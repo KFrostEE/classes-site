@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M03 · Space Electronics and the Technology Gap — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M03 · Space Electronics and the Technology Gap</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 03</p>
+    <h1>Space Electronics: Requirements, Heritage, and the Technology Gap</h1>
+    <p class="lede">
+      What the space environment demands of a part, why qualified parts run
+      generations behind commercial ones, and how the industry works within that.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M01, M02</span>
+      <span><b>Read time</b> ~35 min</span>
+      <span><b>Sources</b> Decks 1–2; Lectures 1–2; syllabus week 2</span>
+    </div>
+
+    <p>
+      <a href="m02-scaling-of-electronics.html">M02</a> described a technology that doubles
+      its transistor count every two years and is manufactured at 13.5 nm wavelength in
+      machines costing a hundred million dollars each. The processor flying on the James
+      Webb Space Telescope was designed in 2001, holds about ten million transistors, and
+      runs at roughly a hundred megahertz. Both statements are true at the same time, and
+      the distance between them is the subject of this module.
+    </p>
+    <p>
+      Three things create that distance, and they are separable. The <b>environment</b>
+      imposes requirements no commercial part is designed to meet — vacuum, a thermal
+      regime with no convection, radiation, launch loads, and no possibility of repair. The
+      <b>economics</b> of manufacturing make it unattractive to build parts that meet them.
+      And the <b>risk structure</b> of the industry rewards reusing a part that has already
+      flown over qualifying one that has not. This module takes each in turn, and closes on
+      the RAD750 as a case in which all three are visible at once. The radiation
+      requirement is stated here and deferred: it is the subject of
+      <a href="index.html#roadmap">M04</a> onward, which is the bulk of the course.
+    </p>
+
+    <h2>1 · What changes when a part leaves the ground</h2>
+    <p>
+      A terrestrial integrated circuit operates inside a set of conditions so reliably
+      present that they are rarely stated: an atmosphere that conducts heat away, a
+      magnetic field and 10 metres of water equivalent of air overhead that remove almost
+      all energetic particles, a temperature range of tens of degrees, mechanical
+      quiet, and an owner who can replace it. Every one of those is absent in space.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Condition</th><th>What it does to electronics</th><th>Where it is treated</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Vacuum</b></td>
+          <td>Removes convection and gas-phase conduction, leaving solid conduction to carry heat to an external surface and radiation to carry it away from there. Causes outgassing of polymers, which then condense on cold optical surfaces. Permits cold welding of bare metal contacts.</td>
+          <td>§2, <a href="index.html#roadmap">M18</a></td>
+        </tr>
+        <tr>
+          <td><b>Thermal extremes and cycling</b></td>
+          <td>Carrier populations, leakage and mobility all change with temperature (equations 1.1, 1.3). Repeated cycling fatigues solder joints and bond wires through thermal-expansion mismatch.</td>
+          <td>§2, <a href="index.html#roadmap">M17</a>, <a href="index.html#roadmap">M18</a></td>
+        </tr>
+        <tr>
+          <td><b>Ionizing radiation</b></td>
+          <td>Deposits charge, shifts thresholds, raises leakage, and can destroy a part with a single particle.</td>
+          <td><a href="index.html#roadmap">M04</a>–<a href="index.html#roadmap">M16</a></td>
+        </tr>
+        <tr>
+          <td><b>Launch loads</b></td>
+          <td>Quasi-static acceleration, random vibration across a broad spectrum, acoustic pressure inside the fairing, and pyrotechnic shock at stage separation. All mechanical, all capable of cracking a die or a joint.</td>
+          <td>§4, <a href="index.html#roadmap">M19</a></td>
+        </tr>
+        <tr>
+          <td><b>Limited power</b></td>
+          <td>Every watt must be generated by a solar array or a radioisotope source and then radiated away as heat. Power is a hard budget, not a cost.</td>
+          <td>§3, <a href="index.html#roadmap">M20</a></td>
+        </tr>
+        <tr>
+          <td><b>Micrometeoroids and debris</b></td>
+          <td>Hypervelocity impacts pit exposed surfaces and can sever a conductor or perforate a radiator.</td>
+          <td><a href="index.html#roadmap">M19</a>, <a href="index.html#roadmap">M21</a></td>
+        </tr>
+        <tr>
+          <td><b>No repair</b></td>
+          <td>Removes every mitigation that depends on intervention. Reliability must be designed in and then demonstrated on the ground.</td>
+          <td>§5–§7, <a href="index.html#roadmap">M19</a></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      These are not independent. A part that runs hot leaks more, and leakage generates
+      heat, so a thermal margin and an electrical margin are the same margin. A thicker
+      shield against radiation adds mass, which costs launch energy, which reduces the
+      power budget available for the payload. Space electronics is an exercise in coupled
+      constraints, and the three that dominate are stated in the industry as
+      <b>mass, power and volume</b>.
+    </p>
+
+    <h2>2 · Heat with no air</h2>
+    <p>
+      The most common misreading of the thermal environment is to assume that space, being
+      cold, cools a spacecraft. It does not, because cooling requires a mechanism. On the
+      ground a chip loses heat by conduction into its package and board and by convection
+      into moving air. In vacuum there is no fluid to convect and nothing to conduct into
+      beyond the spacecraft itself, so the only significant path from the vehicle to its
+      surroundings is <b>thermal radiation</b> from an external surface. (Venting and
+      sublimation reject a little energy as mass, and on a planetary surface the argument
+      inverts entirely — see the Venus case below, where the atmosphere conducts heat
+      <em>in</em>.)
+    </p>
+    <p>
+      A body in sunlight absorbs solar flux over its projected area and radiates over its
+      whole surface. Equating the two gives its equilibrium temperature.
+    </p>
+
+    <div class="eq" id="m03-eq-teq">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em><sub>eq</sub> = <span class="dl">[</span> <span class="frac"><span class="num"><em>α</em><sub>s</sub> <em>S</em> <em>A</em><sub>proj</sub></span><span class="den"><em>ε</em> <em>σ</em> <em>A</em><sub>rad</sub></span></span> <span class="dl">]</span><sup>1/4</sup> &nbsp;&nbsp;&nbsp;&nbsp; <em>S</em>(<em>r</em>) = <em>S</em><sub>0</sub> <span class="dl">(</span><span class="frac"><span class="num">1 AU</span><span class="den"><em>r</em></span></span><span class="dl">)</span><sup>2</sup></div>
+        <div class="eq-num">(3.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em><sub>eq</sub> equilibrium temperature (K) · <em>α</em><sub>s</sub> solar
+        absorptance of the surface, 0 to 1 · <em>S</em> solar irradiance (W/m²),
+        <em>S</em><sub>0</sub> = <b>1,361 W/m² at 1 AU</b> · <em>A</em><sub>proj</sub> area
+        projected toward the Sun (m²) · <em>ε</em> infrared emittance, 0 to 1 ·
+        <em>σ</em> Stefan–Boltzmann constant, 5.670 × 10<sup>−8</sup> W/m²·K⁴ ·
+        <em>A</em><sub>rad</sub> total radiating area (m²) · <em>r</em> distance from the
+        Sun. For a sphere, <em>A</em><sub>proj</sub>/<em>A</em><sub>rad</sub> = 1/4, so with
+        <em>α</em><sub>s</sub> = <em>ε</em> the result is 278 K, or 5 °C — above freezing,
+        in what is called cold space. <b>With no internal dissipation only the ratio
+        <em>α</em><sub>s</sub>/<em>ε</em> matters</b>, and it is a
+        surface property rather than a bulk one, which is why thermal control is done with
+        coatings, paints and multi-layer insulation. Add internal power
+        <em>P</em><sub>int</sub> to the numerator and that ceases to be true:
+        <em>ε</em> then sets the absolute rejection capability, which is why a radiator is
+        specified as high-<em>ε</em> <em>and</em> low-<em>α</em><sub>s</sub> rather than by
+        a ratio. On the formula sheet as
+        <a href="formula-sheet.html#eq-teq">(3.1)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 210" role="img" aria-labelledby="m03f1-t">
+        <title id="m03f1-t">Heat paths available to a chip on the ground and in vacuum</title>
+
+        <text x="130" y="26" class="dg-label" text-anchor="middle">on the ground</text>
+        <rect x="80" y="120" width="100" height="22" class="dg-fill"/>
+        <rect x="105" y="98" width="50" height="22" class="dg-acc-f"/>
+        <text x="130" y="158" class="dg-label-sm" text-anchor="middle">board</text>
+        <g class="dg-line" stroke-width="1.6" fill="none">
+          <line x1="105" y1="98" x2="70" y2="62" marker-end="url(#m03f1-a)"/>
+          <line x1="155" y1="98" x2="190" y2="62" marker-end="url(#m03f1-a)"/>
+          <line x1="130" y1="142" x2="130" y2="180" marker-end="url(#m03f1-a)"/>
+        </g>
+        <text x="62" y="54" class="dg-label-sm" text-anchor="end">convection</text>
+        <text x="198" y="54" class="dg-label-sm">radiation</text>
+        <text x="130" y="196" class="dg-label-sm" text-anchor="middle">conduction</text>
+
+        <text x="390" y="26" class="dg-label" text-anchor="middle">in vacuum</text>
+        <rect x="340" y="120" width="100" height="22" class="dg-fill"/>
+        <rect x="365" y="98" width="50" height="22" class="dg-acc-f"/>
+        <text x="390" y="158" class="dg-label-sm" text-anchor="middle">board → structure → radiator</text>
+        <g class="dg-faint" stroke-width="1.4" stroke-dasharray="4 4" fill="none">
+          <line x1="365" y1="98" x2="330" y2="62"/>
+        </g>
+        <line x1="415" y1="98" x2="450" y2="62" class="dg-acc" stroke-width="1.8" marker-end="url(#m03f1-b)"/>
+        <line x1="390" y1="142" x2="390" y2="180" class="dg-line" stroke-width="1.6" marker-end="url(#m03f1-a)"/>
+        <text x="322" y="54" class="dg-label-sm" text-anchor="end">no convection</text>
+        <text x="452" y="54" class="dg-label-sm" text-anchor="middle">radiation only</text>
+
+        <defs>
+          <marker id="m03f1-a" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+          <marker id="m03f1-b" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Removing the air removes the path that carries most of the heat on the ground. The
+        remaining path is conduction through solid structure to an external radiator, and
+        radiation from that radiator — which is proportional to <em>T</em><sup>4</sup> and
+        therefore very weak at the temperatures electronics tolerate.
+      </figcaption>
+    </figure>
+
+    <p>
+      Equation (3.1) also sets the range of thermal environments a mission may encounter.
+      Because irradiance falls as the inverse square of distance, a spacecraft at Jupiter
+      receives about 1/27 of the flux at Earth and its passive equilibrium temperature falls
+      accordingly; one approaching the Sun receives correspondingly more. The extremes named
+      in the course description follow directly:
+    </p>
+    <ul>
+      <li>
+        <b>Parker Solar Probe</b> flies close enough that the Sun-facing surface of its
+        carbon-foam-cored carbon–carbon shield reaches roughly <b>980 °C</b> at closest
+        approach, while the spacecraft body behind it is held near 30 °C. The shield was
+        <em>qualified</em> to about 1,370 °C, and that larger number is the one usually
+        quoted; it is a test limit, not a flight condition. Either way the electronics never
+        see the high temperature, and the thermal design keeps the two sides of one structure
+        roughly a thousand degrees apart.
+      </li>
+      <li>
+        <b>The Venus surface</b> sits at about 465 °C under 92 bar — some 91 Earth
+        atmospheres — of an atmosphere that is 96.5 % carbon dioxide. The Venera landers of
+        the 1970s and early 1980s returned data for between 23 and 127 minutes. Those are
+        lower bounds on survival rather than times to failure: the landers had no
+        direct-to-Earth link and relayed through an orbiter or a receding flyby bus, so for
+        most of them transmission ended when the relay went below the horizon, not when the
+        lander died. NASA's LLISSE
+        concept targets 60 days using silicon carbide devices that operate at ambient
+        temperature rather than being cooled — a change of approach rather than a better
+        thermal design, and the subject of <a href="index.html#roadmap">M17</a>.
+      </li>
+      <li>
+        <b>Infrared astronomy</b> runs the opposite way. A detector observing thermal
+        infrared must be colder than the signal it measures. The James Webb Space Telescope's
+        sunshield alone cools the near-infrared instruments to about <b>37–40 K</b>, entirely
+        passively. Its mid-infrared instrument needs <b>below 6.7 K</b> — the −266 °C
+        quoted in the syllabus is 7.00 K, and is a ceiling rather than a set point — and that
+        last thirty kelvin cannot be reached by radiating alone, so MIRI carries a mechanical
+        cryocooler. <b>Passive radiative cooling has a floor near 40 K</b>, and the cost of
+        going below it is an entire active cryogenic subsystem. That is the sharper version
+        of the lesson.
+      </li>
+    </ul>
+
+    <h2>3 · Power as a hard budget</h2>
+    <p>
+      Every watt a spacecraft consumes must first be generated, and generation is limited by
+      the area of the solar array and, through equation (3.1), by distance from the Sun.
+      Every watt consumed must then be radiated away, which requires radiator area. Power is
+      therefore constrained twice, and both constraints convert directly into mass.
+    </p>
+    <p>
+      This is why equation (1.8) reads differently for space. A commercial processor
+      maximises performance subject to a package's ability to remove 200 W. A space
+      processor maximises performance subject to a few watts, and by (1.8) the way to
+      operate at a few watts is to run at low frequency and modest transistor count. A
+      part that delivers a hundred megahertz at five watts is a rational point on that
+      curve. Lecture 2 noted that the RAD750's power consumption is more than an order of
+      magnitude below that of contemporary commercial processors of the same era, and that
+      this was a design objective rather than a shortfall.
+    </p>
+
+    <h2>4 · What qualification means</h2>
+    <p>
+      A part destined for flight must be shown to survive the environment before it is
+      launched, because there is no opportunity afterward. That demonstration is
+      <b>qualification</b>, and it is performed against a requirement set that is specified
+      per mission and per orbit.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Requirement</th><th>What is specified</th><th>How it is demonstrated</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Operating temperature range</td><td>A minimum and maximum, wider for externally mounted items than for items inside a controlled bay</td><td>Thermal cycling over the range, with electrical test at the extremes</td></tr>
+        <tr><td>Thermal vacuum</td><td>Operation at temperature extremes <em>in vacuum</em>, since the heat paths differ</td><td>Thermal-vacuum chamber cycling</td></tr>
+        <tr><td>Random vibration</td><td>A power spectral density envelope in g²/Hz across the launch vehicle's spectrum</td><td>Shaker table, three axes</td></tr>
+        <tr><td>Acoustic</td><td>Sound pressure level inside the fairing during ascent, which loads large light structures more than vibration does</td><td>Reverberant acoustic chamber</td></tr>
+        <tr><td>Shock</td><td>Pyrotechnic separation events, very high frequency and short duration</td><td>Shock table or live pyrotechnic firing</td></tr>
+        <tr><td>Total ionizing dose</td><td>A dose in rad(Si) derived from the orbit, mission duration and shielding</td><td>Cobalt-60 or X-ray irradiation to that dose with margin</td></tr>
+        <tr><td>Single-event effects</td><td>An LET threshold and cross-section, derived from the heavy-ion environment</td><td>Heavy-ion or proton beam at an accelerator</td></tr>
+        <tr><td>Outgassing</td><td>Total mass loss and collected volatile condensable material, measured per ASTM E595; the usual flight limits are <b>TML ≤ 1.00 %</b> and <b>CVCM ≤ 0.10 %</b>, for every non-metal</td><td>Standardised vacuum bake and measurement</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Two points about this table matter for the rest of the course. First, the requirements
+      differ by <b>where the part is mounted</b>, not only by mission. A solar cell is
+      exposed directly to space and therefore faces a wider temperature range and a higher
+      radiation dose than a processor inside a shielded avionics box; a battery dissipates
+      internally and has its own, narrower, thermal requirement. Second, the radiation rows
+      are the only ones that require knowledge of the environment in a quantitative form
+      that this course must build from scratch — hence
+      <a href="index.html#roadmap">M04</a> through
+      <a href="index.html#roadmap">M07</a>, which exist to
+      produce the numbers those rows consume.
+    </p>
+
+    <div class="box defn">
+      <span class="box-title">Part quality grades</span>
+      <p>
+        Electronic components are supplied in tiers that differ in screening rather than in
+        design: <b>commercial</b> parts are tested at one temperature and sampled;
+        <b>industrial</b> and <b>automotive</b> grades extend the temperature range and
+        tighten sampling; <b>military</b> grades add burn-in and lot traceability; and
+        <b>space</b> grades add radiation characterisation, full lot testing, destructive
+        physical analysis on samples, and hermetic packaging. Cost rises steeply at each step
+        — a space-grade part typically costs two to three orders of magnitude more than its
+        commercial equivalent, not the ten-thousandfold that a clean order of magnitude per
+        step would imply — and the last step also restricts the supplier to whoever is
+        willing to serve a market of thousands of units.
+      </p>
+    </div>
+
+    <h2>5 · Why the economics do not close</h2>
+    <p>
+      Given that a radiation-hardened part can be designed, the question is why one is
+      rarely designed on a current process. The answer given in Lecture 2, by an industry
+      participant with decades in the field, is arithmetic rather than technical.
+    </p>
+    <p>
+      A leading-edge fabrication plant is built to produce of order <b>a hundred thousand
+      wafers a month</b> — the industry calls a site above that threshold a gigafab — and its
+      economics depend on that volume: the capital cost is fixed and enormous, so profit per
+      wafer is low and profit overall comes from quantity. At a few hundred good die per
+      wafer that is 10<sup>8</sup> to 10<sup>9</sup> die a year. The entire annual demand for
+      a radiation-hardened processor is of order <b>ten thousand units</b>, which really is a
+      fraction of one day's output. Carry the page's own figures through: a volume gap of
+      10<sup>5</sup>, against a price premium of 10<sup>3</sup> — $200,000 against a few
+      hundred dollars — leaves the radiation-hardened customer worth about a hundredth of the
+      revenue of the commercial one, in exchange for a custom process flow, custom test, and a
+      long qualification programme. The proposal loses money at every stage, and it is
+      declined.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 200" role="img" aria-labelledby="m03f2-t">
+        <title id="m03f2-t">Annual unit volume of commercial against radiation-hardened parts on a logarithmic scale</title>
+
+        <line x1="100" y1="170" x2="470" y2="170" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="100" y="188">10³</text>
+          <text x="192" y="188">10⁵</text>
+          <text x="284" y="188">10⁷</text>
+          <text x="376" y="188">10⁹</text>
+          <text x="462" y="188">10¹¹</text>
+        </g>
+        <text x="285" y="28" class="dg-label" text-anchor="middle">annual units produced</text>
+
+        <rect x="100" y="52" width="46" height="26" class="dg-acc-f"/>
+        <text x="156" y="70" class="dg-label-sm">radiation-hardened processors, ~10⁴/year</text>
+
+        <rect x="100" y="104" width="330" height="26" class="dg-fill"/>
+        <text x="112" y="122" class="dg-label-sm">commercial logic, 10⁹–10¹¹/year</text>
+
+        <line x1="146" y1="84" x2="430" y2="98" class="dg-rule" stroke-width="0.9" stroke-dasharray="4 4"/>
+        <text x="290" y="152" class="dg-label-sm" text-anchor="middle">a volume gap of ~10⁵ — a price premium of ~10³ leaves a hundredth of the revenue</text>
+      </svg>
+      <figcaption>
+        The horizontal axis is logarithmic, so the gap shown is a factor of roughly
+        10<sup>5</sup>. A thousandfold price premium recovers three of those five orders,
+        which still leaves the radiation-hardened customer worth a hundredth of the
+        commercial one. This is the whole argument, and it has not changed in thirty years.
+      </figcaption>
+    </figure>
+
+    <p>
+      What exists instead are foundries operating on mature processes that are fully
+      depreciated, where a small run is economically viable and where the process itself is
+      often better suited to the application. Lecture 2 described a visit to such a
+      manufacturer, producing power and space electronics on a mature node patterned with
+      193 nm lithography, with no plan to move to a finer one — because its products need voltage handling, thermal
+      performance and radiation tolerance rather than density, and a thicker oxide on a
+      coarser process delivers the first two directly.
+    </p>
+
+    <h2>6 · Technology readiness and flight heritage</h2>
+    <p>
+      Economics explains why advanced radiation-hardened parts are not manufactured. A
+      second mechanism explains why even the ones that do exist are adopted slowly.
+    </p>
+    <p>
+      <b>Technology readiness level</b> is a nine-point scale, defined in the NASA Systems
+      Engineering Handbook, that states how far a technology has progressed from basic
+      principles to demonstrated operation. Level 1 is an observed physical principle;
+      level 6 is a prototype demonstrated in a relevant environment; level 8 is a completed
+      system qualified through test and demonstration, on the ground or in space; level 9 is
+      a system proven through successful mission operations. Programmes specify a minimum TRL for
+      the components they will accept, and a part that has never flown cannot reach the
+      top of the scale by any amount of ground testing.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 560 150" role="img" aria-labelledby="m03f3-t">
+        <title id="m03f3-t">The nine technology readiness levels and the point at which flight is required</title>
+
+        <line x1="60" y1="100" x2="520" y2="100" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-acc-f">
+          <circle cx="60" cy="100" r="4"/><circle cx="117" cy="100" r="4"/><circle cx="174" cy="100" r="4"/>
+          <circle cx="231" cy="100" r="4"/><circle cx="288" cy="100" r="4"/><circle cx="345" cy="100" r="4"/>
+          <circle cx="402" cy="100" r="4"/><circle cx="459" cy="100" r="4"/><circle cx="516" cy="100" r="4"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="118">1</text><text x="117" y="118">2</text><text x="174" y="118">3</text>
+          <text x="231" y="118">4</text><text x="288" y="118">5</text><text x="345" y="118">6</text>
+          <text x="402" y="118">7</text><text x="459" y="118">8</text><text x="516" y="118">9</text>
+        </g>
+        <text x="60" y="86" class="dg-label-sm" text-anchor="start">principle</text>
+        <text x="231" y="86" class="dg-label-sm" text-anchor="middle">lab validation</text>
+        <text x="345" y="70" class="dg-label-sm" text-anchor="middle">prototype in a</text>
+        <text x="345" y="84" class="dg-label-sm" text-anchor="middle">relevant environment</text>
+        <text x="516" y="86" class="dg-label-sm" text-anchor="end">flight proven</text>
+
+        <line x1="505" y1="100" x2="516" y2="100" class="dg-acc" stroke-width="3"/>
+        <text x="470" y="140" class="dg-label-sm" text-anchor="middle">only TRL 9 requires flight</text>
+        <line x1="505" y1="126" x2="514" y2="108" class="dg-acc" stroke-width="1.4" marker-end="url(#m03f3-a)"/>
+
+        <defs>
+          <marker id="m03f3-a" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Only the last level requires flight — NASA's definitions tag TRL 7 and 8 explicitly
+        as achievable on the ground or in space, and TRL 8 is reached by qualification test.
+        But TRL 9 requires flight, and flight requires a programme willing to accept a part
+        that has not yet reached it. That circularity is the reason space electronics changes
+        slowly, and it is independent of whether the new part is better.
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Flight heritage</b> is the record of how many times a part has flown and how
+      successfully. A part with long heritage carries a known failure history, established
+      test procedures, existing board designs, and engineers who have used it. Selecting it
+      removes a large block of programme risk and schedule. Selecting an unflown part adds
+      that risk back, and adds the cost of qualifying it, in exchange for performance that
+      the mission may not require. For missions where failure is unrecoverable and
+      expensive, the choice is usually made for heritage — a position that Lecture 2's
+      industry participants described as near-universal in civil space.
+    </p>
+    <p>
+      The consequence is a lock-in. Heritage accumulates on parts that are already flying,
+      which makes them more attractive still, which delays the point at which a successor
+      accumulates any. Manufacturers of long-flown devices report trying to retire them and
+      being unable to, because programmes keep selecting them.
+    </p>
+
+    <h2>7 · The RAD750 as a case</h2>
+    <p>
+      One part shows all three mechanisms at once, and Lecture 2 used it as the worked
+      example.
+    </p>
+    <p>
+      The RAD750 is a radiation-hardened microprocessor derived from the commercial
+      PowerPC 750 architecture. <b>BAE Systems designed it</b>, at Manassas, Virginia, under
+      licence to the IBM/Motorola PowerPC 750 core, and manufactures it there; it was
+      introduced in 2001 and first flew in 2005 on Deep Impact. (The course, following a
+      widely repeated error, credits the design to IBM. IBM designed the commercial 750 core,
+      and the Manassas site was IBM Federal Systems before passing to Loral, Lockheed Martin
+      and then BAE — which is where the confusion comes from.) It contains about 10.4 million transistors on a die of roughly
+      130 mm², manufactured on 250 nm and later 150 nm processes. It runs between roughly
+      110 and 200 MHz and consumes about 5 W. It operates from −55 °C to +125 °C and
+      tolerates a total ionizing dose in the range of hundreds of kilorads to about a
+      megarad, depending on variant. <b>Those are the processor's numbers</b>; the name also
+      covers the single-board computer built around it, which draws about 10 W, is rated
+      −55 to +70 °C, and is qualified to about 100 krad(Si). The course quotes a unit price
+      of <b>$200,000 in 2002</b> — in fact the listed price of the predecessor RAD6000, which
+      BAE has said the RAD750 is comparable to; either way the flight unit costs of order
+      10<sup>5</sup> dollars, and about twice that in present-day terms. It flies on the James Webb Space Telescope, the Curiosity rover,
+      the Juno orbiter and many others.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Attribute</th><th>RAD750 (2001)</th><th>Commercial processor a decade later<br>(Intel Core i7-980X, 2010, 32 nm)</th><th>Reading</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Transistors</td><td>~10.4 million</td><td>1.17 billion</td><td>two orders behind a part a decade younger</td></tr>
+        <tr><td>Clock frequency</td><td>110–200 MHz</td><td>3.33 GHz</td><td>more than an order of magnitude slower</td></tr>
+        <tr><td>Power</td><td>~5 W</td><td>130 W</td><td><b>a factor of 26 lower — the design objective</b></td></tr>
+        <tr><td>Temperature range</td><td>−55 to +125 °C (die)</td><td>0 to +70 °C (commercial grade)</td><td>far wider; industrial grade is −40 to +85 °C</td></tr>
+        <tr><td>Total dose tolerance</td><td>hundreds of krad(Si) to ~1 Mrad(Si)</td><td>unspecified; typically fails in the low tens of krad</td><td>the entire point</td></tr>
+        <tr><td>Unit cost</td><td>$200,000 in 2002</td><td>hundreds of dollars</td><td>the volume argument of §5</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Read as a commercial processor the RAD750 is obsolete. Read against its requirement
+      set it is not: it trades frequency and transistor count, which the mission does not
+      need, for power, temperature range and dose tolerance, which the mission cannot do
+      without. The trade is visible in equation (1.8): dropping the clock from 3.3 GHz to
+      130 MHz reduces dynamic power by the same factor.
+    </p>
+    <div class="box pitfall">
+      <span class="box-title">A mature node is not chosen for its gate oxide</span>
+      <p>
+        It is tempting to credit the 250 nm process with helping the radiation response
+        because its gate oxide is thick. <b>The opposite is true for total ionizing dose.</b>
+        The threshold shift from charge trapped in an oxide scales roughly as the
+        <b>square of the oxide thickness</b>, so a thicker gate oxide traps more charge per
+        unit dose and shifts further — which is why the hundreds-of-nanometre isolation
+        oxides, not the gate oxides, dominate total-dose failure in any given technology.
+        Below roughly 10 nm a gate oxide becomes nearly dose-immune, because trapped holes
+        tunnel back out faster than irradiation supplies them. Modern thin gate oxides are
+        radiation-hard by accident of scaling.
+      </p>
+      <p>
+        What a mature node genuinely buys on the radiation side is <b>single-event</b>
+        margin: a larger node holds more critical charge, so it takes a bigger deposit to
+        upset it, and its generous feature sizes leave room for the guard rings and annular
+        transistors that hardening by layout requires. It is also cheap on a depreciated
+        line, tolerates higher supply voltage, and carries decades of heritage. The thick
+        oxide is what delivers the <em>voltage handling</em> mentioned in §5 — not the dose
+        tolerance. <a href="index.html#roadmap">M14</a> and
+        <a href="index.html#roadmap">M15</a> develop both halves.
+      </p>
+    </div>
+
+    <p>
+      That it is still specified for new missions twenty-five years after design is the
+      heritage argument of §6 operating exactly as described.
+    </p>
+
+    <h2>8 · The alternatives</h2>
+    <p>
+      The gap is real but it is not accepted passively, and three responses are in use. They
+      appear again in <a href="index.html#roadmap">M16</a>, where the
+      radiation physics needed to evaluate them is available.
+    </p>
+    <p>
+      The course names five companies as working examples. Two of the descriptions need
+      correcting against what the companies actually do: <b>Magics Technologies</b> is a
+      radiation-hardened IC and ASIC design house; <b>Apogee Semiconductor</b> applies its
+      radiation-hardened-by-design layout kit inside commercial foundries, so it belongs with
+      Magics rather than in a category of its own; <b>Coherent Logix</b> makes the HyperX
+      many-core processor, which is a software-programmable SoC offered as an
+      <em>alternative</em> to radiation-hardened FPGAs rather than an FPGA itself; and
+      <b>VPT</b> and <b>Renesas Electronics</b> both supply radiation-hardened power
+      conversion and control — VPT is a DC–DC converter house, not a commercial-parts test
+      house. That leaves the upscreening approach below without a named example; it is the
+      business of test-and-screening specialists and radiation test laboratories.
+    </p>
+    <ul>
+      <li>
+        <b>Radiation-hardened by design.</b> Build on a standard commercial process, and
+        obtain tolerance from circuit and layout choices — redundant storage cells, error
+        detection and correction, triple redundancy on critical logic, guard structures
+        against latch-up. This is what makes a part like the RAD750 possible without a
+        custom process, and it costs area, power and speed rather than fabrication access.
+      </li>
+      <li>
+        <b>Upscreened commercial parts.</b> Buy commercial devices, test them against the
+        mission's radiation and temperature requirements, and fly the ones that pass from a
+        single traceable production lot. This is now common for short-duration
+        low-Earth-orbit missions and for constellations where a failed satellite is
+        replaceable. It transfers effort from design to test, and its weakness is that the
+        manufacturer may change the process without notice, invalidating the
+        characterisation.
+      </li>
+      <li>
+        <b>System-level tolerance.</b> Accept that individual parts will be disturbed, and
+        design the system to detect and recover — watchdog timers, periodic memory
+        scrubbing, redundant processors voting on results, safe modes. This is how a
+        constellation of commercial-grade satellites achieves availability without
+        radiation-hardened parts in every socket.
+      </li>
+    </ul>
+
+    <details class="check">
+      <summary>A mission proposes replacing a heritage processor with a commercial part that is a hundred times faster, a tenth the power per operation, and a thousandth the cost. Beyond radiation tolerance, what must be established before this is a sound trade?</summary>
+      <div class="answer">
+        <p>
+          Several things, and none of them is about performance. The part must hold its
+          specifications across the full mounted temperature range, not the commercial
+          0–70 °C or the industrial −40 to +85 °C, and must survive thermal cycling in vacuum at that range. Its package
+          must be qualified for launch vibration, acoustic loading and shock, and its
+          non-metallic materials must meet outgassing limits. Its supply must be traceable
+          to a single production lot, because a process change at the foundry invalidates
+          any characterisation performed on earlier material — and commercial
+          manufacturers change processes without notification. Its absolute power may
+          matter more than its power per operation, since the spacecraft budget is in watts
+          rather than in watts per instruction. And the programme must accept a part at a
+          lower technology readiness level, which means budgeting for the qualification
+          campaign and for the schedule risk if it fails. The performance advantage is the
+          easy part of the argument; the cost of establishing everything else is what the
+          hundred-fold price premium on a heritage part is actually buying.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Space removes convection, adds radiation and launch loads, constrains power hard, and removes repair. These constraints are coupled: shielding costs mass, mass costs power, power costs heat rejection.</li>
+        <li>In vacuum the only heat path out of a spacecraft is radiation from an external surface. A sphere at 1 AU with <em>α</em><sub>s</sub> = <em>ε</em> sits at 278 K; thermal control is done by choosing <em>α</em><sub>s</sub>/<em>ε</em> with coatings.</li>
+        <li>Solar irradiance follows an inverse-square law, which sets the thermal environment of every mission — Parker Solar Probe's shield reaches ~980 °C at closest approach (qualified to ~1,370 °C), while passive cooling bottoms out near 40 K for an infrared telescope.</li>
+        <li>Qualification specifies temperature range, thermal vacuum, random vibration, acoustic, shock, total dose, single-event tolerance and outgassing — differently for each mounting location.</li>
+        <li>Radiation-hardened parts are not built on leading-edge processes because the volume is five orders of magnitude below what a gigafab requires, and even a thousand-fold price premium recovers only three of them.</li>
+        <li>Technology readiness level and flight heritage make adoption slow independently of economics: TRL 9 requires flight, and heritage accumulates only on parts already flying.</li>
+        <li>The RAD750 — 10.4 million transistors, 250/150 nm, ~5 W, −55 to +125 °C, hundreds of krad — is not a slow processor but a processor optimised against a different objective, and it is still flying because of heritage. Its mature node buys single-event margin and layout room, <b>not</b> total-dose tolerance: threshold shift grows as the square of oxide thickness.</li>
+        <li>The three responses to the gap are hardening by design, upscreening commercial parts, and system-level fault tolerance.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Lecture 1 (course scope: radiation, temperature, vibration, acoustic, mission lifetime; per-location requirements for batteries and solar cells); syllabus week 2</td></tr>
+      <tr><td>§2</td><td>Lecture 1 (no convective cooling in vacuum; satellites run warm despite cold space; Venus at 450 °C; Parker Solar Probe; infrared detectors near −266 °C). Solar constant and Parker shield temperature from NASA mission documentation; Venera surface survival times and the LLISSE 60-day target from NASA Glenn's high-temperature electronics programme</td></tr>
+      <tr><td>§3</td><td>Lecture 2 (RAD750 power against contemporary processors; power scarcity in orbit)</td></tr>
+      <tr><td>§4</td><td>Lecture 1 (launch vibration and acoustic requirements; qualification against minimum requirements; wider ranges for externally mounted parts)</td></tr>
+      <tr><td>§5</td><td>Lecture 2 transcript (volume mismatch stated by an industry participant; the mature-node power and space foundry); Deck 2 p. 35 for the node statement</td></tr>
+      <tr><td>§6</td><td>Lecture 2 (TRL and flight heritage discussion; heritage lock-in; manufacturers unable to retire long-flown designs). TRL scale as defined in the NASA Systems Engineering Handbook, a required resource for this course</td></tr>
+      <tr><td>§7</td><td>Deck 2 pp. 36–37 (RAD750: 10.4 M transistors, 250/150 nm, 110–200 MHz, −55 to +125 °C, 5 W, IBM design and BAE manufacture, $200,000 in 2002; comparison against Core i7 2010 and Apple M1 2020). Die area, dose tolerance, the BAE design attribution, the RAD6000 price provenance and the JWST clock rate from published BAE Systems and NASA mission data; oxide-thickness scaling of dose response after Oldham &amp; McLean, <em>IEEE TNS</em> <b>50</b>, 483 (2003)</td></tr>
+      <tr><td>§8</td><td>Deck 2 p. 35 (the five named companies and the approach each represents; “still mostly uses old yet reliable technologies, e.g. 250 nm or even bigger”); Lecture 2 transcript (redundancy at transistor, circuit and system level)</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m02-scaling-of-electronics.html"><span>Previous</span>M02 · Scaling of Electronics</a>
+      <a class="next" href="m04-radiation-species-decay.html"><span>Next</span>M04 · Radiation: Species, Decay, and Laboratory Sources</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M10 · Photon Interaction with Matter — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M10 · Photon Interaction with Matter</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 10</p>
+    <h1>Photon Interaction with Matter</h1>
+    <p class="lede">
+      How X-rays and gamma rays deposit energy in a solid: the three mechanisms that remove
+      a photon from a beam, which one operates at which energy and atomic number, and the
+      exponential attenuation law that turns a tabulated coefficient into a shielding
+      thickness.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M09, M08, M04, M01</span>
+      <span><b>Read time</b> ~45 min</span>
+      <span><b>Sources</b> Deck 6; Lecture 6; NIST tables</span>
+    </div>
+
+    <p>
+      Every mechanism in <a href="m08-ionization-excitation.html">M08</a> and
+      <a href="m09-bremsstrahlung-xrays.html">M09</a> began with a charged particle. A
+      charged particle carries a Coulomb field with it, so it interacts continuously along
+      its whole path, gives a little energy to a great many atoms, and comes to rest after a
+      well-defined distance. A photon has no charge and no rest mass. It carries no field
+      ahead of itself, it interacts only in discrete and improbable events, and between
+      those events it travels in a straight line and loses no energy at all. There is no
+      distance at which a photon beam stops. There is only a distance over which its
+      intensity falls by a stated factor.
+    </p>
+    <p>
+      That difference governs everything this course does with photons. It is why gamma
+      sources deliver a uniform dose through the full thickness of a packaged part, while an
+      alpha source deposits everything in the first few micrometres. It is why a photon
+      shield is specified by an attenuation factor and never by a range. And it is why most
+      photons that cross a silicon die do nothing to it at all — a result this module
+      quantifies, because it is the starting point for total ionizing dose in
+      <a href="index.html#roadmap">M14</a>.
+    </p>
+    <p>
+      The module establishes what a photon carries, separates the low-energy regime in which
+      a solid's band structure controls absorption from the high-energy regime in which the
+      band structure is irrelevant, then treats the three interactions in turn:
+      photoelectric absorption, Compton scattering and pair production. It closes with the
+      attenuation law, the tabulated coefficients that feed it, and two worked comparisons
+      that explain why lead is a shielding material and silicon is not.
+    </p>
+
+    <h2>1 · What a photon carries</h2>
+    <p>
+      A photon is a quantum of the electromagnetic field. It has no rest mass and no
+      electric charge, and it travels at the speed of light in vacuum. Its energy is fixed
+      entirely by its wavelength.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>ph</sub> = <span class="frac"><span class="num"><em>hc</em></span><span class="den">λ</span></span> = <em>hf</em></div>
+        <div class="eq-num">(10.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>ph</sub> photon energy (J, or eV after dividing by <em>q</em>) ·
+        <em>h</em> Planck constant, 6.626×10⁻³⁴ J·s ·
+        <em>c</em> speed of light, 2.998×10⁸ m/s ·
+        λ wavelength (m) · <em>f</em> frequency (Hz) ·
+        <em>q</em> elementary charge, 1.602×10⁻¹⁹ C, used only to convert J to eV.
+        The product <em>hc</em> = 1239.8 eV·nm is the form worth memorising: it returns
+        <em>E</em>(eV) = 1239.8 ⁄ λ(nm) with no unit conversion at all.
+      </div>
+    </div>
+
+    <p>
+      For the green light used as the reference case in Lecture 6, λ = 500 nm gives
+      <em>E</em><sub>ph</sub> = 1239.8/500 = 2.48 eV, or 3.97×10⁻¹⁹ J. For the gamma rays
+      this course tests parts with, λ is near 1 pm and the energy is near 1 MeV: six orders
+      of magnitude more energy, from a wavelength six orders of magnitude shorter.
+    </p>
+    <p>
+      A photon also carries momentum, although momentum for a massive body is the product of
+      mass and velocity and a photon has no mass. The relativistic relation between energy
+      and momentum reduces, for a massless particle, to <em>p</em> = <em>E</em>/<em>c</em>,
+      and substituting equation (10.1) gives a momentum set only by wavelength.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>p</em><sub>ph</sub> = <span class="frac"><span class="num"><em>E</em><sub>ph</sub></span><span class="den"><em>c</em></span></span> = <span class="frac"><span class="num"><em>h</em></span><span class="den">λ</span></span></div>
+        <div class="eq-num">(10.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>p</em><sub>ph</sub> photon momentum (kg·m/s) · <em>h</em> Planck constant (J·s) ·
+        λ wavelength (m). At λ = 500 nm this is 1.33×10⁻²⁷ kg·m/s. The relation
+        <em>p</em> = <em>E</em>/<em>c</em> holds only for massless particles; an electron or
+        an ion needs the full relativistic expression.
+      </div>
+    </div>
+
+    <p>
+      That momentum transfers whenever a photon is absorbed or scattered, so a photon flux
+      exerts a pressure. At Earth's distance from the Sun the solar irradiance is
+      1361 W/m², giving a radiation pressure of 1361/<em>c</em> = 4.5×10⁻⁶ Pa on a fully
+      absorbing surface. The force is negligible against a spacecraft structure over a
+      second and significant against a dust grain over an orbit, which is why a comet's dust
+      tail is swept away from the Sun. A comet's second tail, the ionised one, is driven
+      instead by the solar wind treated in
+      <a href="m05-sun-particle-populations.html">M05</a>, and the two tails point in
+      measurably different directions.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 660 210" role="img" aria-labelledby="f10-1-t">
+        <title id="f10-1-t">The electromagnetic spectrum from radio waves to gamma rays, with photon energy and wavelength scales running in opposite directions</title>
+        <text x="30" y="30" class="dg-label">Band structure controls absorption</text>
+        <text x="352" y="30" class="dg-label">Individual atoms control absorption</text>
+        <line x1="30" y1="38" x2="300" y2="38" class="dg-line" stroke-width="1.4"/>
+        <line x1="352" y1="38" x2="628" y2="38" class="dg-line" stroke-width="1.4"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="46" y="66">1 µeV</text>
+          <text x="161" y="66">1 meV</text>
+          <text x="276" y="66">1 eV</text>
+          <text x="390" y="66">1 keV</text>
+          <text x="505" y="66">1 MeV</text>
+          <text x="620" y="66">1 GeV</text>
+        </g>
+        <line x1="46" y1="80" x2="620" y2="80" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="1">
+          <line x1="161" y1="76" x2="161" y2="84"/><line x1="276" y1="76" x2="276" y2="84"/>
+          <line x1="390" y1="76" x2="390" y2="84"/><line x1="505" y1="76" x2="505" y2="84"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="46" y="100">≈1 m</text>
+          <text x="161" y="100">≈1 mm</text>
+          <text x="276" y="100">≈1 µm</text>
+          <text x="390" y="100">≈1 nm</text>
+          <text x="505" y="100">≈1 pm</text>
+          <text x="620" y="100">≈1 fm</text>
+        </g>
+        <rect x="46" y="120" width="238" height="22" class="dg-fill"/>
+        <rect x="284" y="120" width="11" height="22" class="dg-acc-f"/>
+        <rect x="295" y="120" width="61" height="22" class="dg-fill"/>
+        <rect x="356" y="120" width="111" height="22" class="dg-fill"/>
+        <rect x="467" y="120" width="153" height="22" class="dg-fill"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="165" y="135">radio · microwave · infrared</text>
+          <text x="325" y="135">UV</text>
+          <text x="411" y="135">X-ray</text>
+          <text x="543" y="135">gamma ray</text>
+        </g>
+        <text x="284" y="160" class="dg-label-sm" text-anchor="middle">visible</text>
+        <line x1="284" y1="142" x2="284" y2="150" class="dg-rule" stroke-width="1"/>
+        <line x1="356" y1="112" x2="356" y2="176" class="dg-acc" stroke-width="1.8"/>
+        <text x="362" y="176" class="dg-label-sm">≈10 nm, ≈124 eV</text>
+        <text x="362" y="192" class="dg-label-sm">the practical start of the ionising range</text>
+      </svg>
+      <figcaption>
+        Both scales are logarithmic and uniform, three decades between neighbouring ticks,
+        and they run in opposite directions because energy and wavelength are inverse:
+        λ(nm) = 1239.8 / <em>E</em>(eV), so each wavelength shown is the exact inverse of the
+        energy above it to within 24 %. Notice how narrow the visible band is — the whole of
+        it spans less than a factor of two in energy. The marked boundary near 10 nm is where
+        the description of the target must change: below it a solid absorbs according to its
+        band structure, above it according to the atoms it contains. Band boundaries are
+        conventional and overlap.
+      </figcaption>
+    </figure>
+
+    <h2>2 · Two regimes, and why the target is described differently in each</h2>
+    <p>
+      One word, absorption, covers two physically distinct processes, and the quantity that
+      predicts each is different. Separating them is the first thing to do, because a
+      shielding calculation that reasons from a bandgap is wrong by orders of magnitude.
+    </p>
+    <p>
+      At photon energies of a few electronvolts the wavelength is thousands of times larger
+      than the spacing between atoms, so the photon does not resolve individual atoms. It
+      couples to the collective electronic states of the solid, the bands established in
+      <a href="m01-semiconductor-background.html">M01</a>. The photon is absorbed if it can
+      promote an electron from a filled valence state to an empty conduction state, which
+      requires <em>E</em><sub>ph</sub> ≥ <em>E</em><sub>g</sub>. Silicon has
+      <em>E</em><sub>g</sub> = 1.1 eV, so a 2.48 eV green photon is absorbed and its excess
+      1.38 eV passes to lattice vibrations as the excited electron relaxes to the band edge.
+      Gallium nitride, with <em>E</em><sub>g</sub> = 3.4 eV, cannot absorb that photon at
+      all, and transmits it. Below its gap a semiconductor is transparent. This is the
+      regime of photodetectors, solar cells and light-emitting diodes, and it returns in
+      <a href="index.html#roadmap">M21</a>.
+    </p>
+    <p>
+      At X-ray and gamma energies the wavelength falls below the interatomic spacing —
+      0.235 nm between nearest neighbours in silicon — and the collective description fails.
+      A 1 MeV photon has a wavelength of 1.2 pm, roughly two hundred times smaller than the
+      atomic spacing. It interacts with one atomic electron, or with the field of one
+      nucleus, as an isolated target. The band structure does not enter: the 1.1 eV silicon
+      gap lies six orders of magnitude below the photon energy and is invisible to it. What
+      determines the interaction is the atomic number <em>Z</em> of the atoms present and
+      how many of them lie in the path.
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">The quantity that predicts high-energy photon absorption</p>
+      <p>
+        For X-rays and gamma rays a material is characterised by its atomic number and by
+        the mass it presents per unit area, not by its bandgap, its crystal structure or its
+        doping. Amorphous silicon dioxide and crystalline quartz of equal density attenuate
+        identically, and so do a silicon wafer and the same mass of powdered silicon.
+        Concrete stops gamma rays because it is thick and dense, not because of any
+        electronic property of concrete.
+      </p>
+    </div>
+
+    <p>
+      Crystal orientation is irrelevant at these energies for the same reason. It matters a
+      great deal for low-energy ions, where a beam aligned with an open crystallographic
+      direction can channel and penetrate far deeper than the same ion arriving in a random
+      direction — an effect <a href="index.html#roadmap">M13</a> returns to, since it is one
+      of the things a binary-collision simulation must be told about. Doping is negligible
+      in both regimes: a heavy doping level of 10¹⁸ cm⁻³ sits more than four orders of
+      magnitude below the 5.0×10²² cm⁻³ atomic density of silicon, so dopant atoms are far
+      too few to contribute measurably to the total cross-section.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 660 232" role="img" aria-labelledby="f10-2-t">
+        <title id="f10-2-t">Band-gap absorption of a visible photon compared with atomic-scale interaction of a gamma ray</title>
+        <text x="24" y="22" class="dg-label">Visible photon, λ ≫ atomic spacing</text>
+        <path d="M34,74 L150,74 L182,96 L292,96" class="dg-line" stroke-width="1.6"/>
+        <path d="M34,172 L150,172 L182,150 L292,150" class="dg-line" stroke-width="1.6"/>
+        <text x="296" y="100" class="dg-label-sm">E_c</text>
+        <text x="296" y="154" class="dg-label-sm">E_v</text>
+        <text x="34" y="64" class="dg-label-sm">conduction band</text>
+        <text x="34" y="190" class="dg-label-sm">valence band</text>
+        <line x1="228" y1="148" x2="228" y2="98" class="dg-acc" stroke-width="2" marker-end="url(#f10-2-a)"/>
+        <text x="236" y="128" class="dg-label-sm">hν ≥ E_g</text>
+        <text x="24" y="216" class="dg-label-sm">Absorption is decided by the gap of the solid.</text>
+        <line x1="325" y1="34" x2="325" y2="224" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="350" y="22" class="dg-label">Gamma ray, λ ≪ atomic spacing</text>
+        <g class="dg-faint">
+          <circle cx="404" cy="76" r="3.4"/><circle cx="474" cy="76" r="3.4"/><circle cx="544" cy="76" r="3.4"/><circle cx="614" cy="76" r="3.4"/>
+          <circle cx="404" cy="146" r="3.4"/><circle cx="474" cy="146" r="3.4"/><circle cx="544" cy="146" r="3.4"/><circle cx="614" cy="146" r="3.4"/>
+        </g>
+        <text x="390" y="62" class="dg-label-sm">lattice of atoms</text>
+        <path d="M350,182 L620,182" class="dg-line" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="350" y="200" class="dg-label-sm">most photons cross without interacting</text>
+        <path d="M350,112 L468,112" class="dg-acc" stroke-width="1.8"/>
+        <circle cx="474" cy="112" r="5" class="dg-acc-f"/>
+        <path d="M478,108 L562,84" class="dg-acc" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <path d="M478,116 L548,150" class="dg-acc" stroke-width="1.5"/>
+        <text x="492" y="132" class="dg-label-sm">rare event, one atom</text>
+        <text x="350" y="216" class="dg-label-sm">Absorption is decided by Z and by atoms per unit area.</text>
+        <defs>
+          <marker id="f10-2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The left panel is a continuous medium with an energy gap; the right panel is a sparse
+        collection of independent targets. Notice that on the right the photon's fate is
+        all-or-nothing: it either interacts at some atom or crosses the whole thickness
+        untouched, with no partial energy loss in between.
+      </figcaption>
+    </figure>
+
+    <p>
+      A photon crossing a solid can therefore pass many atoms without interacting, and
+      usually does. The atom is mostly empty space, and the chance of an interaction is
+      described by a cross-section: an effective target area, per atom, that the photon must
+      strike. Section 7 converts that cross-section into a mean free path, and shows that
+      for a 1 MeV photon in silicon it is 6.7 cm — roughly ninety times the thickness of a
+      standard 200 mm wafer.
+    </p>
+
+    <h2>3 · Photoelectric absorption</h2>
+    <p>
+      In photoelectric absorption the photon is destroyed. All of its energy passes to a
+      single bound atomic electron, which is ejected from the atom with whatever kinetic
+      energy remains after the binding energy is paid. Nothing of the photon survives, which
+      distinguishes this process from Compton scattering. Pair production, treated in §5,
+      also destroys the photon; what separates it from photoelectric absorption is that the
+      energy creates a particle–antiparticle pair rather than freeing one bound electron.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em><sub>e</sub> = <em>E</em><sub>ph</sub> − <em>E</em><sub>b</sub></div>
+        <div class="eq-num">(10.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em><sub>e</sub> kinetic energy of the ejected photoelectron (eV) ·
+        <em>E</em><sub>ph</sub> incident photon energy (eV) ·
+        <em>E</em><sub>b</sub> binding energy of the electron in its shell (eV).
+        The process is possible only when <em>E</em><sub>ph</sub> ≥ <em>E</em><sub>b</sub>,
+        and the recoil of the whole atom absorbs the momentum imbalance.
+      </div>
+    </div>
+
+    <p>
+      The electron must be bound for the process to occur at all. A photon cannot be
+      absorbed by a free electron, because energy and momentum cannot both be conserved in
+      that two-body outcome. The nucleus, bound to the electron, takes up the excess
+      momentum; its share of the energy is negligible because it is thousands of times more
+      massive. For this reason photoelectric absorption is strongly favoured by the most
+      tightly bound electrons available — the K shell supplies most photoelectric
+      events once the photon energy exceeds the K binding energy — typically about 80 % in
+      heavy elements and around 90 % in silicon, a fraction that can be read directly off the
+      size of the absorption-edge step described below.
+    </p>
+    <p>
+      Lecture 6 takes the silicon binding energy as 99.4 eV, so a photon above about 100 eV,
+      corresponding to λ = 12.4 nm in the extreme ultraviolet, can already eject an
+      electron. That figure is the Si 2p<sub>3/2</sub> level, and it is the correct one to use here:
+      it is also silicon's L₃ absorption edge, tabulated at 99.42 eV. Its spin–orbit partner
+      L₂ (2p<sub>1/2</sub>) sits 0.4 eV higher at 99.82 eV, so the L₂,₃ edge is a closely
+      spaced doublet rather than a single step, and the lower member sets the onset. It is worth being explicit
+      that the same 99.4 eV appears in <a href="m08-ionization-excitation.html">M08</a> in a
+      role it does not fill, where the quantity needed is the mean electron–hole pair
+      creation energy of 3.6 eV. Binding energy sets which photons can be absorbed; pair
+      creation energy sets how much charge the deposited energy liberates.
+    </p>
+
+    <div class="box defn">
+      <p class="box-title">Absorption edge</p>
+      <p>
+        An absorption edge is the photon energy at which a new shell becomes accessible, and
+        it appears in tabulated data as a discontinuous jump. Silicon's K edge is at
+        1.839 keV: just below it the mass attenuation coefficient is 309 cm²/g, and just
+        above it 3192 cm²/g, a factor of 10.3 across zero change in energy. The jump occurs
+        because the two K electrons, previously inaccessible, become available targets. This
+        is why a NIST table lists the same energy on two successive rows, once below the
+        edge and once above.
+      </p>
+    </div>
+
+    <p>
+      The vacancy left behind does not persist. An electron from a higher shell falls into
+      it, and the energy difference leaves either as a characteristic X-ray of the element —
+      the same line spectrum produced by an X-ray tube anode in
+      <a href="m09-bremsstrahlung-xrays.html">M09</a> — or as an Auger electron, in which
+      the energy is given instead to another bound electron that is ejected. Low-<em>Z</em>
+      materials such as silicon favour Auger emission; high-<em>Z</em> materials favour
+      fluorescence. Either way, a single photoelectric absorption in silicon deposits
+      essentially all of the photon energy locally, because the photoelectron range stays
+      well below a die thickness: under 1 µm at the 10 keV energies used for X-ray dose
+      testing, and about 20 µm even at the top of silicon's photoelectric range near 50 keV.
+      A silicon Auger electron, at roughly 1.6 keV, travels under 0.1 µm.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 660 220" role="img" aria-labelledby="f10-3-t">
+        <title id="f10-3-t">Photoelectric absorption: the photon is destroyed, an inner-shell electron is ejected, and the vacancy is refilled with emission of a characteristic X-ray</title>
+        <circle cx="180" cy="110" r="10" class="dg-soft"/>
+        <circle cx="180" cy="110" r="34" class="dg-line" fill="none"/>
+        <circle cx="180" cy="110" r="62" class="dg-line" fill="none"/>
+        <text x="180" y="114" class="dg-label-sm" text-anchor="middle">Z</text>
+        <text x="180" y="62" class="dg-label-sm" text-anchor="middle">K</text>
+        <text x="180" y="34" class="dg-label-sm" text-anchor="middle">L</text>
+        <path d="M40,110 L128,110" class="dg-acc" stroke-width="2" marker-end="url(#f10-3-a)"/>
+        <text x="40" y="98" class="dg-label-sm">photon, E_ph</text>
+        <text x="40" y="128" class="dg-label-sm">entirely absorbed</text>
+        <circle cx="146" cy="110" r="4" class="dg-acc-f"/>
+        <path d="M212,86 L300,54" class="dg-acc" stroke-width="1.8" marker-end="url(#f10-3-a)"/>
+        <circle cx="306" cy="52" r="4" class="dg-acc-f"/>
+        <text x="314" y="48" class="dg-label-sm">photoelectron</text>
+        <text x="314" y="64" class="dg-label-sm">T_e = E_ph − E_b</text>
+        <path d="M180,52 L180,82" class="dg-line" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#f10-3-b)"/>
+        <text x="190" y="72" class="dg-label-sm">refill from L</text>
+        <path d="M212,140 L300,170" class="dg-line" stroke-width="1.6" stroke-dasharray="6 3" marker-end="url(#f10-3-b)"/>
+        <text x="308" y="172" class="dg-label-sm">characteristic X-ray, or Auger electron</text>
+        <text x="420" y="110" class="dg-label">σ ∝ Z⁴ to Z⁵</text>
+        <text x="420" y="132" class="dg-label">σ ∝ E⁻³</text>
+        <text x="420" y="154" class="dg-label-sm">per atom; dominant at low energy,</text>
+        <text x="420" y="170" class="dg-label-sm">overwhelmingly so in heavy elements</text>
+        <defs>
+          <marker id="f10-3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="f10-3-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The photon disappears completely. Notice the two strong dependences written at the
+        right: a fourth-to-fifth power in atomic number and an inverse cube in energy. They
+        are why lead is a shielding material and why its advantage collapses as photon
+        energy rises.
+      </figcaption>
+    </figure>
+
+    <p>
+      The cross-section for photoelectric absorption per atom scales approximately as
+      <em>Z</em>⁴ to <em>Z</em>⁵ and as <em>E</em><sub>ph</sub>⁻³. Both exponents are large,
+      and together they confine the process to low photon energies and favour heavy
+      elements. The <em>Z</em> dependence follows from the requirement that the electron be
+      tightly bound, which is a stronger condition in a heavy atom; the energy dependence
+      follows from the growing mismatch between the photon momentum and the momentum the
+      bound electron can supply as the photon energy rises.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 660 400" role="img" aria-labelledby="f10-4-t">
+        <title id="f10-4-t">Mass attenuation coefficient of silicon against photon energy on logarithmic axes, showing the K absorption edge at 1.839 keV</title>
+        <line x1="72" y1="332" x2="612" y2="332" class="dg-rule" stroke-width="1.2"/>
+        <line x1="72" y1="332" x2="72" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="0.6" opacity="0.35">
+          <line x1="197.6" y1="332" x2="197.6" y2="40"/>
+          <line x1="323.1" y1="332" x2="323.1" y2="40"/>
+          <line x1="448.7" y1="332" x2="448.7" y2="40"/>
+          <line x1="574.2" y1="332" x2="574.2" y2="40"/>
+          <line x1="72" y1="283.3" x2="612" y2="283.3"/>
+          <line x1="72" y1="234.7" x2="612" y2="234.7"/>
+          <line x1="72" y1="186.0" x2="612" y2="186.0"/>
+          <line x1="72" y1="137.3" x2="612" y2="137.3"/>
+          <line x1="72" y1="88.7" x2="612" y2="88.7"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="72" y="350">1 keV</text>
+          <text x="197.6" y="350">10 keV</text>
+          <text x="323.1" y="350">100 keV</text>
+          <text x="448.7" y="350">1 MeV</text>
+          <text x="574.2" y="350">10 MeV</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="66" y="336">0.01</text>
+          <text x="66" y="287">0.1</text>
+          <text x="66" y="238">1</text>
+          <text x="66" y="190">10</text>
+          <text x="66" y="141">10²</text>
+          <text x="66" y="92">10³</text>
+          <text x="66" y="44">10⁴</text>
+        </g>
+        <text x="342" y="376" class="dg-label" text-anchor="middle">Photon energy</text>
+        <text x="20" y="186" class="dg-label" text-anchor="middle" transform="rotate(-90 20 186)">µ/ρ  (cm²/g)</text>
+        <path d="M72.0,79.1 L94.1,101.9 L105.2,113.5" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <path d="M105.2,64.1 L109.8,67.1 L131.9,89.1 L147.6,105.4 L159.8,118.4 L169.7,129.2 L185.4,146.5 L197.6,160.2 L219.7,185.3 L235.3,203.0 L257.5,227.0 L273.1,242.2 L285.3,252.1 L295.3,258.7 L310.9,266.4 L323.1,270.5 L345.2,275.5 L360.9,278.2 L383.0,281.7 L398.7,284.2 L410.9,286.2 L420.8,287.8 L436.5,290.6 L448.7,292.9 L460.8,295.3 L470.8,297.2 L486.5,300.3 L508.6,304.5 L524.2,307.2 L536.4,309.0 L546.4,310.3 L562.0,312.0 L574.2,313.0 L596.3,313.9 L612.0,314.0" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <line x1="105.2" y1="113.5" x2="105.2" y2="64.1" class="dg-acc" stroke-width="2.2" stroke-dasharray="3 3"/>
+        <text x="116" y="60" class="dg-label-sm">K edge, 1.839 keV</text>
+        <text x="116" y="76" class="dg-label-sm">309 → 3192 cm²/g</text>
+        <circle cx="448.7" cy="292.9" r="4" class="dg-acc-f"/>
+        <text x="440" y="284" class="dg-label-sm" text-anchor="end">1 MeV: 6.361×10⁻²</text>
+        <text x="196" y="228" class="dg-label-sm">photoelectric, falling as E⁻³</text>
+        <text x="400" y="258" class="dg-label-sm">Compton plateau</text>
+        <text x="520" y="300" class="dg-label-sm">pair production flattens the tail</text>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> Six decades of attenuation collapse to a shallow plateau between
+        about 100 keV and 10 MeV. Notice that the fall arrests at the right-hand edge —
+        2.46×10⁻² at 10 MeV against 2.34×10⁻² at 20 MeV — because pair production is
+        beginning to offset the continuing decline of Compton scattering. Silicon's minimum
+        lies near 25 MeV, beyond the right edge of this plot, and the curve rises after it.
+        The steep left-hand fall is photoelectric absorption, and the vertical step is the
+        K edge.
+        <span class="src">Data: NIST X-Ray Mass Attenuation Coefficients for silicon, as
+        reproduced on Deck 6 p. 24.</span>
+      </figcaption>
+    </figure>
+
+    <h2>4 · Compton scattering</h2>
+    <p>
+      In Compton scattering the photon is not destroyed. It collides with an atomic electron
+      that is weakly enough bound to be treated as free, gives up part of its energy and
+      momentum, and continues in a new direction with lower energy and therefore longer
+      wavelength. Two particles leave the interaction: a recoil electron and a scattered
+      photon.
+    </p>
+    <p>
+      Requiring energy and momentum to be conserved in the collision of a photon with a
+      stationary free electron fixes the wavelength change completely, and it depends only
+      on the scattering angle — not on the incident wavelength, and not on the material.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">Δλ = λ′ − λ = <span class="frac"><span class="num"><em>h</em></span><span class="den"><em>m</em><sub>e</sub><em>c</em></span></span> (1 − cos θ)</div>
+        <div class="eq-num">(10.4)</div>
+      </div>
+      <div class="eq-says">
+        Δλ wavelength increase of the scattered photon (m) · λ, λ′ incident and scattered
+        wavelength (m) · θ scattering angle of the photon measured from its original
+        direction (rad or deg) · <em>m</em><sub>e</sub> electron rest mass,
+        9.109×10⁻³¹ kg. The group <em>h</em>/<em>m</em><sub>e</sub><em>c</em> = 2.426 pm is
+        the Compton wavelength of the electron, and it is the shift obtained at θ = 90°.
+        Δλ grows monotonically with θ, so the largest possible shift is at θ = 180° and is
+        twice that, 4.853 pm.
+      </div>
+    </div>
+
+    <p>
+      Written in energy rather than wavelength, the same result gives the energy of the
+      scattered photon directly, which is the more useful form for dose calculations.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em>′ = <span class="frac"><span class="num"><em>E</em><sub>ph</sub></span><span class="den">1 + (<em>E</em><sub>ph</sub> ⁄ <em>m</em><sub>e</sub><em>c</em>²)(1 − cos θ)</span></span></div>
+        <div class="eq-num">(10.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em>′ energy of the scattered photon (MeV) · <em>E</em><sub>ph</sub> incident
+        photon energy (MeV) · θ photon scattering angle ·
+        <em>m</em><sub>e</sub><em>c</em>² electron rest energy, 0.511 MeV — both energies
+        must be in the same unit. The recoil electron takes
+        <em>E</em><sub>ph</sub> − <em>E</em>′. Valid for a free electron at rest; binding
+        matters only when <em>E</em><sub>ph</sub> approaches the shell binding energy.
+      </div>
+    </div>
+
+    <p>
+      The electron energy is largest for a backscattered photon, θ = 180°, and this maximum
+      is called the Compton edge. For the 1.25 MeV average of a cobalt-60 source, equation
+      (10.5) gives a backscattered photon of 0.212 MeV and a recoil electron of 1.04 MeV.
+      The photon can never transfer all of its energy in a single Compton event: some always
+      leaves with the scattered photon. That surviving photon is the reason a shield
+      designed from attenuation alone underestimates what arrives at the far side, treated
+      in §7.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 660 230" role="img" aria-labelledby="f10-5-t">
+        <title id="f10-5-t">Compton scattering geometry showing the incident photon, the scattered photon at angle theta, and the recoil electron</title>
+        <path d="M40,116 L214,116" class="dg-acc" stroke-width="2.2" marker-end="url(#f10-5-a)"/>
+        <text x="44" y="104" class="dg-label-sm">incident photon, E_ph</text>
+        <circle cx="228" cy="116" r="5" class="dg-soft"/>
+        <text x="222" y="140" class="dg-label-sm">weakly bound electron</text>
+        <line x1="228" y1="116" x2="420" y2="116" class="dg-rule" stroke-width="0.8" stroke-dasharray="4 4"/>
+        <path d="M236,112 L396,58" class="dg-acc" stroke-width="2" marker-end="url(#f10-5-a)"/>
+        <text x="404" y="54" class="dg-label-sm">scattered photon</text>
+        <text x="404" y="70" class="dg-label-sm">E′ &lt; E_ph, λ′ &gt; λ</text>
+        <path d="M282,116 A54,54 0 0 0 264,98" class="dg-line" stroke-width="1.2" fill="none"/>
+        <text x="288" y="102" class="dg-math">θ</text>
+        <path d="M236,124 L372,182" class="dg-line" stroke-width="1.8" marker-end="url(#f10-5-b)"/>
+        <circle cx="378" cy="184" r="4" class="dg-soft"/>
+        <text x="388" y="188" class="dg-label-sm">recoil electron, E_ph − E′</text>
+        <text x="40" y="206" class="dg-label-sm">Per atom σ ∝ Z, so per gram the coefficient is nearly the same for every light element.</text>
+        <defs>
+          <marker id="f10-5-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="f10-5-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Both a photon and an electron leave the interaction, so energy deposition is
+        partial and the beam is degraded rather than removed. The dashed line marks the
+        original direction against which θ is measured.
+      </figcaption>
+    </figure>
+
+    <p>
+      Compton scattering happens on individual electrons, so the cross-section per atom is
+      proportional to the number of electrons in the atom, which is <em>Z</em>. Expressed
+      per unit mass rather than per atom, that proportionality becomes
+      <em>Z</em>/<em>A</em>, the ratio of atomic number to atomic weight. For every element
+      except hydrogen, <em>Z</em>/<em>A</em> lies between about 0.39 and 0.50. It is close to
+      0.50 for the light elements — silicon gives 14/28.09 = 0.498 and oxygen 8/16.00 =
+      0.500 — and falls slowly to about 0.40 for the heaviest, lead being 0.396 and uranium
+      0.387.
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">Why almost all light materials attenuate 1 MeV photons equally</p>
+      <p>
+        Where Compton scattering dominates, the mass attenuation coefficient is nearly
+        independent of which element is present, because it follows <em>Z</em>/<em>A</em>
+        and that ratio barely varies. At 1 MeV the tabulated coefficients are
+        6.361×10⁻² cm²/g for silicon and 6.372×10⁻² cm²/g for oxygen, differing by 0.2 %.
+        Per gram, silicon, oxygen, carbon and aluminium are the same shield at this energy
+        to within about 3 %, and only density and thickness distinguish them — which is
+        exactly what §8 finds when silicon is compared with lead. Water is the instructive
+        exception: it is 11 % hydrogen by mass, which lifts its effective
+        <em>Z</em>/<em>A</em> to 0.555 and its coefficient to 7.072 × 10⁻² cm²/g, 11 % above
+        silicon's. The hydrogen exception applies to hydrogen-bearing compounds, not only to
+        elemental hydrogen.
+      </p>
+    </div>
+
+    <h2>5 · Pair production</h2>
+    <p>
+      Above a threshold energy a photon can convert entirely into matter, creating an
+      electron and a positron. The positron is the antiparticle of the electron: identical
+      rest mass, opposite charge. The process destroys the photon and produces two charged
+      particles that then behave as the charged particles of
+      <a href="m08-ionization-excitation.html">M08</a> and
+      <a href="m09-bremsstrahlung-xrays.html">M09</a> do.
+    </p>
+    <p>
+      Three conservation laws fix the conditions. Charge conservation requires that the
+      created particles carry zero net charge, so an electron of charge −<em>q</em> must be
+      accompanied by a partner of charge +<em>q</em>. Energy conservation requires the
+      photon to supply at least the rest energy of both particles. Applying
+      <em>E</em> = <em>mc</em>² to the electron gives
+      <em>m</em><sub>e</sub><em>c</em>² = 9.109×10⁻³¹ × (2.998×10⁸)² = 8.19×10⁻¹⁴ J, which
+      is 0.511 MeV, and the positron has the same rest mass and therefore the same rest
+      energy.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>ph</sub> ≥ 2<em>m</em><sub>e</sub><em>c</em>² = 1.022 MeV</div>
+        <div class="eq-num">(10.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>ph</sub> incident photon energy (MeV) ·
+        <em>m</em><sub>e</sub><em>c</em>² electron rest energy, 0.511 MeV. A photon of
+        exactly 1.022 MeV has λ = 1.21 pm. Any energy above the threshold appears as kinetic
+        energy shared between the electron and the positron. This threshold applies to pair
+        production in the field of a nucleus; the same process in the field of an atomic
+        electron, called triplet production, requires 4<em>m</em><sub>e</sub><em>c</em>² =
+        2.044 MeV and is much rarer.
+      </div>
+    </div>
+
+    <p>
+      Momentum conservation is what forces the interaction to occur near a nucleus rather
+      than in free space. A photon of energy <em>E</em> carries momentum <em>E</em>/<em>c</em>,
+      whereas an electron–positron pair of the same total energy carries less than that,
+      because part of their energy is locked in rest mass. The difference must go somewhere,
+      and it goes to the nucleus, which recoils. The nucleus is thousands of times more
+      massive than the pair, so it absorbs the momentum while taking almost none of the
+      energy — but without it, the process cannot occur at all. The available kinetic energy
+      is shared between the electron and positron in proportions that vary from event to
+      event; an equal split is the average outcome, not a requirement.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Where the course's momentum argument stops holding</p>
+      <p>
+        Deck 6 p. 14 argues from <em>p</em> = <em>mv</em> that the electron and positron
+        must leave with the same velocity. The conclusion does not follow. The pair shares
+        momentum with the recoiling nucleus, so the two particles' momenta are not equal in
+        magnitude, and the kinetic energy is divided differently in every event — an equal
+        split is the average, not the rule. Both particles are in fact emitted close to the
+        incident photon's direction, within an angle of order
+        <em>m</em><sub>e</sub><em>c</em>²/<em>E</em>, so their momenta are nearly parallel
+        rather than opposed. Switching to the relativistic <em>p</em> = γ<em>m</em><sub>0</sub><em>v</em>
+        neither rescues nor refutes the argument, because equal rest masses carrying
+        equal-magnitude momenta would still give equal speeds; what breaks it is that the
+        momenta are unequal. The conclusion the course draws — that a partner particle of
+        equal mass and opposite charge must exist — is correct and rests on charge and
+        energy conservation, which are not affected.
+      </p>
+    </div>
+
+    <p>
+      The positron survives only until it meets an electron, which in a solid takes a few hundred
+      picoseconds after it slows down — about 220 ps in bulk silicon. The two annihilate, and their combined rest energy
+      leaves as two photons of 0.511 MeV emitted in opposite directions. Those annihilation
+      photons are themselves penetrating and go on to interact by the mechanisms of §3 and
+      §4, so a single high-energy photon can seed a small cascade. The cross-section for
+      pair production per atom scales as <em>Z</em>², because the process depends on the
+      Coulomb field of the nucleus, and it rises slowly with energy above threshold rather
+      than falling like the other two.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 660 240" role="img" aria-labelledby="f10-6-t">
+        <title id="f10-6-t">Pair production near a nucleus followed by positron annihilation into two 511 keV photons</title>
+        <path d="M30,96 L150,96" class="dg-acc" stroke-width="2.2" marker-end="url(#f10-6-a)"/>
+        <text x="30" y="84" class="dg-label-sm">photon &gt; 1.022 MeV</text>
+        <circle cx="172" cy="96" r="11" class="dg-soft"/>
+        <text x="172" y="100" class="dg-label-sm" text-anchor="middle">Z</text>
+        <text x="150" y="130" class="dg-label-sm">nucleus takes the recoil momentum</text>
+        <path d="M186,90 L292,64" class="dg-acc" stroke-width="1.8" marker-end="url(#f10-6-a)"/>
+        <text x="300" y="62" class="dg-label-sm">e⁻</text>
+        <path d="M186,102 L292,128" class="dg-acc" stroke-width="1.8" marker-end="url(#f10-6-a)"/>
+        <text x="300" y="134" class="dg-label-sm">e⁺</text>
+        <text x="316" y="62" class="dg-label-sm">rest 0.511 MeV + kinetic</text>
+        <text x="316" y="134" class="dg-label-sm">rest 0.511 MeV + kinetic</text>
+        <path d="M232,96 A46,46 0 0 0 226,84" class="dg-line" stroke-width="1" fill="none"/>
+        <text x="238" y="88" class="dg-label-sm">~m_ec²/E</text>
+        <circle cx="430" cy="150" r="5" class="dg-soft"/>
+        <text x="368" y="184" class="dg-label-sm">e⁺ slows, then annihilates with an e⁻</text>
+        <path d="M442,144 L540,116" class="dg-line" stroke-width="1.6" stroke-dasharray="6 3" marker-end="url(#f10-6-b)"/>
+        <path d="M442,156 L540,184" class="dg-line" stroke-width="1.6" stroke-dasharray="6 3" marker-end="url(#f10-6-b)"/>
+        <text x="548" y="114" class="dg-label-sm">0.511 MeV</text>
+        <text x="548" y="188" class="dg-label-sm">0.511 MeV</text>
+        <text x="30" y="216" class="dg-label-sm">Per atom σ ∝ Z², rising with energy above threshold — the one interaction that grows with E.</text>
+        <defs>
+          <marker id="f10-6-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="f10-6-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The photon's energy becomes rest mass plus kinetic energy, and the nucleus supplies
+        only momentum. The opening angle between the pair is exaggerated for legibility: it
+        is of order <em>m</em><sub>e</sub><em>c</em>²/<em>E</em>, so at a few MeV both
+        particles travel within a few degrees of the incident direction. Notice that the two
+        annihilation photons, by contrast, leave back to back — that geometry is required by
+        momentum conservation once the positron has come to rest.
+      </figcaption>
+    </figure>
+
+    <h2>6 · Which interaction dominates</h2>
+    <p>
+      All three processes are always available to a photon above the relevant thresholds,
+      and the total probability of an interaction is the sum of the three. Which one accounts
+      for most of that sum depends on photon energy and on the atomic number of the target,
+      and the dependences of the previous three sections determine the pattern completely.
+    </p>
+    <p>
+      Photoelectric absorption carries the strongest <em>Z</em> dependence, <em>Z</em>⁴ to
+      <em>Z</em>⁵, and the strongest falling energy dependence, <em>E</em>⁻³, so it owns the
+      low-energy corner and extends to much higher energies in heavy elements — to 56.9 keV
+      in silicon but to 521 keV in gold. Compton scattering
+      scales only as <em>Z</em> per atom and falls slowly with energy, so it occupies the
+      middle band across all elements. Pair production scales as <em>Z</em>², begins at
+      1.022 MeV and grows with energy, so it owns the high-energy corner and reaches down to
+      lower energies in heavy elements.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 660 360" role="img" aria-labelledby="f10-7-t">
+        <title id="f10-7-t">Map of the dominant photon interaction as a function of photon energy and atomic number, with silicon and gold marked</title>
+        <line x1="76" y1="300" x2="616" y2="300" class="dg-rule" stroke-width="1.2"/>
+        <line x1="76" y1="300" x2="76" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="76" y="318">10 keV</text>
+          <text x="211" y="318">100 keV</text>
+          <text x="346" y="318">1 MeV</text>
+          <text x="481" y="318">10 MeV</text>
+          <text x="616" y="318">100 MeV</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="70" y="304">0</text>
+          <text x="70" y="240">20</text>
+          <text x="70" y="175">40</text>
+          <text x="70" y="110">60</text>
+          <text x="70" y="46">80</text>
+        </g>
+        <text x="346" y="344" class="dg-label" text-anchor="middle">Photon energy</text>
+        <text x="22" y="170" class="dg-label" text-anchor="middle" transform="rotate(-90 22 170)">Atomic number Z</text>
+        <path d="M83.9,287.1 L114.4,280.6 L136.0,274.2 L152.7,267.8 L166.4,261.3 L177.9,254.8 L188.0,248.4 L196.8,241.9 L204.7,235.5 L211.9,229.1 L218.4,222.6 L224.4,216.1 L229.9,209.7 L235.1,203.2 L240.0,196.8 L244.5,190.3 L248.8,183.9 L252.9,177.4 L256.7,171.0 L260.4,164.5 L263.9,158.1 L267.2,151.7 L270.4,145.2 L273.4,138.8 L276.4,132.3 L279.2,125.8 L282.0,119.4 L284.6,112.9 L287.1,106.5 L289.6,100.0 L292.0,93.6 L294.3,87.2 L296.5,80.7 L298.7,74.2 L300.8,67.8 L302.9,61.3 L304.9,54.9 L306.8,48.4 L308.7,42.0" class="dg-line" stroke-width="2" fill="none"/>
+        <path d="M547.9,287.1 L533.0,280.6 L522.5,274.2 L514.3,267.8 L507.6,261.3 L502.0,254.8 L497.1,248.4 L492.8,241.9 L488.9,235.5 L485.4,229.1 L482.2,222.6 L479.3,216.1 L476.6,209.7 L474.0,203.2 L471.7,196.8 L469.5,190.3 L467.4,183.9 L465.4,177.4 L463.5,171.0 L461.7,164.5 L460.0,158.1 L458.4,151.7 L456.8,145.2 L455.3,138.8 L453.9,132.3 L452.5,125.8 L451.2,119.4 L449.9,112.9 L448.7,106.5 L447.5,100.0 L446.3,93.6 L445.2,87.2 L444.1,80.7 L443.0,74.2 L442.0,67.8 L441.0,61.3 L440.0,54.9 L439.0,48.4 L438.1,42.0" class="dg-line" stroke-width="2" fill="none"/>
+        <text x="110" y="130" class="dg-label">photoelectric</text>
+        <text x="352" y="90" class="dg-label">Compton</text>
+        <text x="505" y="130" class="dg-label">pair production</text>
+        <line x1="76" y1="254.8" x2="616" y2="254.8" class="dg-acc" stroke-width="1.8" stroke-dasharray="7 4"/>
+        <text x="84" y="248" class="dg-label-sm">Si, Z = 14</text>
+        <line x1="76" y1="45.2" x2="616" y2="45.2" class="dg-line" stroke-width="1.5" stroke-dasharray="7 4"/>
+        <text x="84" y="60" class="dg-label-sm">Au, Z = 79</text>
+        <circle cx="177.9" cy="254.8" r="4" class="dg-acc-f"/>
+        <text x="177.9" y="276" class="dg-label-sm" text-anchor="middle">56.9 keV</text>
+        <circle cx="502.0" cy="254.8" r="4" class="dg-acc-f"/>
+        <text x="502.0" y="276" class="dg-label-sm" text-anchor="middle">14.3 MeV</text>
+        <circle cx="307.8" cy="45.2" r="3.5" class="dg-soft"/>
+        <text x="307.8" y="36" class="dg-label-sm" text-anchor="middle">521 keV</text>
+        <circle cx="438.6" cy="45.2" r="3.5" class="dg-soft"/>
+        <text x="438.6" y="36" class="dg-label-sm" text-anchor="middle">4.85 MeV</text>
+        <line x1="359.1" y1="300" x2="359.1" y2="52" class="dg-rule" stroke-width="1" stroke-dasharray="2 4"/>
+        <text x="365" y="70" class="dg-label-sm">Co-60, 1.17 and 1.33 MeV</text>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> The two curves mark where one interaction overtakes another. Follow
+        the silicon line across: photoelectric absorption gives way to Compton scattering at
+        56.9 keV, and Compton holds all the way to 14.3 MeV. Gold's photoelectric region
+        extends about nine times further in energy, to 521 keV. Notice where the cobalt-60
+        line falls: in silicon it is near the middle of the Compton band, but in gold it
+        sits much closer to the photoelectric boundary than to the pair boundary — which is
+        §8's point about why a high-<em>Z</em> shield behaves differently from silicon.
+        <span class="src">Redrawn after Deck 6 p. 21. Crossover energies for Z = 14 and
+        Z = 79 from NIST XCOM partial cross-sections; the curves interpolate between them
+        as a power law in <em>Z</em>, which reproduces the tabulated lead values to 2 %.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Two consequences follow for this course. In silicon, every photon energy used for
+      testing electronics falls in the Compton band: the gamma rays of cobalt-60 at 1.17 and
+      1.33 MeV are far above the photoelectric crossover at 56.9 keV and far below the pair
+      crossover at 14.3 MeV. Photoelectric absorption contributes 0.04 % of silicon's total
+      cross-section at 1.25 MeV, and pair production 0.06 %; Compton scattering accounts for
+      essentially all of it. Lead and gold are Compton-dominated at the same energies, but
+      not so completely: about 20 % of their attenuation is residual <em>photoelectric</em>
+      absorption, because their crossover sits at 521 keV for gold and 556 keV for lead
+      rather than at 57 keV. That residual photoelectric term is what makes a high-<em>Z</em>
+      shield behave differently from the silicon it protects. Pair production contributes
+      0.6 % even in lead at these energies and explains nothing.
+    </p>
+
+    <h2>7 · Attenuation, and reading the coefficient tables</h2>
+    <p>
+      Because a photon either interacts or does not, and because the chance of interacting in
+      a thin layer is the same wherever that layer sits, the surviving intensity falls
+      exponentially with thickness. Each atom presents a cross-section σ, there are <em>n</em>
+      atoms per unit volume, and the product <em>n</em>σ is the probability of interaction per
+      unit path length.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em>(<em>x</em>) = <em>I</em><sub>0</sub> <em>e</em><sup>−µ<em>x</em></sup>,&nbsp;&nbsp; µ = <em>n</em>σ = <span class="dl">(</span><span class="frac"><span class="num">µ</span><span class="den">ρ</span></span><span class="dl">)</span> ρ</div>
+        <div class="eq-num">(10.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em> intensity of photons that have not interacted (any consistent unit) ·
+        <em>I</em><sub>0</sub> incident intensity · <em>x</em> thickness (cm) ·
+        µ linear attenuation coefficient (cm⁻¹) · <em>n</em> atoms per unit volume (cm⁻³) ·
+        σ total cross-section per atom (cm²) · µ/ρ mass attenuation coefficient (cm²/g) ·
+        ρ density (g/cm³). <b>The course works in centimetres throughout this equation</b>,
+        so a thickness given in micrometres must be converted: 1 µm = 10⁻⁴ cm.
+      </div>
+    </div>
+
+    <p>
+      Dividing by density is what makes tabulation practical. The linear coefficient µ
+      changes if the same material is compressed; the mass coefficient µ/ρ does not, because
+      it counts interactions per gram of material rather than per centimetre. A single table
+      of µ/ρ against energy therefore serves every physical form of an element. The National
+      Institute of Standards and Technology publishes these tables for every element and for
+      many compounds, and they are the source Lecture 6 uses.
+    </p>
+    <p>
+      The probability that a given photon does interact in thickness <em>x</em> is the
+      complement of the surviving fraction.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>P</em> = 1 − <em>e</em><sup>−(µ/ρ)ρ<em>x</em></sup></div>
+        <div class="eq-num">(10.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>P</em> probability that one photon interacts somewhere in the thickness
+        (dimensionless, 0 to 1) · µ/ρ mass attenuation coefficient (cm²/g) · ρ density
+        (g/cm³) · <em>x</em> thickness (cm). The exponent (µ/ρ)ρ<em>x</em> is dimensionless.
+        When the exponent is much smaller than 1 the probability is approximately equal to
+        the exponent itself, but the two diverge as soon as the exponent approaches 0.05, so
+        the exponential form should be evaluated rather than assumed small.
+      </div>
+    </div>
+
+    <p>
+      For a compound or mixture, the mass coefficient is the weighted sum of the elemental
+      coefficients, with each element weighted by the fraction of the total mass it
+      contributes. This is the Bragg additivity rule, and it holds because at these energies
+      each atom interacts independently of the chemical bonds around it.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><span class="dl">(</span><span class="frac"><span class="num">µ</span><span class="den">ρ</span></span><span class="dl">)</span> = Σ <em>w</em><sub><em>i</em></sub> <span class="dl">(</span><span class="frac"><span class="num">µ</span><span class="den">ρ</span></span><span class="dl">)</span><sub><em>i</em></sub></div>
+        <div class="eq-num">(10.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>w</em><sub><em>i</em></sub> mass fraction of element <em>i</em> in the compound
+        (dimensionless, summing to 1) · (µ/ρ)<sub><em>i</em></sub> mass attenuation
+        coefficient of pure element <em>i</em> at the same photon energy (cm²/g).
+        Mass fractions are computed from atomic weights, not from the number of atoms:
+        for SiO₂, <em>w</em><sub>Si</sub> = 28.09/(28.09 + 2×16.00) = 0.467 and
+        <em>w</em><sub>O</sub> = 32.00/60.09 = 0.533.
+      </div>
+    </div>
+
+    <p>
+      Applying this to the gate and field oxide of an integrated circuit at 1 MeV gives
+      (µ/ρ) = 0.467 × 6.361×10⁻² + 0.533 × 6.372×10⁻² = 6.367×10⁻² cm²/g. The two elemental
+      coefficients are almost identical, so the weighting changes nothing; that is the
+      <em>Z</em>/<em>A</em> result of §4 appearing again. A compound only shows a
+      significantly different coefficient from its major constituent when one of its
+      elements is much heavier, or when the photon energy is low enough for the
+      <em>Z</em>⁴–<em>Z</em>⁵ photoelectric term to dominate.
+    </p>
+    <p>
+      The reciprocal of the linear coefficient is the mean free path, the average distance a
+      photon travels between interactions.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">λ<sub>mfp</sub> = <span class="frac"><span class="num">1</span><span class="den">µ</span></span></div>
+        <div class="eq-num">(10.10)</div>
+      </div>
+      <div class="eq-says">
+        λ<sub>mfp</sub> mean free path (cm) · µ linear attenuation coefficient (cm⁻¹).
+        After one mean free path the uncollided intensity has fallen to 1/<em>e</em> = 37 %
+        of its initial value. Do not confuse this with the range of a charged particle: a
+        photon beam has no maximum depth, only a characteristic one.
+      </div>
+    </div>
+
+    <div class="box defn">
+      <p class="box-title">The two coefficient columns, and the duplicated edge rows</p>
+      <p>
+        A NIST table lists two coefficients at each energy. <b>µ/ρ</b> is the mass
+        <em>attenuation</em> coefficient: it counts every event that removes a photon from
+        the beam, including a Compton scatter that merely deflects it. <b>µ<sub>tr</sub>/ρ</b>,
+        the mass <em>energy-transfer</em> coefficient, counts the energy handed to secondary
+        electrons as kinetic energy. <b>µ<sub>en</sub>/ρ</b>, the mass
+        <em>energy-absorption</em> coefficient, is that quantity reduced by the fraction
+        those electrons go on to radiate away as bremsstrahlung,
+        µ<sub>en</sub>/ρ = (1 − <em>g</em>)µ<sub>tr</sub>/ρ, and it is the one that gives
+        absorbed dose. In light elements at MeV energies <em>g</em> is a few tenths of a
+        percent and the two are interchangeable; in lead at 10 MeV <em>g</em> exceeds 20 %.
+        All three differ wherever scattering carries energy out of the volume: in silicon at
+        1 MeV, µ/ρ and µ<sub>en</sub>/ρ are 6.361×10⁻² and 2.778×10⁻² cm²/g, so under half of
+        the energy removed from the beam is deposited locally.
+      </p>
+      <p>
+        Two rows at the same energy, with the second marked K, straddle an absorption edge
+        as described in §3. Use the lower value for photons below the edge and the upper for
+        photons above it. Attenuation problems use µ/ρ; dose problems use
+        µ<sub>en</sub>/ρ.
+      </p>
+    </div>
+
+    <p>
+      Equation (10.7) describes photons that have not interacted at all. In a real shield of
+      appreciable thickness, photons that scattered once and survived still emerge, and they
+      still carry energy. Accounting for them requires a buildup factor, an empirical
+      multiplier greater than 1 that depends on the material, the photon energy and the
+      shield thickness in mean free paths.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>total</sub> = <em>B</em> · <em>I</em><sub>0</sub> <em>e</em><sup>−µ<em>x</em></sup></div>
+        <div class="eq-num">(10.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>total</sub> total intensity arriving, including scattered photons ·
+        <em>B</em> buildup factor (dimensionless, ≥ 1) · other symbols as in (10.7).
+        <em>B</em> = 1 for a narrow, well-collimated beam, and grows with shield thickness;
+        for several mean free paths of a low-<em>Z</em> shield it reaches values of several
+        units. The uncollided form is a lower bound on what gets through.
+      </div>
+    </div>
+
+    <p>
+      Geometry enters the exponent through path length rather than through the law itself.
+      A photon crossing a slab of thickness <em>x</em> at angle θ to the normal travels
+      <em>x</em>/cos θ of material, so the exponent grows and the transmitted fraction falls.
+      The exponential form is unchanged, because it follows from a constant interaction
+      probability per unit path length and not from any assumption about the shape of the
+      absorber.
+    </p>
+
+    <h2>8 · Silicon and lead compared</h2>
+    <p>
+      The two worked cases of Lecture 6 apply equation (10.8) to a 600 µm thickness — the
+      figure the deck adopts as a representative die, a little below the 725 µm to which a
+      200 mm wafer is actually polished — for a 1 MeV photon. Together they answer why
+      shielding is built from lead and why a chip does not shield itself.
+    </p>
+    <p>
+      For silicon, µ/ρ = 6.361×10⁻² cm²/g and ρ = 2.33 g/cm³, giving µ = 0.1482 cm⁻¹. With
+      <em>x</em> = 600 µm = 0.06 cm the exponent is 8.89×10⁻³ and
+      <em>P</em> = 1 − <em>e</em><sup>−0.00889</sup> = 8.85×10⁻³. Fewer than nine photons in
+      a thousand interact anywhere in the die. The mean free path from equation (10.10) is
+      6.7 cm, a hundred times the wafer thickness.
+    </p>
+    <p>
+      For lead, µ/ρ = 7.102×10⁻² cm²/g and ρ = 11.35 g/cm³, giving µ = 0.806 cm⁻¹, an
+      exponent of 4.84×10⁻² and <em>P</em> = 4.72×10⁻². The same 600 µm of lead interacts
+      with 4.7 % of the beam, 5.3 times as many photons as silicon does.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Two arithmetic points in the worked slides</p>
+      <p>
+        Deck 6 p. 24 prints 8.63×10⁻³ for silicon; evaluating the expression written on the
+        slide gives 8.85×10⁻³. Deck 6 p. 25 prints 4.84×10⁻² for lead, which is the value of
+        the exponent (µ/ρ)ρ<em>x</em> rather than of
+        1 − <em>e</em><sup>−(µ/ρ)ρ<em>x</em></sup>; the probability is 4.72×10⁻². The slide
+        also states that lead interacts 20 times more than silicon, and Lecture 6 states
+        about ten times. The ratio of the two results is 5.3. Neither the tabulated
+        coefficients nor the conclusion is affected — lead is decisively the better
+        absorber — but the size of its advantage at 1 MeV is a factor of about five, and the
+        reason is worth stating precisely.
+      </p>
+    </div>
+
+    <p>
+      Lead's advantage at 1 MeV is almost entirely density. The mass coefficients differ by
+      only 12 %, 7.102×10⁻² against 6.361×10⁻² cm²/g, and the density ratio,
+      11.35/2.33 = 4.87, supplies the rest. Per gram of material, lead at 1 MeV is scarcely
+      better than silicon. The near-equality of the two mass coefficients is a cancellation
+      rather than a similarity: lead's <em>Z</em>/<em>A</em> is 0.396 against silicon's
+      0.498, so on Compton scattering alone lead would be 21 % <em>weaker</em> per gram, and
+      the residual photoelectric term — a fifth of lead's attenuation at this energy against
+      a twentieth of a percent of silicon's — more than makes up the difference. The
+      <em>Z</em>/<em>A</em> argument of §4 holds between light elements; it does not reach
+      from silicon to lead.
+    </p>
+    <p>
+      The picture changes completely at lower photon energy, where photoelectric absorption
+      and its <em>Z</em>⁴–<em>Z</em>⁵ dependence take over in lead but not in silicon. At
+      100 keV, µ/ρ is 0.1835 cm²/g for silicon and 5.549 cm²/g for lead, a ratio of 30 per
+      gram and 147 per centimetre. The same 600 µm of lead now removes 98 % of the beam,
+      against 2.5 % for silicon. That is the regime in which lead earns its reputation: a few
+      millimetres of it line an X-ray cabinet. At cobalt-60 energies lead is still the most
+      thickness-efficient shield available — its tenth-value layer is about 4 cm against
+      21 cm for ordinary concrete — but its <em>per-gram</em> advantage has gone, so
+      shielding a cobalt-60 source is a mass problem whichever material is chosen. That is
+      why such a cell is built from tens of centimetres of lead, or from metres of concrete
+      where mass is cheap and structural.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 660 300" role="img" aria-labelledby="f10-8-t">
+        <title id="f10-8-t">Fraction of a photon beam interacting in 600 micrometres of silicon and of lead, at 100 keV and at 1 MeV</title>
+        <line x1="120" y1="248" x2="620" y2="248" class="dg-rule" stroke-width="1.2"/>
+        <line x1="120" y1="248" x2="120" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="114" y="252">0 %</text>
+          <text x="114" y="201">25 %</text>
+          <text x="114" y="150">50 %</text>
+          <text x="114" y="99">75 %</text>
+          <text x="114" y="48">100 %</text>
+        </g>
+        <text x="30" y="144" class="dg-label" text-anchor="middle" transform="rotate(-90 30 144)">interacts in 600 µm</text>
+        <rect x="170" y="242.8" width="70" height="5.2" class="dg-fill"/>
+        <text x="205" y="234" class="dg-label-sm" text-anchor="middle">2.5 %</text>
+        <rect x="260" y="48.7" width="70" height="199.3" class="dg-acc-f"/>
+        <text x="295" y="42" class="dg-label-sm" text-anchor="middle">97.7 %</text>
+        <rect x="410" y="246.2" width="70" height="1.8" class="dg-fill"/>
+        <text x="445" y="238" class="dg-label-sm" text-anchor="middle">0.89 %</text>
+        <rect x="500" y="238.4" width="70" height="9.6" class="dg-fill"/>
+        <text x="535" y="230" class="dg-label-sm" text-anchor="middle">4.7 %</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="205" y="266">Si</text>
+          <text x="295" y="266">Pb</text>
+          <text x="445" y="266">Si</text>
+          <text x="535" y="266">Pb</text>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="250" y="288">100 keV</text>
+          <text x="490" y="288">1 MeV</text>
+        </g>
+        <line x1="370" y1="248" x2="370" y2="40" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+      </svg>
+      <figcaption>
+        <b>Figure 8.</b> The same two materials and the same thickness at two photon
+        energies. Notice that lead's enormous advantage at 100 keV, where photoelectric
+        absorption operates, has almost disappeared by 1 MeV, where both materials are
+        Compton-dominated and only density separates them.
+      </figcaption>
+    </figure>
+
+    <h2>9 · Cobalt-60 and the choice of test energy</h2>
+    <p>
+      Cobalt-60 is the laboratory gamma standard introduced in
+      <a href="m04-radiation-species-decay.html">M04</a>, and Lecture 6 returns to it to
+      show where its gamma rays come from. The nuclide has 27 protons and 33 neutrons. It is
+      unstable because that ratio is neutron-rich for its mass, and it decays by beta-minus
+      emission with a half-life of 5.27 years: a neutron in the nucleus converts to a proton,
+      emitting an electron and an antineutrino, and the nucleus becomes nickel-60 with 28
+      protons.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">A slip in the deck's nucleon count</p>
+      <p>
+        Deck 6 p. 16 lists cobalt-60 as having 28 protons and 33 neutrons, which totals 61.
+        Cobalt is element 27, and the decay scheme printed on that same slide labels the
+        parent correctly as <sup>60</sup><sub>27</sub>Co. The daughter, nickel, is element
+        28. Lecture 6 gave 28 protons and 32 neutrons, which totals 60 but assigns the
+        proton number of the daughter to the parent.
+      </p>
+    </div>
+
+    <p>
+      The beta decay does not leave nickel-60 in its ground state. It populates an excited
+      nuclear level, and the nucleus then drops through two lower levels in a cascade,
+      emitting one gamma ray at each step: 1.173 MeV followed by 1.333 MeV. These two gamma
+      rays, not the beta particle, are what a cobalt-60 irradiator delivers to a part under
+      test, because the beta particle is stopped by the stainless-steel source capsule while
+      the gamma rays pass through it.
+    </p>
+    <p>
+      The energy bookkeeping closes exactly. The total energy released per decay is
+      2.823 MeV, and it divides into the beta endpoint energy of 0.317 MeV, shared between
+      the electron and the antineutrino, plus the two gamma rays: 0.317 + 1.173 + 1.333 =
+      2.823 MeV. The mass-difference argument of Deck 6 p. 16 points in the right direction —
+      the energy does come from a mass deficit — but the specific subtraction it performs,
+      <em>m</em><sub>n</sub> − <em>m</em><sub>e</sub> − <em>m</em><sub>p</sub> = 0.000840 u,
+      is 0.782 MeV, which is the decay energy of a <em>free</em> neutron and is neither
+      1.173 nor 1.333 MeV. The gamma energies are set by the spacing of nuclear energy levels
+      in nickel-60, in the same way that characteristic X-ray energies are set by atomic
+      level spacings.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 660 250" role="img" aria-labelledby="f10-9-t">
+        <title id="f10-9-t">Decay scheme of cobalt-60 to nickel-60 showing the beta transition and the two gamma rays of the nickel cascade</title>
+        <line x1="70" y1="50" x2="220" y2="50" class="dg-rule" stroke-width="2"/>
+        <text x="70" y="42" class="dg-label">⁶⁰₂₇Co</text>
+        <text x="152" y="42" class="dg-label-sm">half-life 5.27 y</text>
+        <line x1="330" y1="108" x2="470" y2="108" class="dg-rule" stroke-width="2"/>
+        <line x1="330" y1="164" x2="470" y2="164" class="dg-rule" stroke-width="2"/>
+        <line x1="330" y1="220" x2="470" y2="220" class="dg-rule" stroke-width="2"/>
+        <text x="478" y="112" class="dg-label-sm">⁶⁰Ni, 2.506 MeV level</text>
+        <text x="478" y="168" class="dg-label-sm">⁶⁰Ni, 1.333 MeV level</text>
+        <text x="478" y="224" class="dg-label-sm">⁶⁰Ni ground state</text>
+        <path d="M220,54 L326,104" class="dg-line" stroke-width="1.8" marker-end="url(#f10-9-b)"/>
+        <text x="216" y="84" class="dg-label-sm">β⁻ 0.318 MeV, 99.88 %</text>
+        <line x1="380" y1="112" x2="380" y2="158" class="dg-acc" stroke-width="2" marker-end="url(#f10-9-a)"/>
+        <text x="390" y="140" class="dg-label-sm">γ 1.173 MeV</text>
+        <line x1="380" y1="168" x2="380" y2="214" class="dg-acc" stroke-width="2" marker-end="url(#f10-9-a)"/>
+        <text x="390" y="196" class="dg-label-sm">γ 1.333 MeV</text>
+        <text x="70" y="196" class="dg-label-sm">Total decay energy 2.823 MeV</text>
+        <text x="70" y="214" class="dg-label-sm">= 0.318 + 1.173 + 1.333</text>
+        <defs>
+          <marker id="f10-9-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="f10-9-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The gamma rays are emitted by the nickel daughter as it relaxes, not by the beta
+        transition itself. Notice that the three energies sum to the total decay energy,
+        which is the check that the scheme is complete.
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">Pair production is open at cobalt-60 energies but does not occur</p>
+      <p>
+        Deck 6 p. 16 marks the 1.173 and 1.333 MeV gamma rays as leading to pair production,
+        and Lecture 6 states that a cobalt-60 source produces many pairs in a part under
+        test. Both energies do exceed the 1.022 MeV threshold of equation (10.6), so the
+        process is not forbidden. But the cross-section immediately above threshold is
+        negligible, and Figure 7 places these energies deep inside silicon's Compton band,
+        more than a decade below the energy at which pair production overtakes Compton
+        scattering in silicon. Essentially every cobalt-60 interaction in silicon is a
+        Compton scatter. Cobalt-60 is the standard total-dose source because its gamma rays
+        are penetrating enough to dose a packaged die uniformly, and because the isotope is
+        cheap, long-lived and available as a reactor by-product — not because of pair
+        production.
+      </p>
+    </div>
+
+    <h2>10 · What this means for a part in orbit</h2>
+    <p>
+      Sections 7 and 8 establish that a photon crossing a die almost always crosses it
+      untouched. That is the fact that shapes photon effects on electronics. Damage does not
+      come from photons directly; it comes from the secondary electrons that the rare
+      interaction sets in motion. A photoelectric absorption releases one energetic electron,
+      a Compton scatter releases one and degrades the photon, and a pair production releases
+      two. Those electrons are charged, and from that point onward the mechanisms of
+      <a href="m08-ionization-excitation.html">M08</a> apply: they ionise along their tracks,
+      generating electron–hole pairs at 3.6 eV each in silicon and 17 eV each in silicon
+      dioxide.
+    </p>
+    <p>
+      The low interaction probability is therefore a feature of a test source rather than a
+      limitation. Because a 1 MeV photon has a 6.7 cm mean free path in silicon, the
+      generation rate is very nearly uniform through a packaged part: the front of the die
+      and the back of the die receive the same dose. An alpha or low-energy proton source
+      cannot do that, because its range is comparable to the die thickness and the dose falls
+      steeply with depth. Uniformity is why cobalt-60 became the total-dose standard, and
+      total ionizing dose is the subject of <a href="index.html#roadmap">M14</a>.
+    </p>
+    <p>
+      Interfaces are the exception to uniformity. Where a low-<em>Z</em> material meets a
+      high-<em>Z</em> one — silicon against a gold bond pad, or a die against a Kovar or
+      ceramic package — the high-<em>Z</em> material generates more secondary electrons per
+      unit mass, and those electrons cross into the neighbouring low-<em>Z</em> material.
+      The dose within a few micrometres of the interface can exceed the bulk value by a
+      substantial factor. This dose enhancement is strongest at photon energies where the
+      <em>Z</em> dependence is strongest, which is the photoelectric region, and it is one
+      reason a part tested in a low-energy X-ray cabinet does not always behave like the same
+      part tested at cobalt-60 energies.
+    </p>
+
+    <details class="check">
+      <summary>An aluminium shield 2 mm thick is placed in front of a silicon part in a
+      1 MeV gamma field. Aluminium has µ/ρ = 6.146×10⁻² cm²/g and ρ = 2.70 g/cm³. What
+      fraction of the beam does it remove, and what does that suggest about shielding
+      against gamma rays with structural aluminium?</summary>
+      <div class="answer">
+        <p>
+          The exponent is (6.146×10⁻²)(2.70)(0.20) = 3.32×10⁻², so the interacting fraction
+          is 1 − <em>e</em><sup>−0.0332</sup> = 3.3×10⁻², about 3 %. The mean free path is
+          1/(6.146×10⁻² × 2.70) = 6.0 cm, so 2 mm is one thirtieth of a mean free path.
+        </p>
+        <p>
+          Structural aluminium of the thickness a spacecraft actually carries does almost
+          nothing against 1 MeV gamma rays. Reducing the <em>uncollided</em> beam by a factor
+          of ten requires ln(10) = 2.3 mean free paths, which is 14 cm of aluminium — a mass
+          no mission would fly. The real reduction is worse than that, because at 2.3 mean
+          free paths in a low-<em>Z</em> material the buildup factor of equation (10.11) is
+          several units, so the dose behind the shield falls by a factor of two to four
+          rather than ten. Spacecraft shielding is effective against electrons and low-energy
+          protons, whose behaviour is governed by range rather than by attenuation, and it is
+          largely ineffective against penetrating gamma rays. The same reasoning recurs in
+          <a href="index.html#roadmap">M16</a>.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>
+          A photon carries <em>E</em> = <em>hc</em>/λ and momentum <em>h</em>/λ. The shortcut
+          <em>hc</em> = 1239.8 eV·nm converts either way in one step.
+        </li>
+        <li>
+          Below a few electronvolts, absorption is decided by the bandgap of the solid. Above
+          about 100 eV it is decided by the atomic number and the mass per unit area, and the
+          bandgap is irrelevant.
+        </li>
+        <li>
+          Photoelectric absorption destroys the photon and ejects a bound electron;
+          σ ∝ <em>Z</em>⁴–<em>Z</em>⁵ and <em>E</em>⁻³. Absorption edges appear where a new
+          shell opens; silicon's K edge is 1.839 keV.
+        </li>
+        <li>
+          Compton scattering transfers part of the energy to an electron and the photon
+          survives with longer wavelength, Δλ = 2.426 pm × (1 − cos θ). Per atom σ ∝ <em>Z</em>,
+          so per gram the coefficient follows <em>Z</em>/<em>A</em> ≈ 0.5 and barely varies
+          between light elements.
+        </li>
+        <li>
+          Pair production needs 1.022 MeV and a nearby nucleus to absorb momentum; σ ∝ <em>Z</em>²
+          and grows with energy. The positron annihilates into two 0.511 MeV photons.
+        </li>
+        <li>
+          In silicon, photoelectric gives way to Compton at 56.9 keV and Compton to pair
+          production at 14.3 MeV. Cobalt-60 gamma rays at 1.173 and 1.333 MeV are
+          Compton-dominated. In gold and lead the photoelectric crossover is near 520–556 keV,
+          so a fifth of their attenuation at Co-60 energies is still photoelectric.
+        </li>
+        <li>
+          <em>I</em> = <em>I</em><sub>0</sub><em>e</em><sup>−µ<em>x</em></sup> with
+          µ = (µ/ρ)ρ; interaction probability is 1 − <em>e</em><sup>−µ<em>x</em></sup>;
+          mean free path is 1/µ. Compounds use mass-weighted sums of elemental coefficients.
+        </li>
+        <li>
+          Use µ/ρ for attenuation and µ<sub>en</sub>/ρ for dose; they differ by more than a
+          factor of two in silicon at 1 MeV. A thick shield also needs a buildup factor, and
+          the plain exponential is a lower bound on what gets through.
+        </li>
+        <li>
+          Only 0.89 % of a 1 MeV beam interacts in a 600 µm silicon die, against 4.7 % in the
+          same thickness of lead. At 100 keV the lead figure rises to 98 % while silicon
+          reaches only 2.5 %: lead's advantage is photoelectric, and it collapses at MeV
+          energies where only its density helps.
+        </li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 6 pp. 8–10; Lecture 6. Solar irradiance 1361 W/m² from NASA SORCE/TSIS total solar irradiance measurements</td></tr>
+      <tr><td>§2</td><td>Lecture 6, extended. Silicon lattice constant 0.5431 nm, nearest-neighbour spacing 0.235 nm; atomic density 5.00×10²² cm⁻³</td></tr>
+      <tr><td>§3</td><td>Deck 6 pp. 17–18; Lecture 6. Si K edge and coefficients from NIST X-Ray Mass Attenuation Coefficients, Hubbell &amp; Seltzer</td></tr>
+      <tr><td>§4</td><td>Deck 6 p. 19; Lecture 6. Compton relation and Klein–Nishina Z dependence from standard radiation-physics treatments</td></tr>
+      <tr><td>§5</td><td>Deck 6 pp. 12–15; Lecture 6. Triplet-production threshold and Z² scaling from standard references</td></tr>
+      <tr><td>§6</td><td>Deck 6 pp. 20–21, redrawn</td></tr>
+      <tr><td>§7</td><td>Deck 6 pp. 22–23; Lecture 6. Buildup factor and the two-column distinction added — both were deferred in the lecture</td></tr>
+      <tr><td>§8</td><td>Deck 6 pp. 24–25, recomputed. Coefficients for Si, O and Pb from NIST</td></tr>
+      <tr><td>§9</td><td>Deck 6 p. 16. Decay data from the Brookhaven National Nuclear Data Center evaluation of Co-60</td></tr>
+      <tr><td>§10</td><td>Extension to the course's device context; links forward to M14 and M16</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m09-bremsstrahlung-xrays.html"><span>Previous</span>M09 · Bremsstrahlung and Characteristic X-rays</a>
+      <a class="next" href="m11-displacement-damage.html"><span>Next</span>M11 · Displacement Damage</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

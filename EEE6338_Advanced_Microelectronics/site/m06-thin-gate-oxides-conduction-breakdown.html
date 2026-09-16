@@ -1,0 +1,1893 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M06 · Thin Gate Oxides: Conduction and Breakdown — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M06 · Thin Gate Oxides: Conduction and Breakdown</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 06</p>
+    <h1>Thin Gate Oxides: Conduction and Breakdown</h1>
+    <p class="lede">
+      How electrons cross a film that is supposed to insulate, what that current does to the
+      film, how the film eventually fails, and the thinnest silicon dioxide that any of this
+      leaves usable. Then the growth techniques and the chemical modifications that were
+      invented to push that limit down.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m05-thin-gate-oxides-growth-charge.html">M05</a></span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Class notes pp. 29–48 (Chapter 3); Wolf Vol. 4 ch. 3; Taur &amp; Ning ch. 4</span>
+    </div>
+
+    <p>
+      <a href="m05-thin-gate-oxides-growth-charge.html">M05</a> treated the gate oxide as a
+      dielectric that holds charge. That treatment assumed no current flows through it, which
+      is a good assumption for a 20 nm film and a false one for a 2 nm film. Silicon dioxide
+      has a band gap near 9 eV and presents a 3.1 eV barrier to electrons at the silicon
+      surface, so a thick film is an excellent insulator; but tunnelling depends on barrier
+      <em>width</em> as steeply as on barrier height, and by the time the film is ten atomic
+      layers thick the barrier is narrow enough that electrons cross it continuously under
+      ordinary operating bias.
+    </p>
+    <p>
+      That changes what the oxide is. It stops being a passive insulator and becomes a
+      component carrying current, dissipating power, and accumulating damage from the carriers
+      passing through it. This module follows that sequence. It begins with the two distinct
+      tunnelling mechanisms and the thickness at which each takes over, then the criterion that
+      converts a tunnelling current into a hard limit on how thin the film may be. It then
+      treats what the current does on its way through — trapping electrons, generating and
+      trapping holes, and creating the traps that let still more current through — and how that
+      damage accumulates into breakdown. The second half is about the response: the growth
+      techniques that make a 2 nm film worth having, the nitrogen and fluorine chemistries that
+      strengthen it, and the point at which silicon dioxide runs out of margin altogether and a
+      different material becomes unavoidable, which is
+      <a href="index.html#roadmap">M07</a>.
+    </p>
+
+    <h2>1 · How electrons cross an oxide</h2>
+
+    <p>
+      Two mechanisms carry electrons through a gate oxide, and which one operates is decided by
+      the oxide thickness and the field across it. Both are quantum-mechanical tunnelling: the
+      electron does not acquire enough energy to pass over the barrier, it passes through a
+      classically forbidden region because its wavefunction has a non-zero amplitude on the far
+      side. The probability of that falls off exponentially with the width of the forbidden
+      region, which is why thickness matters so much more than any other variable.
+    </p>
+    <p>
+      Establishing the barrier first makes both mechanisms follow from one picture. A band
+      diagram of the complete gate stack — gate, oxide and semiconductor drawn side by side on
+      a common energy axis — is the reference state that everything in this module perturbs.
+    </p>
+
+    <h3>1.1 The barrier, drawn</h3>
+
+    <p>
+      A band diagram plots electron energy vertically against position through the structure
+      horizontally. Higher on the page means higher electron energy. Within each material the
+      conduction band edge <em>E</em><sub>c</sub> and the valence band edge
+      <em>E</em><sub>v</sub> mark the energies bounding the forbidden gap, and the Fermi level
+      <em>E</em><sub>F</sub> marks the energy at which a state has a one-half probability of
+      being occupied. In silicon the gap is 1.12 eV; in silicon dioxide it is about 9 eV, and
+      that gap straddles the silicon gap asymmetrically. The conduction band of the oxide sits
+      3.1 eV above the conduction band of silicon, and this 3.1 eV offset — not the 9 eV gap —
+      is the barrier an electron in the silicon conduction band actually faces.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 400" role="img" aria-labelledby="f61-t">
+        <title id="f61-t">Energy band diagram of an n-plus polysilicon gate MOS structure at flat band, showing the 3.1 eV electron barrier and the larger 4.6 eV hole barrier at the silicon-oxide interface</title>
+
+        <rect x="290" y="50" width="86" height="300" class="dg-fill"/>
+        <line x1="290" y1="44" x2="290" y2="356" class="dg-rule" stroke-width="1"/>
+        <line x1="376" y1="44" x2="376" y2="356" class="dg-rule" stroke-width="1"/>
+
+        <!-- n+ poly gate: same band gap as silicon, Fermi level at the conduction band edge -->
+        <line x1="70" y1="150" x2="290" y2="150" class="dg-line" stroke-width="1.8"/>
+        <line x1="70" y1="206" x2="290" y2="206" class="dg-line" stroke-width="1.8"/>
+        <line x1="70" y1="146" x2="290" y2="146" class="dg-line" stroke-width="1" stroke-dasharray="5 3"/>
+        <text x="76" y="140" class="dg-label-sm">E_F &#8776; E_c</text>
+        <text x="76" y="222" class="dg-label-sm">E_v</text>
+        <text x="180" y="310" class="dg-label" text-anchor="middle">n&#8314; polysilicon</text>
+
+        <!-- oxide: rectangular barrier, no field at flat band -->
+        <line x1="290" y1="62" x2="376" y2="62" class="dg-acc" stroke-width="2.2"/>
+        <line x1="290" y1="62" x2="290" y2="150" class="dg-acc" stroke-width="2.2"/>
+        <line x1="376" y1="62" x2="376" y2="150" class="dg-acc" stroke-width="2.2"/>
+        <line x1="290" y1="336" x2="376" y2="336" class="dg-line" stroke-width="1.8"/>
+        <line x1="290" y1="206" x2="290" y2="336" class="dg-line" stroke-width="1.8"/>
+        <line x1="376" y1="206" x2="376" y2="336" class="dg-line" stroke-width="1.8"/>
+        <text x="333" y="54" class="dg-label-sm" text-anchor="middle">E_c (oxide)</text>
+        <text x="333" y="352" class="dg-label-sm" text-anchor="middle">E_v (oxide)</text>
+        <text x="333" y="310" class="dg-label" text-anchor="middle">SiO&#8322;</text>
+
+        <!-- electron barrier, 3.1 eV, 88 px -->
+        <line x1="408" y1="62" x2="408" y2="150" class="dg-acc" stroke-width="1.4"
+              marker-start="url(#f61-a)" marker-end="url(#f61-a)"/>
+        <text x="416" y="100" class="dg-label">q&#966;_ox = 3.1 eV</text>
+        <text x="416" y="116" class="dg-label-sm">barrier to electrons</text>
+
+        <!-- hole barrier, 4.6 eV, 130 px -->
+        <line x1="408" y1="206" x2="408" y2="336" class="dg-line" stroke-width="1.4"
+              marker-start="url(#f61-b)" marker-end="url(#f61-b)"/>
+        <text x="416" y="268" class="dg-label">4.6 eV</text>
+        <text x="416" y="284" class="dg-label-sm">barrier to holes &#8212; the larger of the two</text>
+
+        <!-- p-Si -->
+        <line x1="376" y1="150" x2="660" y2="150" class="dg-line" stroke-width="1.8"/>
+        <line x1="376" y1="206" x2="660" y2="206" class="dg-line" stroke-width="1.8"/>
+        <line x1="470" y1="178" x2="660" y2="178" class="dg-faint" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="470" y1="190" x2="660" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="5 3"/>
+        <text x="666" y="154" class="dg-label-sm">E_c</text>
+        <text x="666" y="182" class="dg-label-sm">E_i</text>
+        <text x="666" y="194" class="dg-label-sm">E_F</text>
+        <text x="666" y="210" class="dg-label-sm">E_v</text>
+        <text x="540" y="310" class="dg-label" text-anchor="middle">p-type silicon</text>
+        <text x="540" y="326" class="dg-label-sm" text-anchor="middle">E_g = 1.12 eV</text>
+
+        <line x1="452" y1="178" x2="452" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <text x="446" y="188" class="dg-label-sm" text-anchor="end">q&#966;_F</text>
+
+        <!-- phi_MS: the offset between the two Fermi levels at flat band -->
+        <line x1="250" y1="146" x2="250" y2="190" class="dg-rule" stroke-width="1.2"
+              marker-start="url(#f61-b)" marker-end="url(#f61-b)"/>
+        <line x1="250" y1="190" x2="470" y2="190" class="dg-faint" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="244" y="172" class="dg-label-sm" text-anchor="end">q&#966;_MS</text>
+
+        <defs>
+          <marker id="f61-a" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="f61-b" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The gate stack at flat band — the bias at which the semiconductor bands
+        are flat and no field exists across the oxide, so the barrier is rectangular and the band
+        edges run straight through. The accent outline is the barrier that matters for this
+        module: 3.1 eV between the silicon conduction band and the oxide conduction band. The
+        barrier to holes is the larger of the two at 4.6 eV, and the two together with the silicon
+        gap account for the oxide's ≈9 eV: 3.1 + 1.12 + 4.6 = 8.8 eV. The two oxide barriers are
+        drawn in correct proportion to each other; the silicon gap between them is expanded beyond
+        that scale, or it would be too small to label. Because the gate is degenerately doped n⁺
+        polysilicon, its Fermi level sits at the conduction band edge — and the offset between
+        that level and the silicon's Fermi level is qφ<sub>MS</sub>, the quantity
+        <a href="m03-threshold-voltage.html">M03 §1</a> derives. Applying exactly that voltage is
+        what flattens the bands, which is why it is called the flat-band voltage.
+      </figcaption>
+    </figure>
+
+    <p>
+      The gate is n⁺ polysilicon rather than a metal, for the reasons given in
+      <a href="m03-threshold-voltage.html">M03 §8</a>. Doping it degenerately places its Fermi
+      level at the conduction band edge, so as a source or sink of electrons it behaves much
+      like a metal — with one exception that §6 is devoted to.
+    </p>
+    <p>
+      Applying a bias tilts the oxide bands. A positive voltage on the gate lowers the electron
+      energy on the gate side, so the oxide conduction band slopes downward from the silicon
+      toward the gate, and the rectangular barrier of Figure 1 becomes a trapezoid. The slope is
+      the oxide field <em>E</em><sub>ox</sub>, and how much of the trapezoid the electron must
+      traverse is what separates the two conduction mechanisms.
+    </p>
+
+    <h3>1.2 Fowler–Nordheim tunnelling</h3>
+
+    <p>
+      When the oxide is thick enough and the field large enough, the sloping oxide conduction
+      band drops below the electron's energy part-way across the film. The electron tunnels
+      through the triangular part of the barrier only, emerges into the conduction band of the
+      oxide, and then drifts the rest of the way to the gate as a free carrier in SiO₂. This is
+      <b>Fowler–Nordheim tunnelling</b>. The distance actually tunnelled is
+      <em>φ</em><sub>ox</sub>/<em>E</em><sub>ox</sub>, the barrier height divided by its slope,
+      and is shorter than the oxide.
+    </p>
+    <p>
+      Because the tunnelling distance is set by the field and not by the film thickness, the
+      Fowler–Nordheim current density depends on the field alone:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>J</em><sub>FN</sub> =
+          <span class="frac"><span class="num"><em>q</em><sup>2</sup><em>E</em><sub>ox</sub><sup>2</sup></span><span class="den">16<em>π</em><sup>2</sup><em>ℏφ</em><sub>ox</sub></span></span>
+          exp&thinsp;<span class="dl">(</span>−
+          <span class="frac"><span class="num">4(2<em>qm</em>*)<sup>1/2</sup><em>φ</em><sub>ox</sub><sup>3/2</sup></span><span class="den">3<em>ℏE</em><sub>ox</sub></span></span>
+          <span class="dl">)</span></div>
+        <div class="eq-num">(6.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>J</em><sub>FN</sub> tunnelling current density (A/cm²) ·
+        <em>q</em> elementary charge, 1.6×10⁻¹⁹ C ·
+        <em>E</em><sub>ox</sub> oxide electric field (V/cm) ·
+        <em>ℏ</em> reduced Planck constant, 1.055×10⁻³⁴ J·s ·
+        <em>φ</em><sub>ox</sub> Si–SiO₂ barrier <b>in volts</b>, 3.1 V, so that
+        <em>qφ</em><sub>ox</sub> is the 3.1 eV barrier energy ·
+        <em>m</em>* electron effective mass in the oxide (kg).
+        <b>Equation (6.1) is written in SI and must be evaluated in SI.</b> Put
+        <em>E</em><sub>ox</sub> in V/m, not V/cm, and the result is in A/m²; convert afterwards,
+        1 A/m² = 10⁻⁴ A/cm². The exponent is dimensionless only for
+        <em>E</em><sub>ox</sub> in V/m, and feeding it V/cm inflates it by exactly 100 — at
+        10 MV/cm that turns a correct exponent of about −26 into −2634, and the equation returns
+        zero. The prefactor alone survives the substitution, which is what makes the mistake
+        hard to see. Worked check: at <em>E</em><sub>ox</sub> = 10 MV/cm = 1×10⁹ V/m with
+        <em>m</em>* = 0.5<em>m</em><sub>0</sub>, <em>J</em><sub>FN</sub> ≈ 1.8 A/m² =
+        1.8×10⁻⁴ A/cm².
+        Ignores finite temperature and image-force barrier lowering. Applies only while the
+        tunnelling distance <em>φ</em><sub>ox</sub>/<em>E</em><sub>ox</sub> is shorter than the
+        oxide — otherwise equation (6.1) does not describe the transport at all and §1.3 does.
+      </div>
+    </div>
+
+    <p>
+      The pre-factor and the exponent both matter, but the exponent dominates by orders of
+      magnitude, and it gives the mechanism its experimental signature. Taking the logarithm of
+      <em>J</em><sub>FN</sub>/<em>E</em><sub>ox</sub><sup>2</sup> leaves a constant plus a term
+      proportional to 1/<em>E</em><sub>ox</sub>, so a plot of
+      log(<em>J</em>/<em>E</em><sub>ox</sub><sup>2</sup>) against 1/<em>E</em><sub>ox</sub> is a
+      straight line whenever Fowler–Nordheim tunnelling is the conduction mechanism. That plot
+      is how the mechanism is identified in a measured device. The slope of that line is
+      −4(2<em>qm</em>*)<sup>1/2</sup><em>φ</em><sub>ox</sub><sup>3/2</sup>/3<em>ℏ</em>, which
+      fixes the product <em>m</em>*<sup>1/2</sup><em>φ</em><sub>ox</sub><sup>3/2</sup> rather than
+      the barrier alone, so a barrier height follows from a measured slope only once an effective
+      mass in the oxide has been assumed. Published SiO₂ barrier heights extracted this way
+      scatter between roughly 2.8 and 3.25 eV largely for that reason.
+    </p>
+
+    <h3>1.3 Direct tunnelling</h3>
+
+    <p>
+      Make the oxide thin enough and the electron reaches the gate before the sloping oxide
+      conduction band has dropped to meet it. There is then no triangular barrier to tunnel
+      through and no free flight afterwards: the electron tunnels through the entire forbidden
+      gap of the oxide in one step, from the silicon conduction band directly into the gate.
+      This is <b>direct tunnelling</b>, and it takes over for oxides of roughly 4 nm and below.
+    </p>
+    <p>
+      The crossover is properly a condition, not a thickness. Fowler–Nordheim tunnelling
+      requires the band edge to fall past the electron within the film, which happens when
+      <em>φ</em><sub>ox</sub>/<em>E</em><sub>ox</sub> &lt; <em>t</em><sub>ox</sub> — equivalently
+      when the voltage across the oxide exceeds the barrier, <em>V</em><sub>ox</sub> &gt;
+      <em>φ</em><sub>ox</sub> ≈ 3.1 V. Below that voltage the transport is direct whatever the
+      thickness. Since supply voltages fell below 3.1 V at the same time as oxides fell below
+      4 nm, the two statements coincide in practice, and 4 nm is the thickness usually quoted.
+    </p>
+    <p>
+      The two mechanisms are not two regimes of one equation. Direct tunnelling has no simple
+      dependence on voltage or field, because the barrier the electron crosses is trapezoidal
+      and its width is fixed by the film rather than by the bias. What it does have is an
+      extreme sensitivity to thickness, since thickness is now exactly the tunnelling distance.
+      The notes put the point at which the direct tunnelling current becomes very large below
+      3 nm.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 300" role="img" aria-labelledby="f62-t">
+        <title id="f62-t">Comparison of Fowler-Nordheim tunnelling through the triangular part of the barrier in a thicker oxide, and direct tunnelling through the whole trapezoidal barrier in a thin oxide</title>
+
+        <!-- ================= LEFT PANEL: Fowler-Nordheim ================= -->
+        <text x="150" y="20" class="dg-label" text-anchor="middle">Fowler&#8211;Nordheim</text>
+        <text x="150" y="36" class="dg-label-sm" text-anchor="middle">thicker oxide, large V_ox</text>
+
+        <rect x="86" y="46" width="124" height="220" class="dg-fill"/>
+
+        <!-- gate: filled to its Fermi level, well BELOW the silicon Ec under positive bias -->
+        <rect x="30" y="214" width="56" height="52" class="dg-fill"/>
+        <line x1="30" y1="214" x2="86" y2="214" class="dg-line" stroke-width="1.8"/>
+        <text x="26" y="218" class="dg-label-sm" text-anchor="end">E_F</text>
+        <text x="58" y="284" class="dg-label-sm" text-anchor="middle">gate</text>
+
+        <!-- oxide conduction band: falls toward the gate; barrier present at BOTH interfaces -->
+        <line x1="86" y1="152" x2="210" y2="56" class="dg-line" stroke-width="1.8"/>
+        <line x1="86" y1="152" x2="86" y2="214" class="dg-line" stroke-width="1.8"/>
+        <line x1="210" y1="56" x2="210" y2="118" class="dg-line" stroke-width="1.8"/>
+        <text x="148" y="284" class="dg-label-sm" text-anchor="middle">SiO&#8322;</text>
+
+        <!-- silicon -->
+        <line x1="210" y1="118" x2="306" y2="118" class="dg-line" stroke-width="1.8"/>
+        <line x1="210" y1="158" x2="306" y2="158" class="dg-line" stroke-width="1.4"/>
+        <text x="312" y="122" class="dg-label-sm">E_c</text>
+        <text x="312" y="162" class="dg-label-sm">E_v</text>
+        <text x="258" y="284" class="dg-label-sm" text-anchor="middle">p-Si</text>
+
+        <!-- the electron: tunnels at constant energy to x=130, then drifts down the band edge -->
+        <circle cx="214" cy="118" r="4" class="dg-acc-f"/>
+        <line x1="208" y1="118" x2="134" y2="118" class="dg-acc" stroke-width="2"
+              stroke-dasharray="4 3" marker-end="url(#f62-a)"/>
+        <line x1="130" y1="118" x2="90" y2="149" class="dg-acc" stroke-width="2"
+              marker-end="url(#f62-a)"/>
+        <line x1="130" y1="112" x2="130" y2="60" class="dg-faint" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="210" y1="112" x2="210" y2="60" class="dg-faint" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="130" y1="66" x2="210" y2="66" class="dg-rule" stroke-width="1.2"
+              marker-start="url(#f62-b)" marker-end="url(#f62-b)"/>
+        <text x="170" y="60" class="dg-label-sm" text-anchor="middle">&#966;_ox / E_ox</text>
+        <text x="168" y="138" class="dg-label-sm" text-anchor="middle">tunnel</text>
+        <text x="96" y="176" class="dg-label-sm">drift</text>
+
+        <!-- ================= RIGHT PANEL: direct ================= -->
+        <text x="506" y="20" class="dg-label" text-anchor="middle">Direct</text>
+        <text x="506" y="36" class="dg-label-sm" text-anchor="middle">oxide &#8804; 4 nm, small V_ox</text>
+
+        <rect x="456" y="46" width="56" height="220" class="dg-fill"/>
+
+        <rect x="400" y="158" width="56" height="108" class="dg-fill"/>
+        <line x1="400" y1="158" x2="456" y2="158" class="dg-line" stroke-width="1.8"/>
+        <text x="396" y="162" class="dg-label-sm" text-anchor="end">E_F</text>
+        <text x="428" y="284" class="dg-label-sm" text-anchor="middle">gate</text>
+
+        <line x1="456" y1="96" x2="512" y2="56" class="dg-line" stroke-width="1.8"/>
+        <line x1="456" y1="96" x2="456" y2="158" class="dg-line" stroke-width="1.8"/>
+        <line x1="512" y1="56" x2="512" y2="118" class="dg-line" stroke-width="1.8"/>
+        <text x="484" y="284" class="dg-label-sm" text-anchor="middle">SiO&#8322;</text>
+
+        <line x1="512" y1="118" x2="620" y2="118" class="dg-line" stroke-width="1.8"/>
+        <line x1="512" y1="158" x2="620" y2="158" class="dg-line" stroke-width="1.4"/>
+        <text x="626" y="122" class="dg-label-sm">E_c</text>
+        <text x="626" y="162" class="dg-label-sm">E_v</text>
+        <text x="566" y="284" class="dg-label-sm" text-anchor="middle">p-Si</text>
+
+        <!-- elastic: strictly horizontal, all the way across -->
+        <circle cx="516" cy="118" r="4" class="dg-acc-f"/>
+        <line x1="510" y1="118" x2="458" y2="118" class="dg-acc" stroke-width="2"
+              stroke-dasharray="4 3" marker-end="url(#f62-a)"/>
+        <text x="484" y="140" class="dg-label-sm" text-anchor="middle">tunnel</text>
+        <text x="484" y="154" class="dg-label-sm" text-anchor="middle">whole film</text>
+
+        <defs>
+          <marker id="f62-a" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="f62-b" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> Both panels show a positive gate bias, which pulls the gate down in
+        electron energy and tilts the oxide band edge downward toward it. The 3.1 eV barrier
+        stands above the conduction band of <em>both</em> electrodes, as in Figure 1. On the left
+        the oxide band edge falls past the electron's energy part-way across the film, at the
+        distance <em>φ</em><sub>ox</sub>/<em>E</em><sub>ox</sub> marked at the top; the electron
+        tunnels that far at constant energy, emerges into the oxide conduction band, and then
+        drifts down the band edge to the gate. On the right the whole film is thinner than
+        <em>φ</em><sub>ox</sub>/<em>E</em><sub>ox</sub>, so the band edge never reaches the
+        electron and the barrier stays trapezoidal end to end; tunnelling is elastic, so the
+        arrow is horizontal and the electron arrives in the gate at the energy it left with,
+        above the gate's Fermi level. Not to scale.
+      </figcaption>
+    </figure>
+
+    <h2>2 · The tunnelling limit on oxide thickness</h2>
+
+    <p>
+      Direct tunnelling puts a floor under the gate oxide thickness, and the floor can be
+      located precisely because there is a natural point of comparison. A MOSFET that is
+      nominally off already leaks: subthreshold conduction carries a source-to-drain current
+      even below threshold, as
+      <a href="m05-thin-gate-oxides-growth-charge.html">M05 §3.1</a> described. Gate leakage
+      becomes intolerable at the point where it stops being a small addition to that existing
+      leakage. The limit is therefore reached when the gate-to-channel tunnelling current
+      becomes equal to the off-state source-to-drain subthreshold leakage current.
+    </p>
+    <p>
+      Making that concrete requires a number for the subthreshold leakage and a channel area to
+      spread it over. The notes take an off-state leakage specification of
+      <em>I</em><sub>off</sub>/<em>W</em> = 10 nA/µm — a current per unit channel width, which is
+      how off-state leakage is always specified, because it scales with width.
+    </p>
+
+    <div class="box">
+      <p class="box-title">From a leakage specification to a current density</p>
+      <p>
+        Take a MOSFET with a 1 µm gate length and a 1 µm gate width. Its channel area is
+        1 µm². At 10 nA/µm of width, a 1 µm-wide device leaks 10 nA = 10⁻⁸ A from source to
+        drain in the off state.
+      </p>
+      <p>
+        For the gate tunnelling current to stay below that, it must not exceed 10⁻⁸ A spread
+        over the 1 µm² of channel, which is a current density of 10⁻⁸ A/µm². Converting to the
+        units in which tunnelling currents are quoted: 1 cm² = 10⁸ µm², so
+      </p>
+      <p style="text-align:center">
+        10⁻⁸ A/µm² × 10⁸ µm²/cm² = <b>1 A/cm²</b>
+      </p>
+      <p>
+        One ampere per square centimetre is the ceiling on gate tunnelling current density. It
+        is worth noticing how permissive that sounds and how little margin it actually leaves:
+        §7 shows the current density climbing through twelve orders of magnitude as the oxide
+        thins by a factor of two, so a ceiling twelve decades above the starting point is
+        crossed within a couple of nanometres.
+      </p>
+      <p>
+        The gate length enters this, and it is worth being explicit about it. Gate leakage
+        scales with channel <em>area</em> while the subthreshold leakage it is compared against
+        scales with channel <em>width</em>, so the ratio of the two carries a factor of
+        <em>L</em>. The 1 A/cm² figure is the value for <em>L</em> = 1 µm; a shorter gate has
+        less area to leak through per unit width and so tolerates a proportionally larger
+        current density. The number is a well-defined benchmark rather than a constant of
+        nature, and it is the benchmark the literature quotes.
+      </p>
+    </div>
+
+    <p>
+      That criterion is what ends the era of silicon dioxide as the sole gate dielectric. The
+      notes state the consequence directly: alternate gate dielectric materials with reduced
+      gate leakage will be required for 50 nm MOSFETs and beyond. Those materials, and the
+      argument that lets a physically thicker film behave electrically like a thinner one, are
+      <a href="index.html#roadmap">M07</a>.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Where "very large" actually falls</p>
+      <p>
+        Measured thin-oxide gate currents place the 1 A/cm² ceiling nearer <b>1.5 to 2 nm</b>
+        than 3 nm. On the leakage figures of §7.2 — 10⁻¹² A/cm² at 35 Å rising to 1 A/cm² at
+        about 15 Å, roughly six decades per nanometre — a 3 nm oxide sits around 10⁻⁹ A/cm²,
+        nine decades below the ceiling derived above. Taur &amp; Ning's own milestones are 4 nm
+        for the current beginning to rise sharply, 2 nm for direct tunnelling becoming
+        important, and about 1.5 nm for the standby power it dissipates becoming unacceptable.
+      </p>
+      <p>
+        Three nanometres is where the current stops being negligible, which is a real
+        transition and is what the notes are marking; it is not where the current reaches the
+        limit. Use the notes' figure for anything assessed, and keep the two thresholds
+        distinct — §7 depends on the difference.
+      </p>
+    </div>
+
+    <h2>3 · What the current does to the oxide</h2>
+
+    <p>
+      An electron crossing the oxide does not leave it unchanged. Some electrons are captured
+      by defects in the film; some generate holes, which are captured in turn; and the passage
+      of current generates new defects that were not there before. Each of these alters the
+      field distribution inside the oxide, and because the tunnelling current depends
+      exponentially on that field, each alteration feeds back on the current that produced it.
+      The sign of the feedback differs between the two carriers, and that difference governs
+      how an oxide behaves under stress.
+    </p>
+    <p>
+      Two terms are needed first. The <b>cathode</b> is the electrode acting as the electron
+      source, and the <b>anode</b> is the electrode acting as the electron sink. Which physical
+      layer is which depends on the bias polarity: under positive gate bias the inverted silicon
+      surface is the cathode and the polysilicon gate is the anode, and under negative gate bias
+      the roles reverse. The behaviour below is stated in terms of cathode and anode because it
+      does not depend on which layer happens to be playing each role.
+    </p>
+
+    <h3>3.1 Electron trapping, and negative feedback</h3>
+
+    <p>
+      Electrons enter the oxide from the silicon substrate or from the polysilicon gate, either
+      by the tunnelling of §1 or by hot-electron injection — a carrier heated by the lateral
+      field in the channel arriving at the interface with enough energy to surmount the barrier
+      rather than tunnel through it. Some fraction of these electrons is captured by electron
+      traps already present in the film.
+    </p>
+    <p>
+      Trapped electrons are negative charge sitting in the middle of the dielectric, and they
+      redistribute the field. The field near the cathode is decreased and the field near the
+      anode is increased, because the trapped negative sheet terminates some of the field lines
+      that would otherwise have run the full thickness of the film.
+    </p>
+    <p>
+      A decrease in the field near the cathode causes the Fowler–Nordheim current to decrease,
+      by equation (6.1). This is negative feedback: the current fills traps, the filled traps
+      suppress the current. In a constant-voltage measurement the observed signature is a
+      tunnelling current that falls with time. The effect is large enough to matter in practice.
+      In the classic measurements of Lenzlinger and Snow the samples were first held at a current
+      density of about 10⁻¹⁰ A/cm² for two hours, over which the tunnelling current fell by
+      about an order of magnitude from its initial value; the Fowler–Nordheim data they reported
+      were taken after that conditioning. How long the decrease runs before a more or less
+      steady state is reached depends on the thickness of the film and on how it was grown.
+    </p>
+
+    <h3>3.2 Hole generation and trapping, and positive feedback</h3>
+
+    <p>
+      Holes reach the oxide by two routes, and neither is a hole simply tunnelling in from the
+      silicon valence band.
+    </p>
+    <p>
+      The first route is impact ionisation inside the oxide itself. An electron travelling in
+      the oxide conduction band gains energy from the oxide field. The most it can gain is
+      <em>qV</em><sub>ox</sub>, so if the voltage dropped across the film exceeds about 9 V —
+      putting that energy above the ≈9 eV band gap of silicon dioxide — the electron can promote
+      an oxide valence electron across the gap and create an electron–hole pair in the film.
+      Note the units: the comparison is between an energy <em>qV</em><sub>ox</sub> and an energy
+      <em>E</em><sub>g</sub>, which is the same discipline equation (6.1) applies to
+      <em>φ</em><sub>ox</sub>.
+    </p>
+    <p>
+      That condition is necessary and not sufficient. Electrons in the oxide conduction band
+      lose energy continuously to optical phonons, so they reach a field-dependent steady-state
+      energy distribution rather than accumulating the full <em>qV</em><sub>ox</sub>.
+      Appreciable impact ionisation additionally requires a high field, above roughly
+      7–8 MV/cm, and a film thick enough for an electron to reach the threshold energy before
+      it scatters. It is not observed in thin films however large <em>V</em><sub>ox</sub> is
+      made — which is why the second route matters more in the films this module is about.
+    </p>
+    <p>
+      The second route is <b>anode hole injection</b>, and it operates at lower voltages. A
+      tunnelling electron arrives at the anode carrying the energy it gained crossing the oxide
+      and causes impact ionisation in the anode material, close to the anode–oxide interface. If
+      the arriving electron was energetic enough, the hole so created comes from deep in the
+      anode valence band and is therefore hot. A hot hole sitting at the anode–oxide interface
+      can be injected back into the oxide, and it is then captured as it drifts toward the
+      cathode.
+    </p>
+    <p>
+      Trapped holes are positive charge, so they tilt the field the opposite way: the oxide field
+      near the cathode increases and the field near the anode decreases. Because the tunnelling
+      current depends exponentially on the cathode field, a small increase there causes a large
+      increase in tunnelling current. Hole trapping near the cathode therefore provides positive
+      feedback to the electron tunnelling process — more current injects more holes, which raise
+      the cathode field, which drives still more current. The underlying tendency is a current
+      that rises with time.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 250" role="img" aria-labelledby="f63-t">
+        <title id="f63-t">Trapped electrons decrease the oxide field at the cathode while trapped holes increase it, giving negative and positive feedback respectively</title>
+
+        <!-- LEFT: electron trapping -->
+        <text x="176" y="20" class="dg-label" text-anchor="middle">electron trapping</text>
+
+        <!-- reference straight band (before trapping) -->
+        <line x1="70" y1="180" x2="282" y2="76" class="dg-faint" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <!-- after trapping: kinked, shallower near the cathode (right) -->
+        <path d="M70,180 L176,112 L282,76" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <!-- trapped negative charges, sitting on the kink -->
+        <g class="dg-ink">
+          <text x="148" y="124" class="dg-label-sm">−</text>
+          <text x="172" y="106" class="dg-label-sm">−</text>
+          <text x="198" y="98" class="dg-label-sm">−</text>
+        </g>
+        <line x1="70" y1="210" x2="70" y2="60" class="dg-rule" stroke-width="1"/>
+        <line x1="282" y1="210" x2="282" y2="60" class="dg-rule" stroke-width="1"/>
+        <text x="70" y="226" class="dg-label-sm" text-anchor="middle">anode</text>
+        <text x="282" y="226" class="dg-label-sm" text-anchor="middle">cathode</text>
+        <text x="258" y="66" class="dg-label-sm" text-anchor="end">field ↓ here</text>
+
+        <!-- RIGHT: hole trapping -->
+        <text x="546" y="20" class="dg-label" text-anchor="middle">hole trapping</text>
+
+        <line x1="440" y1="180" x2="652" y2="76" class="dg-faint" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <path d="M440,180 L546,142 L652,76" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <g class="dg-ink">
+          <text x="518" y="152" class="dg-label-sm">+</text>
+          <text x="544" y="134" class="dg-label-sm">+</text>
+          <text x="572" y="120" class="dg-label-sm">+</text>
+        </g>
+        <line x1="440" y1="210" x2="440" y2="60" class="dg-rule" stroke-width="1"/>
+        <line x1="652" y1="210" x2="652" y2="60" class="dg-rule" stroke-width="1"/>
+        <text x="440" y="226" class="dg-label-sm" text-anchor="middle">anode</text>
+        <text x="652" y="226" class="dg-label-sm" text-anchor="middle">cathode</text>
+        <text x="628" y="66" class="dg-label-sm" text-anchor="end">field ↑ here</text>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> The oxide conduction band edge across the film, dashed before trapping
+        and solid after, with the cathode on the right in both panels. The slope of the line is
+        the local field. On the left, trapped negative charge flattens the band on the cathode
+        side — the solid line runs below the dashed reference there — which lowers the field at
+        the cathode and suppresses the tunnelling current that filled the traps. On the right,
+        trapped positive charge steepens the cathode side, raising the field and the current.
+        The end points are identical in both panels because the total voltage across the film is
+        fixed; what trapping redistributes is <em>where</em> that voltage is dropped.
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">The two signatures are not separable in a real measurement</p>
+      <p>
+        Read together, §3.1 and §3.2 suggest that the sign of d<em>I</em>/d<em>t</em> under
+        constant-voltage stress identifies which mechanism is running. It does not. Electron
+        trapping and hole trapping proceed at the same time, and the increase in tunnelling
+        current due to hole trapping is usually not readily observable because it is masked by
+        the decrease due to electron trapping. A constant-voltage trace on a 20 nm oxide
+        typically falls monotonically for the whole stress and then jumps at breakdown; the
+        rising phase becomes visible only close to breakdown.
+      </p>
+      <p>
+        Anode hole injection itself is a model rather than a settled result. It has never been
+        completely verified, photons generated by the Fowler–Nordheim current in the gate have
+        been proposed as the dominant source of the measured substrate hole current instead, and
+        the standard account of oxide degradation built on anode hole injection may yet be
+        revised. It is presented above as mechanism because it is the account the course follows
+        and the one the degradation literature is organised around.
+        <span class="src">Wolf, Vol. 4 §3.3.4.</span>
+      </p>
+    </div>
+
+    <h3>3.3 Trap-assisted tunnelling</h3>
+
+    <p>
+      A third process changes the transport rather than the field. An electron need not cross
+      the whole oxide in one step: it can tunnel from the cathode into a trap inside the oxide,
+      and then tunnel from that trap to the anode. Traps in the film act as stepping stones,
+      splitting one long tunnelling step into two short ones and raising the current
+      substantially, since each step is exponentially more probable than the single step it
+      replaces.
+    </p>
+    <p>
+      The enhanced current then generates more traps, which provide more stepping stones. This
+      is a second positive feedback loop, independent of the hole-trapping one, and it is the
+      mechanism that connects an oxide carrying current to an oxide that eventually fails. It is
+      also, in its low-field form, the mechanism of §4.
+    </p>
+
+    <h2>4 · Stress-induced leakage current</h2>
+
+    <p>
+      When a thin oxide is exposed to high electric field stress, and therefore to
+      Fowler–Nordheim gate current, it is left afterwards conducting more current at low field
+      than it did before. The film has been changed by the stress, and the change shows up as
+      leakage under ordinary operating conditions. This effect is <b>stress-induced leakage
+      current</b>, abbreviated SILC, and it was first reported in 1987.
+    </p>
+    <p>
+      The mechanism is trap generation followed by trap-assisted tunnelling. High-field stress
+      current generates <em>neutral</em> oxide traps — defect sites that carry no charge, and so
+      do not shift the threshold voltage the way the four charges of
+      <a href="m05-thin-gate-oxides-growth-charge.html">M05 §6</a> do, but that facilitate
+      electron tunnelling by the stepping-stone process of §3.3. The oxide is not more
+      conductive because it now holds charge; it is more conductive because it now holds a
+      denser population of intermediate states for electrons to hop through.
+    </p>
+    <p>
+      SILC behaves differently in thick and thin films, and the difference is about whether the
+      traps stay filled. In thicker oxides SILC is a transient phenomenon: the leakage decays as
+      the traps fill, because once an electron occupies a trap it does not readily tunnel out
+      again, and a full trap is not a stepping stone. In thinner oxides the leakage is a
+      continuous current, because tunnelling out of a trap is now as easy as tunnelling in, and
+      a steady state is reached in which trap filling and trap emptying balance. That steady
+      state is a permanent current path.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 210" role="img" aria-labelledby="f64-t">
+        <title id="f64-t">Stress-induced leakage current decays with time in a thicker oxide but reaches a steady non-zero level in a thinner oxide</title>
+        <line x1="60" y1="170" x2="410" y2="170" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="170" x2="60" y2="26" class="dg-rule" stroke-width="1.2"/>
+        <text x="235" y="196" class="dg-label" text-anchor="middle">time after stress</text>
+        <text x="20" y="98" class="dg-label" text-anchor="middle"
+              transform="rotate(-90 20 98)">leakage current</text>
+
+        <!-- thicker oxide: decays to zero -->
+        <path d="M60,44 C120,130 200,164 400,168" class="dg-line" stroke-width="1.8" fill="none"/>
+        <text x="300" y="158" class="dg-label-sm">thicker oxide — transient</text>
+
+        <!-- thinner oxide: decays to a floor -->
+        <path d="M60,36 C120,80 200,102 400,106" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <text x="300" y="96" class="dg-label-sm">thinner oxide — continuous</text>
+        <line x1="60" y1="106" x2="400" y2="106" class="dg-faint" stroke-width="1" stroke-dasharray="4 4"/>
+      </svg>
+      <figcaption>
+        In the thicker film the traps fill and stop conducting; in the thinner film trap filling
+        and emptying reach equilibrium and the current never returns to its pre-stress value.
+        The floor is the failure.
+      </figcaption>
+    </figure>
+
+    <p>
+      SILC is a particular problem for non-volatile memory. Such a device stores data as charge
+      on a floating gate, and it writes and erases that charge by driving Fowler–Nordheim
+      current through a thin tunnel oxide — so it inflicts high-field stress on its own
+      dielectric as part of normal operation, repeatedly, over the life of the part. The
+      resulting leakage lets the stored charge escape, which reduces data retentivity directly.
+      The requirement is usually ten years of retention, and SILC makes non-volatile memory
+      tunnel-oxide scaling much below 8 nm difficult unless that ten-year requirement is
+      relaxed.
+    </p>
+
+    <div class="box">
+      <p class="box-title">Soft breakdown</p>
+      <p>
+        Below about 5 nm a further failure mode appears between SILC and the catastrophic
+        breakdown of §5. Stressing a thin oxide beyond a critical field causes the SILC to
+        transition into <b>soft breakdown</b>, also called quasi-breakdown: a sudden but modest
+        jump in gate current, with a post-breakdown current–voltage characteristic that follows
+        a power law rather than becoming ohmic. In 2.5 nm oxides stressed at 4.1 V and 140 °C,
+        soft breakdown raises the gate current to around 10⁻⁴ A while hard breakdown raises it
+        to around 10⁻² A. Soft breakdown is triggered once the oxide field exceeds roughly
+        10.7–11.0 MV/cm, and it becomes progressively softer and less abrupt as the oxide is
+        thinned. Hard breakdown dominates in thicker films and is often not observed at all in
+        thin gate oxides.
+        <span class="src">Wolf, Vol. 4 §3.8.3 — beyond the class notes.</span>
+      </p>
+    </div>
+
+    <h2>5 · Dielectric breakdown</h2>
+
+    <p>
+      Breakdown is the terminal failure: the oxide stops being a dielectric and becomes a
+      conductor, permanently. In an integrated circuit it must be avoided outright rather than
+      managed, because a single shorted gate oxide destroys the transistor that contains it, and
+      a circuit has hundreds of millions of them sharing one process and one supply voltage.
+    </p>
+    <p>
+      The engineering constraint is stated as a field limit tied to a lifetime. A twenty-year
+      lifetime can be achieved if the oxide field remains below 8 MV/cm. Design practice keeps a
+      wide margin below that: for CMOS logic and memory chips the typical operating field is
+      restricted to the 5 MV/cm range. The gap between the two numbers is not conservatism for
+      its own sake — the failure statistics are steep, and a field a little above the design
+      point shortens the lifetime by far more than proportionally.
+    </p>
+    <p>
+      Field limits govern the intrinsic population, the oxides that are as good as the process
+      can make them. A separate population fails early because of localised defects, and no
+      field limit screens those out. They are removed instead by <b>burn-in</b>: chips are
+      operated at elevated voltage and temperature before shipment, which accelerates the
+      failure of any part containing an oxide that would have failed under normal operating
+      conditions during its service life. Burn-in does not repair anything; it converts a field
+      failure years later into a factory failure now.
+    </p>
+
+    <h3>5.1 The two stages</h3>
+
+    <p>
+      Dielectric breakdown proceeds in two stages with very different time scales.
+    </p>
+    <p>
+      In the <b>first stage</b> the oxide is slowly degraded over time, either by the high
+      electric field across it or by the passage of current through it. The processes are the
+      ones of §3 and §4: trap generation, hole injection, interface-state creation. These
+      defects accumulate until they form a localised conductive path through the oxide — a chain
+      of defect sites dense enough to span the film. This stage occupies essentially the whole
+      life of the device and is what the field limit and burn-in are designed to control.
+    </p>
+    <p>
+      The <b>second stage</b> is the very short runaway breakdown process. Once a conductive
+      path exists, the current through it is concentrated into a very small area, the local
+      heating is severe, and the path grows rapidly. The oxide is shorted and a very large
+      current flows between the gate and the substrate. The transition from the first stage to
+      the second is abrupt, which is why oxide lifetime is characterised as a time-to-breakdown
+      rather than as a gradual drift in any device parameter.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 210" role="img" aria-labelledby="f65-t">
+        <title id="f65-t">Defects accumulate into a localised conductive path spanning the gate oxide, which then carries a large short-circuit current between the polysilicon gate and the substrate</title>
+
+        <!-- stack -->
+        <rect x="60" y="130" width="340" height="56" class="dg-fill"/>
+        <rect x="60" y="100" width="340" height="30" class="dg-fill"/>
+        <rect x="60" y="62" width="340" height="38" class="dg-fill"/>
+        <text x="230" y="164" class="dg-label" text-anchor="middle">substrate</text>
+        <text x="230" y="120" class="dg-label" text-anchor="middle">oxide</text>
+        <text x="230" y="86" class="dg-label" text-anchor="middle">poly</text>
+
+        <!-- scattered defects -->
+        <g class="dg-soft">
+          <circle cx="120" cy="112" r="2.4"/><circle cx="160" cy="122" r="2.4"/>
+          <circle cx="205" cy="107" r="2.4"/><circle cx="300" cy="118" r="2.4"/>
+          <circle cx="345" cy="110" r="2.4"/><circle cx="268" cy="124" r="2.4"/>
+        </g>
+
+        <!-- the percolation path -->
+        <path d="M232,100 L236,110 L230,120 L235,130" class="dg-acc" stroke-width="2.4" fill="none"/>
+        <g class="dg-acc-f">
+          <circle cx="232" cy="100" r="2.8"/><circle cx="236" cy="110" r="2.8"/>
+          <circle cx="230" cy="120" r="2.8"/><circle cx="235" cy="130" r="2.8"/>
+        </g>
+        <line x1="330" y1="60" x2="252" y2="104" class="dg-acc" stroke-width="1.4"
+              marker-end="url(#f65-a)"/>
+        <text x="336" y="50" class="dg-label-sm">localised conductive path</text>
+        <text x="336" y="36" class="dg-label-sm">spans the film</text>
+
+        <!-- short current arrow -->
+        <line x1="90" y1="78" x2="90" y2="156" class="dg-rule" stroke-width="1.6"
+              marker-end="url(#f65-b)"/>
+        <text x="98" y="196" class="dg-label-sm">large short-circuit current</text>
+
+        <defs>
+          <marker id="f65-a" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="f65-b" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Scattered defects are harmless. Breakdown happens when enough of them line up to bridge
+        the film — which is why breakdown is a statistical quantity with a distribution of
+        times, not a fixed property of a thickness.
+      </figcaption>
+    </figure>
+
+    <h2>6 · Polysilicon depletion</h2>
+
+    <p>
+      Every band diagram so far has treated the polysilicon gate as an ideal equipotential
+      region: a perfect conductor whose potential is uniform, so that the whole applied gate
+      voltage appears across the oxide and the silicon. For a thick gate oxide that
+      approximation has insignificant effects on device behaviour and can be used freely. For a
+      thin one it cannot, because polysilicon is a semiconductor and a semiconductor can be
+      depleted.
+    </p>
+
+    <h3>6.1 Where the depletion region comes from</h3>
+
+    <p>
+      Consider an n⁺ polysilicon gate on a p-type silicon substrate, with a positive bias applied
+      between gate and substrate. That bias causes depletion, or depletion and then inversion, in
+      the silicon substrate, as <a href="m01-mosfet-and-how-one-is-made.html">M01 §2</a>
+      described: negative charge is induced in the silicon. Charge neutrality requires an equal
+      positive charge on the gate side of the oxide.
+    </p>
+    <p>
+      In a metal that charge is supplied by a surface layer of electrons rearranging over an
+      atomic distance, and nothing else happens. In n⁺ polysilicon it is supplied by mobile,
+      negatively charged electrons <em>leaving</em> the region of the gate next to the oxide,
+      which exposes the fixed positive donor ions they were compensating. Those ionised donors
+      constitute the positive charge — and because the donor concentration is finite, exposing
+      enough of them requires emptying a layer of finite thickness. A depletion region forms in
+      the polysilicon at the poly–oxide interface. This is the <b>polysilicon depletion effect</b>,
+      abbreviated PDE.
+    </p>
+    <p>
+      A depletion region contains uncompensated charge, so the bands bend across it, so an
+      electric field exists in it, so a voltage is dropped across it. That last consequence is
+      the one that matters.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 330" role="img" aria-labelledby="f66-t">
+        <title id="f66-t">Band diagrams of an n-plus polysilicon gate MOS capacitor biased to inversion, first ignoring and then including the depletion region that forms in the polysilicon gate, both drawn at the same applied bias</title>
+
+      <g>
+        <text x="40" y="18" class="dg-label">ignoring poly depletion</text>
+        <rect x="120" y="60" width="34" height="230" class="dg-fill"/>
+        <!-- poly: flat, E_F = E_c -->
+        <line x1="40" y1="200" x2="120" y2="200" class="dg-line" stroke-width="1.8"/>
+        <line x1="40" y1="196" x2="120" y2="196" class="dg-line" stroke-width="1" stroke-dasharray="5 3"/>
+        <text x="36" y="204" class="dg-label-sm" text-anchor="end">E_F</text>
+        <!-- oxide E_c: 140 at the gate, 90 at the silicon -->
+        <line x1="120" y1="140" x2="154" y2="90" class="dg-line" stroke-width="1.8"/>
+        <line x1="120" y1="140" x2="120" y2="200" class="dg-line" stroke-width="1.8"/>
+        <line x1="154" y1="90" x2="154" y2="150" class="dg-line" stroke-width="1.8"/>
+        <path d="M154,150 C168,132 188,114 210,110 L300,110" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M154,185 C168,167 188,149 210,145 L300,145" class="dg-faint" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+        <path d="M154,220 C168,202 188,184 210,180 L300,180" class="dg-line" stroke-width="1.4" fill="none"/>
+        <line x1="154" y1="158" x2="300" y2="158" class="dg-line" stroke-width="1" stroke-dasharray="5 3"/>
+        <text x="306" y="114" class="dg-label-sm">E_c</text>
+        <text x="306" y="149" class="dg-label-sm">E_i</text>
+        <text x="306" y="162" class="dg-label-sm">E_F</text>
+        <text x="306" y="184" class="dg-label-sm">E_v</text>
+        <!-- V_ox across the oxide -->
+        <line x1="100" y1="140" x2="120" y2="140" class="dg-faint" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="100" y1="90" x2="154" y2="90" class="dg-faint" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="106" y1="90" x2="106" y2="140" class="dg-acc" stroke-width="1.4"
+              marker-start="url(#f66-a)" marker-end="url(#f66-a)"/>
+        <text x="98" y="118" class="dg-label-sm" text-anchor="end">V_ox = 50</text>
+        <!-- psi_s in the silicon -->
+        <line x1="154" y1="150" x2="238" y2="150" class="dg-faint" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="232" y1="110" x2="232" y2="150" class="dg-acc" stroke-width="1.4"
+              marker-start="url(#f66-a)" marker-end="url(#f66-a)"/>
+        <text x="238" y="134" class="dg-label-sm">&#968;_s = 40</text>
+        <text x="80" y="264" class="dg-label-sm" text-anchor="middle">n&#8314; poly</text>
+        <text x="137" y="264" class="dg-label-sm" text-anchor="middle">ox</text>
+        <text x="226" y="264" class="dg-label-sm" text-anchor="middle">p-Si</text>
+        <text x="40" y="288" class="dg-label-sm">V_poly + V_ox + &#968;_s = 0 + 50 + 40 = 90</text>
+      </g>
+
+      <g transform="translate(370,0)">
+        <text x="40" y="18" class="dg-label">with poly depletion</text>
+        <rect x="120" y="60" width="34" height="230" class="dg-fill"/>
+        <!-- poly: flat at 200 in the bulk, bending UP to 176 at the oxide -->
+        <path d="M40,200 L86,200 C104,200 112,190 120,176" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <line x1="40" y1="196" x2="120" y2="196" class="dg-line" stroke-width="1" stroke-dasharray="5 3"/>
+        <text x="36" y="204" class="dg-label-sm" text-anchor="end">E_F</text>
+        <!-- oxide E_c: 116 at the gate, 79 at the silicon. Barrier still 60 at both faces. -->
+        <line x1="120" y1="116" x2="154" y2="79" class="dg-line" stroke-width="1.8"/>
+        <line x1="120" y1="116" x2="120" y2="176" class="dg-line" stroke-width="1.8"/>
+        <line x1="154" y1="79" x2="154" y2="139" class="dg-line" stroke-width="1.8"/>
+        <path d="M154,139 C168,126 188,113 210,110 L300,110" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M154,174 C168,161 188,148 210,145 L300,145" class="dg-faint" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+        <path d="M154,209 C168,196 188,183 210,180 L300,180" class="dg-line" stroke-width="1.4" fill="none"/>
+        <line x1="154" y1="158" x2="300" y2="158" class="dg-line" stroke-width="1" stroke-dasharray="5 3"/>
+        <text x="306" y="114" class="dg-label-sm">E_c</text>
+        <text x="306" y="149" class="dg-label-sm">E_i</text>
+        <text x="306" y="162" class="dg-label-sm">E_F</text>
+        <text x="306" y="184" class="dg-label-sm">E_v</text>
+        <!-- V_poly: the band bending inside the gate -->
+        <line x1="112" y1="176" x2="112" y2="200" class="dg-acc" stroke-width="1.4"
+              marker-start="url(#f66-b)" marker-end="url(#f66-b)"/>
+        <text x="104" y="216" class="dg-label-sm" text-anchor="end">V_poly = 24</text>
+        <!-- V_ox across the oxide, measured exactly as on the left -->
+        <line x1="86" y1="116" x2="120" y2="116" class="dg-faint" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="86" y1="79" x2="154" y2="79" class="dg-faint" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="92" y1="79" x2="92" y2="116" class="dg-acc" stroke-width="1.4"
+              marker-start="url(#f66-a)" marker-end="url(#f66-a)"/>
+        <text x="84" y="101" class="dg-label-sm" text-anchor="end">V_ox = 37</text>
+        <!-- psi_s -->
+        <line x1="154" y1="139" x2="238" y2="139" class="dg-faint" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="232" y1="110" x2="232" y2="139" class="dg-acc" stroke-width="1.4"
+              marker-start="url(#f66-a)" marker-end="url(#f66-a)"/>
+        <text x="238" y="128" class="dg-label-sm">&#968;_s = 29</text>
+        <text x="80" y="264" class="dg-label-sm" text-anchor="middle">n&#8314; poly</text>
+        <text x="137" y="264" class="dg-label-sm" text-anchor="middle">ox</text>
+        <text x="226" y="264" class="dg-label-sm" text-anchor="middle">p-Si</text>
+        <text x="40" y="288" class="dg-label-sm">V_poly + V_ox + &#968;_s = 24 + 37 + 29 = 90</text>
+      </g>
+
+        <defs>
+          <marker id="f66-a" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="f66-b" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> The same capacitor at the same applied bias, drawn twice. On the left
+        the polysilicon bands are flat, which is the usual simplification and is not strictly
+        correct. On the right the accent curve is the band bending that always forms in the gate:
+        the n⁺ poly bands bend <em>upward</em> toward the oxide, because the depleted layer there
+        leaves fixed positive donor charge behind. The 3.1 eV barrier is drawn at the same height
+        at both faces of the oxide and in both panels, because it is a property of the materials
+        and cannot change with bias. What does change is how the same 90 units of band bending
+        are shared: on the left the oxide takes 50 and the silicon surface 40; on the right the
+        poly takes 24 first, leaving 37 and 29. Both the oxide drop and the silicon surface
+        potential shrink, and a smaller surface potential means less inversion charge. The
+        figures beside each bracket are in the drawing's own units, not volts. Not to scale.
+      </figcaption>
+    </figure>
+
+    <h3>6.2 What it costs</h3>
+
+    <p>
+      The applied gate voltage divides between the poly depletion region, the oxide and the
+      silicon substrate. Any voltage dropped in the poly is subtracted from the sum available to
+      the other two, so the remaining voltage is smaller than it would be if the gate were an
+      ideal conductor. A smaller voltage across the oxide and substrate induces a smaller
+      inversion-layer charge density, and since drain current is proportional to inversion charge,
+      the drain current of the MOSFET is degraded. The speed of the device falls with it.
+    </p>
+    <p>
+      At any given bias the effect on inversion charge is the same as if the gate oxide had been
+      made thicker. Polysilicon depletion increases the <b>equivalent oxide thickness</b>
+      <em>t</em><sub>ox,eq</sub> — the thickness of an ideal oxide that would produce the
+      capacitance actually measured. That framing is worth holding on to, because
+      <a href="index.html#roadmap">M07</a> uses the same quantity for the opposite purpose: there
+      it is a physically thick high-permittivity film behaving like a thin oxide, here it is a
+      physically thin oxide behaving like a thick one.
+    </p>
+    <p>
+      The equivalence is bias-dependent rather than a fixed offset, which is what distinguishes
+      it from actually growing a thicker film: the poly depletion layer has zero width at flat
+      band and widens as the gate voltage rises. For a gate doped to 10²⁰ cm⁻³ operating at
+      5 MV/cm — an oxide field that corresponds to an inversion sheet density of
+      <em>Q</em><sub>g</sub>/<em>q</em> = 10¹³ cm⁻² — polysilicon depletion is equivalent to
+      adding 3 to 4 Å to the gate oxide. On a 10 nm oxide that is 3 or 4%, which is why it was
+      ignored for decades. On a 1.5 nm oxide it is 20 to 25%, which is why it stopped being
+      ignorable and why gate materials had to change.
+    </p>
+    <p>
+      Quantitatively, the depletion region in the poly is a capacitor in series with the gate
+      oxide capacitor. No metal electrode exists at the poly–oxide interface, but the equivalent
+      circuit is still valid, because the two notional plates there carry equal and opposite
+      charge and their effects cancel.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">
+          <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>tot</sub></span></span>
+          =
+          <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>poly&nbsp;dep</sub></span></span>
+          +
+          <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>ox</sub></span></span>
+        </div>
+        <div class="eq-num">(6.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>tot</sub> total gate capacitance per unit area (F/cm²) ·
+        <em>C</em><sub>poly&nbsp;dep</sub> capacitance of the depletion layer in the polysilicon
+        gate (F/cm²) · <em>C</em><sub>ox</sub> gate oxide capacitance per unit area (F/cm²), from
+        <a href="m03-threshold-voltage.html">M03 §2</a>.
+        Capacitors in series. The substrate depletion capacitance appears in the same series
+        chain and is omitted here to isolate the gate-side effect.
+      </div>
+    </div>
+
+    <p>
+      For capacitors in series the smaller capacitor largely determines the total, and that is
+      what makes polysilicon depletion a scaling problem rather than a fixed penalty.
+      <em>C</em><sub>ox</sub> increases as the oxide is thinned. <em>C</em><sub>poly&nbsp;dep</sub>
+      does not hold still either: in the depletion approximation it is
+      <em>ε</em><sub>si</sub><em>qN</em><sub>p</sub>/<em>Q</em><sub>g</sub>, inversely proportional
+      to the gate charge density, so the larger charge a thinner oxide supports widens the poly
+      depletion layer and lowers <em>C</em><sub>poly&nbsp;dep</sub> further. Both terms of the
+      series sum move against the designer.
+    </p>
+    <p>
+      The onset is a condition on thickness and supply voltage together, not on thickness alone,
+      because the poly depletion width is set by the gate charge and the gate charge depends on
+      both. Polysilicon depletion begins to degrade device performance appreciably when the gate
+      oxide is scaled below about 10 nm <em>and</em> the gate voltages are 2.5 V or lower. Above
+      that, <em>C</em><sub>ox</sub> is much the smaller of the two capacitances and dominates the
+      series combination, so the poly contributes nothing measurable.
+    </p>
+    <p>
+      The capacitance–voltage signature follows from that. A low-frequency measurement on an
+      ideal MOS capacitor recovers <em>C</em><sub>ox</sub> in strong inversion, because the
+      inversion layer can follow the signal and screens the substrate. With poly depletion
+      present the capacitance never returns to <em>C</em><sub>ox</sub>: it rises to a local
+      maximum somewhat below <em>C</em><sub>ox</sub> and then falls again, because
+      <em>C</em><sub>poly&nbsp;dep</sub> keeps decreasing as the gate voltage rises. How far below
+      <em>C</em><sub>ox</sub> that maximum sits is set by the effective doping of the gate. The
+      non-monotonic shape, rather than a simple offset, is what the measurement shows.
+    </p>
+    <p>
+      That signature is not by itself diagnostic. Quantisation of the inversion layer depresses
+      the same curve for the same structural reason — the inversion charge centroid sits a finite
+      depth below the surface, which adds its own series capacitance — and it does so with no
+      polysilicon involved at all. The two are separated by fitting a model to the measured
+      curve, not by inspection.
+    </p>
+    <p>
+      The mitigation follows from the mechanism. A higher polysilicon doping concentration means
+      more donors per unit volume, so the required positive charge is supplied by depleting a
+      thinner layer; the depletion region is narrower, its capacitance larger, and its effect on
+      the series total smaller. Doping the gate more heavily is therefore the direct fix, and it
+      is bounded by how much dopant can be made <em>electrically active</em> in polysilicon —
+      about 10²⁰ cm⁻³ for n-type and only the mid-to-upper 10¹⁹ cm⁻³ for p-type, which is why p⁺
+      gates suffer polysilicon depletion worse than n⁺ gates — and by the boron penetration
+      problem that §9 addresses for those same p⁺ gates.
+    </p>
+
+    <div class="keycard">
+      <p class="label">What polysilicon depletion does, in order</p>
+      <ul>
+        <li>The gate capacitance is more affected the thinner the oxide gets.</li>
+        <li>It reduces the total MOS gate capacitance.</li>
+        <li>It decreases the potential at the silicon surface for the same gate voltage, and so
+          decreases the inversion layer charge density.</li>
+        <li>The drain current decreases, and the speed of the MOSFET decreases.</li>
+      </ul>
+    </div>
+
+    <h2>7 · The minimum usable oxide thickness</h2>
+
+    <p>
+      Everything to this point converges on one engineering question: how thin can the gate oxide
+      actually be made in production. Six factors play a role in setting that minimum, and they
+      are the subject matter of this module and the last one:
+    </p>
+    <ol>
+      <li><b>Oxide reliability</b> — the time-to-breakdown of §5.</li>
+      <li><b>Tunnelling leakage current</b> — §1 and §2.</li>
+      <li><b>Stress-induced leakage current</b> — §4.</li>
+      <li><b>Polysilicon depletion</b> — §6.</li>
+      <li><b>Process-induced oxide damage</b> — §10.</li>
+      <li><b>Hot-carrier-induced damage</b> — §3, and
+        <a href="m05-thin-gate-oxides-growth-charge.html">M05 §6.3</a>.</li>
+    </ol>
+    <p>
+      The answer is not a single number, because the type of application determines which factors
+      bind. Logic devices, DRAMs and non-volatile memories each tolerate a different failure and
+      therefore each settle at a different thickness. A non-volatile memory is limited by SILC and
+      data retention, as §4 showed, at thicknesses a logic device would find unremarkable; a DRAM
+      is expected to stop at about 3 nm, since a leaking gate oxide discharges the stored bit.
+    </p>
+
+    <h3>7.1 Defects and tunnelling</h3>
+
+    <p>
+      Two of the six factors — defect densities in the film, and direct tunnelling current
+      through it — dominate, and they are treated together because they happen to set
+      approximately the same limit.
+    </p>
+    <p>
+      The reliability limit is computed by extrapolating time-to-breakdown data to a ten-year
+      operating life. The extrapolation is run at the supply voltage <em>plus 10%</em>, which is
+      the worst case a part must survive rather than its nominal rating. For defect-free oxides,
+      the following thicknesses meet a ten-year time-to-breakdown:
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Supply</th><th>Extrapolated at</th><th>Defect-free <em>t</em><sub>ox</sub></th><th>Production <em>t</em><sub>ox</sub></th><th>Implied increase</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>5 V</td><td>5.5 V</td><td>80 Å</td><td><b>110 Å</b></td><td>37.5%</td></tr>
+          <tr><td>3.3 V</td><td>3.6 V</td><td>45 Å</td><td><b>65 Å</b></td><td>44.4%</td></tr>
+          <tr><td>2.5 V</td><td>2.75 V</td><td>33 Å</td><td><b>45 Å</b></td><td>36.4%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The production column exists because real oxides contain defects that locally thin the film
+      without creating an outright pinhole, and a locally thin oxide sees a locally high field.
+      The rule stated for that margin is a 30% increase in thickness. The published production
+      figures do not follow from it: 1.30 × 80 Å is 104 Å, not 110 Å, and the three rows imply
+      increases of 36 to 44%, averaging nearer 39%. Both columns are quoted here as published,
+      with the discrepancy shown rather than smoothed over — it lives in the source, and rounding
+      does not account for it.
+    </p>
+    <p>
+      The projections continue downward from there, and they did not agree with each other. The
+      next generation of work targeted 50 nm gate lengths using oxides below 2.0 nm. A 1998 study
+      put the production minimum at 2.6 nm for a 1.0 V supply, on the argument that intrinsic
+      oxide degradation and breakdown would become the dominant limit — which also implied that a
+      2.2 nm oxide would fail the roadmap requirement outright. A 1999 study countered that
+      1.6 nm could meet the same ten-year target at 1.2 V, provided film-thickness uniformity were
+      substantially improved, since reliability at a given thickness improves with uniformity. In
+      1999 a 100 nm CMOS process shipped with a 2.0 nm oxide at 1.5 V, and by 2000 the same group
+      reported 130 nm CMOS with a 1.5 nm oxide at 1.3 V. Practice overtook both projections.
+    </p>
+    <p>
+      The tunnelling limit lands in the same region. Tunnelling leakage currents become excessive
+      once the oxide thickness falls below 1.4 nm, which is close to the thickness the reliability
+      extrapolation permits, so neither consideration rescues the other.
+    </p>
+
+    <h3>7.2 How steeply leakage climbs</h3>
+
+    <p>
+      The steepness is the whole point, and it is worth seeing as numbers. At a gate bias of
+      about 1 V, the leakage current density through a silicon dioxide film changes from
+      1×10⁻¹² A/cm² at 35 Å to 1×10⁻¹⁰ A/cm² at about 15 Å.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The second figure lost a sign in transcription, and the published span is off by a decade</p>
+      <p>
+        The 15 Å value is wrong as written, and tracing it to the primary literature is worth
+        doing because the correction runs the opposite way from the obvious guess. The published
+        value at about 15 Å is <b>1×10 A/cm², that is 10 A/cm²</b> — not 10⁻¹⁰, and not the
+        10⁰ that the accompanying prose might suggest. What was lost in transcription is the
+        absence of an exponent, read as a negative one.
+      </p>
+      <p>
+        Two checks settle it. The same source states a few pages later that films as thin as
+        20 Å leak 1–10 A/cm², and tunnelling current increases monotonically as a film thins, so
+        a 15 Å film cannot leak less than a 20 Å one; 10⁻¹⁰ A/cm² is twelve decades below that
+        and 1 A/cm² is below it too. Independently, measured 1.5 nm oxides at 1 V sit in the
+        10 to 10² A/cm² band, and gate current densities up to about 10³ A/cm² are tolerated in
+        the highest-performance parts at 1 to 1.5 nm. 10 A/cm² is the value consistent with all
+        of it.
+      </p>
+      <p>
+        One inconsistency survives the correction and belongs to the literature rather than to
+        the transcription. The source describes the change between its two endpoints as
+        <em>twelve</em> orders of magnitude, but 10⁻¹² to 10¹ is thirteen. The endpoints and the
+        span as printed disagree by one decade. That is worth reporting rather than repairing:
+        choosing the endpoint that makes the round phrase come out even is how 1 A/cm² would be
+        arrived at, and it is not what the source prints.
+      </p>
+      <p>
+        Note also that 1 A/cm² and 1.4 nm come from different places and are not two readings of
+        one fact. 1 A/cm² is a <em>design criterion</em>, derived in §2 from subthreshold
+        leakage. The 1.4 nm floor is a <em>measurement</em>: it is where the gate current of a
+        particular low-leakage oxide, grown by RTO after an in-situ clean, crosses that
+        criterion. The 35 Å / 15 Å pair above comes from a third body of data again. That they
+        land close together is the point of §7 — it is not evidence that any one of them
+        implies another.
+      </p>
+      <p>
+        Use the notes' figures for anything assessed.
+        <span class="src">Wolf, Vol. 4 §3.8.1 footnote and §3.4.2, after D. A. Buchanan,
+        <i>IBM J. Res. Develop.</i> <b>43</b>, 245 (1999); Taur &amp; Ning §4.6.1.2, Fig. 4.41.</span>
+      </p>
+    </div>
+
+    <p>
+      Whichever endpoint is taken, the structural conclusion is the same and is the one to carry
+      forward: direct tunnelling current is exponential in thickness, so the transition from
+      negligible gate leakage to prohibitive gate leakage occupies a couple of ångströms rather
+      than a generation of scaling. There is no thickness at which the problem is manageable and
+      the next node is a little worse. This is why the response had to be a change of material
+      rather than a change of dimension.
+    </p>
+
+    <h2>8 · Growing an oxide this thin</h2>
+
+    <p>
+      A 2 nm gate oxide is not a thin version of a 100 nm one. The growth model that describes
+      thick oxides fails in this regime, and the furnace that grows them well cannot control a
+      film this thin. Both had to be replaced.
+    </p>
+
+    <h3>8.1 The models fail below 200 Å</h3>
+
+    <p>
+      The Deal–Grove model allows the thickness of oxide films thicker than 350 Å to be predicted
+      accurately as a function of temperature, furnace ambient, silicon doping concentration and
+      silicon orientation. It is the standard treatment of thermal oxidation and it is genuinely
+      predictive over its range.
+    </p>
+    <p>
+      Two separate limitations are worth keeping apart. First, Deal–Grove is a rate-constant
+      description and does not give a detailed understanding of the mechanisms that produce the
+      dependencies it captures — that is true at every thickness, including the range where it
+      predicts accurately. Second, and independently, it is not valid below 200 Å: for dry
+      oxidation in that range the oxide grows <em>faster</em> than the model predicts, so the
+      model does not merely fail to explain, it returns the wrong number. That second
+      discrepancy is the <b>anomalous region</b> of the Deal–Grove model. Several models have
+      been proposed to explain it:
+    </p>
+    <ol>
+      <li>Models based on <b>space charge effects</b>, in which the oxidation enhancement in the
+        thin regime is due to field-assisted oxidant diffusion, arising from O₂⁻ coupled
+        diffusion with holes.</li>
+      <li>Models based on the existence of <b>structural defects</b> in the oxide, such as
+        micropores or channels around 10 Å in diameter, which would allow oxygen molecules to
+        diffuse more rapidly when the oxide is thin.</li>
+      <li>Models based on <b>parallel O₂ and O reactions</b> at the Si/SiO₂ interface — molecular
+        and atomic oxygen contributing through separate pathways.</li>
+      <li>Models postulating a <b>blocking layer</b> near the Si/SiO₂ interface, which forms as
+        the oxide grows and slows the rate for thicker layers. Here the thin-oxide rate is the
+        undisturbed one and the thick-oxide rate is the anomaly.</li>
+      <li>A model by Massoud based on the presence of a <b>thin surface layer in the silicon</b>
+        where additional reaction sites are available, their concentration decaying exponentially
+        with depth over a characteristic length.</li>
+    </ol>
+    <p>
+      None of them has been convincingly accepted as more valid than the others. Two responses
+      followed, and they are different in kind.
+    </p>
+    <p>
+      The first is an <b>empirical fit</b> that abandons Deal–Grove entirely. Reisman and
+      Nicollian's 1987 model fits all published dry-O₂ data:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em><sub>ox</sub> = <em>a</em>(<em>t</em><sub>g</sub> + <em>τ</em>)<sup><em>b</em></sup></div>
+        <div class="eq-num">(6.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>ox</sub> oxide thickness (Å) ·
+        <em>t</em><sub>g</sub> growth time, the measured duration of the oxidation ·
+        <em>τ</em> the time that would have been required to grow an oxide of thickness
+        <em>t</em><sub>oxi</sub> already present on the surface, which shifts the time origin so
+        that a pre-existing native oxide is accounted for ·
+        <em>a</em>, <em>b</em> fitting constants.
+        Empirical, for dry O₂. It is a fit to data, not a mechanism — it makes no claim about
+        which of the five models is right. The exponent <em>b</em> is not universal: extracted
+        values run from 0.25 to 1.0 depending on temperature and oxidant partial pressure. Its
+        notable property is that it fits down to essentially zero thickness, so on this
+        description there is no anomalous regime at all — the anomaly is an artefact of insisting
+        on the Deal–Grove form.
+      </div>
+    </div>
+
+    <p>
+      The second response keeps Deal–Grove and repairs it, and it is the one that was actually
+      adopted. Massoud's correction adds a second term to the Deal–Grove growth rate — one that
+      decays exponentially with thickness, so it dominates while the film is thin and vanishes
+      once it is not:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">
+          <span class="frac"><span class="num">d<em>t</em><sub>ox</sub></span><span class="den">d<em>t</em></span></span>
+          =
+          <span class="frac"><span class="num"><em>B</em></span><span class="den">2<em>t</em><sub>ox</sub> + <em>A</em></span></span>
+          + <em>C</em> exp&thinsp;<span class="dl">(</span>−
+          <span class="frac"><span class="num"><em>t</em><sub>ox</sub></span><span class="den"><em>L</em><sub>2</sub></span></span>
+          <span class="dl">)</span></div>
+        <div class="eq-num">(6.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>ox</sub> oxide thickness · <em>t</em> time ·
+        <em>A</em>, <em>B</em> the ordinary Deal–Grove linear and parabolic rate constants ·
+        <em>C</em> = <em>C</em><sub>0</sub>exp(−<em>E</em><sub>A</sub>/<em>kT</em>), with
+        <em>C</em><sub>0</sub> ≈ 3.6×10⁸ µm/hr and <em>E</em><sub>A</sub> ≈ 2.35 eV ·
+        <em>L</em><sub>2</sub> ≈ 7 nm, the decay length of the enhancement.
+        For dry oxidation of lightly doped substrates over 800–1000 °C, and independent of
+        surface orientation. The first term is Deal–Grove unchanged; the second is the anomalous
+        enhancement, negligible once <em>t</em><sub>ox</sub> ≫ <em>L</em><sub>2</sub>.
+      </div>
+    </div>
+
+    <p>
+      Equation (6.5) is the thin-oxide growth model implemented in the standard process
+      simulators, and Reisman's is not — because a great deal of other oxidation physics is
+      already expressed in terms of the Deal–Grove constants <em>A</em> and <em>B</em>, and a
+      correction that preserves them inherits all of it while a replacement discards it. Note
+      also which of the five models Massoud's term belongs to: it is number 5 in the list above.
+      The mechanistic question was never settled, but one of the five candidates nonetheless
+      became the form every simulator runs.
+    </p>
+
+    <h3>8.2 Rapid thermal oxidation</h3>
+
+    <p>
+      Conventional batch furnace oxidation faces two linked problems at these thicknesses. Furnace
+      oxidation is difficult to scale below 2 nm, and the low temperatures used to slow growth
+      enough for such ultra-thin films degrade the oxide quality. Growing slowly by growing cold
+      trades the property being optimised for the one being controlled.
+    </p>
+    <p>
+      <b>Rapid thermal oxidation</b>, or RTO, breaks that trade by controlling the duration
+      instead of the rate. It grows the oxides at higher temperatures, where the film quality is
+      good, and keeps the total thickness small by keeping the oxidation time down to just a few
+      seconds — where the minimum practical oxidation time in a batch furnace is at least a few
+      minutes. It is also conducive to cluster tooling, meaning a tool in which several process
+      steps are performed in connected chambers without breaking vacuum.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 250" role="img" aria-labelledby="f67-t">
+        <title id="f67-t">Cross-section of a rapid thermal oxidation reactor showing the tungsten-halogen lamp bank above a cooled quartz window, the wafer on its holder inside a quartz cylinder, and pyrometers below a water-cooled reflector plate</title>
+
+        <!-- lamp housing -->
+        <rect x="120" y="30" width="440" height="42" class="dg-fill"/>
+        <g class="dg-ink">
+          <circle cx="160" cy="51" r="6"/><circle cx="200" cy="51" r="6"/>
+          <circle cx="240" cy="51" r="6"/><circle cx="280" cy="51" r="6"/>
+          <circle cx="320" cy="51" r="6"/><circle cx="360" cy="51" r="6"/>
+          <circle cx="400" cy="51" r="6"/><circle cx="440" cy="51" r="6"/>
+          <circle cx="480" cy="51" r="6"/><circle cx="520" cy="51" r="6"/>
+        </g>
+        <text x="566" y="46" class="dg-label-sm">lamp housing</text>
+        <text x="566" y="60" class="dg-label-sm">W-halogen lamps</text>
+
+        <!-- cooled quartz window -->
+        <rect x="120" y="76" width="440" height="10" class="dg-fill"/>
+        <text x="566" y="85" class="dg-label-sm">cooled quartz window</text>
+
+        <!-- quartz cylinder -->
+        <rect x="120" y="98" width="440" height="72" class="dg-fill" fill-opacity="0.25"/>
+        <text x="60" y="140" class="dg-label-sm" text-anchor="middle">quartz</text>
+        <text x="60" y="154" class="dg-label-sm" text-anchor="middle">cylinder</text>
+
+        <!-- wafer -->
+        <rect x="200" y="122" width="280" height="9" class="dg-acc-f"/>
+        <text x="340" y="116" class="dg-label-sm" text-anchor="middle">wafer, on SiC rotating support ring</text>
+
+        <!-- gas flow -->
+        <line x1="136" y1="108" x2="230" y2="108" class="dg-rule" stroke-width="1.3"
+              marker-end="url(#f67-a)"/>
+        <text x="300" y="100" class="dg-label-sm">H₂ + O₂ premixed, ignited at the wafer</text>
+        <text x="300" y="114" class="dg-label-sm">→ H₂O, OH, atomic O</text>
+
+        <!-- reflector plate -->
+        <rect x="120" y="176" width="440" height="10" class="dg-fill"/>
+        <text x="566" y="185" class="dg-label-sm">water-cooled reflector</text>
+
+        <!-- pyrometers -->
+        <g class="dg-ink">
+          <rect x="280" y="190" width="10" height="16"/>
+          <rect x="360" y="190" width="10" height="16"/>
+        </g>
+        <text x="325" y="222" class="dg-label-sm" text-anchor="middle">pyrometers</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> The heat comes from lamps above the wafer, not from a hot chamber wall,
+        which is what allows the ramp rate to be high and the chamber to stay cold. Pyrometers
+        below the wafer measure its temperature optically, since there is no furnace equilibrium
+        to infer it from.
+        <span class="src">Redrawn from the class notes p. 36, after Wolf Vol. 4 Fig. 3-26
+        (Applied Materials ISSG RTO reactor).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The sequence is short. A robot wafer handler inserts the wafer onto a silicon carbide
+      rotating support ring. The wafer is heated rapidly, at rates of 50–100 °C/s, to a process
+      temperature of 800–1050 °C. Process gases are introduced at reduced pressure in an axial
+      flow pattern, where they react to form water vapour, hydroxyl ions, oxygen ions and other
+      species — which species form, and in what proportion, depends on the hydrogen-to-oxygen
+      ratio and on whether N₂, NH₃, HCl or other reactant gases are added. At the conclusion of
+      the oxidation step the wafer is cooled rapidly.
+    </p>
+    <p>
+      Growing at higher temperature is not merely tolerable, it is better, in three measurable
+      ways:
+    </p>
+    <ol>
+      <li>Oxides exhibit <b>smaller gate leakage currents</b> as their growth temperature
+        increases, up to 1050 °C, beyond which the leakage current increases again.</li>
+      <li>They show <b>higher resistance to boron penetration</b>. A 2 nm oxide grown at 800 °C
+        was compared with one grown by rapid thermal processing at 1000 °C, and boron penetration
+        was suppressed in the RTP-grown oxide.</li>
+      <li>MOSFETs built with RTP-grown oxides had <b>higher effective carrier mobilities</b>, for
+        both electrons and holes, as the oxide growth temperature increased from 800 to 1000 °C.
+        This is due to the smoother Si/SiO₂ interface that the higher temperature produces —
+        surface roughness scattering is one of the two mechanisms that degrade inversion-layer
+        mobility, as <a href="m01-mosfet-and-how-one-is-made.html">M01 §4</a> noted.</li>
+    </ol>
+    <p>
+      Cluster tools produce better quality oxides because they allow process sequences to be
+      carried out in an integrated fashion. The specific gain concerns cleaning: an oxide growth
+      process requires a cleaning procedure before the growth step, and if that clean can be
+      performed <em>in situ</em>, with no exposure to atmosphere between cleaning and growth, the
+      quality of the oxide improves. Cluster tools suit single-wafer processing and are
+      impractical for batch furnace tools.
+    </p>
+
+    <h3>8.3 Wet RTO and in-situ steam generation</h3>
+
+    <p>
+      Dry oxides are expected to be limited to minimum thicknesses somewhere between 1.6 nm and
+      2.5 nm. Wet rapid thermal oxidation is one route below that. The technique called
+      <b>in-situ steam generation</b>, or ISSG, has allowed oxides in the 2.0 nm range to be
+      formed with better reliability than dry oxides of the same thickness.
+    </p>
+    <p>
+      ISSG is a low-pressure oxidation, typically below 20 Torr <em>for safety reasons</em>,
+      performed in a cold-wall rapid thermal processing reactor. The safety constraint is not
+      incidental, and it answers a question the next paragraph would otherwise raise: what is
+      being limited is a premixed charge of hydrogen and oxygen in a hot chamber.
+    </p>
+    <p>
+      The distinguishing feature is where the steam comes from. A conventional hot-wall furnace
+      generates wet ambient in a pyrogenic torch upstream and pipes it in. In ISSG no
+      pre-combustion occurs: electronic-grade hydrogen and oxygen are premixed in a plenum and
+      injected, the hot wafer acts as the ignition source, and H₂O, OH and atomic oxygen are
+      generated directly in the reaction chamber at its surface. The hydrogen fraction is a
+      process variable rather than a fixed stoichiometry — the wide range of temperatures and
+      hydrogen concentrations available is what allows controlled oxidation at any thickness.
+    </p>
+    <p>
+      Two properties of the process follow from that arrangement and are unusual enough to be
+      worth stating explicitly. The oxidation rate rapidly <em>increases</em> as the pressure is
+      decreased below 20 Torr — the opposite of conventional oxidation, where the rate decreases
+      as the pressure is decreased, since both Deal–Grove rate constants scale roughly linearly
+      with the oxidant partial pressure. And the oxidation rate shows a strong correlation to the
+      atomic oxygen concentration and not to any other atomic or molecular species, which
+      identifies atomic oxygen as the reactive agent. The oxidation is also more strongly
+      temperature dependent than wet atmospheric oxidation. ISSG oxides demonstrate better
+      reliability than comparable furnace oxides.
+    </p>
+
+    <h2>9 · Changing the chemistry of the film</h2>
+
+    <p>
+      Growing pure silicon dioxide better eventually stops being enough. The next response was to
+      stop growing pure silicon dioxide: adding nitrogen, or fluorine, to the film changes its
+      bonding in ways that address specific failure modes directly. These are the last
+      modifications before the material itself is replaced in
+      <a href="index.html#roadmap">M07</a>.
+    </p>
+
+    <h3>9.1 Why nitrogen helps</h3>
+
+    <p>
+      Oxynitrides have been studied as replacements for silicon dioxide as the gate dielectric of
+      MOSFETs for thicknesses below 4.0 nm. Four advantages over SiO₂ are claimed for them:
+    </p>
+    <ol>
+      <li>They exhibit <b>improved boron penetration resistance</b>. Boron from a p⁺ polysilicon
+        gate diffuses through a thin gate oxide into the channel, shifting the threshold voltage
+        of the device it was supposed to set — one of the five failures of a very thin oxide in
+        <a href="m05-thin-gate-oxides-growth-charge.html">M05 §3.2</a>.</li>
+      <li>They exhibit <b>better breakdown characteristics</b>.</li>
+      <li>They show <b>greater immunity to hot-electron injection effects</b>.</li>
+      <li>MOSFETs made with such layers exhibit <b>improved high-field channel electron
+        mobility</b>. The claim is made for electrons; it is not made for holes.</li>
+    </ol>
+    <p>
+      The mechanism is interfacial. The improved performance of nitrided SiO₂ has been associated
+      with the accumulation of a small amount of nitrogen at the SiO₂/Si interface, and interfacial
+      nitrogen accumulation reduces interfacial defects by relieving strained Si–O bonds and
+      dangling bonds. These are precisely the defects of
+      <a href="m05-thin-gate-oxides-growth-charge.html">M05 §6.2</a>: the stretched bonds forced
+      out of equilibrium by the lattice mismatch between crystalline silicon and amorphous oxide,
+      and the unsatisfied bonds left by incomplete oxidation. Nitrogen at the interface provides
+      the bonding flexibility to relieve them.
+    </p>
+    <p>
+      The amount matters, and so does which face of the film it sits on. About 1–2 atomic percent
+      peaked at the Si/SiO₂ interface is what raises the breakdown field and lowers the fixed
+      oxide charge density. Suppressing boron penetration needs a higher concentration, above
+      about 5 atomic percent, and it is needed at the <em>opposite</em> face — the poly/SiO₂
+      interface, because that is where the boron enters the film from the p⁺ gate above it.
+      Nitrogen in the bulk of the film degrades the oxide and is deliberately kept out, so an
+      engineered stack places nitrogen in two thin layers with as little as possible between
+      them.
+    </p>
+    <p>
+      Nitridation of SiO₂ is achieved by using an ambient such as NH₃, N₂O, NO, or a mixture of O₂
+      and NO. Which one is used determines the process and its problems, and the two families
+      differ enough to be treated separately.
+    </p>
+
+    <h3>9.2 Ammonia nitridation, and its hydrogen problem</h3>
+
+    <p>
+      Early oxynitride films were formed by nitriding a thermally grown oxide film in an NH₃
+      ambient at high temperature, then re-oxidising the nitrided oxide to reduce the amount of
+      hydrogen remaining in the film after NH₃ nitridation. These are called <b>reoxidized nitrided
+      oxide</b>, or ROXNOX, films. They exhibit better hot-carrier resistance than pure SiO₂.
+    </p>
+    <p>
+      The process is difficult to optimise, and the reason is that the re-oxidation step has to
+      correct a problem the nitridation step created without going too far. Ammonia is NH₃, so
+      nitriding in it necessarily introduces hydrogen, and the consequences run in both directions:
+    </p>
+    <ul>
+      <li>The ROXNOX process may leave <b>excess hydrogen</b>, giving a higher density of electron
+        traps. Electron trapping is a dominant degradation mechanism in p-channel MOSFETs, which
+        therefore exhibit higher hot-carrier degradation.</li>
+      <li>If the re-oxidation step is <b>excessive</b>, the film loses strength against
+        interface-state generation by hot carriers, and n-channel MOSFETs containing such films
+        are prone to more hot-carrier degradation.</li>
+      <li>The best NH₃-nitrided films always exhibit <b>higher densities of positive fixed
+        charge</b> <em>Q</em><sub>f</sub> than the best SiO₂ films — the comparison is between
+        the best of each, not between an arbitrary pair.</li>
+      <li>The ROXNOX process involves <b>multiple high-temperature steps</b>, which is a thermal
+        budget cost paid by every dopant profile already in the wafer.</li>
+    </ul>
+
+    <h3>9.3 Nitrous oxide and nitric oxide</h3>
+
+    <p>
+      The hydrogen incorporation can be avoided by replacing NH₃ with N₂O as the nitriding ambient,
+      since N₂O contains no hydrogen at all.
+    </p>
+    <p>
+      One approach grows the dielectric by directly reacting N₂O at the silicon surface in an RTP
+      system. Less hydrogen is incorporated in the film, and secondary ion mass spectrometry — a
+      technique that sputters the film away layer by layer and mass-analyses the ejected ions, so
+      giving a concentration profile against depth — confirms both less hydrogen in the film and a
+      higher nitrogen concentration at the Si/SiO₂ interface, which is where §9.1 says it is wanted.
+    </p>
+    <p>
+      The growth is diffusion-limited. Thickness increases approximately as the square root of
+      time, which indicates that growth is limited by diffusion of N₂O through the oxide bulk
+      rather than by the reaction at the interface — the same square-root signature that
+      distinguishes a diffusion-limited from a reaction-limited regime in the Deal–Grove model.
+      n-channel MOSFETs fabricated with these films exhibited low electron trapping density, less
+      hot-carrier degradation than those made with control oxides, and smaller values of
+      Δ<em>D</em><sub>it</sub>, the increase in interface trap density under stress.
+    </p>
+    <p>
+      Four limitations were observed against pure oxide films:
+    </p>
+    <ol>
+      <li>Larger initial values of <em>D</em><sub>it</sub> than pure oxide films.</li>
+      <li>Initial values of <em>Q</em><sub>f</sub> were also higher.</li>
+      <li>Slow growth makes these films practical <em>only</em> for ULSI applications, which use
+        dielectric films thinner than 100 Å — the process cannot deliver a thicker film in a
+        reasonable time. For this course's purposes that restriction is not a problem, since
+        100 Å is already far thicker than the films §7 is concerned with.</li>
+      <li>The <em>peak</em> electron mobility in MOSFETs made with these films is about 5% lower
+        than in MOSFETs made with oxide. The comparison reverses at large lateral electric
+        fields, where the mobility is actually higher.</li>
+    </ol>
+
+    <h4>The two-step process</h4>
+
+    <p>
+      The alternative is to separate growth from nitridation. Oxides are first grown in O₂, and the
+      films are then subjected to an oxynitridation step in N₂O or NO. The films have been grown by
+      furnace at atmospheric pressure, by low pressure, and by RTP.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 210" role="img" aria-labelledby="f68-t">
+        <title id="f68-t">Temperature against process time for a conventional furnace two-step oxynitridation, showing oxidation in dilute oxygen followed by a nitrous oxide anneal and a nitrogen step</title>
+        <line x1="54" y1="170" x2="420" y2="170" class="dg-rule" stroke-width="1.2"/>
+        <line x1="54" y1="170" x2="54" y2="26" class="dg-rule" stroke-width="1.2"/>
+        <text x="237" y="196" class="dg-label" text-anchor="middle">process time</text>
+        <text x="18" y="98" class="dg-label" text-anchor="middle"
+              transform="rotate(-90 18 98)">temperature</text>
+
+        <!-- profile: ramp, plateau1, plateau2 higher, plateau3, ramp down -->
+        <path d="M54,170 L106,94 L170,94 L170,66 L350,66 L400,170"
+              class="dg-acc" stroke-width="2.2" fill="none"/>
+        <!-- segment dividers -->
+        <line x1="170" y1="66" x2="170" y2="150" class="dg-faint" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="260" y1="66" x2="260" y2="150" class="dg-faint" stroke-width="1" stroke-dasharray="4 3"/>
+
+        <text x="138" y="110" class="dg-label-sm" text-anchor="middle">O₂, 850 °C</text>
+        <text x="138" y="124" class="dg-label-sm" text-anchor="middle">30 min</text>
+        <text x="138" y="138" class="dg-label-sm" text-anchor="middle">→ 50 Å</text>
+        <text x="215" y="88" class="dg-label-sm" text-anchor="middle">N₂O, 950 °C</text>
+        <text x="215" y="102" class="dg-label-sm" text-anchor="middle">+35 Å → 85 Å</text>
+        <text x="305" y="88" class="dg-label-sm" text-anchor="middle">100% N₂</text>
+        <text x="305" y="102" class="dg-label-sm" text-anchor="middle">950 °C</text>
+      </svg>
+      <figcaption>
+        A conventional furnace recipe, with the drawn plateaux carrying the quantities: 50 Å of
+        SiO₂ grown in O₂ at 850 °C for 30 minutes, then an N₂O anneal at 950 °C that adds a
+        further 35 Å to give an 85 Å film, then an N₂ step at the same temperature. The N₂O step
+        both nitrides and grows, which is why the thickness has to be budgeted across both.
+      </figcaption>
+    </figure>
+
+    <p>
+      The <b>low-pressure process</b> has a threshold rather than a window. A minimum N₂O
+      pressure, reported as somewhere between 1 and 50 Torr, is needed before any measurable
+      nitrogen is incorporated at all. Working just above that onset is what the process is for:
+      the interfacial nitrogen concentration can be controlled while almost no additional oxide
+      grows during the nitridation step, so the final thickness stays tightly controlled.
+    </p>
+    <p>
+      Using N₂O as the nitrogen source in the second step has a disadvantage all the same. The
+      nitrogen concentration it incorporates may be too low for some applications, especially
+      suppression of boron penetration, unless a much higher thermal budget is permitted.
+    </p>
+    <p>
+      NO has more recently been used as the source in the second step. It offers a low thermal
+      budget for incorporating a higher concentration of nitrogen, as well as better thickness
+      control for scaled dielectrics.
+    </p>
+    <p>
+      The chemistry explains why NO outperforms N₂O, and the numbers explain the thermal budget.
+      Nitrogen incorporation from N₂O is driven by the NO species, which is a product of N₂O
+      dissociation — so N₂O works only by becoming NO first, and it does so inefficiently. The
+      molecule dissociates into <b>NO at about 4.7%, N₂ at about 64.3% and O₂ at about 31%</b>,
+      and the three products act in competition: NO incorporates nitrogen, O₂ continues oxidising
+      the silicon by reacting with it, and N₂ — nearly two thirds of the gas, and the majority
+      product — dilutes the partial pressure of the nitriding species and drives the thermal
+      budget up. Dissociation also requires a temperature above 850 °C. Supplying NO directly
+      avoids both costs: it delivers the nitriding species without the 95% that is not doing the
+      job, and without the dissociation temperature. The percentage of nitrogen incorporated
+      depends on the ratio of the NO + O₂ mixture when using RTP.
+    </p>
+    <p>
+      A representative recipe: a 4 nm oxynitride is formed by growing 4 nm of oxide using O₂ at
+      800 °C with 6% HCl and a post-oxidation anneal in N₂, then annealing the oxide in a diluted
+      NO ambient at 800 °C for 45 minutes.
+    </p>
+
+    <h3>9.4 Fluorinated gate oxides</h3>
+
+    <p>
+      Incorporating fluorine into the gate oxide increases hot-electron resistance. The reason is a
+      direct bond-strength argument, and it follows on from the passivation discussion in
+      <a href="m05-thin-gate-oxides-growth-charge.html">M05 §6.3</a>: the presence of fluorine
+      replaces Si–H bonds at the Si/SiO₂ interface with Si–F bonds, and Si–F bonds are stronger
+      than Si–H bonds. A hot carrier that would have had enough energy to break the Si–H bond and
+      create an interface trap does not have enough to break the Si–F bond.
+    </p>
+    <p>
+      Fluorine may be introduced inadvertently rather than deliberately, by two common process
+      steps:
+    </p>
+    <ol>
+      <li>A <b>BF₂⁺ source/drain implant</b>, where boron is implanted as the BF₂ molecular ion and
+        the fluorine comes along with it.</li>
+      <li>An <b>LPCVD-W or LPCVD-WSi<sub>x</sub> process</b>, where WF₆ and SiH₄ are the reactants —
+        tungsten hexafluoride carries six fluorine atoms per tungsten atom into the chamber.</li>
+    </ol>
+    <p>
+      The benefit has a cost that runs against §9.1, and the cost falls on only half of a CMOS
+      pair. Fluorine in the gate oxide may increase boron penetration from p⁺ polysilicon gates,
+      which is a potential problem for deep-submicron <b>p-channel</b> MOSFETs; n-channel devices,
+      whose gates are n⁺, get the hot-carrier benefit with none of the penalty. That asymmetry is
+      what makes fluorine an integration problem rather than a device problem.
+    </p>
+    <p>
+      The two effects are separable by dose, and the dose that matters is the one implanted into
+      the <em>polysilicon gate</em> — the BF₂⁺ implant lands in the poly, and the fluorine then
+      diffuses from there into the gate oxide during the activation anneals. Holding that to a
+      medium dose of about 1×10¹⁴ cm⁻² gives no noticeable enhanced boron penetration, and under
+      the same conditions the charge-to-breakdown of 4 nm oxides on p-channel capacitors is
+      significantly improved.
+    </p>
+
+    <h3>9.5 Two oxide thicknesses on one wafer</h3>
+
+    <p>
+      Not every transistor on a chip wants the thinnest possible oxide. High voltage may be used
+      for analogue and input/output circuitry, which requires thicker oxides to withstand it, while
+      logic applications use the thinner gate oxide that gives the drive current and speed. Both
+      are built on the same wafer, which requires a <b>dual gate oxide thickness structure</b>.
+    </p>
+    <p>
+      A two-step oxidation produces them. The sequence is:
+    </p>
+    <ol>
+      <li>Pattern photoresist, exposing the regions that are to receive the thinner oxide.</li>
+      <li>Perform a low-energy nitrogen implant through the exposed areas.</li>
+      <li>Strip the resist.</li>
+      <li>Strip the sacrificial screen oxide the implant was performed through, and clean.</li>
+      <li>Perform the thermal oxidation.</li>
+    </ol>
+    <p>
+      Typical implant conditions are 10–30 keV at a dose of 2×10¹⁴ to 1×10¹⁵ cm⁻². The
+      differentiation comes from that implant: nitrogen implanted into silicon before oxidation
+      reduces the rate at which that silicon subsequently oxidises. The suggested mechanism is
+      the formation of Si–N bonds at the interface of the growing oxide, which constrain further
+      growth — a different chemistry from §9.1, where nitrogen relieves strain in a film that has
+      already been grown. The single oxidation step at the end therefore grows a thinner film
+      over the implanted regions and a thicker film everywhere else, and one oxidation produces
+      two thicknesses.
+    </p>
+
+    <h2>10 · Process damage, and measuring the film</h2>
+
+    <p>
+      Two practical matters close the chapter. Both concern the gap between the oxide as designed
+      and the oxide as it exists on a finished wafer.
+    </p>
+    <p>
+      <b>Process-induced damage</b> arrives long after the oxide is grown, and whether it gets
+      worse as the film thins is not settled. The coupling is electrical rather than physical:
+      charge collected by the large metal and polysilicon structures connected to the gate is
+      driven through the gate oxide, which is why a step several mask levels later, during
+      interconnect fabrication and never in contact with the gate, can damage it.
+    </p>
+    <p>
+      The evidence runs both ways, and the two thickness pairs involved are almost the same:
+    </p>
+    <ul>
+      <li>A 1996 analysis found thinner oxides <em>less</em> damaged — 6.4 nm oxides showed an
+        order of magnitude smaller interface-trap density than 11.6 nm oxides. The reasoning is
+        that plasma charging behaves as a constant-<em>current</em> source rather than a fixed
+        voltage, so the same current passes whatever the thickness, and a thinner oxide tolerates
+        that current stress better. The conclusion drawn was that plasma damage would not become
+        more serious below 5 nm.</li>
+      <li>A 2000 report found the opposite: damage increased as the gate oxide was thinned from
+        11.5 nm to 5.5 nm, with the RF back-sputter via-clean process used to prepare vias for
+        metal deposition as the main source. Plasma damage was found to correlate with long-term
+        oxide reliability degradation, so it does not announce itself at test; it shortens the
+        life of parts that pass.</li>
+      <li>A third report from the same conference held that the available measurement techniques
+        cannot determine whether low-level plasma damage is occurring at all.</li>
+    </ul>
+    <p>
+      The question is open. What is not in doubt is that the damage is real, that its route is
+      the antenna of connected conductors rather than the plasma reaching the oxide, and that it
+      is counted among the six factors of §7.
+    </p>
+    <p>
+      <b>Measuring</b> a film this thin is itself difficult, and two techniques are used.
+      <b>Ellipsometry</b> measures the change in polarisation of light reflected from the surface
+      and infers thickness and refractive index from it. It is optical, non-contact and fast,
+      which makes it the production measurement, and it can be pushed down below 50 Å — but
+      accuracy degrades there, and multiple-wavelength or multiple-angle variants are needed to
+      recover it. The reason is structural rather than instrumental: the Si/SiO₂ transition
+      region is several ångströms and can reach about 10 Å, which is 20 to 50% of an ultra-thin
+      film, and it has a different refractive index, dielectric constant, band gap and effective
+      mass from the bulk oxide the measurement assumes.
+      <b>High-resolution transmission electron microscopy</b>, HRTEM, images a thinned cross-section
+      of the actual stack at atomic resolution, and oxide thickness as low as 2.4 nm has been
+      measured with it. It is destructive and slow, which makes it the calibration measurement
+      rather than the production one.
+    </p>
+
+    <details class="check">
+      <summary>An oxide is stressed at constant voltage and the gate current is monitored. In one sample the current falls steadily for the first hour and then levels off; in another it rises slowly and then jumps abruptly by two orders of magnitude and stays there. Identify what is happening in each.</summary>
+      <div class="answer">
+        <p>
+          The first is electron trapping, §3.1. Electrons tunnelling into the oxide are captured,
+          the trapped negative charge reduces the field at the cathode, and the reduced cathode
+          field reduces the tunnelling current through the exponential in equation (6.1). The
+          levelling-off is the trap population approaching saturation. This is negative feedback
+          and it is not, by itself, a failure.
+        </p>
+        <p>
+          The second is hole trapping followed by breakdown. The slow rise is the positive feedback
+          of §3.2 — anode hole injection putting positive charge near the cathode, raising the
+          cathode field, raising the current, injecting more holes. The abrupt jump is the
+          transition from the first stage of breakdown to the second, §5.1: defects have
+          accumulated into a localised conductive path spanning the film, and the oxide is now
+          shorted. The magnitude distinguishes the outcome — a jump to an intermediate current
+          with a power-law characteristic afterwards is soft breakdown, while a jump to a much
+          larger current with an ohmic characteristic is hard breakdown.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>The Si–SiO₂ electron barrier is 3.1 eV, inside a 9 eV oxide gap. Fowler–Nordheim
+          tunnelling crosses only the triangular part of the barrier, a distance
+          <em>φ</em><sub>ox</sub>/<em>E</em><sub>ox</sub>, and then drifts; its signature is a
+          straight line in log(<em>J</em>/<em>E</em><sub>ox</sub><sup>2</sup>) against
+          1/<em>E</em><sub>ox</sub>. Direct tunnelling crosses the whole forbidden gap in one step
+          and takes over at 4 nm and below, becoming very large below 3 nm.</li>
+        <li>The tunnelling limit is reached when gate-to-channel tunnelling equals off-state
+          source-to-drain subthreshold leakage. At 10 nA/µm over a 1 µm² channel that is 10⁻⁸ A/µm²,
+          which is <b>1 A/cm²</b> for a 1 µm gate length. Alternate gate dielectrics are required for
+          50 nm MOSFETs and beyond.</li>
+        <li>Trapped electrons lower the cathode field and suppress the current — negative feedback,
+          current falls with time. Trapped holes, generated by impact ionisation in the oxide above
+          9 eV or by anode hole injection, raise the cathode field and enhance the current —
+          positive feedback, current rises with time. Traps also act as stepping stones for
+          two-step tunnelling.</li>
+        <li>SILC is low-field leakage left behind by high-field stress, caused by neutral oxide
+          traps that assist tunnelling. It is transient in thicker oxides and continuous in thinner
+          ones, and it limits non-volatile memory tunnel oxide scaling to about 8 nm at ten-year
+          retention.</li>
+        <li>A 20-year lifetime requires the oxide field below 8 MV/cm; CMOS logic and memory
+          restrict it to the 5 MV/cm range, and burn-in screens defective oxides. Breakdown has two
+          stages: slow degradation forming a localised conductive path, then a very short runaway
+          that shorts the oxide.</li>
+        <li>Polysilicon depletion forms a depleted layer of ionised donors at the poly–oxide
+          interface, dropping voltage that no longer reaches the oxide or the substrate. Its
+          capacitance is in series with <em>C</em><sub>ox</sub>, and both terms move the wrong way
+          as the oxide thins: <em>C</em><sub>ox</sub> grows while
+          <em>C</em><sub>poly&nbsp;dep</sub> = <em>ε</em><sub>si</sub><em>qN</em><sub>p</sub>/<em>Q</em><sub>g</sub>
+          falls. It bites below 10 nm of oxide <em>and</em> 2.5 V or lower, raises
+          <em>t</em><sub>ox,eq</sub> by 3–4 Å at 5 MV/cm, lowers inversion charge,
+          <em>I</em><sub>D</sub> and speed. Heavier poly doping narrows it, bounded by the active
+          doping limit — which is about three times lower for p⁺ than n⁺, so p-channel devices
+          suffer more.</li>
+        <li>Six factors set the minimum thickness: reliability, tunnelling leakage, SILC, poly
+          depletion, process damage and hot-carrier damage. Extrapolated at supply +10%, the
+          defect-free thicknesses are 80, 45 and 33 Å for 5, 3.3 and 2.5 V supplies, and the
+          published production figures are 110, 65 and 45 Å — an increase of 36 to 44%, not the
+          30% the rule names. Tunnelling leakage becomes excessive below 1.4 nm.</li>
+        <li>Deal–Grove fails below 200 Å for dry oxidation — the anomalous region — with five
+          competing models and none accepted; Reisman and Nicollian's empirical
+          <em>t</em><sub>ox</sub> = <em>a</em>(<em>t</em><sub>g</sub> + <em>τ</em>)<sup><em>b</em></sup>
+          fits the data instead. RTO grows at 800–1050 °C for seconds at 50–100 °C/s ramp rates,
+          giving lower leakage, better boron resistance and higher mobility. ISSG generates H₂O, OH
+          and atomic oxygen in the chamber below 20 Torr, with the rate rising as pressure falls.</li>
+        <li>Nitrogen relieves strained and dangling bonds: 1–2 atomic percent at the Si/SiO₂
+          interface for breakdown field and fixed charge, above 5 atomic percent at the
+          <em>poly</em>/SiO₂ interface for boron penetration, and as little as possible in the
+          bulk.
+          NH₃-based ROXNOX introduces hydrogen and its attendant electron traps; N₂O and NO avoid
+          it, with NO offering the lower thermal budget because N₂O must first dissociate above
+          850 °C and yields only about 4.7% NO against 64.3% N₂. Fluorine replaces Si–H with the
+          stronger Si–F, but aggravates boron penetration in p-channel devices above a
+          1×10¹⁴ cm⁻² dose into the poly gate. A pre-oxidation nitrogen implant slows local oxidation and
+          gives two oxide thicknesses from one oxidation.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Class notes pp. 31–32. Band structure, the 3.1 eV barrier and the Fowler–Nordheim current density (6.1) from Taur &amp; Ning, <i>Fundamentals of Modern VLSI Devices</i> 3/E, §4.6.1.1, after Lenzlinger &amp; Snow, <i>J. Appl. Phys.</i> <b>40</b>, 278 (1969)</td></tr>
+      <tr><td>§2</td><td>Class notes p. 32. The 1 A/cm² conversion worked from the notes' own figures; limit line cross-checked against Taur &amp; Ning Fig. 4.41, after Lo <i>et al.</i> (1997)</td></tr>
+      <tr><td>§3</td><td>Class notes pp. 30–31; Taur &amp; Ning §4.6.1.3–4.6.1.4 for anode hole injection, the 9 eV impact-ionisation threshold and trap-assisted tunnelling</td></tr>
+      <tr><td>§4</td><td>Class notes p. 44; Wolf, <i>Silicon Processing for the VLSI Era</i> Vol. 4, §3.8.2. Soft breakdown from Wolf §3.8.3</td></tr>
+      <tr><td>§5</td><td>Class notes pp. 29–30</td></tr>
+      <tr><td>§6</td><td>Class notes pp. 45–48; Wolf Vol. 4 §3.8.4</td></tr>
+      <tr><td>§7</td><td>Class notes pp. 43–44; Wolf Vol. 4 §3.8.1, after Hu, IEDM 1996, with the 1998 and 1999 projections from Stathis &amp; DiMaria and from Weir <i>et al.</i> as cited there. The 15 Å leakage figure traced to D. A. Buchanan, <i>IBM J. Res. Develop.</i> <b>43</b>, 245 (1999) p. 247; the 1.4 nm floor is Wolf §3.4.2, from a different dataset</td></tr>
+      <tr><td>§8</td><td>Class notes pp. 33–37; Wolf Vol. 4 §3.6.1–3.6.2 for the ISSG process detail. Reisman &amp; Nicollian (1987) as cited in the notes</td></tr>
+      <tr><td>§9</td><td>Class notes pp. 37–43; Wolf Vol. 4 §3.7 for the 1–2 and 5 atomic percent nitrogen thresholds</td></tr>
+      <tr><td>§10</td><td>Class notes p. 48</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m05-thin-gate-oxides-growth-charge.html"><span>Previous</span>M05 · Thin Gate Oxides: Roles, Requirements and Charge</a>
+      <a class="next" href="index.html#roadmap"><span>Next · not yet built</span>M07 · High-k Gate Dielectrics</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,1341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M02 · The Deep-Submicron MOSFET: A Structural Roadmap — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M02 · The Deep-Submicron MOSFET: A Structural Roadmap</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 02</p>
+    <h1>The Deep-Submicron MOSFET: A Structural Roadmap</h1>
+    <p class="lede">
+      Every part of the transistor that changed as the gate length fell from ten
+      micrometres to one tenth of a micrometre, why each change was forced, and
+      which later module treats it in full.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m01-mosfet-and-how-one-is-made.html">M01</a></span>
+      <span><b>Read time</b> ~40 min</span>
+      <span><b>Sources</b> Class notes pp. 1–12 (Chapter 1); Lectures 1–4</span>
+    </div>
+
+    <p>
+      The transistor described in <a href="m01-mosfet-and-how-one-is-made.html">M01</a> is
+      the device as it existed around 1975: an aluminium gate over a thermally grown
+      oxide, a uniformly doped body, and source and drain regions formed by diffusion.
+      Almost none of that survives in a modern part. The gate is a silicide-capped
+      polysilicon stack, the dielectric is a hafnium compound, the body carries a
+      doping profile engineered in three dimensions, and the drain is built from two
+      or three separately implanted regions. Each of those replacements was forced by
+      a specific failure that appeared at a specific gate length, and each is the
+      subject of a later chapter of this course.
+    </p>
+    <p>
+      This module is the map of those replacements. It states the scaling history that
+      drove them, then walks the four structural axes along which the transistor was
+      rebuilt — the gate stack, the gate dielectric, the channel doping profile, and
+      the drain structure — followed by the substrate, the gate doping, and the
+      isolation between devices. Every topic here is introduced to the depth needed to
+      see why it exists and what it replaced; the mechanism, the process recipe and the
+      numbers arrive in the module named alongside it. Read this page as the argument
+      the rest of the course elaborates.
+    </p>
+
+    <h2>1 · The gate length history</h2>
+
+    <p>
+      The gate length is the distance, measured along the direction of current flow,
+      over which the gate electrode controls the silicon surface beneath it. It sets
+      the drain current through the factor <em>Z</em>/<em>L</em> of the drain-current
+      expression, it sets the time a carrier needs to cross the channel, and it sets
+      how many transistors fit on a die. Reducing it improves all three at once, which
+      is why it has been reduced continuously since integrated MOSFETs were first
+      manufactured.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 560 250" role="img" aria-labelledby="f1-t">
+        <title id="f1-t">Drawn gate length against year, 1970 to 2005, on a logarithmic vertical scale</title>
+        <line x1="70" y1="200" x2="530" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="200" x2="70" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="62" y="48">10 µm</text>
+          <text x="62" y="96">1 µm</text>
+          <text x="62" y="144">0.1 µm</text>
+          <text x="62" y="192">0.01 µm</text>
+        </g>
+        <g class="dg-faint">
+          <line x1="70" y1="44" x2="530" y2="44" stroke-width=".5"/>
+          <line x1="70" y1="92" x2="530" y2="92" stroke-width=".5"/>
+          <line x1="70" y1="140" x2="530" y2="140" stroke-width=".5"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="70" y="218">1970</text>
+          <text x="185" y="218">1980</text>
+          <text x="300" y="218">1990</text>
+          <text x="415" y="218">2000</text>
+          <text x="518" y="218">2009</text>
+        </g>
+        <path d="M70,44 L185,68 L243,79 L300,101 L358,117 L415,131 L472,147 L518,157"
+              class="dg-acc" stroke-width="2.2" fill="none"/>
+        <g class="dg-acc-f">
+          <circle cx="70" cy="44" r="3.4"/><circle cx="185" cy="68" r="3.4"/>
+          <circle cx="243" cy="79" r="3.4"/><circle cx="300" cy="101" r="3.4"/>
+          <circle cx="415" cy="131" r="3.4"/><circle cx="518" cy="157" r="3.4"/>
+        </g>
+        <text x="82" y="36" class="dg-label-sm">10 µm</text>
+        <text x="195" y="60" class="dg-label-sm">3–5 µm</text>
+        <text x="248" y="71" class="dg-label-sm">2 µm</text>
+        <text x="310" y="95" class="dg-label-sm">0.5–0.35 µm</text>
+        <text x="392" y="123" class="dg-label-sm">0.25–0.13 µm</text>
+        <text x="430" y="170" class="dg-label-sm">90, 65, 45 nm</text>
+        <text x="300" y="240" class="dg-label" text-anchor="middle">year</text>
+      </svg>
+      <figcaption>
+        Drawn gate length by year, from the class notes. The vertical scale is
+        logarithmic, so the near-straight line is a constant fractional reduction per
+        year. The 1985 value is 2 µm; sub-micrometre gates arrived in the late 1980s
+        and 0.5–0.35 µm by the late 1990s.
+      </figcaption>
+    </figure>
+
+    <p>
+      The figures the notes give are 10 µm in 1970, 3–5 µm in 1980, and 2 µm in 1985,
+      with gate lengths dropping below 1 µm in the late 1980s and reaching 0.5–0.35 µm
+      by the late 1990s. The 2001–2002 generation spanned 0.25 µm to 0.13 µm, and the
+      sequence continued through the 90 nm, 65 nm and 45 nm generations.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Below about 130 nm, the generation name is not the gate length</p>
+      <p>
+        The number naming a technology generation and the physical gate length of the
+        transistors built in it were the same quantity only down to the 0.35 µm generation.
+        They began to separate at 0.25 µm, where the physical gate length was already about
+        200 nm, and by the 130 nm generation the gap was close to a factor of two — that
+        generation shipped 70 nm transistors. The 90 nm generation shipped gate lengths near
+        50 nm, 65 nm shipped near 35 nm, and from the 22 nm generation the name became a
+        marketing label with no dimension on the die corresponding to it. Physical gate length
+        has stayed roughly in the 20–30 nm range since about 2011, while generation names
+        continued to fall.
+      </p>
+      <p>
+        The history above is stated in the course's own terms, where the two are treated
+        as one number. Keep the distinction in mind whenever a post-2005 figure is
+        quoted: it is almost always a generation name, and the transistor is larger
+        than the name suggests.
+      </p>
+    </div>
+
+    <p>
+      Reducing the gate length alone does not work. The gate controls the channel by
+      competing with the drain for control of the potential in the silicon between
+      source and drain, and shortening the channel strengthens the drain's share of
+      that competition. Preserving gate control requires the oxide to thin, the source
+      and drain junctions to become shallower, and the body doping to rise — each of
+      which introduces a new failure of its own. The rest of this module is the
+      catalogue of those failures and their fixes.
+    </p>
+
+    <h2>2 · Two transistors, twenty-five years apart</h2>
+
+    <p>
+      The clearest statement of what changed is a pair of cross-sections. The first is
+      a 1.5 µm device: a rectangular gate on a thin oxide, with a source and a drain
+      that are single uniformly doped regions reaching a junction depth
+      <em>x</em><sub>jc</sub> below the surface. Four dimensions describe it — the drawn
+      gate length <em>L</em><sub>L</sub>, the gate thickness <em>t</em><sub>gate</sub>,
+      the oxide thickness <em>t</em><sub>ox</sub>, and the junction depth.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 480 210" role="img" aria-labelledby="f2-t">
+        <title id="f2-t">Cross-section of a 1.5 micrometre MOSFET with a single-region source and drain</title>
+        <rect x="40" y="110" width="400" height="72" class="dg-fill"/>
+        <text x="240" y="170" class="dg-label" text-anchor="middle">substrate (body)</text>
+        <path d="M40,110 L40,132 Q40,150 70,150 L128,150 Q158,150 158,132 L158,110 Z" class="dg-fill"/>
+        <path d="M322,110 L322,132 Q322,150 352,150 L410,150 Q440,150 440,132 L440,110 Z" class="dg-fill"/>
+        <text x="99" y="134" class="dg-label-sm" text-anchor="middle">source</text>
+        <text x="381" y="134" class="dg-label-sm" text-anchor="middle">drain</text>
+        <rect x="158" y="104" width="164" height="6" class="dg-fill"/>
+        <rect x="176" y="62" width="128" height="42" class="dg-fill"/>
+        <text x="240" y="87" class="dg-label" text-anchor="middle">gate</text>
+        <line x1="176" y1="52" x2="304" y2="52" class="dg-acc" stroke-width="1.4"/>
+        <line x1="176" y1="47" x2="176" y2="57" class="dg-acc" stroke-width="1.4"/>
+        <line x1="304" y1="47" x2="304" y2="57" class="dg-acc" stroke-width="1.4"/>
+        <text x="240" y="42" class="dg-label-sm" text-anchor="middle">L<tspan baseline-shift="sub" font-size="8">L</tspan></text>
+        <line x1="318" y1="62" x2="318" y2="104" class="dg-rule" stroke-width="1"/>
+        <text x="326" y="86" class="dg-label-sm">t<tspan baseline-shift="sub" font-size="8">gate</tspan></text>
+        <line x1="344" y1="104" x2="344" y2="110" class="dg-rule" stroke-width="1"/>
+        <text x="352" y="112" class="dg-label-sm">t<tspan baseline-shift="sub" font-size="8">ox</tspan></text>
+        <line x1="28" y1="110" x2="28" y2="150" class="dg-rule" stroke-width="1"/>
+        <line x1="24" y1="110" x2="32" y2="110" class="dg-rule" stroke-width="1"/>
+        <line x1="24" y1="150" x2="32" y2="150" class="dg-rule" stroke-width="1"/>
+        <text x="6" y="134" class="dg-label-sm">x<tspan baseline-shift="sub" font-size="8">jc</tspan></text>
+      </svg>
+      <figcaption>
+        The 1.5 µm structure of the class notes. Source and drain are each one region,
+        of one doping, reaching one depth. Vertical dimensions are exaggerated.
+      </figcaption>
+    </figure>
+
+    <p>
+      The second is a 0.2 µm device. The gate has acquired an insulating
+      <b>sidewall spacer</b> of thickness <em>t</em><sub>sw</sub> — a wedge of deposited
+      oxide standing against each vertical face of the gate, whose purpose is to hold a
+      later implant a fixed distance away from the gate edge. The drain is now two
+      regions: a shallow <b>drain extension</b> of depth <em>x</em><sub>j</sub> that
+      meets the channel, and a deeper heavily doped contact region of depth
+      <em>x</em><sub>jc</sub> that carries the metal contact. Beneath and around the
+      extension sits a <b>pocket implant</b>, a locally heavier dose of the same dopant
+      type as the body.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 480 215" role="img" aria-labelledby="f3-t">
+        <title id="f3-t">Cross-section of a 0.2 micrometre MOSFET with sidewall spacers, drain extension, deeper contact region and pocket implant</title>
+        <rect x="40" y="110" width="400" height="78" class="dg-fill"/>
+        <text x="240" y="176" class="dg-label" text-anchor="middle">substrate (body)</text>
+        <path d="M40,110 L40,140 Q40,158 70,158 L120,158 Q146,158 146,140 L146,110 Z" class="dg-fill"/>
+        <path d="M334,110 L334,140 Q334,158 364,158 L410,158 Q440,158 440,140 L440,110 Z" class="dg-fill"/>
+        <text x="88" y="140" class="dg-label-sm" text-anchor="middle">n⁺</text>
+        <text x="392" y="140" class="dg-label-sm" text-anchor="middle">n⁺</text>
+        <path d="M146,110 L146,126 Q146,134 162,134 L196,134 L196,110 Z" class="dg-fill"/>
+        <path d="M284,110 L284,134 L318,134 Q334,134 334,126 L334,110 Z" class="dg-fill"/>
+        <g class="dg-acc-f" opacity=".5">
+          <path d="M196,110 L196,142 Q196,150 180,150 L156,150 Q146,150 146,138 L146,126 Q146,134 162,134 L196,134 Z"/>
+          <path d="M284,110 L284,134 L318,134 Q334,134 334,126 L334,138 Q334,150 324,150 L300,150 Q284,150 284,142 Z"/>
+        </g>
+        <rect x="196" y="104" width="88" height="6" class="dg-fill"/>
+        <rect x="204" y="58" width="72" height="46" class="dg-fill"/>
+        <text x="240" y="86" class="dg-label" text-anchor="middle">gate</text>
+        <path d="M204,104 L204,58 Q186,58 186,104 Z" class="dg-fill"/>
+        <path d="M276,104 L276,58 Q294,58 294,104 Z" class="dg-fill"/>
+        <text x="168" y="52" class="dg-label-sm" text-anchor="middle">spacer</text>
+        <line x1="176" y1="56" x2="192" y2="76" class="dg-rule" stroke-width=".9"/>
+        <line x1="204" y1="48" x2="276" y2="48" class="dg-acc" stroke-width="1.4"/>
+        <line x1="204" y1="43" x2="204" y2="53" class="dg-acc" stroke-width="1.4"/>
+        <line x1="276" y1="43" x2="276" y2="53" class="dg-acc" stroke-width="1.4"/>
+        <text x="240" y="38" class="dg-label-sm" text-anchor="middle">L<tspan baseline-shift="sub" font-size="8">L</tspan></text>
+        <text x="360" y="100" class="dg-label-sm">drain extension</text>
+        <line x1="356" y1="103" x2="322" y2="120" class="dg-rule" stroke-width=".9"/>
+        <text x="252" y="205" class="dg-label-sm">pocket implant</text>
+        <line x1="288" y1="197" x2="300" y2="152" class="dg-rule" stroke-width=".9"/>
+      </svg>
+      <figcaption>
+        The 0.2 µm structure. Three features are new: the sidewall spacer, the two-part
+        drain, and the pocket implant shaded around the extension. Sections 3 to 6
+        explain what forced each one.
+      </figcaption>
+    </figure>
+
+    <p>
+      The notes organise the difference between these two figures into four axes —
+      gate stack, gate dielectric, channel doping profile, drain structure — and then
+      add three further structural changes that are not visible in a single
+      cross-section: the substrate the wafer is cut from, the doping of the gate
+      material itself, and the structure isolating one transistor from the next. The
+      remaining sections take those in order.
+    </p>
+
+    <h2>3 · The gate stack</h2>
+
+    <p>
+      The gate electrode must do two things. It must hold a controlled potential over
+      the channel, and it must carry that potential from wherever the signal originates
+      to the transistor, which makes it a length of wire as well as a plate. The two
+      requirements pull in different directions, and the history of the gate stack is
+      the history of satisfying both.
+    </p>
+
+    <h3>3.1 Aluminium to polysilicon</h3>
+
+    <p>
+      The original gate material was aluminium. It was replaced by polycrystalline
+      silicon — <b>polysilicon</b>, silicon deposited as a film of small randomly
+      oriented crystal grains rather than as a single crystal — in the mid-1970s.
+      Two properties drove the change. Polysilicon withstands the temperatures of the
+      subsequent dopant-activation anneals, which aluminium, melting at 660 °C, does
+      not; that thermal tolerance is what allows the gate to be patterned before the
+      source and drain are formed, so that the gate itself masks the implant and the
+      three regions self-align. The second property is the work function.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>T</sub> = <em>φ</em><sub>MS</sub> −
+          <span class="frac"><span class="num"><em>Q</em><sub>i</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> −
+          <span class="frac"><span class="num"><em>Q</em><sub>d</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> +
+          2<em>φ</em><sub>F</sub></div>
+        <div class="eq-num">(2.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>T</sub> threshold voltage (V) ·
+        <em>φ</em><sub>MS</sub> gate-to-semiconductor work function difference (V) ·
+        <em>Q</em><sub>i</sub> interface charge per unit area (C/cm²) ·
+        <em>Q</em><sub>d</sub> depletion charge per unit area (C/cm²) ·
+        <em>C</em><sub>ox</sub> oxide capacitance per unit area (F/cm²) ·
+        <em>φ</em><sub>F</sub> Fermi potential of the body (V).
+        This is the professor's four-term form, with signs carried explicitly per device
+        type. It is derived term by term in
+        <a href="m03-threshold-voltage.html">M03</a>; it appears here because the first
+        term is what decides the gate material.
+      </div>
+    </div>
+
+    <p>
+      The work function of a material is the energy needed to remove an electron from
+      it to free space, and <em>φ</em><sub>MS</sub> is the difference between that
+      quantity for the gate and for the silicon body. It enters the threshold voltage
+      directly, volt for volt. Aluminium has one fixed work function, so an aluminium
+      gate offers no adjustment. Polysilicon is silicon, and its work function moves
+      with its doping, which converts <em>φ</em><sub>MS</sub> from a constant of nature
+      into a process variable. That is the lever <a href="m03-threshold-voltage.html">M03</a>
+      pulls, and the reason the gate of a modern transistor is doped as heavily as the
+      source and drain.
+    </p>
+
+    <h3>3.2 Polysilicon to polycide</h3>
+
+    <p>
+      Polysilicon is a poor conductor by the standards of a metal even when doped to
+      its solubility limit. NMOS and CMOS technologies down to 0.35 µm used n⁺
+      polysilicon — polysilicon doped heavily with phosphorus — for the gate. Below
+      1.25 µm gate length the resistance of polysilicon lines became too large for them
+      to serve as local interconnect, despite the heavy doping, because a line that is
+      shorter in one dimension is also narrower in the others and its resistance rises
+      as the cross-section falls.
+    </p>
+    <p>
+      The response was to cap the polysilicon with a <b>metal silicide</b>, a compound
+      of a metal with silicon that conducts far better than doped silicon and tolerates
+      the same process temperatures. The silicide used was tungsten silicide,
+      WSi<sub><i>x</i></sub>. The resulting two-layer gate — silicide over polysilicon —
+      is called a <b>polycide</b>, and it reduced the resistance of the heavily doped
+      layer to one fourth of its previous value. The polysilicon is retained beneath
+      because the electrical behaviour of the gate depends on what touches the oxide,
+      and a silicide in that position would forfeit the work-function control that
+      motivated polysilicon in the first place.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 180" role="img" aria-labelledby="f4-t">
+        <title id="f4-t">Four gate stacks in sequence: aluminium, doped polysilicon, polycide, and salicide</title>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="72" y="168">aluminium</text>
+          <text x="208" y="168">n⁺ polysilicon</text>
+          <text x="344" y="168">polycide</text>
+          <text x="470" y="168">salicide</text>
+        </g>
+        <g text-anchor="middle" class="dg-faint">
+          <text x="72" y="26" class="dg-label-sm">to mid-1970s</text>
+          <text x="208" y="26" class="dg-label-sm">to 1.25 µm</text>
+          <text x="344" y="26" class="dg-label-sm">to 0.35 µm</text>
+          <text x="470" y="26" class="dg-label-sm">deep submicron</text>
+        </g>
+        <rect x="26" y="120" width="92" height="22" class="dg-fill"/>
+        <rect x="40" y="82" width="64" height="38" class="dg-fill"/>
+        <text x="72" y="106" class="dg-label-sm" text-anchor="middle">Al</text>
+        <text x="72" y="136" class="dg-label-sm" text-anchor="middle">Si</text>
+
+        <rect x="162" y="120" width="92" height="22" class="dg-fill"/>
+        <rect x="176" y="82" width="64" height="38" class="dg-fill"/>
+        <text x="208" y="106" class="dg-label-sm" text-anchor="middle">poly</text>
+        <text x="208" y="136" class="dg-label-sm" text-anchor="middle">Si</text>
+
+        <rect x="298" y="120" width="92" height="22" class="dg-fill"/>
+        <rect x="312" y="94" width="64" height="26" class="dg-fill"/>
+        <rect x="312" y="76" width="64" height="18" class="dg-acc-f"/>
+        <text x="344" y="112" class="dg-label-sm" text-anchor="middle">poly</text>
+        <text x="344" y="70" class="dg-label-sm" text-anchor="middle">WSi&#8339;</text>
+        <text x="344" y="136" class="dg-label-sm" text-anchor="middle">Si</text>
+
+        <rect x="424" y="120" width="92" height="22" class="dg-fill"/>
+        <rect x="440" y="94" width="60" height="26" class="dg-fill"/>
+        <rect x="440" y="76" width="60" height="18" class="dg-acc-f"/>
+        <rect x="424" y="112" width="16" height="8" class="dg-acc-f"/>
+        <rect x="500" y="112" width="16" height="8" class="dg-acc-f"/>
+        <text x="470" y="112" class="dg-label-sm" text-anchor="middle">poly</text>
+        <text x="470" y="70" class="dg-label-sm" text-anchor="middle">TiSi₂ / CoSi₂</text>
+        <text x="470" y="136" class="dg-label-sm" text-anchor="middle">Si</text>
+      </svg>
+      <figcaption>
+        The gate stack in four stages. Only the silicide layers are highlighted. In the
+        salicide stage the same silicide forms simultaneously on the gate and on the
+        exposed source and drain silicon at the sides, which is what the additional
+        blocks at the base of the fourth stack represent.
+      </figcaption>
+    </figure>
+
+    <h3>3.3 Polycide to salicide</h3>
+
+    <p>
+      In deep-submicron CMOS the tungsten silicide was replaced by titanium disilicide,
+      TiSi₂, or cobalt disilicide, CoSi₂, both of which have lower resistivities than
+      WSi<sub><i>x</i></sub>. The change brought a second benefit that is more important
+      than the resistivity. Both of these silicides form by depositing the metal over
+      the whole wafer and annealing: the metal reacts readily with silicon wherever it touches silicon, and reacts with
+      oxide far more slowly. Since the gate is capped by
+      exposed polysilicon and the source and drain are exposed single-crystal silicon,
+      while the sidewall spacers and the isolation regions are oxide, one blanket
+      deposition forms silicide on exactly the three places it is wanted, and the metal left
+      lying over the oxide is then stripped away.
+    </p>
+    <p>
+      The anneal is performed in two stages rather than one, with the strip between them. The
+      first anneal, at roughly 600–700 °C for titanium, forms a high-resistivity intermediate
+      phase; the unreacted metal is then removed by a selective wet etch that attacks the metal
+      and not the silicide; and a second anneal at 800–900 °C converts the intermediate phase
+      into the low-resistivity one. Reaching the low-resistivity phase in a single
+      high-temperature step is what the two-stage sequence exists to avoid, because silicon
+      transported sideways through a metal film still lying over the spacer forms silicide
+      bridges from the gate to the source and drain. The selectivity of the process is a matter
+      of reaction rate rather than an absolute prohibition — good enough to build on, and the
+      sidewall spacer is what makes it good enough.
+    </p>
+    <p>
+      A structure formed this way is a <b>self-aligned silicide</b>, contracted to
+      <b>salicide</b>. No lithography step defines where the silicide goes; the existing
+      geometry does. The notes give two benefits:
+    </p>
+    <ul>
+      <li>the polysilicon lines have lower resistivity because of the silicide on top of
+        them, which is the polycide benefit carried over; and</li>
+      <li>the source and drain contact regions exhibit smaller contact resistance and
+        smaller sheet resistivity than a contact without a silicide.</li>
+    </ul>
+    <p>
+      The second benefit addresses a problem that grows as the transistor shrinks. The
+      resistance in series with the channel — through the contact, through the extension,
+      and through the region beneath the spacer — does not fall as the channel resistance
+      falls, so it becomes a larger fraction of the total. Silicide on the source and
+      drain removes the largest component of it.
+      M10 treats the full series-resistance
+      budget and the silicide process.
+    </p>
+
+    <h2>4 · The gate dielectric</h2>
+
+    <p>
+      The gate dielectric is the insulating layer separating the gate from the channel.
+      Its thickness sets <em>C</em><sub>ox</sub>, the oxide capacitance per unit area,
+      and therefore how much inversion charge a given gate voltage induces. Silicon
+      dioxide served in this role from the beginning, for reasons treated in
+      <a href="m05-thin-gate-oxides-growth-charge.html">M05</a>: it grows directly from
+      the silicon it insulates, and the interface it forms carries remarkably few
+      electrically active defects.
+    </p>
+    <p>
+      The oxide cannot stay the same thickness while the gate length falls. If it did,
+      the drain would gain control of the channel potential at the gate's expense, and
+      the transistor would conduct between source and drain regardless of the gate
+      voltage. The notes state the relation the industry maintained as a single ratio.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>L</em><sub>E</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span> ≈ 45</div>
+        <div class="eq-num">(2.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>L</em><sub>E</sub> gate length (any length unit) ·
+        <em>t</em><sub>ox</sub> gate oxide thickness (the same unit).
+        A dimensionless design rule, not a physical law: it records the ratio at which
+        gate control over the channel stayed adequate. Both quantities must be expressed
+        in the same unit before dividing.
+      </div>
+    </div>
+
+    <p>
+      The rule fixes the oxide thickness once the gate length is chosen. The notes give
+      three points on it: a 1 µm gate needs <em>t</em><sub>ox</sub> ≈ 200 Å, a 0.18 µm
+      gate needs 40 Å, and a gate shorter than 0.1 µm needs about 20 Å.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 232" role="img" aria-labelledby="f5-t">
+        <title id="f5-t">Gate oxide thickness against gate length on linear axes, with the ratio-45 line and the three points the class notes give</title>
+        <line x1="80" y1="180" x2="470" y2="180" class="dg-rule" stroke-width="1.2"/>
+        <line x1="80" y1="180" x2="80" y2="36" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="72" y="184">0</text>
+          <text x="72" y="126">100 Å</text>
+          <text x="72" y="67">200 Å</text>
+        </g>
+        <g class="dg-faint">
+          <line x1="80" y1="121.7" x2="470" y2="121.7" stroke-width=".5"/>
+          <line x1="80" y1="63.3" x2="470" y2="63.3" stroke-width=".5"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="80" y="198">0</text>
+          <text x="265" y="198">0.5 µm</text>
+          <text x="450" y="198">1.0 µm</text>
+        </g>
+        <line x1="80" y1="180" x2="450" y2="50.4" class="dg-line" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <text x="392" y="48" class="dg-label-sm">L&#8337;/t&#8338;&#8339; = 45</text>
+        <g class="dg-acc-f">
+          <circle cx="450" cy="63.3" r="4"/><circle cx="146.6" cy="156.7" r="4"/><circle cx="117" cy="168.3" r="4"/>
+        </g>
+        <text x="444" y="80" class="dg-label-sm" text-anchor="end">1 µm → 200 Å  (ratio 50)</text>
+        <text x="172" y="131" class="dg-label-sm">0.18 µm → 40 Å  (ratio 45)</text>
+        <line x1="168" y1="134" x2="150" y2="152" class="dg-rule" stroke-width=".9"/>
+        <text x="132" y="176" class="dg-label-sm">0.1 µm → 20 Å  (ratio 50)</text>
+        <text x="265" y="222" class="dg-label" text-anchor="middle">gate length L&#8337;</text>
+        <text x="22" y="108" class="dg-label" text-anchor="middle" transform="rotate(-90 22 108)">t&#8338;&#8339;</text>
+      </svg>
+      <figcaption>
+        Both axes are linear, so a constant ratio is a straight line through the origin — the
+        dashed line, drawn at exactly 45. The three points the notes give sit on ratios of 50,
+        45 and 50, so the rule as practised is nearer "45 to 50" than a single number. Note how
+        little oxide remains at the short-gate end: the whole range below 0.2 µm is compressed
+        into the bottom corner.
+      </figcaption>
+    </figure>
+
+    <p>
+      Twenty ångströms is 2 nm, which is ten to twelve atomic layers of SiO₂. At that
+      thickness electrons pass through the oxide by <b>tunnelling</b> — the quantum
+      mechanical process in which a particle crosses a barrier it does not have the
+      energy to surmount, at a rate that falls exponentially with barrier thickness.
+      The notes state the consequence precisely: at about 20 Å the gate-to-channel
+      leakage current becomes comparable to the off-state source-to-drain leakage
+      current, roughly 10 nA/µm of channel width. A gate that leaks as much as the
+      channel it is supposed to be switching off has stopped being an insulated gate,
+      and the notes conclude that building high-performance logic gates with SiO₂ is
+      then no longer feasible.
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">The thickness that matters is electrical, not physical</p>
+      <p>
+        What the transistor responds to is <em>C</em><sub>ox</sub> =
+        <em>ε</em><sub>r</sub><em>ε</em><sub>0</sub>/<em>t</em><sub>ox</sub>, and
+        <em>ε</em><sub>r</sub> is a property of the material. A dielectric with a
+        relative permittivity higher than the 3.9 of SiO₂ therefore delivers the same
+        capacitance at a greater physical thickness — and tunnelling depends on the
+        physical thickness, not the capacitance. This is the entire argument for
+        <b>high-k</b> dielectrics: a thicker layer that behaves electrically like a thin
+        one, and so leaks far less. The notes make exactly this point at the end of
+        §1.2. M07 states the argument
+        quantitatively and surveys the candidate materials.
+      </p>
+    </div>
+
+    <p>
+      The same limit constrains storage as well as logic. DRAM cell capacitors and the
+      oxides used in non-volatile memory face stringent thickness limitations for the
+      same reason — in the memory case the requirement is more severe still, because a
+      stored charge must survive for years rather than for one clock cycle.
+    </p>
+
+    <h2>5 · The channel doping profile</h2>
+
+    <p>
+      The <b>channel</b> is the region of the body directly beneath the gate oxide, and
+      its doping concentration sets two things at once: the threshold voltage, through
+      the depletion-charge term of equation (2.1), and the carrier mobility, because a
+      carrier moving through the inversion layer scatters from the ionised dopant atoms
+      around it. Raising the doping raises the threshold and lowers the mobility. The
+      history of channel engineering is the history of getting the first without paying
+      the second.
+    </p>
+
+    <h3>5.1 Uniform doping and the threshold implant</h3>
+
+    <p>
+      In early MOSFETs the channel doping was flat with depth below the Si/SiO₂
+      interface. In NMOS the flatness came directly from the starting wafer, which was
+      uniformly doped throughout. In CMOS a <b>well</b> — a region of the opposite
+      doping type to the substrate, in which transistors of one polarity are built — was
+      introduced near the surface by a shallow implant followed by a drive-in anneal, a
+      high-temperature step that lets the implanted dopant diffuse until its profile is
+      approximately constant near the surface. Either route gives a body of one doping
+      concentration from the surface down past the depletion region.
+    </p>
+    <p>
+      A uniform body fixes the threshold voltage at whatever value the substrate doping
+      happens to give, which is rarely the value the circuit needs. The fix is a
+      <b>threshold-adjust implant</b>: a low-dose ion implantation into the channel
+      region that changes the doping in the first few tens of nanometres of silicon
+      without disturbing the bulk. The notes record that boron is the species used for
+      both NMOS and PMOS devices. Boron is an acceptor, so it makes the near-surface
+      silicon of an n-channel device more strongly p-type, raising the n-channel
+      threshold; in a p-channel device built in an n-type well, the same boron partially
+      compensates the donor doping, which also moves the p-channel threshold in the
+      direction wanted. One species and one implant step serves both.
+      M09 works through the arithmetic and the
+      placement of the implant peak.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 200" role="img" aria-labelledby="f6-t">
+        <title id="f6-t">Three channel doping profiles against depth: conventional diffused, threshold-adjust implant, and threshold implant with a deeper punch-through implant</title>
+        <g class="dg-label-sm">
+          <text x="76" y="20" text-anchor="middle">conventional diffused</text>
+          <text x="248" y="20" text-anchor="middle">V&#8348; implant</text>
+          <text x="424" y="20" text-anchor="middle">+ punch-through implant</text>
+        </g>
+        <g>
+          <line x1="34" y1="160" x2="160" y2="160" class="dg-rule" stroke-width="1"/>
+          <line x1="34" y1="160" x2="34" y2="34" class="dg-rule" stroke-width="1"/>
+          <path d="M34,58 C70,60 104,84 140,158" class="dg-acc" stroke-width="2" fill="none"/>
+        </g>
+        <g>
+          <line x1="206" y1="160" x2="332" y2="160" class="dg-rule" stroke-width="1"/>
+          <line x1="206" y1="160" x2="206" y2="34" class="dg-rule" stroke-width="1"/>
+          <path d="M206,128 C222,126 232,46 250,48 C268,50 280,120 300,128 L332,130" class="dg-acc" stroke-width="2" fill="none"/>
+        </g>
+        <g>
+          <line x1="378" y1="160" x2="504" y2="160" class="dg-rule" stroke-width="1"/>
+          <line x1="378" y1="160" x2="378" y2="34" class="dg-rule" stroke-width="1"/>
+          <path d="M378,128 C394,126 404,46 422,48 C440,50 452,120 470,126 L504,128" class="dg-acc" stroke-width="2" fill="none"/>
+          <path d="M440,124 C452,122 460,86 474,88 C488,90 494,122 504,126" class="dg-line" stroke-width="1.6" stroke-dasharray="4 3" fill="none"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="97" y="180">depth</text>
+          <text x="269" y="180">depth</text>
+          <text x="441" y="180">depth</text>
+        </g>
+        <text x="24" y="98" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 24 98)">log N</text>
+      </svg>
+      <figcaption>
+        Redrawn from the notes. The conventional profile falls monotonically from the
+        surface. The threshold implant places a peak just below the surface. The dashed
+        curve on the right is a second, deeper implant whose peak sits at the bottom of
+        the channel depletion region rather than at the surface.
+      </figcaption>
+    </figure>
+
+    <h3>5.2 Super-steep retrograde profiles</h3>
+
+    <p>
+      As the gate length falls, the depletion regions surrounding the source and drain
+      junctions extend further into the channel relative to its length. When they meet,
+      current flows from source to drain beneath the surface and the gate cannot stop
+      it. This is <b>punch-through</b>. Raising the body doping shrinks those depletion
+      regions and postpones it, but raising the doping everywhere degrades the mobility
+      of the carriers in the inversion layer, which is exactly the region where mobility
+      matters most.
+    </p>
+    <p>
+      The resolution is to make the doping profile non-uniform in depth: light where the
+      carriers travel, heavy where the depletion regions need to be stopped. A profile
+      that increases with depth rather than decreasing is called <b>retrograde</b>, and
+      the version steep enough to serve at deep-submicron dimensions is
+      <b>super-steep retrograde</b>, abbreviated SSR. The notes state the target it
+      achieves: the correct value of <em>V</em><sub>T</sub> without degradation of
+      channel carrier mobility, by keeping the doping in the inversion layer below
+      5×10¹⁷ cm⁻³.
+    </p>
+    <p>
+      Holding a steep profile requires a dopant that does not diffuse away during the
+      anneals that follow. The notes specify heavier dopant species than the usual ones:
+      indium replaces boron for n-channel devices, and arsenic or antimony replaces
+      phosphorus for p-channel devices. These species have smaller diffusivities in
+      silicon, so the implanted profile does not spread during subsequent anneal cycles.
+    </p>
+    <p>
+      Low diffusivity is not the whole story for indium, and the two properties it lacks are
+      what decide how far the technique scales. Indium is a <b>deep acceptor</b>, with a level
+      about 0.16 eV above the valence band edge, so only a fraction of it is ionised at room
+      temperature and its electrically active concentration is well below its chemical
+      concentration — a fraction that itself varies with temperature, which appears directly as
+      threshold-voltage temperature sensitivity. Indium also has a low solid solubility in
+      silicon, of order 10¹⁸ cm⁻³, which caps how high the retrograde peak can be made. Together
+      these are why indium alone stops being sufficient as a channel dopant at gate lengths near
+      60 nm and below: it cannot reach the concentration needed to hold off the leakage.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Low diffusivity is not a consequence of atomic mass</p>
+      <p>
+        Dopant diffusion in silicon proceeds through point defects, and the mechanism
+        differs by species. Boron and phosphorus move predominantly by an interstitial-mediated mechanism
+        and are fast — phosphorus included, despite being a column-V donor like arsenic and
+        antimony. Antimony is the one of the four that is genuinely vacancy-dominated, and it
+        is slow. Arsenic sits between them, diffusing by interstitial and vacancy mechanisms in
+        roughly equal measure, which is why it shows both oxidation-enhanced and
+        nitridation-enhanced diffusion. That the slower species are also the heavier ones is a
+        correlation, not the cause. The distinction matters
+        later: transient enhanced diffusion, in which implant damage temporarily floods
+        the lattice with interstitials and accelerates boron enormously, is
+        unintelligible under a mass-based explanation.
+        M09 treats it.
+      </p>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 210" role="img" aria-labelledby="f7-t">
+        <title id="f7-t">Super-steep retrograde indium profile compared with a conventional boron profile against depth</title>
+        <line x1="60" y1="168" x2="430" y2="168" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="168" x2="60" y2="28" class="dg-rule" stroke-width="1.2"/>
+        <path d="M60,110 C100,108 140,44 180,42 C216,40 246,96 280,120 C320,148 380,164 424,167"
+              class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M60,150 L104,150 L104,60 L150,60 L150,150 L430,150"
+              class="dg-acc" stroke-width="2.2" fill="none"/>
+        <text x="300" y="112" class="dg-label-sm">boron</text>
+        <line x1="296" y1="115" x2="274" y2="124" class="dg-rule" stroke-width=".9"/>
+        <text x="128" y="52" class="dg-label-sm" text-anchor="middle">In</text>
+        <text x="176" y="186" class="dg-label-sm">low doping here:</text>
+        <text x="176" y="199" class="dg-label-sm">high channel mobility</text>
+        <line x1="172" y1="182" x2="84" y2="156" class="dg-rule" stroke-width=".9"/>
+        <text x="230" y="40" class="dg-label-sm">steep peak here:</text>
+        <text x="230" y="53" class="dg-label-sm">punch-through suppression</text>
+        <line x1="226" y1="44" x2="156" y2="66" class="dg-rule" stroke-width=".9"/>
+        <text x="245" y="204" class="dg-label" text-anchor="middle">depth</text>
+        <text x="24" y="98" class="dg-label" text-anchor="middle" transform="rotate(-90 24 98)">concentration</text>
+      </svg>
+      <figcaption>
+        The super-steep retrograde profile in accent, against a conventional boron
+        profile. The surface is at the left. Indium holds a narrow buried peak through
+        the anneals that would spread a boron peak into the shape of the lighter curve.
+      </figcaption>
+    </figure>
+
+    <h3>5.3 Halo and pocket implants</h3>
+
+    <p>
+      The profile can also be made non-uniform along the channel, from source to drain.
+      Conventional MOSFETs used a <b>blanket</b> punch-through implant — blanket meaning
+      applied uniformly over the whole wafer, so that the lateral doping concentration is
+      the same everywhere along the channel. A blanket implant that is heavy enough to
+      stop punch-through at the drain edge is heavier than the rest of the channel needs,
+      and the notes state the consequence directly: it causes performance degradation,
+      because the threshold voltage rises everywhere and the mobility falls everywhere.
+    </p>
+    <p>
+      The alternative is to introduce the dopant only where punch-through actually
+      begins, at the edge of the drain-extension region, leaving the rest of the channel
+      with the lighter doping a low threshold voltage requires. The extra doped region
+      surrounds the edge of the drain extension, and from that geometry the structure
+      takes the name <b>halo</b>. It is also called an anti-punch-through structure.
+    </p>
+    <p>
+      The implant is self-aligned to the gate, in the same way the source and drain are:
+      the gate blocks the ions from the channel it covers, so the doped region places
+      itself at the gate edge with no separate alignment step. The species is the same as
+      the one already present in the well, so the halo reinforces the body doping rather
+      than introducing a new junction. Its energy is somewhat higher than the energy used
+      for the drain-extension implant, which means a greater range and a greater lateral
+      straggle — the spread of implanted ions perpendicular to the beam — so the halo
+      region extends beyond the extension it surrounds.
+    </p>
+    <p>
+      In more advanced technology the second implant is performed with the ion beam
+      directed at a large angle to the wafer rather than perpendicular to it. Tilting the
+      beam places the peak concentration at a precise depth <em>and</em> a precise lateral
+      distance from the gate edge, because the gate now shadows a controlled width of
+      channel. The structure is named a <b>large-angle tilted implanted punch-through</b>
+      structure, LATIPS, and is also known as a <b>pocket implant</b>. It is the shaded
+      region in the 0.2 µm cross-section above.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 480 190" role="img" aria-labelledby="f8-t">
+        <title id="f8-t">A tilted ion beam shadowed by the gate, placing pocket implants at the inner edges of the drain extensions</title>
+        <rect x="40" y="96" width="400" height="70" class="dg-fill"/>
+        <rect x="196" y="90" width="88" height="6" class="dg-fill"/>
+        <rect x="204" y="46" width="72" height="44" class="dg-fill"/>
+        <text x="240" y="73" class="dg-label" text-anchor="middle">gate</text>
+        <path d="M40,96 L40,118 Q40,130 62,130 L140,130 L140,96 Z" class="dg-fill"/>
+        <path d="M340,96 L340,130 L418,130 Q440,130 440,118 L440,96 Z" class="dg-fill"/>
+        <g class="dg-acc">
+          <line x1="120" y1="16" x2="166" y2="92" stroke-width="1.4" marker-end="url(#f8-ar)"/>
+          <line x1="156" y1="16" x2="202" y2="92" stroke-width="1.4" marker-end="url(#f8-ar)"/>
+          <line x1="300" y1="16" x2="346" y2="92" stroke-width="1.4" marker-end="url(#f8-ar)"/>
+          <line x1="336" y1="16" x2="382" y2="92" stroke-width="1.4" marker-end="url(#f8-ar)"/>
+        </g>
+        <g class="dg-acc-f" opacity=".45">
+          <ellipse cx="176" cy="112" rx="26" ry="15"/>
+          <ellipse cx="308" cy="112" rx="26" ry="15"/>
+        </g>
+        <text x="240" y="152" class="dg-label-sm" text-anchor="middle">pocket</text>
+        <text x="60" y="30" class="dg-label-sm">tilted beam</text>
+        <text x="384" y="176" class="dg-label-sm" text-anchor="end">gate shadows the centre of the channel</text>
+        <defs>
+          <marker id="f8-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The tilt is what localises the dose. Ions arriving at an angle reach the silicon
+        just inside each gate edge and are blocked from the middle of the channel, so the
+        heavy doping appears only where punch-through starts.
+      </figcaption>
+    </figure>
+
+    <h2>6 · The drain structure</h2>
+
+    <p>
+      For early MOSFETs with 10 µm channel lengths, the drain side of the pn junction at
+      the end of the channel was a single region of one doping. Two things changed that,
+      in sequence: first a reliability failure at 2 µm, then a resistance problem at
+      0.18 µm created by the fix for the first.
+    </p>
+
+    <h3>6.1 Hot carrier injection, and the lightly doped drain</h3>
+
+    <p>
+      As the channel length reduced to 2 µm, the electric field in the depletion region
+      of the drain junction grew large enough to produce severe <b>hot electron
+      injection</b>. The mechanism is as follows. The voltage between drain and source
+      did not fall in proportion to the channel length, so the field along the channel
+      rose. Electrons crossing the high-field region near the drain gain kinetic energy
+      between collisions faster than they lose it, reaching energies well above the
+      thermal average — they are "hot" relative to the lattice. A carrier with enough
+      energy can surmount the energy barrier between silicon and silicon dioxide and
+      enter the gate oxide, where it may be trapped. Trapped charge in the oxide shifts
+      the threshold voltage by the term <em>Q</em><sub>i</sub>/<em>C</em><sub>ox</sub>
+      of equation (2.1), and the shift grows with operating time. The notes record the
+      consequence as long-term reliability degradation: a device that met specification
+      when manufactured drifts out of specification in service.
+    </p>
+    <p>
+      Field is voltage gradient, so reducing the peak field means spreading the voltage
+      drop over a longer distance. That is achieved by placing a lightly doped region
+      between the channel and the heavily doped drain. A lightly doped region supports a
+      wider depletion layer for the same voltage, so the same potential difference is
+      distributed over more distance and the peak field falls. The structure is a
+      two-region drain: the region connected to the channel is the <b>lightly doped
+      drain</b>, LDD, at about 10¹⁷ cm⁻³, and the second region away from the gate,
+      connected to the first, is heavily doped at about 10²⁰ cm⁻³.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 200" role="img" aria-labelledby="f9-t">
+        <title id="f9-t">Three drain structures: single heavily doped region, lightly doped drain with sidewall spacer, and source-drain extension with contact region</title>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="86" y="20">(a) single region</text>
+          <text x="260" y="20">(b) LDD</text>
+          <text x="434" y="20">(c) extension + contact</text>
+        </g>
+        <g>
+          <rect x="24" y="86" width="124" height="60" class="dg-fill"/>
+          <rect x="24" y="46" width="60" height="34" class="dg-fill"/>
+          <path d="M96,86 L96,112 Q96,124 118,124 L148,124 L148,86 Z" class="dg-fill"/>
+          <text x="122" y="106" class="dg-label-sm" text-anchor="middle">n⁺</text>
+          <text x="54" y="68" class="dg-label-sm" text-anchor="middle">gate</text>
+        </g>
+        <g>
+          <rect x="198" y="86" width="124" height="60" class="dg-fill"/>
+          <rect x="198" y="46" width="56" height="34" class="dg-fill"/>
+          <path d="M254,80 L254,46 Q272,46 272,80 Z" class="dg-fill"/>
+          <path d="M254,86 L254,102 L278,102 L278,86 Z" class="dg-acc-f" opacity=".55"/>
+          <path d="M278,86 L278,112 Q278,124 300,124 L322,124 L322,86 Z" class="dg-fill"/>
+          <text x="228" y="68" class="dg-label-sm" text-anchor="middle">gate</text>
+          <text x="302" y="106" class="dg-label-sm" text-anchor="middle">n⁺</text>
+          <text x="266" y="140" class="dg-label-sm" text-anchor="middle">n⁻</text>
+          <line x1="266" y1="132" x2="266" y2="106" class="dg-rule" stroke-width=".9"/>
+          <text x="264" y="40" class="dg-label-sm" text-anchor="middle">spacer</text>
+        </g>
+        <g>
+          <rect x="372" y="86" width="124" height="60" class="dg-fill"/>
+          <rect x="372" y="46" width="56" height="34" class="dg-fill"/>
+          <path d="M428,80 L428,46 Q446,46 446,80 Z" class="dg-fill"/>
+          <path d="M428,86 L428,104 L452,104 L452,86 Z" class="dg-acc-f" opacity=".55"/>
+          <path d="M452,86 L452,118 Q452,128 472,128 L496,128 L496,86 Z" class="dg-fill"/>
+          <text x="400" y="68" class="dg-label-sm" text-anchor="middle">gate</text>
+          <text x="474" y="108" class="dg-label-sm" text-anchor="middle">contact</text>
+          <text x="440" y="146" class="dg-label-sm" text-anchor="middle">extension</text>
+          <line x1="440" y1="138" x2="440" y2="108" class="dg-rule" stroke-width=".9"/>
+        </g>
+        <text x="260" y="184" class="dg-label-sm" text-anchor="middle">the near region is lightly doped in (b), heavily doped but shallow in (c)</text>
+      </svg>
+      <figcaption>
+        The three drain structures of the class notes. In (b) the near region is lightly
+        doped to spread the field. In (c) it is doped as heavily as the contact but made
+        shallower, because the failure being avoided has changed from hot carriers to
+        series resistance.
+      </figcaption>
+    </figure>
+
+    <p>
+      Producing the two regions in the correct places requires the sidewall spacer. The
+      notes give the process in four steps:
+    </p>
+    <ol>
+      <li>After patterning the gate stack, the lightly doped drain region is implanted
+        using a medium-current implanter. The gate itself aligns the drain dopant to the
+        gate edge.</li>
+      <li>A spacer is formed by chemical vapour deposition of SiO₂ over the whole wafer,
+        followed by an anisotropic etch — one that removes material faster vertically
+        than horizontally — which clears the flat surfaces and leaves oxide standing only
+        against the vertical sidewalls of the gate.</li>
+      <li>A high-current implanter introduces the dopants for the second, heavily doped
+        contact region. The spacer now stands between the beam and the LDD region and
+        prevents these species from entering it.</li>
+      <li>An anneal activates the dopants implanted in both steps and drives the edge of
+        the lightly doped region the proper distance beneath the edge of the gate.</li>
+    </ol>
+    <p>
+      The spacer is the entire mechanism. Its width sets how far the heavy implant stays
+      from the gate, and therefore the length of the lightly doped region, without any
+      lithography step defining it. M10
+      gives the deposition chemistry, the etch, and the reflow step.
+    </p>
+
+    <h3>6.2 Source–drain extension</h3>
+
+    <p>
+      For a 0.18 µm MOSFET the power supply voltage was reduced from 5 V to 2 V. Hot
+      carrier injection depends on the field, and the field depends on the supply
+      voltage, so at 2 V across a 0.18 µm channel the notes state that hot carrier
+      injection no longer needs to be controlled by an LDD structure. What does need
+      controlling is the resistance the LDD introduced: a lightly doped region is by
+      definition resistive, and its contribution to the overall on-resistance of the
+      MOSFET had risen to an unacceptably large degree.
+    </p>
+    <p>
+      The two-region drain is retained, but the near region is redefined. Its implant
+      dose is raised from 1–5×10¹³ cm⁻² to 5–10×10¹⁴ cm⁻², roughly a factor of twenty,
+      which produces a region of much lower resistivity. Because its peak doping is no
+      longer lighter than that of the contact region, the name "lightly doped drain" no
+      longer describes it, and the notes call it the <b>source/drain extension</b>, SDE.
+      The peak doping concentration in the extension is as high as that of the contact
+      region, but its junction depth is shallower. The second region is called the
+      <b>contact region</b>.
+    </p>
+    <p>
+      The shallow junction is the point. A shallower junction is what limits how far the
+      drain field reaches along the channel, which is the short-channel control the
+      structure now exists to provide.
+    </p>
+
+    <h2>7 · Substrates for deep-submicron CMOS</h2>
+
+    <p>
+      The wafer itself changed. The notes specify two options: p⁺ substrates carrying a
+      lightly doped p-type silicon epitaxial layer, or n⁺ substrates carrying a lightly
+      doped n-type epitaxial layer. An <b>epitaxial layer</b> is single-crystal silicon
+      grown on a single-crystal silicon surface, inheriting the orientation and lattice
+      of the material beneath it, so that the boundary between the two is crystalline
+      but the doping across it is a step.
+    </p>
+    <p>
+      The transistors are built entirely in the lightly doped epitaxial layer, which is
+      where light doping is needed for mobility and threshold control. The heavily doped
+      substrate beneath contributes a low-resistance path through the wafer. That path
+      suppresses <b>latch-up</b>, a failure mode specific to CMOS in which the parasitic
+      bipolar transistors formed by the n and p regions of adjacent devices turn each
+      other on and conduct a large current from supply to ground until power is removed.
+      Latch-up needs resistance in the substrate to develop the voltage that triggers it;
+      a p⁺ substrate removes that resistance.
+      <a href="m04-wafer-preparation.html">M04</a> covers how wafers are produced, and
+      M08 covers what the wells built into them
+      do.
+    </p>
+
+    <h2>8 · Dual-doped polysilicon</h2>
+
+    <p>
+      Conventional CMOS at 0.35 µm used n⁺ polysilicon as the gate material for both the
+      n-channel and the p-channel devices. For the n-channel device this is the right
+      choice: it produces a <b>surface-channel</b> MOSFET, in which the inversion layer
+      forms directly at the Si/SiO₂ interface where the gate controls it most strongly.
+    </p>
+    <p>
+      For the p-channel device, n⁺ polysilicon gives the wrong work function. The
+      resulting <em>φ</em><sub>MS</sub> requires a threshold-adjust implant heavy enough
+      that the conducting layer forms not at the surface but at some depth below it. Such
+      a device is a <b>buried-channel</b> MOSFET. A buried channel is further from the
+      gate than a surface channel, so the gate controls it less well, and the notes state
+      the consequence: buried-channel PMOSFETs exhibit off-state leakage currents that
+      are unacceptably large once MOSFETs are scaled to 0.25 µm gate lengths.
+    </p>
+    <p>
+      Building a surface-channel PMOSFET requires p⁺ polysilicon as the gate material,
+      which means the two device types now need gates of opposite doping. That is
+      <b>dual-doped polysilicon</b>, and it introduces additional process steps: the two
+      gate regions must be doped separately and masked from each other.
+    </p>
+
+    <div class="box pitfall">
+      <p class="box-title">Boron penetration through the gate oxide</p>
+      <p>
+        The p-type dopant introduced into the p⁺ polysilicon is boron, and boron
+        diffuses rapidly. Unless a sufficiently low thermal budget is used after the poly
+        doping step, boron traverses the gate oxide and enters the silicon substrate
+        beneath. The notes state the damage precisely: such penetration causes
+        unacceptable variation in the threshold voltage of the PMOSFETs, because the
+        boron that arrives in the channel changes its doping and therefore its
+        <em>V</em><sub>T</sub>. A thin oxide makes this worse, since the distance to be
+        crossed is shorter — which is why boron penetration is one of the constraints on
+        oxide scaling in <a href="m05-thin-gate-oxides-growth-charge.html">M05</a>.
+      </p>
+      <p>
+        A second failure follows from the same mobility, in a different direction. Boron
+        also diffuses <em>along</em> a polysilicon line, and faster still through any silicide
+        capping it, so boron implanted into a p⁺ gate can travel sideways into n⁺ polysilicon
+        elsewhere on the same line and counter-dope it. That changes the gate doping, and with
+        it the work function and the threshold voltage, of devices that were masked from the
+        boron implant entirely. Dual-gate processes respond by keeping the n⁺/p⁺ transition
+        away from active gates.
+      </p>
+    </div>
+
+    <h2>9 · Isolation: LOCOS to shallow trench</h2>
+
+    <p>
+      Neighbouring transistors on a die must not conduct into one another. The isolating
+      structure between them is <b>field oxide</b>: a thick oxide, typically about one
+      micrometre, lying over the silicon everywhere no transistor is being built, so that
+      any metal line crossing that region is too far from the silicon to invert it.
+    </p>
+    <p>
+      The technology that produced it was <b>LOCOS</b>, local oxidation of silicon. A thin thermal oxide — the <b>pad oxide</b>, typically 10 to 50 nm — is grown
+      first to decouple the silicon from the stress of the film above it; a silicon nitride film
+      is patterned over that pad oxide across the regions that will become transistors; and the
+      wafer is then oxidised. Oxide grows thickly everywhere the nitride is absent, because
+      nitride is nearly impermeable to oxygen, and hardly at all where it is present. The notes record that LOCOS served NMOS and PMOS
+      technologies until the gate length reached the 0.35 µm generation, and that it
+      failed there for two reasons.
+    </p>
+    <p>
+      The first is the <b>bird's beak</b>, and the pad oxide is what causes it. Oxygen
+      arriving at the edge of the nitride diffuses <em>sideways</em> through that pad oxide and
+      oxidises the silicon underneath the nitride edge. Oxidation also consumes silicon and
+      produces an oxide occupying roughly 2.2 times the volume of the silicon it replaced, and
+      that expansion lifts the nitride edge, giving the growing wedge its characteristic taper.
+      The field oxide therefore encroaches into the active areas of the chip, and the width lost
+      is set by the oxidation, not by the lithography — which is why the beak is shortened by
+      thinning the pad oxide or thickening the nitride, and not by anything the mask designer
+      can do. At large dimensions
+      that loss is tolerable; at 0.35 µm it is a substantial fraction of the device.
+    </p>
+    <p>
+      The second is topography. Because the field oxide is grown thermally and is only
+      semi-recessed — partly below and partly above the original silicon surface — the
+      wafer surface after LOCOS is not planar. Non-planar topography is a direct
+      difficulty for lithography, which must bring a whole field into focus at once, and
+      for the metal layers deposited over it.
+    </p>
+    <p>
+      <b>Shallow trench isolation</b>, STI, solves both. A trench is etched into the
+      silicon where isolation is wanted, and filled with deposited oxide rather than
+      grown oxide. Nothing is consumed, so there is no bird's beak and no encroachment;
+      and the fill is polished back flat, so the surface is planar.
+      M15 gives the full flow, and the
+      polishing step it depends on is the subject of
+      M13.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 500 200" role="img" aria-labelledby="f10-t">
+        <title id="f10-t">CMOS cross-section with shallow trench isolation and dual-doped polysilicon gates over p-type and n-type wells</title>
+        <rect x="20" y="98" width="460" height="66" class="dg-fill"/>
+        <line x1="250" y1="98" x2="250" y2="164" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="134" y="140" class="dg-label-sm" text-anchor="middle">p-Si well</text>
+        <text x="366" y="140" class="dg-label-sm" text-anchor="middle">n-Si well</text>
+        <g class="dg-fill">
+          <path d="M22,98 L66,98 L60,128 L28,128 Z"/>
+          <path d="M214,98 L286,98 L280,128 L220,128 Z"/>
+          <path d="M434,98 L478,98 L472,128 L440,128 Z"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="44" y="118">STI</text>
+          <text x="250" y="118">STI</text>
+          <text x="456" y="118">STI</text>
+        </g>
+        <path d="M66,98 L66,112 L96,112 L96,98 Z" class="dg-fill"/>
+        <path d="M184,98 L184,112 L214,112 L214,98 Z" class="dg-fill"/>
+        <path d="M286,98 L286,112 L316,112 L316,98 Z" class="dg-fill"/>
+        <path d="M404,98 L404,112 L434,112 L434,98 Z" class="dg-fill"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="81" y="110">n⁺</text><text x="199" y="110">n⁺</text>
+          <text x="301" y="110">p⁺</text><text x="419" y="110">p⁺</text>
+        </g>
+        <rect x="96" y="92" width="88" height="6" class="dg-fill"/>
+        <rect x="316" y="92" width="88" height="6" class="dg-fill"/>
+        <path d="M104,92 L176,92 L168,54 L112,54 Z" class="dg-acc-f" opacity=".4"/>
+        <path d="M324,92 L396,92 L388,54 L332,54 Z" class="dg-acc-f" opacity=".4"/>
+        <text x="140" y="78" class="dg-label-sm" text-anchor="middle">n⁺ poly</text>
+        <text x="360" y="78" class="dg-label-sm" text-anchor="middle">p⁺ poly</text>
+        <text x="140" y="42" class="dg-label-sm" text-anchor="middle">n-channel</text>
+        <text x="360" y="42" class="dg-label-sm" text-anchor="middle">p-channel</text>
+        <text x="250" y="186" class="dg-label-sm" text-anchor="middle">gate doping differs between the two device types; the isolation between them is a filled trench</text>
+      </svg>
+      <figcaption>
+        Redrawn from the class notes. Two structural changes appear together: the
+        trapezoidal filled trenches replacing grown field oxide, and gates of opposite
+        doping over the two wells.
+      </figcaption>
+    </figure>
+
+    <h2>10 · Silicon on insulator</h2>
+
+    <p>
+      In bulk silicon technology the pn junctions separating one device from another are
+      reverse-biased, and a reverse-biased junction conducts only a small leakage current.
+      That is not the whole story. The notes state that current paths among devices may
+      still be activated in the bulk region by such phenomena as latch-up or transient
+      radiation effects — a burst of ionising radiation generates carriers throughout the
+      silicon volume at once, and those carriers provide the conduction the reverse bias
+      was supposed to prevent. Furthermore, the parasitic circuit elements associated with
+      the CMOS structure, such as source-to-substrate and drain-to-substrate capacitances,
+      become too large in structures using bulk silicon; those capacitances must be charged
+      and discharged on every transition, so they cost speed and power.
+    </p>
+    <p>
+      <b>Silicon on insulator</b> removes the shared bulk. The transistors are built in a
+      thin single-crystal silicon film sitting on a buried oxide layer, so no conduction
+      path exists beneath them and the junction capacitances terminate on an insulator
+      rather than on a substrate. The notes give this ten lines and no more, and the
+      professor indicated it may become a project topic rather than a lecture;
+      M17 holds the treatment.
+    </p>
+
+    <h2>11 · The scaling limits of the conventional structure</h2>
+
+    <p>
+      Chapter 1 of the notes closes with a table. Below 0.1 µm, the notes state, MOSFET
+      devices need to adopt different structural changes — meaning that the modifications
+      catalogued above run out, and each of six features reaches a value beyond which it
+      cannot usefully go. The reason column is the important one: every limit is either a
+      leakage current that grows or a resistance that grows.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Feature</th><th>Limit</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>Oxide thickness</td><td>2 nm</td><td>Leakage (<em>I</em><sub>gate</sub>)</td></tr>
+        <tr><td>Junction depth</td><td>30 nm</td><td>Resistance (<em>R</em><sub>SDE</sub>)</td></tr>
+        <tr><td>Channel doping</td><td><em>V</em><sub>T</sub> = 0.25 V</td><td>Leakage (<em>I</em><sub>off</sub>)</td></tr>
+        <tr><td>SDE under-diffusion</td><td>15 nm</td><td>Resistance (<em>R</em><sub>inv</sub>)</td></tr>
+        <tr><td>Channel length</td><td>0.06 µm</td><td>Leakage (<em>I</em><sub>off</sub>)</td></tr>
+        <tr><td>Gate length</td><td>0.10 µm</td><td>Leakage (<em>I</em><sub>off</sub>)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Read the table as a set of opposing constraints rather than a list, and read the
+      channel-doping row as a <em>floor</em> rather than a ceiling. Subthreshold current rises
+      exponentially as the threshold falls, and the rate of that rise can be no steeper than
+      about 60 mV per decade at room temperature, so a threshold below 0.25 V multiplies the
+      off-state leakage faster than the lower threshold buys drive current. The doping cannot be
+      reduced past the value that produces that threshold. Neither can it be raised without
+      limit, for the separate reason given in §5: heavier doping scatters the carriers in the
+      inversion layer and costs mobility. Two different physical effects close on the same
+      quantity from opposite sides.
+    </p>
+    <p>
+      The rest of the table has the same shape. The oxide cannot thin further because the gate
+      leaks, and cannot thicken because gate control of the channel is already marginal. The
+      extension junction cannot be made shallower because a shallower region is more resistive,
+      and cannot be made deeper because the drain field then reaches too far along the channel.
+      Every direction is blocked by something.
+    </p>
+    <p>
+      The notes list the responses on the same page: high-k materials for gate
+      dielectrics, novel shallow ultra-low-resistivity junctions, advanced lithography,
+      and silicon–germanium technology. The first three are the subject of the chapters
+      that follow.
+    </p>
+
+    <div class="box">
+      <p class="box-title">These are the limits of one structure, as assessed around 2002</p>
+      <p>
+        Every entry in the table except the threshold-voltage floor was subsequently passed, and
+        the table is best read as a statement of where the <em>conventional planar bulk
+        transistor with a pure SiO₂ gate dielectric</em> ran out rather than where silicon ran
+        out. Nitrided oxides and then high-k dielectrics with metal gates took the equivalent
+        oxide thickness below 2 nm; strained silicon raised drive current without raising
+        leakage; source–drain extension junctions went below 20 nm; and non-planar fin
+        structures restored the electrostatic control a planar channel could no longer provide,
+        which is why physical gate length continued below 0.10 µm instead of stopping there.
+      </p>
+      <p>
+        The threshold-voltage entry is the one that has held, and it held because it does not
+        depend on the structure: the 60 mV per decade limit on subthreshold slope follows from
+        the thermal distribution of carrier energies, so no change of geometry or material
+        removes it.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>The salicide process needs no mask to decide where silicide forms. What supplies that information instead, and what would go wrong if the sidewall spacers were absent when the metal was deposited?</summary>
+      <div class="answer">
+        <p>
+          The information is supplied by which surfaces are silicon and which are oxide.
+          The metal reacts only with silicon, so silicide forms on the exposed
+          polysilicon of the gate and on the exposed source and drain, and not on the
+          spacers or the isolation oxide. Unreacted metal is then stripped.
+        </p>
+        <p>
+          Without spacers the gate sidewall would be exposed silicon continuous with the
+          source and drain silicon at its base. Silicide would form across that path and
+          short the gate to the source and drain. The spacer is therefore doing two
+          separate jobs at two different stages: setting the extension length during
+          implantation, and insulating the gate edge during silicidation.
+        </p>
+      </div>
+    </details>
+
+    
+
+    <h2>Where this page follows the class notes against the literature</h2>
+
+    <p>
+      The course is graded on the professor's material, so every figure below is reproduced
+      above as he gives it. Each one also disagrees with the published record, and the
+      disagreement is recorded here rather than silently propagated or silently overruled.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>As the notes give it</th><th>What the literature gives</th><th>Where</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Polysilicon replaced aluminium as the gate metal "in the mid-1970s"</td>
+          <td>The self-aligned silicon gate was working at Fairchild in 1968 and shipped that
+            year; Intel's 1103 (1970) and 4004 (1971) were silicon-gate parts, and the process
+            was mainstream by about 1973</td>
+          <td>§3.1</td>
+        </tr>
+        <tr>
+          <td>Gate lengths reaching 0.5–0.35 µm "by the late 1990s", and 0.25–0.13 µm in 2001–2002</td>
+          <td>Volume production ran 0.5 µm ≈ 1993–94, 0.35 ≈ 1995, 0.25 ≈ 1997, 0.18 ≈ 1999,
+            0.13 ≈ 2001, 90 nm ≈ 2003, 65 nm ≈ 2005–06, 45 nm ≈ 2007–08. The notes' calendar
+            runs two to four years behind from the mid-1990s on</td>
+          <td>§1</td>
+        </tr>
+        <tr>
+          <td>A 0.18 µm gate needs <em>t</em><sub>ox</sub> ≈ 40 Å</td>
+          <td>That is the generation <em>name</em> divided by 45. The physical gate length at
+            that generation was about 140 nm, and the equivalent oxide thickness that shipped
+            was 1.9–2.5 nm. The 40 Å point is the very conflation §1 warns about</td>
+          <td>§4</td>
+        </tr>
+        <tr>
+          <td>Polycide "reduced the resistance to one fourth"</td>
+          <td>Heavily doped polysilicon bottoms out near 20–30 Ω per square, set by dopant solid
+            solubility; a silicide cap brings the stack to 2–5 Ω per square — a factor of five
+            to ten</td>
+          <td>§3.2</td>
+        </tr>
+        <tr>
+          <td>The LDD region is "about 10¹⁷ cm⁻³"</td>
+          <td>Inconsistent with the 1–5×10¹³ cm⁻² dose the notes give for the same implant: over
+            a 0.15–0.2 µm junction that dose gives roughly 10¹⁸ cm⁻³</td>
+          <td>§6.1, §6.2</td>
+        </tr>
+        <tr>
+          <td>At 0.18 µm "the supply was reduced from 5 V to 2 V"</td>
+          <td>The nominal supply at that generation was 1.8 V, and it was reached in steps:
+            5 V → 3.3 V (0.35 µm) → 2.5 V (0.25 µm) → 1.8 V (0.18 µm)</td>
+          <td>§6.2</td>
+        </tr>
+        <tr>
+          <td>Field oxide "typically about one micrometre"</td>
+          <td>That is the micron-era figure. The notes' own thickness table gives 200–400 nm for
+            LOCOS field oxide, which is the range that applies at the 0.5–0.35 µm generations
+            this section is about</td>
+          <td>§9</td>
+        </tr>
+        <tr>
+          <td>2 nm of SiO₂ is "ten to twelve atomic layers"</td>
+          <td>About 5 to 6 SiO₂ molecular layers, at a layer spacing of 3.6 Å, or roughly 8
+            layers if silicon and oxygen planes are counted separately</td>
+          <td>§4</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p class="small">
+      None of these changes the argument the chapter is making. They matter because a number
+      quoted in an answer should be the professor's number, and a number used to reason with
+      should be the right one.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Gate length fell from 10 µm in 1970 to the 45 nm generation, roughly a constant
+          fraction per year. Below about 130 nm the generation name and the physical gate
+          length are different numbers.</li>
+        <li>The gate stack went aluminium → n⁺ polysilicon (for thermal tolerance and
+          work-function control) → polycide with WSi<sub><i>x</i></sub> (resistance to one
+          fourth) → salicide with TiSi₂ or CoSi₂ (lower resistivity, and silicide on the
+          source and drain contacts with no extra mask).</li>
+        <li>Oxide thickness tracks gate length at <em>L</em><sub>E</sub>/<em>t</em><sub>ox</sub>
+          ≈ 45: 200 Å at 1 µm, 40 Å at 0.18 µm, 20 Å below 0.1 µm. At 20 Å the gate
+          tunnelling current reaches the off-state leakage of about 10 nA/µm, which ends
+          SiO₂ as a logic gate dielectric and forces high-k.</li>
+        <li>Channel doping went uniform → threshold-adjust boron implant (both device types)
+          → super-steep retrograde with indium or antimony, keeping the inversion layer
+          below 5×10¹⁷ cm⁻³ → halo and pocket implants placing the punch-through dose only
+          at the drain-extension edge.</li>
+        <li>The drain went single-region → lightly doped drain at 10¹⁷ cm⁻³ beside a 10²⁰ cm⁻³
+          contact, to suppress hot carrier injection → source/drain extension at 5–10×10¹⁴ cm⁻²
+          once the supply fell to 2 V and series resistance mattered more than hot carriers.</li>
+        <li>The sidewall spacer is the enabling structure for the two-region drain, for the
+          pocket implant, and for the salicide. Its width is set by deposition and etch, not
+          by lithography.</li>
+        <li>Substrates became heavily doped wafers with a lightly doped epitaxial layer;
+          gates became dual-doped, n⁺ over the n-channel and p⁺ over the p-channel, to make
+          both devices surface-channel. Boron penetration through the gate oxide is the cost.</li>
+        <li>LOCOS failed at 0.35 µm on bird's-beak encroachment and non-planar topography, and
+          was replaced by shallow trench isolation.</li>
+        <li>Below 0.1 µm every remaining direction is blocked by either a growing leakage
+          current or a growing series resistance.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Class notes p. 1. Node-name against gate-length separation from ITRS 2005/2007 PIDS tables, which list them as separate rows, and Thompson <i>et al.</i>, <i>Intel Technology Journal</i> <b>6</b>(2), 2002 (90 nm generation, 50 nm physical gate length)</td></tr>
+      <tr><td>§2</td><td>Class notes pp. 1–2, figures 1.a and 1.b</td></tr>
+      <tr><td>§3</td><td>Class notes pp. 2–3 (§1.1). Silicide resistivities from Wolf, <i>Silicon Processing for the VLSI Era</i> Vol. 4, ch. 1; Lecture 3 for the refractory-metal discussion</td></tr>
+      <tr><td>§4</td><td>Class notes p. 4 (§1.2); Lectures 2 and 3</td></tr>
+      <tr><td>§5</td><td>Class notes pp. 5–8 (§1.3); Lectures 3 and 4. Dopant diffusion mechanisms from Plummer, Deal &amp; Griffin, <i>Silicon VLSI Technology</i>, ch. 7 §7.4, and Fahey, Griffin &amp; Plummer, <i>Rev. Mod. Phys.</i> <b>61</b>, 289 (1989)</td></tr>
+      <tr><td>§6</td><td>Class notes pp. 8–10 (§1.4); Lecture 4 for the five-step process</td></tr>
+      <tr><td>§7–8</td><td>Class notes pp. 10–11; Lecture 4</td></tr>
+      <tr><td>§9</td><td>Class notes p. 11; Lecture 4</td></tr>
+      <tr><td>§10–11</td><td>Class notes p. 12</td></tr>
+    </table>
+
+    <p class="small">
+      <b>A note on one number.</b> The class notes give 2 µm for 1985; the Lecture 1
+      transcript says 1 µm for the same year. The notes are followed here, as the written
+      source outranks an auto-generated caption.
+    </p>
+
+    <nav class="pagination">
+      <a class="prev" href="m01-mosfet-and-how-one-is-made.html"><span>Previous</span>M01 · The MOSFET and How One Is Made</a>
+      <a class="next" href="m03-threshold-voltage.html"><span>Next</span>M03 · The Threshold Voltage Equation</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

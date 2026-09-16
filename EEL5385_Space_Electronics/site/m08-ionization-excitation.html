@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M08 · Ionization and Excitation — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M08 · Ionization and Excitation</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 08</p>
+    <h1>Ionization and Excitation</h1>
+    <p class="lede">
+      How a charged particle transfers its energy to the electrons of the material it
+      crosses, how many mobile carriers that produces, and why a single particle can
+      deliver a power density larger than a directed-energy weapon.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M01, M04</span>
+      <span><b>Read time</b> ~40 min</span>
+      <span><b>Sources</b> Decks 4–5; Lectures 4–5</span>
+    </div>
+
+    <p>
+      Part II established what arrives at a spacecraft and in what quantity. Part III turns
+      to the second link in the course's chain: what happens when one of those particles
+      enters solid matter. Every radiation effect in electronics — the accumulated
+      degradation of total ionising dose, the instantaneous disturbance of a single-event
+      upset, the permanent lattice damage of displacement — begins with an energy transfer
+      from an incident particle to the atoms of the target, and there are only a few ways
+      that transfer can happen.
+    </p>
+    <p>
+      This module covers the two that dominate: ionization, in which an electron is removed
+      from an atom entirely, and excitation, in which it is promoted to a higher bound
+      state. Both act through the Coulomb force, both apply only to charged incident
+      particles, and together they account for almost all of the energy a charged particle
+      loses. The module then follows the consequence through to a device — from energy
+      deposited, to carriers generated, to charge collected, to current, to a power density
+      — which is the calculation the course returns to throughout and the origin of the
+      single-event effects treated in <a href="index.html#roadmap">M15</a>.
+    </p>
+
+    <h2>1 · The four charged-particle interactions</h2>
+    <p>
+      A charged particle moving through matter interacts continuously with the electrons and
+      nuclei of the atoms surrounding its path, and it loses energy by four distinct
+      mechanisms.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Mechanism</th><th>What the incident particle does</th><th>Applies to</th><th>Where treated</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Ionization</b></td><td>Removes an electron from an atom entirely, creating an ion pair</td><td>alphas, protons, heavy ions, betas</td><td>§3 — the dominant channel</td></tr>
+        <tr><td><b>Excitation</b></td><td>Promotes an electron to a higher bound state without removing it</td><td>alphas, protons, heavy ions, betas</td><td>§6</td></tr>
+        <tr><td><b>Bremsstrahlung</b></td><td>Radiates a photon when its own trajectory is deflected</td><td>primarily betas</td><td><a href="m09-bremsstrahlung-xrays.html">M09</a></td></tr>
+        <tr><td><b>Cherenkov radiation</b></td><td>Radiates light because it exceeds the speed of light <em>in that medium</em></td><td>primarily betas</td><td>§1, below</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Ionization is almost always the primary mechanism of energy loss, and for heavy
+      charged particles it and excitation account for essentially all of it. Bremsstrahlung
+      requires the incident particle to be deflected sharply, which happens appreciably only
+      to electrons, and is the subject of the next module. A fifth channel sits outside this
+      list because it is negligible as an energy loss and decisive as a damage mechanism: a
+      rare collision with a <em>nucleus</em> rather than with the electron cloud, which
+      displaces the atom permanently. That is <a href="m11-displacement-damage.html">M11</a>,
+      and the four mechanisms here all leave the crystal structure intact.
+    </p>
+    <p>
+      <b>Cherenkov radiation</b> completes the list and is the only one of the four that
+      does not appear again. The speed of light in a transparent medium of refractive index
+      <em>n</em> is <em>c</em>/<em>n</em>, which is less than <em>c</em>, and a charged
+      particle can exceed it while remaining below <em>c</em>. When it does, the
+      polarisation it induces in the medium radiates coherently in a cone behind it,
+      producing the blue glow visible in the water of a reactor pool. The threshold is
+      <em>v</em> &gt; <em>c</em>/<em>n</em>, which for electrons in water requires about
+      260 keV. The energy carried away is a small fraction of one percent of the particle's
+      collision losses, so Cherenkov radiation is negligible as an energy-loss channel and
+      valuable as a detection mechanism, which is why it is listed and then set aside.
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy.</b> Deck 4 p. 19 lists four charged-particle interactions and
+        names all four. Deck 5 p. 8 reuses the same slide, keeps the word "four", and lists
+        only three — Cherenkov radiation has been dropped from the list without the count
+        being changed. Four is correct.
+      </p>
+    </div>
+
+    <h2>2 · The Coulomb force at atomic range</h2>
+    <p>
+      All four mechanisms are electromagnetic, and the force involved is the Coulomb force
+      between the incident particle's charge and the charges within the atom.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">
+          <em>F</em> = <em>k</em>
+          <span class="frac"><span class="num"><em>q</em><sub>1</sub><em>q</em><sub>2</sub></span><span class="den"><em>r</em>²</span></span>
+        </div>
+        <div class="eq-num">(8.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>F</em> force between the charges (N) ·
+        <em>k</em> Coulomb constant, 9 × 10<sup>9</sup> N·m²/C² ·
+        <em>q</em><sub>1</sub> charge on the incident particle (C) ·
+        <em>q</em><sub>2</sub> charge on the struck particle (C) ·
+        <em>r</em> separation (<b>m</b>).
+        This equation is the one place in the course that requires metres; every other
+        length here is in centimetres or micrometres. Attraction or repulsion follows from
+        the signs.
+        <a href="formula-sheet.html#eq-coulomb">Formula sheet §6</a>
+      </div>
+    </div>
+
+    <p>
+      The inverse-square dependence is what makes a charged particle interact continuously
+      rather than on impact. The force falls with distance but never reaches zero, so a
+      charged particle passing through a solid exerts a measurable force on the electrons of
+      every atom within some distance of its path — not only on atoms it strikes. Since a
+      solid contains on the order of 10<sup>22</sup> to 10<sup>23</sup> atoms per cubic
+      centimetre, a particle crossing even one micrometre passes within interaction range of
+      an enormous number of them, and loses energy to each in a small increment.
+    </p>
+    <p>
+      The alternative is instructive. An atom is about 10<sup>&minus;10</sup> m across and
+      its nucleus about 10<sup>&minus;15</sup> m, so the nucleus occupies roughly
+      10<sup>&minus;15</sup> of the atomic volume &mdash; fifteen nines of emptiness. Decks 4
+      and 5 quote the figure as 99.9999999 % empty space, which is nine nines and therefore
+      six orders of magnitude less extreme; the conclusion drawn from it is unaffected, since
+      either figure makes a direct nuclear hit overwhelmingly improbable. A particle with no charge exerts no Coulomb force, has no
+      interaction with the electron cloud, and can only interact by striking that
+      vanishingly small nucleus. This is the quantitative statement behind
+      <a href="m04-radiation-species-decay.html">M04</a>'s penetration ordering: a charged
+      particle interacts with everything it passes, an uncharged particle with almost
+      nothing.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 300" role="img" aria-labelledby="f8-1-t">
+        <title id="f8-1-t">A charged particle interacting at a distance with many atoms compared with an uncharged particle requiring a direct nuclear hit</title>
+        <text x="180" y="24" class="dg-label" text-anchor="middle">charged particle</text>
+        <text x="540" y="24" class="dg-label" text-anchor="middle">uncharged particle</text>
+        <g class="dg-faint">
+          <circle cx="90" cy="100" r="26"/><circle cx="170" cy="100" r="26"/><circle cx="250" cy="100" r="26"/>
+          <circle cx="90" cy="200" r="26"/><circle cx="170" cy="200" r="26"/><circle cx="250" cy="200" r="26"/>
+        </g>
+        <g class="dg-ink">
+          <circle cx="90" cy="100" r="2.5"/><circle cx="170" cy="100" r="2.5"/><circle cx="250" cy="100" r="2.5"/>
+          <circle cx="90" cy="200" r="2.5"/><circle cx="170" cy="200" r="2.5"/><circle cx="250" cy="200" r="2.5"/>
+        </g>
+        <line x1="30" y1="150" x2="320" y2="150" class="dg-acc" stroke-width="2.2" marker-end="url(#f8-1-a)"/>
+        <g class="dg-acc" stroke-width="1" stroke-dasharray="3 2">
+          <line x1="90" y1="150" x2="90" y2="122"/><line x1="170" y1="150" x2="170" y2="122"/><line x1="250" y1="150" x2="250" y2="122"/>
+          <line x1="90" y1="150" x2="90" y2="178"/><line x1="170" y1="150" x2="170" y2="178"/><line x1="250" y1="150" x2="250" y2="178"/>
+        </g>
+        <text x="180" y="258" class="dg-label-sm" text-anchor="middle">F = kq₁q₂/r² reaches every atom near the path</text>
+        <text x="180" y="276" class="dg-label-sm" text-anchor="middle">energy lost in many small increments</text>
+
+        <g class="dg-faint">
+          <circle cx="450" cy="100" r="26"/><circle cx="530" cy="100" r="26"/><circle cx="610" cy="100" r="26"/>
+          <circle cx="450" cy="200" r="26"/><circle cx="530" cy="200" r="26"/><circle cx="610" cy="200" r="26"/>
+          <circle cx="490" cy="150" r="26"/><circle cx="570" cy="150" r="26"/>
+        </g>
+        <g class="dg-ink">
+          <circle cx="450" cy="100" r="2.5"/><circle cx="530" cy="100" r="2.5"/><circle cx="610" cy="100" r="2.5"/>
+          <circle cx="450" cy="200" r="2.5"/><circle cx="530" cy="200" r="2.5"/><circle cx="610" cy="200" r="2.5"/>
+          <circle cx="490" cy="150" r="2.5"/><circle cx="570" cy="150" r="2.5"/>
+        </g>
+        <line x1="390" y1="150" x2="680" y2="150" class="dg-line" stroke-width="2.2" marker-end="url(#f8-1-b)"/>
+        <circle cx="570" cy="150" r="7" class="dg-acc-f"/>
+        <text x="540" y="258" class="dg-label-sm" text-anchor="middle">passes through the electron cloud untouched;</text>
+        <text x="540" y="276" class="dg-label-sm" text-anchor="middle">interacts only on striking a nucleus, ~10⁻¹⁵ of the volume</text>
+        <defs>
+          <marker id="f8-1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="f8-1-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The same geometry, two incident particles. Charge converts the
+        near-miss into an interaction, and near-misses are what a solid is mostly made of.
+      </figcaption>
+    </figure>
+
+    <h2>3 · Ionization</h2>
+    <p>
+      <b>Ionization</b> is the complete removal of one or more electrons from an atom by the
+      Coulomb force of a passing charged particle. For it to occur, the energy the incident
+      particle imparts to the electron must exceed the electron's binding energy — the
+      energy holding it to the atom. The result is an <b>ion pair</b>: a free electron, the
+      negative member, and the positively charged atom it left behind.
+    </p>
+    <p>
+      Three properties of the process follow, and each is used later.
+    </p>
+    <p>
+      <b>Ionization occurs close to the track.</b> Equation (8.1) makes the force strongest
+      at small separation, so the electrons that receive enough energy to be removed are
+      those nearest the particle's path. The deposited charge is therefore concentrated in a
+      narrow column along the trajectory rather than spread through the material, and the
+      diameter of that column — on the order of tens to hundreds of nanometres — is
+      comparable with the dimensions of a modern transistor.
+    </p>
+    <p>
+      <b>Each ionization slows the incident particle.</b> The energy given to the electron
+      comes out of the particle's kinetic energy, so the particle decelerates continuously
+      as it travels. A particle of finite energy therefore has a finite range, and both the
+      range and the rate of energy loss along it are computable. That computation is the
+      subject of <a href="index.html#roadmap">M12</a> and is what the SRIM simulations
+      central to this course perform.
+    </p>
+    <p>
+      <b>The freed electron may itself ionise.</b> If the energy transferred exceeds the
+      binding energy by a sufficient margin, the liberated electron carries away enough
+      kinetic energy to ionise further atoms on its own account. That is the subject of §4.
+    </p>
+
+    <h2>4 · Delta rays</h2>
+    <p>
+      A <b>delta ray</b> is a secondary electron — the negative member of an ion pair — that
+      has sufficient kinetic energy to cause additional ionization. The name identifies a
+      role, not a species: a delta ray is an ordinary electron, distinguished only by having
+      been liberated by a passing particle rather than emitted by a nucleus. A beta particle
+      of the same energy behaves identically once it is in flight, and the two are
+      distinguished only by provenance.
+    </p>
+    <p>
+      Delta rays matter for two reasons. They broaden the track: the primary particle
+      deposits energy in a narrow column, and the delta rays it produces carry some of that
+      energy outward before depositing it, giving the track a halo whose radius is set by
+      the range of the most energetic secondaries. And they are the majority carrier-producing
+      mechanism in a dense material — most of the electron–hole pairs created along a heavy-ion
+      track are produced not by the ion itself but by the cascade of secondary electrons it
+      liberates.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 640 240" role="img" aria-labelledby="f8-2-t">
+        <title id="f8-2-t">A primary ion track producing delta rays that ionise further atoms away from the track</title>
+        <line x1="40" y1="120" x2="600" y2="120" class="dg-acc" stroke-width="2.6" marker-end="url(#f8-2-a)"/>
+        <text x="46" y="108" class="dg-label-sm">incident ion</text>
+        <g class="dg-line" stroke-width="1.3" fill="none">
+          <path d="M140,120 C160,100 176,86 200,72"/>
+          <path d="M230,120 C244,142 256,164 286,180"/>
+          <path d="M330,120 C352,104 372,96 404,88"/>
+          <path d="M430,120 C442,140 452,152 474,166"/>
+        </g>
+        <g class="dg-acc-f">
+          <circle cx="200" cy="72" r="4"/><circle cx="286" cy="180" r="4"/>
+          <circle cx="404" cy="88" r="4"/><circle cx="474" cy="166" r="4"/>
+        </g>
+        <text x="212" y="62" class="dg-label-sm">delta ray</text>
+        <text x="416" y="78" class="dg-label-sm">delta ray</text>
+        <g class="dg-faint">
+          <circle cx="182" cy="86" r="3"/><circle cx="192" cy="78" r="3"/>
+          <circle cx="266" cy="168" r="3"/><circle cx="276" cy="176" r="3"/>
+          <circle cx="386" cy="96" r="3"/><circle cx="396" cy="90" r="3"/>
+        </g>
+        <text x="320" y="220" class="dg-label-sm" text-anchor="middle">the primary track is narrow; delta rays carry energy outward and widen the deposited-charge column</text>
+        <defs>
+          <marker id="f8-2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>Secondary electrons energetic enough to ionise are what give a heavy-ion track a measurable radius rather than a mathematical line.</figcaption>
+    </figure>
+
+    <h2>5 · Counting carriers in silicon</h2>
+    <p>
+      Converting deposited energy into a number of mobile carriers is the step that connects
+      radiation physics to circuit behaviour, and it is done by dividing the deposited
+      energy by a characteristic energy per carrier. Which characteristic energy to use is
+      the one place where this course's convention and the radiation-effects literature
+      differ, so both are given here.
+    </p>
+    <p>
+      <b>The course's arithmetic.</b> Decks 4 and 5 take the electron binding energy in
+      silicon as 99.42 eV and note the excitation energy as 1.1 eV, the bandgap. A particle
+      depositing more than 99.42 eV can ionise, and dividing an incident energy of 1 MeV by
+      that figure gives approximately 10<sup>4</sup> ionizations per incident particle. This
+      is the estimate the lectures use and the one to reproduce for the course's problems.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">
+          <em>N</em><sub>pairs</sub> =
+          <span class="frac"><span class="num"><em>E</em><sub>dep</sub></span><span class="den"><em>E</em><sub>pair</sub></span></span>
+        </div>
+        <div class="eq-num">(8.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>pairs</sub> number of electron–hole pairs generated (dimensionless) ·
+        <em>E</em><sub>dep</sub> energy deposited in the material (eV) ·
+        <em>E</em><sub>pair</sub> mean energy per pair (eV) — <b>99.42 eV in this course's
+        silicon estimate</b>; the measured value for silicon is <b>3.6 eV</b>, and for SiO₂
+        it is 17 eV.
+        Only the energy actually deposited counts; a particle that passes through and leaves
+        deposits only a fraction of its kinetic energy.
+        <a href="formula-sheet.html#eq-pairs">Formula sheet §6</a>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — what 99.42 eV is.</b> 99.4 eV is the binding energy of the
+        silicon <b>2p core level</b>, the standard photoelectron-spectroscopy line for
+        elemental silicon; it is not the binding energy of the outermost orbital, which the
+        slide labels it. The outermost electrons in a silicon crystal are the valence
+        electrons, bound by a few electron-volts.
+      </p>
+      <p>
+        The quantity that determines <em>collected charge</em>, and the one used throughout
+        the radiation-effects literature, is the <b>mean electron–hole pair creation
+        energy</b>: 3.6 eV in silicon and about 17 eV in SiO₂. It exceeds the 1.1 eV bandgap
+        because each ionizing event also loses energy to lattice vibrations and to
+        sub-threshold excitations. Using 3.6 eV, 1 MeV deposited in silicon produces about
+        2.8 × 10<sup>5</sup> pairs rather than 10<sup>4</sup> — a factor of 28 more.
+      </p>
+      <p>
+        Both numbers appear here because the course is graded on the first and the physical
+        world runs on the second. Use 99.42 eV when reproducing the course's estimate, and
+        3.6 eV whenever the answer must match a measurement, a datasheet or a SRIM output.
+      </p>
+    </div>
+
+    <p>
+      The two conventions do not conflict in the place it matters most. The professor's
+      worked single-event example in §8 begins from an assumed 10<sup>6</sup> carriers
+      generated by one heavy ion, and that figure is independently correct: an ion with a
+      linear energy transfer of 30 MeV·cm²/mg deposits about 7 MeV per micrometre of track
+      in silicon, which at 3.6 eV per pair gives close to 2 × 10<sup>6</sup> pairs. The
+      starting point of the calculation is sound whichever route reaches it.
+    </p>
+
+    <h2>6 · Excitation</h2>
+    <p>
+      <b>Excitation</b> is the alternative outcome when the energy transferred is
+      insufficient to remove the electron. The Coulomb force promotes an electron to a
+      higher available energy state within the atom, leaving it bound. The atom is left
+      excited, and it de-excites shortly afterwards by emitting a low-energy photon,
+      typically in the ultraviolet. Like ionization, each excitation event removes energy
+      from the incident particle and slows it.
+    </p>
+    <p>
+      Excitation occurs on average further from the particle's trajectory than ionization
+      does, because the force required is smaller and equation (8.1) makes a smaller force
+      available at a larger distance. The two processes therefore occupy concentric regions
+      around the track: a dense ionised core and a wider excited halo.
+    </p>
+    <p>
+      In an isolated atom, the available higher states are discrete, so the de-excitation
+      photons appear at sharp wavelengths that identify the element — the line spectra that
+      make emission spectroscopy possible. In a solid the picture changes. As atoms are
+      brought together, their outer orbitals overlap and each discrete level broadens into a
+      band of closely spaced states. The highest filled band is the valence band, the lowest
+      empty one the conduction band, and the gap between them is the bandgap
+      (<a href="m01-semiconductor-background.html">M01</a>). Excitation in a semiconductor
+      means promoting an electron across that gap: 1.1 eV in silicon.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 640 250" role="img" aria-labelledby="f8-3-t">
+        <title id="f8-3-t">Ionization compared with excitation across the silicon bandgap</title>
+        <text x="160" y="24" class="dg-label" text-anchor="middle">excitation</text>
+        <text x="470" y="24" class="dg-label" text-anchor="middle">ionization</text>
+        <line x1="50" y1="90" x2="280" y2="90" class="dg-line" stroke-width="1.8"/>
+        <line x1="50" y1="180" x2="280" y2="180" class="dg-line" stroke-width="1.8"/>
+        <text x="288" y="94" class="dg-label-sm">E_c</text>
+        <text x="288" y="184" class="dg-label-sm">E_v</text>
+        <text x="60" y="140" class="dg-label-sm">E_g = 1.1 eV</text>
+        <line x1="165" y1="176" x2="165" y2="96" class="dg-acc" stroke-width="2" marker-end="url(#f8-3-a)"/>
+        <circle cx="165" cy="90" r="5" class="dg-acc-f"/>
+        <circle cx="165" cy="180" r="5" class="dg-faint"/>
+        <text x="178" y="140" class="dg-label-sm">electron promoted</text>
+        <text x="178" y="156" class="dg-label-sm">across the gap</text>
+        <text x="160" y="214" class="dg-label-sm" text-anchor="middle">both carriers stay in the crystal</text>
+        <text x="160" y="230" class="dg-label-sm" text-anchor="middle">and make it more conductive</text>
+
+        <line x1="360" y1="90" x2="590" y2="90" class="dg-line" stroke-width="1.8"/>
+        <line x1="360" y1="180" x2="590" y2="180" class="dg-line" stroke-width="1.8"/>
+        <line x1="360" y1="46" x2="590" y2="46" class="dg-rule" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <text x="598" y="50" class="dg-label-sm">vacuum</text>
+        <line x1="475" y1="176" x2="475" y2="52" class="dg-acc" stroke-width="2" marker-end="url(#f8-3-a)"/>
+        <circle cx="475" cy="46" r="5" class="dg-acc-f"/>
+        <text x="488" y="120" class="dg-label-sm">electron removed</text>
+        <text x="488" y="136" class="dg-label-sm">from the atom entirely</text>
+        <text x="470" y="214" class="dg-label-sm" text-anchor="middle">requires more than the binding energy;</text>
+        <text x="470" y="230" class="dg-label-sm" text-anchor="middle">may leave enough over for a delta ray</text>
+        <defs>
+          <marker id="f8-3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>In a semiconductor the distinction narrows: promoting an electron across the gap already produces a mobile electron and a mobile hole, so excitation in a solid has the electrical consequence that ionization has in a gas.</figcaption>
+    </figure>
+
+    <h2>7 · What the generated carriers do to a junction</h2>
+    <p>
+      A reverse-biased p–n junction depends for its behaviour on the near-absence of mobile
+      carriers in its depletion region. <a href="m01-semiconductor-background.html">M01</a>
+      established that the reverse leakage current of a silicon diode is small precisely
+      because carriers must be thermally generated across a 1.1 eV gap, and the thermal
+      energy available at room temperature is 0.026 eV.
+    </p>
+    <p>
+      Radiation removes that constraint. Carriers generated by ionization or by excitation
+      inside the depletion region find themselves in a strong electric field — the built-in
+      field plus the applied reverse bias, typically 10<sup>5</sup> V/cm — and are swept
+      apart immediately: electrons toward the n side, holes toward the p side. Each pair
+      contributes to the reverse current, and the reverse current rises by orders of
+      magnitude while the irradiation continues.
+    </p>
+    <p>
+      The device consequence is that a reverse-biased junction stops behaving like a diode
+      and begins behaving like a resistor. The off state is no longer off. In a MOSFET this
+      appears as increased leakage between drain and source and between gate and channel,
+      degrading the switching behaviour; in a memory cell it appears as loss of the stored
+      charge that represents the data; and in every case it appears as power dissipated
+      where the design assumed none, which heats the device and raises the leakage further.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 250" role="img" aria-labelledby="f8-4-t">
+        <title id="f8-4-t">Reverse current-voltage characteristic of a junction before and during irradiation</title>
+        <line x1="60" y1="60" x2="60" y2="220" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="150" x2="560" y2="150" class="dg-rule" stroke-width="1.2"/>
+        <text x="300" y="242" class="dg-label" text-anchor="middle">reverse bias</text>
+        <text x="24" y="130" class="dg-label" text-anchor="middle" transform="rotate(-90 24 130)">reverse current</text>
+        <path d="M60,150 C160,148 320,146 545,144" class="dg-line" stroke-width="1.8" fill="none"/>
+        <text x="420" y="136" class="dg-label-sm">dark: thermally generated only</text>
+        <path d="M60,150 C120,128 200,104 300,96 C400,90 480,86 545,84" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <text x="330" y="76" class="dg-label-sm">under irradiation: orders of magnitude higher</text>
+        <line x1="200" y1="150" x2="200" y2="104" class="dg-rule" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="212" y="124" class="dg-label-sm">the off state is no longer off</text>
+      </svg>
+      <figcaption>The reverse characteristic flattens upward as generated carriers are swept out by the junction field. The device still rectifies, but its off-state current is set by the radiation rather than by temperature.</figcaption>
+    </figure>
+
+    <h2>8 · From charge to current: the single-event chain</h2>
+    <p>
+      The calculation below is the one the course returns to in both lectures that cover
+      this material, and it converts a single particle into a quantity a circuit designer
+      recognises. It proceeds in four steps and each is a single multiplication.
+    </p>
+    <p>
+      <b>Step 1 — carriers to charge.</b> Assume one heavy ion generates 10<sup>6</sup>
+      electron–hole pairs in the semiconductor. The total charge liberated is that number
+      times the elementary charge:
+      <em>Q</em> = 10<sup>6</sup> × 1.6 × 10<sup>−19</sup> C = 1.6 × 10<sup>−13</sup> C.
+    </p>
+    <p>
+      <b>Step 2 — charge to current.</b> The junction field sweeps that charge out in the
+      time it takes carriers to drift across the depletion region, on the order of
+      τ = 10<sup>−12</sup> s. Current is charge per unit time,
+      <em>I</em> = <em>Q</em>/&tau; = 1.6 &times; 10<sup>&minus;13</sup> /
+      10<sup>&minus;12</sup> = 0.16 A, which the lectures round down to <b>0.1 A</b> and carry
+      through the remaining steps.
+      A tenth of an ampere through a single junction is enormous — many orders of magnitude
+      above the reverse leakage current the junction was designed for, and large enough to
+      initiate avalanche multiplication, in which the carriers themselves acquire enough
+      energy between collisions to ionise further and multiply the current again.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">
+          <em>I</em> = <span class="frac"><span class="num"><em>Q</em></span><span class="den">τ</span></span>
+          = <span class="frac"><span class="num"><em>q N</em><sub>pairs</sub></span><span class="den">τ</span></span>
+        </div>
+        <div class="eq-num">(8.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em> transient current (A) ·
+        <em>Q</em> collected charge (C) ·
+        <em>q</em> elementary charge, 1.6 × 10<sup>−19</sup> C ·
+        <em>N</em><sub>pairs</sub> carriers generated ·
+        τ collection time (s), ~10<sup>−12</sup> s in this course's estimate.
+        Treats the transient as a rectangular pulse; a real collected-charge transient has a
+        fast drift peak followed by a slower diffusion tail, so this gives the
+        order of magnitude of the peak.
+        <a href="formula-sheet.html#eq-qit">Formula sheet §6</a>
+      </div>
+    </div>
+
+    <p>
+      <b>Step 3 — current to power.</b> With the junction reverse-biased at 0.5 V, the
+      instantaneous power dissipated is <em>P</em> = <em>IV</em> = 0.1 × 0.5 = <b>0.05 W</b>.
+    </p>
+    <p>
+      <b>Step 4 — power to power density.</b> The charge was generated within the track,
+      whose cross-section is of order 100 nm × 100 nm — an area of
+      10<sup>−10</sup> cm². Dividing gives
+      0.05 W / 10<sup>−10</sup> cm² = <b>5 × 10<sup>8</sup> W/cm², or 500 MW per square
+      centimetre</b>.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 230" role="img" aria-labelledby="f8-5-t">
+        <title id="f8-5-t">The four-step chain from carriers generated to power density in the track</title>
+        <g class="dg-fill">
+          <rect x="10" y="60" width="140" height="76" rx="5"/>
+          <rect x="188" y="60" width="140" height="76" rx="5"/>
+          <rect x="366" y="60" width="140" height="76" rx="5"/>
+          <rect x="544" y="60" width="166" height="76" rx="5"/>
+        </g>
+        <text x="80" y="86" class="dg-label" text-anchor="middle">10⁶ pairs</text>
+        <text x="80" y="110" class="dg-label-sm" text-anchor="middle">× q = 1.6×10⁻¹⁹ C</text>
+        <text x="80" y="128" class="dg-label-sm" text-anchor="middle">Q = 1.6×10⁻¹³ C</text>
+        <text x="258" y="86" class="dg-label" text-anchor="middle">÷ τ = 10⁻¹² s</text>
+        <text x="258" y="114" class="dg-label-sm" text-anchor="middle">I ≈ 0.1 A</text>
+        <text x="436" y="86" class="dg-label" text-anchor="middle">× V = 0.5 V</text>
+        <text x="436" y="114" class="dg-label-sm" text-anchor="middle">P = 0.05 W</text>
+        <text x="627" y="86" class="dg-label" text-anchor="middle">÷ A = 10⁻¹⁰ cm²</text>
+        <text x="627" y="114" class="dg-label-sm" text-anchor="middle">500 MW/cm²</text>
+        <line x1="152" y1="98" x2="184" y2="98" class="dg-acc" stroke-width="1.8" marker-end="url(#f8-5-a)"/>
+        <line x1="330" y1="98" x2="362" y2="98" class="dg-acc" stroke-width="1.8" marker-end="url(#f8-5-a)"/>
+        <line x1="508" y1="98" x2="540" y2="98" class="dg-acc" stroke-width="1.8" marker-end="url(#f8-5-a)"/>
+        <text x="360" y="176" class="dg-label" text-anchor="middle">for comparison: a fielded high-energy laser weapon reaches ~50 MW/cm²</text>
+        <text x="360" y="198" class="dg-label-sm" text-anchor="middle">one heavy ion delivers an order of magnitude more, into an area 10⁻¹⁰ cm² across</text>
+        <defs>
+          <marker id="f8-5-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> Four multiplications convert one particle into a power density.
+        Each step is elementary; the result is not.
+        <span class="src">Deck 4 pp. 26–27, Deck 5 p. 13.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The comparison the lectures draw is with a directed-energy weapon: the Lockheed Martin
+      system quoted in Deck 5 delivers roughly 50 MW/cm&sup2;. That figure comes from the
+      slide and is not independently verifiable &mdash; published material on such systems
+      gives total beam power rather than on-target power density &mdash; so treat it as the
+      order-of-magnitude comparison the lecture intends rather than as a specification. A single heavy ion deposits an
+      order of magnitude more power density than that, and it does so inside the silicon
+      rather than on its surface. The scale is why single-event effects include destructive
+      as well as recoverable outcomes, and why the photograph accompanying the slide shows a
+      commercial 120 V DC–DC converter with its power transistor burned through.
+    </p>
+
+    <div class="box insight">
+      <p>
+        The power density is large because the denominators are small, not because the
+        energy is. The total energy in the event is 0.05 W for a picosecond, which is
+        5 × 10<sup>−14</sup> J — less than the energy of the incident ion. Concentrating it
+        into 10<sup>−12</sup> s and 10<sup>−10</sup> cm² is what produces the number. This is
+        the general principle behind every single-particle effect in electronics: the total
+        energy involved is trivial, and the concentration in space and time is not. It is
+        also why the effect worsens as devices shrink — the same deposited charge arrives at
+        a node holding progressively less stored charge.
+      </p>
+    </div>
+
+    <h2>9 · Why this matters more as devices scale</h2>
+    <p>
+      <a href="m02-scaling-of-electronics.html">M02</a> described the reduction of transistor
+      dimensions and supply voltage across technology generations. Both trends act against
+      single-event tolerance, and the mechanism is visible directly in the chain above.
+    </p>
+    <p>
+      The charge that a circuit node must lose before its stored logic state is corrupted is
+      the <b>critical charge</b>, and it is approximately the node capacitance multiplied by
+      the supply voltage. Scaling reduces both: smaller devices have smaller capacitances,
+      and supply voltages have fallen from 5 V to below 1 V. The charge deposited by an
+      incident ion, meanwhile, is set by the physics of the track and does not scale at all.
+      A deposited charge that was a small perturbation on a 250 nm node is a decisive
+      disturbance on a 5 nm one.
+    </p>
+    <p>
+      Two effects work in the opposite direction. A smaller device presents a smaller target
+      area, so the probability that any given particle strikes a sensitive volume falls; and
+      the smaller collection volume intercepts a shorter length of track, so less of the
+      deposited charge is collected. The net outcome differs by technology and by effect
+      type, and it is one reason the radiation-hardened processors of
+      <a href="m03-space-electronics-gap.html">M03</a> are built on mature nodes — the larger
+      critical charge, not any total-dose advantage, is what the older process buys. The
+      quantitative treatment of upset rate against deposited charge is
+      <a href="index.html#roadmap">M15</a>.
+    </p>
+
+    <details class="check">
+      <summary>A 1 MeV proton and a 1 MeV iron ion each enter a silicon device. Both deposit their full energy. Which is more likely to cause a single-event upset, and why is the answer not simply "they deposit the same energy"?</summary>
+      <div class="answer">
+        <p>
+          Both deposit 1 MeV, so both liberate the same total number of carriers — about
+          2.8 × 10<sup>5</sup> using the measured 3.6 eV per pair. What differs is the volume
+          that energy is deposited into, and upset depends on the charge collected at one
+          node rather than on the charge liberated in the die.
+        </p>
+        <p>
+          The rate of energy loss along the track scales as the square of the incident
+          charge, so the iron ion with <em>Z</em> = 26 loses energy some 676 times faster
+          than the proton at the same velocity. Its range is correspondingly shorter — a
+          1 MeV iron ion stops within a fraction of a micrometre, while a 1 MeV proton
+          travels tens of micrometres. The iron ion therefore deposits its entire 1 MeV
+          inside a volume comparable with a single transistor, delivering the whole
+          2.8 × 10<sup>5</sup> pairs to one node. The proton spreads the same charge along a
+          track crossing many devices, so no single node collects more than a small fraction
+          of it.
+        </p>
+        <p>
+          The quantity that captures this is the <em>linear</em> energy transfer — energy
+          deposited per unit path length — and it, rather than total energy, is what
+          single-event rate prediction is built on. It is developed in
+          <a href="index.html#roadmap">M12</a>.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>A charged particle loses energy by four mechanisms: ionization, excitation, bremsstrahlung and Cherenkov radiation. Ionization dominates; Cherenkov is negligible as an energy loss and useful for detection.</li>
+        <li><em>F</em> = <em>kq</em><sub>1</sub><em>q</em><sub>2</sub>/<em>r</em>² with <em>k</em> = 9 × 10<sup>9</sup> N·m²/C² and <em>r</em> <b>in metres</b>. Its infinite range is why a charged particle interacts with every atom it passes; an uncharged particle must strike a nucleus occupying ~10<sup>−15</sup> of the atomic volume.</li>
+        <li>Ionization removes an electron entirely, creating an ion pair, occurs close to the track, and slows the incident particle at every event. Excitation promotes an electron to a higher bound state, occurs further from the track, and de-excites by emitting an ultraviolet photon.</li>
+        <li>A delta ray is a liberated electron energetic enough to ionise further. Delta rays produce most of the pairs along a heavy-ion track and set the track's radial extent.</li>
+        <li><em>N</em><sub>pairs</sub> = <em>E</em><sub>dep</sub>/<em>E</em><sub>pair</sub>. The course uses <em>E</em><sub>pair</sub> = 99.42 eV, giving 10<sup>4</sup> pairs per MeV. The measured electron–hole pair creation energy is 3.6 eV in Si and 17 eV in SiO₂, giving 2.8 × 10<sup>5</sup> pairs per MeV; 99.4 eV is the Si 2p core-level binding energy.</li>
+        <li>Generated carriers in a reverse-biased depletion region are swept out by the junction field and raise the reverse current by orders of magnitude — the off state stops being off.</li>
+        <li>The single-event chain: 10<sup>6</sup> pairs &rarr; <em>Q</em> = 1.6 &times; 10<sup>&minus;13</sup> C &rarr; <em>I</em> = <em>Q</em>/&tau; = 0.16 A at &tau; = 1 ps, rounded to 0.1 A in the lectures &rarr; <em>P</em> = <em>IV</em> = 0.05 W at 0.5 V &rarr; 500 MW/cm&sup2; over a 10<sup>&minus;10</sup> cm&sup2; track. Carrying 0.16 A through instead gives 0.08 W and 800 MW/cm&sup2;. The slide-quoted laser weapon is ~50 MW/cm&sup2;.</li>
+        <li>The energy involved is trivial &mdash; about 5 &times; 10<sup>&minus;14</sup> J, or 8 &times; 10<sup>&minus;14</sup> J unrounded. The concentration in space and time is what causes the damage.</li>
+        <li>Scaling lowers critical charge through both smaller node capacitance and lower supply voltage, while the deposited charge does not scale. A mature node's single-event margin, not its total-dose behaviour, is what makes it attractive for space.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 4 p. 19 (four types of charged-particle interaction, including Cherenkov; ionization almost always the primary mechanism of energy loss) and Deck 5 p. 8 (the same slide with three listed). Cherenkov threshold condition and yield from standard radiation-detection references</td></tr>
+      <tr><td>§2</td><td>Deck 4 p. 18 and Deck 5 p. 9 (Coulomb's equation with <em>k</em> = 9 × 10<sup>9</sup> N·m²/C², charges in coulombs, distance in metres); Deck 4 p. 21 and Deck 5 p. 10 (atom is 99.9999999 % empty space; interaction via electrostatic force); Lecture 5 (atomic density ~10<sup>22</sup>–10<sup>23</sup> cm<sup>−3</sup>)</td></tr>
+      <tr><td>§3</td><td>Deck 4 pp. 20, 22 (energy imparted must exceed the electron binding energy; ionization most likely near the trajectory; each event reduces the particle's velocity; the stripped electron is the negative member of the ion pair)</td></tr>
+      <tr><td>§4</td><td>Deck 4 p. 20 and Deck 5 p. 11 (a delta ray is a secondary electron with sufficient kinetic energy to cause additional ionization); Lecture 5 (delta rays and beta rays distinguished by provenance, not species)</td></tr>
+      <tr><td>§5</td><td>Deck 4 p. 23 and Deck 5 p. 12 (Si binding energy 99.42 eV, radiation above it causes ionization damage, 1 MeV → 10<sup>4</sup> or more electrons, excitation energy 1.1 eV). The 3.6 eV electron–hole pair creation energy for silicon, 17 eV for SiO₂, and the identification of 99.4 eV as the Si 2p core level are standard values from the semiconductor-detector and photoelectron-spectroscopy literature</td></tr>
+      <tr><td>§6</td><td>Deck 5 pp. 16–17 (excitation promotes an electron to a higher shell, occurs farther from the trajectory than ionization, de-excites by emitting a low-energy ultraviolet photon, each event reduces velocity; emission spectra of different atoms); Deck 5 p. 18 (band diagram, excitation to the conduction band, more conductive); Lecture 5 (band formation as atoms are brought together)</td></tr>
+      <tr><td>§7</td><td>Deck 5 pp. 18–19 (increased gate leakage affecting switching; data corruption in memory cells; excited-electron generation giving large leakage so the diode off state resembles the on state, heating the electronics)</td></tr>
+      <tr><td>§8</td><td>Deck 4 pp. 25–27 and Deck 5 p. 13 (10<sup>6</sup> charges, <em>Q</em> = 1.6 × 10<sup>−13</sup> C, <em>I</em> = <em>Q</em>/τ with τ ≈ 10<sup>−12</sup> s giving 0.1 A, avalanche multiplication, <em>P</em> = <em>IV</em> = 0.05 W at 0.5 V, area 100 nm × 100 nm = 10<sup>−10</sup> cm², 500 MW/cm², Lockheed Martin laser weapon ~50 MW/cm²); Deck 4 p. 24 and Deck 5 p. 14 (destructive event in a commercial 120 V DC–DC converter)</td></tr>
+      <tr><td>§9</td><td>Critical charge as node capacitance times supply voltage, and the competing target-area and collection-depth trends, from the standard single-event-effects literature; <a href="m02-scaling-of-electronics.html">M02</a> for the scaling history and <a href="m03-space-electronics-gap.html">M03</a> for the mature-node rationale</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m07-orbits-and-environment.html"><span>Previous</span>M07 · Orbits and the Environment They See</a>
+      <a class="next" href="m09-bremsstrahlung-xrays.html"><span>Next</span>M09 · Bremsstrahlung and Characteristic X-rays</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M06 · Device Physics for Radiation Effects — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M06 · Device Physics for Radiation Effects</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 06</p>
+    <h1>Device Physics for Radiation Effects</h1>
+    <p class="lede">
+      The device machinery total ionizing dose acts through: how a MOS capacitor responds to
+      gate bias, what a charge placed inside the oxide does to that response and how much it
+      matters where the charge sits, how the same charge reaches the drain current of a
+      transistor and the base current of a bipolar device, and how a charge-coupled device
+      moves signal charge that defects can intercept.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M05</span>
+      <span><b>Read time</b> ~40 min</span>
+      <span><b>Sources</b> Deck 03 pp. 42–44; Deck 04 pp. 5–34, 37–44, 47–48; Deck 05 pp. 4–15</span>
+    </div>
+
+    <p>
+      <a href="m05-three-effects-taxonomy.html">M05</a> placed total ionizing dose as the
+      cumulative ionizing cell of the taxonomy and stated its chain in four steps: pairs are
+      generated in an oxide, some holes survive recombination, those holes transport to the
+      silicon interface, and the trapped charge moves a device parameter. The first three
+      steps are oxide physics and belong to
+      <a href="m07-oxide-interface-trap-charge.html">M07</a>. The fourth is device physics,
+      and it cannot be made quantitative — or even stated with the right sign — without the
+      electrostatics of the devices themselves.
+    </p>
+    <p>
+      This module supplies that electrostatics. It is deliberately radiation-free in its
+      mechanisms: no process here creates charge, and the only radiation that appears is as
+      the eventual source of a charge whose origin is deferred. What the module does establish
+      is the machinery that converts a charge density into a measurable terminal quantity —
+      the oxide capacitance that sets the exchange rate between charge and voltage, the
+      position weighting that makes a charge near the silicon count fully and a charge near
+      the gate count not at all, the occupancy rule that decides the sign of the interface
+      contribution, and the exponential subthreshold characteristic on which the standard
+      separation measurement depends.
+    </p>
+    <p>
+      Three device families follow, because the course examines all three and they fail
+      differently. The MOS transistor responds to charge in its gate oxide through a threshold
+      shift and to charge in its isolation oxides through leakage. The bipolar transistor
+      responds through recombination at the surface where its emitter–base junction meets the
+      oxide, which is a completely different mechanism reaching a completely different
+      terminal. The charge-coupled device responds through the efficiency with which it passes
+      a charge packet from one electrode to the next. Each is developed here in its
+      unirradiated form, with the radiation response named and deferred.
+    </p>
+
+    <div class="box defn">
+      <p>
+        <b>Assumed background.</b> This module takes as known: the band structure of a
+        semiconductor, the meaning of the Fermi level and of doping, the existence of a
+        depletion region at a junction, and the exponential current–voltage relation of a
+        diode. Everything else it builds. The course itself assumes rather more — the syllabus
+        treats this material as prerequisite from earlier device courses — so the coverage here
+        is deliberately more complete than the lecture.
+      </p>
+    </div>
+
+    <h2>1 · The MOS capacitor and its three regimes</h2>
+    <p>
+      Every effect in Part III acts through a metal–oxide–semiconductor capacitor, either as a
+      structure in its own right or as the gate stack of a transistor. It is three layers: a
+      conducting gate, an insulating oxide, and a doped semiconductor substrate. The gate and
+      the substrate are the two plates; the oxide is the dielectric. What makes it more than a
+      capacitor is that one of its plates is a semiconductor, whose carrier concentration at
+      the surface is itself controlled by the applied voltage.
+    </p>
+    <p>
+      Consider a substrate doped p-type, so that holes are the majority carrier. Applying a
+      negative voltage to the gate attracts holes to the oxide interface. The surface carries
+      a higher hole concentration than the bulk; this is <b>accumulation</b>, the semiconductor
+      surface behaves as a conductor, and the structure is a parallel-plate capacitor whose
+      dielectric is the oxide alone.
+    </p>
+    <p>
+      Applying a small positive voltage instead repels holes from the interface and leaves the
+      immobile negative acceptor ions behind. The surface is stripped of mobile carriers to a
+      depth <em>W</em> that grows with the applied voltage; this is <b>depletion</b>. The
+      depleted layer is an insulator, so it adds a second capacitance in series with the oxide,
+      and the total capacitance falls as <em>W</em> grows.
+    </p>
+    <p>
+      Raising the gate voltage further bends the bands far enough that the minority carrier —
+      here the electron — becomes the more numerous species at the surface. This is
+      <b>inversion</b>, and the surface layer is now n-type although the bulk is p-type. Once
+      inversion is established, further increases in gate voltage are accommodated by adding
+      electrons to that layer rather than by widening the depletion region, so the depletion
+      width stops growing at a maximum value. The inversion layer is the conducting channel of
+      a MOS transistor.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 268" role="img" aria-labelledby="m06f1-t">
+        <title id="m06f1-t">Charge distribution in a MOS capacitor in accumulation, depletion and inversion</title>
+
+        <g class="dg-label" text-anchor="middle">
+          <text x="128" y="18">Accumulation</text>
+          <text x="350" y="18">Depletion</text>
+          <text x="572" y="18">Inversion</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="128" y="34"><tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">G</tspan> &lt; <tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">FB</tspan></text>
+          <text x="350" y="34"><tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">FB</tspan> &lt; <tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">G</tspan> &lt; <tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">T</tspan></text>
+          <text x="572" y="34"><tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">G</tspan> &gt; <tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">T</tspan></text>
+        </g>
+
+        <!-- panel 1 -->
+        <g>
+          <rect x="48" y="48" width="160" height="22" class="dg-fill"/>
+          <rect x="48" y="70" width="160" height="26" class="dg-fill"/>
+          <rect x="48" y="96" width="160" height="96" class="dg-fill"/>
+          <text x="128" y="63" class="dg-label-sm" text-anchor="middle">gate</text>
+          <text x="128" y="87" class="dg-label-sm" text-anchor="middle">oxide</text>
+          <text x="128" y="180" class="dg-label-sm" text-anchor="middle">p-type Si</text>
+          <g class="dg-acc-f">
+            <text x="66" y="66" class="dg-label-sm">−</text><text x="96" y="66" class="dg-label-sm">−</text>
+            <text x="126" y="66" class="dg-label-sm">−</text><text x="156" y="66" class="dg-label-sm">−</text><text x="186" y="66" class="dg-label-sm">−</text>
+            <text x="66" y="110" class="dg-label-sm">+</text><text x="96" y="110" class="dg-label-sm">+</text>
+            <text x="126" y="110" class="dg-label-sm">+</text><text x="156" y="110" class="dg-label-sm">+</text><text x="186" y="110" class="dg-label-sm">+</text>
+          </g>
+          <text x="128" y="212" class="dg-label-sm" text-anchor="middle">holes pile at the surface</text>
+          <text x="128" y="228" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">C</tspan> = <tspan class="dg-math">C</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">ox</tspan></text>
+        </g>
+
+        <!-- panel 2 -->
+        <g>
+          <rect x="270" y="48" width="160" height="22" class="dg-fill"/>
+          <rect x="270" y="70" width="160" height="26" class="dg-fill"/>
+          <rect x="270" y="96" width="160" height="96" class="dg-fill"/>
+          <text x="350" y="63" class="dg-label-sm" text-anchor="middle">gate</text>
+          <text x="350" y="87" class="dg-label-sm" text-anchor="middle">oxide</text>
+          <text x="350" y="180" class="dg-label-sm" text-anchor="middle">p-type Si</text>
+          <rect x="270" y="96" width="160" height="40" class="dg-rule" fill="none" stroke-dasharray="3 3"/>
+          <g class="dg-acc-f">
+            <text x="288" y="66" class="dg-label-sm">+</text><text x="318" y="66" class="dg-label-sm">+</text>
+            <text x="348" y="66" class="dg-label-sm">+</text><text x="378" y="66" class="dg-label-sm">+</text><text x="408" y="66" class="dg-label-sm">+</text>
+            <text x="288" y="122" class="dg-label-sm">−</text><text x="318" y="122" class="dg-label-sm">−</text>
+            <text x="348" y="122" class="dg-label-sm">−</text><text x="378" y="122" class="dg-label-sm">−</text><text x="408" y="122" class="dg-label-sm">−</text>
+          </g>
+          <text x="440" y="120" class="dg-label-sm"><tspan class="dg-math">W</tspan></text>
+          <text x="350" y="212" class="dg-label-sm" text-anchor="middle">fixed acceptor ions exposed</text>
+          <text x="350" y="228" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">C</tspan> = <tspan class="dg-math">C</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">ox</tspan><tspan class="dg-math">C</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">S</tspan> / (<tspan class="dg-math">C</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">ox</tspan> + <tspan class="dg-math">C</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">S</tspan>)</text>
+        </g>
+
+        <!-- panel 3 -->
+        <g>
+          <rect x="492" y="48" width="160" height="22" class="dg-fill"/>
+          <rect x="492" y="70" width="160" height="26" class="dg-fill"/>
+          <rect x="492" y="96" width="160" height="96" class="dg-fill"/>
+          <text x="572" y="63" class="dg-label-sm" text-anchor="middle">gate</text>
+          <text x="572" y="87" class="dg-label-sm" text-anchor="middle">oxide</text>
+          <text x="572" y="180" class="dg-label-sm" text-anchor="middle">p-type Si</text>
+          <rect x="492" y="96" width="160" height="40" class="dg-rule" fill="none" stroke-dasharray="3 3"/>
+          <rect x="492" y="96" width="160" height="8" class="dg-acc" fill="none" stroke-width="1.6"/>
+          <g class="dg-acc-f">
+            <text x="510" y="66" class="dg-label-sm">+</text><text x="540" y="66" class="dg-label-sm">+</text>
+            <text x="570" y="66" class="dg-label-sm">+</text><text x="600" y="66" class="dg-label-sm">+</text><text x="630" y="66" class="dg-label-sm">+</text>
+          </g>
+          <text x="572" y="128" class="dg-label-sm" text-anchor="middle">−  −  −  −  −</text>
+          <text x="572" y="212" class="dg-label-sm" text-anchor="middle">electron layer at the surface;</text>
+          <text x="572" y="228" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">W</tspan> stops growing at <tspan class="dg-math">W</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">max</tspan></text>
+        </g>
+
+        <text x="350" y="256" class="dg-label-sm" text-anchor="middle">The gate charge is always equal and opposite to the total charge in the semiconductor and the oxide.</text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The three regimes of a p-substrate MOS capacitor. Only the middle and
+        right panels contain an insulating layer in the silicon, which is why capacitance falls
+        away from accumulation. The inversion layer outlined in accent is the transistor
+        channel.
+      </figcaption>
+    </figure>
+
+    <p>
+      The gate voltage at which the semiconductor surface is neither accumulated nor depleted —
+      where the bands are flat all the way to the interface — is the <b>flat-band voltage</b>,
+      <em>V</em><sub>FB</sub>. The gate voltage at which inversion is established is the
+      <b>threshold voltage</b>, <em>V</em><sub>T</sub>. Both are the reference points against
+      which radiation-induced shifts are measured, and both move when charge appears inside the
+      oxide.
+    </p>
+
+    <h2>2 · The capacitance–voltage curve</h2>
+    <p>
+      Sweeping the gate voltage and measuring the small-signal capacitance traces out the three
+      regimes and is the standard characterisation of a MOS capacitor. It is also the
+      measurement from which radiation-induced charge densities are extracted, so its shape
+      must be understood in detail.
+    </p>
+    <p>
+      In accumulation the semiconductor surface is conductive and the measured capacitance is
+      that of the oxide alone.
+    </p>
+
+    <div class="eq" id="m06-eq-cox">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em><sub>ox</sub> = <span class="frac"><span class="num"><em>ε</em><sub>ox</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(6.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>ox</sub> oxide capacitance <b>per unit area</b> (F/cm²) ·
+        <em>ε</em><sub>ox</sub> permittivity of the oxide (F/cm), equal to
+        <em>κ</em><sub>ox</sub><em>ε</em><sub>0</sub> with <em>κ</em><sub>ox</sub> = 3.9 for
+        SiO₂ and <em>ε</em><sub>0</sub> = 8.854×10⁻¹⁴ F/cm, giving
+        <em>ε</em><sub>ox</sub> = 3.45×10⁻¹³ F/cm ·
+        <em>t</em><sub>ox</sub> oxide thickness (<b>cm</b>, not nm — this is the most common
+        unit slip in the subject). A 5 nm oxide gives
+        <em>C</em><sub>ox</sub> = 6.9×10⁻⁷ F/cm², which is 6.9 fF per square micrometre of
+        gate. On the formula sheet as
+        <a href="formula-sheet.html#eq-cox">(6.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      In depletion the depleted silicon adds a capacitance
+      <em>C</em><sub>S</sub> = <em>ε</em><sub>Si</sub>/<em>W</em> in series with the oxide, so
+      the total is <em>C</em><sub>ox</sub><em>C</em><sub>S</sub>/(<em>C</em><sub>ox</sub> + <em>C</em><sub>S</sub>).
+      Because <em>W</em> grows with gate voltage, the curve falls monotonically through this
+      region.
+    </p>
+    <p>
+      In inversion the result depends on the measurement frequency, and the reason is the rate
+      at which minority carriers can be supplied. At <b>low frequency</b> the inversion layer
+      can be replenished from thermal generation in the bulk fast enough to follow the
+      small-signal excitation, so the surface again behaves as a conductor and the capacitance
+      returns to <em>C</em><sub>ox</sub>. At <b>high frequency</b> it cannot; the inversion
+      charge does not respond, the depletion layer at its maximum width still does, and the
+      capacitance stays at the low value
+      <em>C</em><sub>ox</sub><em>C</em><sub>S,min</sub>/(<em>C</em><sub>ox</sub> + <em>C</em><sub>S,min</sub>).
+      If the gate voltage is swept faster than minority carriers can be generated at all, no
+      inversion layer forms, the depletion region grows past <em>W</em><sub>max</sub>, and the
+      capacitance falls below the high-frequency curve; this is <b>deep depletion</b>.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 680 330" role="img" aria-labelledby="m06f2-t">
+        <title id="m06f2-t">Capacitance against gate voltage for a MOS capacitor, showing the low-frequency, high-frequency and deep-depletion branches, and the effect of oxide charge and interface traps</title>
+
+        <line x1="80" y1="270" x2="640" y2="270" class="dg-rule" stroke-width="1.2"/>
+        <line x1="80" y1="270" x2="80" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <text x="360" y="320" class="dg-label" text-anchor="middle">Gate voltage <tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">G</tspan></text>
+        <text x="26" y="155" class="dg-label" text-anchor="middle" transform="rotate(-90 26 155)"><tspan class="dg-math">C</tspan> / <tspan class="dg-math">C</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">ox</tspan></text>
+        <text x="72" y="74" class="dg-label-sm" text-anchor="end">1.0</text>
+        <line x1="75" y1="70" x2="80" y2="70" class="dg-rule" stroke-width="0.8"/>
+
+        <!-- pre-rad HF curve -->
+        <path d="M96,70 L188,70 C232,70 248,118 268,168 C284,206 300,222 330,222 L436,222"
+              class="dg-acc" stroke-width="2.2" fill="none"/>
+        <!-- LF branch -->
+        <path d="M300,222 C322,222 330,140 352,90 C360,74 368,70 380,70 L436,70"
+              class="dg-line" stroke-width="1.6" fill="none" stroke-dasharray="6 4"/>
+        <!-- deep depletion -->
+        <path d="M330,222 C356,226 380,240 436,254" class="dg-line" stroke-width="1.4" fill="none" stroke-dasharray="2 3"/>
+
+        <text x="444" y="226" class="dg-label-sm">high frequency</text>
+        <text x="444" y="74" class="dg-label-sm">low frequency</text>
+        <text x="444" y="258" class="dg-label-sm">deep depletion</text>
+        <text x="104" y="62" class="dg-label-sm">accumulation</text>
+
+        <!-- post-rad, shifted and stretched -->
+        <path d="M96,70 L122,70 C170,70 192,116 222,166 C252,214 276,222 316,222 L436,222"
+              class="dg-line" stroke-width="1.6" fill="none"/>
+        <text x="100" y="196" class="dg-label-sm">shifted left by oxide charge,</text>
+        <text x="100" y="210" class="dg-label-sm">stretched by interface traps</text>
+        <line x1="196" y1="192" x2="216" y2="172" class="dg-rule" stroke-width="0.8"/>
+
+        <line x1="214" y1="70" x2="214" y2="278" class="dg-rule" stroke-width="0.8" stroke-dasharray="3 3"/>
+        <text x="214" y="292" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">FB</tspan></text>
+        <line x1="330" y1="70" x2="330" y2="278" class="dg-rule" stroke-width="0.8" stroke-dasharray="3 3"/>
+        <text x="330" y="292" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">T</tspan></text>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> The accent curve is the high-frequency characteristic before
+        irradiation. Charge in the oxide translates the whole curve along the voltage axis
+        without changing its shape; interface traps change its shape in depletion, because
+        their occupancy changes with surface potential and adds a bias-dependent capacitance
+        in parallel. The two signatures are independent, which is what makes them separable.
+        Both curves reach the same <em>C</em><sub>ox</sub> in accumulation and the same minimum
+        in inversion: radiation changes neither <em>ε</em><sub>ox</sub> nor
+        <em>t</em><sub>ox</sub> nor the substrate doping, so only the path between the two ends
+        moves.
+      </figcaption>
+    </figure>
+
+    <p>
+      The two distortions marked in Figure 2 are the whole diagnostic content of the
+      measurement, and Deck 04 states them in one line each: <b>fixed charge translates the
+      curve</b>, and <b>interface traps change the slope of the curve in depletion</b>. A
+      translation with no change of shape means charge that does not exchange carriers with
+      the silicon and therefore contributes the same amount at every bias. A change of shape
+      means states whose charge depends on where the Fermi level sits at the surface, so their
+      contribution varies through the sweep and the curve is stretched along the voltage axis.
+      <a href="m07-oxide-interface-trap-charge.html">M07</a> §9 turns this into the standard
+      measurement that separates the two radiation-induced densities.
+    </p>
+
+    <p>
+      The frequency that separates the two branches is set by how fast the inversion layer can
+      be replenished, and that rate is thermal generation in the depleted silicon rather than
+      anything electrical. Generation is slow — the generation lifetime in device-grade silicon
+      is orders of magnitude longer than the recombination lifetime — so the inversion charge
+      follows only excitations well below the kilohertz range, and a conventional
+      capacitance meter operating at 100 kHz or 1 MHz always reports the high-frequency branch.
+      Obtaining the low-frequency branch therefore requires a different instrument rather than a
+      lower dial setting: the <b>quasi-static</b> measurement ramps the gate voltage slowly and
+      records the displacement current it drives, which gives the capacitance directly at an
+      effective frequency near zero. The two branches taken together are more informative than
+      either alone, because the interface-trap capacitance appears in the low-frequency curve and
+      not in the high-frequency one, and the difference between them is a direct measure of the
+      interface-trap density across the gap.
+    </p>
+
+    <h2>3 · Charge in the oxide, and where it sits</h2>
+    <p>
+      An oxide is never charge-free. Deck 04 names four populations, distinguished by where
+      they sit and whether their charge state depends on bias.
+    </p>
+    <ul>
+      <li><b>Mobile ionic charge</b>, <em>Q</em><sub>M</sub> — alkali contamination,
+        principally sodium and potassium, which drifts through the oxide under bias at elevated
+        temperature. Its signature is a flat-band voltage that changes with bias-temperature
+        history, producing hysteresis in a swept measurement.</li>
+      <li><b>Fixed oxide charge</b>, <em>Q</em><sub>F</sub> — positive charge sitting within a
+        few nanometres of the silicon interface, created during oxidation, independent of bias
+        and immobile.</li>
+      <li><b>Interface-trapped charge</b>, <em>Q</em><sub>it</sub> — states at the silicon
+        surface whose charge state depends on the surface potential, treated in §5.</li>
+      <li><b>Oxide-trapped charge</b>, <em>ρ</em><sub>ox</sub> — charge captured at defect
+        sites distributed through the oxide bulk. This is the population radiation creates, and
+        it is the reason the position dependence below matters.</li>
+    </ul>
+    <p>
+      Any charge inside the oxide must be balanced by image charge on the two conductors that
+      surround it, and the split between them is what determines its effect. Deck 04 states the
+      division: charge in the oxide is mirrored in the gate electrode and the substrate, and the
+      closer the charge is to the silicon, the greater its effect on the silicon. A charge
+      sitting immediately against the gate is imaged entirely on the gate, induces nothing in
+      the silicon, and does not shift the flat-band voltage at all. Moving it toward the silicon
+      transfers a growing share of the image charge to the substrate, where it does act on the
+      surface.
+    </p>
+    <p>
+      The flat-band condition makes that quantitative, and it is the condition the measurement
+      of §2 reports. Flat band is by definition the gate voltage at which there is no field in
+      the substrate, so the applied bias has been adjusted until all the image charge has
+      returned to the gate. The field the trapped sheet drives then occupies only the oxide
+      lying <em>between the gate and the sheet</em>, and the voltage dropped across that region
+      is exactly the shift in flat-band voltage. A sheet against the gate spans no oxide and
+      costs nothing; a sheet at the silicon interface spans the whole oxide and costs the most.
+      Deck 04 states the limiting case in those terms: the effect is maximum when
+      <em>x</em><sub>1</sub> = <em>x</em><sub>ox</sub>.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 250" role="img" aria-labelledby="m06f3-t">
+        <title id="m06f3-t">Image charge division and the resulting oxide field for a sheet of charge at three positions in the oxide</title>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="118" y="16">at the gate</text>
+          <text x="350" y="16">mid-oxide</text>
+          <text x="582" y="16">at the Si interface</text>
+        </g>
+
+        <!-- three stacks -->
+        <g>
+          <rect x="48" y="28" width="140" height="20" class="dg-fill"/>
+          <rect x="48" y="48" width="140" height="92" class="dg-fill"/>
+          <rect x="48" y="140" width="140" height="30" class="dg-fill"/>
+          <text x="118" y="42" class="dg-label-sm" text-anchor="middle">gate</text>
+          <text x="118" y="160" class="dg-label-sm" text-anchor="middle">Si</text>
+          <line x1="48" y1="52" x2="188" y2="52" class="dg-acc" stroke-width="2.4"/>
+          <text x="196" y="56" class="dg-label-sm"><tspan class="dg-math">x</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">1</tspan> = 0</text>
+          <text x="118" y="196" class="dg-label-sm" text-anchor="middle">no oxide between charge and gate</text>
+          <text x="118" y="214" class="dg-label-sm" text-anchor="middle">Δ<tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">FB</tspan> = 0</text>
+        </g>
+
+        <g>
+          <rect x="280" y="28" width="140" height="20" class="dg-fill"/>
+          <rect x="280" y="48" width="140" height="92" class="dg-fill"/>
+          <rect x="280" y="140" width="140" height="30" class="dg-fill"/>
+          <text x="350" y="42" class="dg-label-sm" text-anchor="middle">gate</text>
+          <text x="350" y="160" class="dg-label-sm" text-anchor="middle">Si</text>
+          <line x1="280" y1="94" x2="420" y2="94" class="dg-acc" stroke-width="2.4"/>
+          <text x="428" y="98" class="dg-label-sm"><tspan class="dg-math">x</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">1</tspan> = <tspan class="dg-math">t</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">ox</tspan>/2</text>
+          <path d="M296,52 L296,92" class="dg-line" stroke-width="1.4" marker-end="url(#m06a1)"/>
+          <path d="M344,52 L344,92" class="dg-line" stroke-width="1.4" marker-end="url(#m06a1)"/>
+          <text x="350" y="196" class="dg-label-sm" text-anchor="middle">field spans half the oxide</text>
+          <text x="350" y="214" class="dg-label-sm" text-anchor="middle">Δ<tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">FB</tspan> = −<tspan class="dg-math">Q</tspan>/2<tspan class="dg-math">C</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">ox</tspan></text>
+        </g>
+
+        <g>
+          <rect x="512" y="28" width="140" height="20" class="dg-fill"/>
+          <rect x="512" y="48" width="140" height="92" class="dg-fill"/>
+          <rect x="512" y="140" width="140" height="30" class="dg-fill"/>
+          <text x="582" y="42" class="dg-label-sm" text-anchor="middle">gate</text>
+          <text x="582" y="160" class="dg-label-sm" text-anchor="middle">Si</text>
+          <line x1="512" y1="138" x2="652" y2="138" class="dg-acc" stroke-width="2.4"/>
+          <text x="660" y="142" class="dg-label-sm" text-anchor="end"><tspan class="dg-math">x</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">1</tspan> = <tspan class="dg-math">t</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">ox</tspan></text>
+          <path d="M522,52 L522,136" class="dg-line" stroke-width="1.4" marker-end="url(#m06a1)"/>
+          <path d="M560,52 L560,136" class="dg-line" stroke-width="1.4" marker-end="url(#m06a1)"/>
+          <text x="582" y="196" class="dg-label-sm" text-anchor="middle">field spans the whole oxide</text>
+          <text x="582" y="214" class="dg-label-sm" text-anchor="middle">Δ<tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">FB</tspan> = −<tspan class="dg-math">Q</tspan>/<tspan class="dg-math">C</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">ox</tspan>, the maximum</text>
+        </g>
+
+        <text x="350" y="240" class="dg-label-sm" text-anchor="middle">At flat band all the image charge is on the gate, so the field runs from the gate down to the sheet. <tspan class="dg-math">x</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">1</tspan> is measured from the gate.</text>
+        <defs><marker id="m06a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> The same quantity of trapped charge at three depths, drawn at flat band.
+        Its effect is proportional to how far it sits from the gate, because that is the
+        thickness of oxide the sheet’s field has to cross — and the voltage dropped across it is
+        what the gate must supply to hold the substrate flat.
+      </figcaption>
+    </figure>
+
+    <p>
+      Weighting each element of charge by its distance from the gate gives the general result.
+    </p>
+
+    <div class="eq" id="m06-eq-centroid">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>FB</sub> = −<span class="frac"><span class="num">1</span><span class="den"><em>ε</em><sub>ox</sub></span></span> ∫<sub>0</sub><sup><em>t</em><sub>ox</sub></sup> <em>x ρ</em>(<em>x</em>) d<em>x</em> = −<span class="frac"><span class="num"><em>Q</em><sub>ox</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> · <span class="frac"><span class="num"><em>x̄</em></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(6.2)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>FB</sub> shift in flat-band voltage (V) ·
+        <em>ρ</em>(<em>x</em>) volume charge density in the oxide (C/cm³) ·
+        <em>x</em> distance measured <b>from the gate electrode</b> (cm) ·
+        <em>t</em><sub>ox</sub> oxide thickness (cm) ·
+        <em>Q</em><sub>ox</sub> = ∫<em>ρ</em> d<em>x</em>, the total areal charge density
+        (C/cm²) · <em>x̄</em> its centroid, the charge-weighted mean distance from the gate
+        (cm). Positive <em>Q</em><sub>ox</sub> gives a negative shift. The full
+        <em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub> is recovered only when every charge
+        sits at the silicon interface, <em>x̄</em> = <em>t</em><sub>ox</sub>. On the formula
+        sheet as <a href="formula-sheet.html#eq-dv">(6.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      Two consequences run through the rest of Part III. First, the sign: radiation-induced
+      oxide charge is net positive, so it always shifts the flat-band and threshold voltages
+      <b>negative</b>, in an n-channel and a p-channel device alike. Second, the geometry:
+      because trapped holes accumulate close to the silicon interface rather than uniformly,
+      <em>x̄</em> is near <em>t</em><sub>ox</sub> and the shift is close to its maximum
+      possible value for the charge present. This is also why the same areal density of trapped
+      charge is far more damaging in a thick oxide than a thin one — the charge scales with
+      thickness while <em>C</em><sub>ox</sub> falls with it, which
+      <a href="m07-oxide-interface-trap-charge.html">M07</a> §3 makes quantitative.
+    </p>
+
+    <h2>4 · The MOS transistor above threshold</h2>
+    <p>
+      A MOS field-effect transistor is the capacitor of §1 with two heavily doped contacts, the
+      source and the drain, placed at either end of the surface so that the inversion layer
+      forms a channel between them. Gate voltage controls whether the channel exists and how
+      much charge it holds; drain voltage draws current along it. For an n-channel device on a
+      p-type substrate, the channel is an electron layer and the device conducts once
+      <em>V</em><sub>GS</sub> exceeds <em>V</em><sub>T</sub>.
+    </p>
+    <p>
+      The charge per unit area in the channel is <em>C</em><sub>ox</sub>(<em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>)
+      at the source end, falling toward the drain as the local channel-to-gate voltage falls.
+      Integrating along the channel gives the current.
+    </p>
+
+    <div class="eq" id="m06-eq-idlin">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D</sub> = <em>µ</em><sub>n</sub><em>C</em><sub>ox</sub> <span class="frac"><span class="num"><em>W</em></span><span class="den"><em>L</em></span></span> <span class="dl">[</span> (<em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>)<em>V</em><sub>DS</sub> − <span class="frac"><span class="num"><em>V</em><sub>DS</sub><sup>2</sup></span><span class="den">2</span></span> <span class="dl">]</span></div>
+        <div class="eq-num">(6.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D</sub> drain current (A) · <em>µ</em><sub>n</sub> effective channel
+        electron mobility (cm²/V·s) · <em>C</em><sub>ox</sub> from (6.1) (F/cm²) ·
+        <em>W</em>, <em>L</em> channel width and length (same units, so the ratio is
+        dimensionless) · <em>V</em><sub>GS</sub>, <em>V</em><sub>DS</sub> gate–source and
+        drain–source voltages (V) · <em>V</em><sub>T</sub> threshold voltage (V). Valid in the
+        <b>linear region</b>, <em>V</em><sub>DS</sub> &lt; <em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>,
+        where the channel reaches from source to drain.
+      </div>
+    </div>
+
+    <p>
+      When <em>V</em><sub>DS</sub> reaches <em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub> the
+      channel charge falls to zero at the drain end and the channel pinches off. Beyond that
+      point the current stops rising with drain voltage, which is the <b>saturation
+      region</b>: substituting <em>V</em><sub>DS</sub> = <em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>
+      into (6.3) gives
+      <em>I</em><sub>D,sat</sub> = (<em>µ</em><sub>n</sub><em>C</em><sub>ox</sub>/2)(<em>W</em>/<em>L</em>)(<em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>)².
+      In a short-channel device the saturation current rises less steeply than this square law:
+      the short channel puts the carriers in a high enough lateral field that their drift
+      velocity saturates, and <em>I</em><sub>D,sat</sub> becomes roughly proportional to
+      (<em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>) rather than to its square.
+    </p>
+    <p>
+      Equation (6.3) is the reason the two radiation-induced quantities of Part III reach the
+      terminal current by different routes, and Deck 04 separates them explicitly. A change in
+      <em>V</em><sub>T</sub> <b>translates</b> the transfer characteristic along the gate-voltage
+      axis: the same current is available, at a different gate voltage. A change in
+      <em>µ</em><sub>n</sub> <b>scales</b> it: less current at every bias point, with the
+      threshold unmoved. A third change, the stretchout produced by interface traps, distorts
+      it. All three occur together in an irradiated device, and reading a single post-irradiation
+      curve requires knowing which signature is which.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 640 250" role="img" aria-labelledby="m06f4-t">
+        <title id="m06f4-t">Transfer characteristic of an n-channel MOSFET before and after irradiation, showing threshold shift, stretchout and mobility degradation</title>
+
+        <line x1="72" y1="200" x2="600" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="72" y1="200" x2="72" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <text x="336" y="238" class="dg-label" text-anchor="middle">Gate voltage <tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">GS</tspan></text>
+        <text x="24" y="115" class="dg-label" text-anchor="middle" transform="rotate(-90 24 115)">Drain current <tspan class="dg-math">I</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">D</tspan></text>
+
+        <path d="M256,200 C300,196 330,150 372,100 C400,68 430,50 470,42" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <text x="478" y="44" class="dg-label-sm">pre-irradiation</text>
+
+        <path d="M176,200 C228,196 266,160 316,118 C356,86 400,72 470,66" class="dg-line" stroke-width="1.8" fill="none"/>
+        <text x="478" y="70" class="dg-label-sm">post-irradiation</text>
+
+        <line x1="176" y1="200" x2="256" y2="200" class="dg-acc" stroke-width="3"/>
+        <text x="216" y="218" class="dg-label-sm" text-anchor="middle">Δ<tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">T</tspan></text>
+
+        <text x="300" y="96" class="dg-label-sm">stretchout from</text>
+        <text x="300" y="110" class="dg-label-sm">interface traps</text>
+        <line x1="296" y1="104" x2="272" y2="126" class="dg-rule" stroke-width="0.8"/>
+
+        <text x="486" y="98" class="dg-label-sm">mobility degradation</text>
+        <text x="486" y="112" class="dg-label-sm">lowers the whole curve</text>
+        <line x1="482" y1="98" x2="466" y2="58" class="dg-rule" stroke-width="0.8"/>
+      </svg>
+      <figcaption>Three separable signatures in one measurement. A pure translation is oxide charge; a change of slope is interface traps; a reduction in the saturated value is mobility.</figcaption>
+    </figure>
+
+    <p>
+      Because the threshold voltage is defined by a condition on surface potential rather than
+      by anything directly measurable, extracting it from a measured curve requires a
+      convention, and different conventions give slightly different numbers. Deck 04 gives two
+      that the course uses. The <b>constant-current</b> method defines
+      <em>V</em><sub>T</sub> as the gate voltage at which the drain current reaches
+      100 nA × (<em>W</em>/<em>L</em>), which scales the criterion with device geometry. The
+      <b>transconductance-peak</b> method defines it as the gate voltage at which
+      <em>g</em><sub>m</sub> = d<em>I</em><sub>D</sub>/d<em>V</em><sub>GS</sub> is largest,
+      corrected by half the drain voltage:
+      <em>V</em><sub>T</sub> = <em>V</em><sub>G</sub>(at <em>g</em><sub>m</sub> peak) − 0.5<em>V</em><sub>DS</sub>.
+      A shift quoted without its extraction convention cannot be compared across studies.
+    </p>
+
+    <h2>5 · Interface traps and their occupancy</h2>
+    <p>
+      At the boundary between crystalline silicon and amorphous silicon dioxide the lattice
+      terminates, and not every silicon atom at the surface finds four bonding partners. Those
+      that do not leave an unsatisfied bond — a <b>dangling bond</b> — whose energy level lies
+      inside the silicon bandgap. These are <b>interface traps</b>. Their areal density per
+      unit energy is <em>D</em><sub>it</sub>, in cm⁻²eV⁻¹, and the integrated areal density is
+      <em>N</em><sub>it</sub>, in cm⁻².
+    </p>
+    <p>
+      An interface trap exchanges carriers with the silicon, so its charge state is not fixed:
+      it is set by whether its level sits above or below the Fermi level at the surface, which
+      the gate voltage controls. Deck 04 gives the two kinds and the occupancy rule.
+    </p>
+    <ul>
+      <li><b>Donor-like</b> traps are neutral when occupied by an electron and positive when
+        empty.</li>
+      <li><b>Acceptor-like</b> traps are neutral when empty and negative when occupied.</li>
+    </ul>
+    <p>
+      Radiation-induced interface traps in silicon are distributed such that the states below
+      midgap are donor-like and those above midgap are acceptor-like. The consequence is the
+      single most useful property in the whole of Part III: <b>at midgap the net
+      interface-trap charge is zero</b>. Below midgap the donor-like states are filled and
+      therefore neutral; above midgap the acceptor-like states are empty and therefore also
+      neutral. Whatever the density, the contribution vanishes when the Fermi level at the
+      surface crosses midgap.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 280" role="img" aria-labelledby="m06f5-t">
+        <title id="m06f5-t">Interface trap occupancy and net charge at midgap and at threshold in an n-channel MOSFET</title>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="180" y="18">Surface Fermi level at midgap</text>
+          <text x="520" y="18">Surface Fermi level at threshold (inversion)</text>
+        </g>
+
+        <!-- left panel -->
+        <g>
+          <line x1="60" y1="44" x2="300" y2="44" class="dg-line" stroke-width="1.8"/>
+          <line x1="60" y1="204" x2="300" y2="204" class="dg-line" stroke-width="1.8"/>
+          <text x="308" y="48" class="dg-label-sm"><tspan class="dg-math">E</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">c</tspan></text>
+          <text x="308" y="208" class="dg-label-sm"><tspan class="dg-math">E</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">v</tspan></text>
+          <line x1="60" y1="124" x2="300" y2="124" class="dg-rule" stroke-width="1" stroke-dasharray="4 3"/>
+          <text x="308" y="128" class="dg-label-sm"><tspan class="dg-math">E</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">i</tspan></text>
+          <line x1="60" y1="124" x2="300" y2="124" class="dg-acc" stroke-width="2"/>
+          <text x="40" y="128" class="dg-label-sm" text-anchor="end"><tspan class="dg-math">E</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">F</tspan></text>
+
+          <g class="dg-label-sm">
+            <text x="96" y="70">acceptor-like, empty → neutral</text>
+            <text x="96" y="90">○ ○ ○ ○ ○</text>
+            <text x="96" y="164">● ● ● ● ●</text>
+            <text x="96" y="184">donor-like, filled → neutral</text>
+          </g>
+          <text x="180" y="238" class="dg-label" text-anchor="middle">net interface charge = 0</text>
+          <text x="180" y="256" class="dg-label-sm" text-anchor="middle">whatever <tspan class="dg-math">D</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">it</tspan> may be</text>
+        </g>
+
+        <!-- right panel -->
+        <g>
+          <line x1="400" y1="44" x2="640" y2="44" class="dg-line" stroke-width="1.8"/>
+          <line x1="400" y1="204" x2="640" y2="204" class="dg-line" stroke-width="1.8"/>
+          <line x1="400" y1="124" x2="640" y2="124" class="dg-rule" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="400" y1="76" x2="640" y2="76" class="dg-acc" stroke-width="2"/>
+          <text x="380" y="80" class="dg-label-sm" text-anchor="end"><tspan class="dg-math">E</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">F</tspan></text>
+
+          <g class="dg-label-sm">
+            <text x="436" y="64">○ ○ ○  empty, neutral</text>
+            <text x="436" y="104">● ● ● ● ●  acceptor-like,</text>
+            <text x="436" y="118">filled → <tspan class="dg-acc-f">negative</tspan></text>
+            <text x="436" y="164">● ● ● ● ●  donor-like, filled</text>
+            <text x="436" y="184">→ neutral</text>
+          </g>
+          <text x="520" y="238" class="dg-label" text-anchor="middle">net interface charge &lt; 0</text>
+          <text x="520" y="256" class="dg-label-sm" text-anchor="middle">so Δ<tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">T</tspan> is positive in an n-channel device</text>
+        </g>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> Filled circles are states holding an electron. Moving the surface Fermi
+        level from midgap up toward the conduction band fills acceptor-like states, which are
+        negative when filled. That negative charge must be offset by a more positive gate
+        voltage, which is why interface traps raise an n-channel threshold.
+      </figcaption>
+    </figure>
+
+    <p>
+      The sign of the interface-trap contribution therefore depends on the channel type,
+      because the two channel types are biased to opposite sides of midgap at threshold. An
+      n-channel device inverts when the surface Fermi level moves <em>up</em> toward the
+      conduction band, filling acceptor-like states above midgap, so the interface charge at
+      threshold is <b>negative</b> and the threshold shift is <b>positive</b>. A p-channel
+      device inverts when the surface Fermi level moves <em>down</em> toward the valence band,
+      emptying donor-like states below midgap, so the interface charge at threshold is
+      <b>positive</b> and the threshold shift is <b>negative</b>.
+    </p>
+
+    <div class="box insight">
+      <p>
+        Combining this with §3 gives the sign structure of the whole of total ionizing dose in
+        MOS devices. Oxide-trapped charge is positive and shifts the threshold negative in
+        <em>both</em> channel types. Interface-trapped charge shifts an n-channel threshold
+        positive and a p-channel threshold negative. A p-channel device therefore has two
+        contributions pushing the same way and degrades monotonically; an n-channel device has
+        two contributions in opposition, so its net shift can move negative early and return
+        later as interface traps continue to build. The measured Δ<em>V</em><sub>T</sub> is the
+        sum, and <a href="m07-oxide-interface-trap-charge.html">M07</a> §9 is the technique for
+        recovering the two terms from it.
+      </p>
+    </div>
+
+    <h2>6 · Subthreshold conduction and mobility</h2>
+    <p>
+      Below threshold the channel is not empty. The surface is depleted rather than inverted,
+      but a small population of electrons is present, and their concentration at the source end
+      depends exponentially on the surface potential. Conduction in this regime is by diffusion
+      rather than drift, which makes the transistor behave much as a bipolar transistor does,
+      and the drain current falls exponentially with gate voltage.
+    </p>
+    <p>
+      The steepness is quantified by the <b>subthreshold swing</b>: the gate voltage change
+      required to change the drain current by one decade.
+    </p>
+
+    <div class="eq" id="m06-eq-swing">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> ln10 <span class="dl">(</span>1 + <span class="frac"><span class="num"><em>C</em><sub>d</sub> + <em>C</em><sub>it</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span><span class="dl">)</span>  ,   <em>C</em><sub>it</sub> = <em>q D</em><sub>it</sub></div>
+        <div class="eq-num">(6.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em> subthreshold swing (V/decade) · <em>kT</em>/<em>q</em> thermal voltage,
+        0.02585 V at 300 K · <em>C</em><sub>d</sub> depletion capacitance per unit area
+        (F/cm²) · <em>C</em><sub>it</sub> interface-trap capacitance per unit area (F/cm²) ·
+        <em>D</em><sub>it</sub> interface-trap density (<b>cm⁻²eV⁻¹</b>) — with the density
+        expressed per electronvolt, the conversion is a single factor of
+        <em>q</em> = 1.602×10⁻¹⁹ C, not <em>q</em>². The ideal minimum, with
+        <em>C</em><sub>d</sub> and <em>C</em><sub>it</sub> both negligible, is
+        <em>S</em><sub>0</sub> = (<em>kT</em>/<em>q</em>)ln10 = <b>59.5 mV/decade</b> at 300 K.
+        On the formula sheet as <a href="formula-sheet.html#eq-swing">(6.4)</a>.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p>
+        The course states this without the depletion term, as
+        <em>S</em> = <em>S</em><sub>0</sub>(1 + <em>qD</em><sub>it</sub>/<em>C</em><sub>ox</sub>),
+        and homework solutions use that form. It isolates the radiation-induced term, which is
+        what the problems are about, but it predicts exactly 59.5 mV/decade for an
+        unirradiated device where a real transistor measures higher because
+        <em>C</em><sub>d</sub> is never zero. Use the course form for course work and expect
+        the discrepancy against measured pre-irradiation data.
+      </p>
+    </div>
+
+    <p>
+      Two properties make the subthreshold region the most informative part of the transfer
+      characteristic for radiation work. Its slope depends on <em>D</em><sub>it</sub> and on
+      nothing else that radiation changes, so stretchout measures interface traps directly.
+      And it spans many decades of current, so a threshold shift of a few tens of millivolts
+      displaces it visibly. The leakage current of an integrated circuit at zero gate bias is
+      read off the same curve, which is why a negative threshold shift in an n-channel device
+      translates immediately into standby supply current.
+    </p>
+    <p>
+      Mobility is the third quantity radiation changes. Carriers in the inversion layer travel
+      within a few nanometres of the interface, so charged centres at or near that interface
+      scatter them by Coulomb interaction, and the effective mobility falls as their density
+      rises. Deck 04 gives the empirical form used in the field.
+    </p>
+
+    <div class="eq" id="m06-eq-mob">
+      <div class="eq-body">
+        <div class="eq-math"><em>µ</em> = <span class="frac"><span class="num"><em>µ</em><sub>0</sub></span><span class="den">1 + <em>α</em><sub>it</sub> Δ<em>N</em><sub>it</sub> + <em>α</em><sub>ot</sub> Δ<em>N</em><sub>ot</sub></span></span></div>
+        <div class="eq-num">(6.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>µ</em> effective channel mobility after irradiation (cm²/V·s) ·
+        <em>µ</em><sub>0</sub> pre-irradiation mobility (cm²/V·s) ·
+        Δ<em>N</em><sub>it</sub>, Δ<em>N</em><sub>ot</sub> radiation-induced areal densities of
+        interface traps and of oxide-trapped charge (cm⁻²) ·
+        <em>α</em><sub>it</sub>, <em>α</em><sub>ot</sub> empirical scattering parameters (cm²),
+        fitted per technology, with <em>α</em><sub>it</sub> the larger of the two. Both
+        populations scatter channel carriers, so both appear. Deck 04 notes the assumption the
+        expression rests on: the effect of oxide charge on mobility is <em>projected</em> onto
+        the interface and falls off strongly with distance of the charge into the oxide, which
+        is what allows Δ<em>N</em><sub>ot</sub> — a charge distributed through the oxide — to be
+        written as a single areal density at all. Empirical: a fitting form, not a derivation.
+      </div>
+    </div>
+
+    <h2>7 · The bipolar transistor</h2>
+    <p>
+      A bipolar junction transistor operates on an entirely different principle from a MOSFET
+      and fails under radiation for entirely different reasons, so the course treats both. It
+      is two junctions sharing a thin central region: in an n–p–n device, an n-type emitter, a
+      thin p-type base, and an n-type collector. In forward-active operation the emitter–base
+      junction is forward biased and the base–collector junction reverse biased. Electrons
+      injected from the emitter into the base diffuse across it, and because the base is thin
+      most arrive at the collector junction and are swept across. The fraction that does not
+      arrive is lost to recombination in the base.
+    </p>
+    <p>
+      Current gain is the ratio of the current that reaches the collector to the current the
+      base terminal must supply.
+    </p>
+
+    <div class="eq" id="m06-eq-beta">
+      <div class="eq-body">
+        <div class="eq-math"><em>β</em> = <span class="frac"><span class="num"><em>I</em><sub>C</sub></span><span class="den"><em>I</em><sub>B</sub></span></span>  ,   <em>I</em><sub>B</sub> = <em>I</em><sub>B1</sub> + <em>I</em><sub>B2</sub> + <em>I</em><sub>B3</sub></div>
+        <div class="eq-num">(6.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>β</em> common-emitter current gain (dimensionless) ·
+        <em>I</em><sub>C</sub> collector current (A) · <em>I</em><sub>B</sub> base current (A).
+        The three base-current components, in Deck 04's numbering:
+        <em>I</em><sub>B1</sub> holes injected from the base back into the emitter ·
+        <em>I</em><sub>B2</sub> recombination inside the emitter–base depletion region ·
+        <em>I</em><sub>B3</sub> recombination with electrons crossing the neutral base.
+        Total ionizing dose acts principally on <b><em>I</em><sub>B2</sub></b>. Gain falls
+        because the denominator grows, not because the numerator shrinks. On the formula sheet
+        as <a href="formula-sheet.html#eq-beta">(6.6)</a>.
+      </div>
+    </div>
+
+    <p>
+      The three components are distinguishable by how they scale with base–emitter voltage, and
+      that is how a measurement separates them. Recombination in the neutral base tracks the
+      injected carrier concentration, so <em>I</em><sub>B3</sub> ∝ exp(<em>qV</em><sub>BE</sub>/(<em>kT</em>)),
+      an ideality factor of 1. Recombination inside the depletion region is fastest where the
+      electron and hole concentrations are equal, and at that crossover point the product of
+      the two concentrations gives <em>I</em><sub>B2</sub> ∝ exp(<em>qV</em><sub>BE</sub>/(2<em>kT</em>)),
+      an ideality factor of 2. Plotting collector and base current logarithmically against
+      base–emitter voltage — a <b>Gummel plot</b> — displays both as straight lines of
+      different slope, so a rise in the ideality-2 component is visible as an excess at low
+      bias while the collector current is unchanged. Deck 04 records that the ideality factor
+      of the radiation-induced base current is usually between 1 and 2.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 660 300" role="img" aria-labelledby="m06f6-t">
+        <title id="m06f6-t">Structure of an n-p-n bipolar transistor and the Gummel plot showing excess base current after irradiation</title>
+
+        <!-- structure -->
+        <rect x="34" y="70" width="240" height="120" class="dg-fill"/>
+        <rect x="34" y="70" width="240" height="26" class="dg-fill"/>
+        <rect x="70" y="44" width="72" height="26" class="dg-fill"/>
+        <text x="106" y="61" class="dg-label-sm" text-anchor="middle">n⁺ emitter</text>
+        <rect x="34" y="44" width="30" height="26" class="dg-fill"/>
+        <rect x="150" y="44" width="52" height="26" class="dg-fill"/>
+        <text x="176" y="61" class="dg-label-sm" text-anchor="middle">base</text>
+        <text x="154" y="88" class="dg-label-sm">p base</text>
+        <text x="154" y="150" class="dg-label-sm">n collector</text>
+
+        <!-- oxide over the surface -->
+        <rect x="34" y="32" width="240" height="12" class="dg-fill"/>
+        <text x="282" y="42" class="dg-label-sm">oxide</text>
+
+        <!-- the sensitive point -->
+        <circle cx="146" cy="72" r="9" class="dg-acc" fill="none" stroke-width="2"/>
+        <line x1="146" y1="63" x2="180" y2="20" class="dg-acc" stroke-width="1.2"/>
+        <text x="184" y="18" class="dg-label-sm">where the emitter–base junction</text>
+        <text x="184" y="32" class="dg-label-sm">meets the oxide — the sensitive region</text>
+
+        <text x="154" y="214" class="dg-label-sm">Base current has three parts:</text>
+        <text x="154" y="230" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">B1</tspan> back-injection into the emitter</text>
+        <text x="154" y="246" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">B2</tspan> recombination in the E–B depletion region</text>
+        <text x="154" y="262" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">B3</tspan> recombination in the neutral base</text>
+        <text x="34" y="286" class="dg-label-sm">Total ionizing dose acts on <tspan class="dg-math">I</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">B2</tspan>, which has an ideality factor of 2.</text>
+
+        <!-- Gummel -->
+        <line x1="376" y1="240" x2="636" y2="240" class="dg-rule" stroke-width="1.2"/>
+        <line x1="376" y1="240" x2="376" y2="56" class="dg-rule" stroke-width="1.2"/>
+        <text x="506" y="272" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">V</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">BE</tspan></text>
+        <text x="352" y="150" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 352 150)">log <tspan class="dg-math">I</tspan></text>
+
+        <path d="M396,214 L618,58" class="dg-line" stroke-width="1.8" fill="none"/>
+        <text x="572" y="52" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">C</tspan></text>
+
+        <path d="M396,236 L618,80" class="dg-line" stroke-width="1.6" fill="none" stroke-dasharray="5 3"/>
+        <text x="560" y="100" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">B</tspan> pre-rad</text>
+
+        <path d="M396,186 C462,168 542,116 618,78" class="dg-acc" stroke-width="2" fill="none"/>
+        <text x="462" y="146" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">B</tspan> post-rad</text>
+        <line x1="472" y1="140" x2="486" y2="158" class="dg-rule" stroke-width="0.8"/>
+
+        <text x="398" y="206" class="dg-label-sm">excess is largest</text>
+        <text x="398" y="220" class="dg-label-sm">at low bias</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> The sensitive region is the surface, not the bulk. Before irradiation
+        <em>I</em><sub>B</sub> runs <em>parallel</em> to <em>I</em><sub>C</sub>, which is what a
+        bias-independent gain looks like. The post-irradiation excess enters with the shallower
+        slope of an ideality factor near 2, so the curves converge at high bias: gain loss is
+        worst at low injection, which is where analogue circuits are usually biased.
+      </figcaption>
+    </figure>
+
+    <p>
+      The reason the surface matters so much is that recombination there is governed by the
+      interface traps of §5 rather than by bulk defects. In the bulk, recombination through a
+      single trap level follows the Shockley–Read–Hall rate,
+      <em>R</em> = (<em>pn</em> − <em>n</em><sub>i</sub>²) / [<em>τ</em><sub>n0</sub>(<em>p</em> + <em>p</em><sub>1</sub>) + <em>τ</em><sub>p0</sub>(<em>n</em> + <em>n</em><sub>1</sub>)],
+      which is largest where the electron and hole concentrations are comparable. At the
+      surface the same expression is integrated over the continuum of interface states, and to
+      a good approximation the surface recombination rate is the excess carrier concentration
+      times a <b>surface recombination velocity</b>,
+      <em>R</em><sub>s</sub> ≈ <em>s</em> Δ<em>n</em><sub>s</sub>, which is the form Deck 04
+      gives. That velocity is itself proportional to the areal density of interface states,
+      <em>s</em> = <em>σ v</em><sub>th</sub><em>N</em><sub>it</sub>, with <em>σ</em> the capture
+      cross-section (cm²) and <em>v</em><sub>th</sub> the carrier thermal velocity (cm/s) —
+      note that this uses the integrated density <em>N</em><sub>it</sub> in cm⁻², not the
+      per-energy <em>D</em><sub>it</sub>. More interface states means a higher surface
+      recombination velocity, a larger <em>I</em><sub>B2</sub>, and a lower gain. This is the mechanism, and it is a different mechanism from the threshold shift
+      that dominates a MOSFET even though both originate in the same interface states.
+    </p>
+    <p>
+      Geometry decides which bipolar devices are most exposed to it. An n–p–n transistor is
+      usually vertical, with current flowing down from a surface emitter into a buried
+      collector, so only the perimeter of the emitter–base junction touches the oxide. Deck 04
+      lists three p–n–p arrangements — vertical, lateral and substrate — and singles out the
+      <b>lateral</b> p–n–p as typically very sensitive, because its carriers travel laterally
+      just below the surface and therefore spend their transit adjacent to the oxide rather
+      than crossing it once.
+    </p>
+    <p>
+      Oxide charge acts on a bipolar device as well, but electrostatically rather than through
+      recombination, and its effect has opposite signs in the two families. Positive charge in
+      the oxide above an n–p–n transistor's p-type base <b>depletes</b> that surface, widening
+      the region where electron and hole concentrations are comparable and so increasing the
+      area over which fast recombination occurs. Above a lateral p–n–p transistor's n-type
+      base the same positive charge <b>accumulates</b> the surface, which suppresses
+      recombination and partly offsets the degradation. The two mechanisms — interface traps
+      raising the recombination velocity, oxide charge changing the area over which it acts —
+      must be kept separate, because they do not even share a sign.
+    </p>
+    <p>
+      One further behaviour has no MOSFET counterpart. Deck 04 records that bipolar degradation
+      at a given total dose is often <em>worse</em> when the dose is delivered slowly, which is
+      <b>enhanced low-dose-rate sensitivity</b>. Laboratory irradiations commonly run above
+      50 rad(SiO₂)/s to keep test time manageable, while space dose rates are typically below
+      0.01 rad(SiO₂)/s, so a part qualified quickly can be substantially worse in orbit than
+      the test predicted. The oxides at risk are thick, low-quality and at low electric field —
+      bipolar isolation oxides of hundreds of nanometres rather than gate oxides. The mechanism
+      belongs to <a href="m08-tid-effects-devices-ics.html">M08</a>; what matters here is that it exists and
+      that it inverts the usual expectation that slower is gentler.
+    </p>
+
+    <h2>8 · Isolation structures</h2>
+    <p>
+      The gate oxide is not the only oxide on a chip, and in a modern process it is not the one
+      that fails first. Transistors must be electrically isolated from their neighbours, and
+      the isolation is made of the same silicon dioxide — but hundreds of nanometres thick
+      rather than a few, grown or deposited under conditions chosen for planarity rather than
+      for electrical quality, and covered by whatever interconnect happens to pass overhead.
+    </p>
+    <p>
+      Positive charge trapped in a field oxide acts on the silicon beneath it exactly as gate
+      charge acts on a channel: it drives the surface toward n-type. Where that silicon is
+      p-type substrate separating two n-type regions, enough positive charge inverts it and
+      opens a conducting path where the design intended none. Deck 04 identifies this as the
+      <b>primary total-dose failure mechanism in advanced CMOS integrated circuits</b>, and its
+      observable is an increase in supply current rather than a change in any transistor's
+      characteristics.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 660 220" role="img" aria-labelledby="m06f7-t">
+        <title id="m06f7-t">Parasitic leakage paths from charge trapped in field oxide and in a buried oxide</title>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="160" y="16">Field-oxide leakage between devices</text>
+          <text x="490" y="16">SOI back-channel leakage</text>
+        </g>
+
+        <!-- left -->
+        <rect x="34" y="66" width="252" height="90" class="dg-fill"/>
+        <rect x="34" y="40" width="70" height="26" class="dg-fill"/>
+        <rect x="216" y="40" width="70" height="26" class="dg-fill"/>
+        <rect x="104" y="30" width="112" height="36" class="dg-fill"/>
+        <text x="69" y="57" class="dg-label-sm" text-anchor="middle">n⁺</text>
+        <text x="251" y="57" class="dg-label-sm" text-anchor="middle">n⁺</text>
+        <text x="160" y="52" class="dg-label-sm" text-anchor="middle">field oxide</text>
+        <text x="160" y="110" class="dg-label-sm" text-anchor="middle">p substrate</text>
+        <g class="dg-acc-f">
+          <text x="120" y="64" class="dg-label-sm">+</text><text x="142" y="64" class="dg-label-sm">+</text>
+          <text x="164" y="64" class="dg-label-sm">+</text><text x="186" y="64" class="dg-label-sm">+</text>
+        </g>
+        <path d="M96,72 C130,80 190,80 224,72" class="dg-acc" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+        <text x="160" y="96" class="dg-label-sm" text-anchor="middle">inverted surface</text>
+        <text x="160" y="180" class="dg-label-sm" text-anchor="middle">Remedy: a channel-stop implant raises the</text>
+        <text x="160" y="194" class="dg-label-sm" text-anchor="middle">doping locally, so more charge is needed to invert it</text>
+
+        <!-- right -->
+        <rect x="360" y="40" width="252" height="28" class="dg-fill"/>
+        <rect x="360" y="68" width="252" height="32" class="dg-fill"/>
+        <rect x="360" y="100" width="252" height="56" class="dg-fill"/>
+        <rect x="360" y="40" width="56" height="28" class="dg-fill"/>
+        <rect x="556" y="40" width="56" height="28" class="dg-fill"/>
+        <text x="388" y="58" class="dg-label-sm" text-anchor="middle">source</text>
+        <text x="584" y="58" class="dg-label-sm" text-anchor="middle">drain</text>
+        <text x="486" y="58" class="dg-label-sm" text-anchor="middle">body</text>
+        <text x="486" y="88" class="dg-label-sm" text-anchor="middle">buried oxide</text>
+        <text x="486" y="132" class="dg-label-sm" text-anchor="middle">substrate</text>
+        <g class="dg-acc-f">
+          <text x="420" y="90" class="dg-label-sm">+</text><text x="452" y="90" class="dg-label-sm">+</text>
+          <text x="484" y="90" class="dg-label-sm">+</text><text x="516" y="90" class="dg-label-sm">+</text><text x="548" y="90" class="dg-label-sm">+</text>
+        </g>
+        <path d="M412,66 L560,66" class="dg-acc" stroke-width="2" stroke-dasharray="4 3"/>
+        <text x="486" y="180" class="dg-label-sm" text-anchor="middle">Charge in the buried oxide inverts the underside of</text>
+        <text x="486" y="194" class="dg-label-sm" text-anchor="middle">the body, connecting source to drain below the gate</text>
+      </svg>
+      <figcaption>In both structures the trapped charge sits in an oxide the designer never intended to act as a gate, and controls a channel the gate terminal cannot switch off.</figcaption>
+    </figure>
+
+    <p>
+      The countermeasure at process level is a <b>channel-stop implant</b>: extra doping at the
+      silicon surface beneath the isolation, which raises the threshold voltage of the
+      parasitic field-oxide transistor so that more trapped charge is required to invert it.
+      Deck 04 shows the effect directly as a comparison between low and high p⁺ doping under
+      the same trapped-hole density.
+    </p>
+    <p>
+      Silicon-on-insulator technology introduces a second isolation oxide with the same
+      vulnerability. An SOI transistor is built in a thin silicon island sitting on a
+      <b>buried oxide</b> that separates it from the substrate. That buried oxide is thick, and
+      positive charge trapped in it inverts the underside of the silicon island — creating a
+      <b>back channel</b> that connects source to drain along a path the front gate does not
+      control. Deck 04 gives the diagnostic signature: back-channel leakage is nearly
+      independent of gate voltage, while leakage along the gate-controlled edge of the island
+      does increase with gate voltage, so the combined characteristic of an irradiated SOI
+      transistor can show a distinct step.
+    </p>
+
+    <h2>9 · Charge-coupled devices</h2>
+    <p>
+      A charge-coupled device is the third structure the course examines, and it is built
+      directly from the capacitor of §1. An array of MOS gates over a common substrate holds
+      signal charge in potential wells formed beneath positively biased electrodes. Clocking
+      the electrode voltages in sequence moves each charge packet from one well to the next,
+      down a row, to a single output amplifier. Deck 03 describes a three-phase device, in which
+      each pixel has three electrodes, and implanted <b>channel stops</b> confine the packet to
+      one row as it travels.
+    </p>
+    <p>
+      Two design features set the radiation response. The signal charge travels in a
+      <b>buried channel</b> — a doped layer holding the packet slightly below the silicon
+      surface rather than against it — specifically to keep it away from interface traps. And
+      the device reads out a very small current through a very long chain of transfers, so
+      every inefficiency in a single transfer is multiplied by the number of transfers the
+      packet makes.
+    </p>
+    <p>
+      That multiplication is what makes the governing figure of merit a per-transfer quantity.
+    </p>
+
+    <div class="eq" id="m06-eq-cti">
+      <div class="eq-body">
+        <div class="eq-math">CTI = 1 − CTE  ,   <span class="frac"><span class="num"><em>Q</em><sub>out</sub></span><span class="den"><em>Q</em><sub>in</sub></span></span> = CTE<sup><em>n</em></sup> ≈ 1 − <em>n</em> · CTI</div>
+        <div class="eq-num">(6.7)</div>
+      </div>
+      <div class="eq-says">
+        CTE charge transfer efficiency, the fraction of a packet delivered in one transfer
+        (dimensionless, just below 1) · CTI charge transfer inefficiency, the fraction left
+        behind (dimensionless, typically 10⁻⁵ or smaller before irradiation) ·
+        <em>n</em> number of transfers the packet makes, which is of order the array dimension
+        · <em>Q</em><sub>in</sub>, <em>Q</em><sub>out</sub> packet charge at the start and end
+        of the chain. The approximation holds while <em>n</em> · CTI ≪ 1. On the formula sheet
+        as <a href="formula-sheet.html#eq-cti">(6.7)</a>.
+      </div>
+    </div>
+
+    <p>
+      Deck 03 adds a behaviour that is counter-intuitive until the trap picture is in place:
+      deliberately introducing a background charge <em>improves</em> transfer efficiency,
+      because the background fills the traps and leaves them unable to interact with the signal
+      packet. The improvement depends on signal size, and it usually comes at the cost of
+      additional noise. The measured example is an EEV CCD02 exposed to a fluence of
+      7.2×10⁹ <b>10 MeV</b> protons/cm², corresponding to 4 krad(Si) — the proton energy is part
+      of the datum, since a fluence converts to a dose only at a stated energy.
+    </p>
+    <p>
+      A charge-coupled device is therefore sensitive to both cumulative effect classes at once,
+      by two independent routes. Total ionizing dose acts through the gate oxides in the way
+      §3 and §5 describe, shifting flat-band voltages and raising dark current through interface
+      traps. Displacement damage acts through the silicon, creating bulk traps in the buried
+      channel that intercept and delay signal charge and so degrade transfer efficiency
+      directly. Deck 04's summary separates them cleanly: dark current increases from interface
+      traps, charge transfer inefficiency from traps that delay charge transfer, producing
+      streaks and noise. <a href="index.html#roadmap">M12</a> develops the displacement side.
+    </p>
+
+    <details class="check">
+      <summary>Two n-channel transistors are made in the same process with gate oxides of 10 nm and 40 nm. Both are irradiated to the same dose, and in each case the trapped holes end up near the silicon interface. How much larger is the threshold shift of the thicker device, and which two factors in (6.1) and (6.2) produce that ratio?</summary>
+      <div class="answer">
+        <p>
+          About sixteen times larger. Two factors of four multiply. The number of electron–hole
+          pairs generated in the oxide is proportional to the oxide volume, so at fixed dose the
+          areal density of trapped charge <em>Q</em><sub>ox</sub> scales with
+          <em>t</em><sub>ox</sub> — one factor of four. And
+          <em>C</em><sub>ox</sub> = <em>ε</em><sub>ox</sub>/<em>t</em><sub>ox</sub> is
+          <em>inversely</em> proportional to thickness, so the same charge produces a larger
+          voltage in the thicker oxide — a second factor of four. Since the shift is
+          <em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub> with the centroid at the interface,
+          the product gives a <em>t</em><sub>ox</sub>² dependence.
+        </p>
+        <p>
+          Deck 04 calls the first of those two factors a <em>very simple model</em>, and the
+          hedge is worth keeping: measured exponents run between about 2 and 3 rather than
+          exactly 2. Below roughly 5 nm a second mechanism takes over entirely, since electrons
+          tunnelling from the silicon neutralize traps close to the interface, and thin oxides
+          fall off far faster than any power law. M07 §3 assembles both.
+          None of this says anything about isolation oxides, which did not thin with the gate —
+          which is why §8's leakage mechanism became dominant as gate oxides stopped being the
+          problem.
+        </p>
+      </div>
+    </details>
+
+    <h2>Where this leaves us</h2>
+    <p>
+      Charge placed inside an oxide shifts the flat-band and threshold voltages by
+      <em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub>, weighted by how far the charge sits from
+      the gate, so positive trapped charge near the silicon interface produces the largest
+      possible negative shift. States at the interface itself add a second contribution whose
+      sign depends on channel type, because they are neutral at midgap and fill with electrons
+      as an n-channel device is driven toward inversion. Both are read from the same
+      measurement: the first as a translation of the characteristic, the second as a change of
+      its slope. Mobility falls as the density of interface-referred charge rises.
+    </p>
+    <p>
+      The same interface states reach a bipolar transistor by a different route entirely —
+      raising the surface recombination velocity where the emitter–base junction meets the
+      oxide, which increases base current and lowers gain, worst at low injection. Isolation
+      and buried oxides carry the same trapped charge and control parasitic channels that no
+      terminal switches off. A charge-coupled device is exposed at its gate oxides and in its
+      buried channel at once, and multiplies any per-transfer loss by the length of its
+      readout chain.
+    </p>
+    <p>
+      Every one of those statements begins with charge already present in an oxide.
+      <a href="m07-oxide-interface-trap-charge.html">M07</a> supplies its origin: how much
+      charge a given dose generates, what fraction of it survives prompt recombination and what
+      controls that fraction, how the surviving holes reach the interface and how long they
+      take, what traps them when they arrive, and how the interface states themselves are
+      created by a process that takes thousands of seconds to complete.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Quick reference</p>
+      <ul>
+        <li><b>MOS capacitor regimes</b> (p-substrate): accumulation below <em>V</em><sub>FB</sub>, depletion between <em>V</em><sub>FB</sub> and <em>V</em><sub>T</sub>, inversion above <em>V</em><sub>T</sub>. Depletion width stops growing at <em>W</em><sub>max</sub> once inversion is established.</li>
+        <li><b><em>C</em><sub>ox</sub> = <em>ε</em><sub>ox</sub>/<em>t</em><sub>ox</sub></b>, F/cm², with <em>ε</em><sub>ox</sub> = 3.9<em>ε</em><sub>0</sub> = 3.45×10⁻¹³ F/cm. <em>t</em><sub>ox</sub> in <b>cm</b>. Check: 5 nm gives 6.9×10⁻⁷ F/cm² = 6.9 fF/µm².</li>
+        <li><b>C–V signatures:</b> oxide charge <em>translates</em> the curve; interface traps <em>stretch</em> it in depletion. Low frequency returns to <em>C</em><sub>ox</sub> in inversion, high frequency does not, deep depletion falls below both.</li>
+        <li><b>Four oxide charge populations:</b> <em>Q</em><sub>M</sub> mobile ions (hysteresis), <em>Q</em><sub>F</sub> fixed charge near the interface, <em>Q</em><sub>it</sub> interface traps (bias-dependent), <em>ρ</em><sub>ox</sub> oxide-trapped charge (what radiation makes).</li>
+        <li><b>Position matters:</b> Δ<em>V</em><sub>FB</sub> = −(<em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub>)(<em>x̄</em>/<em>t</em><sub>ox</sub>), with <em>x</em> measured from the gate. Charge at the gate has no effect; charge at the silicon interface has maximum effect.</li>
+        <li><b>Sign structure:</b> positive oxide charge shifts <em>V</em><sub>T</sub> negative in <em>both</em> channel types. Interface traps shift n-channel <b>positive</b> and p-channel <b>negative</b>, because acceptor-like states above midgap fill as an n-channel inverts. Net interface charge is <b>zero at midgap</b>.</li>
+        <li><b>Transfer characteristic:</b> threshold shift translates it, interface traps stretch it, mobility loss scales it down. <em>V</em><sub>T</sub> extraction by constant current at 100 nA·(<em>W</em>/<em>L</em>), or <em>g</em><sub>m</sub> peak minus 0.5<em>V</em><sub>DS</sub>.</li>
+        <li><b>Subthreshold swing:</b> <em>S</em><sub>0</sub> = (<em>kT</em>/<em>q</em>)ln10 = <b>59.5 mV/decade</b> at 300 K; <em>C</em><sub>it</sub> = <em>qD</em><sub>it</sub> with <em>D</em><sub>it</sub> per eV. The course omits <em>C</em><sub>d</sub>.</li>
+        <li><b>BJT:</b> <em>β</em> = <em>I</em><sub>C</sub>/<em>I</em><sub>B</sub>; dose acts on <em>I</em><sub>B2</sub>, recombination in the emitter–base depletion region, ideality factor 2, worst at low bias. Surface recombination velocity <em>s</em> ∝ <em>σv</em><sub>th</sub><em>D</em><sub>it</sub>. Lateral p–n–p devices are the most sensitive geometry.</li>
+        <li><b>Oxide charge on a BJT is electrostatic and signed:</b> it depletes an n–p–n p-type base surface (aggravating) and accumulates a lateral p–n–p n-type base surface (opposing).</li>
+        <li><b>ELDRS:</b> more bipolar degradation at low dose rate. Lab typically &gt;50 rad(SiO₂)/s, space typically &lt;0.01 rad(SiO₂)/s. Risk oxides are thick, low quality, low field.</li>
+        <li><b>Isolation leakage</b> is the primary total-dose failure mechanism in advanced CMOS: trapped positive charge inverts the p-type surface under a field oxide and raises supply current. Channel-stop implants raise the parasitic threshold.</li>
+        <li><b>SOI back channel:</b> charge in the buried oxide inverts the underside of the body. Back-channel leakage is nearly gate-voltage independent; edge leakage is not.</li>
+        <li><b>CCD:</b> CTI = 1 − CTE, and a packet making <em>n</em> transfers retains CTE<sup><em>n</em></sup>. TID raises dark current through interface traps; displacement damage degrades CTI through bulk traps. A background charge fills traps and improves CTI at the cost of noise.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1–2</td><td>Deck 04 pp. 6–8 for the three regimes, the series capacitance in depletion, and the two C–V distortions. The low-frequency, high-frequency and deep-depletion branches and the physical reason for each are standard MOS treatment, after E. H. Nicollian and J. R. Brews, <em>MOS Physics and Technology</em> (1982), added because the deck plots the three curves without distinguishing them</td></tr>
+      <tr><td>§3</td><td>Deck 04 pp. 12–15 for the four charge populations, the image-charge division, and the three position cases. Equation (6.2) is the standard centroid form of the same statement</td></tr>
+      <tr><td>§4</td><td>Deck 04 pp. 9–10 for the I–V families, the three radiation signatures and both <em>V</em><sub>T</sub> extraction conventions. The square-law current expressions are standard</td></tr>
+      <tr><td>§5</td><td>Deck 04 pp. 16–20 for donor-like and acceptor-like behaviour, midgap neutrality, and the threshold-shift directions in each channel type</td></tr>
+      <tr><td>§6</td><td>Deck 04 p. 11 for subthreshold conduction and its two radiation signatures; p. 21 for the mobility expression, both of its scattering terms, and the interface-projection assumption it rests on. The full swing expression with <em>C</em><sub>d</sub> is standard; the course's reduced form is from the Lecture 8 problem key</td></tr>
+      <tr><td>§7</td><td>Deck 04 pp. 33–44 and Deck 05 pp. 4–15. Surface recombination velocity as <em>s</em> = <em>σv</em><sub>th</sub><em>N</em><sub>it</sub> after A. S. Grove, <em>Physics and Technology of Semiconductor Devices</em> (1967), added because Deck 04 p. 37 gives only the energy integral and the <em>R</em><sub>s</sub> = <em>s</em>Δ<em>n</em><sub>s</sub> form for BJT structure, the three base-current components, the Gummel plot, the SRH and surface recombination treatment, the p–n–p geometries, the opposite electrostatic signs in n–p–n and lateral p–n–p, and ELDRS (after G. C. Messenger and M. S. Ash, <em>The Effects of Radiation on Electronic Systems</em> (1986); S. C. Witczak <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>44</b>, 1989 (1997); J. L. Titus <em>et al.</em>, <em>ibid.</em> <b>46</b>, 1608 (1999))</td></tr>
+      <tr><td>§8</td><td>Deck 04 pp. 26–31 (after John Chen, <em>CMOS Devices and Technology</em>) for field-oxide inversion as the primary advanced-CMOS failure mechanism, channel-stop implants, and the two SOI leakage paths with their differing gate-voltage dependence</td></tr>
+      <tr><td>§9</td><td>Deck 03 pp. 42–44 and Deck 04 pp. 47–48 for three-phase transfer, the buried channel, channel stops, the background-charge effect on CTI, and the EEV CCD02 measurement at 7.2×10⁹ 10 MeV protons/cm² / 4 krad(Si). After C. J. Marshall and P. W. Marshall, 1999 IEEE NSREC Short Course Section IV, and their NASA/GSFC report <em>CCD Radiation Effects and Test Issues for Satellite Designers</em> — Deck 03 prints the initials as "S. J. Marshall" on pp. 42–45, corrected here</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m05-three-effects-taxonomy.html"><span>Previous</span>M05 · The Three Effects: A Taxonomy</a>
+      <a class="next" href="m07-oxide-interface-trap-charge.html"><span>Next</span>M07 · Oxide-Trapped and Interface-Trap Charge</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

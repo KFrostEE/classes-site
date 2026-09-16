@@ -1,0 +1,494 @@
+/* =================================================================
+   course.css — shared stylesheet for all generated course sites
+   Design goals: long-form reading comfort, offline-first, printable,
+   theme-aware, zero external dependencies except locally-vendored KaTeX.
+   ================================================================= */
+
+/* ---------- 1. Tokens (light is the base definition) ------------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg:            #fbfaf7;
+  --bg-sunken:     #f3f1ec;
+  --bg-raised:     #ffffff;
+  --bg-code:       #f4f2ee;
+  --dg-surface:    #eceae3;   /* diagram regions: always reads as a panel */
+
+  /* Ink */
+  --ink:           #1c1b19;
+  --ink-soft:      #4a4843;
+  --ink-faint:     #7b7873;
+  --rule:          #e0ddd5;
+  --rule-strong:   #c9c5bb;
+
+  /* Accents — used semantically, never decoratively */
+  --accent:        #2f6f7e;   /* primary: links, active nav */
+  --accent-soft:   #e4eff1;
+  --insight:       #6b4fa8;   /* the key idea */
+  --insight-soft:  #ece6f7;
+  --warn:          #a8630f;   /* caution / approximation breaks */
+  --warn-soft:     #fbf0dd;
+  --pitfall:       #a33a3a;   /* common mistake */
+  --pitfall-soft:  #fae8e6;
+  --exam:          #1f6b45;   /* professor emphasized this */
+  --exam-soft:     #e2f2e9;
+  --defn:          #3d5a99;   /* formal definition */
+  --defn-soft:     #e7edf9;
+
+  /* Typography */
+  --serif: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, "Times New Roman", serif;
+  --sans:  "Inter", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --mono:  "Cascadia Code", "JetBrains Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
+
+  --measure: 70ch;      /* reading column width */
+  --sidebar: 288px;
+  --radius: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg:          #15161a;
+    --bg-sunken:   #101115;
+    --bg-raised:   #1d1f25;
+    --bg-code:     #1f2228;
+    --dg-surface:  #272a33;
+    --ink:         #e6e4df;
+    --ink-soft:    #b0aca4;
+    --ink-faint:   #807d76;
+    --rule:        #2c2f36;
+    --rule-strong: #3d414a;
+    --accent:      #6fb3c4;
+    --accent-soft: #17323a;
+    --insight:     #b39ae0;
+    --insight-soft:#241d38;
+    --warn:        #e0a24f;
+    --warn-soft:   #33260f;
+    --pitfall:     #e08880;
+    --pitfall-soft:#361c1a;
+    --exam:        #6fc294;
+    --exam-soft:   #12301f;
+    --defn:        #8fa9e0;
+    --defn-soft:   #1a2135;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:          #15161a;
+  --bg-sunken:   #101115;
+  --bg-raised:   #1d1f25;
+  --bg-code:     #1f2228;
+  --dg-surface:  #272a33;
+  --ink:         #e6e4df;
+  --ink-soft:    #b0aca4;
+  --ink-faint:   #807d76;
+  --rule:        #2c2f36;
+  --rule-strong: #3d414a;
+  --accent:      #6fb3c4;
+  --accent-soft: #17323a;
+  --insight:     #b39ae0;
+  --insight-soft:#241d38;
+  --warn:        #e0a24f;
+  --warn-soft:   #33260f;
+  --pitfall:     #e08880;
+  --pitfall-soft:#361c1a;
+  --exam:        #6fc294;
+  --exam-soft:   #12301f;
+  --defn:        #8fa9e0;
+  --defn-soft:   #1a2135;
+}
+
+/* ---------- 2. Reset & base -------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 2rem; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17.5px;
+  line-height: 1.68;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- 3. Page shell ---------------------------------------- */
+.shell { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); }
+
+.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--bg-sunken);
+  border-right: 1px solid var(--rule);
+  padding: 1.5rem 1.1rem 3rem;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.sidebar .brand {
+  display: block; font-weight: 700; font-size: 12px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-faint); text-decoration: none;
+  margin-bottom: .4rem;
+}
+.sidebar .brand:hover { color: var(--accent); }
+.sidebar h2 {
+  font-size: 15px; margin: 0 0 1.2rem; line-height: 1.3;
+  font-family: var(--sans); font-weight: 650; color: var(--ink);
+  border: 0; padding: 0;
+}
+.sidebar nav ol { list-style: none; margin: 0; padding: 0; }
+.sidebar nav li { margin: 0; }
+.sidebar nav a {
+  display: block; padding: .3rem .55rem; margin: 1px 0;
+  color: var(--ink-soft); text-decoration: none;
+  border-radius: 4px; border-left: 2px solid transparent;
+}
+.sidebar nav a:hover { background: var(--bg-raised); color: var(--ink); }
+.sidebar nav a.active {
+  color: var(--accent); border-left-color: var(--accent);
+  background: var(--accent-soft); font-weight: 600;
+}
+.sidebar nav .lvl-3 a { padding-left: 1.5rem; font-size: 12.8px; color: var(--ink-faint); }
+.sidebar nav .lvl-3 a.active { color: var(--accent); }
+.sidebar .side-sep { border: 0; border-top: 1px solid var(--rule); margin: 1.2rem 0; }
+
+main { padding: 3.2rem 3rem 8rem; min-width: 0; }
+.wrap { max-width: var(--measure); margin: 0 auto; }
+.wrap.wide { max-width: 92ch; }
+
+/* Reading-progress bar */
+.progress {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+  background: var(--accent); z-index: 60; transition: width .1s linear;
+}
+@media (prefers-reduced-motion: reduce) { .progress { transition: none; } }
+
+/* ---------- 4. Typography ---------------------------------------- */
+h1, h2, h3, h4 { font-family: var(--sans); font-weight: 650; line-height: 1.22; color: var(--ink); }
+h1 { font-size: 2.15rem; margin: 0 0 .5rem; letter-spacing: -.02em; }
+h2 {
+  font-size: 1.5rem; margin: 3.4rem 0 1rem;
+  padding-bottom: .4rem; border-bottom: 1px solid var(--rule); letter-spacing: -.01em;
+}
+h3 { font-size: 1.14rem; margin: 2.3rem 0 .6rem; }
+h4 { font-size: .95rem; margin: 1.6rem 0 .4rem; color: var(--ink-soft);
+     text-transform: uppercase; letter-spacing: .06em; }
+/* Same look as h4, but not a heading — for labels like "By the end you should
+   be able to" that must not appear in the document outline or the TOC. */
+.label {
+  font-family: var(--sans); font-weight: 650; font-size: .95rem; line-height: 1.22;
+  margin: 1.6rem 0 .4rem; color: var(--ink-soft);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+p  { margin: 0 0 1.05rem; }
+a  { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+strong { font-weight: 650; }
+ul, ol { margin: 0 0 1.05rem; padding-left: 1.4rem; }
+li { margin: .3rem 0; }
+li > ul, li > ol { margin-bottom: .3rem; }
+hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
+small, .small { font-size: .86em; color: var(--ink-soft); }
+
+/* Anchor links that appear on heading hover */
+.anchor {
+  opacity: 0; margin-left: .4em; font-weight: 400; text-decoration: none;
+  color: var(--ink-faint); font-size: .8em;
+}
+h2:hover .anchor, h3:hover .anchor, .anchor:focus { opacity: 1; }
+
+code, kbd, samp {
+  font-family: var(--mono); font-size: .875em;
+  background: var(--bg-code); padding: .1em .35em; border-radius: 3px;
+  border: 1px solid var(--rule);
+}
+pre {
+  background: var(--bg-code); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: .9rem 1.1rem; overflow-x: auto; font-size: .86rem; line-height: 1.55;
+}
+pre code { background: none; border: 0; padding: 0; font-size: 1em; }
+
+/* ---------- 5. Module header ------------------------------------- */
+.eyebrow {
+  font-family: var(--sans); font-size: 11.5px; font-weight: 700;
+  letter-spacing: .11em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 .5rem;
+}
+.lede { font-size: 1.13rem; color: var(--ink-soft); margin: 0 0 1.8rem; line-height: 1.6; }
+
+.meta-bar {
+  display: flex; flex-wrap: wrap; gap: .5rem 1.4rem;
+  font-family: var(--sans); font-size: 12.5px; color: var(--ink-faint);
+  padding: .7rem 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  margin-bottom: 2.4rem;
+}
+.meta-bar b { color: var(--ink-soft); font-weight: 600; }
+
+/* ---------- 6. Callouts ------------------------------------------ */
+.box {
+  --c: var(--accent); --cs: var(--accent-soft);
+  border-left: 3px solid var(--c); background: var(--cs);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: .95rem 1.15rem; margin: 1.6rem 0;
+}
+.box > :first-child { margin-top: 0; }
+.box > :last-child  { margin-bottom: 0; }
+.box .box-title {
+  font-family: var(--sans); font-size: 11.5px; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--c);
+  margin: 0 0 .45rem; display: block;
+}
+.box.insight { --c: var(--insight); --cs: var(--insight-soft); }
+.box.warn    { --c: var(--warn);    --cs: var(--warn-soft); }
+.box.pitfall { --c: var(--pitfall); --cs: var(--pitfall-soft); }
+.box.exam    { --c: var(--exam);    --cs: var(--exam-soft); }
+.box.defn    { --c: var(--defn);    --cs: var(--defn-soft); }
+
+/* ---------- 7. Equations ----------------------------------------- */
+.eq {
+  margin: 1.7rem 0; padding: 1rem 1.2rem;
+  background: var(--bg-raised); border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.eq-body { display: flex; align-items: center; gap: 1rem; }
+.eq-body .eq-math { flex: 1; min-width: 0; overflow-x: auto; overflow-y: hidden; padding: .2rem 0; }
+
+/* Stacked fraction. Removes the ambiguity of a/b/c and of a·b/c in running
+   math. Usage:  <span class="frac"><span class="num">…</span><span class="den">…</span></span>
+   The rule uses currentColor, so it re-themes with the surrounding text. */
+.frac {
+  display: inline-block; vertical-align: middle;
+  text-align: center; margin: 0 .18em; line-height: 1.25;
+}
+.frac > .num { display: block; padding: 0 .4em .1em; border-bottom: 1px solid currentColor; }
+.frac > .den { display: block; padding: .1em .4em 0; }
+.frac .frac { font-size: .93em; }          /* nested fractions step down */
+.eq-math .frac { margin: 0 .22em; }
+/* A radical that scales with its content, for √(…) inside a fraction. */
+.sqrt { display: inline-block; }
+.sqrt > .rad { padding-right: .1em; }
+.sqrt > .arg { border-top: 1px solid currentColor; padding: 0 .15em; }
+/* Delimiter stretched to wrap a stacked fraction: <span class="dl">(</span> */
+.dl {
+  display: inline-block; transform: scaleY(1.9); transform-origin: center;
+  margin: 0 .1em; font-weight: 300;
+}
+.eq-num {
+  font-family: var(--mono); font-size: .8rem; color: var(--ink-faint);
+  flex-shrink: 0; user-select: none;
+}
+.eq-says {
+  margin-top: .8rem; padding-top: .7rem; border-top: 1px dashed var(--rule);
+  font-size: .95rem; color: var(--ink-soft);
+}
+.eq-says::before {
+  content: "In words"; display: block; font-family: var(--sans); font-size: 10.5px;
+  font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ink-faint); margin-bottom: .25rem;
+}
+
+/* Symbol / notation table */
+table.symbols { font-size: .92rem; }
+table.symbols td:first-child { font-family: var(--mono); white-space: nowrap; width: 1%; color: var(--accent); }
+table.symbols td:last-child  { color: var(--ink-faint); white-space: nowrap; width: 1%; text-align: right; font-family: var(--sans); font-size: .85rem; }
+
+/* ---------- 8. Worked example ------------------------------------ */
+.example {
+  border: 1px solid var(--rule-strong); border-radius: var(--radius);
+  margin: 1.8rem 0; overflow: hidden; background: var(--bg-raised);
+}
+.example > .ex-head {
+  background: var(--bg-sunken); border-bottom: 1px solid var(--rule);
+  padding: .6rem 1.15rem;
+  font-family: var(--sans); font-size: 12px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft);
+}
+.example > .ex-body { padding: 1.05rem 1.15rem; counter-reset: exstep; }
+.example > .ex-body > :first-child { margin-top: 0; }
+.example > .ex-body > :last-child  { margin-bottom: 0; }
+.ex-step { margin: 0 0 .9rem; padding-left: 1.9rem; position: relative; }
+.ex-step::before {
+  content: counter(exstep); counter-increment: exstep;
+  position: absolute; left: 0; top: .12em;
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  width: 1.35rem; height: 1.35rem; line-height: 1.35rem; text-align: center;
+  background: var(--accent-soft); color: var(--accent); border-radius: 50%;
+}
+.ex-answer {
+  margin-top: 1rem; padding: .6rem .9rem; border-radius: 4px;
+  background: var(--exam-soft); border-left: 3px solid var(--exam);
+  font-weight: 600;
+}
+
+/* ---------- 9. Self-check (retrieval practice) ------------------- */
+.check {
+  border: 1px solid var(--rule); border-left: 3px solid var(--insight);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 1.6rem 0; background: var(--bg-raised);
+}
+.check > summary {
+  cursor: pointer; padding: .8rem 1.1rem; list-style: none;
+  font-weight: 600; display: flex; gap: .7rem; align-items: baseline;
+}
+.check > summary::-webkit-details-marker { display: none; }
+.check > summary::before {
+  content: "Q"; flex-shrink: 0;
+  font-family: var(--sans); font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+  color: var(--insight); background: var(--insight-soft);
+  padding: .12rem .4rem; border-radius: 3px; position: relative; top: -1px;
+}
+.check > summary:hover { background: var(--insight-soft); }
+.check[open] > summary { border-bottom: 1px solid var(--rule); }
+.check .answer { padding: .9rem 1.1rem 1rem 2.8rem; color: var(--ink-soft); }
+.check .answer > :first-child { margin-top: 0; }
+.check .answer > :last-child  { margin-bottom: 0; }
+
+/* ---------- 10. Figures ------------------------------------------ */
+figure {
+  margin: 2rem 0; padding: 1.2rem;
+  background: var(--bg-raised); border: 1px solid var(--rule); border-radius: var(--radius);
+}
+figure svg { display: block; width: 100%; height: auto; max-width: 100%; }
+figcaption {
+  margin-top: .9rem; padding-top: .7rem; border-top: 1px solid var(--rule);
+  font-size: .88rem; color: var(--ink-soft); line-height: 1.55;
+}
+figcaption b { font-family: var(--sans); font-size: .85rem; color: var(--ink); }
+
+/* Compact diagram — the small, frequent figure that breaks up prose and anchors
+   one idea. Lighter frame than a full figure so it reads as part of the text. */
+figure.compact { padding: .7rem .85rem; margin: 1.3rem 0; background: transparent; }
+figure.compact figcaption {
+  margin-top: .55rem; padding-top: .5rem; font-size: .82rem; line-height: 1.5;
+}
+
+/* Two compact diagrams side by side, for direct comparison. */
+.figrow { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.6rem 0; }
+.figrow figure { margin: 0; height: 100%; }
+@media (max-width: 720px) { .figrow { grid-template-columns: 1fr; } }
+
+/* Photographs and scanned figures from slides, papers or textbooks. */
+figure img { display: block; width: 100%; height: auto; border-radius: 4px; }
+figcaption .src {
+  display: block; margin-top: .4rem;
+  font-family: var(--sans); font-size: .78rem; color: var(--ink-faint);
+}
+
+/* SVG semantic classes — diagrams inherit the theme automatically */
+.dg-ink    { fill: var(--ink); }
+.dg-soft   { fill: var(--ink-soft); }
+.dg-faint  { fill: var(--ink-faint); }
+.dg-line   { stroke: var(--ink-soft); fill: none; }
+.dg-rule   { stroke: var(--rule-strong); fill: none; }
+.dg-acc    { stroke: var(--accent); fill: none; }
+.dg-acc-f  { fill: var(--accent); }
+.dg-fill   { fill: var(--dg-surface); stroke: var(--rule-strong); }
+.dg-label  { fill: var(--ink-soft); font-family: var(--sans); font-size: 12px; }
+.dg-label-sm { fill: var(--ink-faint); font-family: var(--sans); font-size: 10.5px; }
+.dg-math   { fill: var(--ink); font-family: var(--serif); font-style: italic; font-size: 13px; }
+
+/* ---------- 11. Tables ------------------------------------------- */
+.table-scroll { overflow-x: auto; margin: 1.6rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: .5rem .8rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+thead th {
+  font-family: var(--sans); font-size: 12px; font-weight: 650;
+  text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft);
+  border-bottom: 1px solid var(--rule-strong);
+}
+tbody tr:last-child td { border-bottom: 0; }
+
+/* ---------- 12. Objectives / summary card ------------------------ */
+.objectives { list-style: none; padding: 0; }
+.objectives li { padding-left: 1.7rem; position: relative; margin: .45rem 0; }
+.objectives li::before {
+  content: ""; position: absolute; left: 0; top: .48em;
+  width: .62rem; height: .62rem; border: 1.5px solid var(--accent); border-radius: 2px;
+}
+
+.keycard {
+  background: var(--bg-raised); border: 1px solid var(--rule-strong);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--radius); padding: 1.2rem 1.35rem; margin: 2.5rem 0;
+}
+.keycard h4, .keycard .label { margin-top: 0; color: var(--accent); }
+.keycard ul { margin-bottom: 0; }
+
+/* Source map: which lecture/chapter each section came from */
+.srcmap { font-family: var(--sans); font-size: .86rem; color: var(--ink-faint); }
+.srcmap td { padding: .35rem .8rem .35rem 0; border: 0; }
+.srcmap td:first-child { color: var(--ink-soft); font-weight: 600; white-space: nowrap; }
+
+/* ---------- 13. Module index cards (course home page) ------------ */
+.cards { display: grid; gap: .9rem; margin: 1.8rem 0; }
+.card {
+  display: block; text-decoration: none; color: inherit;
+  border: 1px solid var(--rule); border-radius: var(--radius);
+  background: var(--bg-raised); padding: 1rem 1.2rem;
+  transition: border-color .12s, transform .12s;
+}
+.card:hover { border-color: var(--accent); transform: translateX(2px); }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+.card .card-n {
+  font-family: var(--mono); font-size: .78rem; color: var(--accent);
+  letter-spacing: .04em;
+}
+.card .card-t { font-family: var(--sans); font-weight: 650; font-size: 1.02rem; margin: .15rem 0 .3rem; }
+.card .card-d { font-size: .92rem; color: var(--ink-soft); margin: 0; line-height: 1.5; }
+.card.todo { opacity: .55; border-style: dashed; }
+
+/* ---------- 14. Prev / next -------------------------------------- */
+.pagination { display: flex; justify-content: space-between; gap: 1rem; margin-top: 4rem;
+              padding-top: 1.4rem; border-top: 1px solid var(--rule); font-family: var(--sans); }
+.pagination a { text-decoration: none; font-size: .92rem; max-width: 46%; }
+.pagination a span { display: block; font-size: 11px; text-transform: uppercase;
+                     letter-spacing: .08em; color: var(--ink-faint); margin-bottom: .12rem; }
+.pagination .next { text-align: right; margin-left: auto; }
+
+/* ---------- 15. Theme toggle ------------------------------------- */
+.theme-btn {
+  position: fixed; bottom: 1.1rem; right: 1.1rem; z-index: 50;
+  width: 2.3rem; height: 2.3rem; border-radius: 50%;
+  border: 1px solid var(--rule-strong); background: var(--bg-raised);
+  color: var(--ink-soft); cursor: pointer; font-size: 1rem; line-height: 1;
+  display: grid; place-items: center;
+}
+.theme-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ---------- 16. Responsive --------------------------------------- */
+@media (max-width: 1020px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--rule);
+    padding: 1rem 1.25rem;
+  }
+  .sidebar nav { max-height: 15rem; overflow-y: auto; }
+  main { padding: 2rem 1.25rem 5rem; }
+}
+@media (max-width: 620px) {
+  body { font-size: 16.5px; }
+  h1 { font-size: 1.7rem; }
+  h2 { font-size: 1.28rem; }
+  .eq { padding: .8rem .9rem; }
+  .pagination { flex-direction: column; }
+  .pagination a { max-width: 100%; }
+  .pagination .next { text-align: left; margin-left: 0; }
+}
+
+/* ---------- 17. Print -------------------------------------------- */
+@media print {
+  :root { --bg: #fff; --bg-raised: #fff; --bg-sunken: #fff; --ink: #000; }
+  .sidebar, .theme-btn, .progress, .pagination, .anchor { display: none !important; }
+  .shell { display: block; }
+  main { padding: 0; }
+  .wrap { max-width: 100%; }
+  body { font-size: 10.5pt; }
+  .check .answer { display: block; }
+  .check summary { font-weight: 700; }
+  h2, h3 { break-after: avoid; }
+  figure, .eq, .example, .box { break-inside: avoid; border: 1px solid #bbb; }
+  a { color: #000; text-decoration: none; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; color: #555; }
+}

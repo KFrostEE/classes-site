@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M12 · Energy Loss, Range, and the Bragg Peak — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M12 · Energy Loss, Range, and the Bragg Peak</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 12</p>
+    <h1>Energy Loss, Range, and the Bragg Peak</h1>
+    <p class="lede">
+      The quantitative layer under every charged-particle mechanism the course has covered:
+      how fast a particle loses energy, how far it travels before stopping, how sharply the
+      loss concentrates at the end of its path, and what linear energy transfer measures.
+      These are the quantities a transport simulation computes.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M08, M11, M04</span>
+      <span><b>Read time</b> ~40 min</span>
+      <span><b>Sources</b> Deck 5; NIST PSTAR; Ziegler, Biersack &amp; Littmark</span>
+    </div>
+
+    <p>
+      <a href="m08-ionization-excitation.html">M08</a> established that a charged particle
+      ionises and excites the atoms it passes, and <a href="m11-displacement-damage.html">M11</a>
+      established that it can also strike a nucleus and displace an atom. Both modules
+      described what happens in a single event. This module counts the events: it gives the
+      rate at which a particle loses energy along its path, the distance that rate implies
+      before the particle stops, and the way the rate changes as the particle slows.
+    </p>
+    <p>
+      Nothing here is a new mechanism. Everything is bookkeeping over the mechanisms already
+      established, and that bookkeeping is what turns qualitative statements into numbers.
+      It answers whether a given proton reaches the active layer of a die or stops in the
+      package, how much charge a heavy ion deposits in a sensitive volume, and whether
+      adding shielding helps or hurts. It is also the layer the course's simulation tool
+      computes: the entire output of SRIM consists of stopping powers, ranges and the damage
+      distributions that follow from them, and <a href="index.html#roadmap">M13</a> is not
+      usable without the definitions collected here.
+    </p>
+    <p>
+      One convention before starting. All quantities in this module describe a particle that
+      carries charge. Photons have no stopping power and no range, and are handled by the
+      attenuation law of <a href="m10-photon-interaction.html">M10</a> instead.
+    </p>
+
+    <h2>1 · Stopping power</h2>
+    <p>
+      Stopping power is the rate at which a charged particle loses kinetic energy with
+      distance travelled. It is a property of the particle and the material jointly, and it
+      varies continuously along the path because the particle slows as it goes.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> = − <span class="frac"><span class="num">d<em>E</em></span><span class="den">d<em>x</em></span></span>,&nbsp;&nbsp; <span class="frac"><span class="num"><em>S</em></span><span class="den">ρ</span></span> = − <span class="frac"><span class="num">1</span><span class="den">ρ</span></span> <span class="frac"><span class="num">d<em>E</em></span><span class="den">d<em>x</em></span></span></div>
+        <div class="eq-num">(12.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em> linear stopping power (MeV/cm) · <em>E</em> particle kinetic energy (MeV) ·
+        <em>x</em> distance along the track (cm) · ρ density (g/cm³) ·
+        <em>S</em>/ρ mass stopping power (MeV·cm²/g). The minus sign makes <em>S</em>
+        positive, since energy falls as distance grows. As with the attenuation coefficient
+        of <a href="m10-photon-interaction.html">M10</a>, dividing by density gives a
+        quantity that is a property of the element rather than of a particular sample, which
+        is why tables list the mass form.
+      </div>
+    </div>
+
+    <p>
+      The total stopping power separates into two independent contributions, because the
+      particle can lose energy to the electrons of the target or to its nuclei, and the two
+      have completely different magnitudes, energy dependences and consequences.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em><sub>total</sub> = <em>S</em><sub>elec</sub> + <em>S</em><sub>nuc</sub></div>
+        <div class="eq-num">(12.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em><sub>elec</sub> electronic stopping power, energy lost to ionization and
+        excitation of target electrons (MeV·cm²/g) · <em>S</em><sub>nuc</sub> nuclear
+        stopping power, energy lost in elastic collisions with screened target nuclei
+        (MeV·cm²/g). For light ions at MeV energies the electronic term dominates by three
+        or four orders of magnitude; the nuclear term matters only near the end of the
+        track. The names refer to what the energy is given to, not to the nuclear force. A
+        third term, radiative stopping from bremsstrahlung, is omitted here because it is
+        negligible for ions at these energies; it dominates only for electrons above a few
+        MeV, which is the regime of <a href="m09-bremsstrahlung-xrays.html">M09</a>.
+      </div>
+    </div>
+
+    <div class="box defn">
+      <p class="box-title">The names are about the recipient, not the force</p>
+      <p>
+        Nuclear stopping is an electrostatic process. The incident ion and the target
+        nucleus repel each other through a Coulomb interaction screened by their electron
+        clouds, and the collision is elastic. The word nuclear identifies the target as a
+        nucleus rather than an electron; it does not mean the strong nuclear force is
+        involved, and it does not mean a nuclear reaction occurs. Reactions of that kind do
+        happen, and are treated separately as nuclear interactions.
+      </p>
+    </div>
+
+    <h2>2 · Electronic stopping and the 1/v² dependence</h2>
+    <p>
+      Electronic stopping is the sum of the ionization and excitation events of
+      <a href="m08-ionization-excitation.html">M08</a>, counted per unit path length. A typical
+      event removes tens of electronvolts, so a particle of a few MeV undergoes tens of
+      thousands of them. The distribution has a long tail: the largest transfer a 10 MeV
+      proton can make to a free electron is 21.9 keV, and it is those rare large transfers
+      that produce the escaping delta rays of §4.
+      Because the number is so large, the loss is smooth and well described by an average
+      rate. The Bethe formula gives that rate.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>S</em><sub>elec</sub></span><span class="den">ρ</span></span> = <em>K</em> <span class="frac"><span class="num"><em>Z</em></span><span class="den"><em>A</em></span></span> <span class="frac"><span class="num"><em>z</em>²</span><span class="den">β²</span></span> <span class="dl">[</span> ln <span class="dl">(</span><span class="frac"><span class="num">2<em>m</em><sub>e</sub><em>c</em>²β²γ²</span><span class="den"><em>I</em></span></span><span class="dl">)</span> − β² <span class="dl">]</span></div>
+        <div class="eq-num">(12.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>K</em> = 0.307 MeV·cm²/mol, a combination of fundamental constants ·
+        <em>Z</em>, <em>A</em> atomic number and atomic weight of the <em>target</em>
+        (<em>A</em> in g/mol) · <em>z</em> charge number of the <em>incident particle</em>
+        (1 for a proton, 2 for an alpha, 26 for iron) · β = <em>v</em>/<em>c</em>, particle
+        speed as a fraction of the speed of light · γ = 1/√(1 − β²), the Lorentz factor ·
+        <em>m</em><sub>e</sub><em>c</em>² electron rest energy, 0.511 MeV ·
+        <em>I</em> mean excitation energy of the target (eV), an empirical material constant
+        equal to 173 eV for silicon. Valid where the particle is fast enough to be fully
+        stripped of its own electrons; it fails at low velocity, treated below.
+      </div>
+    </div>
+
+    <p>
+      Three dependences in equation (12.3) carry all of the physics, and each can be read
+      directly from the mechanism.
+    </p>
+    <p>
+      <b>The loss grows as the square of the incident charge.</b> The Coulomb force the
+      particle exerts on a target electron is proportional to <em>z</em>, the momentum it
+      imparts is therefore proportional to <em>z</em>, and the energy transferred goes as
+      the square of that momentum. An iron ion with <em>z</em> = 26 would lose energy
+      26² = 676 times faster than a proton of the same velocity if it were fully stripped.
+      It is fully stripped only at high velocity: at 1 MeV per nucleon its effective charge
+      gives a factor nearer 160, climbing towards the bare value as the energy rises. Either
+      way the ratio is enormous, which is why heavy ions dominate single-event effects even
+      though they are a small fraction of the flux in space.
+    </p>
+    <p>
+      <b>The loss grows as the inverse square of the velocity</b>, through the 1/β² factor.
+      A slow particle spends longer in the vicinity of each atom it passes, so the Coulomb
+      impulse delivered to that atom's electrons is larger — proportional to 1/<em>v</em> —
+      and the energy transferred, which goes as the square of that impulse, is proportional
+      to 1/<em>v</em>². This single factor is the origin of the Bragg peak of §6: as the
+      particle slows, its rate of loss rises, which slows it further.
+    </p>
+    <p>
+      <b>The loss is proportional to the electron density of the target</b>, through
+      <em>Z</em>/<em>A</em> multiplied by the density. This is the same <em>Z</em>/<em>A</em>
+      ratio that appeared for Compton scattering in <a href="m10-photon-interaction.html">M10</a>,
+      and for the same reason: the target that matters is an electron, and the number of
+      electrons per gram barely varies between elements.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 660 370" role="img" aria-labelledby="f12-1-t">
+        <title id="f12-1-t">Electronic and nuclear mass stopping power for protons in silicon against proton energy, on logarithmic axes</title>
+        <line x1="78" y1="302" x2="618" y2="302" class="dg-rule" stroke-width="1.2"/>
+        <line x1="78" y1="302" x2="78" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="0.6" opacity="0.35">
+          <line x1="168" y1="302" x2="168" y2="40"/><line x1="258" y1="302" x2="258" y2="40"/>
+          <line x1="348" y1="302" x2="348" y2="40"/><line x1="438" y1="302" x2="438" y2="40"/>
+          <line x1="528" y1="302" x2="528" y2="40"/>
+          <line x1="78" y1="264.6" x2="618" y2="264.6"/><line x1="78" y1="227.1" x2="618" y2="227.1"/>
+          <line x1="78" y1="189.7" x2="618" y2="189.7"/><line x1="78" y1="152.3" x2="618" y2="152.3"/>
+          <line x1="78" y1="114.9" x2="618" y2="114.9"/><line x1="78" y1="77.4" x2="618" y2="77.4"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="78" y="320">1 keV</text>
+          <text x="168" y="320">10 keV</text>
+          <text x="258" y="320">100 keV</text>
+          <text x="348" y="320">1 MeV</text>
+          <text x="438" y="320">10 MeV</text>
+          <text x="528" y="320">100 MeV</text>
+          <text x="618" y="320">1 GeV</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="72" y="306">10⁻⁴</text>
+          <text x="72" y="268">10⁻³</text>
+          <text x="72" y="231">10⁻²</text>
+          <text x="72" y="194">10⁻¹</text>
+          <text x="72" y="156">1</text>
+          <text x="72" y="119">10</text>
+          <text x="72" y="81">10²</text>
+          <text x="72" y="44">10³</text>
+        </g>
+        <text x="348" y="346" class="dg-label" text-anchor="middle">Proton kinetic energy</text>
+        <text x="20" y="171" class="dg-label" text-anchor="middle" transform="rotate(-90 20 171)">S/ρ  (MeV·cm²/g)</text>
+        <path d="M78.0,76.6 L113.8,69.2 L140.9,63.6 L159.3,59.7 L176.7,56.4 L195.1,53.4 L207.5,51.7 L222.2,50.2 L234.6,49.7 L244.1,49.9 L251.6,50.5 L258.0,51.1 L279.9,54.5 L293.8,56.9 L307.0,59.3 L320.9,62.1 L331.2,64.2 L339.3,66.1 L346.0,67.8 L363.8,72.5 L379.7,76.9 L390.9,80.2 L406.8,85.0 L418.0,88.4 L426.8,91.1 L433.9,93.4 L446.7,97.5 L465.1,103.4 L480.9,108.6 L496.8,113.8 L508.0,117.4 L516.8,120.1 L523.9,122.4 L536.7,126.2 L555.1,131.3 L567.5,134.5 L582.2,137.6 L594.6,139.9 L604.1,141.2 L611.6,142.1 L618.0,142.7" class="dg-acc" stroke-width="2.4" fill="none"/>
+        <path d="M78.0,112.1 L113.8,116.5 L140.9,121.4 L159.3,125.4 L176.7,129.6 L195.1,134.5 L207.5,138.0 L222.2,142.3 L234.6,146.1 L244.1,149.1 L251.6,151.5 L258.0,153.5 L279.9,160.8 L293.8,165.5 L307.0,170.0 L320.9,174.8 L331.2,178.4 L339.3,181.3 L346.0,183.7 L363.8,190.1 L379.7,195.9 L390.9,200.0 L406.8,205.9 L418.0,210.1 L426.8,213.4 L433.9,216.0 L446.7,220.9 L465.1,228.0 L480.9,234.1 L496.8,240.2 L508.0,244.6 L516.8,248.0 L523.9,250.8 L536.7,255.9 L555.1,263.1 L567.5,268.0 L582.2,273.8 L594.6,278.7 L604.1,282.4 L611.6,285.4 L618.0,287.9" class="dg-line" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+        <text x="300" y="46" class="dg-label">electronic</text>
+        <text x="286" y="204" class="dg-label">nuclear</text>
+        <circle cx="234.6" cy="49.7" r="4" class="dg-acc-f"/>
+        <text x="130" y="38" class="dg-label-sm">peak 549 MeV·cm²/g at 55 keV</text>
+        <line x1="230" y1="44" x2="234" y2="47" class="dg-acc" stroke-width="1"/>
+        <circle cx="438" cy="94.7" r="4" class="dg-acc-f"/>
+        <text x="446" y="90" class="dg-label-sm">10 MeV: 34.6</text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> Notice that the electronic curve is not monotonic: it rises as the
+        proton slows, as 1/β² requires, until 55 keV, then turns over once the proton is no
+        longer fast compared with the target's own electrons. Nuclear stopping is three to
+        four orders of magnitude below through the MeV range and closes to a factor of nine
+        at 1 keV, which is the only place it becomes a visible fraction of the total.
+        <span class="src">Data: NIST PSTAR, silicon, <em>I</em> = 173 eV, ρ = 2.33 g/cm³.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The turnover at low energy is a limit on the Bethe formula rather than a correction to
+      it, and equation (12.3) cannot describe it. The formula holds only while the projectile
+      moves fast compared with the orbital velocities of the target's electrons. As that
+      condition fails, the logarithm shrinks and then changes sign: evaluated with silicon's
+      <em>I</em> = 173 eV, the expression as printed reaches its own maximum near 216 keV and
+      is meaningless below about 79 keV. The real turnover lies further down still, at 55 keV.
+      What happens physically is that fewer and fewer target electrons can be excited at all
+      as the projectile slows past them, and the stopping power becomes proportional to
+      velocity rather than to its inverse square — a result derived by Lindhard and Scharff.
+      The tabulated silicon values follow that proportionality exactly between 1 and 10 keV.
+      Effective-charge reduction, in which the projectile captures electrons and its
+      <em>z</em> falls, is a real effect and matters for heavy ions, which have many
+      electrons to capture; it is not what governs a proton, which has only one.
+      Stopping-power tables and simulation codes therefore use fitted forms in this region
+      rather than a closed expression.
+    </p>
+
+    <h2>3 · Nuclear stopping</h2>
+    <p>
+      Nuclear stopping is the energy lost in elastic collisions with whole atoms rather than
+      with their electrons. Because a silicon nucleus is some fifty thousand times heavier than an
+      electron, each such collision transfers far more energy but occurs far more rarely.
+      Every nuclear-stopping event is also a candidate displacement event, so this term is
+      the direct link to the damage of <a href="m11-displacement-damage.html">M11</a>: it is
+      the part of the energy loss that goes into moving atoms rather than into freeing
+      charge.
+    </p>
+    <p>
+      Nuclear stopping is negligible at high energy and grows in relative importance as the
+      particle slows. For protons in silicon it never actually overtakes electronic
+      stopping: at 10 MeV the two are 34.58 and 0.018 MeV·cm²/g, so nuclear stopping is
+      0.05 % of the total, and even at 1 keV it is only about 10 %. For heavy ions the
+      crossover does occur, because the nuclear term rises with the mass and charge of the
+      projectile faster than the electronic term does, and it happens within the last part
+      of the track.
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">Where the damage is, and why shielding can make things worse</p>
+      <p>
+        Nuclear stopping peaks near the end of the range, precisely where the particle is
+        depositing energy fastest. A particle that passes through a die leaves a thin track
+        of ionization and few displacements; a particle that stops inside the die delivers
+        both its ionization maximum and its displacement maximum into that volume. Placing
+        shielding in front of a part slows the incident spectrum, and a particle that would
+        have passed straight through can be brought to rest inside the sensitive region.
+        This is the reversal established in <a href="m11-displacement-damage.html">M11 §5</a>,
+        and §6 gives it a quantitative shape.
+      </p>
+    </div>
+
+    <p>
+      Below the nuclear-stopping peak the term falls again. At very low velocity the
+      electron clouds of the two atoms screen their nuclear charges so effectively that the
+      interaction weakens, and the collision becomes soft. The result is a maximum in the
+      nuclear stopping curve rather than a monotonic rise, though it lies below the energies
+      of Figure 1 for protons.
+    </p>
+
+    <h2>4 · Linear energy transfer</h2>
+    <p>
+      Linear energy transfer, universally abbreviated LET, is the quantity the
+      radiation-effects literature uses in place of stopping power, and the two are related
+      but not identical. Stopping power counts all energy the particle loses. LET counts
+      only the energy deposited locally, near the track.
+    </p>
+    <p>
+      The two differ because some ionization events produce delta rays — the energetic
+      secondary electrons of <a href="m08-ionization-excitation.html">M08 §4</a> — that
+      travel far from the track and deposit their energy elsewhere. Restricted LET removes
+      them by imposing an energy cut-off Δ: transfers above Δ are assumed to leave the
+      track and are subtracted. Radiative loss does not enter the comparison at all, because
+      LET is a restricted <em>electronic</em> stopping power and bremsstrahlung is outside
+      that quantity by definition.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">LET<sub>Δ</sub> = <span class="dl">(</span>− <span class="frac"><span class="num">d<em>E</em></span><span class="den">d<em>x</em></span></span><span class="dl">)</span><sub>Δ</sub></div>
+        <div class="eq-num">(12.4)</div>
+      </div>
+      <div class="eq-says">
+        LET<sub>Δ</sub> restricted linear energy transfer (MeV·cm²/mg when divided by
+        density, or keV/µm) · Δ the cut-off energy above which a secondary electron is
+        considered to have escaped the track (eV or keV). With Δ = ∞ the restricted LET
+        equals the electronic stopping power. In practice the radiation-effects literature
+        quotes unrestricted LET and treats it as equal to electronic stopping power, which
+        is accurate for heavy ions at the energies that matter for single-event effects.
+      </div>
+    </div>
+
+    <p>
+      The unit of LET in this field is MeV·cm²/mg, milligrams rather than grams, which makes
+      the numerical values convenient: a heavy ion of interest for single-event testing has
+      an LET of order 1 to 100 MeV·cm²/mg. Converting to a linear rate requires the density,
+      and converting to collected charge requires the electron–hole pair creation energy of
+      3.6 eV established in <a href="m08-ionization-excitation.html">M08</a>.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em>′ = <span class="frac"><span class="num">LET · ρ · <em>q</em></span><span class="den"><em>E</em><sub>ehp</sub></span></span> = 10.4 <span class="frac"><span class="num">fC</span><span class="den">µm</span></span> per <span class="frac"><span class="num">MeV·cm²</span><span class="den">mg</span></span></div>
+        <div class="eq-num">(12.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em>′ charge liberated per unit track length (C/cm, or fC/µm) · LET linear
+        energy transfer (MeV·cm²/mg) · ρ density (mg/cm³; 2330 for silicon) ·
+        <em>q</em> elementary charge, 1.602×10⁻¹⁹ C · <em>E</em><sub>ehp</sub> electron–hole
+        pair creation energy, 3.6 eV in silicon. <b>The numerical value 10.4 fC/µm is
+        specific to silicon</b> and follows from its density and pair energy; equivalently,
+        an LET of 96.4 MeV·cm²/mg liberates 1 pC/µm. This is the bridge from a tabulated LET
+        to the critical charge of a circuit node, used in
+        <a href="index.html#roadmap">M15</a>.
+      </div>
+    </div>
+
+    <h2>5 · Range, projected range, and straggling</h2>
+    <p>
+      Because a charged particle loses energy continuously, it comes to rest after a
+      definite distance. That distance follows from the stopping power by integration: the
+      particle travels d<em>E</em>/<em>S</em> while giving up an increment d<em>E</em>, and
+      summing those increments from the initial energy down to zero gives the path length.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>CSDA</sub> = ∫<sub>0</sub><sup><em>E</em><sub>0</sub></sup> <span class="frac"><span class="num">d<em>E</em></span><span class="den"><em>S</em><sub>total</sub>(<em>E</em>)</span></span></div>
+        <div class="eq-num">(12.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em><sub>CSDA</sub> range in the continuous-slowing-down approximation
+        (g/cm²; divide by ρ for cm) · <em>E</em><sub>0</sub> initial kinetic energy (MeV) ·
+        <em>S</em><sub>total</sub> total mass stopping power at energy <em>E</em>
+        (MeV·cm²/g). The approximation treats energy loss as perfectly smooth, ignoring the
+        statistical spread of individual events. It gives the average <em>path length</em>
+        travelled, measured along the trajectory.
+      </div>
+    </div>
+
+    <p>
+      Path length is not the same as penetration depth. Collisions with target electrons
+      barely deflect a heavy ion, because it is thousands of times the electron's mass, but
+      the comparatively rare screened-Coulomb collisions with nuclei described in §3 turn it
+      measurably. Its path therefore wanders, and the straight-line distance from entry to
+      stopping point is shorter than the distance travelled. That straight-line distance, measured
+      along the original direction of motion, is the projected range, and it is the quantity
+      an engineer needs when asking whether a particle reaches a buried layer.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>f</em><sub>d</sub> = <span class="frac"><span class="num"><em>R</em><sub>proj</sub></span><span class="den"><em>R</em><sub>CSDA</sub></span></span></div>
+        <div class="eq-num">(12.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>f</em><sub>d</sub> detour factor (dimensionless, 0 to 1) ·
+        <em>R</em><sub>proj</sub> projected range (g/cm²) · <em>R</em><sub>CSDA</sub> CSDA
+        range (g/cm²). A value near 1 means the track is nearly straight. For protons in
+        silicon <em>f</em><sub>d</sub> = 0.995 at 10 MeV and 0.27 at 1 keV: a fast heavy
+        particle travels almost in a straight line, a slow light one does not. For electrons
+        the detour factor is far smaller at all energies, because an electron is light enough
+        to be turned through large angles by elastic scattering from target <em>nuclei</em>,
+        which is what dominates the wandering.
+      </div>
+    </div>
+
+    <p>
+      Neither range is a sharp cut-off. Energy loss is a statistical process, so two
+      identical particles entering the same material stop at slightly different depths. The
+      spread is called straggling, and it has a longitudinal component along the beam and a
+      lateral component across it. Longitudinal straggling for MeV protons in silicon is of
+      order one percent of the range, which is why an ion beam can be used to place a dose
+      at a chosen depth with useful precision. For electrons straggling is so large that a
+      range is barely a useful concept at all.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 660 230" role="img" aria-labelledby="f12-2-t">
+        <title id="f12-2-t">Path length, projected range and straggling for a heavy ion compared with an electron</title>
+        <line x1="60" y1="46" x2="60" y2="200" class="dg-rule" stroke-width="1.6"/>
+        <text x="30" y="40" class="dg-label-sm">surface</text>
+        <path d="M60,80 C120,78 180,86 240,82 C280,80 300,88 316,84" class="dg-acc" stroke-width="2" fill="none"/>
+        <circle cx="318" cy="84" r="4" class="dg-acc-f"/>
+        <line x1="60" y1="104" x2="318" y2="104" class="dg-line" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#f12-2-a)"/>
+        <text x="150" y="118" class="dg-label-sm">projected range R_proj</text>
+        <text x="150" y="70" class="dg-label-sm">path length R_CSDA (slightly longer)</text>
+        <text x="326" y="88" class="dg-label-sm">stops here</text>
+        <text x="60" y="36" class="dg-label">Heavy ion: f_d ≈ 1</text>
+        <path d="M60,160 C86,142 96,182 122,164 C146,148 152,190 178,172 C200,158 210,196 232,180 C248,168 258,192 272,182" class="dg-line" stroke-width="1.8" fill="none"/>
+        <circle cx="274" cy="182" r="4" class="dg-soft"/>
+        <line x1="60" y1="206" x2="274" y2="206" class="dg-line" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#f12-2-a)"/>
+        <text x="60" y="146" class="dg-label">Electron: f_d ≪ 1, path far longer than depth</text>
+        <rect x="430" y="60" width="170" height="120" class="dg-fill"/>
+        <line x1="470" y1="60" x2="470" y2="180" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="560" y1="60" x2="560" y2="180" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+        <path d="M430,176 C480,174 500,120 515,72 C530,120 550,174 600,176" class="dg-acc" stroke-width="2" fill="none"/>
+        <text x="515" y="52" class="dg-label-sm" text-anchor="middle">stopping depth distribution</text>
+        <line x1="470" y1="192" x2="560" y2="192" class="dg-acc" stroke-width="1.4" marker-end="url(#f12-2-b)" marker-start="url(#f12-2-b)"/>
+        <text x="515" y="208" class="dg-label-sm" text-anchor="middle">straggling</text>
+        <text x="430" y="36" class="dg-label">Not a sharp cut-off</text>
+        <defs>
+          <marker id="f12-2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+          <marker id="f12-2-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The heavy ion's path barely deviates, so its two ranges nearly coincide; the
+        electron's path wanders so much that its penetration depth is a fraction of the
+        distance it travels. Notice on the right that identical particles stop across a
+        distribution of depths rather than at one plane.
+      </figcaption>
+    </figure>
+
+    <p>
+      For protons in silicon, the tabulated ranges give a direct sense of scale. A 1 MeV
+      proton travels 16.5 µm, a 10 MeV proton 715 µm, and a 100 MeV proton 4.2 cm. The first
+      stops within the top layers of a die, the second crosses the 600 µm die thickness the
+      course adopts but would not clear a 725 µm wafer, and the third passes through a
+      spacecraft wall and everything behind it. Trapped-belt
+      protons span this whole range, which is why the orbit tables of
+      <a href="m07-orbits-and-environment.html">M07</a> matter so directly to part
+      selection.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Proton energy</th><th>Total <em>S</em>/ρ (MeV·cm²/g)</th><th>CSDA range (g/cm²)</th><th>Range in Si</th><th>Detour factor</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>10 keV</td><td>337</td><td>5.29×10⁻⁵</td><td>0.23 µm</td><td>0.552</td></tr>
+          <tr><td>100 keV</td><td>505</td><td>2.31×10⁻⁴</td><td>0.99 µm</td><td>0.850</td></tr>
+          <tr><td>1 MeV</td><td>175</td><td>3.84×10⁻³</td><td>16.5 µm</td><td>0.982</td></tr>
+          <tr><td>10 MeV</td><td>34.6</td><td>1.67×10⁻¹</td><td>715 µm</td><td>0.995</td></tr>
+          <tr><td>100 MeV</td><td>5.84</td><td>9.74</td><td>4.18 cm</td><td>0.997</td></tr>
+          <tr><td>1 GeV</td><td>1.80</td><td>4.01×10²</td><td>1.72 m</td><td>0.998</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">NIST PSTAR, protons in silicon. Range in silicon computed as CSDA/ρ with ρ = 2.33 g/cm³.</p>
+
+    <h2>6 · The Bragg peak</h2>
+    <p>
+      The 1/β² factor of equation (12.3) means a particle loses energy faster the slower it
+      goes. That creates a runaway near the end of the track: the particle slows, the
+      stopping power rises, it slows faster still, and almost all of its remaining energy is
+      given up in a short final distance. Plotting energy deposited per unit depth against
+      depth therefore gives a curve that is nearly flat for most of the path and then rises
+      to a sharp maximum just before the particle stops. That maximum is the Bragg peak.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 660 380" role="img" aria-labelledby="f12-3-t">
+        <title id="f12-3-t">Bragg curve for a 10 MeV proton stopping in silicon, with an enlargement of the final 25 micrometres</title>
+        <line x1="78" y1="300" x2="372" y2="300" class="dg-rule" stroke-width="1.2"/>
+        <line x1="78" y1="300" x2="78" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="78" y="318">0</text>
+          <text x="151.5" y="318">180</text>
+          <text x="225" y="318">360</text>
+          <text x="298.5" y="318">540</text>
+          <text x="372" y="318">720</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="72" y="304">0</text>
+          <text x="72" y="219">200</text>
+          <text x="72" y="135">400</text>
+          <text x="72" y="50">600</text>
+        </g>
+        <text x="225" y="344" class="dg-label" text-anchor="middle">Depth in silicon (µm)</text>
+        <text x="20" y="170" class="dg-label" text-anchor="middle" transform="rotate(-90 20 170)">S/ρ  (MeV·cm²/g)</text>
+        <path d="M78.0,285.4 L102.7,284.8 L126.7,284.1 L149.5,283.4 L171.4,282.6 L192.3,281.8 L212.1,280.8 L230.9,279.7 L248.6,278.4 L265.3,277.0 L280.9,275.3 L295.4,273.3 L308.7,271.0 L320.9,268.0 L331.9,264.3 L336.9,262.0 L341.7,259.4 L346.1,256.4 L350.2,252.7 L353.9,248.2 L357.3,242.6 L360.4,235.5 L363.1,225.7 L364.0,220.8 L364.9,214.8 L365.8,208.0 L366.6,200.4 L367.3,191.2 L367.9,178.8 L368.5,161.9 L368.8,150.4 L369.0,135.4 L369.2,114.6 L369.4,86.1 L369.5,71.7 L369.5,67.0 L369.6,67.8" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <text x="110" y="272" class="dg-label-sm">entrance, 34.6</text>
+        <text x="238" y="150" class="dg-label-sm">nearly flat over</text>
+        <text x="238" y="165" class="dg-label-sm">98 % of the path</text>
+        <text x="30" y="26" class="dg-label">10 MeV proton in silicon</text>
+        <line x1="410" y1="300" x2="614" y2="300" class="dg-rule" stroke-width="1.2"/>
+        <line x1="452" y1="300" x2="452" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="452" y="318">690</text>
+          <text x="516.8" y="318">700</text>
+          <text x="581.6" y="318">710</text>
+        </g>
+        <path d="M462.0,235.5 L504.7,225.7 L512.5,223.3 L520.1,220.8 L527.4,218.0 L534.4,214.8 L541.2,211.5 L547.7,208.0 L554.0,204.3 L560.0,200.4 L565.8,196.1 L571.3,191.2 L576.6,185.4 L581.6,178.8 L586.3,171.1 L590.7,161.9 L594.8,150.4 L598.6,135.4 L602.0,114.6 L604.9,86.1 L605.7,77.0 L606.5,69.6 L607.0,67.0 L607.5,67.8" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <circle cx="607.2" cy="67.0" r="4" class="dg-acc-f"/>
+        <text x="600" y="56" class="dg-label-sm" text-anchor="end">peak 551</text>
+        <text x="410" y="26" class="dg-label">Final 25 µm, enlarged</text>
+        <text x="410" y="344" class="dg-label" text-anchor="start">Depth (µm)</text>
+        <text x="410" y="364" class="dg-label-sm">Peak-to-entrance ratio 15.9</text>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> Both panels show the same track, and the quantity plotted is the
+        <em>rate</em> of loss, not the total. Notice how nearly flat that rate stays over the
+        first 690 µm and how abruptly it climbs in the last ten: the ratio of peak to entrance
+        stopping power is 15.9. The proton still has about 1.3 MeV left at 690 µm, so 87 % of
+        its energy has already gone into that long flat stretch — a sharp peak in rate is not
+        the same as most of the energy arriving at the end. Beyond the peak the curve
+        falls again over a fraction of a micrometre, because the proton has captured
+        electrons and its effective charge has collapsed.
+        <span class="src">Computed from NIST PSTAR stopping power and range data for
+        protons in silicon.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The peak-to-entrance ratio depends on the particle and the energy, and it is largest
+      for the lightest ions. For the 10 MeV proton of Figure 3 it is 15.9. Measured in
+      silicon at a common 9.3 MeV per nucleon, it falls monotonically with ion mass: about
+      3.1 for nitrogen, 2.6 for neon, 1.9 for argon, 1.6 for iron and 1.2 for xenon. The
+      reason is effective charge. A heavy ion begins capturing electrons at a higher
+      velocity than a light one, so its charge is already falling well before the end of the
+      track and the peak is blunted. That is why a heavy ion's LET can be treated as roughly
+      constant across a sensitive volume in single-event work, while a proton's cannot. For
+      electrons the peak is absent altogether, because their scattering is severe enough that
+      a well-defined depth does not exist.
+    </p>
+    <p>
+      The 15.9 figure is also a single-particle value. Across a beam, straggling spreads the
+      stopping depth by about one percent of the range, and convolving the curve of Figure 3
+      with that spread reduces the peak-to-entrance ratio to roughly 5. A single ion crossing
+      one sensitive volume sees the sharp value; a therapy beam or a flux of identical
+      particles sees the smeared one.
+    </p>
+    <p>
+      Two consequences follow, and they point in opposite directions. In proton therapy the
+      Bragg peak is the entire purpose of the technique: the incident energy is chosen so
+      that the peak lands on the tumour, sparing the tissue in front and leaving essentially
+      nothing behind. In a spacecraft the same concentration is a hazard, because a shield
+      that removes just enough energy to place the peak inside the die maximises the damage
+      rather than minimising it. Effective shielding must either stop the particle well
+      outside the sensitive volume or leave it energetic enough to pass through.
+    </p>
+
+    <h2>7 · Scaling with mass and charge</h2>
+    <p>
+      Equation (12.3) depends on the incident particle only through its charge number
+      <em>z</em> and its velocity. That permits any ion's stopping power to be obtained from
+      a proton table, provided the comparison is made at equal velocity rather than at equal
+      energy. Equal velocity means equal kinetic energy per nucleon, <em>E</em>/<em>M</em>.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em><sub>ion</sub>(<em>E</em>) ≈ <em>z</em>² <em>S</em><sub>p</sub><span class="dl">(</span><span class="frac"><span class="num"><em>E</em></span><span class="den"><em>M</em></span></span><span class="dl">)</span>,&nbsp;&nbsp; <em>R</em><sub>ion</sub>(<em>E</em>) ≈ <span class="frac"><span class="num"><em>M</em></span><span class="den"><em>z</em>²</span></span> <em>R</em><sub>p</sub><span class="dl">(</span><span class="frac"><span class="num"><em>E</em></span><span class="den"><em>M</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(12.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em><sub>ion</sub>, <em>R</em><sub>ion</sub> stopping power and range of the
+        ion · <em>S</em><sub>p</sub>, <em>R</em><sub>p</sub> the same quantities for a proton
+        from a table · <em>E</em> ion kinetic energy (MeV) · <em>M</em> ion mass number
+        (dimensionless) · <em>z</em> ion charge number. Valid only where both particles are
+        fully stripped, so it degrades badly near the end of the range and for heavy ions at
+        low energy, which is one of the reasons a dedicated ion code is used instead.
+      </div>
+    </div>
+
+    <p>
+      Applying this to an alpha particle, <em>M</em> = 4 and <em>z</em> = 2, gives
+      <em>R</em><sub>α</sub>(<em>E</em>) ≈ <em>R</em><sub>p</sub>(<em>E</em>/4): an alpha
+      has roughly the range of a proton with a quarter of its energy. A 5.5 MeV alpha from a
+      typical decay therefore penetrates about as far as a 1.4 MeV proton, which the proton
+      table puts at 26.6 µm in silicon. The tabulated alpha value is 27.8 µm; the scaling
+      falls 4 % short because it ignores the low-energy end of the track, where neither
+      particle is fully stripped, and a fuller form of equation (12.8) adds a constant to
+      absorb exactly that. Either number explains why alpha contamination in package
+      materials affects only the topmost layers of a die.
+    </p>
+    <p>
+      Range also scales strongly with energy. Over the MeV decade the tabulated proton
+      ranges give 16.5 µm at 1 MeV and 715 µm at 10 MeV, a factor of 43 for a factor of 10
+      in energy, and 715 µm to 4.18 cm from 10 to 100 MeV, a factor of 58. The implied power
+      law is <em>R</em> ∝ <em>E</em><sup>1.6</sup> to <em>E</em><sup>1.8</sup>. Doubling the
+      energy of an incident proton roughly triples its penetration.
+    </p>
+
+    <details class="check">
+      <summary>A die is covered by 50 µm of silicon overlayer and passivation. Trapped
+      protons arrive with a spectrum extending from 1 to 100 MeV. Which part of that
+      spectrum can deposit its Bragg peak in the active silicon within the first few
+      micrometres below the overlayer, and what does that imply for the damage such a shield
+      produces?</summary>
+      <div class="answer">
+        <p>
+          A proton stops at its range. To stop just past 50 µm requires a range of roughly
+          50–55 µm, which from the scaling <em>R</em> ∝ <em>E</em><sup>1.6</sup> and the
+          16.5 µm figure at 1 MeV corresponds to about 2.1 MeV: the tabulated range at
+          2 MeV is 48 µm. Only a narrow slice of the spectrum, near 2 MeV, places its peak
+          in that volume.
+        </p>
+        <p>
+          Everything below about 2 MeV is absorbed harmlessly in the overlayer. From about
+          4–5 MeV upward a proton crosses the active layer at close to its entrance stopping
+          power and deposits comparatively little; between 2 and 4 MeV it is elevated but not
+          at its peak. The overlayer therefore converts a narrow
+          band of the incident spectrum into the worst possible case, and removes a broader
+          band entirely. Whether it helps depends on how much flux sits in each band —
+          which is exactly the calculation a transport simulation performs, and the reason
+          shielding decisions are not made by inspection.
+        </p>
+      </div>
+    </details>
+
+    <h2>8 · What a transport simulation computes</h2>
+    <p>
+      Equations (12.1) to (12.8) describe an average particle. They do not give the
+      distribution of stopping depths, the spatial pattern of vacancies, the trajectories of
+      recoiling target atoms, or what happens in a layered target where each layer has a
+      different density and composition. Those require following individual particles and
+      accumulating statistics over many of them, which is what a Monte Carlo transport code
+      does.
+    </p>
+    <p>
+      A binary-collision Monte Carlo treats the ion's history as a sequence of independent
+      two-body encounters. At each step it samples an impact parameter at random, computes
+      the deflection and the energy transferred using the screened Coulomb potential of §3,
+      subtracts the electronic energy loss accumulated between collisions using a stopping
+      formula, and repeats until the ion falls below a cut-off energy. Any target atom that
+      receives more than the displacement threshold of
+      <a href="m11-displacement-damage.html">M11</a> is followed in turn as a recoil, so a
+      single incident ion generates a tree of trajectories. Running thousands of ions builds
+      distributions rather than averages.
+    </p>
+    <p>
+      This is why the tool exists, and it is why the quantities in this module are the ones
+      it reports: ion range and its longitudinal and lateral straggling, energy given to
+      ionization against energy given to recoils, vacancy production against depth, and
+      energy ending as lattice vibration. <a href="index.html#roadmap">M13</a> covers
+      operating the code and reading those outputs. Every one of them is a quantity defined
+      in the sections above.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">What the quantities in this module do not capture</p>
+      <p>
+        Stopping power and range describe electromagnetic energy loss. They say nothing
+        about nuclear reactions, in which an incident proton or neutron transforms the
+        target nucleus and releases secondary particles with their own ranges and their own
+        damage. Such reactions are rare compared with electronic stopping but they can
+        deposit far more energy in one place. Down to about 90 nm they are the dominant
+        cause of single-event upset from protons, whose direct ionization is too weak to
+        exceed the critical charge of a node that size. At 65 nm and below the critical
+        charge has fallen far enough that direct proton ionization is measurable and often
+        dominant, so the classical picture no longer holds across the board. A
+        binary-collision code models neither channel.
+      </p>
+    </div>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>
+          Stopping power <em>S</em> = −d<em>E</em>/d<em>x</em> is the rate of energy loss
+          with distance; the mass form <em>S</em>/ρ in MeV·cm²/g is what tables list.
+        </li>
+        <li>
+          <em>S</em> splits into electronic, energy given to target electrons, and nuclear,
+          energy given elastically to target atoms. Electronic dominates by three to four
+          orders of magnitude for light ions at MeV energies; nuclear is what produces
+          displacements.
+        </li>
+        <li>
+          The Bethe formula gives <em>S</em><sub>elec</sub> ∝ <em>z</em>²/β² times the
+          target electron density. Charge squared is why heavy ions matter; inverse velocity
+          squared is why the Bragg peak exists.
+        </li>
+        <li>
+          The Bethe formula fails at low velocity, where the ion captures electrons and its
+          effective charge falls. Proton stopping in silicon peaks at 549 MeV·cm²/g at
+          55 keV and falls below that on both sides.
+        </li>
+        <li>
+          LET is the locally deposited part of the energy loss, quoted in MeV·cm²/mg. In
+          silicon, 1 MeV·cm²/mg liberates 10.4 fC/µm; 96.4 MeV·cm²/mg liberates 1 pC/µm.
+        </li>
+        <li>
+          CSDA range is path length; projected range is penetration depth; their ratio is
+          the detour factor, 0.995 for a 10 MeV proton in silicon and far smaller for
+          electrons. Neither is a sharp cut-off, because of straggling.
+        </li>
+        <li>
+          Protons in silicon: 16.5 µm at 1 MeV, 715 µm at 10 MeV, 4.2 cm at 100 MeV, with
+          <em>R</em> ∝ <em>E</em><sup>1.6</sup> to <em>E</em><sup>1.8</sup>.
+        </li>
+        <li>
+          The Bragg peak concentrates the <em>rate</em> of loss at the end of the track — a
+          factor of 15.9 above entrance for a single 10 MeV proton in silicon, falling to
+          about 5 once straggling is averaged over a beam, and falling further for heavier
+          ions, to about 1.6 for iron. A shield that places the peak inside the die maximises
+          damage instead of reducing it.
+        </li>
+        <li>
+          At equal velocity, <em>S</em> ∝ <em>z</em>² and <em>R</em> ∝ <em>M</em>/<em>z</em>²,
+          so any ion's behaviour follows approximately from a proton table evaluated at
+          <em>E</em>/<em>M</em>.
+        </li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1–2</td><td>Deck 5 (charged-particle energy loss); Bethe formula in the PDG form, <em>K</em> = 0.307 MeV·cm²/mol</td></tr>
+      <tr><td>§2, Fig. 1</td><td>NIST PSTAR, protons in silicon: mean excitation energy 173 eV, density 2.33 g/cm³</td></tr>
+      <tr><td>§3</td><td>Screened-Coulomb nuclear stopping after Ziegler, Biersack &amp; Littmark, <em>The Stopping and Range of Ions in Solids</em>; links to M11 §4–5</td></tr>
+      <tr><td>§4</td><td>Restricted LET definition per ICRU convention; charge conversion from the 3.6 eV pair energy established in M08 §5</td></tr>
+      <tr><td>§5</td><td>NIST PSTAR CSDA range, projected range and detour factor for silicon</td></tr>
+      <tr><td>§6</td><td>Bragg curve computed from the PSTAR stopping power and range tables for a 10 MeV proton in silicon</td></tr>
+      <tr><td>§7</td><td>Standard ion-scaling relations; ranges cross-checked against the PSTAR table in §5</td></tr>
+      <tr><td>§8</td><td>Binary-collision Monte Carlo method after Ziegler, Biersack &amp; Littmark; forward link to M13</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m11-displacement-damage.html"><span>Previous</span>M11 · Displacement Damage</a>
+      <a class="next" href="index.html"><span>Next</span>M13 · SRIM and TRIM — awaiting the lecture</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

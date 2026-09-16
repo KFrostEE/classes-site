@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formula sheet — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>Formula sheet</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="m01-mosfet-and-how-one-is-made.html">M01 · The MOSFET</a></li>
+        <li><a href="m02-deep-submicron-roadmap.html">M02 · Structural roadmap</a></li>
+        <li><a href="m03-threshold-voltage.html">M03 · Threshold voltage</a></li>
+        <li><a href="m04-wafer-preparation.html">M04 · Wafer preparation</a></li>
+        <li><a href="m05-thin-gate-oxides-growth-charge.html">M05 · Thin gate oxides</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap wide">
+
+    <p class="eyebrow">Reference</p>
+    <h1>Formula sheet</h1>
+    <p class="lede">
+      Every equation the course uses, with all symbols, exact units and the regime each
+      one holds in — organised by what a problem asks for rather than by topic.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Scope</b> whole course</span>
+      <span><b>Equation numbers</b> match the module that teaches them</span>
+      <span><b>Grows with</b> each module — M01–M05 built so far</span>
+    </div>
+
+    <p>
+      Equations are numbered by the module they belong to, so (7.3) is the third equation
+      of Module 07 whether or not that module has been generated yet. Links point to a
+      module page where one exists.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The two conventions that cause most wrong answers</p>
+      <p>
+        <b>Everything is in centimetres.</b> This course works in CGS-derived units
+        throughout, not SI. The permittivity of free space is
+        <em>ε</em><sub>0</sub> = 8.85×10⁻¹⁴ F/cm, <b>not</b> 8.85×10⁻¹² F/m. Capacitance
+        is per unit area in F/cm². Doping is in cm⁻³, areal charge density in cm⁻², charge
+        per unit area in C/cm². Depletion widths come out in cm and are converted to µm
+        afterwards. Convert every length to centimetres before substituting: 1 Å = 10⁻⁸ cm,
+        1 nm = 10⁻⁷ cm, 1 µm = 10⁻⁴ cm.
+      </p>
+      <p>
+        <b>Densities are not charges.</b> Interface and oxide charge are quoted in the
+        literature and in lecture as areal number densities in cm⁻², and every equation
+        here needs a charge in C/cm². Multiply by <em>q</em> = 1.6×10⁻¹⁹ C first. Omitting
+        that step produces an answer wrong by nineteen orders of magnitude while still
+        having the units of a voltage.
+      </p>
+    </div>
+
+    <h2>1 · Decision tree</h2>
+
+    <p>
+      Keyed by what the question asks for. The strategy column names the route; the link
+      goes to the equation.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Asked for…</th><th>Strategy</th><th>Equation</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>Threshold voltage</b> of a MOSFET</td>
+          <td>Four terms, in this order. (i) <em>φ</em><sub>F</sub> from the doping — sign
+            follows the body type. (ii) <em>φ</em><sub>MS</sub> read from the
+            work-function graph for the gate material and that doping. (iii)
+            <em>C</em><sub>ox</sub> after converting <em>t</em><sub>ox</sub> to cm.
+            (iv) <em>Q</em><sub>i</sub> = <em>qN</em><sub>i</sub>, then
+            <em>W</em><sub>m</sub>, then <em>Q</em><sub>d</sub>. Sum with the signs from
+            the table in §2.</td>
+          <td><a href="#eq-vt">(3.1)</a></td>
+        </tr>
+        <tr>
+          <td><b>Oxide capacitance</b> per unit area</td>
+          <td><em>ε</em><sub>r</sub><em>ε</em><sub>0</sub>/<em>t</em><sub>ox</sub> with
+            <em>ε</em><sub>0</sub> in F/cm. Convert ångströms to cm first. For a whole gate,
+            multiply by the area <em>Z</em>×<em>L</em>.</td>
+          <td><a href="#eq-cox">(3.4)</a></td>
+        </tr>
+        <tr>
+          <td><b>Maximum depletion width</b> or <b>depletion charge</b></td>
+          <td><em>φ</em><sub>F</sub> first, then <em>W</em><sub>m</sub>, then
+            <em>Q</em><sub>d</sub> = <em>qNW</em><sub>m</sub> with the sign set by the body
+            type. Answer in cm; divide by 10⁻⁴ for µm.</td>
+          <td><a href="#eq-wm">(3.6)</a>, <a href="#eq-qd">(3.7)</a></td>
+        </tr>
+        <tr>
+          <td><b>Required oxide thickness</b> for a gate length</td>
+          <td><em>t</em><sub>ox</sub> = <em>L</em><sub>E</sub>/45, both in the same unit.</td>
+          <td><a href="#eq-ratio">(2.2)</a></td>
+        </tr>
+        <tr>
+          <td><b>Maximum supply voltage</b> for a given oxide, or whether an oxide survives
+            a voltage</td>
+          <td><em>E</em><sub>ox</sub> = <em>V</em>/<em>t</em><sub>ox</sub> in V/cm, compare with
+            8–10 MV/cm for a high-quality dry oxide. 8 MV/cm is a minimum acceptable breakdown
+            strength, not an operating field; design practice is nearer 5 MV/cm. Say which end
+            of the 8–10 range you took, and allow ~30% margin on the arithmetic answer.</td>
+          <td><a href="#eq-eox">(5.2)</a></td>
+        </tr>
+        <tr>
+          <td><b>Threshold shift</b> caused by oxide or interface charge</td>
+          <td>Δ<em>V</em><sub>T</sub> = −<em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub>.
+            Get <em>Q</em><sub>ox</sub> by multiplying the areal density by <em>q</em>.
+            Positive oxide charge gives a negative shift.</td>
+          <td><a href="#eq-dvt">(5.4)</a></td>
+        </tr>
+        <tr>
+          <td><b>Drain current</b> of a MOSFET</td>
+          <td>Check the regime first: linear if
+            <em>V</em><sub>D</sub> &lt; <em>V</em><sub>G</sub> − <em>V</em><sub>T</sub>,
+            saturated otherwise. <em>Z</em>/<em>L</em> is the width-to-length ratio,
+            typically 5–10.</td>
+          <td><a href="#eq-idlin">(5.1)</a>, <a href="#eq-idsat">(1.2)</a></td>
+        </tr>
+        <tr>
+          <td><b>Wavelength</b> from a band gap or work function, or the reverse</td>
+          <td><em>E</em> [eV] = 1.24/<em>λ</em> [µm]. Longer wavelength than this is not
+            absorbed; shorter is.</td>
+          <td><a href="#eq-lambda">(3.2)</a></td>
+        </tr>
+        <tr>
+          <td><b>Net doping</b> after a compensating implant</td>
+          <td>Subtract the concentrations, not the exponents. Bring both to the same power
+            of ten first.</td>
+          <td><a href="#eq-net">(3.9)</a></td>
+        </tr>
+        <tr>
+          <td><b>Area or die-count gain</b> from a larger wafer</td>
+          <td>Ratio of the squares of the diameters. 200 → 300 mm is 2.25×.</td>
+          <td><a href="#eq-area">(4.4)</a></td>
+        </tr>
+        <tr>
+          <td><b>Etch undercut</b> from a wet etch</td>
+          <td>A wet etch is isotropic: it undercuts the mask laterally by roughly the depth
+            etched, on each side. A 2 µm window etched 1 µm deep opens to about 4 µm. A dry
+            anisotropic etch leaves the width essentially unchanged.</td>
+          <td><a href="#eq-undercut">(1.3)</a></td>
+        </tr>
+        <tr>
+          <td><b>Which oxide charge</b> a measured threshold drift is</td>
+          <td>Reversible with bias polarity and accelerated by temperature →
+            <em>Q</em><sub>m</sub>. Progressive under electrical stress and not recovering
+            → <em>Q</em><sub>it</sub> with <em>Q</em><sub>ot</sub>. Frequency-dependent
+            capacitance → <em>Q</em><sub>it</sub>. Fixed at manufacture, orientation- and
+            oxidation-dependent → <em>Q</em><sub>f</sub>.</td>
+          <td><a href="#eq-qi">(5.3)</a></td>
+        </tr>
+      <tr>
+        <td>Which tunnelling mechanism is operating, or the gate leakage of a thin oxide</td>
+        <td>Compare <em>t</em><sub>ox</sub> against 4 nm: above it and at high field,
+            Fowler–Nordheim; at or below it, direct. Confirm F–N by plotting
+            log(<em>J</em>/<em>E</em><sub>ox</sub><sup>2</sup>) against 1/<em>E</em><sub>ox</sub>
+            and checking for a straight line.</td>
+        <td><a href="#eq-fn">(6.1)</a></td>
+      </tr>
+      <tr>
+        <td>The thinnest usable gate oxide, or whether a given oxide leaks too much</td>
+        <td>Convert the off-state leakage spec to a current density over the channel area — the
+            standard case gives 1 A/cm² — and compare. Cross-check against the reliability
+            thicknesses: 110 Å at 5 V, 65 Å at 3.3 V, 45 Å at 2.5 V, each already carrying a 30%
+            defect margin. Tunnelling becomes excessive below 1.4 nm.</td>
+        <td><a href="#eq-jlimit">(6.2)</a></td>
+      </tr>
+      <tr>
+        <td>Why the measured gate capacitance is below <em>C</em><sub>ox</sub> even in strong
+            inversion at low frequency</td>
+        <td>Polysilicon depletion. Put <em>C</em><sub>poly&nbsp;dep</sub> in series with
+            <em>C</em><sub>ox</sub>; the smaller dominates. Interface traps stretch a C–V curve
+            along the voltage axis instead, and never push it above
+            <em>C</em><sub>ox</sub> — that is how the two are told apart.</td>
+        <td><a href="#eq-cpoly">(6.3)</a></td>
+      </tr>
+      <tr>
+        <td>Why a stressed oxide's current drifts with time, and in which direction</td>
+        <td>Falling current at constant voltage means electron trapping — cathode field reduced,
+            negative feedback. Rising current means hole trapping by anode hole injection —
+            cathode field raised, positive feedback. An abrupt jump is breakdown.</td>
+        <td><a href="#eq-fn">(6.1)</a></td>
+      </tr>
+</tbody>
+    </table>
+    </div>
+
+    <h2>2 · How solutions work in this subject</h2>
+
+    <h3>2.1 Signs in the threshold equation</h3>
+
+    <p>
+      Three of the four terms change sign with the device type. Getting this wrong is the
+      most common error in the whole course, and the result still looks plausible.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Term</th><th>n-channel (p body)</th><th>p-channel (n body)</th><th>Rule</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><em>φ</em><sub>MS</sub></td><td>−</td><td>−</td>
+          <td>Negative for Al and for n⁺ poly on either body type</td></tr>
+        <tr><td>−<em>Q</em><sub>i</sub>/<em>C</em><sub>ox</sub></td><td>−</td><td>−</td>
+          <td><em>Q</em><sub>i</sub> is positive charge in both cases</td></tr>
+        <tr><td>−<em>Q</em><sub>d</sub>/<em>C</em><sub>ox</sub></td><td>+</td><td>−</td>
+          <td><em>Q</em><sub>d</sub> &lt; 0 for p body (ionised acceptors), &gt; 0 for n body
+            (ionised donors)</td></tr>
+        <tr><td>+2<em>φ</em><sub>F</sub></td><td>+</td><td>−</td>
+          <td><em>φ</em><sub>F</sub> &gt; 0 for p type, &lt; 0 for n type</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      <b>Consequence to sanity-check against.</b> The third and fourth terms always share a
+      sign, so they add rather than cancelling; for an n-channel device they come to about +1 V
+      together and partially offset the first two. A p-channel device has all four negative, so
+      its threshold is large and negative — several times the magnitude of an n-channel device
+      on the same wafer with the same oxide. If a p-channel calculation
+      produces a small or positive threshold, a sign is wrong. This asymmetry is why early
+      MOS circuits needed six-volt supplies.
+    </p>
+
+    <h3>2.2 Order-of-magnitude checks</h3>
+
+    <ul>
+      <li><em>C</em><sub>ox</sub> for 1000 Å is 3.45×10⁻⁸ F/cm². Scale inversely with
+        thickness: 100 Å gives 3.45×10⁻⁷, 20 Å gives 1.73×10⁻⁶ F/cm².</li>
+      <li><em>φ</em><sub>F</sub> is 0.288 V at 10¹⁵ cm⁻³ and rises by 0.0259 × ln(10) =
+        0.060 V per decade of doping. At 10¹⁶ it is 0.348 V, at 10¹⁷ it is 0.408 V.</li>
+      <li><em>W</em><sub>m</sub> is 0.867 µm at 10¹⁵ cm⁻³. It falls roughly as the inverse
+        square root of the doping, so a decade of doping shrinks it by about 3.2×, less the
+        slow growth of <em>φ</em><sub>F</sub>.</li>
+      <li>An interface charge density of 5×10¹¹ cm⁻² through a 1000 Å oxide costs 2.32 V.
+        Scale linearly in both density and thickness.</li>
+      <li>A field of 10 MV/cm across 5 nm is 5 V; across 2 nm it is 2 V. Thickness in nm
+        times 10 gives the breakdown voltage in volts at 10 MV/cm.</li>
+    </ul>
+
+    <h3>2.3 When a value looks wrong</h3>
+
+    <p>
+      Several numbers in the class notes and lectures disagree with the literature. The
+      module pages flag each one where it appears, and the course follows the professor's
+      version for anything assessed. The ones that affect a calculation are:
+      <em>n</em><sub>i</sub> = 1.5×10¹⁰ cm⁻³ (accepted value 9.65×10⁹, moves
+      2<em>φ</em><sub>F</sub> by 23 mV), and the p-channel worked answer of −4.919 V,
+      which does not reconstruct from the stated terms — see
+      <a href="m03-threshold-voltage.html">M03</a> §7.1.
+    </p>
+
+    <h2>3 · The MOSFET</h2>
+
+    <div class="eq" id="eq-idlin">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D</sub> =
+          <span class="frac"><span class="num"><em>Z</em></span><span class="den"><em>L</em></span></span>
+          <em>µ</em><sub>n</sub><em>C</em><sub>ox</sub>
+          <span class="dl">[</span>(<em>V</em><sub>G</sub> − <em>V</em><sub>T</sub>)<em>V</em><sub>D</sub>
+          − ½<em>V</em><sub>D</sub><sup>2</sup><span class="dl">]</span></div>
+        <div class="eq-num">(5.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D</sub> drain current (A) · <em>Z</em> channel width (cm) ·
+        <em>L</em> channel length (cm) · <em>µ</em><sub>n</sub> channel electron mobility
+        (cm²/V·s) · <em>C</em><sub>ox</sub> oxide capacitance per unit area (F/cm²) ·
+        voltages in V.
+        <b>Linear region only</b>, valid while
+        <em>V</em><sub>D</sub> &lt; <em>V</em><sub>G</sub> − <em>V</em><sub>T</sub>.
+        The professor writes the channel width as <em>Z</em>; most texts write <em>W</em>.
+        <em>Z</em>/<em>L</em> is typically 5–10. Taught in
+        <a href="m05-thin-gate-oxides-growth-charge.html">M05</a> §2.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-idsat">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D,sat</sub> =
+          <span class="frac"><span class="num"><em>Z</em><em>µ</em><sub>n</sub><em>C</em><sub>ox</sub></span><span class="den">2<em>L</em></span></span>
+          (<em>V</em><sub>G</sub> − <em>V</em><sub>T</sub>)<sup>2</sup></div>
+        <div class="eq-num">(1.2)</div>
+      </div>
+      <div class="eq-says">
+        Same symbols as (5.1).
+        <b>Saturation region</b>, valid once
+        <em>V</em><sub>D</sub> ≥ <em>V</em><sub>G</sub> − <em>V</em><sub>T</sub>, where the
+        channel has pinched off at the drain end and further drain voltage falls across the
+        pinch-off region rather than along the channel. Obtained by substituting
+        <em>V</em><sub>D</sub> = <em>V</em><sub>G</sub> − <em>V</em><sub>T</sub> into (5.1).
+        Current is then independent of <em>V</em><sub>D</sub> to first order and rises as
+        the square of the gate overdrive. See
+        <a href="m01-mosfet-and-how-one-is-made.html">M01</a> §4.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-undercut">
+      <div class="eq-body">
+        <div class="eq-math"><em>w</em><sub>final</sub> ≈ <em>w</em><sub>mask</sub> + 2<em>d</em>
+          &nbsp;&nbsp;(isotropic wet etch)</div>
+        <div class="eq-num">(1.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>w</em><sub>final</sub> opened width at the surface (µm) ·
+        <em>w</em><sub>mask</sub> width of the window in the mask (µm) ·
+        <em>d</em> depth etched (µm).
+        A wet chemical etch removes material at the same rate in every direction, so it
+        eats sideways under the mask by about the depth it has gone down, on each of the
+        two sides. A 2 µm window etched 1 µm deep opens to about 4 µm. A dry anisotropic
+        etch — reactive ion etching — removes material almost only downward, so the opened
+        width stays near 2 µm. This is the whole reason plasma etching replaced wet etching
+        for fine features. See <a href="m01-mosfet-and-how-one-is-made.html">M01</a> §7.
+      </div>
+    </div>
+
+    <h2>4 · Threshold voltage</h2>
+
+    <div class="eq" id="eq-vt">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>T</sub> = <em>φ</em><sub>MS</sub> −
+          <span class="frac"><span class="num"><em>Q</em><sub>i</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> −
+          <span class="frac"><span class="num"><em>Q</em><sub>d</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> +
+          2<em>φ</em><sub>F</sub></div>
+        <div class="eq-num">(3.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>T</sub> threshold voltage (V) ·
+        <em>φ</em><sub>MS</sub> gate-to-semiconductor work function difference (V) ·
+        <em>Q</em><sub>i</sub> total interface and oxide charge per unit area (C/cm²) ·
+        <em>Q</em><sub>d</sub> depletion charge per unit area (C/cm²), <b>signed</b> ·
+        <em>C</em><sub>ox</sub> oxide capacitance per unit area (F/cm²) ·
+        <em>φ</em><sub>F</sub> Fermi potential (V), <b>signed</b>.
+        The professor's four-term form. Signs per the table in §2.1. The first two terms
+        dominate. Taught in <a href="m03-threshold-voltage.html">M03</a>.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-cox">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em><sub>ox</sub> =
+          <span class="frac"><span class="num"><em>ε</em><sub>r</sub><em>ε</em><sub>0</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(3.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>ox</sub> capacitance <b>per unit area</b> (F/cm²) ·
+        <em>ε</em><sub>r</sub> relative permittivity, 3.9 for SiO₂ (dimensionless) ·
+        <em>ε</em><sub>0</sub> = 8.85×10⁻¹⁴ F/cm ·
+        <em>t</em><sub>ox</sub> oxide thickness (cm).
+        Area is already divided out. Reference value: <em>t</em><sub>ox</sub> = 1000 Å =
+        10⁻⁵ cm gives <em>C</em><sub>ox</sub> = 3.45×10⁻⁸ F/cm².
+      </div>
+    </div>
+
+    <div class="eq" id="eq-qi-def">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em><sub>i</sub> = <em>q</em><em>N</em><sub>i</sub></div>
+        <div class="eq-num">(3.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em><sub>i</sub> charge per unit area (C/cm²) ·
+        <em>q</em> = 1.6×10⁻¹⁹ C ·
+        <em>N</em><sub>i</sub> areal density of charges (cm⁻²), 5×10¹⁰ to 10¹³ cm⁻²
+        depending on process quality.
+        The conversion step everyone forgets. Sources quote the density; the equation needs
+        the charge.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-phif">
+      <div class="eq-body">
+        <div class="eq-math"><em>φ</em><sub>F</sub> = ±
+          <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span>
+          ln <span class="dl">(</span><span class="frac"><span class="num"><em>N</em></span><span class="den"><em>n</em><sub>i</sub></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(3.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>φ</em><sub>F</sub> Fermi potential (V) ·
+        <em>kT</em>/<em>q</em> = 0.0259 V at 300 K ·
+        <em>N</em> body doping, <em>N</em><sub>A</sub> or <em>N</em><sub>D</sub> (cm⁻³) ·
+        <em>n</em><sub>i</sub> = 1.5×10¹⁰ cm⁻³ (course convention).
+        <b>Plus</b> for a p-type body, <b>minus</b> for an n-type body — the minus must be
+        written explicitly, because substituting <em>N</em><sub>D</sub> returns a positive
+        number. Natural logarithm. Reference value: 0.288 V at 10¹⁵ cm⁻³.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-wm">
+      <div class="eq-body">
+        <div class="eq-math"><em>W</em><sub>m</sub> =
+          <span class="sqrt"><span class="rad">√</span><span class="arg"><span class="frac"><span class="num">4<em>ε</em><sub>s</sub><em>φ</em><sub>F</sub></span><span class="den"><em>q</em><em>N</em></span></span></span></span></div>
+        <div class="eq-num">(3.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>W</em><sub>m</sub> maximum depletion width (cm) ·
+        <em>ε</em><sub>s</sub> = 11.8 × 8.85×10⁻¹⁴ = 1.044×10⁻¹² F/cm ·
+        <em>φ</em><sub>F</sub> magnitude of the Fermi potential (V) ·
+        <em>q</em> = 1.6×10⁻¹⁹ C · <em>N</em> body doping (cm⁻³).
+        The factor 4 comes from the strong-inversion surface potential being
+        2<em>φ</em><sub>F</sub>. Use the magnitude of <em>φ</em><sub>F</sub>; the sign is
+        carried elsewhere. Answer in cm. Reference value: 0.867×10⁻⁴ cm = 0.867 µm at
+        <em>N</em><sub>A</sub> = 10¹⁵ cm⁻³.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-qd">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em><sub>d</sub> = −<em>q</em><em>N</em><sub>A</sub><em>W</em><sub>m</sub>
+          &nbsp;(p body)&nbsp;&nbsp;·&nbsp;&nbsp;
+          <em>Q</em><sub>d</sub> = +<em>q</em><em>N</em><sub>D</sub><em>W</em><sub>m</sub>
+          &nbsp;(n body)</div>
+        <div class="eq-num">(3.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em><sub>d</sub> depletion charge per unit area (C/cm²), signed ·
+        <em>N</em><sub>A</sub>, <em>N</em><sub>D</sub> doping (cm⁻³) ·
+        <em>W</em><sub>m</sub> maximum depletion width (cm).
+        A p body exposes ionised acceptors, which are negative; an n body exposes ionised
+        donors, which are positive. Reference value: 1.39×10⁻⁸ C/cm² at 10¹⁵ cm⁻³ with
+        <em>W</em><sub>m</sub> = 0.867 µm.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-phims">
+      <div class="eq-body">
+        <div class="eq-math"><em>φ</em><sub>MS</sub> = <em>φ</em><sub>M</sub> − <em>φ</em><sub>S</sub>,
+          &nbsp;&nbsp;<em>φ</em><sub>S</sub> = <em>χ</em> +
+          <span class="frac"><span class="num"><em>E</em><sub>g</sub></span><span class="den">2<em>q</em></span></span>
+          ± <em>φ</em><sub>F</sub></div>
+        <div class="eq-num">(3.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>φ</em><sub>M</sub> gate work function (V; 4.1 for aluminium) ·
+        <em>φ</em><sub>S</sub> silicon work function (V) ·
+        <em>χ</em> electron affinity of silicon, 4.05 V ·
+        <em>E</em><sub>g</sub>/2<em>q</em> = 0.56 V ·
+        <em>φ</em><sub>F</sub> Fermi potential magnitude (V).
+        <b>Plus</b> for a p-type body, <b>minus</b> for an n-type body. In this course
+        <em>φ</em><sub>MS</sub> is normally <b>read from the published graph</b> against
+        doping, not computed; the formula is the consistency check. Graph value for Al on
+        p-Si at 10¹⁵ cm⁻³ is −0.9 V; the formula gives −0.80 V. Silicon's work function
+        spans 4.05 V (Fermi level at <em>E</em><sub>c</sub>) to 5.17 V (Fermi level at
+        <em>E</em><sub>v</sub>), which is why polysilicon gate doping is a design variable.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-net">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>net</sub> = |<em>N</em><sub>D</sub> − <em>N</em><sub>A</sub>|</div>
+        <div class="eq-num">(3.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>net</sub> net doping after compensation (cm⁻³) ·
+        <em>N</em><sub>D</sub>, <em>N</em><sub>A</sub> donor and acceptor concentrations
+        (cm⁻³).
+        Subtract the <b>concentrations</b>, not the exponents. 10¹⁶ − 10¹⁵ = 9×10¹⁵, not
+        10¹. The material is n-type if <em>N</em><sub>D</sub> &gt; <em>N</em><sub>A</sub>
+        and p-type otherwise. Assumes full ionisation, which holds at room temperature for
+        the shallow dopants used here.
+      </div>
+    </div>
+
+    <h2>5 · Scaling and the gate dielectric</h2>
+
+    <div class="eq" id="eq-ratio">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>L</em><sub>E</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span> ≈ 45</div>
+        <div class="eq-num">(2.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>L</em><sub>E</sub> gate length · <em>t</em><sub>ox</sub> oxide thickness, both
+        in the same length unit. Dimensionless.
+        A design rule, not a physical law: it records the ratio at which gate control over
+        the channel stayed adequate against the drain. Points on it: 1 µm → 200 Å,
+        0.18 µm → 40 Å, &lt; 0.1 µm → 20 Å.
+        <a href="m02-deep-submicron-roadmap.html">M02</a> §4.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-lambda">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em> [eV] = <span class="frac"><span class="num">1.24</span><span class="den"><em>λ</em> [µm]</span></span></div>
+        <div class="eq-num">(3.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em> photon energy (eV) · <em>λ</em> free-space wavelength (µm).
+        The constant is <em>hc</em>/<em>q</em>; its exact value is 1.2398 eV·µm. Works in
+        both directions. Silicon (<em>E</em><sub>g</sub> = 1.12 eV) absorbs below 1.107 µm;
+        GaN (3.4 eV) below 0.365 µm. Also sets lithography exposure wavelengths.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-eot">
+      <div class="eq-body">
+        <div class="eq-math">EOT = <em>t</em><sub>high-k</sub> ·
+          <span class="frac"><span class="num">3.9</span><span class="den"><em>ε</em><sub>r,high-k</sub></span></span></div>
+        <div class="eq-num">(7.1)</div>
+      </div>
+      <div class="eq-says">
+        EOT equivalent oxide thickness (nm or Å) ·
+        <em>t</em><sub>high-k</sub> physical thickness of the alternative dielectric ·
+        <em>ε</em><sub>r,high-k</sub> its relative permittivity (dimensionless).
+        The thickness of SiO₂ that would give the same capacitance per unit area. The
+        entire point of a high-k dielectric: tunnelling depends on the <b>physical</b>
+        thickness while the transistor responds to the <b>equivalent</b> one, so a thicker
+        layer behaves electrically like a thin one and leaks far less. Full treatment in
+        M07, not yet built.
+      </div>
+    </div>
+
+    <h2>6 · Oxide charge and breakdown</h2>
+
+    <div class="eq" id="eq-qi">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em><sub>i</sub> = <em>Q</em><sub>f</sub> + <em>Q</em><sub>it</sub>
+          + <em>Q</em><sub>ot</sub> + <em>Q</em><sub>m</sub></div>
+        <div class="eq-num">(5.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em><sub>f</sub> fixed oxide charge, positive, within ~2 nm of the interface,
+        set by the oxidation and the crystal orientation (C/cm²) ·
+        <em>Q</em><sub>it</sub> interface trapped charge, at the interface, from dangling
+        bonds; also quoted as <em>D</em><sub>it</sub> in states/cm²·eV ·
+        <em>Q</em><sub>ot</sub> oxide trapped charge, in the bulk, positive <i>or</i>
+        negative, anneals out above 550 °C ·
+        <em>Q</em><sub>m</sub> mobile ionic charge, Na⁺/K⁺/Li⁺, drifts under bias.
+        All areal densities in C/cm². <em>Q</em><sub>f</sub> and <em>Q</em><sub>m</sub> are
+        well controlled today; <em>Q</em><sub>it</sub> and <em>Q</em><sub>ot</sub> are the
+        reliability problem because they are generated during operation.
+        <a href="m05-thin-gate-oxides-growth-charge.html">M05</a> §6.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-dvt">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>T</sub> = −
+          <span class="frac"><span class="num"><em>Q</em><sub>ox</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(5.4)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>T</sub> threshold shift (V) · <em>Q</em><sub>ox</sub> <b>effective</b>
+        oxide charge per unit area (C/cm²) · <em>C</em><sub>ox</sub> oxide capacitance per unit
+        area (F/cm²). Positive oxide charge gives a negative shift. Charge sitting a distance
+        <em>x</em> from the gate in an oxide of thickness <em>t</em><sub>ox</sub> counts only
+        <em>x</em>/<em>t</em><sub>ox</sub> of its value, so the bare sum of (5.3) is exact for
+        interface charge and an upper bound for charge distributed through the bulk.
+        Reference value: an interface trap density of 6.8×10¹¹ cm⁻² through a 20 nm oxide gives
+        0.63 V.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-eox">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>ox</sub> =
+          <span class="frac"><span class="num"><em>V</em></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(5.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>ox</sub> oxide field (V/cm) · <em>V</em> voltage across the oxide (V)
+        · <em>t</em><sub>ox</sub> oxide thickness (cm).
+        Uniform-field approximation for a parallel-plate structure. Convert thickness to cm:
+        5 nm = 5×10⁻⁷ cm. Thresholds to compare against: <b>8–10 MV/cm</b> ramped breakdown for a high-quality
+        dry oxide, the lower end being the minimum a film must demonstrate to be accepted;
+        <b>~5 MV/cm</b> typical CMOS operating field. Time to breakdown falls by roughly a
+        decade per 0.3–0.5 MV/cm, which is why the operating field sits so far below the
+        breakdown field.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-dit">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>it</sub> = <em>f</em> · <em>N</em><sub>surf</sub></div>
+        <div class="eq-num">(5.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>it</sub> areal density of interface traps (cm⁻²) ·
+        <em>f</em> fraction of surface bonds left dangling (dimensionless) ·
+        <em>N</em><sub>surf</sub> areal density of silicon atoms on the surface plane,
+        6.8×10¹⁴ cm⁻² for (100).
+        Assumes one electronic charge per state. The worked case: <em>f</em> = 10⁻³ gives
+        6.8×10¹¹ cm⁻², which through a 20 nm oxide shifts the threshold by 0.63 V. A 99.9%
+        perfect interface is not good enough, which is the measure of how good the Si/SiO₂
+        system has to be.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-fn">
+      <div class="eq-body">
+        <div class="eq-math"><em>J</em><sub>FN</sub> =
+          <span class="frac"><span class="num"><em>q</em><sup>2</sup><em>E</em><sub>ox</sub><sup>2</sup></span><span class="den">16<em>π</em><sup>2</sup><em>ℏφ</em><sub>ox</sub></span></span>
+          exp&thinsp;<span class="dl">(</span>−
+          <span class="frac"><span class="num">4(2<em>qm</em>*)<sup>1/2</sup><em>φ</em><sub>ox</sub><sup>3/2</sup></span><span class="den">3<em>ℏE</em><sub>ox</sub></span></span>
+          <span class="dl">)</span></div>
+        <div class="eq-num">(6.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>J</em><sub>FN</sub> Fowler–Nordheim tunnelling current density (A/cm²) ·
+        <em>q</em> 1.6×10⁻¹⁹ C · <em>E</em><sub>ox</sub> oxide field (V/cm) ·
+        <em>ℏ</em> 1.055×10⁻³⁴ J·s ·
+        <em>φ</em><sub>ox</sub> Si–SiO₂ barrier <b>in volts</b>, 3.1 V (so
+        <em>qφ</em><sub>ox</sub> = 3.1 eV) · <em>m</em>* electron effective mass in the oxide (kg).
+        Valid only while the tunnelling distance <em>φ</em><sub>ox</sub>/<em>E</em><sub>ox</sub>
+        is shorter than <em>t</em><sub>ox</sub>; otherwise the transport is direct tunnelling and
+        has no closed form. <b>The identification test:</b>
+        log(<em>J</em>/<em>E</em><sub>ox</sub><sup>2</sup>) against 1/<em>E</em><sub>ox</sub> is a
+        straight line for F–N and is not for anything else.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-jlimit">
+      <div class="eq-body">
+        <div class="eq-math"><em>J</em><sub>gate</sub> &le;
+          <span class="frac"><span class="num"><em>I</em><sub>off</sub>/<em>W</em></span><span class="den"><em>L</em></span></span>
+          = 1 A/cm<sup>2</sup></div>
+        <div class="eq-num">(6.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>J</em><sub>gate</sub> gate tunnelling current density (A/cm²) ·
+        <em>I</em><sub>off</sub>/<em>W</em> off-state subthreshold leakage per unit channel width,
+        taken as 10 nA/µm · <em>L</em> gate length (µm).
+        The criterion is that gate leakage must not exceed the source–drain leakage already
+        present. <b>Worked:</b> 10 nA/µm over a 1 µm × 1 µm channel is 10⁻⁸ A over 1 µm² =
+        10⁻⁸ A/µm²; since 1 cm² = 10⁸ µm², that is <b>1 A/cm²</b>. Watch this conversion — it
+        is the one place in this course where µm² and cm² must be converted, and the factor is
+        10⁸, not 10⁴.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-cpoly">
+      <div class="eq-body">
+        <div class="eq-math">
+          <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>tot</sub></span></span>
+          =
+          <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>poly&nbsp;dep</sub></span></span>
+          +
+          <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>ox</sub></span></span>
+        </div>
+        <div class="eq-num">(6.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>tot</sub> total gate capacitance per unit area (F/cm²) ·
+        <em>C</em><sub>poly&nbsp;dep</sub> polysilicon depletion capacitance per unit area (F/cm²) ·
+        <em>C</em><sub>ox</sub> oxide capacitance per unit area (F/cm²), see
+        <a href="#eq-cox">§4</a>.
+        Series capacitors, so the <b>smaller</b> one dominates. <em>C</em><sub>ox</sub> grows as
+        the oxide thins while <em>C</em><sub>poly&nbsp;dep</sub> does not, so poly depletion starts
+        to bite below <em>t</em><sub>ox</sub> ≈ 10 nm. It raises the equivalent oxide thickness,
+        lowers inversion charge, lowers <em>I</em><sub>D</sub>. Heavier poly doping narrows the
+        depleted layer and reduces the effect.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-reisman">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em><sub>ox</sub> = <em>a</em>(<em>t</em><sub>g</sub> + <em>τ</em>)<sup><em>b</em></sup></div>
+        <div class="eq-num">(6.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>ox</sub> oxide thickness (Å) · <em>t</em><sub>g</sub> growth time ·
+        <em>τ</em> the time that would have been needed to grow the oxide already present on the
+        surface, which shifts the time origin · <em>a</em>, <em>b</em> fitting constants.
+        Reisman &amp; Nicollian (1987), empirical, dry O₂. Use it where Deal–Grove does not apply:
+        Deal–Grove predicts films <b>above 350 Å</b> well and fails below <b>200 Å</b> for dry
+        oxidation — the anomalous region. Equation (6.4) is a fit, not a mechanism.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-massoud">
+      <div class="eq-body">
+        <div class="eq-math">
+          <span class="frac"><span class="num">d<em>t</em><sub>ox</sub></span><span class="den">d<em>t</em></span></span>
+          =
+          <span class="frac"><span class="num"><em>B</em></span><span class="den">2<em>t</em><sub>ox</sub> + <em>A</em></span></span>
+          + <em>C</em> exp&thinsp;<span class="dl">(</span>−
+          <span class="frac"><span class="num"><em>t</em><sub>ox</sub></span><span class="den"><em>L</em><sub>2</sub></span></span>
+          <span class="dl">)</span></div>
+        <div class="eq-num">(6.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>ox</sub> oxide thickness · <em>t</em> time ·
+        <em>A</em>, <em>B</em> the ordinary Deal–Grove linear and parabolic rate constants ·
+        <em>C</em> = <em>C</em><sub>0</sub>exp(−<em>E</em><sub>A</sub>/<em>kT</em>), with
+        <em>C</em><sub>0</sub> ≈ 3.6×10⁸ µm/hr and <em>E</em><sub>A</sub> ≈ 2.35 eV ·
+        <em>L</em><sub>2</sub> ≈ 7 nm.
+        Massoud’s thin-oxide correction: Deal–Grove plus a term that decays over
+        <em>L</em><sub>2</sub>. Dry oxidation, lightly doped substrates, 800–1000 °C,
+        independent of orientation. <b>This is the model in the process simulators</b>, not
+        <a href="#eq-reisman">(6.4)</a> — it preserves <em>A</em> and <em>B</em>, so all the
+        other oxidation physics expressed in them carries over.
+      </div>
+    </div>
+
+    <h2>7 · Wafers and crystal growth</h2>
+
+    <div class="eq" id="eq-area">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>A</em><sub>2</sub></span><span class="den"><em>A</em><sub>1</sub></span></span> =
+          <span class="dl">(</span><span class="frac"><span class="num"><em>D</em><sub>2</sub></span><span class="den"><em>D</em><sub>1</sub></span></span><span class="dl">)</span><sup>2</sup></div>
+        <div class="eq-num">(4.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>A</em> wafer area · <em>D</em> wafer diameter, both in any consistent unit; the
+        ratio is dimensionless.
+        200 → 300 mm gives 2.25. Usable die count rises slightly more, because the fixed
+        edge-exclusion zone is a smaller fraction of a larger wafer.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-pull">
+      <div class="eq-body">
+        <div class="eq-math"><em>v</em><sub>rate</sub> ∝
+          <span class="frac"><span class="num">1</span><span class="den"><em>D</em><sub>crystal</sub></span></span></div>
+        <div class="eq-num">(4.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>v</em><sub>rate</sub> Czochralski pull rate (mm/min) ·
+        <em>D</em><sub>crystal</sub> crystal diameter (mm).
+        A slower pull gives a larger diameter, because the latent heat released at the
+        freezing front must be conducted away through the growing crystal. A larger wafer
+        therefore costs growth time directly: a 300 mm boule takes about 100 hours.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-carbo">
+      <div class="eq-body">
+        <div class="eq-math">SiO₂ + 2C → Si + 2CO<br>
+          Si + 3HCl ⇌ SiHCl₃ + H₂</div>
+        <div class="eq-num">(4.1–4.2)</div>
+      </div>
+      <div class="eq-says">
+        Carbothermic reduction of silica to metallurgical-grade silicon (98% pure), then the
+        reversible trichlorosilane reaction used forward to make a distillable liquid and
+        backward, in the Siemens reactor, to deposit electronic-grade polysilicon
+        (99.9999%). Class temperatures: about 1400 °C and about 900 °C respectively; see
+        <a href="m04-wafer-preparation.html">M04</a> §2 for the published values, which
+        differ substantially.
+      </div>
+    </div>
+
+    <div class="eq" id="eq-cmp">
+      <div class="eq-body">
+        <div class="eq-math">Si + 2NaOH + H₂O → Na₂SiO₃ + 2H₂<br>
+          Si + 4NaOH → Na₄SiO₄ + 2H₂</div>
+        <div class="eq-num">(4.5)</div>
+      </div>
+      <div class="eq-says">
+        The two chemical reactions of silicon CMP: sodium metasilicate and sodium
+        orthosilicate. The mechanism is chemical attack followed by mechanical abrasion of
+        the soft reaction product, which is why CMP removes material smoothly rather than
+        scratching. Roughness falls from about 2.5 µm before polishing to under 100 Å after.
+      </div>
+    </div>
+
+    <h2>8 · Master constants</h2>
+
+    <div class="table-scroll">
+    <table class="symbols">
+      <tbody>
+        <tr><td>q</td><td>Electronic charge</td><td>1.602×10⁻¹⁹ C (use 1.6×10⁻¹⁹)</td></tr>
+        <tr><td>ε₀</td><td>Permittivity of free space — <b>centimetre form</b></td><td>8.85×10⁻¹⁴ F/cm</td></tr>
+        <tr><td>ε₀</td><td>Permittivity of free space — SI form, <b>not used here</b></td><td>8.854×10⁻¹² F/m</td></tr>
+        <tr><td>k</td><td>Boltzmann constant</td><td>1.381×10⁻²³ J/K = 8.617×10⁻⁵ eV/K</td></tr>
+        <tr><td>kT/q</td><td>Thermal voltage at 300 K</td><td>0.02585 V (course uses 0.0259)</td></tr>
+        <tr><td>kT</td><td>Thermal energy at 300 K</td><td>0.02585 eV</td></tr>
+        <tr><td>h</td><td>Planck constant</td><td>6.626×10⁻³⁴ J·s = 4.136×10⁻¹⁵ eV·s</td></tr>
+        <tr><td>hc/q</td><td>Photon energy–wavelength constant</td><td>1.2398 eV·µm (course uses 1.24)</td></tr>
+        <tr><td>c</td><td>Speed of light</td><td>2.998×10¹⁰ cm/s</td></tr>
+        <tr><td>m₀</td><td>Electron rest mass</td><td>9.109×10⁻³¹ kg</td></tr>
+        <tr><td>N<sub>A</sub></td><td>Avogadro constant</td><td>6.022×10²³ mol⁻¹</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>9 · Material reference values</h2>
+
+    <h3>9.1 Silicon</h3>
+
+    <div class="table-scroll">
+    <table class="symbols">
+      <tbody>
+        <tr><td>E<sub>g</sub></td><td>Band gap at 300 K</td><td>1.12 eV</td></tr>
+        <tr><td>n<sub>i</sub></td><td>Intrinsic carrier concentration — <b>course value</b></td><td>1.5×10¹⁰ cm⁻³</td></tr>
+        <tr><td>n<sub>i</sub></td><td>Intrinsic carrier concentration — accepted measured value</td><td>9.65×10⁹ cm⁻³</td></tr>
+        <tr><td>ε<sub>r</sub></td><td>Relative permittivity — course value</td><td>11.8 (Sze 11.9, Taur &amp; Ning 11.7)</td></tr>
+        <tr><td>ε<sub>s</sub></td><td>Permittivity, centimetre form</td><td>1.044×10⁻¹² F/cm</td></tr>
+        <tr><td>χ</td><td>Electron affinity</td><td>4.05 eV</td></tr>
+        <tr><td>N<sub>c</sub></td><td>Effective density of states, conduction band</td><td>2.8×10¹⁹ cm⁻³</td></tr>
+        <tr><td>N<sub>v</sub></td><td>Effective density of states, valence band</td><td>1.04×10¹⁹ cm⁻³</td></tr>
+        <tr><td>µ<sub>n</sub></td><td>Bulk electron mobility, lightly doped</td><td>1450 cm²/V·s</td></tr>
+        <tr><td>µ<sub>p</sub></td><td>Bulk hole mobility, lightly doped</td><td>500 cm²/V·s</td></tr>
+        <tr><td>—</td><td>Atomic density</td><td>5.0×10²² cm⁻³</td></tr>
+        <tr><td>—</td><td>Surface atom density, (100) plane</td><td>6.8×10¹⁴ cm⁻²</td></tr>
+        <tr><td>T<sub>m</sub></td><td>Melting point</td><td>1414 °C</td></tr>
+        <tr><td>ρ</td><td>Density</td><td>2.33 g/cm³</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p class="small">
+      Inversion-layer mobility is roughly half the bulk value and falls further with
+      transverse field, through surface-phonon and surface-roughness scattering. The
+      professor quotes 1300 and 400–500 cm²/V·s in lecture.
+    </p>
+
+    <h3>9.2 Silicon dioxide</h3>
+
+    <div class="table-scroll">
+    <table class="symbols">
+      <tbody>
+        <tr><td>ε<sub>r</sub></td><td>Relative permittivity</td><td>3.9</td></tr>
+        <tr><td>E<sub>g</sub></td><td>Band gap</td><td>≈ 9 eV</td></tr>
+        <tr><td>E<sub>BD</sub></td><td>Breakdown field, high-quality dry oxide</td><td>8–10 MV/cm</td></tr>
+        <tr><td>E<sub>op</sub></td><td>Operating field for 20-year lifetime</td><td>CMOS practice ~5 MV/cm (the notes say &lt; 8)</td></tr>
+        <tr><td>—</td><td>Si–O bond length</td><td>1.62 Å</td></tr>
+        <tr><td>—</td><td>Si–Si distance</td><td>3.12 Å</td></tr>
+        <tr><td>—</td><td>Si–O–Si bond angle, most probable</td><td>144° (range 110°–180°)</td></tr>
+        <tr><td>—</td><td>Atomic layers in a 2 nm film</td><td>10–12</td></tr>
+        <tr><td>—</td><td>Diffusion masking factor against silicon</td><td>≈ 10×</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>9.3 Other materials</h3>
+
+    <div class="table-scroll">
+    <table class="symbols">
+      <tbody>
+        <tr><td>Al</td><td>Work function · melting point · resistivity</td><td>4.1 eV · 660 °C · 2.65–2.7 µΩ·cm</td></tr>
+        <tr><td>GaN</td><td>Band gap · absorption edge</td><td>3.4 eV · 0.365 µm</td></tr>
+        <tr><td>Ta₂O₅</td><td>Relative permittivity</td><td>20–25</td></tr>
+        <tr><td>Si₃N₄</td><td>Relative permittivity</td><td>≈ 7</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>9.4 Process reference values</h3>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Quantity</th><th>Value</th><th>Where</th></tr></thead>
+      <tbody>
+        <tr><td>Threshold-adjust implant energy</td><td>25–100 keV</td><td><a href="m03-threshold-voltage.html">M03</a> §9</td></tr>
+        <tr><td>LDD doping · contact doping</td><td>10¹⁷ cm⁻³ · 10²⁰ cm⁻³</td><td><a href="m02-deep-submicron-roadmap.html">M02</a> §6</td></tr>
+        <tr><td>LDD implant dose · SDE implant dose</td><td>1–5×10¹³ cm⁻² · 5–10×10¹⁴ cm⁻²</td><td><a href="m02-deep-submicron-roadmap.html">M02</a> §6</td></tr>
+        <tr><td>SSR inversion-layer doping ceiling</td><td>5×10¹⁷ cm⁻³</td><td><a href="m02-deep-submicron-roadmap.html">M02</a> §5</td></tr>
+        <tr><td>Off-state leakage reference</td><td>10 nA/µm of channel width</td><td><a href="m02-deep-submicron-roadmap.html">M02</a> §4</td></tr>
+        <tr><td>Gate tunnelling current ceiling</td><td>10⁻⁸ A/µm² = 1 A/cm²</td><td><a href="m05-thin-gate-oxides-growth-charge.html">M05</a></td></tr>
+        <tr><td>Q<sub>ot</sub> anneal temperature</td><td>&gt; 550 °C</td><td><a href="m05-thin-gate-oxides-growth-charge.html">M05</a> §6.5</td></tr>
+        <tr><td>Forming gas composition</td><td>4% H₂ in N₂</td><td><a href="m05-thin-gate-oxides-growth-charge.html">M05</a> §6.3</td></tr>
+        <tr><td>Oxygen out-diffusion anneal</td><td>&gt; 1200 °C</td><td><a href="m04-wafer-preparation.html">M04</a> §3</td></tr>
+        <tr><td>Wafer thickness, 150 / 200 / 300 mm</td><td>675 / 725 / 775 µm</td><td><a href="m04-wafer-preparation.html">M04</a> §5</td></tr>
+        <tr><td>Final wafer roughness</td><td>&lt; 100 Å</td><td><a href="m04-wafer-preparation.html">M04</a> §6</td></tr>
+        <tr><td>CMP slurry particle size</td><td>≈ 10 nm, amorphous silica</td><td><a href="m04-wafer-preparation.html">M04</a> §6.4</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>10 · Unit conversions</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>From</th><th>To</th><th>Multiply by</th></tr></thead>
+      <tbody>
+        <tr><td>Å</td><td>cm</td><td>10⁻⁸</td></tr>
+        <tr><td>Å</td><td>nm</td><td>0.1</td></tr>
+        <tr><td>nm</td><td>cm</td><td>10⁻⁷</td></tr>
+        <tr><td>µm</td><td>cm</td><td>10⁻⁴</td></tr>
+        <tr><td>mm</td><td>cm</td><td>0.1</td></tr>
+        <tr><td>m</td><td>cm</td><td>100</td></tr>
+        <tr><td>inch</td><td>mm</td><td>25.4</td></tr>
+        <tr><td>F/m</td><td>F/cm</td><td>10⁻²</td></tr>
+        <tr><td>cm⁻³</td><td>m⁻³</td><td>10⁶</td></tr>
+        <tr><td>A/µm²</td><td>A/cm²</td><td>10⁸</td></tr>
+        <tr><td>MV/cm</td><td>V/cm</td><td>10⁶</td></tr>
+        <tr><td>V/cm</td><td>V/m</td><td>100</td></tr>
+        <tr><td>eV</td><td>J</td><td>1.602×10⁻¹⁹</td></tr>
+        <tr><td>°C</td><td>K</td><td>add 273.15</td></tr>
+        <tr><td>ppm</td><td>atomic fraction</td><td>10⁻⁶</td></tr>
+        <tr><td>ppb</td><td>atomic fraction</td><td>10⁻⁹</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p class="small">
+      <b>The conversion that is not a multiplication.</b> Going from a number density in
+      cm⁻² to a charge density in C/cm² is a multiplication by <em>q</em>, not a unit
+      conversion, and it is the step most often skipped. Going from a per-unit-area
+      capacitance in F/cm² to the capacitance of a real gate is a multiplication by the gate
+      area in cm² — and every gate area in this course starts life in µm², so convert it
+      with the 10⁻⁸ factor that squaring 10⁻⁴ produces.
+    </p>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>
