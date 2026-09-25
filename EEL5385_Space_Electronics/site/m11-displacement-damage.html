@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M11 · Displacement Damage — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M11 · Displacement Damage</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 11</p>
+    <h1>Displacement Damage</h1>
+    <p class="lede">
+      What happens when an incident particle strikes a nucleus hard enough to knock the atom
+      out of its lattice site: the defects that result, the four things a defect level does
+      to a semiconductor, and why slowing a particle down can make the damage worse.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M08, M01</span>
+      <span><b>Read time</b> ~40 min</span>
+      <span><b>Sources</b> Decks 5, 7; Lectures 5, 7</span>
+    </div>
+
+    <p>
+      Every mechanism so far has involved the incident particle interacting with the
+      <em>electrons</em> of the target. Ionization removes them, excitation promotes them,
+      bremsstrahlung is produced by deflection in the field of the nucleus without touching
+      it. The damage is electrical, and much of it is transient: carriers recombine,
+      excited atoms de-excite, and the crystal is unchanged. The part that persists &mdash;
+      positive charge trapped in the insulating oxides of a device and traps built up at the
+      silicon&ndash;oxide interface &mdash; is the total-ionizing-dose effect, the subject of
+      <a href="m14-total-ionizing-dose.html">M14</a>.
+    </p>
+    <p>
+      Displacement damage is different in kind. Here the incident particle transfers enough
+      momentum to a nucleus to knock the entire atom out of its position in the crystal
+      lattice. The atom does not return. What is left is a permanent structural defect that
+      changes the electronic properties of the material at that point, and those changes
+      accumulate for as long as the device is exposed. This is a <b>volumetric</b> effect —
+      the whole silicon volume accumulates damage, not just an interface or an oxide — and it
+      degrades the bulk properties that minority-carrier devices depend on.
+    </p>
+    <p>
+      The module builds the mechanism from the collision, follows the cascade of secondary
+      displacements it produces, gives the quantity that predicts the damage from a known
+      environment, and then works through the four distinct things a defect level in the
+      bandgap does to a device. It closes on the counter-intuitive shielding consequence that
+      the lectures returned to explicitly.
+    </p>
+
+    <h2>1 · Striking the nucleus</h2>
+    <p>
+      <a href="m08-ionization-excitation.html">M08</a> established that the nucleus occupies
+      roughly 10<sup>−15</sup> of the volume of an atom, which is why an uncharged particle
+      interacts so rarely. The same geometry means that nuclear collisions are rare for
+      charged particles too — a charged particle undergoes an enormous number of electron
+      interactions for every nuclear one. Ionization therefore accounts for almost all of a
+      particle's energy loss, and displacement damage accounts for almost none of it.
+    </p>
+    <p>
+      The disproportion between energy and consequence is the point. A single displaced atom
+      creates a defect that persists for the life of the device and affects carrier behaviour
+      in the volume around it. A million ionizations create carriers that recombine within
+      microseconds and leave nothing behind. A fraction of a percent of the deposited energy
+      produces effects out of all proportion to its share.
+    </p>
+    <p>
+      Which particles cause displacement damage follows from which can transfer enough
+      momentum to a nucleus. Neutrons are the classic case, because a nuclear collision is
+      the only interaction available to them. Protons and heavy ions do it readily, having
+      both charge for a Coulomb interaction with the nucleus and enough mass to transfer
+      significant momentum. Electrons can do it in silicon only above roughly 150&ndash;220 keV,
+      because an electron is too light to transfer much momentum to an atom 51,000 times its
+      mass: the relativistic two-body transfer first reaches the 21 eV threshold of &sect;2 at
+      about 220 keV, and reaches the lowest, direction-dependent threshold of about 13 eV at
+      about 150 keV.
+      Photons cannot do it directly at all; they cause displacement only through the
+      energetic electrons they liberate.
+    </p>
+    <p>
+      For photons the route to a displaced atom is therefore a two-step chain. A
+      photoelectric absorption, a Compton scatter or a pair production first sets an
+      electron in motion (<a href="m10-photon-interaction.html">M10</a>), and that electron
+      displaces an atom only if its kinetic energy exceeds that threshold. A Compton
+      electron receives the most energy when the photon scatters straight back, θ = 180&deg;
+      in equation (10.5), which gives a maximum of
+      2<em>E</em><sub>ph</sub>²/(<em>m</em><sub>e</sub><em>c</em>² + 2<em>E</em><sub>ph</sub>).
+      For the two cobalt-60 lines, 1.173 and 1.332 MeV, that maximum is 0.963 and 1.118 MeV,
+      several times the threshold, so a cobalt-60 source displaces silicon atoms as well
+      as ionising them. The displacement is a minor by-product of the dose. Compton electrons
+      emerge with a spread of energies below the maximum, each loses nearly all of its energy
+      to ionization, and it can displace atoms only over the part of its track where its
+      energy remains above threshold. Photon irradiation acts on electronics chiefly through
+      the charge it generates and through the charge and interface traps that build up in and
+      at oxides, the total-ionizing-dose effects of
+      <a href="m14-total-ionizing-dose.html">M14</a>.
+    </p>
+
+    <h2>2 · The threshold energy and the Frenkel pair</h2>
+    <p>
+      An atom in a crystal sits in a potential well formed by its bonds to its neighbours.
+      Removing it requires a minimum energy, the <b>threshold displacement energy</b>
+      <em>E</em><sub>d</sub>, and a collision that transfers less than that merely sets the
+      atom vibrating — the energy becomes heat and the lattice is undamaged. For silicon
+      <em>E</em><sub>d</sub> is about 21 eV, roughly twenty times the bandgap and some nine
+      times the 2.3 eV energy of a single Si&ndash;Si bond, because the atom must break free
+      of four bonds at once and then push past its neighbours to reach a site it can rest
+      in.
+    </p>
+    <p>
+      When the transfer exceeds the threshold, the atom leaves its site and comes to rest
+      somewhere between lattice positions. Two defects are created at once and they are
+      always created together:
+    </p>
+    <ul>
+      <li>a <b>vacancy</b> — the empty lattice site the atom left, where four bonds now
+        terminate on nothing; and</li>
+      <li>an <b>interstitial</b> — the displaced atom itself, wedged into a position the
+        crystal structure does not provide for.</li>
+    </ul>
+    <p>
+      The pair is called a <b>Frenkel pair</b>, and it is the elementary unit of displacement
+      damage. Both members disturb the local bonding, and both introduce allowed electron
+      energy levels inside the bandgap where the perfect crystal has none — which is the
+      entire electrical significance of the defect, developed in §6.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 280" role="img" aria-labelledby="f11-1-t">
+        <title id="f11-1-t">Creation of a Frenkel pair: a vacancy and an interstitial produced together</title>
+        <text x="160" y="24" class="dg-label" text-anchor="middle">perfect lattice</text>
+        <text x="520" y="24" class="dg-label" text-anchor="middle">after displacement</text>
+        <g class="dg-fill">
+          <circle cx="70" cy="70" r="13"/><circle cx="130" cy="70" r="13"/><circle cx="190" cy="70" r="13"/><circle cx="250" cy="70" r="13"/>
+          <circle cx="70" cy="130" r="13"/><circle cx="130" cy="130" r="13"/><circle cx="190" cy="130" r="13"/><circle cx="250" cy="130" r="13"/>
+          <circle cx="70" cy="190" r="13"/><circle cx="130" cy="190" r="13"/><circle cx="190" cy="190" r="13"/><circle cx="250" cy="190" r="13"/>
+        </g>
+        <g class="dg-rule" stroke-width="0.9" opacity="0.6">
+          <line x1="70" y1="70" x2="250" y2="70"/><line x1="70" y1="130" x2="250" y2="130"/><line x1="70" y1="190" x2="250" y2="190"/>
+          <line x1="70" y1="70" x2="70" y2="190"/><line x1="130" y1="70" x2="130" y2="190"/>
+          <line x1="190" y1="70" x2="190" y2="190"/><line x1="250" y1="70" x2="250" y2="190"/>
+        </g>
+        <line x1="288" y1="130" x2="332" y2="130" class="dg-acc" stroke-width="2" marker-end="url(#f11-1-a)"/>
+        <text x="310" y="118" class="dg-label-sm" text-anchor="middle">E &gt; E_d</text>
+
+        <g class="dg-fill">
+          <circle cx="420" cy="70" r="13"/><circle cx="480" cy="70" r="13"/><circle cx="540" cy="70" r="13"/><circle cx="600" cy="70" r="13"/>
+          <circle cx="420" cy="130" r="13"/><circle cx="540" cy="130" r="13"/><circle cx="600" cy="130" r="13"/>
+          <circle cx="420" cy="190" r="13"/><circle cx="480" cy="190" r="13"/><circle cx="540" cy="190" r="13"/><circle cx="600" cy="190" r="13"/>
+        </g>
+        <g class="dg-rule" stroke-width="0.9" opacity="0.6">
+          <line x1="420" y1="70" x2="600" y2="70"/><line x1="420" y1="130" x2="600" y2="130"/><line x1="420" y1="190" x2="600" y2="190"/>
+          <line x1="420" y1="70" x2="420" y2="190"/><line x1="480" y1="70" x2="480" y2="190"/>
+          <line x1="540" y1="70" x2="540" y2="190"/><line x1="600" y1="70" x2="600" y2="190"/>
+        </g>
+        <circle cx="480" cy="130" r="13" class="dg-acc" stroke-width="2" fill="none" stroke-dasharray="4 3"/>
+        <text x="480" y="230" class="dg-label-sm" text-anchor="middle">vacancy</text>
+        <circle cx="512" cy="162" r="10" class="dg-acc-f"/>
+        <text x="576" y="246" class="dg-label-sm" text-anchor="middle">interstitial</text>
+        <line x1="552" y1="238" x2="522" y2="172" class="dg-rule" stroke-width="0.9"/>
+        <text x="540" y="264" class="dg-label" text-anchor="middle">together: a Frenkel pair</text>
+        <defs>
+          <marker id="f11-1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The defects are created as a pair and are separated by only a few
+        lattice spacings. If they are close enough and mobile enough, they recombine and the
+        damage anneals away — which is what §8 is about.
+      </figcaption>
+    </figure>
+
+    <div class="box">
+      <p>
+        The value of <em>E</em><sub>d</sub> is not a sharply defined constant. It depends on
+        the direction of the recoil relative to the crystal axes, and published values for
+        silicon range from about 13 eV to 25 eV depending on the measurement and the
+        convention. Twenty-one electron-volts is the value most often used in
+        displacement-damage calculations. The choice matters directly for simulation: a
+        vacancy count computed with <em>E</em><sub>d</sub> = 15 eV differs from one computed
+        at 21 eV by roughly 40 %, and the assumed threshold is an input to the SRIM
+        calculations this course is built around, which report the resulting vacancies per
+        incident ion as a function of depth (<a href="m13-srim-trim.html">M13</a>).
+      </p>
+    </div>
+
+    <h2>3 · The primary knock-on atom and the cascade</h2>
+    <p>
+      A collision that displaces an atom rarely transfers only the threshold energy. Typical
+      transfers from an energetic incident particle are thousands of times larger, and the
+      displaced atom therefore leaves its site with substantial kinetic energy. It is now
+      itself an energetic heavy ion inside the crystal, and it is called the <b>primary
+      knock-on atom</b>.
+    </p>
+    <p>
+      The maximum energy an incident particle of mass <em>m</em> can transfer to a target
+      nucleus of mass <em>M</em> is given by the elastic-collision expression already met in
+      <a href="m04-radiation-species-decay.html">M04</a>. For a 1 MeV neutron striking a
+      silicon nucleus the factor 4<em>Mm</em>/(<em>M</em>+<em>m</em>)² evaluates to 0.133, so
+      the primary knock-on atom can carry away up to 133 keV — more than six thousand times
+      the displacement threshold.
+    </p>
+    <p>
+      That atom then travels through the lattice, displacing further atoms, each of which may
+      displace more. The result is a branching <b>collision cascade</b>: a tree of
+      displacements spreading from the initial event, ending when every moving atom has
+      fallen below the threshold energy and the remaining energy has become lattice
+      vibration. A single incident particle can therefore produce hundreds or thousands of
+      Frenkel pairs concentrated in a region tens of nanometres across.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">
+          <em>N</em><sub>d</sub> =
+          <span class="frac">
+            <span class="num">0.8 <em>T</em><sub>dam</sub></span>
+            <span class="den">2 <em>E</em><sub>d</sub></span>
+          </span>
+        </div>
+        <div class="eq-num">(11.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>d</sub> number of displaced atoms produced by one cascade
+        (dimensionless) ·
+        <em>T</em><sub>dam</sub> damage energy — the part of the recoil energy that goes into
+        atomic collisions rather than into ionization (eV) ·
+        <em>E</em><sub>d</sub> threshold displacement energy (eV; ~21 eV for silicon) ·
+        0.8 a displacement efficiency factor from the Norgett–Robinson–Torrens standard.
+        A 133 keV silicon recoil that spends most of its energy on nuclear collisions
+        produces of order 2,000 displacements by this estimate. It counts displacements, not
+        <em>surviving</em> defects — most Frenkel pairs recombine promptly.
+        <a href="formula-sheet.html#eq-nrt">Formula sheet §6</a>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 640 250" role="img" aria-labelledby="f11-2-t">
+        <title id="f11-2-t">A collision cascade branching from a primary knock-on atom</title>
+        <line x1="20" y1="60" x2="150" y2="88" class="dg-acc" stroke-width="2.2" marker-end="url(#f11-2-a)"/>
+        <text x="26" y="48" class="dg-label-sm">incident particle</text>
+        <g class="dg-line" stroke-width="1.5" fill="none">
+          <path d="M160,92 L235,70"/>
+          <path d="M160,92 L228,130"/>
+          <path d="M235,70 L300,44"/>
+          <path d="M235,70 L296,92"/>
+          <path d="M228,130 L292,124"/>
+          <path d="M228,130 L272,178"/>
+          <path d="M296,92 L358,76"/>
+          <path d="M296,92 L346,116"/>
+          <path d="M292,124 L352,146"/>
+          <path d="M272,178 L330,196"/>
+          <path d="M300,44 L360,32"/>
+        </g>
+        <g class="dg-acc-f">
+          <circle cx="160" cy="92" r="6"/>
+          <circle cx="235" cy="70" r="4"/><circle cx="228" cy="130" r="4"/>
+          <circle cx="300" cy="44" r="4"/><circle cx="296" cy="92" r="4"/>
+          <circle cx="292" cy="124" r="4"/><circle cx="272" cy="178" r="4"/>
+          <circle cx="358" cy="76" r="3.5"/><circle cx="346" cy="116" r="3.5"/>
+          <circle cx="352" cy="146" r="3.5"/><circle cx="330" cy="196" r="3.5"/>
+          <circle cx="360" cy="32" r="3.5"/>
+        </g>
+        <text x="150" y="118" class="dg-label-sm" text-anchor="end">primary</text>
+        <text x="150" y="132" class="dg-label-sm" text-anchor="end">knock-on atom</text>
+        <text x="410" y="70" class="dg-label-sm">each displaced atom</text>
+        <text x="410" y="86" class="dg-label-sm">carries enough energy to</text>
+        <text x="410" y="102" class="dg-label-sm">displace others, until every</text>
+        <text x="410" y="118" class="dg-label-sm">recoil falls below E_d</text>
+        <text x="410" y="146" class="dg-label-sm">one particle → hundreds or</text>
+        <text x="410" y="162" class="dg-label-sm">thousands of defects, in a</text>
+        <text x="410" y="178" class="dg-label-sm">region tens of nm across</text>
+        <defs>
+          <marker id="f11-2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>The branching structure is why displacement damage is described as a cascade rather than as a series of independent events. It is also why the damage is spatially clustered rather than uniformly distributed.</figcaption>
+    </figure>
+
+    <h2>4 · Non-ionizing energy loss</h2>
+    <p>
+      A particle crossing a material divides its energy loss between two accounts: the part
+      that goes into exciting and ionising electrons, and the part that goes into displacing
+      atoms. The second is the <b>non-ionizing energy loss</b>, universally abbreviated NIEL,
+      and it is the quantity that predicts displacement damage from a known particle
+      environment.
+    </p>
+    <p>
+      NIEL is defined as the rate of non-ionizing energy deposition per unit path length,
+      normalised by material density, in MeV·cm²/g. It depends on the incident species and
+      strongly on its energy, and it plays the same role for displacement damage that linear
+      energy transfer plays for single-event effects and that dose plays for total ionizing
+      dose. Multiplying NIEL by particle fluence gives the <b>displacement damage dose</b>,
+      the accumulated non-ionizing energy per gram, and the central experimental result of
+      the field is that device degradation correlates with this quantity largely
+      independently of which particle produced it. A proton environment and an electron
+      environment that produce the same displacement damage dose produce approximately the
+      same degradation, which is what makes ground testing with a single species meaningful.
+      The scaling is an approximation with documented limits: it breaks down for protons
+      below a few MeV, and for effects that depend on defect <em>clustering</em> rather than
+      on total defect number &mdash; charge transfer efficiency in an imager is the standard
+      example &mdash; because a dense cascade and a sparse one deposit the same non-ionizing
+      energy in very different spatial distributions.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">
+          <em>D</em><sub>d</sub> = NIEL(<em>E</em>) · Φ
+        </div>
+        <div class="eq-num">(11.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>D</em><sub>d</sub> displacement damage dose (MeV/g) ·
+        NIEL(<em>E</em>) non-ionizing energy loss at particle energy <em>E</em>
+        (MeV·cm²/g) ·
+        Φ particle fluence (cm<sup>−2</sup>).
+        For a spectrum rather than a monoenergetic beam, integrate NIEL(<em>E</em>) against
+        the differential fluence. Note that NIEL varies over orders of magnitude with energy,
+        so a fluence quoted without a spectrum cannot be converted.
+        <a href="formula-sheet.html#eq-niel">Formula sheet §6</a>
+      </div>
+    </div>
+
+    <h2>5 · Why a particle that stops is worse than one that passes</h2>
+    <p>
+      This is the result the lectures flagged explicitly, and it reverses the intuition that
+      more shielding is always better.
+    </p>
+    <p>
+      A particle's energy loss to nuclear collisions is not uniform along its path. At high
+      velocity the particle spends very little time near any one nucleus, the momentum
+      transfer per encounter is small, and almost all of its energy goes to electrons
+      instead. As it slows, the interaction time with each nucleus lengthens, momentum
+      transfers grow, and the nuclear contribution rises steeply. Near the end of the range, where the
+      particle is moving too slowly to ionise efficiently, nuclear stopping overtakes
+      electronic stopping; it peaks and then falls again at the very lowest energies as
+      electron screening weakens the interaction. The last micrometres of a particle's track
+      therefore contain the large majority of the displacements it will ever produce.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 300" role="img" aria-labelledby="f11-3-t">
+        <title id="f11-3-t">Electronic and nuclear stopping along a particle track, showing displacement damage concentrated at the end of range</title>
+        <line x1="70" y1="230" x2="640" y2="230" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="230" x2="70" y2="35" class="dg-rule" stroke-width="1.2"/>
+        <text x="355" y="256" class="dg-label" text-anchor="middle">depth into the material →</text>
+        <text x="24" y="132" class="dg-label" text-anchor="middle" transform="rotate(-90 24 132)">energy loss per unit path</text>
+        <path d="M80,150 C160,142 260,128 360,112 C430,100 480,86 510,74 C525,68 534,72 540,98 C546,130 552,190 558,228"
+              class="dg-line" stroke-width="2" fill="none"/>
+        <text x="220" y="126" class="dg-label-sm">electronic stopping — ionization</text>
+        <path d="M80,226 C200,225 330,222 430,214 C480,208 505,196 520,168 C530,148 536,126 542,108 C548,90 554,108 560,228"
+              class="dg-acc" stroke-width="2.4" fill="none"/>
+        <text x="300" y="212" class="dg-label-sm">nuclear stopping — displacement</text>
+        <line x1="545" y1="40" x2="545" y2="230" class="dg-rule" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="556" y="56" class="dg-label">end of range</text>
+        <text x="556" y="74" class="dg-label-sm">nuclear stopping peaks here</text>
+        <text x="556" y="90" class="dg-label-sm">— nearly all displacements</text>
+        <text x="556" y="106" class="dg-label-sm">occur in the last few µm</text>
+        <rect x="524" y="35" width="40" height="195" class="dg-faint" opacity="0.25"/>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> Two accounts, two different depth profiles. A particle that crosses
+        the sensitive volume at full speed contributes only the low, flat left-hand part of
+        the nuclear curve; a particle that stops inside it delivers the peak.
+      </figcaption>
+    </figure>
+
+    <p>
+      The shielding consequence follows immediately. Consider an energetic proton that would
+      pass entirely through a die, depositing a small fraction of its energy and producing a
+      correspondingly small number of displacements. Place a shield in front of it that is
+      thick enough to slow the proton but not thick enough to stop it, and the proton now
+      arrives at the die with reduced energy and comes to rest inside the sensitive volume —
+      delivering its full end-of-range displacement peak exactly where it does the most harm.
+      <b>The shield has converted a passing particle into a stopping one, and increased the
+      damage.</b>
+    </p>
+    <p>
+      This does not make shielding useless; it makes shield thickness a quantity that must be
+      computed rather than maximised. A shield thick enough to stop the incident spectrum
+      entirely is unambiguously helpful. A shield in the intermediate regime can be worse
+      than none at all for part of the spectrum. Determining which regime a given design sits
+      in requires knowing the particle ranges in the shield material, which is what SRIM
+      computes and why the tool sits at the centre of this course
+      (<a href="m13-srim-trim.html">M13</a>).
+    </p>
+
+    <div class="box pitfall">
+      <p>
+        The same reversal appears in the laboratory. A test that uses a lower-energy beam
+        because it is more readily available can produce <em>more</em> displacement damage
+        per incident particle than the higher-energy environment it is meant to represent,
+        because the lower-energy particles stop within the device while the flight particles
+        pass through. Comparing test and flight environments by fluence alone is invalid;
+        they must be compared by displacement damage dose, which is what equation (11.2) is
+        for.
+      </p>
+    </div>
+
+    <h2>6 · What a defect level does</h2>
+    <p>
+      A perfect semiconductor crystal has no allowed electron states between the valence band
+      maximum and the conduction band minimum. That empty gap is the reason a semiconductor
+      behaves as one: an electron can only move from valence to conduction band by acquiring
+      the full bandgap energy, and at room temperature very few do.
+    </p>
+    <p>
+      A vacancy or an interstitial breaks the periodicity that produced the gap. The dangling
+      or distorted bonds around the defect have energies that fall inside the forbidden
+      range, so the defect introduces localised allowed states there — <b>trap levels</b>.
+      An electron can now cross the gap in two steps instead of one, or be captured and held.
+      Deck 5 identifies four distinct consequences, and each corresponds to a different
+      device symptom.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 300" role="img" aria-labelledby="f11-4-t">
+        <title id="f11-4-t">Four consequences of a defect level in the silicon bandgap</title>
+        <line x1="40" y1="60" x2="690" y2="60" class="dg-line" stroke-width="1.8"/>
+        <line x1="40" y1="220" x2="690" y2="220" class="dg-line" stroke-width="1.8"/>
+        <text x="22" y="64" class="dg-label-sm" text-anchor="end">E_c</text>
+        <text x="22" y="224" class="dg-label-sm" text-anchor="end">E_v</text>
+
+        <line x1="70" y1="140" x2="150" y2="140" class="dg-acc" stroke-width="2" stroke-dasharray="6 4"/>
+        <line x1="110" y1="216" x2="110" y2="146" class="dg-acc" stroke-width="1.8" marker-end="url(#f11-4-a)"/>
+        <line x1="110" y1="134" x2="110" y2="66" class="dg-acc" stroke-width="1.8" marker-end="url(#f11-4-a)"/>
+        <text x="110" y="252" class="dg-label" text-anchor="middle">(a) generation</text>
+        <text x="110" y="270" class="dg-label-sm" text-anchor="middle">→ leakage current</text>
+
+        <line x1="230" y1="140" x2="310" y2="140" class="dg-acc" stroke-width="2" stroke-dasharray="6 4"/>
+        <line x1="270" y1="66" x2="270" y2="134" class="dg-acc" stroke-width="1.8" marker-end="url(#f11-4-a)"/>
+        <line x1="270" y1="146" x2="270" y2="214" class="dg-acc" stroke-width="1.8" marker-end="url(#f11-4-a)"/>
+        <text x="270" y="252" class="dg-label" text-anchor="middle">(b) recombination</text>
+        <text x="270" y="270" class="dg-label-sm" text-anchor="middle">→ lost lifetime and gain</text>
+
+        <line x1="390" y1="100" x2="470" y2="100" class="dg-acc" stroke-width="2" stroke-dasharray="6 4"/>
+        <line x1="424" y1="68" x2="424" y2="94" class="dg-acc" stroke-width="1.8" marker-end="url(#f11-4-a)"/>
+        <line x1="440" y1="94" x2="440" y2="68" class="dg-acc" stroke-width="1.8" marker-end="url(#f11-4-a)"/>
+        <text x="430" y="252" class="dg-label" text-anchor="middle">(c) trapping</text>
+        <text x="430" y="270" class="dg-label-sm" text-anchor="middle">→ transfer loss, noise</text>
+
+        <line x1="550" y1="92" x2="620" y2="92" class="dg-acc" stroke-width="2" stroke-dasharray="6 4"/>
+        <line x1="550" y1="186" x2="620" y2="186" class="dg-acc" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="636" y="96" class="dg-label-sm">donor</text>
+        <text x="636" y="190" class="dg-label-sm">acceptor</text>
+        <line x1="585" y1="98" x2="585" y2="180" class="dg-acc" stroke-width="1.8" marker-end="url(#f11-4-a)"/>
+        <text x="585" y="252" class="dg-label" text-anchor="middle">(d) compensation</text>
+        <text x="585" y="270" class="dg-label-sm" text-anchor="middle">→ carrier removal</text>
+        <defs>
+          <marker id="f11-4-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> The same defect level can do any of these depending on where in the
+        gap it sits and on the local carrier population. A level near mid-gap is the most
+        effective generation and recombination centre, because both steps are equally
+        probable.
+        <span class="src">After Deck 5 p. 31.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>(a) Thermal carrier generation increases, raising leakage current.</b> An electron
+      in the valence band needs 1.1 eV to reach the conduction band directly, and thermal
+      energy at room temperature supplies 0.026 eV. With a trap level near mid-gap the
+      journey becomes two steps of about 0.55 eV each, and the probability of completing both
+      is enormously higher than the probability of the single large step. Generation rate
+      rises, and in a reverse-biased junction every generated pair is swept out as leakage
+      current. This is the dominant displacement-damage symptom in a diode or an imaging
+      pixel, and it appears as increased dark current.
+    </p>
+    <p>
+      <b>(b) Recombination increases, destroying minority-carrier lifetime.</b> The same
+      two-step path runs in reverse: a conduction-band electron is captured by the trap and
+      then falls to the valence band, annihilating a hole. Minority-carrier lifetime is the
+      average time before this happens, and it is the parameter that every bipolar and
+      photovoltaic device depends on. A solar cell converts light to current only if a
+      photogenerated carrier survives long enough to reach the junction; a bipolar transistor
+      has current gain only if injected minority carriers cross the base without recombining.
+      Displacement damage reduces both, which is why bipolar devices and solar cells are the
+      parts most sensitive to it while MOS devices — majority-carrier devices — are far less
+      affected.
+    </p>
+    <p>
+      <b>(c) Free-carrier trapping is enhanced, delaying and losing signal charge.</b> A trap
+      can capture a carrier and release it later rather than passing it to the other band.
+      The carrier is not lost permanently but it is removed from the signal for a time set by
+      the trap's emission rate. In a charge-coupled device, where a packet of signal charge
+      must be shifted through thousands of transfers, this appears as charge transfer
+      inefficiency: each pixel leaves a little of its signal behind and picks up some of the
+      previous pixel's, smearing the image. The random capture and release also generates
+      noise, and in the most damaged pixels produces random telegraph signal — a dark current
+      that switches between discrete levels.
+    </p>
+    <p>
+      <b>(d) Donor–acceptor trap pairs compensate the doping, reducing free-carrier
+      concentration.</b> Some defect complexes act as donors and others as acceptors. An
+      acceptor level introduced into n-type material captures an electron from the donor
+      population, removing it from the conduction band without any carrier having recombined.
+      The net doping falls, resistivity rises, and depletion widths change. This is
+      <b>carrier removal</b>, and in heavily irradiated silicon it can drive the material
+      toward intrinsic behaviour or even invert its type.
+    </p>
+
+    <h2>7 · What this looks like at device level</h2>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Device</th><th>Parameter that degrades</th><th>Mechanism from §6</th><th>Practical consequence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Solar cell</b></td><td>Short-circuit current, then open-circuit voltage</td><td>(b) minority-carrier lifetime</td><td>End-of-life power budget; arrays are sized for degraded output, not initial output</td></tr>
+        <tr><td><b>Bipolar transistor</b></td><td>Current gain <em>&beta;</em></td><td>(b) recombination in the base</td><td>Analogue circuits drift out of specification. The Messenger&ndash;Spratt relation makes <b>1/<em>&beta;</em></b> linear in fluence, so the gain itself degrades reciprocally rather than linearly</td></tr>
+        <tr><td><b>Photodiode, CCD, CMOS imager</b></td><td>Dark current; charge transfer efficiency</td><td>(a) generation, (c) trapping</td><td>Hot pixels, image smear, reduced signal-to-noise; the limiting factor for long space-telescope missions</td></tr>
+        <tr><td><b>Optocoupler, LED, laser diode</b></td><td>Optical output and transfer ratio</td><td>(b) lifetime in the emitter</td><td>Among the most displacement-sensitive parts flown; often the limiting component in a design</td></tr>
+        <tr><td><b>MOSFET, digital CMOS</b></td><td>Little direct effect</td><td>—</td><td>Majority-carrier conduction does not depend on lifetime; total ionizing dose dominates instead</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      The last row is the one that determines how the rest of the course is organised.
+      Displacement damage is a bulk, minority-carrier effect, so it is the governing concern
+      for solar arrays, optoelectronics and imagers, and a secondary one for digital logic.
+      Digital parts are instead governed by charge trapped in oxides, which is total ionizing
+      dose (<a href="m14-total-ionizing-dose.html">M14</a>), and by prompt charge collection, which is
+      single-event effects (<a href="index.html#roadmap">M15</a>). A complete radiation
+      analysis carries all three quantities separately, because no one of them predicts the
+      others.
+    </p>
+
+    <h2>8 · Annealing</h2>
+    <p>
+      Displacement damage is permanent in the sense that the lattice does not spontaneously
+      return to its original configuration, but the defect population does evolve after the
+      irradiation stops. Vacancies and interstitials are mobile at room temperature in
+      silicon, and several things follow.
+    </p>
+    <p>
+      Most Frenkel pairs recombine within a few to a few tens of picoseconds of creation,
+      while the cascade is still quenching, because the vacancy and the interstitial are
+      formed only a few lattice spacings apart and the interstitial is attracted back to the
+      empty site. Equation (11.1) counts displacements rather than survivors;
+      molecular-dynamics simulations put the surviving fraction near 30 % for a dense cascade
+      and close to unity for a near-threshold recoil that produces one isolated pair. Of the defects that
+      do survive, many migrate and combine with impurities or with each other to form stable
+      complexes — a vacancy with a phosphorus donor, a vacancy with an oxygen atom, or two
+      vacancies together — and it is these complexes rather than the isolated point defects
+      that produce most of the electrically active levels in an irradiated device.
+    </p>
+    <p>
+      The measurable consequence is that a device's degradation is time-dependent after
+      exposure. Part of the damage anneals within minutes to hours at room temperature, and
+      further annealing can be induced deliberately by heating. A measurement made
+      immediately after irradiation and one made a week later give different answers, so
+      displacement-damage test standards specify the interval between exposure and
+      measurement.
+    </p>
+
+    <details class="check">
+      <summary>A spacecraft's solar array and its digital processor are exposed to the same proton environment. The array loses 15 % of its power over the mission and the processor shows no measurable displacement effect. Both are silicon. Why?</summary>
+      <div class="answer">
+        <p>
+          Both accumulate the same displacement damage dose and therefore roughly the same
+          density of defect levels. What differs is whether the device's operation depends on
+          a parameter those levels degrade.
+        </p>
+        <p>
+          A solar cell is a <b>minority-carrier</b> device. A photon absorbed in the bulk
+          generates an electron–hole pair that must diffuse to the junction before it
+          recombines, and the fraction that succeeds is set by the minority-carrier diffusion
+          length, which scales as the square root of the lifetime. Mechanism (b) attacks that
+          lifetime directly, so collected current falls and delivered power falls with it.
+          This is why array sizing is done against an end-of-life figure computed from the
+          mission's displacement damage dose rather than against the initial output.
+        </p>
+        <p>
+          A digital MOSFET is a <b>majority-carrier</b> device. Current flows by drift of
+          carriers already present in an inversion layer a few nanometres thick, over a
+          channel length well under a micrometre. There is no diffusion over a long path and
+          no dependence on minority-carrier lifetime, so degrading the lifetime changes
+          almost nothing. The processor is not immune to radiation — it is exposed to total
+          ionizing dose and to single-event effects — but displacement damage is not the
+          mechanism that will limit it.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Displacement damage is a nuclear-collision effect: the incident particle knocks an atom off its lattice site permanently. It is volumetric, cumulative, and accounts for a tiny fraction of the deposited energy while producing effects out of proportion to that share.</li>
+        <li>Photons displace atoms only through the electrons they set in motion, and an electron needs roughly 150&ndash;220 keV, depending on crystal direction, to displace a silicon atom. Cobalt-60 Compton electrons reach at most 0.963 and 1.118 MeV, so a cobalt-60 source adds a minor displacement component to what is mainly an ionizing dose.</li>
+        <li>Displacing an atom requires the threshold energy <em>E</em><sub>d</sub>, about 21 eV in silicon, and produces a <b>Frenkel pair</b> — one vacancy and one interstitial, created together.</li>
+        <li>The displaced atom is the <b>primary knock-on atom</b> and usually carries far more than the threshold: a 1 MeV neutron can give a silicon nucleus up to 133 keV. It then displaces further atoms in a branching <b>cascade</b>, giving hundreds to thousands of displacements from one particle.</li>
+        <li><em>N</em><sub>d</sub> = 0.8<em>T</em><sub>dam</sub>/2<em>E</em><sub>d</sub> counts displacements, not survivors. Most Frenkel pairs recombine within picoseconds, leaving roughly 30 % of a dense cascade behind; the survivors form stable complexes with impurities, and those carry the electrical activity.</li>
+        <li><b>Non-ionizing energy loss</b> (MeV&middot;cm&sup2;/g) times fluence gives displacement damage dose, and degradation correlates with that quantity largely independently of species &mdash; which is what makes single-species ground testing valid. The scaling fails below a few MeV for protons and for cluster-sensitive effects such as charge transfer efficiency.</li>
+        <li>Nuclear stopping overtakes electronic stopping near the end of a particle's range, so <b>a particle that stops inside the device does far more damage than one that passes through</b>. A shield too thin to stop the spectrum can convert passing particles into stopping ones and increase the damage.</li>
+        <li>A defect level in the gap does four things: (a) two-step thermal generation → leakage and dark current; (b) recombination → lost minority-carrier lifetime and gain; (c) trapping and delayed release → charge transfer inefficiency and noise; (d) donor–acceptor compensation → carrier removal.</li>
+        <li>Solar cells, bipolar transistors, imagers and optocouplers are governed by displacement damage because they are minority-carrier devices. Digital MOS is largely unaffected and is governed by total ionizing dose and single-event effects instead.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 5 p. 27 (displacement damage is a volumetric effect in that the entire silicon volume accumulates damage); Deck 5 p. 26 (radiation and atom direct interaction). Species dependence from the displacement-damage literature (J. R. Srour, C. J. Marshall and P. W. Marshall, <em>IEEE Trans. Nucl. Sci.</em> <b>50</b>, 653 (2003)). Electron thresholds computed from relativistic two-body kinematics: ~220 keV for <em>E</em><sub>d</sub> = 21 eV and ~150 keV for the minimum-direction <em>E</em><sub>d</sub> ≈ 13 eV, the latter matching the measured onset (J. J. Loferski and P. Rappaport, <em>Phys. Rev.</em> <b>111</b>, 432 (1958)). Persistent ionization damage as oxide-trapped charge and interface traps after T. R. Oldham and F. B. McLean, <em>IEEE Trans. Nucl. Sci.</em> <b>50</b>, 483 (2003). Deck 7 p. 17 and Lecture 7 (no direct displacement damage from photons; the chain photon → electron by photoelectric, Compton or pair production → displacement; photon effects on electronics mostly charge generation and accumulation). Compton maximum from equation (10.5) of <a href="m10-photon-interaction.html">M10</a> at θ = 180&deg;, with the Co-60 line energies from the NNDC evaluation</td></tr>
+      <tr><td>§2</td><td>Deck 5 p. 27 (defects introduce local asymmetry in the lattice, changing electron–hole pair interactions and therefore lifetime, scattering rate and mobility); Deck 5 p. 28 (transmission electron micrograph of point defects, after <em>J. Phys. Chem. C</em> <b>124</b>, 12424 (2020)); Lecture 5 (an atom knocked off its lattice site leaves a vacancy). Threshold displacement energy values for silicon from standard displacement-damage references</td></tr>
+      <tr><td>§3</td><td>Deck 5 p. 29 (a material absorbing all of the incident energy results in a particle stopped within it; in the wake of the burst of collisions a cascade tree forms, creating multiple point defects and interstitial atoms); Deck 5 p. 30 (simulation of displacement damage). Maximum elastic transfer computed from the expression in <a href="m04-radiation-species-decay.html">M04</a>; the Norgett–Robinson–Torrens displacement count is the international standard form</td></tr>
+      <tr><td>§4</td><td>Non-ionizing energy loss, displacement damage dose and the species-independence result from the standard displacement-damage literature; introduced here because it is the quantity the course's simulations produce</td></tr>
+      <tr><td>§5</td><td>Lecture 5 (a particle that stops inside the device does far more damage than one that passes through, and therefore a shield that slows particles into the die makes matters worse — stressed in the lecture); Deck 5 p. 29 (stopped particles absorb all of the incident energy). The electronic and nuclear stopping curves are developed quantitatively in <a href="m12-stopping-power-range.html">M12</a></td></tr>
+      <tr><td>§6</td><td>Deck 5 p. 31 (band-gap traps produced by displacement damage: mid-band traps increase thermal carrier generation, increase recombination, enhance free-carrier trapping, and localised donor–acceptor trap pairs reduce free-carrier concentration; accompanying diode characteristic). Mid-gap effectiveness from Shockley–Read–Hall recombination statistics</td></tr>
+      <tr><td>§7</td><td>Device sensitivities from the standard radiation-effects literature; the majority- against minority-carrier distinction follows from <a href="m01-semiconductor-background.html">M01</a></td></tr>
+      <tr><td>§8</td><td>Prompt recombination fractions, defect-complex formation and post-irradiation annealing behaviour from the displacement-damage literature and test-standard practice</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m10-photon-interaction.html"><span>Previous</span>M10 · Photon Interaction with Matter</a>
+      <a class="next" href="m12-stopping-power-range.html"><span>Next</span>M12 · Energy Loss, Range, and the Bragg Peak</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

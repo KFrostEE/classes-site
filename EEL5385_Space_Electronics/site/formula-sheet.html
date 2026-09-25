@@ -1,0 +1,2045 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formula sheet — EEL5385 Space Electronics</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>Formula sheet</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap wide">
+
+    <p class="eyebrow">Reference</p>
+    <h1>Formula sheet</h1>
+    <p class="lede">
+      Every equation in the course with all its symbols and exact units, the constants
+      needed to evaluate them, and a strategy table keyed by what a problem asks for.
+    </p>
+
+    <div class="box warn">
+      <span class="box-title">Growing with the site</span>
+      <p>
+        This sheet covers every module built so far, M01 to M14. Sections are added as
+        modules are built. Some constants and reference values in §8 to §10 already
+        anticipate modules not yet written, because they are the values most often needed
+        mid-problem and are not worth waiting for.
+      </p>
+    </div>
+
+    <h2 id="tree">1 · What to do, by what is asked</h2>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Asked for…</th><th>Strategy</th><th>Where</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Carrier concentration in doped silicon</td>
+          <td>Majority carrier ≈ the dopant concentration. Get the minority carrier from
+              <em>np</em> = <em>n</em><sub>i</sub><sup>2</sup>. Check the dopants are fully
+              ionized (true at 300 K, not at cryogenic temperature).</td>
+          <td><a href="#eq-massaction">(1.3)</a></td>
+        </tr>
+        <tr>
+          <td>Fermi-level position, or a carrier density, from the doping</td>
+          <td>Measure from the intrinsic level: <em>n</em> = <em>n</em><sub>i</sub>
+              exp[(<em>E</em><sub>F</sub> − <em>E</em><sub>i</sub>)/<em>kT</em>], and for p-type
+              <em>φ</em><sub>F</sub> = (<em>kT</em>/<em>q</em>) ln(<em>N</em><sub>a</sub>/<em>n</em><sub>i</sub>)
+              &mdash; 0.298 to 0.476 V for 10<sup>15</sup> to 10<sup>18</sup> cm<sup>−3</sup>, 59.5 meV
+              per decade. Check the material is non-degenerate and fully ionized. Hot enough that
+              <em>n</em><sub>i</sub> approaches the doping: charge neutrality, with
+              <em>n</em><sub>i</sub>(<em>T</em>) from (1.2).</td>
+          <td><a href="#eq-efermi">(1.4)</a>, <a href="#eq-massaction">(1.3)</a>, <a href="#eq-neutral">(1.5)</a></td>
+        </tr>
+        <tr>
+          <td>The field, or which way a carrier drifts, from a band diagram</td>
+          <td>The field is the slope of the bands divided by <em>q</em> and points up the slope;
+              1 eV across 1 µm is 10<sup>4</sup> V/cm. A positive voltage lowers the bands. Electrons
+              roll down <em>E</em><sub>c</sub>; holes rise along <em>E</em><sub>v</sub>.</td>
+          <td><a href="#eq-bandtilt">(1.7)</a>, <a href="#eq-ecx">(1.12)</a></td>
+        </tr>
+        <tr>
+          <td>Flat-band or threshold voltage of a MOS structure</td>
+          <td>Get <em>φ</em><sub>F</sub> from the body doping, then
+              <em>φ</em><sub>ms</sub> ≈ −(<em>E</em><sub>g</sub>/2<em>q</em> + <em>φ</em><sub>F</sub>)
+              for an n⁺-polysilicon gate on p-type silicon, then
+              <em>V</em><sub>FB</sub> = <em>φ</em><sub>ms</sub> − <em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub>,
+              then add 2<em>φ</em><sub>F</sub> and the depletion-charge term over
+              <em>C</em><sub>ox</sub>. <em>C</em><sub>ox</sub> in F/cm² from <em>t</em><sub>ox</sub>
+              in cm. Check: 10<sup>17</sup> cm<sup>−3</sup> under 10 nm gives ≈ 0.34 V.</td>
+          <td><a href="#eq-vfb">(1.10)</a>, <a href="#eq-vt">(1.11)</a>, <a href="#eq-efermi">(1.4)</a></td>
+        </tr>
+        <tr>
+          <td>Whether a MOS surface is in accumulation, depletion or inversion</td>
+          <td>Compare the gate voltage with <em>V</em><sub>FB</sub> and <em>V</em><sub>th</sub>. On a
+              p-type body: below <em>V</em><sub>FB</sub>, accumulation (holes at the surface); between
+              them, depletion, weakly inverted once the bending exceeds <em>φ</em><sub>F</sub>; above
+              <em>V</em><sub>th</sub>, strong inversion, <em>ψ</em><sub>s</sub> = 2<em>φ</em><sub>F</sub>.
+              With an n⁺-polysilicon gate <em>V</em><sub>FB</sub> is about −1 V, so zero gate
+              voltage is already depletion.</td>
+          <td><a href="#eq-vfb">(1.10)</a>, <a href="#eq-vt">(1.11)</a></td>
+        </tr>
+        <tr>
+          <td>How a device changes with temperature</td>
+          <td>Work out whether the quantity tracks <em>n</em><sub>i</sub> or
+              <em>n</em><sub>i</sub><sup>2</sup>. Leakage and reverse saturation current go
+              as <em>n</em><sub>i</sub><sup>2</sup>, doubling roughly every 5 K; the
+              generation current goes as <em>n</em><sub>i</sub> and doubles every ~10 K, and
+              it is the one that dominates measured silicon leakage.
+              Mobility falls with temperature above ~100 K. Subthreshold swing is
+              proportional to <em>T</em> outright.</td>
+          <td><a href="#eq-ni">(1.2)</a>, <a href="#eq-diode">(1.9)</a>, <a href="#eq-ss">(1.15)</a></td>
+        </tr>
+        <tr>
+          <td>Depletion width, or the sensitive volume of a junction</td>
+          <td>Get <em>V</em><sub>bi</sub> from the doping, add the reverse bias, then use
+              the depletion-width expression. Multiply by junction area for the volume.
+              Width goes as the square root of total voltage.</td>
+          <td><a href="#eq-vbi">(1.8)</a></td>
+        </tr>
+        <tr>
+          <td>Current from a charge deposited in a short time</td>
+          <td><em>I</em> = <em>Q</em>/<em>t</em> with <em>Q</em> = <em>N</em><em>q</em>.
+              Then power <em>P</em> = <em>IV</em>, then power density <em>P</em>/<em>A</em>
+              over the track cross-section. Keep the area in cm² and watch that
+              100 nm = 10<sup>−5</sup> cm.</td>
+          <td><a href="#eq-qit">(8.3)</a></td>
+        </tr>
+        <tr>
+          <td>Transistor drive current, or the effect of a geometry change</td>
+          <td>Use the saturation expression. For a fin or nanosheet, first convert the
+              geometry to an effective width, then substitute.</td>
+          <td><a href="#eq-idsat">(1.14)</a>, <a href="#eq-weff">(2.2)</a></td>
+        </tr>
+        <tr>
+          <td>Whether a process can print a feature</td>
+          <td>CD = <em>k</em><sub>1</sub><em>λ</em>/NA with <em>k</em><sub>1</sub> ≥ 0.25
+              for a single exposure. If the required CD needs
+              <em>k</em><sub>1</sub> &lt; 0.25, the answer is multiple patterning or a
+              shorter wavelength. Check depth of focus separately.</td>
+          <td><a href="#eq-rayleigh">(2.3)</a></td>
+        </tr>
+        <tr>
+          <td>Equilibrium temperature of a surface in space</td>
+          <td>Balance absorbed solar power against radiated power. Only the ratio
+              <em>α</em><sub>s</sub>/<em>ε</em> and the area ratio matter. Scale the
+              irradiance to the orbital distance first. Add internal dissipation to the
+              absorbed side.</td>
+          <td><a href="#eq-teq">(3.1)</a></td>
+        </tr>
+        <tr>
+          <td>Activity of a source now, or after a stated time</td>
+          <td>Get the mass of the <b>isotope</b> (scale the element mass by isotopic
+              abundance), divide by its atomic mass, multiply by <em>N</em><sub>A</sub> and by
+              ln2/<em>t</em><sub>1/2</sub> with the half-life <b>in seconds</b>. For elapsed
+              time, halve once per half-life rather than exponentiating.</td>
+          <td><a href="#eq-activity">(4.4)</a></td>
+        </tr>
+        <tr>
+          <td>Dose delivered, or equivalent dose to a person</td>
+          <td>Energy deposited over absorber mass, stated for a named material. Multiply by the
+              quality factor only for biological risk &mdash; never for a device.</td>
+          <td><a href="#eq-dose">(4.5)</a></td>
+        </tr>
+        <tr>
+          <td>Which shield material for which species</td>
+          <td>Neutrons: maximise 4<em>Mm</em>/(<em>M</em>+<em>m</em>)&sup2; &rarr; hydrogen-rich.
+              Gammas: maximise <em>Z</em> &rarr; lead. Betas: <b>minimise</b> <em>Z</em> to
+              suppress bremsstrahlung, then a high-<em>Z</em> layer <b>behind</b> it. Ions:
+              check the range &mdash; a shield that stops a particle inside the die is worse
+              than none.</td>
+          <td><a href="#eq-elastic">(4.1)</a>, <a href="#eq-brems">(9.1)</a></td>
+        </tr>
+        <tr>
+          <td>Whether a particle is trapped, and where it mirrors</td>
+          <td>Gyroradius must be small against the scale over which <em>B</em> varies; use the
+              momentum form for electrons. The mirror point depends only on equatorial pitch
+              angle, not on mass or energy.</td>
+          <td><a href="#eq-gyro">(6.2)</a></td>
+        </tr>
+        <tr>
+          <td>Orbital speed, period, or time spent inside a belt</td>
+          <td>Add <em>R</em><sub>E</sub> to the altitude first. Circular: (7.1). Elliptical: use
+              vis-viva at the belt-crossing radius &mdash; an eccentric orbit crosses fast and
+              dwells slow, so exposure is the time integral, not the peak flux.</td>
+          <td><a href="#eq-orbit">(7.1)</a>, <a href="#eq-visviva">(7.2)</a></td>
+        </tr>
+        <tr>
+          <td>Carriers or charge liberated by a particle</td>
+          <td>Divide deposited energy by the pair-creation energy &mdash; <b>99.42 eV for the
+              course's own arithmetic, 3.6 eV for anything physical</b> &mdash; then multiply by
+              <em>q</em>. Only energy actually deposited counts.</td>
+          <td><a href="#eq-pairs">(8.2)</a></td>
+        </tr>
+        <tr>
+          <td>Peak current, power or power density from one strike</td>
+          <td>Charge over collection time (~1 ps) for current, times bias for power, over the
+              track cross-section for power density. The course's chain lands at 500 MW/cm&sup2;.</td>
+          <td><a href="#eq-qit">(8.3)</a></td>
+        </tr>
+        <tr>
+          <td>X-ray output of an electron beam or a beta shield</td>
+          <td><em>f</em> = 0.0007<em>ZE</em> with <em>E</em> in MeV gives the <b>fraction</b>
+              radiated, spread over a continuum ending at the electron energy. It is not a
+              photon line.</td>
+          <td><a href="#eq-brems">(9.1)</a></td>
+        </tr>
+        <tr>
+          <td>Displacement count, or damage from a known fluence</td>
+          <td>Maximum recoil energy from (4.1), then NRT for the displacement count. For an
+              environment, integrate NIEL against the fluence spectrum to get displacement
+              damage dose.</td>
+          <td><a href="#eq-nrt">(11.1)</a>, <a href="#eq-niel">(11.2)</a></td>
+        </tr>
+        <tr>
+          <td>Power or delay of a logic block</td>
+          <td>Dynamic power is <em>αCV</em><sup>2</sup><em>f</em>; static power is
+              <em>V</em><em>I</em><sub>off</sub>; delay is <em>CV</em>/<em>I</em>. Lowering
+              frequency reduces the first and not the second.</td>
+          <td><a href="#eq-delay">(1.17)</a></td>
+        </tr>
+        <tr>
+          <td>Shielding thickness for a photon beam, or how much of a beam a layer stops</td>
+          <td>Look up &mu;/&rho; for the material at that photon energy in the NIST table,
+              multiply by &rho; and by thickness <b>in cm</b>, then
+              <em>P</em> = 1 &minus; <em>e</em><sup>&minus;exponent</sup>. For a compound,
+              mass-weight the elemental coefficients first. To attenuate by a factor <em>n</em>,
+              solve &mu;<em>x</em> = ln&thinsp;<em>n</em>. Add a buildup factor for anything
+              more than about one mean free path.</td>
+          <td><a href="#eq-atten">(10.7&ndash;8)</a>, <a href="#eq-bragg-additivity">(10.9)</a></td>
+        </tr>
+        <tr>
+          <td>Which photon interaction applies, or whether pair production matters</td>
+          <td>Locate the photon energy and the target <em>Z</em> on the dominance map.
+              In silicon: photoelectric below ~50 keV, Compton from there to ~15 MeV, pair
+              production above. Exceeding the 1.022 MeV threshold does not make pair
+              production significant.</td>
+          <td><a href="#eq-pair">(10.6)</a></td>
+        </tr>
+        <tr>
+          <td>Dose from a photon field, rather than attenuation</td>
+          <td>Use &mu;<sub>en</sub>/&rho;, not &mu;/&rho;. The two differ by more than a
+              factor of two in silicon at 1 MeV, because Compton scattering carries energy
+              out of the volume.</td>
+          <td><a href="#eq-atten">(10.7&ndash;8)</a></td>
+        </tr>
+        <tr>
+          <td>Whether a charged particle reaches a buried layer, or where it stops</td>
+          <td>Get the range from a PSTAR-style table at that energy, divide by &rho; for a
+              depth, and use the projected range rather than the CSDA range. For an ion other
+              than a proton, evaluate the proton table at <em>E</em>/<em>M</em> and scale by
+              <em>M</em>/<em>z</em>&sup2;.</td>
+          <td><a href="#eq-range">(12.6&ndash;7)</a>, <a href="#eq-ionscale">(12.8)</a></td>
+        </tr>
+        <tr>
+          <td>Charge deposited by an ion in a sensitive volume</td>
+          <td>Take LET in MeV&middot;cm&sup2;/mg, multiply by 10.4 fC/&micro;m for silicon, then
+              by the path length through the volume. Compare against the node's critical charge.</td>
+          <td><a href="#eq-let">(12.5)</a></td>
+        </tr>
+        <tr>
+          <td>Energy an ion deposits in a layer, from TRIM's ionization output</td>
+          <td>Add the ion and recoil ionization curves (eV/(Å·ion)) and integrate across the
+              layer's depth range: sum the bins times the bin width, one hundredth of the plotting
+              window, in Å. The result is eV per ion. The height of the curve is a density, never
+              an energy.</td>
+          <td><a href="#eq-integral">(13.7)</a></td>
+        </tr>
+        <tr>
+          <td>Electron–hole pairs, or charge, from a TRIM run</td>
+          <td>Integrate first, then divide by the pair energy of <b>that layer's</b> material &mdash;
+              3.6 eV in Si, 17 eV in SiO₂ (99.42 eV only to reproduce the course's own arithmetic)
+              &mdash; and multiply by <em>q</em>. These are pairs generated, not collected. For an LET
+              read off the curve near the surface: in silicon 1 eV/Å = 0.0429 MeV·cm²/mg =
+              0.445 fC/µm.</td>
+          <td><a href="#eq-integral">(13.7)</a>, <a href="#eq-trim-pairs">(13.8)</a></td>
+        </tr>
+        <tr>
+          <td>Dose from a fluence of ions</td>
+          <td>Energy per ion in the layer times fluence, over the layer's mass per area
+              ρ<em>t</em> (<em>t</em> in cm), gives eV/g; divide by 6.242 × 10<sup>13</sup> for rad.
+              The answer is in rad of that layer's material &mdash; rad(SiO₂) for an oxide, which is
+              what (14.3) needs. For a thin sensitive region, integrate over that region alone.</td>
+          <td><a href="#eq-trim-dose">(13.9)</a></td>
+        </tr>
+        <tr>
+          <td>Implanted concentration at a depth, from the range distribution</td>
+          <td>Concentration = fluence × range distribution. The plot is already in
+              (atoms/cm³)/(atoms/cm²); RANGE.txt is in atoms/(Å·ion) and needs ×10<sup>8</sup>
+              first. Low fluence only: TRIM's target never changes.</td>
+          <td><a href="#eq-conc">(13.6)</a></td>
+        </tr>
+        <tr>
+          <td>How many ions a TRIM run needs</td>
+          <td>For a mean depth, the error is σ<sub><em>R</em></sub>/√<em>N</em>: 500 ions give
+              4.5 % of the straggling. For a depth profile, each bin's error is 1/√<em>n</em>
+              of its own count: 500 ions over 100 bins leave about 45 % scatter. 1000 ions
+              typically give better than 10 %. Rerun with another seed to see what is noise.</td>
+          <td><a href="#eq-stats">(13.4)</a></td>
+        </tr>
+        <tr>
+          <td>Which TRIM damage option to choose, including for sputtering</td>
+          <td>Default to <b>Quick Calculation of Damage</b> (Kinchin–Pease): identical ion ranges
+              and ionization by the ion, and the recommended route to displacements per atom,
+              through the damage energy and (11.1) with the lattice binding energy set to zero.
+              Full cascades give about twice the vacancies. <b>Sputtering needs an option that
+              follows recoils</b> &mdash; Surface Sputtering or Monolayer Collision Steps, or Full
+              Damage Cascades &mdash; on a thin target. State the <em>E</em><sub>d</sub> used: TRIM's
+              silicon default of 15 eV gives about 1.4 times the vacancies of 21 eV.</td>
+          <td><a href="#eq-displacements">(13.10)</a>, <a href="#eq-sputter">(13.11)</a></td>
+        </tr>
+        <tr>
+          <td>Setting up a compound or gas layer</td>
+          <td>Enter <b>atom</b> fractions (convert a composition by weight through the atomic
+              weights). Then <b>type in the measured density</b>: SiO₂ 2.20, GaAs 5.32, Ga₂O₃
+              6.44 (the deck's α-phase value; β is 5.88), dry air 1.205 × 10<sup>−3</sup> g/cm³.
+              TRIM's own proposal is kept only for a single element such as Si (2.32). For a gas
+              tick the Gas box, still check the density, and give the width in mm. Every depth
+              scales as 1/ρ.</td>
+          <td><a href="#eq-bragg">(13.3)</a>, <a href="#eq-density">(13.5)</a></td>
+        </tr>
+        <tr>
+          <td>Whether an ion's energy goes to ionization or to recoils and heat</td>
+          <td>Evaluate the reduced energy. Large ε (100 keV proton in Si, 79): at least 97 %
+              to ionization, recoils negligible. Small ε (100 keV oxygen 5.4, 190 keV phosphorus
+              3.8, 1 keV argon 0.014): a large Recoils column and phonons of tens of percent.
+              The mass factor of (13.2) says how much one collision can transfer.</td>
+          <td><a href="#eq-epsilon">(13.12)</a>, <a href="#eq-transfer">(13.2)</a></td>
+        </tr>
+        <tr>
+          <td>Dose in rad(SiO₂) versus rad(Si)</td>
+          <td>For photons, the ratio of mass energy-absorption coefficients: 1.003 for cobalt-60,
+              so the two are interchangeable; 0.558 at 10 keV, so 1 rad(SiO₂) ≈ 1.8 rad(Si).
+              Charged-particle equilibrium required. For an ion beam, compute each layer's dose
+              directly.</td>
+          <td><a href="#eq-dose-ratio">(14.1)</a>, <a href="#eq-trim-dose">(13.9)</a></td>
+        </tr>
+        <tr>
+          <td>Threshold-voltage shift from a dose</td>
+          <td>Convert the dose to rad(SiO₂). Holes generated per area:
+              <em>g</em><sub>0</sub><em>D</em><em>t</em><sub>ox</sub>
+              with <em>g</em><sub>0</sub> = 8.1 × 10<sup>12</sup> cm<sup>−3</sup> rad(SiO₂)<sup>−1</sup>
+              and <em>t</em><sub>ox</sub> in cm. Times the yield <em>f</em><sub>y</sub>(<em>E</em><sub>ox</sub>, particle),
+              times the trapped fraction <em>f</em><sub>ot</sub>, then
+              Δ<em>V</em><sub>ot</sub> = −<em>q</em>Δ<em>N</em><sub>ot</sub>/<em>C</em><sub>ox</sub> for
+              charge at the interface (centroid form otherwise). Add Δ<em>V</em><sub>it</sub> with the
+              sign of the channel type: + for n-channel, − for p-channel.</td>
+          <td><a href="#eq-g0">(14.3)</a>&ndash;<a href="#eq-vth">(14.8)</a></td>
+        </tr>
+        <tr>
+          <td>Which oxide dominates a part's total-dose response</td>
+          <td>Compare <em>t</em><sub>ox</sub>²: tenfold thicker means a hundredfold larger shift
+              (measured exponents 1.5 to 2). Below about 10 nm tunnelling neutralizes trapped
+              holes and a gate oxide is nearly immune, so in a modern commercial part the
+              100–1000 nm isolation oxide dominates, through edge leakage in n-channel
+              transistors.</td>
+          <td><a href="#eq-tox2">(14.12)</a></td>
+        </tr>
+        <tr>
+          <td>Off-state current increase from a threshold shift</td>
+          <td>One decade per <em>S</em> of shift: ratio = 10<sup>−Δ<em>V</em><sub>th</sub>/<em>S</em></sup>
+              with <em>S</em> in V/decade. At 80 mV/decade, −0.1 V gives ×18, −0.3 V gives
+              ×5.6 × 10<sup>3</sup>. Equivalently, each 59.5 meV of barrier lowering multiplies
+              the current by ten at 300 K; DIBL multiplies it by
+              10<sup>DIBL·Δ<em>V</em><sub>DS</sub>/<em>S</em></sup>.</td>
+          <td><a href="#eq-ioff">(14.11)</a>, <a href="#eq-thermionic">(1.13)</a>, <a href="#eq-dibl">(1.16)</a></td>
+        </tr>
+        <tr>
+          <td>Mobility loss, drive-current change or a stretched subthreshold slope</td>
+          <td>Mobility falls as 1/(1 + αΔ<em>N</em><sub>it</sub>); drive goes as
+              µ(<em>V</em><sub>GS</sub> − <em>V</em><sub>th</sub>)²; interface traps add
+              <em>C</em><sub>it</sub> = <em>qD</em><sub>it</sub> to the swing bracket. Oxide
+              charge only translates the transfer curve; interface traps also stretch it.</td>
+          <td><a href="#eq-mobility">(14.9)</a>, <a href="#eq-swing">(14.10)</a>, <a href="#eq-idsat">(1.14)</a></td>
+        </tr>
+        <tr>
+          <td>Whether an irradiated n-channel transistor recovers or rebounds</td>
+          <td>Follow the two terms separately in time. Oxide-trapped charge anneals linearly in
+              log <em>t</em>; interface traps do not anneal at room temperature and keep forming
+              for thousands of seconds, so the net shift moves positive and can overshoot.
+              Compare exposures at equal time since irradiation began. A p-channel transistor
+              cannot rebound.</td>
+          <td><a href="#eq-vth">(14.8)</a>, <a href="#eq-front">(14.13)</a></td>
+        </tr>
+        <tr>
+          <td>Output of an on-chip charge pump after its transistors shift</td>
+          <td>Each millivolt of pass-transistor threshold shift costs <em>N</em> + 1 millivolts
+              of output; the function needing the highest voltage (erase) fails first.</td>
+          <td><a href="#eq-pump">(14.2)</a></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2 id="general">2 · Facts that hold across problems</h2>
+    <ul>
+      <li>
+        <b>This subject works in centimetres.</b> Concentrations in cm<sup>−3</sup>,
+        mobilities in cm²/V·s, fields in V/cm, permittivities in F/cm, current densities in
+        A/cm². Mixing in metres is the most common source of errors of 10<sup>2</sup>,
+        10<sup>4</sup> or 10<sup>6</sup>.
+      </li>
+      <li>
+        <b>Charge is conserved and quantised.</b> Any count of carriers converts to a charge
+        by multiplying by 1.602 × 10<sup>−19</sup> C, and any charge delivered over a time
+        is a current. Most single-event estimates are exactly this chain.
+      </li>
+      <li>
+        <b>Check the regime before the algebra.</b> Is the semiconductor in equilibrium
+        (then <em>np</em> = <em>n</em><sub>i</sub><sup>2</sup>) or not? Is the transistor
+        above or below threshold? Is the field low enough that <em>v</em> = <em>µ</em>ℰ
+        still holds? Each of these has a different governing expression.
+      </li>
+      <li>
+        <b>Exponentials dominate.</b> Where a quantity contains exp(−<em>E</em>/<em>kT</em>),
+        an order-of-magnitude estimate of the exponent is worth more than a precise
+        prefactor. A factor of two in <em>N</em><sub>c</sub> is irrelevant next to a
+        0.1 eV error in <em>E</em>.
+      </li>
+      <li>
+        <b>Order-of-magnitude first.</b> The lectures' worked estimates deliberately round
+        to one significant figure and then check the exponent. A power density of
+        10<sup>8</sup> W/cm² is a physically meaningful result; 4.87 × 10<sup>8</sup> is
+        false precision on inputs known to a factor of two.
+      </li>
+      <li>
+        <b>Sanity checks.</b> Carrier concentrations cannot exceed the atomic density,
+        5 × 10<sup>22</sup> cm<sup>−3</sup>. Depletion widths in ordinary doping are
+        0.01–10 µm. Drift velocity cannot exceed ~10<sup>7</sup> cm/s. An equilibrium
+        temperature at 1 AU is near 278 K unless the surface is deliberately engineered.
+      </li>
+      <li>
+        <b>TRIM transports ions and nothing else.</b> It has no photons: the dose of an X-ray
+        or cobalt-60 exposure follows from the attenuation law and µ<sub>en</sub>/ρ of
+        <a href="#eq-atten">(10.7–8)</a>, never from TRIM. It has no electron transport, takes
+        neutrons only as recoil lists from another program, omits nuclear reactions
+        (significant above about 5 MeV per nucleon), and stops at energy deposition, before
+        any charge collection. Its target is amorphous, at 0 K and at zero dose: no channeling,
+        no annealing, no build-up. A check on any run: a single homogeneous layer must return
+        a mean stopping depth close to the tabulated projected range.
+      </li>
+      <li>
+        <b>The quick damage mode does not follow recoils.</b> Ion ranges and ionization by the
+        ion match the full-cascade mode; displacements are estimated analytically; sputtering
+        is impossible in it. A TRIM vacancy count is a count of displacement events for a
+        stated threshold and damage option, not of defects that survive.
+      </li>
+      <li>
+        <b>A TRIM depth plot is a density, per ion per unit depth.</b> Integrate across a layer
+        for a total, multiply per-Å values by 10<sup>8</sup> for per-cm, and multiply by the
+        fluence for a volume density. Every depth scales as 1/ρ, so a compound or gas layer
+        with an untyped density is wrong everywhere.
+      </li>
+      <li>
+        <b>A dose must name its material.</b> rad(Si) and rad(SiO₂) agree to 0.3 % under
+        cobalt-60 and differ by a factor of about 1.8 under 10 keV X-rays. Oxide-charge physics
+        runs in rad(SiO₂); standards and mission requirements are stated in rad(Si).
+      </li>
+      <li>
+        <b>Thick oxides are worse.</b> The oxide-trapped-charge shift grows roughly as
+        <em>t</em><sub>ox</sub>²; below about 10 nm tunnelling neutralizes trapped holes and a
+        gate oxide is nearly immune. In a modern commercial part the isolation oxide, not the
+        gate oxide, sets the total-dose tolerance.
+      </li>
+      <li>
+        <b>The interface-trap sign depends on the channel type.</b> Δ<em>V</em><sub>ot</sub> is
+        negative for both types; Δ<em>V</em><sub>it</sub> is positive for n-channel and negative
+        for p-channel. An n-channel transistor can show a small net shift that hides large
+        amounts of both, and can rebound positive as the oxide charge anneals; a p-channel
+        transistor cannot.
+      </li>
+      <li>
+        <b>Bias and time belong to the dose.</b> Positive gate bias is the worst case, because
+        it drives holes and protons to the silicon. MOS gate oxides show a time dependence, not
+        a true dose-rate dependence, so compare exposures at equal time since irradiation
+        began. Bipolar linear circuits (ELDRS), and some thick isolation oxides, show a true
+        low-dose-rate enhancement, which makes a high-rate test non-conservative.
+      </li>
+      <li>
+        <b>Pairs generated are not charge collected.</b> Initial recombination removes a
+        fraction that depends on field and on track density, and trapping and collection
+        remove more; every pair count from (8.2) or (13.8) is an upper bound on collected
+        charge.
+      </li>
+    </ul>
+
+    <h2 id="devices">3 · Semiconductors and devices (M01)</h2>
+
+    <div class="eq" id="eq-fermi">
+      <div class="eq-body">
+        <div class="eq-math"><em>f</em>(<em>E</em>) = <span class="frac"><span class="num">1</span><span class="den">1 + exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>E</em> − <em>E</em><sub>F</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span></span></span></div>
+        <div class="eq-num">(1.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>f</em>(<em>E</em>) probability that an allowed state at energy <em>E</em> holds an
+        electron (dimensionless, 0 to 1); 1 − <em>f</em>(<em>E</em>) is the probability that it
+        is empty, which in the valence band means it holds a hole · <em>E</em> energy of the
+        state (eV) · <em>E</em><sub>F</sub> Fermi level, the energy of half occupancy (eV) ·
+        <em>k</em> in the <b>eV form</b>, 8.617 × 10<sup>−5</sup> eV/K · <em>T</em> absolute
+        temperature (K); <em>kT</em> = 0.02585 eV at 300 K. More than 3<em>kT</em> above
+        <em>E</em><sub>F</sub> it equals the Boltzmann tail
+        exp[−(<em>E</em> − <em>E</em><sub>F</sub>)/<em>kT</em>] to within 5 %, and more than
+        3<em>kT</em> below it equals 1 to the same accuracy. Occupancy falls from 95 % to 5 %
+        across 6<em>kT</em>, about 0.15 eV at 300 K; in pure silicon <em>E</em><sub>c</sub>
+        sits 0.56 eV above <em>E</em><sub>F</sub>, where <em>f</em> = 4 × 10<sup>−10</sup>.
+        <b>Thermal equilibrium only.</b>
+        <a href="m01-semiconductor-background.html#m01-eq-fermi">M01 §2</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-ni">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em><sub>i</sub> = <span class="sqrt"><span class="rad">√</span><span class="arg"><em>N</em><sub>c</sub><em>N</em><sub>v</sub></span></span> · exp&thinsp;<span class="dl">(</span>−<span class="frac"><span class="num"><em>E</em><sub>g</sub></span><span class="den">2<em>kT</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(1.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em><sub>i</sub> intrinsic carrier concentration (<b>cm<sup>−3</sup></b>) ·
+        <em>N</em><sub>c</sub> = 2.86 × 10<sup>19</sup> cm<sup>−3</sup>,
+        <em>N</em><sub>v</sub> = 3.10 × 10<sup>19</sup> cm<sup>−3</sup> with
+        <em>E</em><sub>g</sub> = 1.124 eV for Si at 300 K — <b>one consistent set; do not
+        mix tabulations</b> · <em>kT</em> = <b>0.02585 eV</b> at
+        300 K, so use <em>k</em> = 8.617 × 10<sup>−5</sup> eV/K, not the joule form.
+        Returns 1.08 × 10<sup>10</sup> cm<sup>−3</sup>. The measured value long quoted at
+        300 K is 1.00 × 10<sup>10</sup> cm<sup>−3</sup>; a 2003 reanalysis with band-gap
+        narrowing gives 9.65 × 10<sup>9</sup> (Sze &amp; Ng); older textbooks carry
+        1.45 × 10<sup>10</sup>. <b>The course uses 1.0 × 10<sup>10</sup> cm<sup>−3</sup>
+        throughout</b>, 8 % below what the formula returns with this constant set.
+        <em>N</em><sub>c</sub> and <em>N</em><sub>v</sub> themselves scale as
+        <em>T</em><sup>3/2</sup>, a small correction beside the exponential. Near room
+        temperature <em>n</em><sub>i</sub> roughly doubles for every 10 K.
+        <a href="m01-semiconductor-background.html#m01-eq-ni">M01 §2</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-massaction">
+      <div class="eq-body">
+        <div class="eq-math"><em>n p</em> = <em>n</em><sub>i</sub><sup>2</sup> &nbsp;&nbsp;&nbsp; <em>n</em> ≈ <em>N</em><sub>d</sub> &nbsp;(n-type) &nbsp;&nbsp; <em>p</em> ≈ <em>N</em><sub>a</sub> &nbsp;(p-type)</div>
+        <div class="eq-num">(1.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em>, <em>p</em> electron and hole concentrations (cm<sup>−3</sup>) ·
+        <em>N</em><sub>d</sub>, <em>N</em><sub>a</sub> donor and acceptor concentrations
+        (cm<sup>−3</sup>). Valid in thermal equilibrium only, with the dopants fully ionized
+        and <em>N</em><sub>d</sub> or <em>N</em><sub>a</sub> ≫ <em>n</em><sub>i</sub>.
+        <b>Fails under illumination, under bias, and whenever radiation-generated carriers are
+        present</b> — which is most of this course. Worked point: n-type at
+        10<sup>16</sup> cm<sup>−3</sup> gives <em>p</em> = 10<sup>4</sup> cm<sup>−3</sup>,
+        twelve orders of magnitude below the majority population.
+        <a href="m01-semiconductor-background.html#m01-eq-massaction">M01 §3</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-efermi">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em> = <em>n</em><sub>i</sub> exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>E</em><sub>F</sub> − <em>E</em><sub>i</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span> &nbsp;&nbsp; <em>p</em> = <em>n</em><sub>i</sub> exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>E</em><sub>i</sub> − <em>E</em><sub>F</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span> &nbsp;&nbsp; <em>φ</em><sub>F</sub> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> ln <span class="frac"><span class="num"><em>N</em><sub>a</sub></span><span class="den"><em>n</em><sub>i</sub></span></span></div>
+        <div class="eq-num">(1.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em>, <em>p</em> electron and hole concentrations (cm<sup>−3</sup>) ·
+        <em>E</em><sub>F</sub> Fermi level and <em>E</em><sub>i</sub> intrinsic level, within
+        about 1 meV of midgap in silicon at 300 K (eV) · <em>kT</em> in eV, 0.02585 eV at
+        300 K · <em>φ</em><sub>F</sub> <b>bulk Fermi potential</b> of p-type material,
+        (<em>E</em><sub>i</sub> − <em>E</em><sub>F</sub>)/<em>q</em> in the neutral bulk (V) ·
+        <em>kT</em>/<em>q</em> thermal voltage, 0.02585 V · <em>N</em><sub>a</sub> acceptor
+        concentration (cm<sup>−3</sup>). An energy in eV divided by <em>q</em> is the same
+        number in volts. For n-type material the magnitude is
+        (<em>kT</em>/<em>q</em>) ln(<em>N</em><sub>d</sub>/<em>n</em><sub>i</sub>) with
+        <em>E</em><sub>F</sub> above <em>E</em><sub>i</sub>. With
+        <em>n</em><sub>i</sub> = 1.0 × 10<sup>10</sup> cm<sup>−3</sup>,
+        <em>φ</em><sub>F</sub> = <b>0.298, 0.357, 0.417 and 0.476 V</b> for
+        <em>N</em><sub>a</sub> = 10<sup>15</sup>, 10<sup>16</sup>, 10<sup>17</sup> and
+        10<sup>18</sup> cm<sup>−3</sup>; each factor of ten in doping moves
+        <em>E</em><sub>F</sub> by <em>kT</em> ln 10 = 59.5 meV. The product of the first two
+        expressions is (1.3). <b>Non-degenerate material only</b>, dopants fully ionized:
+        near 1.4 × 10<sup>18</sup> cm<sup>−3</sup> of phosphorus at 300 K,
+        <em>E</em><sub>F</sub> comes within 3<em>kT</em> of <em>E</em><sub>c</sub> and the
+        Boltzmann tail no longer describes the occupancy.
+        <a href="m01-semiconductor-background.html#m01-eq-efermi">M01 §3</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-neutral">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em> = <span class="frac"><span class="num"><em>N</em><sub>d</sub></span><span class="den">2</span></span> + <span class="sqrt"><span class="rad">√</span><span class="arg"><span class="dl">(</span><span class="frac"><span class="num"><em>N</em><sub>d</sub></span><span class="den">2</span></span><span class="dl">)</span><sup>2</sup> + <em>n</em><sub>i</sub><sup>2</sup></span></span> &nbsp;&nbsp;&nbsp; <em>p</em> = <span class="frac"><span class="num"><em>n</em><sub>i</sub><sup>2</sup></span><span class="den"><em>n</em></span></span></div>
+        <div class="eq-num">(1.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em>, <em>p</em> electron and hole concentrations (cm<sup>−3</sup>) ·
+        <em>N</em><sub>d</sub> donor concentration, all ionized (cm<sup>−3</sup>) ·
+        <em>n</em><sub>i</sub> intrinsic concentration <b>at the temperature in question</b>,
+        from (1.2) (cm<sup>−3</sup>). Follows from charge neutrality,
+        <em>n</em> = <em>p</em> + <em>N</em><sub>d</sub>, with <em>np</em> =
+        <em>n</em><sub>i</sub><sup>2</sup>. Reduces to <em>n</em> = <em>N</em><sub>d</sub>
+        when <em>n</em><sub>i</sub> ≪ <em>N</em><sub>d</sub> and to <em>n</em> =
+        <em>n</em><sub>i</sub> when <em>n</em><sub>i</sub> ≫ <em>N</em><sub>d</sub>; at
+        <em>n</em><sub>i</sub> = <em>N</em><sub>d</sub> it gives <em>n</em> =
+        1.62 <em>N</em><sub>d</sub>. <b>Covers the extrinsic-to-intrinsic transition only</b>;
+        freeze-out needs incomplete donor ionization as well. For p-type exchange <em>n</em>
+        and <em>p</em> and use <em>N</em><sub>a</sub>. Regime markers for
+        10<sup>15</sup> cm<sup>−3</sup> of phosphorus: ionized fraction about 15 % at 50 K,
+        one half at 65 K, 90 % at 92 K; extrinsic from roughly 150 K to 450 K;
+        <em>n</em><sub>i</sub> = <em>N</em><sub>d</sub> near 545 K (germanium, at the same
+        doping, near 390 K).
+        <a href="m01-semiconductor-background.html#m01-eq-neutral">M01 §4</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-drift">
+      <div class="eq-body">
+        <div class="eq-math"><em>v</em><sub>d</sub> = <em>µ</em>ℰ &nbsp;&nbsp;&nbsp;&nbsp; <em>J</em> = <em>q</em><span class="dl">(</span><em>nµ</em><sub>n</sub> + <em>pµ</em><sub>p</sub><span class="dl">)</span>ℰ</div>
+        <div class="eq-num">(1.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>v</em><sub>d</sub> drift velocity (cm/s) · <em>µ</em> mobility
+        (<b>cm²/V·s</b>) · ℰ electric field (<b>V/cm</b>, not V/m) · <em>J</em> current density
+        (A/cm²) · <em>q</em> = 1.602 × 10<sup>−19</sup> C. Silicon at 300 K, lightly doped:
+        <em>µ</em><sub>n</sub> ≈ 1,450, <em>µ</em><sub>p</sub> ≈ 505 cm²/V·s (Sze &amp; Ng;
+        tabulations differ by up to 10 %, 1,350–1,500 and 450–505, so name the source).
+        Both fall with doping and with temperature across the range used here; in doped
+        material the trend reverses below roughly 100 K. <b>Fails at high field</b>, where
+        velocity saturates near 10<sup>7</sup> cm/s in silicon.
+        <a href="m01-semiconductor-background.html#m01-eq-drift">M01 §5</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-bandtilt">
+      <div class="eq-body">
+        <div class="eq-math">ℰ = −<span class="frac"><span class="num">d<em>V</em></span><span class="den">d<em>x</em></span></span> = <span class="frac"><span class="num">1</span><span class="den"><em>q</em></span></span> <span class="frac"><span class="num">d<em>E</em><sub>i</sub></span><span class="den">d<em>x</em></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>E</em> = −<em>qV</em></div>
+        <div class="eq-num">(1.7)</div>
+      </div>
+      <div class="eq-says">
+        ℰ electric field (V/cm) · <em>V</em> electrostatic potential (V) · <em>x</em> position
+        (cm) · <em>E</em><sub>i</sub> intrinsic level, or equally <em>E</em><sub>c</sub> or
+        <em>E</em><sub>v</sub>, which move in parallel (J, or eV) · <em>q</em> =
+        1.602 × 10<sup>−19</sup> C · <em>E</em> potential energy of an electron at potential
+        <em>V</em> (J, or eV). With energies in eV, (1/<em>q</em>)
+        d<em>E</em><sub>i</sub>/d<em>x</em> is the slope in eV/cm read as V/cm: bands rising
+        1 eV across 1 µm hold 10<sup>4</sup> V/cm. <b>A positive voltage lowers the bands; the
+        field points up their slope.</b> Electrons roll down <em>E</em><sub>c</sub>, toward high
+        potential; holes rise along <em>E</em><sub>v</sub>, with the field. Applies wherever the
+        potential varies — depletion region, gate oxide, channel.
+        <a href="m01-semiconductor-background.html#m01-eq-bandtilt">M01 §5</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-vbi">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>bi</sub> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> ln <span class="frac"><span class="num"><em>N</em><sub>a</sub><em>N</em><sub>d</sub></span><span class="den"><em>n</em><sub>i</sub><sup>2</sup></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>W</em> = <span class="sqrt"><span class="rad">√</span><span class="arg"><span class="frac"><span class="num">2<em>ε</em><sub>s</sub>(<em>V</em><sub>bi</sub> + <em>V</em><sub>R</sub>)</span><span class="den"><em>q</em></span></span> <span class="dl">(</span><span class="frac"><span class="num">1</span><span class="den"><em>N</em><sub>a</sub></span></span> + <span class="frac"><span class="num">1</span><span class="den"><em>N</em><sub>d</sub></span></span><span class="dl">)</span></span></span></div>
+        <div class="eq-num">(1.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>bi</sub> built-in potential (V) · <em>kT</em>/<em>q</em> =
+        <b>0.02585 V</b> at 300 K · <em>W</em> depletion width (<b>cm</b>) ·
+        <em>V</em><sub>R</sub> reverse bias, taken positive (V) · <em>ε</em><sub>s</sub> =
+        11.7 × 8.854 × 10<sup>−14</sup> = 1.036 × 10<sup>−12</sup> <b>F/cm</b> for silicon ·
+        doping in cm<sup>−3</sup>. Worked point: <em>N</em><sub>a</sub> =
+        <em>N</em><sub>d</sub> = 10<sup>16</sup> cm<sup>−3</sup> gives
+        <em>V</em><sub>bi</sub> = 0.71 V, <em>W</em> = 0.43 µm unbiased and 1.22 µm at 5 V
+        reverse. <em>W</em> grows as √(<em>V</em><sub>bi</sub> + <em>V</em><sub>R</sub>),
+        tending to √<em>V</em><sub>R</sub> only once the reverse bias is large compared with
+        <em>V</em><sub>bi</sub>.
+        <a href="m01-semiconductor-background.html#m01-eq-vbi">M01 §6</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-diode">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em> = <em>I</em><sub>0</sub> <span class="dl">[</span> exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>qV</em></span><span class="den"><em>nkT</em></span></span><span class="dl">)</span> − 1 <span class="dl">]</span></div>
+        <div class="eq-num">(1.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em> diode current (A), positive forward · <em>I</em><sub>0</sub> ideal
+        diffusion saturation current (A), 10<sup>−12</sup> to 10<sup>−15</sup> A for a
+        small silicon junction; measured reverse current is larger because depletion-region
+        generation dominates it in silicon at and below room temperature · <em>V</em> applied
+        voltage (V), negative in reverse · <em>n</em> ideality factor, 1 for pure diffusion
+        current and → 2 when depletion-region generation dominates · <em>kT</em>/<em>q</em> =
+        0.02585 V at 300 K. <b><em>I</em><sub>0</sub> ∝ <em>n</em><sub>i</sub><sup>2</sup></b>
+        and therefore doubles roughly every 5 K. The familiar “leakage doubles every 10 °C”
+        belongs to the generation current, which goes as <em>n</em><sub>i</sub> and dominates
+        measured silicon reverse current near 300 K. Beyond about −0.1 V the exponential is
+        negligible and <em>I</em> → −<em>I</em><sub>0</sub>.
+        <a href="m01-semiconductor-background.html#m01-eq-diode">M01 §6</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-vfb">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>FB</sub> = <em>φ</em><sub>ms</sub> − <span class="frac"><span class="num"><em>Q</em><sub>ox</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>C</em><sub>ox</sub> = <span class="frac"><span class="num"><em>ε</em><sub>ox</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(1.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>FB</sub> flat-band voltage (V) · <em>φ</em><sub>ms</sub> gate work
+        function minus body work function (V); for an n⁺-polysilicon gate on p-type silicon
+        <em>φ</em><sub>ms</sub> ≈ −(<em>E</em><sub>g</sub>/2<em>q</em> +
+        <em>φ</em><sub>F</sub>), about <b>−0.98 V</b> at <em>N</em><sub>a</sub> =
+        10<sup>17</sup> cm<sup>−3</sup> · <em>Q</em><sub>ox</sub> fixed oxide charge per unit
+        area, taken as a sheet at the Si/SiO₂ interface (<b>C/cm²</b>), positive for positive
+        charge · <em>C</em><sub>ox</sub> oxide capacitance per unit area (<b>F/cm²</b>) ·
+        <em>ε</em><sub>ox</sub> = 3.9 × 8.854 × 10<sup>−14</sup> = 3.45 × 10<sup>−13</sup>
+        <b>F/cm</b> · <em>t</em><sub>ox</sub> oxide thickness (<b>cm</b>), so 10 nm gives
+        <em>C</em><sub>ox</sub> = 3.45 × 10<sup>−7</sup> F/cm². <b>Positive oxide charge makes
+        <em>V</em><sub>FB</sub> more negative.</b> Charge spread through the oxide counts in
+        proportion to its distance from the gate, so a sheet at the interface counts fully —
+        the centroid form is (14.6).
+        <a href="m01-semiconductor-background.html#m01-eq-vfb">M01 §7</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-vt">
+      <div class="eq-body">
+        <div class="eq-math"><em>ψ</em><sub>s</sub> = 2<em>φ</em><sub>F</sub> &nbsp;&nbsp;&nbsp;&nbsp; <em>V</em><sub>th</sub> = <em>V</em><sub>FB</sub> + 2<em>φ</em><sub>F</sub> + <span class="frac"><span class="num"><span class="sqrt"><span class="rad">√</span><span class="arg">2<em>ε</em><sub>s</sub><em>qN</em><sub>a</sub> · 2<em>φ</em><sub>F</sub></span></span></span><span class="den"><em>C</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(1.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>ψ</em><sub>s</sub> <b>surface potential</b>, the band bending between the neutral
+        bulk and the surface divided by <em>q</em> (V), positive when the bands bend down ·
+        <em>φ</em><sub>F</sub> from (1.4) (V) · <em>V</em><sub>th</sub> threshold voltage (V)
+        · <em>V</em><sub>FB</sub> from (1.10) (V) · <em>ε</em><sub>s</sub> =
+        1.036 × 10<sup>−12</sup> F/cm · <em>q</em> = 1.602 × 10<sup>−19</sup> C ·
+        <em>N</em><sub>a</sub> body doping (cm<sup>−3</sup>) · <em>C</em><sub>ox</sub> from
+        (1.10) (F/cm²). The square root is the depletion charge per unit area at threshold
+        (C/cm²). The three terms: flatten the bands, bend them to inversion, drop across the
+        oxide. Worked point: <em>N</em><sub>a</sub> = 10<sup>17</sup> cm<sup>−3</sup>, 10 nm
+        oxide, n⁺-polysilicon gate, no oxide charge → 2<em>φ</em><sub>F</sub> = 0.83 V, oxide
+        term 0.48 V, <em>V</em><sub>FB</sub> = −0.98 V, so <em>V</em><sub>th</sub> ≈ 0.34 V.
+        <b>Long channel, uniform doping.</b> Oxide charge shifts <em>V</em><sub>FB</sub>, and so
+        <em>V</em><sub>th</sub>, by −<em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub>.
+        <a href="m01-semiconductor-background.html#m01-eq-vt">M01 §7</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-ecx">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>c</sub>(<em>x</em>) = <em>E</em><sub>c0</sub> − <em>qψ</em>(<em>x</em>) &nbsp;&nbsp;&nbsp;&nbsp; <em>E</em><sub>v</sub>(<em>x</em>) = <em>E</em><sub>v0</sub> − <em>qψ</em>(<em>x</em>)</div>
+        <div class="eq-num">(1.12)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>c</sub>(<em>x</em>), <em>E</em><sub>v</sub>(<em>x</em>) band edges at
+        position <em>x</em> along the surface from source to drain (eV) ·
+        <em>E</em><sub>c0</sub>, <em>E</em><sub>v0</sub> their values where <em>ψ</em> = 0 (eV)
+        · <em>ψ</em>(<em>x</em>) electrostatic potential at the surface at <em>x</em> (V) ·
+        <em>q</em> elementary charge; with energies in eV, <em>qψ</em> in eV equals
+        <em>ψ</em> in volts. This is <em>E</em> = −<em>qV</em> of (1.7) applied point by
+        point: it draws the source–channel–drain barrier. Deck 8 labels
+        <em>ψ</em>(<em>x</em>) the built-in potential; under bias it also carries the gate and
+        drain voltages.
+        <a href="m01-semiconductor-background.html#m01-eq-ecx">M01 §8</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-thermionic">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D</sub> ∝ exp&thinsp;<span class="dl">(</span>−<span class="frac"><span class="num"><em>E</em><sub>B</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(1.13)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D</sub> drain current (A) · <em>E</em><sub>B</sub> barrier height,
+        <em>E</em><sub>c</sub> at the top of the source-end barrier minus
+        <em>E</em><sub>F</sub> in the source (eV) · <em>kT</em> in eV, 0.02585 eV at 300 K.
+        <b>Lowering <em>E</em><sub>B</sub> by <em>kT</em> ln 10 = 59.5 meV at 300 K multiplies
+        the current by ten.</b> Holds while the barrier top lies more than a few <em>kT</em>
+        above the source Fermi level: the off-state and subthreshold region. Above threshold
+        the current is limited by channel charge and velocity instead, (1.14). Anything that
+        lowers the barrier — a hotter crystal, positive oxide charge, DIBL — raises
+        <em>I</em><sub>off</sub> exponentially.
+        <a href="m01-semiconductor-background.html#m01-eq-thermionic">M01 §8</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-idsat">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D,sat</sub> = <span class="frac"><span class="num"><em>µ</em><sub>n</sub><em>C</em><sub>ox</sub></span><span class="den">2</span></span> · <span class="frac"><span class="num"><em>W</em></span><span class="den"><em>L</em></span></span> · <span class="dl">(</span><em>V</em><sub>GS</sub> − <em>V</em><sub>th</sub><span class="dl">)</span><sup>2</sup> &nbsp;&nbsp;&nbsp;&nbsp; <em>C</em><sub>ox</sub> = <span class="frac"><span class="num"><em>ε</em><sub>ox</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(1.14)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D,sat</sub> saturated drain current (A) · <em>µ</em><sub>n</sub> channel
+        electron mobility (cm²/V·s), lower than bulk because of surface scattering ·
+        <em>C</em><sub>ox</sub> gate oxide capacitance per unit area (<b>F/cm²</b>) ·
+        <em>ε</em><sub>ox</sub> = 3.9 × 8.854 × 10<sup>−14</sup> = 3.45 × 10<sup>−13</sup>
+        <b>F/cm</b> for SiO₂ · <em>t</em><sub>ox</sub> oxide thickness (<b>cm</b>) ·
+        <em>W</em>, <em>L</em> channel width and gate length, entering only as
+        <em>W</em>/<em>L</em> · <em>V</em><sub>GS</sub> gate–source voltage (V).
+        <b>Long-channel and saturation only</b>
+        (<em>V</em><sub>DS</sub> &gt; <em>V</em><sub>GS</sub> − <em>V</em><sub>th</sub>);
+        short devices approach a linear dependence on overdrive because carrier velocity
+        saturates. <em>W</em> is the perimeter of the channel, not a planar width — see (2.2).
+        <a href="m01-semiconductor-background.html#m01-eq-idsat">M01 §8</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-ss">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> · ln 10 · <span class="dl">(</span>1 + <span class="frac"><span class="num"><em>C</em><sub>d</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span><span class="dl">)</span> ≥ 60 mV/decade at 300 K</div>
+        <div class="eq-num">(1.15)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em> subthreshold swing, the gate-voltage change for one decade of drain current
+        (<b>mV/decade</b>) · <em>C</em><sub>d</sub> depletion capacitance per unit area under
+        the channel (F/cm²) · <em>C</em><sub>ox</sub> from (1.10). The bracket is ≥ 1, so
+        <em>S</em> cannot fall below (<em>kT</em>/<em>q</em>)·ln 10 = <b>59.5 mV/decade at
+        300 K</b> in any conventional MOSFET — a floor set by thermal statistics, not by
+        fabrication. <b>Explicitly proportional to <em>T</em></b>: the floor is 19.8 mV/decade
+        at 100 K and 99.2 mV/decade at 500 K, before the body factor. Interface traps add a
+        term to the bracket: (14.10).
+        <a href="m01-semiconductor-background.html#m01-eq-ss">M01 §8</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-dibl">
+      <div class="eq-body">
+        <div class="eq-math">DIBL = −<span class="frac"><span class="num">Δ<em>V</em><sub>th</sub></span><span class="den">Δ<em>V</em><sub>DS</sub></span></span></div>
+        <div class="eq-num">(1.16)</div>
+      </div>
+      <div class="eq-says">
+        DIBL drain-induced barrier lowering (<b>mV/V</b>) · Δ<em>V</em><sub>th</sub> change in
+        threshold voltage (mV) · Δ<em>V</em><sub>DS</sub> change in drain–source voltage over
+        which it is measured (V), typically from about 0.05 V to the supply voltage. Positive
+        when the threshold falls as <em>V</em><sub>DS</sub> rises. It multiplies
+        <em>I</em><sub>off</sub> by 10<sup>DIBL·Δ<em>V</em><sub>DS</sub>/<em>S</em></sup>.
+        Intel's 22 nm tri-gate transistors: about 50 mV/V, with <em>S</em> near
+        70 mV/decade. Short-channel effect: (1.14) and (1.15) are long-channel results.
+        <a href="m01-semiconductor-background.html#m01-eq-dibl">M01 §8</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-delay">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em><sub>d</sub> ≈ <span class="frac"><span class="num"><em>C</em><sub>L</sub><em>V</em><sub>DD</sub></span><span class="den"><em>I</em><sub>D,sat</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>P</em><sub>dyn</sub> = <em>α</em> <em>C</em><sub>L</sub> <em>V</em><sub>DD</sub><sup>2</sup> <em>f</em></div>
+        <div class="eq-num">(1.17)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>d</sub> gate delay (s) · <em>C</em><sub>L</sub> load capacitance
+        (F), the sum of gate, junction and interconnect capacitance · <em>V</em><sub>DD</sub>
+        supply voltage (V) · <em>I</em><sub>D,sat</sub> from (1.14) (A) ·
+        <em>P</em><sub>dyn</sub> dynamic power (W) · <em>α</em> activity factor, the fraction
+        of clock cycles on which the node switches, typically 0.1–0.2 · <em>f</em> clock
+        frequency (Hz). <b>Static power <em>V</em><sub>DD</sub><em>I</em><sub>off</sub> must be
+        added separately</b>, with <em>I</em><sub>off</sub> the off-state current per device (A)
+        times the device count, and <b>is not reduced by lowering <em>f</em></b> — which is why
+        leakage came to dominate as frequency stalled.
+        <a href="m01-semiconductor-background.html#m01-eq-delay">M01 §9</a>
+      </div>
+    </div>
+
+    <h2 id="scaling">4 · Scaling and lithography (M02)</h2>
+
+    <div class="eq" id="eq-moore">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em>(<em>t</em>) = <em>N</em><sub>0</sub> · 2<sup><em>t</em>/<em>T</em></sup>, &nbsp;&nbsp; <em>T</em> ≈ 2 years</div>
+        <div class="eq-num">(2.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em> transistors per chip · <em>t</em> elapsed time (years) · <em>T</em>
+        doubling period. Empirical and economic, not physical. Describes count only —
+        speed and power followed from Dennard scaling, which has failed while count has
+        partly continued. <a href="m02-scaling-of-electronics.html#m02-eq-moore">M02 §2</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-weff">
+      <div class="eq-body">
+        <div class="eq-math"><em>W</em><sub>eff,fin</sub> = 2<em>H</em><sub>fin</sub> + <em>W</em><sub>fin</sub> &nbsp;&nbsp;&nbsp;&nbsp; <em>W</em><sub>eff,sheet</sub> = 2<em>n</em><span class="dl">(</span><em>W</em><sub>sh</sub> + <em>T</em><sub>sh</sub><span class="dl">)</span></div>
+        <div class="eq-num">(2.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>W</em><sub>eff</sub> effective channel width for substitution into
+        (1.14) (<b>nm</b>) · <em>H</em><sub>fin</sub>, <em>W</em><sub>fin</sub> fin height
+        and thickness (nm) · <em>n</em> sheets in the stack · <em>W</em><sub>sh</sub>,
+        <em>T</em><sub>sh</sub> sheet width and thickness (nm). A 50 nm × 7 nm fin gives
+        <em>W</em><sub>eff</sub> = 107 nm from a 7 nm footprint. Fin width is quantised in
+        whole fins; nanosheet width is continuous.
+        <a href="m02-scaling-of-electronics.html#m02-eq-weff">M02 §3</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-rayleigh">
+      <div class="eq-body">
+        <div class="eq-math">CD = <em>k</em><sub>1</sub> <span class="frac"><span class="num"><em>λ</em></span><span class="den">NA</span></span> &nbsp;&nbsp;&nbsp;&nbsp; DOF = <em>k</em><sub>2</sub> <span class="frac"><span class="num"><em>λ</em></span><span class="den">NA<sup>2</sup></span></span> &nbsp;&nbsp;&nbsp;&nbsp; NA = <em>n</em> sin <em>θ</em></div>
+        <div class="eq-num">(2.3)</div>
+      </div>
+      <div class="eq-says">
+        CD critical dimension, smallest resolvable half-pitch (<b>nm</b>) · <em>λ</em>
+        exposure wavelength (<b>nm</b>) · NA numerical aperture, dimensionless ·
+        <em>n</em> index of the medium at the wafer: 1.0 dry, <b>1.44 for water at
+        193 nm</b> · <em>k</em><sub>1</sub> ≈ 0.6 typical, floored at <b>0.25</b> for a
+        single exposure · <em>k</em><sub>2</sub> ≈ 0.5 · DOF depth of focus (nm).
+        Raising NA helps CD linearly and hurts DOF quadratically; only shortening
+        <em>λ</em> improves both.
+        <a href="m02-scaling-of-electronics.html#m02-eq-rayleigh">M02 §6</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-spot">
+      <div class="eq-body">
+        <div class="eq-math">2<em>w</em><sub>0</sub> = <span class="dl">(</span><span class="frac"><span class="num">4<em>λ</em></span><span class="den">π</span></span><span class="dl">)</span> <span class="dl">(</span><span class="frac"><span class="num"><em>F</em></span><span class="den"><em>D</em></span></span><span class="dl">)</span> = <span class="frac"><span class="num">2</span><span class="den">π</span></span> <span class="frac"><span class="num"><em>λ</em></span><span class="den">NA</span></span></div>
+        <div class="eq-num">(2.4)</div>
+      </div>
+      <div class="eq-says">
+        <b>The course's form of the resolution limit.</b> 2<em>w</em><sub>0</sub> focused spot
+        diameter to the 1/<em>e</em><sup>2</sup> points (<b>nm</b>) · <em>λ</em>
+        wavelength (<b>nm</b>) · <em>F</em>/<em>D</em> focal length over lens diameter, the
+        <b>f-number</b> — dimensionless, so use any consistent length unit.
+        Worked case from the lecture: <em>D</em> = 10 mm, <em>F</em> = 1 mm,
+        <em>λ</em> = 200 nm → <b>25 nm</b> (the slide prints 24 nm).
+        <b>Reproduce that, but know it is not a physical spot:</b> f/0.1 implies NA ≈ 5,
+        and NA = <em>n</em> sin <em>θ</em> cannot exceed 1 in air. The exact relation
+        tan <em>θ</em> = <em>D</em>/2<em>F</em> gives NA = 0.98 and a real spot near
+        130 nm; the diffraction limit here is about <em>λ</em>/2 = 100 nm.
+        NA ≈ <em>D</em>/2<em>F</em> is <b>paraxial only</b> — 5 % high at NA = 0.3, 15 % at
+        NA = 0.5, and divergent below f/1. Where it holds, (2.4) shares the
+        <em>λ</em>/NA form of (2.3) with prefactor 2/π = 0.64, but the two describe
+        different things: one focused Gaussian beam against a resolved half-pitch.
+        Resolution figures quoted in the course: electron-beam ~2 nm isolated features
+        (~5 nm half-pitch), EUV ~8 nm half-pitch by interference lithography — a 0.33 NA
+        production scanner resolves nearer 13 nm.
+        <a href="m02-scaling-of-electronics.html#m02-eq-spot">M02 §6</a>
+      </div>
+    </div>
+
+    <h2 id="thermal">5 · The space environment (M03)</h2>
+
+    <div class="eq" id="eq-teq">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em><sub>eq</sub> = <span class="dl">[</span> <span class="frac"><span class="num"><em>α</em><sub>s</sub><em>SA</em><sub>proj</sub> + <em>P</em><sub>int</sub></span><span class="den"><em>εσA</em><sub>rad</sub></span></span> <span class="dl">]</span><sup>1/4</sup> &nbsp;&nbsp;&nbsp;&nbsp; <em>S</em>(<em>r</em>) = <em>S</em><sub>0</sub> <span class="dl">(</span><span class="frac"><span class="num">1 AU</span><span class="den"><em>r</em></span></span><span class="dl">)</span><sup>2</sup></div>
+        <div class="eq-num">(3.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em><sub>eq</sub> equilibrium temperature (<b>K</b>) ·
+        <em>α</em><sub>s</sub> solar absorptance (0–1) · <em>S</em> irradiance (W/m²),
+        <em>S</em><sub>0</sub> = <b>1,361 W/m²</b> at 1 AU · <em>A</em><sub>proj</sub> area
+        projected sunward (m²) · <em>P</em><sub>int</sub> internal dissipation (W) ·
+        <em>ε</em> infrared emittance (0–1) · <em>σ</em> = 5.670 × 10<sup>−8</sup>
+        W/m²·K⁴ · <em>A</em><sub>rad</sub> total radiating area (m²). For a sphere,
+        <em>A</em><sub>proj</sub>/<em>A</em><sub>rad</sub> = 1/4; with
+        <em>α</em><sub>s</sub> = <em>ε</em> and no internal power this gives <b>278 K</b>.
+        <b>Metres and kelvin here</b>, unlike the rest of the sheet.
+        <a href="m03-space-electronics-gap.html#m03-eq-teq">M03 §2</a>
+      </div>
+    </div>
+
+    <h3>Charge, current and power density (M08)</h3>
+
+    <div class="eq" id="eq-qit">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em> = <em>Nq</em> &nbsp;&nbsp;&nbsp; <em>I</em> = <span class="frac"><span class="num"><em>Q</em></span><span class="den"><em>Δt</em></span></span> &nbsp;&nbsp;&nbsp; <em>P</em> = <em>IV</em> &nbsp;&nbsp;&nbsp; <span class="frac"><span class="num"><em>P</em></span><span class="den"><em>A</em></span></span> = power density</div>
+        <div class="eq-num">(8.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em> number of carriers generated · <em>q</em> = 1.602 × 10<sup>−19</sup> C ·
+        <em>Q</em> collected charge (C) · <em>Δt</em> collection time (<b>s</b>; the prompt
+        drift component is of order 10<sup>−12</sup> s) · <em>V</em> junction bias (V) ·
+        <em>A</em> track cross-sectional area (<b>cm²</b>). <b>The course's worked chain,
+        exactly as lectured:</b> one heavy ion creates 10<sup>6</sup> carriers →
+        <em>Q</em> = 1.6 × 10<sup>−13</sup> C → over <em>τ</em> ≈
+        10<sup>−12</sup> s → <em>I</em> = <b>0.1 A</b>, far above the reverse-bias
+        current → at −0.5 V, <em>P</em> = <b>0.05 W</b> → over
+        (100 nm)² = 10<sup>−10</sup> cm² → <b>500 MW/cm²</b>. For comparison the
+        lecture gives a Lockheed Martin laser weapon at ~50 MW/cm², a factor of ten lower.
+        (1.6 × 10<sup>−13</sup> C in 1 ps is 0.16 A; the course rounds to 0.1 A and
+        carries that through.) Mechanism in <a href="m08-ionization-excitation.html">M08</a> and
+        <a href="index.html#roadmap">M15</a>.
+      </div>
+    </div>
+
+
+    <h2 id="radiation">6 &middot; Radiation, the environment, and interaction (M04&ndash;M13)</h2>
+
+    <h3>Radioactive decay and activity (M04)</h3>
+
+    <div class="eq" id="eq-decay">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em> = <em>N</em><sub>0</sub> e<sup>&minus;&lambda;<em>t</em></sup></div>
+        <div class="eq-num">(4.2)</div>
+      </div>
+      <div class="eq-says"><em>N</em> nuclei remaining at time <em>t</em> &middot; <em>N</em><sub>0</sub> nuclei at <em>t</em> = 0 &middot; <em>&lambda;</em> decay constant (<b>s<sup>&minus;1</sup></b>) &middot; <em>t</em> elapsed time (<b>s</b>). <em>&lambda;</em> and <em>t</em> must share a time unit. When the elapsed time is a whole number of half-lives, halve repeatedly instead &mdash; no exponential needed. <a href="m04-radiation-species-decay.html">M04 &sect;6</a></div>
+    </div>
+
+    <div class="eq" id="eq-lambda">
+      <div class="eq-body">
+        <div class="eq-math"><em>&lambda;</em> = <span class="frac"><span class="num">ln 2</span><span class="den"><em>t</em><sub>1/2</sub></span></span></div>
+        <div class="eq-num">(4.3)</div>
+      </div>
+      <div class="eq-says"><em>&lambda;</em> decay constant (s<sup>&minus;1</sup>) &middot; <em>t</em><sub>1/2</sub> half-life (<b>s</b>) &middot; ln 2 = 0.693. Convert years first: 1 y = 3.156 &times; 10<sup>7</sup> s. The fraction remaining after time <em>t</em> is 2<sup>&minus;<em>t</em>/<em>t</em><sub>1/2</sub></sup>. <a href="m04-radiation-species-decay.html">M04 &sect;6</a></div>
+    </div>
+
+    <div class="eq" id="eq-activity">
+      <div class="eq-body">
+        <div class="eq-math"><em>A</em> = <span class="frac"><span class="num"><em>m</em></span><span class="den"><em>m</em><sub>a</sub></span></span> <em>N</em><sub>A</sub> <span class="frac"><span class="num">ln 2</span><span class="den"><em>t</em><sub>1/2</sub></span></span> &nbsp;&nbsp;=&nbsp;&nbsp; <em>&lambda;N</em></div>
+        <div class="eq-num">(4.4)</div>
+      </div>
+      <div class="eq-says"><em>A</em> activity (<b>Bq</b> = decays/s; 1 Ci = 3.7 &times; 10<sup>10</sup> Bq) &middot; <em>m</em> mass of the <b>radioactive isotope</b> present (g) &mdash; <b>not</b> the mass of the element; scale by isotopic abundance first &middot; <em>m</em><sub>a</sub> atomic mass of that isotope (g/mol) &middot; <em>N</em><sub>A</sub> = 6.022 &times; 10<sup>23</sup> mol<sup>&minus;1</sup> &middot; <em>t</em><sub>1/2</sub> half-life (<b>s</b>). Course worked case: 1 g of potassium holds 117 &micro;g of K-40 (<em>m</em><sub>a</sub> = 39.964, <em>t</em><sub>1/2</sub> = 4 &times; 10<sup>16</sup> s) &rarr; &asymp; 30 Bq; an adult body &asymp; 4,430 Bq of K-40. <a href="m04-radiation-species-decay.html">M04 &sect;7</a></div>
+    </div>
+
+    <div class="eq" id="eq-dose">
+      <div class="eq-body">
+        <div class="eq-math"><em>D</em> = <span class="frac"><span class="num"><em>E</em><sub>absorbed</sub></span><span class="den"><em>m</em></span></span></div>
+        <div class="eq-num">(4.5)</div>
+      </div>
+      <div class="eq-says"><em>D</em> absorbed dose (<b>Gy = J/kg</b>; 1 rad = 0.01 Gy) &middot; <em>E</em><sub>absorbed</sub> energy deposited (J) &middot; <em>m</em> mass of the absorber (kg). <b>Always dose in a stated material</b> &mdash; rad(Si) and rad(SiO&#8322;) differ for the same field. Device hardness is quoted as absorbed dose, never as equivalent dose. <a href="m04-radiation-species-decay.html">M04 &sect;9</a></div>
+    </div>
+
+    <div class="eq" id="eq-doseeq">
+      <div class="eq-body">
+        <div class="eq-math"><em>H</em> = <em>Q</em> &middot; <em>D</em></div>
+        <div class="eq-num">(4.6)</div>
+      </div>
+      <div class="eq-says"><em>H</em> equivalent dose (<b>Sv</b>; 1 Sv = 100 rem) &middot; <em>Q</em> quality factor (dimensionless) &middot; <em>D</em> absorbed dose (Gy). Rad in &rarr; rem out; gray in &rarr; sievert out. Course table: X-ray, gamma and beta 1; thermal neutrons 5; fast neutrons 10; alpha 20. <b>Biological risk only</b> &mdash; meaningless for a semiconductor. <a href="m04-radiation-species-decay.html">M04 &sect;9</a></div>
+    </div>
+
+    <div class="eq" id="eq-elastic">
+      <div class="eq-body">
+        <div class="eq-math"><span class="dl">(</span><span class="frac"><span class="num">&Delta;<em>E</em></span><span class="den"><em>E</em></span></span><span class="dl">)</span><sub>max</sub> = <span class="frac"><span class="num">4<em>Mm</em></span><span class="den">(<em>M</em> + <em>m</em>)&sup2;</span></span></div>
+        <div class="eq-num">(4.1)</div>
+      </div>
+      <div class="eq-says">Fraction of kinetic energy transferred in a <b>head-on elastic collision</b>. <em>m</em> incident particle mass &middot; <em>M</em> target nucleus mass (any consistent unit &mdash; only the ratio enters). Maximised at <em>M</em> = <em>m</em>. Values: hydrogen 1.00, carbon 0.28, silicon 0.133, lead 0.019. Explains why hydrogen-rich material moderates neutrons and lead does not, and sets the maximum primary knock-on energy in M11. <a href="m04-radiation-species-decay.html">M04 &sect;5</a></div>
+    </div>
+
+    <h3>Trapping and orbits (M06&ndash;M07)</h3>
+
+    <div class="eq" id="eq-lorentz">
+      <div class="eq-body">
+        <div class="eq-math"><b>F</b> = <em>q</em>(<b>E</b> + <b>v</b> &times; <b>B</b>)</div>
+        <div class="eq-num">(6.1)</div>
+      </div>
+      <div class="eq-says"><b>F</b> force (N) &middot; <em>q</em> <b>signed</b> charge (C) &middot; <b>E</b> electric field (V/m) &middot; <b>v</b> velocity (m/s) &middot; <b>B</b> flux density (<b>T</b>; Earth's surface field 5 &times; 10<sup>&minus;5</sup> T = 0.5 G). The magnetic term is perpendicular to <b>v</b>, so it <b>does no work</b>: a trapped particle keeps its energy indefinitely. Reversing <em>q</em> reverses the curvature, which is what separates protons from electrons. <a href="m06-magnetosphere-belts.html">M06 &sect;2</a></div>
+    </div>
+
+    <div class="eq" id="eq-gyro">
+      <div class="eq-body">
+        <div class="eq-math"><em>r</em><sub>g</sub> = <span class="frac"><span class="num"><em>m v</em><sub>&perp;</sub></span><span class="den"><em>q B</em></span></span> = <span class="frac"><span class="num"><em>p</em><sub>&perp;</sub></span><span class="den"><em>q B</em></span></span></div>
+        <div class="eq-num">(6.2)</div>
+      </div>
+      <div class="eq-says"><em>r</em><sub>g</sub> gyroradius (m) &middot; <em>m</em> mass (kg) &middot; <em>v</em><sub>&perp;</sub> velocity perpendicular to <b>B</b> (m/s) &middot; <em>p</em><sub>&perp;</sub> perpendicular momentum (kg&middot;m/s) &mdash; <b>use the momentum form for relativistic particles</b>, <em>p</em> = &gamma;<em>mv</em> &middot; <em>q</em> charge magnitude (C) &middot; <em>B</em> flux density (T). In 50 &micro;T a 1 MeV proton gives &asymp; 2.9 km and a 1 MeV electron &asymp; 95 m. Trapping requires <em>r</em><sub>g</sub> small against the scale over which <em>B</em> varies. Mirroring separately conserves <em>mv</em><sub>&perp;</sub>&sup2;/2<em>B</em>. <a href="m06-magnetosphere-belts.html">M06 &sect;3</a></div>
+    </div>
+
+    <div class="eq" id="eq-orbit">
+      <div class="eq-body">
+        <div class="eq-math"><em>v</em> = <span class="sqrt"><span class="frac"><span class="num"><em>GM</em></span><span class="den"><em>r</em></span></span></span>&nbsp;&nbsp;&nbsp;&nbsp;<em>T</em> = 2&pi; <span class="sqrt"><span class="frac"><span class="num"><em>r</em>&sup3;</span><span class="den"><em>GM</em></span></span></span></div>
+        <div class="eq-num">(7.1)</div>
+      </div>
+      <div class="eq-says"><em>v</em> circular orbital speed (m/s) &middot; <em>T</em> period (s) &middot; <em>r</em> radius from Earth's <b>centre</b> (m) &mdash; add <em>R</em><sub>E</sub> to any quoted altitude &middot; <em>GM</em><sub>&oplus;</sub> = 3.986 &times; 10<sup>14</sup> m&sup3;/s&sup2;. Circular orbits only. Check values: 420 km &rarr; 7.66 km/s, 92.8 min; 20,200 km &rarr; 3.87 km/s, 11 h 58 min; 35,786 km &rarr; 3.07 km/s, 23 h 56 min. <a href="m07-orbits-and-environment.html">M07 &sect;2</a></div>
+    </div>
+
+    <div class="eq" id="eq-visviva">
+      <div class="eq-body">
+        <div class="eq-math"><em>v</em>&sup2; = <em>GM</em> <span class="dl">(</span><span class="frac"><span class="num">2</span><span class="den"><em>r</em></span></span> &minus; <span class="frac"><span class="num">1</span><span class="den"><em>a</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(7.2)</div>
+      </div>
+      <div class="eq-says"><em>v</em> instantaneous speed (m/s) &middot; <em>r</em> current radius from Earth's centre (m) &middot; <em>a</em> semi-major axis = &frac12;(<em>r</em><sub>perigee</sub> + <em>r</em><sub>apogee</sub>) (m) &middot; <em>GM</em><sub>&oplus;</sub> = 3.986 &times; 10<sup>14</sup> m&sup3;/s&sup2;. Reduces to (7.1) at <em>r</em> = <em>a</em>; the period depends on <em>a</em> alone. Molniya check (600 km / 39,800 km, <em>a</em> = 26,571 km): 10.0 km/s at perigee, 1.5 km/s at apogee. <a href="m07-orbits-and-environment.html">M07 &sect;2</a></div>
+    </div>
+
+    <h3>Charged-particle interaction (M08&ndash;M09)</h3>
+
+    <div class="eq" id="eq-coulomb">
+      <div class="eq-body">
+        <div class="eq-math"><em>F</em> = <em>k</em> <span class="frac"><span class="num"><em>q</em><sub>1</sub><em>q</em><sub>2</sub></span><span class="den"><em>r</em>&sup2;</span></span></div>
+        <div class="eq-num">(8.1)</div>
+      </div>
+      <div class="eq-says"><em>F</em> force (N) &middot; <em>k</em> = 9 &times; 10<sup>9</sup> N&middot;m&sup2;/C&sup2; &middot; <em>q</em><sub>1</sub>, <em>q</em><sub>2</sub> charges (C) &middot; <em>r</em> separation (<b>metres</b> &mdash; the one place in this course that is not centimetres). Its infinite range is why a charged particle interacts with every atom it passes and an uncharged one must hit a nucleus. <a href="m08-ionization-excitation.html">M08 &sect;2</a></div>
+    </div>
+
+    <div class="eq" id="eq-pairs">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>pairs</sub> = <span class="frac"><span class="num"><em>E</em><sub>dep</sub></span><span class="den"><em>E</em><sub>pair</sub></span></span></div>
+        <div class="eq-num">(8.2)</div>
+      </div>
+      <div class="eq-says"><em>N</em><sub>pairs</sub> electron&ndash;hole pairs generated &middot; <em>E</em><sub>dep</sub> energy <b>actually deposited</b> (eV) &mdash; a particle that passes through leaves only part of its energy &middot; <em>E</em><sub>pair</sub> mean energy per pair (eV). <b>The course uses 99.42 eV for silicon</b> (1 MeV &rarr; 10<sup>4</sup>); the measured value is <b>3.6 eV</b> for Si and ~17 eV for SiO&#8322; (1 MeV &rarr; 2.8 &times; 10<sup>5</sup>). See the warning in &sect;9. <a href="m08-ionization-excitation.html">M08 &sect;5</a></div>
+    </div>
+
+    <div class="eq" id="eq-brems">
+      <div class="eq-body">
+        <div class="eq-math"><em>f</em> = 0.0007 <em>Z E</em> &nbsp;&nbsp;&nbsp;&nbsp; <em>f</em> = <span class="frac"><span class="num">(6 &times; 10<sup>&minus;4</sup>) <em>Z E</em></span><span class="den">1 + (6 &times; 10<sup>&minus;4</sup>) <em>Z E</em></span></span></div>
+        <div class="eq-num">(9.1)</div>
+      </div>
+      <div class="eq-says"><em>f</em> fraction of an electron's kinetic energy radiated as bremsstrahlung &mdash; <b>dimensionless</b>, 0 to 1 &middot; <em>Z</em> atomic number of the <b>target</b> &middot; <em>E</em> electron kinetic energy (<b>MeV</b>). The left form is valid while <em>f</em> &#8810; 1; the right form saturates. 1 MeV electron in Si (<em>Z</em> = 14) &rarr; <b>9.8 keV</b> (saturating form 8.3 keV); in W (<em>Z</em> = 74) &rarr; ~5 %. <b>Deck 5 p. 23 evaluates this with 0.007 and prints 98 keV &mdash; a factor of ten above its own printed formula.</b> <em>f</em> is a fraction spread over a continuum and never predicts a photon line. <a href="m09-bremsstrahlung-xrays.html">M09 &sect;4</a></div>
+    </div>
+
+    <div class="eq" id="eq-duanehunt">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>max</sub> = <em>e V</em><sub>tube</sub></div>
+        <div class="eq-num">(9.2)</div>
+      </div>
+      <div class="eq-says"><em>E</em><sub>max</sub> highest photon energy in an X-ray tube beam (eV) &middot; <em>e</em> elementary charge &middot; <em>V</em><sub>tube</sub> accelerating potential (V). Numerically, <em>V</em> kilovolts gives an endpoint at <em>V</em> keV &mdash; the meaning of &ldquo;kVp&rdquo;. The <b>mean</b> beam energy is a third to a half of the endpoint, and filtration raises it (beam hardening) while lowering intensity. <a href="m09-bremsstrahlung-xrays.html">M09 &sect;5</a></div>
+    </div>
+
+    <h3>Displacement damage (M11)</h3>
+
+    <div class="eq" id="eq-nrt">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>d</sub> = <span class="frac"><span class="num">0.8 <em>T</em><sub>dam</sub></span><span class="den">2 <em>E</em><sub>d</sub></span></span></div>
+        <div class="eq-num">(11.1)</div>
+      </div>
+      <div class="eq-says"><em>N</em><sub>d</sub> atoms displaced by one cascade &middot; <em>T</em><sub>dam</sub> damage energy &mdash; the part of the recoil energy going to atomic collisions rather than ionization (eV) &middot; <em>E</em><sub>d</sub> threshold displacement energy (eV; <b>~21 eV for Si</b>, published values 13&ndash;25 eV) &middot; 0.8 the Norgett&ndash;Robinson&ndash;Torrens efficiency factor. <b>Counts displacements, not survivors</b> &mdash; most Frenkel pairs recombine promptly. <a href="m11-displacement-damage.html">M11 &sect;3</a></div>
+    </div>
+
+    <div class="eq" id="eq-niel">
+      <div class="eq-body">
+        <div class="eq-math"><em>D</em><sub>d</sub> = NIEL(<em>E</em>) &middot; &Phi;</div>
+        <div class="eq-num">(11.2)</div>
+      </div>
+      <div class="eq-says"><em>D</em><sub>d</sub> displacement damage dose (<b>MeV/g</b>) &middot; NIEL non-ionizing energy loss at the particle energy (<b>MeV&middot;cm&sup2;/g</b>) &middot; &Phi; fluence (<b>cm<sup>&minus;2</sup></b>). For a spectrum, integrate NIEL(<em>E</em>) against the differential fluence &mdash; NIEL varies over orders of magnitude with energy, so a fluence quoted without a spectrum cannot be converted. Degradation correlates with <em>D</em><sub>d</sub> largely independently of species, which is what makes single-species ground testing meaningful. <a href="m11-displacement-damage.html">M11 &sect;4</a></div>
+    </div>
+
+    <h3>Photon interaction with matter (M10)</h3>
+
+    <div class="eq" id="eq-photonE">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>ph</sub> = <span class="frac"><span class="num"><em>hc</em></span><span class="den">&lambda;</span></span> = <em>hf</em> &nbsp;&nbsp;&nbsp;&nbsp; <em>p</em><sub>ph</sub> = <span class="frac"><span class="num"><em>E</em><sub>ph</sub></span><span class="den"><em>c</em></span></span> = <span class="frac"><span class="num"><em>h</em></span><span class="den">&lambda;</span></span></div>
+        <div class="eq-num">(10.1&ndash;2)</div>
+      </div>
+      <div class="eq-says"><em>E</em><sub>ph</sub> photon energy &middot; <em>p</em><sub>ph</sub> photon momentum (<b>kg&middot;m/s</b>) &middot; <em>h</em> = 6.626 &times; 10<sup>&minus;34</sup> J&middot;s &middot; <em>c</em> = 2.998 &times; 10<sup>8</sup> m/s &middot; &lambda; wavelength (<b>m</b>). <b>Use <em>hc</em> = 1239.8 eV&middot;nm</b>: <em>E</em>(eV) = 1239.8 / &lambda;(nm), no unit conversion needed. <em>p</em> = <em>E</em>/<em>c</em> holds <b>only for massless particles</b>; never write <em>p</em> = <em>mv</em> for a photon. 500 nm &rarr; 2.48 eV. <a href="m10-photon-interaction.html">M10 &sect;1</a></div>
+    </div>
+
+    <div class="eq" id="eq-photoelectric">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em><sub>e</sub> = <em>E</em><sub>ph</sub> &minus; <em>E</em><sub>b</sub></div>
+        <div class="eq-num">(10.3)</div>
+      </div>
+      <div class="eq-says"><em>T</em><sub>e</sub> photoelectron kinetic energy (eV) &middot; <em>E</em><sub>b</sub> shell binding energy (eV). Requires a <b>bound</b> electron &mdash; a free electron cannot absorb a photon and conserve both energy and momentum. Cross-section &prop; <em>Z</em><sup>4</sup>&ndash;<em>Z</em><sup>5</sup> and &prop; <em>E</em><sup>&minus;3</sup>. Si: 2p level 99.4 eV, K edge <b>1.839 keV</b> (&mu;/&rho; steps 309 &rarr; 3192 cm&sup2;/g). <a href="m10-photon-interaction.html">M10 &sect;3</a></div>
+    </div>
+
+    <div class="eq" id="eq-compton">
+      <div class="eq-body">
+        <div class="eq-math">&Delta;&lambda; = <span class="frac"><span class="num"><em>h</em></span><span class="den"><em>m</em><sub>e</sub><em>c</em></span></span> (1 &minus; cos &theta;) &nbsp;&nbsp;&nbsp;&nbsp; <em>E</em>&prime; = <span class="frac"><span class="num"><em>E</em><sub>ph</sub></span><span class="den">1 + (<em>E</em><sub>ph</sub> &frasl; <em>m</em><sub>e</sub><em>c</em>&sup2;)(1 &minus; cos &theta;)</span></span></div>
+        <div class="eq-num">(10.4&ndash;5)</div>
+      </div>
+      <div class="eq-says">&theta; photon scattering angle from its original direction &middot; <em>h</em>/<em>m</em><sub>e</sub><em>c</em> = <b>2.426 pm</b>, the Compton wavelength of the electron &middot; <em>m</em><sub>e</sub><em>c</em>&sup2; = 0.511 MeV &mdash; <b><em>E</em><sub>ph</sub> and <em>m</em><sub>e</sub><em>c</em>&sup2; must share a unit</b>. Recoil electron takes <em>E</em><sub>ph</sub> &minus; <em>E</em>&prime;; maximum at &theta; = 180&deg; is the <b>Compton edge</b> (1.25 MeV &rarr; 1.04 MeV electron, 0.212 MeV photon). Per atom &sigma; &prop; <em>Z</em>, so per gram it follows <em>Z</em>/<em>A</em> &asymp; 0.5 and hardly varies between light elements. <a href="m10-photon-interaction.html">M10 &sect;4</a></div>
+    </div>
+
+    <div class="eq" id="eq-pair">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>ph</sub> &ge; 2<em>m</em><sub>e</sub><em>c</em>&sup2; = 1.022 MeV</div>
+        <div class="eq-num">(10.6)</div>
+      </div>
+      <div class="eq-says">Threshold for pair production <b>in the field of a nucleus</b>, which is required to absorb the momentum. &lambda; = 1.21 pm at threshold. Excess energy is shared as kinetic energy between electron and positron; an equal split is the average, not a rule. Triplet production, in the field of an atomic electron, needs <b>4<em>m</em><sub>e</sub><em>c</em>&sup2; = 2.044 MeV</b>. The positron annihilates into two back-to-back <b>0.511 MeV</b> photons. &sigma; &prop; <em>Z</em>&sup2;, rising with energy. <b>Being above threshold is not the same as being significant</b> &mdash; at Co-60 energies in silicon, pair production is negligible and Compton dominates. <a href="m10-photon-interaction.html">M10 &sect;5</a></div>
+    </div>
+
+    <div class="eq" id="eq-atten">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em> = <em>I</em><sub>0</sub> <em>e</em><sup>&minus;&mu;<em>x</em></sup> &nbsp;&nbsp; <em>P</em> = 1 &minus; <em>e</em><sup>&minus;(&mu;/&rho;)&rho;<em>x</em></sup> &nbsp;&nbsp; &lambda;<sub>mfp</sub> = <span class="frac"><span class="num">1</span><span class="den">&mu;</span></span></div>
+        <div class="eq-num">(10.7&ndash;8, 10.10)</div>
+      </div>
+      <div class="eq-says"><em>I</em> uncollided intensity &middot; <em>P</em> probability one photon interacts in thickness <em>x</em> &middot; &mu; linear attenuation coefficient (<b>cm<sup>&minus;1</sup></b>) &middot; &mu;/&rho; mass attenuation coefficient (<b>cm&sup2;/g</b>, from NIST) &middot; &rho; density (g/cm&sup3;) &middot; <em>x</em> thickness (<b>cm &mdash; convert &micro;m by &times;10<sup>&minus;4</sup></b>). <b>&mu;/&rho; is for attenuation; &mu;<sub>en</sub>/&rho; is for dose</b> &mdash; they differ by more than 2&times; in Si at 1 MeV (6.361 &times; 10<sup>&minus;2</sup> vs 2.778 &times; 10<sup>&minus;2</sup>). Two table rows at one energy straddle an absorption edge: lower value below, upper above. Oblique incidence: replace <em>x</em> by <em>x</em>/cos &theta;. <a href="m10-photon-interaction.html">M10 &sect;7</a></div>
+    </div>
+
+    <div class="eq" id="eq-bragg-additivity">
+      <div class="eq-body">
+        <div class="eq-math"><span class="dl">(</span><span class="frac"><span class="num">&mu;</span><span class="den">&rho;</span></span><span class="dl">)</span> = &Sigma; <em>w</em><sub><em>i</em></sub> <span class="dl">(</span><span class="frac"><span class="num">&mu;</span><span class="den">&rho;</span></span><span class="dl">)</span><sub><em>i</em></sub> &nbsp;&nbsp;&nbsp;&nbsp; <em>I</em><sub>total</sub> = <em>B</em> <em>I</em><sub>0</sub> <em>e</em><sup>&minus;&mu;<em>x</em></sup></div>
+        <div class="eq-num">(10.9, 10.11)</div>
+      </div>
+      <div class="eq-says"><em>w</em><sub><em>i</em></sub> <b>mass</b> fraction of element <em>i</em> (from atomic weights, not atom counts; SiO&sub2; gives 0.467 Si / 0.533 O) &middot; <em>B</em> buildup factor (&ge; 1), which accounts for scattered photons that still arrive. <em>B</em> = 1 only for a narrow collimated beam; it grows with shield thickness, so <b>the plain exponential is a lower bound on what gets through a real shield</b>. <a href="m10-photon-interaction.html">M10 &sect;7</a></div>
+    </div>
+
+    <h3>Stopping power, range and LET (M12)</h3>
+
+    <div class="eq" id="eq-stopping">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> = &minus; <span class="frac"><span class="num">d<em>E</em></span><span class="den">d<em>x</em></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>S</em><sub>total</sub> = <em>S</em><sub>elec</sub> + <em>S</em><sub>nuc</sub></div>
+        <div class="eq-num">(12.1&ndash;2)</div>
+      </div>
+      <div class="eq-says"><em>S</em> linear stopping power (<b>MeV/cm</b>); <em>S</em>/&rho; mass stopping power (<b>MeV&middot;cm&sup2;/g</b>, what tables list) &middot; <em>S</em><sub>elec</sub> energy to target <b>electrons</b> (ionization and excitation) &middot; <em>S</em><sub>nuc</sub> energy to target <b>nuclei</b> (elastic, screened Coulomb &mdash; not the strong force, not a nuclear reaction). Electronic dominates by 3&ndash;4 orders of magnitude for light ions at MeV energies; nuclear is what makes displacements. <a href="m12-stopping-power-range.html">M12 &sect;1</a></div>
+    </div>
+
+    <div class="eq" id="eq-bethe">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>S</em><sub>elec</sub></span><span class="den">&rho;</span></span> = <em>K</em> <span class="frac"><span class="num"><em>Z</em></span><span class="den"><em>A</em></span></span> <span class="frac"><span class="num"><em>z</em>&sup2;</span><span class="den">&beta;&sup2;</span></span> <span class="dl">[</span> ln <span class="dl">(</span><span class="frac"><span class="num">2<em>m</em><sub>e</sub><em>c</em>&sup2;&beta;&sup2;&gamma;&sup2;</span><span class="den"><em>I</em></span></span><span class="dl">)</span> &minus; &beta;&sup2; <span class="dl">]</span></div>
+        <div class="eq-num">(12.3)</div>
+      </div>
+      <div class="eq-says"><em>K</em> = 0.307 MeV&middot;cm&sup2;/mol &middot; <em>Z</em>, <em>A</em> of the <b>target</b> &middot; <em>z</em> charge number of the <b>projectile</b> &middot; &beta; = <em>v</em>/<em>c</em> &middot; &gamma; = 1/&radic;(1&minus;&beta;&sup2;) &middot; <em>I</em> mean excitation energy, <b>173 eV for Si</b>. <b>The two dependences that matter: &prop; <em>z</em>&sup2; (why heavy ions dominate) and &prop; 1/&beta;&sup2; (why the Bragg peak exists).</b> <b>Fails once the projectile is no longer fast compared with the target's own electrons</b> &mdash; with <em>I</em> = 173 eV the printed expression already peaks near 216 keV and is meaningless below ~79 keV. Proton stopping in Si really peaks at <b>549 MeV&middot;cm&sup2;/g at 55 keV</b> and falls below that on both sides, becoming proportional to velocity at the bottom (Lindhard&ndash;Scharff). Effective-charge loss from electron capture governs <em>heavy</em> ions, not protons. <a href="m12-stopping-power-range.html">M12 &sect;2</a></div>
+    </div>
+
+    <div class="eq" id="eq-let-restricted">
+      <div class="eq-body">
+        <div class="eq-math">LET<sub>&Delta;</sub> = <span class="dl">(</span>&minus; <span class="frac"><span class="num">d<em>E</em></span><span class="den">d<em>x</em></span></span><span class="dl">)</span><sub>&Delta;</sub></div>
+        <div class="eq-num">(12.4)</div>
+      </div>
+      <div class="eq-says">LET<sub>&Delta;</sub> restricted linear energy transfer (MeV&middot;cm&sup2;/mg when divided by density, or keV/&micro;m) &middot; &Delta; cut-off energy above which a secondary electron is considered to have escaped the track (eV or keV). With &Delta; = &infin; the restricted LET equals the electronic stopping power. The radiation-effects literature quotes <b>unrestricted</b> LET and treats it as equal to electronic stopping power, which is accurate for heavy ions at the energies that matter for single-event effects. Heavy ions of interest for single-event testing: LET of order 1 to 100 MeV&middot;cm&sup2;/mg. <a href="m12-stopping-power-range.html">M12 &sect;4</a></div>
+    </div>
+
+    <div class="eq" id="eq-let">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em>&prime; = <span class="frac"><span class="num">LET &middot; &rho; &middot; <em>q</em></span><span class="den"><em>E</em><sub>ehp</sub></span></span> = 10.4 <span class="frac"><span class="num">fC</span><span class="den">&micro;m</span></span> per <span class="frac"><span class="num">MeV&middot;cm&sup2;</span><span class="den">mg</span></span></div>
+        <div class="eq-num">(12.5)</div>
+      </div>
+      <div class="eq-says"><em>Q</em>&prime; charge liberated per unit track length &middot; LET in <b>MeV&middot;cm&sup2;/mg</b> (note <b>milli</b>grams &mdash; the field's unit) &middot; &rho; = 2330 mg/cm&sup3; for Si &middot; <em>E</em><sub>ehp</sub> = 3.6 eV in Si. <b>The 10.4 fC/&micro;m figure is silicon-specific</b>; equivalently <b>96.4 MeV&middot;cm&sup2;/mg &rarr; 1 pC/&micro;m</b> with the 2.33 g/cm&sup3; this equation uses, or 96.5 with the measured 2.329 g/cm&sup3; &mdash; the difference is the density, not the physics. LET is the <b>locally deposited</b> part of the energy loss: it excludes delta rays energetic enough to leave the track. <a href="m12-stopping-power-range.html">M12 &sect;4</a></div>
+    </div>
+
+    <div class="eq" id="eq-range">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>CSDA</sub> = &int;<sub>0</sub><sup><em>E</em><sub>0</sub></sup> <span class="frac"><span class="num">d<em>E</em></span><span class="den"><em>S</em><sub>total</sub>(<em>E</em>)</span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>f</em><sub>d</sub> = <span class="frac"><span class="num"><em>R</em><sub>proj</sub></span><span class="den"><em>R</em><sub>CSDA</sub></span></span></div>
+        <div class="eq-num">(12.6&ndash;7)</div>
+      </div>
+      <div class="eq-says"><em>R</em><sub>CSDA</sub> range in the continuous-slowing-down approximation (<b>g/cm&sup2;</b> &mdash; divide by &rho; for cm) &middot; <em>f</em><sub>d</sub> detour factor. <b><em>R</em><sub>CSDA</sub> is path length; <em>R</em><sub>proj</sub> is penetration depth.</b> Protons in Si: <em>f</em><sub>d</sub> = 0.995 at 10 MeV, 0.55 at 10 keV; for electrons it is far smaller at all energies. Neither range is a sharp cut-off &mdash; straggling spreads the stopping depth. <a href="m12-stopping-power-range.html">M12 &sect;5</a></div>
+    </div>
+
+    <div class="eq" id="eq-ionscale">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em><sub>ion</sub>(<em>E</em>) &asymp; <em>z</em>&sup2; <em>S</em><sub>p</sub><span class="dl">(</span><span class="frac"><span class="num"><em>E</em></span><span class="den"><em>M</em></span></span><span class="dl">)</span> &nbsp;&nbsp;&nbsp;&nbsp; <em>R</em><sub>ion</sub>(<em>E</em>) &asymp; <span class="frac"><span class="num"><em>M</em></span><span class="den"><em>z</em>&sup2;</span></span> <em>R</em><sub>p</sub><span class="dl">(</span><span class="frac"><span class="num"><em>E</em></span><span class="den"><em>M</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(12.8)</div>
+      </div>
+      <div class="eq-says">Gets any ion from a <b>proton</b> table &middot; <em>M</em> ion mass number &middot; <em>z</em> ion charge number &middot; <b>compare at equal velocity, meaning equal <em>E</em>/<em>M</em></b>, never at equal energy. Alpha (<em>M</em> = 4, <em>z</em> = 2): <em>R</em><sub>&alpha;</sub>(<em>E</em>) &asymp; <em>R</em><sub>p</sub>(<em>E</em>/4). Valid only while both are fully stripped, so it degrades near end of range. Range&ndash;energy power law for protons in Si: <em>R</em> &prop; <em>E</em><sup>1.6</sup> to <em>E</em><sup>1.8</sup>. <a href="m12-stopping-power-range.html">M12 &sect;7</a></div>
+    </div>
+
+    <h3>Ion transport simulation: SRIM and TRIM (M13)</h3>
+
+    <p class="card-d">
+      TRIM's depth outputs are densities <b>per ion per unit depth</b>, per Å in every text
+      file: integrate over depth for a total, multiply by 10<sup>8</sup> Å/cm for a per-cm
+      quantity, and multiply by the fluence for a volume density. Conversions in §10.
+    </p>
+
+    <div class="eq" id="eq-zbl">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em>(<em>r</em>) = <span class="frac"><span class="num"><em>Z</em><sub>1</sub><em>Z</em><sub>2</sub><em>e</em>²</span><span class="den">4πε<sub>0</sub> <em>r</em></span></span> Φ<span class="dl">(</span><span class="frac"><span class="num"><em>r</em></span><span class="den"><em>a</em><sub>U</sub></span></span><span class="dl">)</span>,&nbsp;&nbsp; <em>a</em><sub>U</sub> = <span class="frac"><span class="num">0.8854 <em>a</em><sub>0</sub></span><span class="den"><em>Z</em><sub>1</sub><sup>0.23</sup> + <em>Z</em><sub>2</sub><sup>0.23</sup></span></span></div>
+        <div class="eq-num">(13.1)</div>
+      </div>
+      <div class="eq-says">
+        <b>The ZBL universal screened potential.</b> <em>V</em> potential energy of the
+        ion–atom pair (<b>eV</b>) · <em>r</em> separation of the two nuclei (<b>Å</b>) ·
+        <em>Z</em><sub>1</sub>, <em>Z</em><sub>2</sub> atomic numbers of the ion and the target
+        atom · <em>e</em>²/4πε<sub>0</sub> = <b>14.40 eV·Å</b> · Φ universal screening
+        function (dimensionless), 1 at <em>r</em> = 0 and → 0 at large <em>r</em>, a sum of four
+        exponentials · <em>a</em><sub>U</sub> universal screening length (Å) ·
+        <em>a</em><sub>0</sub> = 0.529 Å, the Bohr radius. Hydrogen on silicon:
+        <em>a</em><sub>U</sub> = 0.165 Å; oxygen on silicon: 0.136 Å. <b>Elastic,
+        nuclear-stopping collisions only</b> (M12 §3); it carries no information about energy
+        given to electrons.
+        <a href="m13-srim-trim.html#m13-eq-zbl">M13 §2</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-transfer">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em> = <em>T</em><sub>max</sub> sin² <span class="frac"><span class="num">θ</span><span class="den">2</span></span>,&nbsp;&nbsp; <em>T</em><sub>max</sub> = <span class="frac"><span class="num">4<em>M</em><sub>1</sub><em>M</em><sub>2</sub></span><span class="den">(<em>M</em><sub>1</sub> + <em>M</em><sub>2</sub>)²</span></span> <em>E</em></div>
+        <div class="eq-num">(13.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em> kinetic energy given to the struck atom (eV) · <em>E</em> ion kinetic energy
+        before the collision (eV) · θ scattering angle in the <b>centre-of-mass</b> frame (rad)
+        · <em>M</em><sub>1</sub>, <em>M</em><sub>2</sub> masses of ion and target atom (u;
+        only the ratio enters). Head-on, θ = π, gives <em>T</em><sub>max</sub>: equation (4.1)
+        applied to an ion. Mass factor 4<em>M</em><sub>1</sub><em>M</em><sub>2</sub>/(<em>M</em><sub>1</sub>
+        + <em>M</em><sub>2</sub>)² = <b>0.134</b> for hydrogen on silicon, <b>0.925</b> for
+        oxygen on silicon. <b>Non-relativistic, elastic.</b>
+        <a href="m13-srim-trim.html#m13-eq-transfer">M13 §2</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-bragg">
+      <div class="eq-body">
+        <div class="eq-math">ε<sub>c</sub> = Σ<sub><em>i</em></sub> <em>x</em><sub><em>i</em></sub> ε<sub><em>i</em></sub>,&nbsp;&nbsp; <em>S</em><sub>c</sub> = <em>N</em> ε<sub>c</sub></div>
+        <div class="eq-num">(13.3)</div>
+      </div>
+      <div class="eq-says">
+        <b>Bragg's rule for stopping.</b> ε<sub>c</sub>, ε<sub><em>i</em></sub> stopping
+        cross-section of the compound and of element <em>i</em>, energy lost per atom per unit
+        areal density (<b>eV·cm²/atom</b>) · <em>x</em><sub><em>i</em></sub> <b>atom</b>
+        fraction of element <em>i</em> (1/3 Si and 2/3 O for SiO₂) · <em>S</em><sub>c</sub>
+        linear stopping power of the compound (eV/cm) · <em>N</em> atomic density of the
+        compound (atoms/cm³). Equivalent to weighting <em>mass</em> stopping powers by
+        <b>mass</b> fraction, the form (10.9) uses for attenuation. <b>Neglects chemical
+        bonding</b>; SRIM's compound correction adjusts the result by up to 20 %, most for light
+        compounds such as hydrocarbons. A layer built element by element gets no correction
+        (Compound Corr reads 1).
+        <a href="m13-srim-trim.html#m13-eq-bragg">M13 §2</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-stats">
+      <div class="eq-body">
+        <div class="eq-math">σ<sub><em>R̄</em></sub> = <span class="frac"><span class="num">σ<sub><em>R</em></sub></span><span class="den">√<em>N</em></span></span>,&nbsp;&nbsp; <span class="frac"><span class="num">δ<em>n</em></span><span class="den"><em>n</em></span></span> = <span class="frac"><span class="num">1</span><span class="den">√<em>n</em></span></span></div>
+        <div class="eq-num">(13.4)</div>
+      </div>
+      <div class="eq-says">
+        σ<sub><em>R̄</em></sub> standard error of the mean stopping depth (Å) ·
+        σ<sub><em>R</em></sub> straggling, the standard deviation of individual stopping depths
+        (Å) · <em>N</em> number of ions followed · <em>n</em> events recorded in one depth bin ·
+        δ<em>n</em>/<em>n</em> relative random error of that bin. The first is the standard
+        error of a mean; the second is Poisson counting error and holds for the ion-range
+        histogram, one count per ion. <b>Averages converge quickly, depth profiles slowly</b>:
+        500 ions (the course's setting) fix the mean depth to σ<sub><em>R</em></sub>/22, about
+        4.5 % of the straggling, but 500 ions spread over all 100 bins leave five per bin and
+        about 45 % scatter. The SRIM tutorial's guideline: 1000 ions typically give better than
+        10 %. <b>Cascade outputs</b> (vacancies) add many correlated events per ion — estimate
+        the error per ion, for example by rerunning with a different seed.
+        <a href="m13-srim-trim.html#m13-eq-stats">M13 §3</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-density">
+      <div class="eq-body">
+        <div class="eq-math"><em>x</em> = <span class="frac"><span class="num"><em>R</em><sub>m</sub></span><span class="den">ρ</span></span></div>
+        <div class="eq-num">(13.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>x</em> a depth or range as a length (<b>cm</b>) · <em>R</em><sub>m</sub> the same
+        quantity as a mass per unit area (<b>g/cm²</b>), which depends on composition but not
+        on density · ρ layer density (<b>g/cm³</b>). A density wrong by some fraction makes
+        every depth in that layer wrong by the same fraction in the opposite direction.
+        <b>A compound's density must be typed in</b>: TRIM's proposal, a stoichiometry-weighted
+        mean of elemental densities, is not the compound's. Holds while stopping per atom is
+        independent of packing (solids); the gas–solid difference is the Gas option's job.
+        <a href="m13-srim-trim.html#m13-eq-density">M13 §4</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-conc">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em>(<em>x</em>) = Φ · <em>h</em>(<em>x</em>)</div>
+        <div class="eq-num">(13.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em> concentration of implanted ions at depth <em>x</em> (<b>atoms/cm³</b>) ·
+        Φ fluence, ions per unit area (<b>cm⁻²</b>) · <em>h</em> TRIM's range distribution,
+        (atoms/cm³)/(atoms/cm²), which is <b>cm⁻¹</b>. <b>RANGE.txt lists the same distribution
+        in atoms/(Å·ion): multiply by 10⁸ Å/cm</b> to obtain <em>h</em> in cm⁻¹. The integral
+        of <em>h</em> over depth is the fraction of ions that stop in the target; its mean is
+        the projected range and its standard deviation the longitudinal straggling (M12 §5).
+        Valid only at fluences low enough that the implanted atoms do not change the target
+        (the zero-dose assumption).
+        <a href="m13-srim-trim.html#m13-eq-conc">M13 §5</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-integral">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>layer</sub> = ∫<sub><em>x</em><sub>1</sub></sub><sup><em>x</em><sub>2</sub></sup> <em>I</em>(<em>x</em>) d<em>x</em> ≈ Σ<sub><em>k</em></sub> <em>I</em><sub><em>k</em></sub> Δ<em>x</em></div>
+        <div class="eq-num">(13.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>layer</sub> energy given to electrons within the layer, per ion
+        (<b>eV</b>) · <em>I</em> ionization density, <b>the sum of the ion and recoil
+        curves</b> (<b>eV/(Å·ion)</b>) · <em>x</em><sub>1</sub>, <em>x</em><sub>2</sub> depths of
+        the layer's boundaries (Å) · <em>I</em><sub><em>k</em></sub> value in depth bin
+        <em>k</em> · Δ<em>x</em> bin width, one hundredth of the plotting window (Å). Units:
+        eV/(Å·ion) × Å = eV per ion. <b>The ordinate is a density, not an energy</b>: only the
+        area is an energy. The phonon plot integrates the same way to energy per ion, and the
+        vacancy plot to vacancies per ion.
+        <a href="m13-srim-trim.html#m13-eq-integral">M13 §5</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-trim-pairs">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>eh</sub> = <span class="frac"><span class="num"><em>E</em><sub>layer</sub></span><span class="den"><em>E</em><sub>pair</sub></span></span>,&nbsp;&nbsp; <em>Q</em> = <em>q</em> <em>N</em><sub>eh</sub></div>
+        <div class="eq-num">(13.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>eh</sub> electron–hole pairs generated per ion in the layer ·
+        <em>E</em><sub>layer</sub> from (13.7) (eV) · <em>E</em><sub>pair</sub> mean pair
+        creation energy (eV): <b>3.6 eV in silicon, about 17 eV in SiO₂</b> · <em>Q</em> charge
+        liberated per ion (C) · <em>q</em> = 1.602×10⁻¹⁹ C. Counts pairs
+        <b>generated</b>; how many survive recombination and are collected is outside TRIM.
+        The course's own order-of-magnitude arithmetic divides by 99.42 eV instead; 3.6 eV is
+        the value that matches a SRIM output or a measurement (M08). Near the surface the
+        height of the ions' ionization curve is their electronic LET: in silicon
+        1 eV/Å = 10 keV/µm = 0.0429 MeV·cm²/mg → 0.445 fC/µm.
+        <a href="m13-srim-trim.html#m13-eq-pairs">M13 §5</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-trim-dose">
+      <div class="eq-body">
+        <div class="eq-math"><em>D</em> = <span class="frac"><span class="num">Φ · <em>E</em><sub>layer</sub></span><span class="den">ρ · <em>t</em></span></span></div>
+        <div class="eq-num">(13.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>D</em> absorbed dose in the layer's material (<b>eV/g</b>; divide by
+        6.242×10¹³ eV/g per rad, or by 6.242×10¹⁵ eV/g per gray) · Φ fluence (cm⁻²) ·
+        <em>E</em><sub>layer</sub> energy per ion from (13.7) (eV) · ρ layer density (g/cm³)
+        · <em>t</em> layer thickness (<b>cm</b>). <b>The dose must name its material</b> —
+        rad(SiO₂) for an oxide layer, rad(Si) for silicon. The layer average hides any depth
+        variation; for a thin sensitive region integrate over that region alone. Worked point
+        (M13 §5): 100 keV protons leave about 57 keV each in 0.5 µm of SiO₂ (2.20 g/cm³),
+        about 3.4×10³ pairs per proton at 17 eV; 10¹⁰ protons/cm² give
+        5.2×10¹⁸ eV/g, about 83 krad(SiO₂).
+        <a href="m13-srim-trim.html#m13-eq-dose">M13 §5</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-displacements">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>disp</sub> = <em>N</em><sub>vac</sub> + <em>N</em><sub>repl</sub>,&nbsp;&nbsp; <em>N</em><sub>vac</sub> = <em>N</em><sub>int</sub> + <em>N</em><sub>out</sub></div>
+        <div class="eq-num">(13.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>disp</sub> displacements · <em>N</em><sub>vac</sub> vacancies ·
+        <em>N</em><sub>repl</sub> replacement collisions · <em>N</em><sub>int</sub> atoms that
+        come to rest as interstitials · <em>N</em><sub>out</sub> atoms that leave the target
+        through a surface. All per ion; the plotted versions are per ion per Å. <b>Vacancies
+        per cm³: multiply the plotted value by 10⁸ Å/cm and by the fluence</b>; dividing by the
+        atomic density (4.99×10²² atoms/cm³ in silicon) gives the result per atom. The vacancy
+        count is smaller than the displacement count by up to about 30 % (SRIM manual).
+        <b>The threshold sets the count</b>: TRIM's silicon default <em>E</em><sub>d</sub> =
+        15 eV gives about 21/15 = 1.4 times the vacancies of 21 eV, somewhat more when many
+        recoils fall near threshold. Full-cascade runs give about twice the Kinchin–Pease
+        count (2.06 to 2.43, Stoller et al. 2013); for displacements per atom use the damage
+        energy of a quick-mode run through (11.1), with the lattice binding energy set to zero.
+        Counts are displacement events at 0 K with no recombination, not surviving defects.
+        <a href="m13-srim-trim.html#m13-eq-displacements">M13 §5</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-sputter">
+      <div class="eq-body">
+        <div class="eq-math"><em>Y</em> = <span class="frac"><span class="num"><em>N</em><sub>sputtered</sub></span><span class="den"><em>N</em><sub>ions</sub></span></span></div>
+        <div class="eq-num">(13.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>Y</em> sputtering yield (<b>atoms/ion</b>; given separately for each element of a
+        compound) · <em>N</em><sub>sputtered</sub> target atoms ejected ·
+        <em>N</em><sub>ions</sub> incident ions. A recoil is sputtered if its energy normal to
+        the surface exceeds <em>E</em><sub>surf</sub>, <b>4.7 eV for silicon</b> by default.
+        <b>Requires an option that follows recoils</b>: Surface Sputtering or Monolayer
+        Collision Steps, which the SRIM manual calls essential for accurate yields, or Full
+        Damage Cascades — never the quick mode. Target thickness: for ions heavier than 20 u,
+        40–50 Å (manual) or 300 Å (Tutorial #2); for light ions such as helium 300–500 Å and up
+        to 1000 Å; increase until the yield stops changing. Reference: about 0.87 atoms/ion for
+        1 keV argon on silicon at normal incidence (Seah fit, about 10 %). TRIM yields are
+        accurate to about 30 % with respect to <em>E</em><sub>surf</sub>.
+        <a href="m13-srim-trim.html#m13-eq-sputter">M13 §5</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-epsilon">
+      <div class="eq-body">
+        <div class="eq-math">ε = <span class="frac"><span class="num"><em>a</em><sub>U</sub> <em>M</em><sub>2</sub> <em>E</em></span><span class="den"><em>Z</em><sub>1</sub><em>Z</em><sub>2</sub> <span class="dl">(</span><span class="frac"><span class="num"><em>e</em>²</span><span class="den">4πε<sub>0</sub></span></span><span class="dl">)</span> (<em>M</em><sub>1</sub> + <em>M</em><sub>2</sub>)</span></span> = <span class="frac"><span class="num">32.53 <em>M</em><sub>2</sub> <em>E</em><sub>keV</sub></span><span class="den"><em>Z</em><sub>1</sub><em>Z</em><sub>2</sub> (<em>M</em><sub>1</sub> + <em>M</em><sub>2</sub>)(<em>Z</em><sub>1</sub><sup>0.23</sup> + <em>Z</em><sub>2</sub><sup>0.23</sup>)</span></span></div>
+        <div class="eq-num">(13.12)</div>
+      </div>
+      <div class="eq-says">
+        <b>Lindhard reduced energy.</b> ε dimensionless · <em>a</em><sub>U</sub> from (13.1)
+        (Å) · <em>E</em> ion energy — <b>eV in the first form, keV
+        (<em>E</em><sub>keV</sub>) in the second</b> · <em>M</em><sub>1</sub>,
+        <em>M</em><sub>2</sub> masses of ion and target atom (u) · <em>Z</em><sub>1</sub>,
+        <em>Z</em><sub>2</sub> atomic numbers · <em>e</em>²/4πε<sub>0</sub> = 14.40 eV·Å.
+        Nuclear stopping of every ion–target pair follows one universal curve of ε, and the
+        nuclear share of the loss grows as ε falls. In silicon: <b>ε ≈ 79</b> for a 100 keV
+        proton, <b>≈ 5.4</b> for 100 keV oxygen, ≈ 3.8 for 190 keV phosphorus, about 0.014 for
+        1 keV argon. At equal energy, compare velocity through energy per nucleon: 100 keV
+        oxygen carries 6.25 keV per nucleon.
+        <a href="m13-srim-trim.html#m13-eq-epsilon">M13 §6</a>
+      </div>
+    </div>
+
+    <h2 id="tid">7 · Total ionizing dose (M14)</h2>
+
+    <p class="card-d">
+      The physics of oxide charge is written in rad(SiO₂); test standards and mission
+      requirements are written in rad(Si). Convert with (14.1) before using (14.3)–(14.4).
+      All thicknesses in these expressions are in <b>cm</b>.
+    </p>
+
+    <h3>Dose in a named material, and the flash-memory charge pump</h3>
+
+    <div class="eq" id="eq-dose-ratio">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>D</em><sub>SiO₂</sub></span><span class="den"><em>D</em><sub>Si</sub></span></span> = <span class="frac"><span class="num">(µ<sub>en</sub>/ρ)<sub>SiO₂</sub></span><span class="den">(µ<sub>en</sub>/ρ)<sub>Si</sub></span></span></div>
+        <div class="eq-num">(14.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>D</em><sub>SiO₂</sub>, <em>D</em><sub>Si</sub> absorbed dose in each material for the
+        same photon fluence (rad) · µ<sub>en</sub>/ρ mass energy-absorption coefficient
+        (cm²/g), for SiO₂ the mass-weighted sum of silicon (46.74 %) and oxygen (53.26 %)
+        values. <b>Valid under charged-particle equilibrium.</b> From the NIST tables:
+        <b>1.003 at 1.25 MeV</b>, the mean cobalt-60 energy, so rad(Si) and rad(SiO₂) are
+        interchangeable in a cobalt-60 test; <b>0.558 at 10 keV</b>, so under a 10 keV X-ray
+        source 1 rad(SiO₂) corresponds to about 1.8 rad(Si). The first is Compton scattering,
+        ∝ <em>Z</em>/<em>A</em> (0.498 Si, 0.500 O); the second is photoelectric absorption,
+        roughly ∝ <em>Z</em>³ to <em>Z</em>⁴ per gram.
+        <a href="m14-total-ionizing-dose.html#m14-eq-dose-ratio">M14 §2</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-pump">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>out</sub> = <em>V</em><sub>cc</sub> − <em>V</em><sub>te</sub> + <span style="white-space:nowrap"><em>N</em><span class="dl">(</span>α<em>V</em><sub>cc</sub> − <em>V</em><sub>te</sub><span class="dl">)</span></span></div>
+        <div class="eq-num">(14.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>out</sub> open-circuit output of an on-chip charge pump (V) ·
+        <em>V</em><sub>cc</sub> supply voltage (V), 3.3 V for the 128-Mb NAND flash of M14 ·
+        <em>V</em><sub>te</sub> effective threshold voltage of a pass transistor, as a magnitude
+        (V) · <em>N</em> number of pumping stages · α coupling efficiency of each stage's
+        capacitor, close to 1 at light load and falling rapidly as the current drawn rises.
+        Regrouped, <em>V</em><sub>out</sub> = (1 + <em>N</em>α)<em>V</em><sub>cc</sub> −
+        (<em>N</em> + 1)<em>V</em><sub>te</sub>: <b>each millivolt of threshold shift costs
+        <em>N</em> + 1 millivolts of output.</b> Open circuit — any stage-to-stage leakage
+        lowers the output further. NAND cells need about 20 V to erase and program, NOR cells
+        about 12 V; the operation needing the highest voltage fails first (erase, then program,
+        then read).
+        <a href="m14-total-ionizing-dose.html#m14-eq-pump">M14 §2</a>
+      </div>
+    </div>
+
+    <h3>From absorbed energy to trapped charge</h3>
+
+    <div class="eq" id="eq-g0">
+      <div class="eq-body">
+        <div class="eq-math"><em>g</em><sub>0</sub> = <span class="frac"><span class="num">ρ<sub>SiO₂</sub> · 6.24×10<sup>13</sup></span><span class="den"><em>E</em><sub>p</sub></span></span> = <span style="white-space:nowrap">8.1×10<sup>12</sup> cm<sup>−3</sup> rad(SiO₂)<sup>−1</sup></span></div>
+        <div class="eq-num">(14.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>g</em><sub>0</sub> generation constant, electron–hole pairs created per cm³ of oxide
+        per rad(SiO₂) (<b>cm⁻³ rad(SiO₂)⁻¹</b>) · ρ<sub>SiO₂</sub> density of thermal oxide,
+        2.2 g/cm³ · 6.24×10<sup>13</sup> energy deposited by 1 rad, in eV/g
+        (1 rad = 100 erg/g) · <em>E</em><sub>p</sub> mean pair-creation energy, <b>17 eV in
+        SiO₂</b> (17 ± 1 eV, Benedetto and Boesch). <b>The dose must be in rad(SiO₂)</b>;
+        convert a rad(Si) figure with (14.1). The same construction with silicon's 2.33 g/cm³
+        and 3.6 eV gives <b>4×10<sup>13</sup> pairs cm<sup>−3</sup> rad(Si)<sup>−1</sup></b>.
+        <a href="m14-total-ionizing-dose.html#m14-eq-g0">M14 §3</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-holes">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>h</sub> = <em>f</em><sub>y</sub>(<em>E</em><sub>ox</sub>) · <em>g</em><sub>0</sub> · <em>D</em> · <em>t</em><sub>ox</sub></div>
+        <div class="eq-num">(14.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>h</sub> areal density of holes that escape initial recombination
+        (<b>cm⁻²</b>) · <em>f</em><sub>y</sub> fractional yield, 0 to 1, a function of the
+        oxide field <em>E</em><sub>ox</sub> (MV/cm) and of the radiation type — at 1 MV/cm
+        about 0.9 for cobalt-60, below 0.1 for alphas (table in §9) · <em>g</em><sub>0</sub>
+        from (14.3) (cm⁻³ rad(SiO₂)⁻¹) · <em>D</em> dose (<b>rad(SiO₂)</b>) ·
+        <em>t</em><sub>ox</sub> oxide thickness (<b>cm</b>). Assumes uniform dose through the
+        oxide, which fails next to high-<em>Z</em> layers under low-energy photons, where dose
+        enhancement raises the local dose. Surviving electrons leave for the gate within a
+        picosecond (mobility in SiO₂ about 20 cm²/V·s).
+        <a href="m14-total-ionizing-dose.html#m14-eq-holes">M14 §3</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-not">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>N</em><sub>ot</sub> = <em>f</em><sub>ot</sub> · <em>N</em><sub>h</sub></div>
+        <div class="eq-num">(14.5)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>N</em><sub>ot</sub> areal density of radiation-induced oxide-trapped charge, in
+        holes per cm² (<b>cm⁻²</b>) · <em>f</em><sub>ot</sub> fraction of the surviving holes
+        that are trapped, dimensionless · <em>N</em><sub>h</sub> from (14.4) (cm⁻²).
+        <b><em>f</em><sub>ot</sub> is a property of the process, not of the radiation</b>: a few
+        percent in radiation-hardened oxides, 50 to 100 % in unhardened ones, and it falls as
+        the field rises. The traps are oxygen vacancies (E′ centres) within about 3–4 nm of the
+        interface in hardened gate oxides; distributed through the bulk in isolation and some
+        commercial oxides. <b>Holds before any annealing.</b>
+        <a href="m14-total-ionizing-dose.html#m14-eq-not">M14 §3</a>
+      </div>
+    </div>
+
+    <h3>The threshold-voltage shift and what it does</h3>
+
+    <div class="eq" id="eq-vot">
+      <div class="eq-body">
+        <div class="eq-math"><span style="white-space:nowrap">Δ<em>V</em><sub>ot</sub> = − <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>ox</sub></span></span></span> <span style="white-space:nowrap">∫<sub>0</sub><sup><em>t</em><sub>ox</sub></sup> <span class="frac"><span class="num"><em>x</em></span><span class="den"><em>t</em><sub>ox</sub></span></span> ρ<sub>ot</sub>(<em>x</em>) d<em>x</em></span> <span style="white-space:nowrap">= − <span class="frac"><span class="num"><em>q</em> Δ<em>N</em><sub>ot</sub> <em>x̄</em></span><span class="den">ε<sub>ox</sub></span></span></span> <span style="white-space:nowrap">→ − <span class="frac"><span class="num"><em>q</em> Δ<em>N</em><sub>ot</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span>,</span> &nbsp; <span style="white-space:nowrap"><em>C</em><sub>ox</sub> = <span class="frac"><span class="num">ε<sub>ox</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></span></div>
+        <div class="eq-num">(14.6)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>ot</sub> threshold shift from oxide-trapped charge (V) ·
+        <em>C</em><sub>ox</sub> oxide capacitance per unit area (<b>F/cm²</b>) · <em>x</em>
+        depth into the oxide measured <b>from the gate</b> (cm) · ρ<sub>ot</sub>(<em>x</em>)
+        trapped charge density (<b>C/cm³</b>) · <em>q</em> = 1.602×10⁻¹⁹ C ·
+        Δ<em>N</em><sub>ot</sub> from (14.5) (cm⁻²) · <em>x̄</em> centroid of the trapped
+        charge, measured from the gate (cm) · ε<sub>ox</sub> = 3.45×10⁻¹³ F/cm ·
+        <em>t</em><sub>ox</sub> oxide thickness (cm). The arrow is the limit
+        <em>x̄</em> = <em>t</em><sub>ox</sub>, all charge at the silicon interface — hardened
+        gate oxides under positive bias — which gives the largest shift. <b>Positive charge
+        always gives a negative shift, in both device types.</b> Negative bias puts the holes
+        near the gate, where they count for almost nothing.
+        <a href="m14-total-ionizing-dose.html#m14-eq-vot">M14 §4</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-vit">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>it</sub> = ± <span class="frac"><span class="num"><em>q</em> Δ<em>N</em><sub>it</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span>  &nbsp; <span style="white-space:nowrap">(+ n‑channel, − p‑channel)</span></div>
+        <div class="eq-num">(14.7)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>it</sub> threshold shift from interface traps (V) ·
+        Δ<em>N</em><sub>it</sub> radiation-induced interface traps charged when the device is
+        at threshold, per unit area (<b>cm⁻²</b>) · <em>q</em> (C), <em>C</em><sub>ox</sub>
+        (F/cm²) as in (14.6). <b>The sign follows the surface Fermi level</b>: traps are
+        acceptor-like above midgap and donor-like below, so at threshold an n-channel surface
+        (Fermi level above midgap) holds net negative trap charge, Δ<em>V</em><sub>it</sub>
+        &gt; 0, and a p-channel surface net positive, Δ<em>V</em><sub>it</sub> &lt; 0. No
+        centroid factor — the charge is at the interface. Evaluated at threshold only.
+        Illustration: 10¹¹ cm⁻² charged traps shift the threshold by 0.46 V under 100 nm of
+        oxide (<em>C</em><sub>ox</sub> = 3.45×10⁻⁸ F/cm²) and 0.046 V under 10 nm.
+        <a href="m14-total-ionizing-dose.html#m14-eq-vit">M14 §4</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-vth">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>th</sub> = Δ<em>V</em><sub>ot</sub> + Δ<em>V</em><sub>it</sub></div>
+        <div class="eq-num">(14.8)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>th</sub> total threshold-voltage shift (V), with
+        Δ<em>V</em><sub>ot</sub> from (14.6) and Δ<em>V</em><sub>it</sub> from (14.7). Signs:
+        Δ<em>V</em><sub>ot</sub> &lt; 0 for both types; Δ<em>V</em><sub>it</sub> &gt; 0 for
+        n-channel and &lt; 0 for p-channel. <b>The terms oppose in an n-channel transistor and
+        add in a p-channel one</b>, so a small net n-channel shift can conceal large amounts of
+        both charges, and the two evolve on different time scales (rebound, (14.13)).
+        <a href="m14-total-ionizing-dose.html#m14-eq-vth">M14 §4</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-mobility">
+      <div class="eq-body">
+        <div class="eq-math">µ = <span class="frac"><span class="num">µ<sub>0</sub></span><span class="den">1 + α Δ<em>N</em><sub>it</sub></span></span></div>
+        <div class="eq-num">(14.9)</div>
+      </div>
+      <div class="eq-says">
+        µ channel mobility after irradiation (cm²/V·s) · µ<sub>0</sub> before irradiation
+        (cm²/V·s) · Δ<em>N</em><sub>it</sub> radiation-induced interface-trap density (cm⁻²)
+        · α a fitted constant (<b>cm²</b>), specific to the technology. Empirical. At short
+        times after exposure trapped holes near the interface also scatter carriers, and the
+        form underestimates the loss. Drive current ∝ µ(<em>V</em><sub>GS</sub> −
+        <em>V</em><sub>th</sub>)² (1.14), so mobility loss and threshold shift both change
+        gate delay (1.17).
+        <a href="m14-total-ionizing-dose.html#m14-eq-mobility">M14 §4</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-swing">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> <span style="white-space:nowrap">ln 10 <span class="dl">(</span>1 + <span class="frac"><span class="num"><em>C</em><sub>d</sub> + <em>C</em><sub>it</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span><span class="dl">)</span>,</span> &nbsp; <span style="white-space:nowrap"><em>C</em><sub>it</sub> = <em>q D</em><sub>it</sub></span></div>
+        <div class="eq-num">(14.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em> subthreshold swing (mV/decade) · <em>kT</em>/<em>q</em> thermal voltage,
+        25.9 mV at 300 K · <em>C</em><sub>d</sub> depletion capacitance (F/cm²) ·
+        <em>C</em><sub>it</sub> interface-trap capacitance (F/cm²) · <em>D</em><sub>it</sub>
+        interface-trap density per unit energy (<b>cm⁻² eV⁻¹</b>; with <em>q</em> in coulombs
+        this gives <em>C</em><sub>it</sub> in F/cm²) · <em>C</em><sub>ox</sub> from (14.6).
+        (1.15) with one more capacitance in parallel with <em>C</em><sub>d</sub>.
+        Illustration: <em>D</em><sub>it</sub> = 10¹² cm⁻² eV⁻¹ gives <em>C</em><sub>it</sub> =
+        1.6×10⁻⁷ F/cm², which under a 10 nm oxide adds 0.46 to the bracket and about
+        28 mV/decade to <em>S</em> at 300 K. <b>Oxide-trapped charge translates the transfer
+        curve; interface traps translate and stretch it</b> — the basis for separating the two.
+        <a href="m14-total-ionizing-dose.html#m14-eq-swing">M14 §4</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-ioff">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>I</em><sub>off</sub>(after)</span><span class="den"><em>I</em><sub>off</sub>(before)</span></span> = 10<sup>−Δ<em>V</em><sub>th</sub>/<em>S</em></sup></div>
+        <div class="eq-num">(14.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>off</sub> drain current of an n-channel transistor at a fixed gate
+        voltage below threshold, usually zero (A) · Δ<em>V</em><sub>th</sub> threshold shift
+        (V), negative for a transistor moving toward depletion mode · <em>S</em> subthreshold
+        swing in <b>V/decade here</b>, to match Δ<em>V</em><sub>th</sub>. Holds while the gate
+        voltage stays in the subthreshold region and <em>S</em> is unchanged. With
+        <em>S</em> = 80 mV/decade, a shift of −0.1 V multiplies <em>I</em><sub>off</sub> by
+        <b>18</b>, −0.2 V by <b>316</b>, −0.3 V by <b>5.6×10³</b>. Across a die of billions of
+        n-channel transistors it appears first as a rise in static supply current.
+        <a href="m14-total-ionizing-dose.html#m14-eq-ioff">M14 §4</a>
+      </div>
+    </div>
+
+    <h3>Oxide thickness and annealing</h3>
+
+    <div class="eq" id="eq-tox2">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>ot</sub> = − <span class="frac"><span class="num"><em>q</em> <em>f</em><sub>ot</sub> <em>f</em><sub>y</sub> <em>g</em><sub>0</sub> <em>D</em></span><span class="den">ε<sub>ox</sub></span></span> <em>t</em><sub>ox</sub><sup>2</sup></div>
+        <div class="eq-num">(14.12)</div>
+      </div>
+      <div class="eq-says">
+        (14.4) and (14.5) substituted into the interface limit of (14.6). <em>q</em> (C) ·
+        <em>f</em><sub>ot</sub> from (14.5) · <em>f</em><sub>y</sub> from (14.4) ·
+        <em>g</em><sub>0</sub> = 8.1×10¹² cm⁻³ rad(SiO₂)⁻¹ · <em>D</em> dose (rad(SiO₂)) ·
+        ε<sub>ox</sub> = 3.45×10⁻¹³ F/cm · <em>t</em><sub>ox</sub> (<b>cm</b>). <b>Thick oxides
+        are the sensitive ones: tenfold thickness, hundredfold shift.</b> At 10 krad(SiO₂) of
+        cobalt-60, 1 MV/cm (<em>f</em><sub>y</sub> ≈ 0.9), all holes trapped: 10 nm →
+        7.3×10¹⁰ holes/cm², −0.034 V; 100 nm → −3.4 V; 500 nm → 3.6×10¹² holes/cm², −85 V
+        (−0.0017, −0.17 and −4.2 V at an illustrative 5 % trapped). Assumes all trapped charge
+        at the interface and no annealing. Measured exponents of the shifts run from about 1.5
+        to 2 (Schwank et al.: <em>t</em><sub>ox</sub><sup>1.5</sup> to
+        <em>t</em><sub>ox</sub><sup>1.8</sup>). <b>Fails in thin films</b>: the shift falls below
+        the law from roughly 12–20 nm and is about an order of magnitude below it at 10 nm;
+        below about 10 nm a gate oxide is nearly immune, because tunnelling from both
+        electrodes neutralizes the trapped holes.
+        <a href="m14-total-ionizing-dose.html#m14-eq-tox2">M14 §5</a>
+      </div>
+    </div>
+
+    <div class="eq" id="eq-front">
+      <div class="eq-body">
+        <div class="eq-math"><em>x</em><sub>m</sub>(<em>t</em>) = <em>x</em><sub>m</sub>(<em>t</em><sub>0</sub>) + <span style="white-space:nowrap">λ log<sub>10</sub><span class="dl">(</span><span class="frac"><span class="num"><em>t</em></span><span class="den"><em>t</em><sub>0</sub></span></span><span class="dl">)</span></span></div>
+        <div class="eq-num">(14.13)</div>
+      </div>
+      <div class="eq-says">
+        <em>x</em><sub>m</sub> depth of the tunnel-annealing front, measured into the oxide
+        <b>from the Si/SiO₂ interface</b> (nm); trapped holes nearer the interface than
+        <em>x</em><sub>m</sub> have been neutralized · <em>t</em> time since the charge was
+        trapped (s) · <em>t</em><sub>0</sub> a reference time (s) · λ advance per decade of
+        time, <b>0.2–0.4 nm</b>. Holds while the front is within tunnelling range, about 4–6 nm
+        at room temperature (about 4 nm at 80 K); it gives the recovery of
+        Δ<em>V</em><sub>ot</sub> linear in log <em>t</em>. Thermal emission, dominant at raised
+        temperature, also gives a log-<em>t</em> recovery. <b>Interface traps do not anneal at
+        room temperature</b> and keep forming for 10³–10⁴ s (months in some oxides), so an
+        n-channel shift can rebound positive: about +3.5 V after 1 Mrad in the case Oldham and
+        McLean describe.
+        <a href="m14-total-ionizing-dose.html#m14-eq-front">M14 §6</a>
+      </div>
+    </div>
+
+    <h2 id="constants">8 · Master constants</h2>
+
+    <h3>Fundamental</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Symbol</th><th>Quantity</th><th>Value</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td><em>q</em>, <em>e</em></td><td>elementary charge</td><td>1.602 176 634 × 10<sup>−19</sup> C</td><td>exact by definition</td></tr>
+        <tr><td><em>k</em></td><td>Boltzmann constant</td><td>1.380 649 × 10<sup>−23</sup> J/K<br>= 8.617 333 × 10<sup>−5</sup> <b>eV/K</b></td><td><b>the eV form is the one this course needs</b></td></tr>
+        <tr><td><em>kT</em></td><td>thermal energy at 300 K</td><td>0.025 85 eV</td><td>often quoted as 26 meV</td></tr>
+        <tr><td><em>kT</em>/<em>q</em></td><td>thermal voltage at 300 K</td><td>0.025 85 V</td><td>numerically equal to <em>kT</em> in eV</td></tr>
+        <tr><td><em>h</em></td><td>Planck constant</td><td>6.626 070 15 × 10<sup>−34</sup> J·s<br>= 4.135 668 × 10<sup>−15</sup> eV·s</td><td>exact</td></tr>
+        <tr><td><em>hc</em></td><td>photon energy–wavelength product</td><td>1,239.84 eV·nm</td><td><em>E</em>[eV] = 1240 / <em>λ</em>[nm] — worth memorising</td></tr>
+        <tr><td><em>c</em></td><td>speed of light</td><td>2.997 924 58 × 10<sup>8</sup> m/s</td><td>exact</td></tr>
+        <tr><td><em>N</em><sub>A</sub></td><td>Avogadro constant</td><td>6.022 140 76 × 10<sup>23</sup> mol<sup>−1</sup></td><td>exact; needed for activity calculations</td></tr>
+        <tr><td><em>ε</em><sub>0</sub></td><td>vacuum permittivity</td><td>8.854 188 × 10<sup>−12</sup> F/m<br>= 8.854 188 × 10<sup>−14</sup> <b>F/cm</b></td><td>use the F/cm form with cm-based doping</td></tr>
+        <tr><td><em>σ</em></td><td>Stefan–Boltzmann constant</td><td>5.670 374 × 10<sup>−8</sup> W/m²·K⁴</td><td>metres, not centimetres</td></tr>
+        <tr><td><em>m</em><sub>e</sub></td><td>electron rest mass</td><td>9.109 384 × 10<sup>−31</sup> kg = 0.511 MeV/<em>c</em>²</td><td>the energy form is the useful one</td></tr>
+        <tr><td><em>m</em><sub>p</sub></td><td>proton rest mass</td><td>1.672 622 × 10<sup>−27</sup> kg = 938.27 MeV/<em>c</em>²</td><td>1,836 × <em>m</em><sub>e</sub></td></tr>
+        <tr><td><em>m</em><sub>n</sub></td><td>neutron rest mass</td><td>1.674 927 × 10<sup>−27</sup> kg = 939.57 MeV/<em>c</em>²</td><td>—</td></tr>
+        <tr><td><em>m</em><sub>α</sub></td><td>alpha particle rest mass</td><td>3,727.4 MeV/<em>c</em>²</td><td>gives <em>v</em>/<em>c</em> ≈ 0.05 at 5 MeV</td></tr>
+        <tr><td><em>k</em><sub>e</sub></td><td>Coulomb constant, 1/4π<em>ε</em><sub>0</sub></td><td>8.987 552 × 10<sup>9</sup> N·m²/C²</td><td>the course rounds to <b>9 × 10<sup>9</sup></b> and works in <b>metres</b> for Coulomb's law, unlike the rest of this sheet</td></tr>
+        <tr><td>AU</td><td>astronomical unit</td><td>1.495 979 × 10<sup>11</sup> m</td><td>exact by definition</td></tr>
+        <tr><td><em>S</em><sub>0</sub></td><td>solar irradiance at 1 AU</td><td>1,361 W/m²</td><td>varies ~0.1% over the solar cycle</td></tr>
+        <tr><td><em>R</em><sub>E</sub></td><td>Earth equatorial radius</td><td>6,378 km</td><td>belt altitudes are often quoted in <em>R</em><sub>E</sub> from Earth's centre</td></tr>
+        <tr><td><em>R</em><sub>E</sub></td><td>Earth mean radius</td><td>6,371 km</td><td>the value used when converting an altitude to an orbital radius</td></tr>
+        <tr><td><em>GM</em><sub>&oplus;</sub></td><td>Earth gravitational parameter</td><td>3.986 004 &times; 10<sup>14</sup> m&sup3;/s&sup2;</td><td><b>metres</b>; drives every orbit calculation</td></tr>
+        <tr><td><em>B</em><sub>0</sub></td><td>Earth surface magnetic flux density</td><td>~5 &times; 10<sup>&minus;5</sup> T = 50 &micro;T = 0.5 G</td><td>falls as 1/<em>r</em>&sup3;; the course quotes 50 &micro;T throughout</td></tr>
+        <tr><td>ln 2</td><td>natural logarithm of 2</td><td>0.693 147</td><td>appears in every decay and activity calculation</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Semiconductor, oxide and radiation constants</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Symbol</th><th>Quantity</th><th>Value</th><th>Used in</th></tr></thead>
+      <tbody>
+        <tr><td>(<em>kT</em>/<em>q</em>) ln 10</td><td>thermal voltage times ln 10, 300 K</td><td>59.5 mV (<em>kT</em> ln 10 = 59.5 meV)</td><td>one decade of subthreshold current, <a href="#eq-thermionic">(1.13)</a>, <a href="#eq-ss">(1.15)</a>; one decade of doping moves <em>E</em><sub>F</sub> this far, <a href="#eq-efermi">(1.4)</a>. The display floor of (1.15) is quoted as 60 mV/decade</td></tr>
+        <tr><td><em>ε</em><sub>s</sub></td><td>permittivity of silicon</td><td>11.7 × 8.854 × 10<sup>−14</sup> = <b>1.036 × 10<sup>−12</sup> F/cm</b></td><td><a href="#eq-vbi">(1.8)</a>, <a href="#eq-vt">(1.11)</a></td></tr>
+        <tr><td><em>ε</em><sub>ox</sub></td><td>permittivity of SiO₂</td><td>3.9 × 8.854 × 10<sup>−14</sup> = <b>3.45 × 10<sup>−13</sup> F/cm</b></td><td><a href="#eq-vfb">(1.10)</a>, <a href="#eq-idsat">(1.14)</a>, <a href="#eq-vot">(14.6)</a>, <a href="#eq-tox2">(14.12)</a></td></tr>
+        <tr><td><em>C</em><sub>ox</sub></td><td>oxide capacitance per unit area</td><td>3.45 × 10<sup>−7</sup> F/cm² at 10 nm; 3.45 × 10<sup>−8</sup> F/cm² at 100 nm</td><td><a href="#eq-vfb">(1.10)</a>, <a href="#eq-vit">(14.7)</a></td></tr>
+        <tr><td><em>E</em><sub>pair</sub></td><td>mean electron–hole pair creation energy</td><td><b>3.6 eV</b> in Si; <b>17 eV</b> in SiO₂ (measured 17 ± 1 eV)</td><td><a href="#eq-pairs">(8.2)</a>, <a href="#eq-let">(12.5)</a>, <a href="#eq-trim-pairs">(13.8)</a>, <a href="#eq-g0">(14.3)</a>; the course's own arithmetic uses 99.42 eV (§9)</td></tr>
+        <tr><td><em>g</em><sub>0</sub></td><td>pairs per cm³ per rad in SiO₂</td><td><b>8.1 × 10<sup>12</sup> cm<sup>−3</sup> rad(SiO₂)<sup>−1</sup></b></td><td><a href="#eq-g0">(14.3)</a>, <a href="#eq-holes">(14.4)</a>, <a href="#eq-tox2">(14.12)</a>. Silicon's analogue: 4 × 10<sup>13</sup> cm<sup>−3</sup> rad(Si)<sup>−1</sup></td></tr>
+        <tr><td>—</td><td>energy deposited by 1 rad</td><td>6.24 × 10<sup>13</sup> eV/g (1 rad = 100 erg/g); 6.242 × 10<sup>13</sup> to four figures</td><td><a href="#eq-g0">(14.3)</a>, <a href="#eq-trim-dose">(13.9)</a></td></tr>
+        <tr><td>—</td><td>LET-to-charge factor, silicon</td><td>10.4 fC/µm per MeV·cm²/mg; <b>96.4 MeV·cm²/mg per pC/µm with ρ = 2.33 g/cm³</b> (96.5 with 2.329)</td><td><a href="#eq-let">(12.5)</a></td></tr>
+        <tr><td>—</td><td>TRIM ionization density in silicon</td><td>1 eV/Å = 10 keV/µm = 0.0429 MeV·cm²/mg → 0.445 fC/µm</td><td><a href="#eq-trim-pairs">(13.8)</a></td></tr>
+        <tr><td><em>K</em></td><td>Bethe prefactor</td><td>0.307 MeV·cm²/mol</td><td><a href="#eq-bethe">(12.3)</a></td></tr>
+        <tr><td><em>e</em>²/4π<em>ε</em><sub>0</sub></td><td>Coulomb energy × distance</td><td><b>14.40 eV·Å</b></td><td><a href="#eq-zbl">(13.1)</a>, <a href="#eq-epsilon">(13.12)</a></td></tr>
+        <tr><td><em>a</em><sub>0</sub></td><td>Bohr radius</td><td>0.529 Å</td><td><a href="#eq-zbl">(13.1)</a>, with the ZBL prefactor 0.8854</td></tr>
+        <tr><td>32.53</td><td>reduced-energy constant</td><td>for <em>E</em> in keV and masses in u</td><td><a href="#eq-epsilon">(13.12)</a>, second form only</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2 id="reference">9 · Reference values</h2>
+
+    <h3>Silicon and its oxide at 300 K</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Quantity</th><th>Si</th><th>SiO₂</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Bandgap <em>E</em><sub>g</sub></td><td>1.12 eV</td><td>8.9 eV</td><td>the lectures round silicon to 1.1 eV; Deck 8's MOS band diagram rounds SiO₂ to 9 eV</td></tr>
+        <tr><td>Band offset at the Si/SiO₂ interface</td><td>—</td><td>conduction band <b>3.1 eV</b> above Si's (3.1–3.2 eV in photoemission); valence band <b>about 4.4 eV</b> below Si's (4.35–4.55 eV)</td><td>the barriers an electron and a hole must cross to enter the oxide; offsets and gap come from different measurements and do not sum exactly. The 3.1 eV barrier is also the one tunnel annealing crosses (<a href="#eq-front">14.13</a>). <a href="m01-semiconductor-background.html">M01 §7</a></td></tr>
+        <tr><td>Relative permittivity</td><td>11.7</td><td>3.9</td><td>→ <em>ε</em> = 1.036 × 10<sup>−12</sup> and 3.45 × 10<sup>−13</sup> F/cm. Sze &amp; Ng use 11.9 for Si, Pierret 11.8</td></tr>
+        <tr><td>Density</td><td>2.329 g/cm³ measured; <b>2.33 g/cm³</b> in NIST PSTAR and (12.5)</td><td>2.20 g/cm³ (amorphous, thermal)</td><td><b>The LET conversions use 2.33</b> (2,330 mg/cm³), which gives 96.4 MeV·cm²/mg per pC/µm; 2.329 gives 96.5. TRIM proposes 2.32 for Si, within 0.3 %; (14.3) rounds SiO₂ to 2.2. Densities for other layers below</td></tr>
+        <tr><td>Atomic / molecular density</td><td>5.0 × 10<sup>22</sup> cm<sup>−3</sup> (4.99 × 10<sup>22</sup> to three figures)</td><td>2.3 × 10<sup>22</sup> cm<sup>−3</sup></td><td>upper bound on any carrier concentration; the 4.99 figure converts TRIM vacancies to displacements per atom (<a href="#eq-displacements">13.10</a>)</td></tr>
+        <tr><td>Atomic number / relative atomic mass</td><td><em>Z</em> = 14, <em>A</em> = 28.09</td><td>—</td><td>Si-28 has 14 protons and 14 neutrons</td></tr>
+        <tr><td>Lattice constant</td><td>5.431 Å</td><td>amorphous</td><td>diamond cubic</td></tr>
+        <tr><td><em>n</em><sub>i</sub></td><td>1.0 × 10<sup>10</sup> cm<sup>−3</sup></td><td>—</td><td>textbook values range 9.65 × 10<sup>9</sup> to 1.45 × 10<sup>10</sup></td></tr>
+        <tr><td><em>N</em><sub>c</sub> / <em>N</em><sub>v</sub></td><td>2.86 × 10<sup>19</sup> / 3.10 × 10<sup>19</sup> cm<sup>−3</sup></td><td>—</td><td>Green (1990), with <em>E</em><sub>g</sub> = 1.124 eV; both ∝ <em>T</em><sup>3/2</sup></td></tr>
+        <tr><td>Mobility <em>µ</em><sub>n</sub> / <em>µ</em><sub>p</sub></td><td>1,450 / 505 cm²/V·s</td><td>—</td><td>lightly doped (Sze &amp; Ng); tabulations vary 1,350–1,500 and 450–505</td></tr>
+        <tr><td>Saturation velocity</td><td>~1 × 10<sup>7</sup> cm/s</td><td>—</td><td>caps equation (1.6)</td></tr>
+        <tr><td>Dopant ionization energy (Deck 8 p. 9)</td><td>donors below <em>E</em><sub>c</sub>: Li 0.033, Sb 0.039, <b>P 0.045</b>, <b>As 0.054</b>, Bi 0.069 eV. Acceptors above <em>E</em><sub>v</sub>: <b>B 0.045</b>, Al 0.067, Ga 0.072, In 0.16 eV. Au, deep: 0.54 eV below <em>E</em><sub>c</sub> and 0.29 eV above <em>E</em><sub>v</sub></td><td>—</td><td>P, As and B are the production dopants: shallow, soluble to beyond 10<sup>20</sup> cm<sup>−3</sup>, immobile. In at 0.16 eV is only partly ionized at 300 K (about 70 % at 10<sup>16</sup> cm<sup>−3</sup>); gold does not dope but acts as a generation–recombination centre. Infrared spectroscopy gives Sb 43 meV rather than 39. <a href="m01-semiconductor-background.html">M01 §3</a></td></tr>
+        <tr><td>Degenerate doping</td><td>Si:P insulator–metal transition at 3.7 × 10<sup>18</sup> cm<sup>−3</sup>; <em>E</em><sub>F</sub> within 3<em>kT</em> of <em>E</em><sub>c</sub> near 1.4 × 10<sup>18</sup> cm<sup>−3</sup> at 300 K</td><td>—</td><td>beyond these (1.4) and the Boltzmann tail fail; MOSFET source and drain, 10<sup>19</sup> to beyond 10<sup>20</sup> cm<sup>−3</sup>, are degenerate</td></tr>
+        <tr><td>Bulk Fermi potential <em>φ</em><sub>F</sub></td><td>0.298, 0.357, 0.417, 0.476 V at <em>N</em><sub>a</sub> = 10<sup>15</sup>, 10<sup>16</sup>, 10<sup>17</sup>, 10<sup>18</sup> cm<sup>−3</sup></td><td>—</td><td>with <em>n</em><sub>i</sub> = 1.0 × 10<sup>10</sup> cm<sup>−3</sup> (<a href="#eq-efermi">1.4</a>)</td></tr>
+        <tr><td>Mean electron–hole pair creation energy</td><td><b>3.6 eV</b></td><td><b>17 eV</b> (17 ± 1 eV)</td><td>the quantity that sets collected charge; larger than <em>E</em><sub>g</sub> because some energy goes to phonons. Energy in the oxide yields nearly five times fewer carriers</td></tr>
+        <tr><td>Electron mobility</td><td>see (1.6)</td><td>about 20 cm²/V·s</td><td>electrons leave a biased gate oxide within a picosecond; holes hop, many orders of magnitude more slowly (<a href="#eq-holes">14.4</a>)</td></tr>
+        <tr><td>Si 2p core-level binding energy</td><td>~99 eV</td><td>—</td><td><b>the figure the lectures use</b> to count ionizations; see the note below</td></tr>
+        <tr><td>Threshold displacement energy <em>E</em><sub>d</sub></td><td><b>~21 eV</b></td><td>&mdash;</td><td>published values 13&ndash;25 eV; the choice changes a calculated vacancy count materially. <b>TRIM's default for Si is 15 eV</b>, giving about 1.4 times the vacancies (<a href="#eq-displacements">13.10</a>)</td></tr>
+        <tr><td>Maximum elastic recoil from a 1 MeV neutron</td><td>133 keV</td><td>&mdash;</td><td>4<em>Mm</em>/(<em>M</em>+<em>m</em>)&sup2; = 0.133 for <em>A</em> = 28</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box warn">
+      <span class="box-title">Two different "ionization energies" for silicon</span>
+      <p>
+        The lectures divide an incident particle's energy by <b>99.42 eV</b> to estimate how
+        many silicon atoms it ionizes, a figure the slide labels as the binding energy of the
+        outermost orbital. It is in fact the binding energy of a silicon <b>2p core</b>
+        electron; the outermost valence electrons are bound by a few eV, not a hundred. The quantity used throughout the radiation-effects literature is the mean
+        <b>electron–hole pair creation energy</b>, <b>3.6 eV in silicon</b> and about
+        <b>17 eV in SiO₂</b>, which is what determines the charge a device actually
+        collects and is larger than the 1.12 eV bandgap because part of the deposited
+        energy goes into lattice vibrations rather than carriers. The two answer different
+        questions and differ by a factor near 28. <b>Use 99 eV where the course's own
+        arithmetic is being reproduced, and 3.6 eV for any estimate of collected charge.</b>
+      </p>
+    </div>
+
+    <h3>Wide-bandgap materials, for comparison</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Material</th><th><em>E</em><sub>g</sub> (eV)</th><th>Relative permittivity</th><th>Why it appears in this course</th></tr></thead>
+      <tbody>
+        <tr><td>Germanium</td><td>0.66</td><td>16.0</td><td>the first transistor material; too leaky and no usable oxide. <em>n</em><sub>i</sub> about 2 × 10<sup>13</sup> cm<sup>−3</sup> at 300 K; intrinsic near 390 K at 10<sup>15</sup> cm<sup>−3</sup> (M01)</td></tr>
+        <tr><td>Silicon</td><td>1.12</td><td>11.7</td><td>the baseline</td></tr>
+        <tr><td>Gallium arsenide</td><td>1.42</td><td>12.9</td><td>high-mobility and optoelectronic devices; solar cells</td></tr>
+        <tr><td>Silicon carbide (4H)</td><td>3.26</td><td>9.7</td><td>high temperature and high voltage; the Venus lander material</td></tr>
+        <tr><td>Gallium nitride</td><td>3.4</td><td>8.9</td><td>high-frequency power devices</td></tr>
+        <tr><td>Gallium oxide (β)</td><td>4.8</td><td>10</td><td>ultra-wide-bandgap power research</td></tr>
+        <tr><td>Aluminium nitride</td><td>6.2</td><td>8.5</td><td>ultra-wide-bandgap; also a package ceramic</td></tr>
+        <tr><td>Diamond</td><td>5.47</td><td>5.7</td><td>the limiting case for temperature and radiation tolerance</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Radiation sources used for testing</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Source</th><th>Emission</th><th>Half-life</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td>Cobalt-60</td><td>β⁻ then γ at 1.173 and 1.332 MeV</td><td>5.27 y</td><td>the standard total-dose source; the short half-life forces replacement</td></tr>
+        <tr><td>Caesium-137</td><td>β⁻ then γ at 662 keV</td><td>30.1 y</td><td>total dose where a longer-lived source is wanted; the lowest-rate irradiators in the M14 anneal data</td></tr>
+        <tr><td>Americium-241</td><td>α at 5.49 MeV, γ at 59.5 keV</td><td>432 y</td><td>alpha source; also the ionization smoke detector</td></tr>
+        <tr><td>Carbon-14</td><td>β⁻, endpoint 156 keV</td><td>5,700 y</td><td>the beta-decay example; also the body's own activity</td></tr>
+        <tr><td>Potassium-40</td><td>β⁻ and γ at 1.461 MeV</td><td>1.25 × 10<sup>9</sup> y</td><td>0.0117 % of natural potassium; the background in food and in the body</td></tr>
+        <tr><td>X-ray tube</td><td>bremsstrahlung continuum to the tube voltage, plus the anode's characteristic lines</td><td>—</td><td>total dose at low energy; spectrum shaped by filtration. Laboratory testers near 10 keV need three corrections against cobalt-60: 1 rad(SiO₂) ≈ 1.8 rad(Si) (<a href="#eq-dose-ratio">14.1</a>), a lower fractional yield, and dose enhancement next to high-<em>Z</em> layers</td></tr>
+      </tbody>
+    </table>
+    <p class="card-d">
+      Decay energies and half-lives from standard nuclear data tables. These are used from
+      <a href="m04-radiation-species-decay.html">M04</a> onward.
+    </p>
+    </div>
+
+    <h3>Layer densities for TRIM (M13)</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Material</th><th>ρ (g/cm³)</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Silicon</td><td>2.329 measured; 2.33 in NIST PSTAR and (12.5)</td><td>TRIM proposes 2.32, within 0.3 % — kept</td></tr>
+        <tr><td>SiO₂, amorphous (thermal gate or field oxide)</td><td><b>2.20</b></td><td>TRIM's stoichiometry-weighted proposal is not the compound's density; type this in</td></tr>
+        <tr><td>GaAs</td><td>5.32</td><td>the standard value; Deck 7 p. 24</td></tr>
+        <tr><td>Ga₂O₃, α (corundum structure)</td><td>6.44 (6.47 from lattice constants)</td><td><b>the value Deck 7 p. 24 prints</b>; use it to reproduce the course's exercise</td></tr>
+        <tr><td>Ga₂O₃, β (monoclinic, the stable phase)</td><td>5.88 tabulated (5.96 from lattice constants)</td><td>the phase grown as power-device substrates; depths 8–10 % deeper than a 6.44 run (8 % with 5.96, 9.5 % with 5.88)</td></tr>
+        <tr><td>Dry air near sea level</td><td>1.205 × 10<sup>−3</sup></td><td>tick Gas and check the density; by atom 78.4 % N, 21.1 % O, 0.47 % Ar (the course's two-element air, N : O = 80 : 20, is within two points). Atmospheric column 1033 g/cm²</td></tr>
+      </tbody>
+    </table>
+    <p class="card-d">
+      Every TRIM depth scales as 1/ρ (<a href="#eq-density">13.5</a>).
+      <a href="m13-srim-trim.html">M13 §4</a>
+    </p>
+    </div>
+
+    <h3>SRIM and TRIM settings, defaults and reference results (M13)</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Item</th><th>Value</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Damage option</td><td>Ion Distribution and Quick Calculation of Damage (default; the course's choice)</td><td>does not follow recoils; Full Damage Cascades does; sputtering needs Surface Sputtering, Monolayer Collision Steps or Full Damage Cascades</td></tr>
+        <tr><td>Ion defaults</td><td>H, 1.008 u, 10 keV, 0°</td><td>energy in keV; angle from the surface normal, up to 89.9°; mass is the most abundant isotope's</td></tr>
+        <tr><td>Target</td><td>up to 8 layers, up to 12 elements per layer</td><td>widths default to Å; the course works in µm; composition in atom fractions</td></tr>
+        <tr><td>Si damage energies</td><td><em>E</em><sub>d</sub> 15 eV, <em>E</em><sub>latt</sub> 2 eV, <em>E</em><sub>surf</sub> 4.7 eV</td><td>displacement, lattice binding and surface binding; set <em>E</em><sub>latt</sub> = 0 for a standard displacement count</td></tr>
+        <tr><td>Run parameters</td><td>Total Number of Ions 99999 (course: 500); AutoSave 10000; 100 depth bins</td><td>fixed default seed: identical inputs give identical ions</td></tr>
+        <tr><td>Monolayer spacing</td><td><em>N</em><sup>−1/3</sup> = 2.7 Å in silicon</td><td>Monolayer Collision Steps computes a collision in every one</td></tr>
+        <tr><td>Gas option</td><td>H, He, N, O, Ne, Ar, Kr, Xe</td><td>gas-phase stopping at standard temperature and pressure; gas and solid differ by under 10 % above 200 keV per nucleon, up to about a factor of two below</td></tr>
+        <tr><td>Compound correction</td><td>up to 20 %</td><td>about 150 of the 300-plus Compound Dictionary entries carry bonding data (H, C, N, O, F, S, Cl bonds)</td></tr>
+        <tr><td>Stopping-power accuracy</td><td>mean deviation 4.0 % H, 3.9 % He, 4.8 % Li, 5.8 % Be–U; 4.6 % overall</td><td>srim.org, SRIM-2013 table; the 2010 paper gives 3.9, 3.5, 4.6, 5.6 and 4.3 %</td></tr>
+        <tr><td>Energy range</td><td>10 eV to 2 GeV per nucleon</td><td>no nuclear reactions, significant above about 5 MeV per nucleon</td></tr>
+        <tr><td>Protons in Si, projected range</td><td>0.45 µm at 50 keV; 0.84 µm at 100 keV</td><td>in SiO₂ at 2.20 g/cm³, 0.57 µm at 50 keV; 100 keV protons leave 0.5 µm of SiO₂ with about 43 keV</td></tr>
+        <tr><td>Mass stopping at 100 keV (protons)</td><td>SiO₂ 533, Si 504 MeV·cm²/g</td><td>nearly equal linear stopping after multiplying by 2.20 and 2.33 g/cm³</td></tr>
+        <tr><td>Protons in dry air</td><td>1 MeV: CSDA 2.38 cm, projected 2.35 cm; 250 MeV: 42.9 g/cm²</td><td>at 1.205 × 10<sup>−3</sup> g/cm³; 42.9 g/cm² is 356 m of sea-level air, 4.2 % of the atmosphere's column</td></tr>
+        <tr><td>Energy partition, 100 keV proton in Si</td><td>at least 97 % to ionization</td><td>nuclear stopping 0.18 % of the total at 100 keV, 0.29 % at 50 keV; about 1 % integrated</td></tr>
+        <tr><td>Energy partition, 190 keV P in Si (full cascades)</td><td>ionization 44.3 % by the ion, 23.8 % by recoils; phonons 29.3 %; vacancies 2.6 %</td><td>about 2300 vacancies per ion (SRIM Tutorial #4)</td></tr>
+        <tr><td>Sputtering, 1 keV Ar on Si</td><td>about 0.87 atoms/ion</td><td>normal incidence; semi-empirical fit, about 10 %</td></tr>
+      </tbody>
+    </table>
+    <p class="card-d"><a href="m13-srim-trim.html">M13 §3–8</a></p>
+    </div>
+
+    <h3>Charge in SiO₂ (M14)</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Quantity</th><th>Value</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Fractional hole yield <em>f</em><sub>y</sub> at 1 MV/cm</td><td>cobalt-60 γ ≈ 0.9; 12 MeV electrons ≈ 0.9; 5 keV electrons ≈ 0.55; 700 keV protons ≈ 0.15; 2 MeV alphas ≈ 0.07</td><td>read from published curves, approximate; sparse tracks survive, dense ones recombine. Cobalt-60 at about 0.1 MV/cm or less: about 0.4</td></tr>
+        <tr><td>Trapped fraction <em>f</em><sub>ot</sub></td><td>a few % (hardened); 50–100 % (unhardened)</td><td>falls as the field rises (<a href="#eq-not">14.5</a>)</td></tr>
+        <tr><td>Location of trapped holes</td><td>within about 3–4 nm of the interface in hardened gate oxides</td><td>90 % within 5 nm in one study; through the bulk in isolation and some commercial oxides</td></tr>
+        <tr><td>Hole transport</td><td>hopping between sites about 1 nm apart</td><td>thermally activated above about 140 K; duration rises roughly as <em>t</em><sub>ox</sub><sup>4</sup>; normally over in much less than a second at room temperature</td></tr>
+        <tr><td>Proton (H⁺) transport</td><td>hops of about 0.26 nm</td><td>the spacing of oxygen atoms</td></tr>
+        <tr><td>Interface dangling-bond sites</td><td>of order 10<sup>13</sup> cm<sup>−2</sup></td><td>almost all passivated as Si–H before irradiation</td></tr>
+        <tr><td>Interface-trap buildup</td><td>10<sup>3</sup>–10<sup>4</sup> s to approach saturation; activation energy 0.82 eV</td><td>continues for months in some oxides; little or none under negative bias; no room-temperature anneal</td></tr>
+        <tr><td>Tunnel-annealing range</td><td>about 4 nm at 80 K; about 4–6 nm at room temperature</td><td>front advances 0.2–0.4 nm per decade of time (<a href="#eq-front">14.13</a>)</td></tr>
+        <tr><td>Thin-oxide limit</td><td>shift falls below the <em>t</em><sub>ox</sub>² law from roughly 12–20 nm; nearly immune below about 10 nm</td><td>6 nm oxide: interface-trap buildup a factor of 16 below the extrapolation; a 5 nm tunnel oxide showed no measurable increase after 8 Mrad</td></tr>
+        <tr><td>Isolation oxide thickness</td><td>100–1000 nm</td><td>LOCOS gave way to shallow-trench isolation below about 0.35 µm; not thinned by scaling</td></tr>
+        <tr><td>Processing</td><td>post-oxidation N₂ anneal above about 875 °C</td><td>creates oxygen vacancies and sharply increases trapped charge</td></tr>
+      </tbody>
+    </table>
+    <p class="card-d"><a href="m14-total-ionizing-dose.html">M14 §3–7</a></p>
+    </div>
+
+    <h3>Total-dose testing and hardness levels (M14)</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Item</th><th>Value</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>MIL-STD-883 Test Method 1019 (revision 1019.9, current as of 2019)</td><td>cobalt-60 only (since the 1991 revision); <b>50–300 rad(Si)/s</b></td><td>extended room-temperature anneal for parts that fail at high rate</td></tr>
+        <tr><td>TM 1019 MOS accelerated anneal (rebound test)</td><td>irradiate to the rated dose and test; a further 50 % untested; bake <b>168 h at 100 °C</b> under bias; test</td><td>anneals trapped holes and leaves interface traps: the end state of a long exposure</td></tr>
+        <tr><td>TM 1019 condition D (bipolar linear)</td><td>at or below 10 mrad(Si)/s, with a 1.5× overtest</td><td>ELDRS; in linear circuits it appears below about 1 rad(Si)/s</td></tr>
+        <tr><td>ESCC Basic Specification 22900 (Issue 5, 2016)</td><td>cobalt-60, or electrons of at least 1 MeV; <b>0.1–50 rad(Si)/s</b></td><td>enclosure of at least 1.5 mm Pb lined with at least 0.7 mm Al</td></tr>
+        <tr><td>ESCC 22900 post-irradiation</td><td>evaluation: biased room-temperature anneal measured at 24, 48 and 168 h, then 168 h at 100 °C biased. Qualification and lot acceptance: 24 h biased room temperature, then 168 h at 100 °C biased</td><td>tracks both components through the annealing curve</td></tr>
+        <tr><td>ESCC 22900 low-rate test</td><td>0.01 rad(Si)/s or below, against parts irradiated at least 100 times faster</td><td>ELDRS-sensitive if the median of the most sensitive parameter is enhanced by more than 1.5; window 2, 0.01–0.1 rad(Si)/s, when time-dependent or true dose-rate effects are suspected</td></tr>
+        <tr><td>Prompt dose rate (nuclear weapon)</td><td>10<sup>8</sup>–10<sup>12</sup> rad(Si)/s</td><td>MIL-STD-883 TM 1020 (latchup), 1021 (digital upset), 1023 (linear response)</td></tr>
+        <tr><td>RHA designators, MIL-PRF-38535</td><td>M 3, D 10, P 30, L 50, R 100, F 300, G 500, H 1000 krad(Si)</td><td>ESCC uses a different letter scheme, in which F denotes 50 krad(Si). A designation certifies a lot, a bias and a test method, and says nothing about single-event effects</td></tr>
+        <tr><td>Mission requirement</td><td>over 90 % of NASA missions before 2004: 100 krad(Si) or less</td><td>behind a nominal shield such as 70 mils (1.78 mm) of Al, with a radiation design margin of at least 2</td></tr>
+        <tr><td>Shielding</td><td>belt-electron dose cut off near 0.9 cm of Al (three-month GTO)</td><td>beyond about a centimetre, protons and bremsstrahlung set a floor and added mass buys little</td></tr>
+        <tr><td>Measured commercial failures</td><td>128-Mb NAND flash erase: 8 krad(Si) biased, 45 krad(Si) unbiased. Multilevel NOR flash: 12 krad(Si). Isolation leakage: about 10 krad(Si). Analog: as low as 1 krad(Si)</td><td>a hardened processor such as the RAD750 reaches hundreds of krad(Si) to about a megarad</td></tr>
+      </tbody>
+    </table>
+    <p class="card-d"><a href="m14-total-ionizing-dose.html">M14 §1, §2 and §8</a></p>
+    </div>
+
+    <h3>Photon mass attenuation coefficients, &mu;/&rho; (cm&sup2;/g)</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Material</th><th>&rho; (g/cm&sup3;)</th><th>100 keV</th><th>500 keV</th><th>1 MeV</th><th>1.25 MeV</th></tr></thead>
+      <tbody>
+        <tr><td>Silicon (<em>Z</em> = 14)</td><td>2.33</td><td>1.835 × 10⁻¹</td><td>8.748 × 10⁻²</td><td>6.361 × 10⁻²</td><td>5.688 × 10⁻²</td></tr>
+        <tr><td>Oxygen (<em>Z</em> = 8)</td><td>—</td><td>1.551 × 10⁻¹</td><td>8.729 × 10⁻²</td><td>6.372 × 10⁻²</td><td>5.697 × 10⁻²</td></tr>
+        <tr><td>Aluminium (<em>Z</em> = 13)</td><td>2.70</td><td>1.704 × 10⁻¹</td><td>8.445 × 10⁻²</td><td>6.146 × 10⁻²</td><td>5.496 × 10⁻²</td></tr>
+        <tr><td>Lead (<em>Z</em> = 82)</td><td>11.35</td><td><b>5.549</b></td><td>1.614 × 10⁻¹</td><td>7.102 × 10⁻²</td><td>5.876 × 10⁻²</td></tr>
+        <tr><td>SiO₂ (mass-weighted)</td><td>~2.20</td><td>1.684 × 10⁻¹</td><td>8.738 × 10⁻²</td><td>6.367 × 10⁻²</td><td>5.693 × 10⁻²</td></tr>
+      </tbody>
+    </table>
+    <p class="card-d">
+      NIST X-Ray Mass Attenuation Coefficients (Hubbell &amp; Seltzer); SiO₂ row computed by
+      Bragg additivity from the Si and O rows with <em>w</em><sub>Si</sub> = 0.467 and
+      <em>w</em><sub>O</sub> = 0.533. Notice the pattern: at 1 MeV every entry lies within
+      15 % of every other. Among the light entries that is the <em>Z</em>/<em>A</em> result —
+      Compton dominates and the coefficient barely varies. Lead is a coincidence rather than
+      an instance of it: its <em>Z</em>/<em>A</em> is 0.396 against silicon's 0.498, so
+      Compton alone would put it 21 % <b>lower</b>, and a residual photoelectric term worth
+      about a fifth of its attenuation more than compensates. Lead separates decisively only
+      at low energy, where photoelectric absorption and its <em>Z</em>⁴–<em>Z</em>⁵
+      dependence take over. Silicon's
+      mass <em>energy-absorption</em> coefficient at 1 MeV is 2.778 × 10⁻², less than half its
+      attenuation coefficient. <a href="m10-photon-interaction.html">M10 §7–8</a>
+    </p>
+    </div>
+
+    <h3>Protons in silicon: stopping power and range</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Energy</th><th>Total <em>S</em>/&rho; (MeV·cm²/g)</th><th>CSDA range (g/cm²)</th><th>Range in Si</th><th>Detour factor</th></tr></thead>
+      <tbody>
+        <tr><td>10 keV</td><td>337</td><td>5.29 × 10⁻⁵</td><td>0.23 µm</td><td>0.552</td></tr>
+        <tr><td>55 keV</td><td><b>551 (peak)</b></td><td>1.46 × 10⁻⁴</td><td>0.63 µm</td><td>0.782</td></tr>
+        <tr><td>100 keV</td><td>505</td><td>2.31 × 10⁻⁴</td><td>0.99 µm</td><td>0.850</td></tr>
+        <tr><td>1 MeV</td><td>175</td><td>3.84 × 10⁻³</td><td>16.5 µm</td><td>0.982</td></tr>
+        <tr><td>2 MeV</td><td>112</td><td>1.12 × 10⁻²</td><td>48 µm</td><td>0.990</td></tr>
+        <tr><td>10 MeV</td><td>34.6</td><td>1.67 × 10⁻¹</td><td>715 µm</td><td>0.995</td></tr>
+        <tr><td>100 MeV</td><td>5.84</td><td>9.74</td><td>4.18 cm</td><td>0.997</td></tr>
+        <tr><td>1 GeV</td><td>1.80</td><td>4.01 × 10²</td><td>1.72 m</td><td>0.998</td></tr>
+      </tbody>
+    </table>
+    <p class="card-d">
+      NIST PSTAR, protons in silicon (<em>I</em> = 173 eV, &rho; = 2.33 g/cm³). Range in
+      silicon is CSDA/&rho;. Two things to carry: a 10 MeV proton just crosses a standard
+      600 µm wafer, and the range follows <em>R</em> ∝ <em>E</em><sup>1.6</sup> to
+      <em>E</em><sup>1.8</sup>, so doubling the energy roughly triples the penetration. The
+      peak-to-entrance stopping-power ratio for a single 10 MeV proton is 15.9; averaged over
+      a beam with ~1 % straggling it falls to about 5, and it falls with ion mass — about 1.6
+      for iron at the same energy per nucleon.
+      <a href="m12-stopping-power-range.html">M12 §5–7</a>
+    </p>
+    </div>
+
+    <h2 id="conversions">10 · Unit conversions</h2>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>From</th><th>To</th><th>Factor</th></tr></thead>
+      <tbody>
+        <tr><td>1 eV</td><td>J</td><td>1.602 176 634 × 10<sup>−19</sup></td></tr>
+        <tr><td>1 cm</td><td>m</td><td>10<sup>−2</sup> — so 1 cm<sup>−3</sup> = 10<sup>6</sup> m<sup>−3</sup></td></tr>
+        <tr><td>1 cm²</td><td>m²</td><td>10<sup>−4</sup></td></tr>
+        <tr><td>1 µm</td><td>cm</td><td>10<sup>−4</sup></td></tr>
+        <tr><td>1 nm</td><td>cm</td><td>10<sup>−7</sup> — so (100 nm)² = 10<sup>−10</sup> cm², and a 10 nm oxide is 10<sup>−6</sup> cm</td></tr>
+        <tr><td>1 Å</td><td>nm</td><td>0.1</td></tr>
+        <tr><td>1 Å</td><td>cm</td><td>10<sup>−8</sup> — so any TRIM output “per Å” times 10<sup>8</sup> is “per cm”</td></tr>
+        <tr><td>1 mil</td><td>mm</td><td>0.0254 — a 70 mil aluminium shield is 1.78 mm</td></tr>
+        <tr><td>1 V/cm</td><td>V/m</td><td>100</td></tr>
+        <tr><td>1 MV/cm</td><td>V across an oxide</td><td>multiply by <em>t</em><sub>ox</sub> in cm: 1 MV/cm across 500 nm is 50 V</td></tr>
+        <tr><td>1 F/m</td><td>F/cm</td><td>10<sup>−2</sup></td></tr>
+        <tr><td><em>D</em><sub>it</sub> (cm<sup>−2</sup> eV<sup>−1</sup>)</td><td><em>C</em><sub>it</sub> (F/cm²)</td><td>multiply by <em>q</em> = 1.602 × 10<sup>−19</sup> C: 10<sup>12</sup> cm<sup>−2</sup> eV<sup>−1</sup> → 1.6 × 10<sup>−7</sup> F/cm² (<a href="#eq-swing">14.10</a>)</td></tr>
+        <tr><td><em>S</em> in mV/decade</td><td>V/decade</td><td>10<sup>−3</sup> — (<a href="#eq-ioff">14.11</a>) needs <em>S</em> in the unit of Δ<em>V</em><sub>th</sub></td></tr>
+        <tr><td>1 g/cm³</td><td>mg/cm³</td><td>10<sup>3</sup></td></tr>
+        <tr><td>Mass per area (g/cm²)</td><td>length (cm)</td><td>divide by ρ (<a href="#eq-density">13.5</a>): 2.87 × 10<sup>−3</sup> g/cm² of air is 2.4 cm at 1.205 × 10<sup>−3</sup> g/cm³; 42.9 g/cm² is 356 m of sea-level air, and the atmosphere's 1033 g/cm² is 8.6 km of it</td></tr>
+        <tr><td>Mass fraction</td><td>atom fraction</td><td>divide each by its atomic weight and renormalise; TRIM's Atom Stoich column takes atom fractions. Dry air, 75.5 / 23.2 / 1.3 % N / O / Ar by mass → 78.4 / 21.1 / 0.47 % by atom</td></tr>
+        <tr><td>Ion energy</td><td>energy per nucleon</td><td>divide by the mass number: 100 keV oxygen (16 u) carries 6.25 keV per nucleon. Compare ions at equal <em>E</em>/<em>M</em>, never at equal <em>E</em></td></tr>
+        <tr><td>1 rad</td><td>Gy</td><td>0.01 — so 100 rad = 1 Gy, 1 krad = 10 Gy, 1 Mrad = 10<sup>4</sup> Gy</td></tr>
+        <tr><td>1 Gy</td><td>J/kg</td><td>1, by definition</td></tr>
+        <tr><td>1 rad</td><td>erg/g</td><td>100</td></tr>
+        <tr><td>1 rad</td><td>eV/g</td><td>6.24 × 10<sup>13</sup> (<a href="#eq-g0">14.3</a>); 6.242 × 10<sup>13</sup> to four figures (<a href="#eq-trim-dose">13.9</a>). 1 Gy = 6.242 × 10<sup>15</sup> eV/g</td></tr>
+        <tr><td>1 mrad(Si)/s</td><td>rad(Si)/s</td><td>10<sup>−3</sup> — so 10 mrad(Si)/s = 0.01 rad(Si)/s. At 25 rad(Si)/s, 8 krad(Si) takes 320 s; at 0.012 rad(Si)/s, about eight days</td></tr>
+        <tr><td>rad(SiO₂)</td><td>rad(Si)</td><td>through the ratio of µ<sub>en</sub>/ρ (<a href="#eq-dose-ratio">14.1</a>): <em>D</em><sub>SiO₂</sub>/<em>D</em><sub>Si</sub> = 1.003 for cobalt-60 (equal to 0.3 %), 0.558 at 10 keV, where 1 rad(SiO₂) ≈ 1.8 rad(Si)</td></tr>
+        <tr><td>1 Ci</td><td>Bq</td><td>3.7 × 10<sup>10</sup></td></tr>
+        <tr><td>1 Sv</td><td>rem</td><td>100</td></tr>
+        <tr><td>1 MeV·cm²/mg</td><td>MeV·cm²/g</td><td>10<sup>3</sup></td></tr>
+        <tr><td>1 MeV·cm²/mg in silicon</td><td>keV/µm</td><td>multiply by the density: <b>233 with ρ = 2.33 g/cm³</b>, the value (<a href="#eq-let">12.5</a>) and NIST PSTAR use; 232.9 with the measured 2.329 g/cm³</td></tr>
+        <tr><td>1 MeV·cm²/mg in silicon</td><td>fC/µm</td><td>10.4 — divide the above by the 3.6 eV pair energy and multiply by <em>q</em>; both densities round to 10.4. Inversely, <b>96.4 MeV·cm²/mg gives 1 pC/µm with 2.33 g/cm³, or 96.5 with 2.329 g/cm³</b></td></tr>
+        <tr><td>1 eV/Å</td><td>keV/µm</td><td>10 — the unit of TRIM's ionization and phonon plots, per ion</td></tr>
+        <tr><td>1 eV/Å in silicon</td><td>MeV·cm²/mg, fC/µm</td><td>0.0429 MeV·cm²/mg (with 2.33 g/cm³), which liberates 0.445 fC/µm at 3.6 eV per pair</td></tr>
+        <tr><td>TRIM RANGE.txt, atoms/(Å·ion)</td><td>(atoms/cm³)/(atoms/cm²) = cm<sup>−1</sup></td><td>10<sup>8</sup>; then times the fluence for a concentration in atoms/cm³ (<a href="#eq-conc">13.6</a>)</td></tr>
+        <tr><td>TRIM vacancies/(Å·ion)</td><td>vacancies/cm³</td><td>10<sup>8</sup> × fluence (cm<sup>−2</sup>); divide by 4.99 × 10<sup>22</sup> atoms/cm³ for displacements per silicon atom (<a href="#eq-displacements">13.10</a>)</td></tr>
+        <tr><td>TRIM energy per ion (eV) over a layer</td><td>dose</td><td>Φ<em>E</em><sub>layer</sub>/(ρ<em>t</em>) in eV/g, then ÷ 6.242 × 10<sup>13</sup> for rad of that layer's material (<a href="#eq-trim-dose">13.9</a>)</td></tr>
+        <tr><td>Photon wavelength ↔ energy</td><td>—</td><td><em>E</em>(eV) = 1239.8 / λ(nm). 1 MeV ↔ 1.24 pm; 1 keV ↔ 1.24 nm; 2.48 eV ↔ 500 nm</td></tr>
+        <tr><td>µ/ρ in cm²/g</td><td>µ in cm⁻¹</td><td>multiply by the density in g/cm³. <b>Thickness must then be in cm</b>: 600 µm = 0.06 cm</td></tr>
+        <tr><td>Attenuation by a factor <em>n</em></td><td>µ<em>x</em></td><td>ln <em>n</em> — a factor of 10 needs 2.30 mean free paths, a factor of 100 needs 4.61</td></tr>
+        <tr><td>Photon wavelength <em>λ</em> (nm)</td><td>energy (eV)</td><td><em>E</em> = 1,239.84 / <em>λ</em></td></tr>
+        <tr><td>1 T</td><td>gauss</td><td>10<sup>4</sup> — Earth's 50 µT is 0.5 G</td></tr>
+        <tr><td>1 atm</td><td>bar</td><td>1.013 25</td></tr>
+        <tr><td><em>T</em> in °C</td><td>K</td><td>add 273.15</td></tr>
+        <tr><td>1 year</td><td>s</td><td>3.156 × 10<sup>7</sup> — within 0.5 % of π × 10<sup>7</sup></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

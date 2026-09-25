@@ -1,0 +1,1645 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M13 · SRIM and TRIM — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M13 · SRIM and TRIM</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 13</p>
+    <h1>SRIM and TRIM</h1>
+    <p class="lede">
+      The course's simulation tool: what a binary-collision Monte Carlo calculation computes,
+      how an ion and a layered target are specified, how each output converts to range,
+      ionization, displacement and sputtering, and which physics the program leaves out.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M12, M11, M08</span>
+      <span><b>Read time</b> ~45 min</span>
+      <span><b>Sources</b> Deck 7; Lecture 7; SRIM manual (srim.org); NIST PSTAR; Ziegler et al. (2010); Stoller et al. (2013)</span>
+    </div>
+
+    <p>
+      <a href="m12-stopping-power-range.html">M12</a> defined stopping power, range,
+      straggling and linear energy transfer for an average particle, and closed by describing
+      the binary-collision Monte Carlo method that turns those averages into distributions.
+      This module covers the program the course uses to perform that calculation: the SRIM
+      package and its transport engine, TRIM. Given an ion species, an energy and a stack of
+      target layers, TRIM follows thousands of individual ions and the target atoms they set
+      in motion, and reports where the ions come to rest and, depth by depth, how their energy
+      divides between target electrons, displaced atoms and lattice vibration.
+    </p>
+    <p>
+      A calculation of this kind is needed because the quantities that decide a device's
+      response are not the averages that stopping-power tables list. A device is a stack of
+      layers that differ in composition and density, and what matters is where in that stack
+      the ions stop, where their ionization concentrates and where vacancies form. Part of
+      each ion's energy is also carried away from its own path by the target atoms it strikes,
+      which then ionize and displace atoms of their own. No closed-form expression gives these
+      depth distributions for a layered target; a calculation that follows individual
+      histories and accumulates statistics over many of them does.
+    </p>
+    <p>
+      Every output of the program is a quantity already defined in the course. The ion-range
+      distribution is the projected range and straggling of
+      <a href="m12-stopping-power-range.html">M12 §5</a>. The ionization profile, divided by
+      the electron–hole pair creation energy of <a href="m08-ionization-excitation.html">M08</a>,
+      gives the charge liberated per ion, and summed over a fluence it gives the total ionizing
+      dose of <a href="m14-total-ionizing-dose.html">M14</a>. The vacancy profile is the
+      displacement damage of <a href="m11-displacement-damage.html">M11</a>. The module treats
+      the physics the program implements first, then the specification of an ion and a target,
+      then each output and the conversions that make it a device quantity, and finally the
+      program's accuracy, its limits, and the practical matters of installing it and saving
+      its results.
+    </p>
+
+    <h2>1 · SRIM and TRIM</h2>
+    <p>
+      SRIM names a package of programs; TRIM names one program inside it. The distinction
+      matters because the two answer different questions — one returns tabulated averages for a
+      single material in under a second, the other follows ions through a layered target and
+      returns distributions — and the course uses the second.
+    </p>
+    <p>
+      SRIM, the <b>Stopping and Range of Ions in Matter</b>, is a group of programs written by
+      J. F. Ziegler, J. P. Biersack and M. D. Ziegler that calculates the stopping and range
+      of ions from 10 eV to 2 GeV per nucleon in any element or compound. Its stopping powers
+      are not computed from first principles: they are fits to a compilation of measured
+      stopping values, which the 2010 release extended to more than 28,000 data points. The
+      package began in 1983 as a DOS program and moved to Windows in 1989. The current release
+      is SRIM-2013; the program is free for non-commercial use. The authors' published
+      description of the 2010 revision (Ziegler, Ziegler and Biersack, 2010) states that,
+      besides adding data, it improved the corrections for compounds and the stopping of heavy
+      ions. The version notes on srim.org describe SRIM-2010 differently, as leaving the basic
+      calculations of SRIM-2003 unchanged while fixing reported bugs and adding features.
+    </p>
+    <p>
+      The SRIM main menu offers two routes into the calculation. The <b>Stopping/Range
+      Tables</b> module takes one ion and one homogeneous material and tabulates, against ion
+      energy, the electronic and nuclear stopping powers, the projected range, and the
+      longitudinal and lateral straggling. These are the quantities of
+      <a href="m12-stopping-power-range.html">M12</a> equations (12.2), (12.6) and (12.7),
+      evaluated with SRIM's stopping powers, and the table appears in under a second. The
+      <b>TRIM Calculation</b> route opens TRIM, the <b>Transport of Ions in Matter</b>, which
+      accepts targets of up to eight layers built from compound materials, follows ions one at
+      a time, and calculates both the final three-dimensional distribution of the ions and the
+      energy-loss phenomena along their paths: target damage, sputtering, ionization and phonon
+      production. The computing time per ion grows with the number of collisions that must be
+      followed, so heavier ions, higher energies and the more detailed damage options all
+      lengthen a run, and the accuracy of every result is set by the number of ions followed.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 240" role="img" aria-labelledby="f13-1-t">
+        <title id="f13-1-t">The SRIM package: the main menu leads either to the Stopping and Range Tables or to the TRIM Monte Carlo calculation</title>
+        <rect x="140" y="10" width="160" height="34" rx="4" class="dg-fill"/>
+        <text x="220" y="32" class="dg-label" text-anchor="middle">SRIM main menu</text>
+        <line x1="190" y1="44" x2="118" y2="76" class="dg-rule" stroke-width="1.2" marker-end="url(#f13-1-a)"/>
+        <line x1="250" y1="44" x2="322" y2="76" class="dg-acc" stroke-width="1.8" marker-end="url(#f13-1-b)"/>
+        <rect x="8" y="80" width="206" height="152" rx="4" class="dg-fill"/>
+        <text x="111" y="101" class="dg-label" text-anchor="middle">Stopping/Range Tables</text>
+        <g class="dg-label-sm">
+          <text x="20" y="126">one ion, one material</text>
+          <text x="20" y="145">S<tspan baseline-shift="sub" style="font-size:75%">e</tspan> and S<tspan baseline-shift="sub" style="font-size:75%">n</tspan> against energy</text>
+          <text x="20" y="164">projected range, straggling</text>
+          <text x="20" y="183">averages only</text>
+          <text x="20" y="202">under one second</text>
+        </g>
+        <rect x="226" y="80" width="206" height="152" rx="4" class="dg-fill"/>
+        <rect x="226" y="80" width="206" height="152" rx="4" class="dg-acc" stroke-width="1.8"/>
+        <text x="329" y="101" class="dg-label" text-anchor="middle">TRIM Calculation</text>
+        <g class="dg-label-sm">
+          <text x="238" y="126">ion by ion, recoils included</text>
+          <text x="238" y="145">up to eight compound layers</text>
+          <text x="238" y="164">3-D stopping positions</text>
+          <text x="238" y="183">ionization, phonons, damage,</text>
+          <text x="238" y="202">sputtering, all against depth:</text>
+          <text x="238" y="221">distributions, not averages</text>
+        </g>
+        <defs>
+          <marker id="f13-1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+          <marker id="f13-1-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> Both routes use the same stopping powers. The tables return the
+        averages of M12 for one material; TRIM follows individual ions through a layered
+        target and returns every quantity as a distribution in depth, which is the form a
+        device calculation needs.
+      </figcaption>
+    </figure>
+
+    <div class="box defn">
+      <p class="box-title">Monte Carlo calculation</p>
+      <p>
+        A Monte Carlo calculation estimates an average by simulating many independent random
+        histories, each built from steps whose outcomes are drawn from known probability
+        distributions, and averaging over them. In TRIM one history is one ion: the impact
+        parameter of each collision is drawn at random, the collision's outcome follows from
+        the interatomic potential, and the ion's position and energy after each step follow from
+        the previous ones. The method is required because the quantity of interest — for
+        example the probability that an ion stops at a given depth in a given layer — results
+        from thousands of random collisions per ion, each depending on the outcome of the one
+        before, and no analytic treatment follows that chain through several layers. Its cost is
+        statistical: a result built from <em>N</em> histories carries a random error that
+        falls only as 1/√<em>N</em> (§3).
+      </p>
+    </div>
+
+    <p>
+      Deck 7 p. 20 sets out the procedure the course follows, and the rest of the module keeps
+      its order: specify the incident ion; specify the layers, first single-element materials
+      such as silicon and then compounds such as SiO₂; run the TRIM calculation; save the data.
+      The Stopping/Range Tables remain useful beside it as a fast independent check, because a
+      TRIM run on a single homogeneous layer must return a mean stopping depth close to the
+      tabulated projected range for the same ion and energy.
+    </p>
+
+    <h2>2 · The physics inside TRIM</h2>
+    <p>
+      TRIM implements the binary-collision Monte Carlo method of
+      <a href="m12-stopping-power-range.html">M12 §8</a> with four specific choices: a rule
+      for selecting collisions, an interatomic potential for computing them, an electronic
+      stopping model for the path between them, and a set of assumptions about the target.
+      Each choice fixes what the output can contain, and the limits of §8 follow directly from
+      them.
+    </p>
+    <p>
+      The <b>binary collision approximation</b> treats the ion's interaction with the target
+      as a sequence of isolated two-body elastic collisions, each with a single target atom,
+      separated by straight segments of free flight along which the ion loses energy
+      continuously to target electrons. The approximation holds while the moving atom's
+      kinetic energy is far above the few-electronvolt energies that bind atoms in a solid,
+      because each collision is then brief and involves only the nearest atom. TRIM therefore
+      ends each trajectory once the moving atom's energy falls to a low cut-off: in the
+      full-cascade mode a recoil is followed until its energy drops below the lowest
+      displacement energy among the target atoms.
+    </p>
+    <p>
+      To save computation, TRIM does not calculate a collision in every atomic layer. It uses
+      statistical algorithms that let the ion jump between calculated collisions and averages
+      the collision results over the intervening path, a scheme called the free-flight path.
+      The alternative <b>Monolayer Collision Steps</b> option calculates a collision in every
+      monolayer, whose spacing TRIM takes as <em>N</em><sup>−1/3</sup> for a target of
+      <em>N</em> atoms per cm³ — 2.7 Å in silicon. It returns the same averaged quantities and
+      takes far longer. It is used where every individual collision must be recorded, and it
+      underlies the option for calculating surface sputtering, because whether an atom is
+      sputtered is decided in the outermost monolayers.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 222" role="img" aria-labelledby="f13-2-t">
+        <title id="f13-2-t">One ion history in TRIM: straight free-flight segments with continuous electronic loss, separated by binary collisions, one of which launches a recoil</title>
+        <line x1="34" y1="22" x2="34" y2="206" class="dg-rule" stroke-width="1.6"/>
+        <text x="40" y="20" class="dg-label-sm">surface</text>
+        <path d="M6,112 L110,108 L192,128 L270,112 L330,142 L374,152" class="dg-acc" stroke-width="2.2" fill="none" marker-start="url(#f13-2-a)"/>
+        <g class="dg-ink">
+          <circle cx="110" cy="108" r="5"/><circle cx="192" cy="128" r="5"/>
+          <circle cx="270" cy="112" r="5"/><circle cx="330" cy="142" r="5"/>
+        </g>
+        <circle cx="376" cy="152" r="5" class="dg-acc-f"/>
+        <text x="384" y="156" class="dg-label-sm">at rest</text>
+        <text x="44" y="82" class="dg-label-sm">free flight: continuous loss to</text>
+        <text x="44" y="96" class="dg-label-sm">target electrons (ionization)</text>
+        <path d="M192,128 L226,168 L258,176" class="dg-line" stroke-width="1.6" fill="none"/>
+        <path d="M226,168 L236,196" class="dg-line" stroke-width="1.2" fill="none"/>
+        <circle cx="258" cy="176" r="3" class="dg-soft"/>
+        <circle cx="236" cy="196" r="3" class="dg-soft"/>
+        <text x="56" y="170" class="dg-label-sm">recoil: <tspan class="dg-math">T</tspan> &gt; <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">d</tspan>,</text>
+        <text x="56" y="184" class="dg-label-sm">displaced; followed only</text>
+        <text x="56" y="198" class="dg-label-sm">in the cascade options</text>
+        <path d="M270,112 L280,88" class="dg-guide" stroke-width="1.2" stroke-dasharray="3 2" fill="none"/>
+        <text x="250" y="60" class="dg-label-sm"><tspan class="dg-math">T</tspan> &lt; <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">d</tspan>: atom stays,</text>
+        <text x="250" y="74" class="dg-label-sm">energy ends as phonons</text>
+        <text x="300" y="204" class="dg-label-sm">binary collisions (●)</text>
+        <defs>
+          <marker id="f13-2-a" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> Schematic, not to scale. The ion's path is a chain of straight
+        segments; the electronic loss along them is what TRIM records as ionization, and the
+        angular changes all come from the collisions. A struck atom that receives more than
+        the displacement threshold <em>E</em><sub>d</sub> leaves its site and becomes a moving
+        atom in its own right; one that receives less stays and converts the energy to lattice
+        vibration. TRIM traces the displaced atom's own path only in the options that follow
+        recoils; the quick mode the course uses (§3) estimates its displacements analytically.
+      </figcaption>
+    </figure>
+
+    <p>
+      Each collision is computed from a screened Coulomb potential. Two nuclei repel as bare
+      point charges when they are much closer together than the radius of their inner
+      electron shells, and hardly at all when they are far apart, because each nucleus is then
+      surrounded by its own neutralising electron cloud. TRIM uses the universal potential of
+      Ziegler, Biersack and Littmark (ZBL), which multiplies the bare Coulomb interaction by a
+      single screening function of the separation measured in a screening length that depends
+      on both atomic numbers.
+    </p>
+
+    <div class="eq" id="m13-eq-zbl">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em>(<em>r</em>) = <span class="frac"><span class="num"><em>Z</em><sub>1</sub><em>Z</em><sub>2</sub><em>e</em>²</span><span class="den">4πε<sub>0</sub> <em>r</em></span></span> Φ<span class="dl">(</span><span class="frac"><span class="num"><em>r</em></span><span class="den"><em>a</em><sub>U</sub></span></span><span class="dl">)</span>,&nbsp;&nbsp; <em>a</em><sub>U</sub> = <span class="frac"><span class="num">0.8854 <em>a</em><sub>0</sub></span><span class="den"><em>Z</em><sub>1</sub><sup>0.23</sup> + <em>Z</em><sub>2</sub><sup>0.23</sup></span></span></div>
+        <div class="eq-num">(13.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em> potential energy of the ion–atom pair (eV) · <em>r</em> separation of the two
+        nuclei (Å) · <em>Z</em><sub>1</sub>, <em>Z</em><sub>2</sub> atomic numbers of the ion
+        and the target atom · <em>e</em>²/4πε<sub>0</sub> = 14.40 eV·Å · Φ the universal
+        screening function (dimensionless), equal to 1 at <em>r</em> = 0 and falling to 0 at
+        large <em>r</em>, a sum of four exponentials fitted to calculated potentials for many
+        ion–atom pairs · <em>a</em><sub>U</sub> universal screening length (Å) ·
+        <em>a</em><sub>0</sub> = 0.529 Å, the Bohr radius. For hydrogen on silicon
+        <em>a</em><sub>U</sub> = 0.165 Å; for oxygen on silicon 0.136 Å. Describes only the
+        elastic, nuclear-stopping collisions of <a href="m12-stopping-power-range.html">M12 §3</a>;
+        it carries no information about energy given to electrons.
+        On the formula sheet as <a href="formula-sheet.html#eq-zbl">(13.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      For each collision TRIM draws an impact parameter at random, obtains the scattering
+      angle from the potential through a fast analytic approximation to the classical
+      scattering integral (introduced by Biersack and Haggmark in 1980, the origin of TRIM's
+      range algorithms), and from the angle obtains the energy transferred to the struck atom.
+      The transfer follows from conservation of energy and momentum alone.
+    </p>
+
+    <div class="eq" id="m13-eq-transfer">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em> = <em>T</em><sub>max</sub> sin² <span class="frac"><span class="num">θ</span><span class="den">2</span></span>,&nbsp;&nbsp; <em>T</em><sub>max</sub> = <span class="frac"><span class="num">4<em>M</em><sub>1</sub><em>M</em><sub>2</sub></span><span class="den">(<em>M</em><sub>1</sub> + <em>M</em><sub>2</sub>)²</span></span> <em>E</em></div>
+        <div class="eq-num">(13.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em> kinetic energy given to the struck atom (eV) · <em>E</em> ion kinetic energy
+        before the collision (eV) · θ scattering angle in the centre-of-mass frame (rad) ·
+        <em>M</em><sub>1</sub>, <em>M</em><sub>2</sub> masses of ion and target atom (u; only
+        the ratio enters). The head-on case θ = π gives <em>T</em><sub>max</sub>, the result of
+        <a href="m04-radiation-species-decay.html">M04</a> equation (4.1) applied to an ion. The
+        mass factor 4<em>M</em><sub>1</sub><em>M</em><sub>2</sub>/(<em>M</em><sub>1</sub> +
+        <em>M</em><sub>2</sub>)² is 0.134 for hydrogen on silicon and 0.925 for oxygen on
+        silicon. Non-relativistic, elastic.
+        On the formula sheet as <a href="formula-sheet.html#eq-transfer">(13.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      Between collisions the ion loses energy to target electrons at a rate taken from SRIM's
+      fitted electronic stopping powers for that ion, energy and material. For a heavy ion
+      the charge state inside the target is represented by an <b>effective charge</b>: a
+      velocity-dependent charge that allows for the electrons the ion carries and for
+      screening by the target's own electrons, and that replaces the bare charge number in the
+      scaling of <a href="m12-stopping-power-range.html">M12</a> equation (12.8). This
+      continuous loss is the quantity TRIM reports as ionization.
+    </p>
+    <p>
+      A compound target needs the stopping power of a mixture. The starting point is
+      <b>Bragg's rule</b>, which treats each atom as stopping the ion independently of its
+      neighbours, so that the stopping of the compound is the atom-fraction-weighted sum of
+      the elemental values.
+    </p>
+
+    <div class="eq" id="m13-eq-bragg">
+      <div class="eq-body">
+        <div class="eq-math">ε<sub>c</sub> = Σ<sub><em>i</em></sub> <em>x</em><sub><em>i</em></sub> ε<sub><em>i</em></sub>,&nbsp;&nbsp; <em>S</em><sub>c</sub> = <em>N</em> ε<sub>c</sub></div>
+        <div class="eq-num">(13.3)</div>
+      </div>
+      <div class="eq-says">
+        ε<sub>c</sub>, ε<sub><em>i</em></sub> stopping cross-section of the compound and of
+        element <em>i</em>, the energy lost per atom per unit areal density (eV·cm²/atom) ·
+        <em>x</em><sub><em>i</em></sub> <b>atom</b> fraction of element <em>i</em>
+        (1/3 Si and 2/3 O for SiO₂) · <em>S</em><sub>c</sub> linear stopping power of the
+        compound (eV/cm) · <em>N</em> atomic density of the compound (atoms/cm³). Equivalent
+        to weighting mass stopping powers by <b>mass</b> fraction, the form
+        <a href="m10-photon-interaction.html">M10</a> equation (10.9) uses for attenuation
+        coefficients. Neglects chemical bonding; SRIM's compound correction, applied to the
+        materials of its Compound Dictionary, adjusts the result by up to 20 %, most for light
+        compounds such as hydrocarbons.
+        On the formula sheet as <a href="formula-sheet.html#eq-bragg">(13.3)</a>.
+      </div>
+    </div>
+
+    <p>
+      Three assumptions about the target complete the model. The target is
+      <b>amorphous</b>: atoms are placed at random within their cells rather than on a
+      lattice. It is at <b>zero dose</b>: every ion enters a perfect target, unaffected by the
+      damage or the implanted atoms left by earlier ions. It is at <b>0 K</b>: nothing
+      diffuses and no damage anneals. The zero-dose assumption is what makes the ion
+      histories independent, as the Monte Carlo average requires; the amorphous and 0 K
+      assumptions simplify the collision and defect models. Each is also a respect in which
+      TRIM differs from a real device.
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">An amorphous target has no channels</p>
+      <p>
+        In a crystal, the atoms along certain directions form rows with open space between
+        them, and an ion entering nearly parallel to such a direction is steered along the
+        channel by a succession of gentle collisions with the rows. A channeled ion undergoes
+        few close collisions, loses energy mainly to electrons, and penetrates much deeper
+        than the same ion entering in a random direction; this is why implantation into
+        crystalline silicon depends on the wafer's orientation and tilt. Because TRIM places
+        target atoms at random, no channel exists in its target, and no TRIM setting
+        reproduces channeling or any other dependence on crystal orientation. A TRIM depth
+        profile corresponds to a random-direction or amorphous target. Codes that track a
+        crystal lattice are required for channeling.
+      </p>
+    </div>
+
+    <h2>3 · Setting up a calculation</h2>
+    <p>
+      A TRIM calculation is specified entirely in one window, TRIM Setup, opened from the
+      <b>TRIM Calculation</b> button of the SRIM main menu. The window is divided into regions
+      that are filled from top to bottom: the type of calculation, the incident ion, the
+      layers of the target, the elements of each layer, the run parameters, and the optional
+      output files. Figure 3 maps those regions; this section follows them in order, with the
+      course's choice at each step and the reason for it. Composition and density, which carry
+      most of the risk of a wrong result, have §4 to themselves.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 486" role="img" aria-labelledby="f13-3-t">
+        <title id="f13-3-t">Schematic of the TRIM Setup window, showing its six input regions in the order they are filled, and the run button</title>
+        <g class="dg-fill">
+          <rect x="38" y="8" width="396" height="62" rx="4"/>
+          <rect x="38" y="78" width="396" height="62" rx="4"/>
+          <rect x="38" y="148" width="396" height="62" rx="4"/>
+          <rect x="38" y="218" width="396" height="62" rx="4"/>
+          <rect x="38" y="288" width="396" height="62" rx="4"/>
+          <rect x="38" y="358" width="396" height="46" rx="4"/>
+        </g>
+        <g class="dg-rule" stroke-width="1.2" fill="none">
+          <circle cx="20" cy="26" r="10"/><circle cx="20" cy="96" r="10"/>
+          <circle cx="20" cy="166" r="10"/><circle cx="20" cy="236" r="10"/>
+          <circle cx="20" cy="306" r="10"/><circle cx="20" cy="376" r="10"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="20" y="30">1</text><text x="20" y="100">2</text><text x="20" y="170">3</text>
+          <text x="20" y="240">4</text><text x="20" y="310">5</text><text x="20" y="380">6</text>
+        </g>
+        <g class="dg-label">
+          <text x="48" y="27">Type of TRIM Calculation</text>
+          <text x="48" y="97">ION DATA</text>
+          <text x="48" y="167">TARGET DATA: layers</text>
+          <text x="48" y="237">Input Elements to Layer N</text>
+          <text x="48" y="307">Special Parameters</text>
+          <text x="48" y="377">Output Disk Files</text>
+        </g>
+        <g class="dg-label-sm">
+          <text x="48" y="45">DAMAGE: Ion Distribution and Quick Calculation of Damage</text>
+          <text x="48" y="61">Basic Plots: live display only, default kept</text>
+          <text x="48" y="115">PT · Symbol · Atomic No. · Mass (amu) · Energy (keV) · Angle</text>
+          <text x="48" y="131">defaults: H · 1 · 1.008 · 10 keV · 0° (normal incidence)</text>
+          <text x="48" y="185">Add New Layer · Layer Name · Width + unit · Density (g/cm³)</text>
+          <text x="48" y="201">Compound Corr · Gas · up to eight layers, first at the surface</text>
+          <text x="48" y="255">PT · Atomic No. · Weight · Atom Stoich or % (atom fractions)</text>
+          <text x="48" y="271">Damage (eV): Disp · Latt · Surf · Compound Dictionary</text>
+          <text x="48" y="325">Total Number of Ions (99999) · AutoSave at Ion # (10000)</text>
+          <text x="48" y="341">Random Number Seed · Plotting Window Depths (100 bins)</text>
+          <text x="48" y="395">per-ion files: ranges, backscattered, transmitted, sputtered</text>
+        </g>
+        <rect x="38" y="416" width="190" height="36" rx="5" class="dg-fill"/>
+        <rect x="38" y="416" width="190" height="36" rx="5" class="dg-acc" stroke-width="2"/>
+        <text x="133" y="439" class="dg-label" text-anchor="middle">Save Input &amp; Run TRIM</text>
+        <rect x="244" y="416" width="190" height="36" rx="5" class="dg-fill"/>
+        <text x="339" y="439" class="dg-label" text-anchor="middle">Resume saved TRIM calc.</text>
+        <text x="38" y="472" class="dg-label-sm">writes TRIM.IN and starts the run</text>
+        <text x="244" y="472" class="dg-label-sm">reloads a saved calculation</text>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> A schematic of the regions, not a screenshot; labels follow the SRIM
+        manual, and the defaults shown are those of a fresh setup. Regions 3 and 4 work as a
+        pair: the element table always belongs to the layer highlighted in the layer table,
+        and every new layer starts with an empty element table.
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Region 1, the type of calculation.</b> The DAMAGE menu decides how the target atoms
+      set in motion by the ion are treated. The course uses the default, <b>Ion Distribution
+      and Quick Calculation of Damage</b>. In this mode TRIM follows every ion in full but does
+      not follow the recoils; it estimates the displacements each recoil would produce from
+      the Kinchin–Pease analytic count as modified by Sigmund and by Norgett, Robinson and
+      Torrens, which is close to the latter authors' standard displacement count,
+      <a href="m11-displacement-damage.html">M11</a> equation (11.1). The final distribution of
+      the ions, their ionization energy loss, the energy they transfer to recoils, and the
+      backscattered and transmitted ions all come out exactly as in the detailed mode, and the
+      ion ranges are identical, because TRIM draws ions and recoils from separate random-number
+      sequences. The alternative, <b>Detailed Calculation with Full Damage Cascades</b>,
+      follows every recoil until its energy falls below the lowest displacement energy among
+      the target atoms, which multiplies the number of trajectories per ion. Sputtering (§5)
+      needs one of the options that follow recoils, and the SRIM manual names the
+      Surface Sputtering option, which forces a collision in every monolayer, as essential for
+      an accurate yield. The Basic Plots menu selects only the live display drawn during
+      the run and does not change the calculation; the course keeps its default.
+    </p>
+    <p>
+      <b>Region 2, the ion.</b> The <b>PT</b> button opens a periodic table. Selecting
+      hydrogen specifies a proton, and the atomic number and mass fill in automatically, the
+      mass being that of the most abundant isotope rather than the natural atomic weight. The
+      energy is entered in keV, with a default of 10 keV. The angle of incidence is measured
+      from the surface normal: 0°, the default and the course's choice, is normal incidence,
+      and any angle up to 89.9° tilts the beam within the plane of the depth axis and one
+      lateral axis.
+    </p>
+    <p>
+      <b>Regions 3 and 4, the target.</b> Each row of the layer table is one layer, ordered
+      from the surface inward, with a name, a width and a density. The width defaults to
+      ångströms, and a unit menu offers micrometres, millimetres, metres and kilometres; the
+      course works in micrometres. Adding a layer creates an empty row and an empty element
+      table, and each element must then be added with <b>Add New Element to Layer</b> and the
+      PT button; a layer holds up to twelve elements. Beside each element the table lists three
+      energies that govern damage: the <b>displacement energy</b> <em>E</em><sub>d</sub>
+      needed to move an atom off its site, the <b>lattice binding energy</b>
+      <em>E</em><sub>latt</sub> that a displaced atom loses in leaving its site, and the
+      <b>surface binding energy</b> <em>E</em><sub>surf</sub> that an atom must overcome to
+      escape the surface. TRIM's defaults for silicon are 15, 2 and 4.7 eV.
+    </p>
+    <p>
+      <b>Region 5, the run parameters.</b> <b>Total Number of Ions</b> sets how many ion
+      histories are computed; its default of 99999 is meant to be interrupted once the
+      statistics are adequate. <b>AutoSave at Ion #</b>, 10000 by default, sets how often
+      TRIM saves its state so that an interrupted run can resume. The <b>Random Number Seed</b>
+      has a fixed default, so identical inputs reproduce identical ions until the seed is
+      changed. <b>Plotting Window Depths</b> sets the depth range over which TRIM accumulates
+      its depth distributions, in 100 equal bins; the default covers the whole target.
+      <b>Region 6</b> lists files that record every individual ion or collision; ticking them
+      here records from the first ion (§9). <b>Save Input &amp; Run TRIM</b> writes the setup to
+      a text file, TRIM.IN, and starts the calculation.
+    </p>
+    <p>
+      The number of ions sets the statistical error of every output, and the course trades
+      accuracy for time: it reduces Total Number of Ions to 500 for runs made during the
+      lecture. The cost of that choice follows from the statistics of independent samples.
+    </p>
+
+    <div class="eq" id="m13-eq-stats">
+      <div class="eq-body">
+        <div class="eq-math">σ<sub><em>R̄</em></sub> = <span class="frac"><span class="num">σ<sub><em>R</em></sub></span><span class="den">√<em>N</em></span></span>,&nbsp;&nbsp; <span class="frac"><span class="num">δ<em>n</em></span><span class="den"><em>n</em></span></span> = <span class="frac"><span class="num">1</span><span class="den">√<em>n</em></span></span></div>
+        <div class="eq-num">(13.4)</div>
+      </div>
+      <div class="eq-says">
+        σ<sub><em>R̄</em></sub> standard error of the mean stopping depth (Å) ·
+        σ<sub><em>R</em></sub> straggling, the standard deviation of individual stopping depths
+        (Å) · <em>N</em> number of ions followed · <em>n</em> number of events recorded in one
+        depth bin · δ<em>n</em>/<em>n</em> relative random error of that bin's height. The first form is
+        the standard error of a mean of <em>N</em> independent values; the second is Poisson
+        counting error and holds for the ion-range histogram, where each ion adds one count.
+        In cascade outputs such as vacancies one ion adds many correlated events, and the
+        error must be estimated per ion, for example by repeating the run with a different
+        seed.
+        On the formula sheet as <a href="formula-sheet.html#eq-stats">(13.4)</a>.
+      </div>
+    </div>
+
+    <p>
+      With 500 ions the mean stopping depth is known to σ<sub><em>R</em></sub>/22, about
+      4.5 % of the straggling, which is ample. A depth histogram is another matter: 500 stopping
+      positions spread evenly over 100 bins would leave five per bin and a bin-to-bin scatter
+      of about 45 %. Where the stopping positions concentrate in a few bins, those bins hold
+      more ions and scatter less, and the sparsely populated tails scatter more. Averages converge quickly and
+      depth profiles slowly. The SRIM tutorial's guideline is that 1000 ions typically give
+      better than 10 % accuracy, and repeating a run with a different random seed shows
+      directly how much of a profile's structure is noise.
+    </p>
+
+    <div class="box">
+      <p class="box-title">Why the quick damage option is also the recommended one</p>
+      <p>
+        A systematic comparison by Stoller and co-workers (2013) found that the vacancy count
+        from a full-cascade run is about twice the Kinchin–Pease count — ratios of 2.06 to
+        2.43 across the cases they tested — even though the two modes agree to within 5–10 %
+        on the damage energy, the energy that goes into atomic collisions. The full-cascade
+        vacancy file is therefore not a reliable measure of displacements per atom. They
+        recommend the quick Kinchin–Pease option wherever ion damage is to be compared with
+        neutron damage or with the standard displacement count, with the lattice binding
+        energy set to zero and the displacements computed from the damage energy through the
+        standard formula, <a href="m11-displacement-damage.html">M11</a> equation (11.1),
+        rather than read from the vacancy file. The course's default is the option the
+        literature supports.
+      </p>
+    </div>
+
+    <h2>4 · Compounds, densities and gases</h2>
+    <p>
+      A layer is defined by what it is made of and how densely its atoms are packed, and TRIM
+      takes both from the user. The composition fixes the stopping through equation (13.3) and
+      decides which atoms the ion can strike; the density converts every mass-based quantity
+      into a length. An error in either one propagates into every output, which is why this
+      is the step that most often decides whether a result is right.
+    </p>
+    <p>
+      The <b>Atom Stoich or %</b> column takes <b>atom</b> fractions, and TRIM normalises
+      them, so Si 1 with O 2, Si 100 with O 200, and Si 33 with O 67 all specify the same
+      SiO₂ layer. A composition quoted by weight must be converted to atom fractions before it
+      is entered. The course builds SiO₂, the composite example Deck 7 p. 20 names, as
+      Lecture 7 demonstrated: add silicon, add oxygen with a second element row, and change
+      oxygen's stoichiometry from 1 to 2.
+    </p>
+    <p>
+      TRIM then proposes a density for the layer, computed from the densities of its elements
+      weighted by their stoichiometry. For a single element in its normal solid form the
+      proposal is SRIM's tabulated density for that element and is adequate: silicon's,
+      2.32 g/cm³, lies within 0.3 % of the measured 2.329 g/cm³ and needs no change. For a
+      compound the proposal is not the compound's density. Each elemental density describes
+      that element in its own standard condensed state, a compound packs its atoms in a
+      different structure, and oxygen and nitrogen have no solid state at room temperature at
+      all, so no weighted average of elemental densities has any reason to reproduce the
+      density of an oxide. The proposed value must be replaced by a measured one: 2.20 g/cm³
+      for amorphous SiO₂, the form of a thermally grown gate or field oxide.
+    </p>
+
+    <div class="eq" id="m13-eq-density">
+      <div class="eq-body">
+        <div class="eq-math"><em>x</em> = <span class="frac"><span class="num"><em>R</em><sub>m</sub></span><span class="den">ρ</span></span></div>
+        <div class="eq-num">(13.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>x</em> a depth or range as a length (cm) · <em>R</em><sub>m</sub> the same quantity
+        as a mass per unit area (g/cm²), which depends on composition but not on density ·
+        ρ layer density (g/cm³). Every TRIM depth distribution scales this way, so a density
+        wrong by some fraction makes every computed depth in that layer wrong by the same
+        fraction in the opposite direction. Holds while the stopping per atom is independent of
+        packing, which is true for solids; the phase difference between a gas and a solid is
+        handled separately by the Gas option.
+        On the formula sheet as <a href="formula-sheet.html#eq-density">(13.5)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 214" role="img" aria-labelledby="f13-4-t">
+        <title id="f13-4-t">A two-layer target of 0.5 micrometres of silicon dioxide on 1 micrometre of silicon, drawn to scale in depth, with the layer and element entries each layer needs</title>
+        <line x1="4" y1="70" x2="36" y2="70" class="dg-acc" stroke-width="2" marker-end="url(#f13-4-a)"/>
+        <text x="4" y="58" class="dg-label-sm">ion</text>
+        <rect x="40" y="36" width="120" height="68" class="dg-fill"/>
+        <rect x="160" y="36" width="240" height="68" class="dg-fill"/>
+        <text x="100" y="66" class="dg-label" text-anchor="middle">SiO₂</text>
+        <text x="100" y="84" class="dg-label-sm" text-anchor="middle">0.5 µm</text>
+        <text x="280" y="66" class="dg-label" text-anchor="middle">Si</text>
+        <text x="280" y="84" class="dg-label-sm" text-anchor="middle">1.0 µm</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="40" y="122">0</text><text x="160" y="122">0.5</text><text x="400" y="122">1.5 µm</text>
+        </g>
+        <text x="220" y="24" class="dg-label-sm" text-anchor="middle">depth, to scale</text>
+        <text x="8" y="150" class="dg-label">Layer 1</text>
+        <text x="72" y="150" class="dg-label-sm">SiO₂ · 0.5 µm · elements Si 1, O 2 ·</text>
+        <text x="72" y="166" class="dg-label-sm">density typed in: 2.20 g/cm³</text>
+        <line x1="72" y1="170" x2="226" y2="170" class="dg-acc" stroke-width="1.6"/>
+        <text x="8" y="194" class="dg-label">Layer 2</text>
+        <text x="72" y="194" class="dg-label-sm">Si · 1.0 µm · element Si 1 · proposed 2.32 g/cm³</text>
+        <text x="72" y="208" class="dg-label-sm">(within 0.3 % of the measured 2.329: kept)</text>
+        <defs>
+          <marker id="f13-4-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> The second target of Deck 7 p. 21. Each layer carries its own element
+        table, and the compound layer needs the one entry TRIM cannot supply correctly: its
+        density. The single-element layer beneath it does not.
+      </figcaption>
+    </figure>
+
+    <p>
+      The <b>Compound Dictionary</b> button offers an alternative route: a list of more than
+      300 compounds, each stored with its stoichiometry and a typical density. About 150 of
+      them, marked with a star, also carry the chemical-bonding information from which SRIM
+      computes a stopping correction; the correction concerns bonds of the light elements H,
+      C, N, O, F, S and Cl. Choosing an entry fills the element table and the density, and the
+      correction where one exists. A layer built element by
+      element, as the course builds SiO₂, uses Bragg's rule with no bonding correction — the
+      Compound Corr column reads 1. The correction is largest for light compounds such as
+      hydrocarbons. The
+      density still needs checking on either route.
+    </p>
+    <p>
+      A gas needs one more setting. Ticking the <b>Gas</b> box for a layer makes TRIM use
+      gas-phase stopping powers for hydrogen, helium, nitrogen, oxygen, neon, argon, krypton
+      and xenon; any other element in a gas layer is still treated as a solid. The phase
+      matters because, compared at the same number of atoms per cm² traversed, an ion loses
+      less energy in a solid than in the corresponding gas. Above 200 keV per nucleon the
+      difference is below 10 %; below that it can approach a factor of two. TRIM applies the
+      gas correction for standard temperature and pressure. The density column behaves
+      differently between versions. The SRIM-2003-era tutorial ticks the box and then has the
+      user overwrite a density that SRIM computed assuming a solid; in SRIM-2013, as the
+      Lecture 7 demonstration showed, ticking the box replaces the solid-phase proposal with a
+      gas-phase estimate of order 10⁻³ g/cm³. That estimate is built from the elements, not
+      measured for the actual mixture, so on either version the entry is checked and set to
+      the measured value: 1.205×10⁻³ g/cm³ for dry air near sea level. Oxygen bound in a solid, as in SiO₂, belongs in a layer declared solid.
+    </p>
+    <p>
+      The composition of air follows from the same rule of atom fractions. Dry air is
+      75.5 % nitrogen, 23.2 % oxygen and 1.3 % argon by mass, which converts to 78.4 %
+      nitrogen, 21.1 % oxygen and 0.47 % argon by atom. The course's two-element air, nitrogen
+      and oxygen in the atom ratio 80 : 20, is within two percentage points of this; argon,
+      which is on TRIM's list of gases, is the refinement. Deck 7 p. 25 asks how to simulate
+      air, and the answer assembles the pieces of this section: one layer, nitrogen and oxygen
+      (and argon) entered as atom fractions, the Gas box ticked, the density typed in, and a
+      width in millimetres rather than micrometres.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Deck 7 p. 24: which phase of Ga₂O₃</p>
+      <p>
+        Deck 7 p. 24 specifies 0.5 µm of Ga₂O₃ with ρ = 6.44 g/cm³ on 1 µm of GaAs with
+        ρ = 5.32 g/cm³. The GaAs value is the standard one. The Ga₂O₃ value is a real density,
+        but of the α (corundum-structure) phase: the density calculated from α-Ga₂O₃'s lattice
+        constants is 6.47 g/cm³. The thermodynamically stable phase, and the one grown as bulk
+        substrates for gallium-oxide power devices, is monoclinic β-Ga₂O₃, whose lattice
+        constants give 5.96 g/cm³ and whose tabulated density is 5.88 g/cm³. Use 6.44 to
+        reproduce the course's exercise. For a β-Ga₂O₃ layer, equation (13.5) places every
+        computed depth in that layer 8–10 % deeper than the 6.44 g/cm³ run does: 8 % with the
+        lattice-constant density, 9.5 % with the tabulated one.
+      </p>
+    </div>
+
+    <h2>5 · Reading the outputs</h2>
+    <p>
+      Once a run starts, the TRIM window lists its outputs in a table of distributions, each
+      with a <b>Plot</b> button that opens a graph and a <b>File</b> button that writes the
+      same data as text. Plots update after every ion while the calculation continues, and
+      every average is taken over all ions computed so far; open plots slow the calculation. A
+      second panel, Calculation Parameters, carries the energy-loss table and the sputtering
+      yield. Every depth distribution is normalised <em>per ion</em> and <em>per unit
+      depth</em> and is accumulated in the 100 bins of the plotting window. This section takes
+      the outputs in turn and gives, for each, the conversion that turns it into a device
+      quantity.
+    </p>
+
+    <h3>Ion ranges</h3>
+    <p>
+      The <b>Ion Distribution</b> plot, titled ION RANGES, is the histogram of the depths at
+      which the ions came to rest. TRIM reports its mean, which is the projected range, its
+      standard deviation, which is the longitudinal straggling, and its skewness and kurtosis
+      — the quantities of <a href="m12-stopping-power-range.html">M12 §5</a>, now obtained as
+      moments of a computed distribution for the actual layered target. The Lateral Range plot
+      gives the spread across the beam direction. The ordinate is in (atoms/cm³)/(atoms/cm²),
+      a concentration per unit fluence, so multiplying by the fluence gives the concentration
+      of implanted atoms directly.
+    </p>
+
+    <div class="eq" id="m13-eq-conc">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em>(<em>x</em>) = Φ · <em>h</em>(<em>x</em>)</div>
+        <div class="eq-num">(13.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em> concentration of implanted ions at depth <em>x</em> (atoms/cm³) · Φ fluence,
+        ions per unit area (cm⁻²) · <em>h</em> TRIM's range distribution
+        ((atoms/cm³)/(atoms/cm²), which is cm⁻¹). The text file RANGE.txt lists the same
+        distribution in atoms/(Å·ion); multiply by 10⁸ Å/cm to obtain <em>h</em> in cm⁻¹. The
+        integral of <em>h</em> over depth is the fraction of ions that stop in the target.
+        Valid only at fluences low enough that the implanted atoms do not change the target,
+        the zero-dose assumption of §2.
+        On the formula sheet as <a href="formula-sheet.html#eq-conc">(13.6)</a>.
+      </div>
+    </div>
+
+    <h3>Ionization</h3>
+    <p>
+      The <b>Ionization</b> plot is the energy the ions and recoils give to target electrons
+      per unit depth, averaged per ion, in eV/(Å·ion), shown as two curves: ionization by the
+      ions and ionization by the recoils. Ionization is TRIM's name for all electronic energy
+      loss, excitation included. It is the output that connects TRIM to electrical effects,
+      because the energy given to electrons is what creates electron–hole pairs.
+    </p>
+    <p>
+      The ordinate is a density — energy per unit depth — not an energy. The energy an ion
+      deposits in a layer is the area under the curve across that layer, which TRIM's 100-bin
+      depth grid turns into a sum. The same holds for every depth plot on the page: the
+      phonon plot integrates to energy per ion and the vacancy plot to vacancies per ion.
+    </p>
+
+    <div class="eq" id="m13-eq-integral">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>layer</sub> = ∫<sub><em>x</em><sub>1</sub></sub><sup><em>x</em><sub>2</sub></sup> <em>I</em>(<em>x</em>) d<em>x</em> ≈ Σ<sub><em>k</em></sub> <em>I</em><sub><em>k</em></sub> Δ<em>x</em></div>
+        <div class="eq-num">(13.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>layer</sub> energy given to electrons within the layer, per ion (eV) ·
+        <em>I</em> ionization density, the sum of the ion and recoil curves (eV/(Å·ion)) ·
+        <em>x</em><sub>1</sub>, <em>x</em><sub>2</sub> depths of the layer's boundaries (Å) ·
+        <em>I</em><sub><em>k</em></sub> value in depth bin <em>k</em> · Δ<em>x</em> bin width,
+        one hundredth of the plotting window (Å). The units reduce as
+        eV/(Å·ion) × Å = eV per ion.
+        On the formula sheet as <a href="formula-sheet.html#eq-integral">(13.7)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 250" role="img" aria-labelledby="f13-5-t">
+        <title id="f13-5-t">Schematic TRIM depth profiles for a proton beam in silicon dioxide on silicon: ionization density with the area inside the oxide shaded, stopped-ion distribution and vacancy distribution</title>
+        <rect x="50" y="30" width="120" height="170" class="dg-fill" opacity="0.5"/>
+        <line x1="170" y1="30" x2="170" y2="200" class="dg-guide" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="110" y="24" class="dg-label-sm" text-anchor="middle">SiO₂</text>
+        <text x="290" y="24" class="dg-label-sm" text-anchor="middle">Si</text>
+        <line x1="50" y1="200" x2="414" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="50" y1="200" x2="50" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <path d="M50,200 L50,112 C90,110 130,106 170,104 L170,200 Z" class="dg-acc-f" opacity="0.3"/>
+        <path d="M50,112 C90,110 130,106 170,104 C210,102 240,101 258,106 C276,112 290,140 304,168 C316,190 326,197 344,199" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <path d="M232,199 C252,196 266,150 286,80 C306,150 320,196 340,199" class="dg-line" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
+        <path d="M50,194 C120,192 190,188 230,182 C256,178 270,166 280,158 C290,166 300,190 318,198" class="dg-line" stroke-width="1.6" stroke-dasharray="2 3" fill="none"/>
+        <text x="182" y="96" class="dg-label-sm">ionization</text>
+        <text x="296" y="78" class="dg-label-sm">ions at rest</text>
+        <text x="178" y="176" class="dg-label-sm">vacancies</text>
+        <text x="58" y="146" class="dg-label-sm">shaded area =</text>
+        <text x="58" y="160" class="dg-label-sm">eV per ion given</text>
+        <text x="58" y="174" class="dg-label-sm">to oxide electrons</text>
+        <line x1="286" y1="200" x2="286" y2="206" class="dg-rule" stroke-width="1.2"/>
+        <text x="286" y="218" class="dg-label-sm" text-anchor="middle">projected range</text>
+        <text x="232" y="240" class="dg-label" text-anchor="middle">depth</text>
+        <text x="20" y="115" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 20 115)">per ion, per unit depth</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> Schematic shapes for a 50–100 keV proton, each
+        curve on its own vertical scale. The ionization density stays nearly level and then
+        falls away across the stopping region: below about 55 keV a proton's electronic
+        stopping decreases as it slows (<a href="m12-stopping-power-range.html">M12</a>
+        Figure 1), so no sharp Bragg peak forms at these energies. Vacancies concentrate near
+        the end of the track, where nuclear stopping is largest. Only the shaded area, not the
+        height of the curve, is an energy.
+      </figcaption>
+    </figure>
+
+    <p>
+      Three conversions turn <em>E</em><sub>layer</sub> into device quantities. Dividing by
+      the electron–hole pair creation energy of <a href="m08-ionization-excitation.html">M08
+      §5</a> gives the number of pairs, and multiplying by the elementary charge gives the
+      charge liberated per ion.
+    </p>
+
+    <div class="eq" id="m13-eq-pairs">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>eh</sub> = <span class="frac"><span class="num"><em>E</em><sub>layer</sub></span><span class="den"><em>E</em><sub>pair</sub></span></span>,&nbsp;&nbsp; <em>Q</em> = <em>q</em> <em>N</em><sub>eh</sub></div>
+        <div class="eq-num">(13.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>eh</sub> electron–hole pairs generated per ion in the layer ·
+        <em>E</em><sub>layer</sub> from equation (13.7) (eV) · <em>E</em><sub>pair</sub> mean
+        pair creation energy (eV): 3.6 eV in silicon, about 17 eV in SiO₂ · <em>Q</em> charge
+        liberated per ion (C) · <em>q</em> = 1.602×10⁻¹⁹ C. Counts pairs <em>generated</em>;
+        how many survive recombination and are collected is outside TRIM (§8). The course's
+        own order-of-magnitude arithmetic divides by 99.42 eV instead; as
+        <a href="m08-ionization-excitation.html">M08</a> explains, 3.6 eV is the value that
+        matches a SRIM output or a measurement.
+        On the formula sheet as <a href="formula-sheet.html#eq-trim-pairs">(13.8)</a>.
+      </div>
+    </div>
+
+    <p>
+      Near the surface, where every ion is still moving and nearly normal to it, the height of
+      the ions' ionization curve is their electronic linear energy transfer. Deeper, it is a
+      beam average per incident ion, which falls where ions have stopped or been deflected,
+      not only where the stopping of each moving ion falls. In silicon, 1 eV/Å is 10 keV/µm,
+      which is 0.0429 MeV·cm²/mg and liberates 0.445 fC/µm through
+      <a href="m12-stopping-power-range.html">M12</a> equation (12.5); equivalently,
+      96.4 MeV·cm²/mg liberates 1 pC/µm with the 2.33 g/cm³ that equation uses, or 96.5 with
+      the 2.329 g/cm³ of §4. For a fluence rather than a single
+      ion, the energy per ion becomes an absorbed dose, the quantity of
+      <a href="m14-total-ionizing-dose.html">M14</a>.
+    </p>
+
+    <div class="eq" id="m13-eq-dose">
+      <div class="eq-body">
+        <div class="eq-math"><em>D</em> = <span class="frac"><span class="num">Φ · <em>E</em><sub>layer</sub></span><span class="den">ρ · <em>t</em></span></span></div>
+        <div class="eq-num">(13.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>D</em> absorbed dose in the layer's material (eV/g; divide by
+        6.242×10¹³ eV/g per rad, or by 6.242×10¹⁵ eV/g per gray) · Φ fluence (cm⁻²) ·
+        <em>E</em><sub>layer</sub> energy per ion from equation (13.7) (eV) · ρ layer density
+        (g/cm³) · <em>t</em> layer thickness (cm). A dose must name its material — rad(SiO₂)
+        for an oxide layer, rad(Si) for silicon. The layer average hides any variation in
+        depth; for a thin sensitive region, integrate over that region alone. The same
+        conversion from dose to pairs per unit volume, through the pair-generation constant
+        <em>g</em><sub>0</sub>, is developed in EEE 5416
+        <a href="../../EEE5416_Radiation_Effects/site/m04-quantifying-energy-deposition.html">M04</a>.
+        On the formula sheet as <a href="formula-sheet.html#eq-trim-dose">(13.9)</a>.
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A beam of 100 keV protons strikes 0.5 µm of SiO₂ (2.20 g/cm³) on silicon at
+      normal incidence. The NIST PSTAR proton range table, applied along a straight path,
+      shows each proton leaving the oxide with about 43 keV, and electronic stopping carries
+      more than 99 % of the loss at these energies. Estimate the electron–hole pairs each
+      proton generates in the oxide, and the oxide dose from a fluence of
+      10¹⁰ protons/cm².</summary>
+      <div class="answer">
+        <p>
+          The energy given to oxide electrons is about 100 − 43 = 57 keV per proton, which is
+          what integrating TRIM's ionization curve across the oxide, equation (13.7), should
+          approximately return. At 17 eV per pair in SiO₂, equation (13.8) gives
+          5.7×10⁴ / 17 ≈ 3.4×10³ pairs per proton.
+        </p>
+        <p>
+          Equation (13.9): D = 10¹⁰ × 5.7×10⁴ eV / (2.20 g/cm³ × 5×10⁻⁵ cm) =
+          5.2×10¹⁸ eV/g, and dividing by 6.242×10¹³ eV/g per rad gives about 83 krad(SiO₂).
+          The straight-path estimate slightly underestimates the energy deposited, because a
+          real proton's path through the layer is longer than the layer's thickness — the
+          detour of <a href="m12-stopping-power-range.html">M12</a> equation (12.7) — and that
+          difference is one of the things the TRIM run supplies.
+        </p>
+      </div>
+    </details>
+
+    <h3>Phonons</h3>
+    <p>
+      The <b>Phonons</b> plot gives the energy per unit depth that ends as lattice vibration,
+      that is, as heat, again split between the ions and the recoils, in the same eV/(Å·ion)
+      units and integrated in the same way. Phonon energy arises wherever energy reaches the
+      lattice without displacing an atom: collisions that transfer less than
+      <em>E</em><sub>d</sub>, and the final energy of every moving atom that comes to rest.
+      For a heavy ion more than 90 % of the phonon energy is produced by the recoils rather
+      than by the ion, because recoils are slow and spend their energy in many low-energy
+      collisions.
+    </p>
+
+    <h3>Damage events</h3>
+    <p>
+      The Damage Events menu opens the <b>Collision Events</b> plot, which gives three
+      distributions against depth in vacancies/(Å·ion): total displacements, total vacancies,
+      and replacement collisions, each also separated by target element. TRIM books each
+      collision by the rule of Figure 6. A <b>displacement</b> occurs whenever the struck
+      atom receives more than its displacement energy. If the projectile also keeps more than
+      the displacement energy, both move on and the struck atom's site is left as a
+      <b>vacancy</b>. If the projectile is left with less, and is of the same element as the
+      atom it struck, it drops into the vacated site: a <b>replacement collision</b>, which
+      moves an atom but leaves no vacancy.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 262" role="img" aria-labelledby="f13-6-t">
+        <title id="f13-6-t">TRIM's rule for booking a collision as a phonon event, a vacancy, a replacement collision or an interstitial</title>
+        <rect x="60" y="6" width="320" height="30" rx="4" class="dg-fill"/>
+        <text x="220" y="26" class="dg-label" text-anchor="middle">collision: projectile keeps <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">1</tspan>, struck atom gets <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">2</tspan></text>
+        <rect x="160" y="56" width="120" height="30" rx="4" class="dg-fill"/>
+        <rect x="160" y="56" width="120" height="30" rx="4" class="dg-acc" stroke-width="1.8"/>
+        <text x="220" y="76" class="dg-label" text-anchor="middle"><tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">2</tspan> &gt; <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">d</tspan> ?</text>
+        <rect x="6" y="110" width="150" height="44" rx="4" class="dg-fill"/>
+        <text x="81" y="128" class="dg-label-sm" text-anchor="middle">atom stays on its site;</text>
+        <text x="81" y="144" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">2</tspan> ends as phonons</text>
+        <rect x="240" y="110" width="120" height="30" rx="4" class="dg-fill"/>
+        <text x="300" y="130" class="dg-label" text-anchor="middle"><tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">1</tspan> &gt; <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">d</tspan> ?</text>
+        <rect x="318" y="164" width="116" height="44" rx="4" class="dg-fill"/>
+        <text x="376" y="182" class="dg-label-sm" text-anchor="middle">vacancy;</text>
+        <text x="376" y="198" class="dg-label-sm" text-anchor="middle">both atoms move on</text>
+        <rect x="170" y="164" width="120" height="30" rx="4" class="dg-fill"/>
+        <text x="230" y="184" class="dg-label" text-anchor="middle"><tspan class="dg-math">Z</tspan><tspan baseline-shift="sub" style="font-size:75%">1</tspan> = <tspan class="dg-math">Z</tspan><tspan baseline-shift="sub" style="font-size:75%">2</tspan> ?</text>
+        <rect x="16" y="214" width="190" height="44" rx="4" class="dg-fill"/>
+        <text x="111" y="232" class="dg-label-sm" text-anchor="middle">replacement collision:</text>
+        <text x="111" y="248" class="dg-label-sm" text-anchor="middle">projectile takes the site</text>
+        <rect x="218" y="214" width="216" height="44" rx="4" class="dg-fill"/>
+        <text x="326" y="232" class="dg-label-sm" text-anchor="middle">projectile stops as an interstitial;</text>
+        <text x="326" y="248" class="dg-label-sm" text-anchor="middle">the struck atom's site is vacant</text>
+        <g class="dg-rule" stroke-width="1.2" fill="none">
+          <line x1="220" y1="36" x2="220" y2="56"/>
+          <line x1="190" y1="86" x2="120" y2="110"/>
+          <line x1="250" y1="86" x2="290" y2="110"/>
+          <line x1="330" y1="140" x2="366" y2="164"/>
+          <line x1="280" y1="140" x2="248" y2="164"/>
+          <line x1="200" y1="194" x2="150" y2="214"/>
+          <line x1="250" y1="194" x2="290" y2="214"/>
+        </g>
+        <g class="dg-label-sm">
+          <text x="132" y="100">no</text><text x="276" y="100">yes</text>
+          <text x="352" y="152">yes</text><text x="246" y="154">no</text>
+          <text x="158" y="206">yes</text><text x="276" y="206">no</text>
+        </g>
+      </svg>
+      <figcaption>
+        <b>Figure 6.</b> Every "yes" at the first question is a displacement. Replacement
+        collisions move atoms without leaving vacancies, which is why TRIM's vacancy count is
+        smaller than its displacement count, by up to about 30 % according to the SRIM manual.
+      </figcaption>
+    </figure>
+
+    <div class="eq" id="m13-eq-displacements">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>disp</sub> = <em>N</em><sub>vac</sub> + <em>N</em><sub>repl</sub>,&nbsp;&nbsp; <em>N</em><sub>vac</sub> = <em>N</em><sub>int</sub> + <em>N</em><sub>out</sub></div>
+        <div class="eq-num">(13.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>disp</sub> displacements · <em>N</em><sub>vac</sub> vacancies ·
+        <em>N</em><sub>repl</sub> replacement collisions · <em>N</em><sub>int</sub> atoms that
+        come to rest as interstitials · <em>N</em><sub>out</sub> atoms that leave the target
+        volume through a surface. All per ion; the plotted versions are per ion per Å. To
+        obtain vacancies per cm³, multiply the plotted value by 10⁸ Å/cm and by the fluence;
+        dividing by the atomic density (4.99×10²² atoms/cm³ in silicon) expresses the result
+        per atom. For a standard displacements-per-atom figure the damage-energy route of §3
+        is preferred to the vacancy count. The counts are of displacements made at 0 K with no
+        recombination, not of defects that survive (§8).
+        On the formula sheet as <a href="formula-sheet.html#eq-displacements">(13.10)</a>.
+      </div>
+    </div>
+
+    <p>
+      In the quick mode the recoils are not followed, and the vacancy count comes instead from
+      the modified Kinchin–Pease estimate of §3, close to
+      <a href="m11-displacement-damage.html">M11</a> equation (11.1), applied to the energy
+      each recoil receives. Either way, the displacement energy
+      entered in the element table sets the count.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">TRIM's silicon threshold is 15 eV, not 21 eV</p>
+      <p>
+        TRIM's default displacement energy for silicon is 15 eV, the typical value the SRIM
+        manual gives for semiconductors. <a href="m11-displacement-damage.html">M11</a> and the
+        formula sheet use about 21 eV; published values for silicon span a wide range. For
+        recoils well above threshold the modified Kinchin–Pease count is inversely
+        proportional to <em>E</em><sub>d</sub>, so a run with the default returns about
+        21/15 = 1.4 times as many vacancies as the same run with 21 eV. The factor is
+        somewhat larger when many recoils receive energies near the threshold, because a recoil
+        given between 15 and 21 eV is displaced only under the lower threshold.
+        Neither value is a TRIM error; the threshold is an input, and a vacancy count means
+        nothing without the threshold that produced it.
+      </p>
+    </div>
+
+    <h3>The energy-loss table</h3>
+    <p>
+      The <b>% Energy Loss</b> table in the Calculation Parameters panel summarises where the
+      incident energy went. Its two columns are the carriers, <b>Ions</b> and <b>Recoils</b>;
+      its three rows are the channels, <b>Ionization</b>, <b>Vacancies</b> and
+      <b>Phonons</b>. Each cell is the percentage of the incident ions' energy that the carrier
+      dissipated in that channel. The Vacancies row books the energy spent in creating vacancies, a few electronvolts
+      each, so it is always small. The six cells sum to 100 % less
+      the energy carried out of the target by backscattered, transmitted and sputtered atoms.
+      The Recoils column exists only because the ion transferred energy to target atoms; its
+      size relative to the Ions column is the clearest single measure of how much of the ion's
+      energy went into nuclear collisions, and §6 compares it for a light and a heavy ion.
+    </p>
+
+    <h3>Sputtering</h3>
+    <p>
+      Sputtering is the ejection of target atoms through the surface by the collision cascade
+      an ion sets off. A recoil moving back toward the surface is sputtered if, as it crosses
+      the surface plane, its energy resolved normal to the surface exceeds the surface binding
+      energy <em>E</em><sub>surf</sub> — 4.7 eV for silicon by default, a value for which the
+      heat of sublimation is usually a good estimate. The quantity TRIM reports is the yield.
+    </p>
+
+    <div class="eq" id="m13-eq-sputter">
+      <div class="eq-body">
+        <div class="eq-math"><em>Y</em> = <span class="frac"><span class="num"><em>N</em><sub>sputtered</sub></span><span class="den"><em>N</em><sub>ions</sub></span></span></div>
+        <div class="eq-num">(13.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>Y</em> sputtering yield (atoms/ion; given separately for each element of a
+        compound) · <em>N</em><sub>sputtered</sub> target atoms ejected ·
+        <em>N</em><sub>ions</sub> incident ions. Shown live in the SPUTTERING YIELD box; each
+        sputtered atom is written to SPUTTER.txt if that file is requested. Requires an
+        option that follows recoils, because the quick mode does not follow them and only
+        recoils are sputtered: Surface Sputtering or Monolayer Collision Steps, which the SRIM
+        manual calls essential for accurate yields, or Full Damage Cascades.
+        On the formula sheet as <a href="formula-sheet.html#eq-sputter">(13.11)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 200" role="img" aria-labelledby="f13-7-t">
+        <title id="f13-7-t">Sputtering: an incident ion starts a cascade below the surface, and a recoil that reaches the surface with enough energy normal to it escapes</title>
+        <rect x="10" y="80" width="420" height="112" class="dg-fill"/>
+        <line x1="10" y1="80" x2="430" y2="80" class="dg-rule" stroke-width="1.6"/>
+        <text x="16" y="186" class="dg-label-sm">target</text>
+        <line x1="84" y1="14" x2="148" y2="78" class="dg-line" stroke-width="2" marker-end="url(#f13-7-a)"/>
+        <text x="10" y="50" class="dg-label">incident ion</text>
+        <path d="M150,80 L178,122 L214,138" class="dg-line" stroke-width="1.6" fill="none"/>
+        <path d="M178,122 L150,158" class="dg-line" stroke-width="1.2" fill="none"/>
+        <path d="M214,138 L250,128 L262,82" class="dg-line" stroke-width="1.2" fill="none"/>
+        <path d="M214,138 L236,170" class="dg-line" stroke-width="1.2" fill="none"/>
+        <path d="M250,128 L300,112 L318,82" class="dg-line" stroke-width="1.2" fill="none"/>
+        <line x1="262" y1="80" x2="300" y2="24" class="dg-acc" stroke-width="2" marker-end="url(#f13-7-b)"/>
+        <line x1="262" y1="80" x2="262" y2="30" class="dg-guide" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <text x="306" y="30" class="dg-label-sm">sputtered atom</text>
+        <text x="306" y="46" class="dg-label-sm">(normal energy &gt; <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">surf</tspan>)</text>
+        <path d="M318,82 L346,96" class="dg-line" stroke-width="1.2" stroke-dasharray="3 2" fill="none"/>
+        <text x="330" y="118" class="dg-label-sm">too little normal</text>
+        <text x="330" y="132" class="dg-label-sm">energy: held back</text>
+        <text x="190" y="60" class="dg-label-sm">surface</text>
+        <defs>
+          <marker id="f13-7-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+          <marker id="f13-7-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> Schematic. The incident ion is rarely the atom that leaves: sputtered
+        atoms are recoils from the cascade that return to the surface, and only the component
+        of their energy normal to the surface counts against the surface binding energy.
+      </figcaption>
+    </figure>
+
+    <p>
+      Because only the outermost atomic layers contribute, a thin target suffices. For ions
+      heavier than 20 u the SRIM manual suggests 40–50 Å and SRIM Tutorial #2 suggests 300 Å
+      (for light ions such as helium, 300–500 Å and up to 1000 Å respectively), and both advise
+      increasing the thickness until the yield stops changing. The
+      reference value against which a silicon result can be judged is about 0.87 atoms per
+      ion for 1 keV argon at normal incidence, from the semi-empirical fit of Seah and
+      co-workers to measured yields, which reproduces the data to about 10 %. TRIM's yields
+      depend on the surface binding energy; the SRIM tutorial rates them accurate to about
+      30 % with respect to it, and in the tutorial's example of xenon on silicon even reducing
+      <em>E</em><sub>surf</sub> to zero only doubled the calculated yield.
+    </p>
+
+    <h2>6 · Light ion and heavy ion</h2>
+    <p>
+      Deck 7 pp. 21 and 22 run the same kinds of target with a proton and with an oxygen ion,
+      and the comparison isolates what the ion's mass and charge do to every output. Nothing
+      in it is new physics. The velocity at a given energy sets the electronic stopping, as
+      <a href="m12-stopping-power-range.html">M12 §2</a> established, and the mass and charge
+      set the nuclear stopping, as M12 §3 established; the partition of the energy between
+      the channels of §5 follows from the balance between the two.
+    </p>
+    <p>
+      At equal kinetic energy, velocity scales as the square root of energy per unit mass, so
+      a 100 keV oxygen ion, at 16 u, moves four times more slowly than a 100 keV proton: it
+      carries 6.25 keV per nucleon against the proton's 100 keV. The proton sits near the
+      55 keV maximum of its electronic stopping in silicon. The oxygen ion sits far below the
+      velocity at which it would be stripped of its electrons, in the low-velocity regime
+      where electronic stopping is proportional to velocity and the effective charge is small.
+      Its nuclear stopping, by contrast, is large on both counts that equations (13.1) and
+      (13.2) identify: the potential carries the product <em>Z</em><sub>1</sub><em>Z</em><sub>2</sub>,
+      eight times larger for oxygen than for hydrogen, and the mass factor lets oxygen give a
+      silicon atom up to 0.925 of its energy in one collision, against 0.134 for a proton. The
+      Lindhard reduced energy combines these dependences into a single number.
+    </p>
+
+    <div class="eq" id="m13-eq-epsilon">
+      <div class="eq-body">
+        <div class="eq-math">ε = <span class="frac"><span class="num"><em>a</em><sub>U</sub> <em>M</em><sub>2</sub> <em>E</em></span><span class="den"><em>Z</em><sub>1</sub><em>Z</em><sub>2</sub> <span class="dl">(</span><span class="frac"><span class="num"><em>e</em>²</span><span class="den">4πε<sub>0</sub></span></span><span class="dl">)</span> (<em>M</em><sub>1</sub> + <em>M</em><sub>2</sub>)</span></span> = <span class="frac"><span class="num">32.53 <em>M</em><sub>2</sub> <em>E</em><sub>keV</sub></span><span class="den"><em>Z</em><sub>1</sub><em>Z</em><sub>2</sub> (<em>M</em><sub>1</sub> + <em>M</em><sub>2</sub>)(<em>Z</em><sub>1</sub><sup>0.23</sup> + <em>Z</em><sub>2</sub><sup>0.23</sup>)</span></span></div>
+        <div class="eq-num">(13.12)</div>
+      </div>
+      <div class="eq-says">
+        ε reduced energy (dimensionless) · <em>a</em><sub>U</sub> screening length of
+        equation (13.1) (Å) · <em>E</em> ion energy (eV in the first form; keV,
+        <em>E</em><sub>keV</sub>, in the second) · <em>M</em><sub>1</sub>,
+        <em>M</em><sub>2</sub> masses of ion and target atom (u) · <em>Z</em><sub>1</sub>,
+        <em>Z</em><sub>2</sub> atomic numbers · <em>e</em>²/4πε<sub>0</sub> = 14.40 eV·Å.
+        The ratio of the collision energy to the Coulomb energy at the screening distance:
+        in reduced units the nuclear stopping of every ion–target pair follows one universal
+        curve of ε, and the share of the loss that goes to nuclear collisions grows as ε
+        falls. In silicon at 100 keV, ε ≈ 79 for a proton and ε ≈ 5.4 for an oxygen ion.
+        On the formula sheet as <a href="formula-sheet.html#eq-epsilon">(13.12)</a>.
+      </div>
+    </div>
+
+    <p>
+      The consequences appear in every output. The oxygen ion's range is a small fraction of
+      the proton's: the deck sizes its oxygen targets at 0.5 µm against 1.5 µm for hydrogen,
+      where the 100 keV proton's projected range in silicon is 0.84 µm. Its track is short and
+      branched rather than long and straight, because each strong nuclear collision both
+      deflects it and launches an energetic recoil that cascades in turn (Figure 8). A
+      projectile lighter than the target atom, as both hydrogen and oxygen are relative to
+      silicon, can be turned back through the surface by a large-angle collision, and TRIM
+      records such ions as backscattered; large-angle collisions are far more frequent for
+      the slow heavy ion. Each history also takes longer to compute, because there are more
+      collisions and more recoils to follow.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 300 220" role="img" aria-labelledby="f13-8-t">
+          <title id="f13-8-t">Schematic ion tracks in silicon: a long, nearly straight proton track with few recoils, and a short oxygen track with a branching recoil cascade</title>
+          <line x1="20" y1="10" x2="20" y2="210" class="dg-rule" stroke-width="1.4"/>
+          <text x="26" y="20" class="dg-label">H⁺, 100 keV</text>
+          <path d="M20,60 L120,61 L200,64 L240,70 L262,82 L270,96" class="dg-acc" stroke-width="2" fill="none"/>
+          <path d="M240,70 L246,60" class="dg-line" stroke-width="1" fill="none"/>
+          <path d="M262,82 L272,76" class="dg-line" stroke-width="1" fill="none"/>
+          <text x="120" y="92" class="dg-label-sm" text-anchor="middle">few, weak recoils</text>
+          <text x="26" y="130" class="dg-label">O, 100 keV</text>
+          <path d="M20,168 L48,164 L70,178 L86,170 L98,184" class="dg-acc" stroke-width="2" fill="none"/>
+          <g class="dg-line" stroke-width="1.2" fill="none">
+            <path d="M48,164 L66,146 L84,140"/><path d="M66,146 L72,132"/>
+            <path d="M70,178 L82,200 L100,206"/><path d="M82,200 L74,210"/>
+            <path d="M86,170 L108,160 L122,166"/><path d="M108,160 L114,146"/>
+            <path d="M98,184 L116,194"/>
+          </g>
+          <text x="140" y="176" class="dg-label-sm">short track,</text>
+          <text x="140" y="190" class="dg-label-sm">recoil cascades</text>
+        </svg>
+        <figcaption>
+          <b>Figure 8.</b> Schematic, not to scale. The oxygen ion's energy is shared with the
+          silicon atoms it strikes; the proton keeps almost all of its own.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 300 220" role="img" aria-labelledby="f13-9-t">
+          <title id="f13-9-t">Energy partition in silicon for a 100 keV proton and for a 190 keV phosphorus ion, as percentages of the incident energy</title>
+          <text x="10" y="22" class="dg-label">H⁺, 100 keV (NIST PSTAR)</text>
+          <rect x="10" y="32" width="276" height="30" class="dg-acc-f" opacity="0.85"/>
+          <rect x="286" y="32" width="4" height="30" class="dg-ink"/>
+          <text x="10" y="78" class="dg-label-sm">ionization by the ion, ≥ 97 %</text>
+          <text x="290" y="78" class="dg-label-sm" text-anchor="end">nuclear ≈ 1 %</text>
+          <text x="10" y="112" class="dg-label">P, 190 keV (SRIM tutorial)</text>
+          <rect x="10" y="122" width="124" height="30" class="dg-acc-f" opacity="0.85"/>
+          <rect x="134" y="122" width="67" height="30" class="dg-acc-f" opacity="0.45"/>
+          <rect x="201" y="122" width="82" height="30" class="dg-soft"/>
+          <rect x="283" y="122" width="7" height="30" class="dg-ink"/>
+          <text x="72" y="168" class="dg-label-sm" text-anchor="middle">ion: 44 %</text>
+          <text x="167" y="168" class="dg-label-sm" text-anchor="middle">recoils: 24 %</text>
+          <text x="72" y="182" class="dg-label-sm" text-anchor="middle">ionization</text>
+          <text x="167" y="182" class="dg-label-sm" text-anchor="middle">ionization</text>
+          <text x="242" y="168" class="dg-label-sm" text-anchor="middle">phonons</text>
+          <text x="242" y="182" class="dg-label-sm" text-anchor="middle">29 %</text>
+          <text x="290" y="206" class="dg-label-sm" text-anchor="end">vacancies 3 %</text>
+        </svg>
+        <figcaption>
+          <b>Figure 9.</b> Bar lengths proportional to percentage of the incident energy. The
+          proton gives nearly everything to electrons; the heavy ion passes more than half of
+          its energy to recoils, which spend most of it as phonons. The phosphorus bar follows
+          the tutorial's % Energy Loss table: ionization 44.3 % by the ion and 23.8 % by
+          recoils, phonons 29.3 % (0.4 % of it from the ion), vacancies 2.6 %.
+          <span class="src">Proton: integrated from NIST PSTAR nuclear and total stopping in
+          silicon. Phosphorus: SRIM Tutorial #4, full damage cascades.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      The energy-loss table quantifies the shift. For a proton, the PSTAR tables put nuclear
+      stopping in silicon at 0.18 % of the total at 100 keV and 0.29 % at 50 keV; integrated
+      over the whole slowing-down, nuclear collisions take about 1 % of a 100 keV proton's
+      energy and at most 3 % of a 50 keV proton's, the uncertainty being the final keV, below
+      the table's lowest energy. At least 97 % therefore goes directly to ionization, and the
+      Recoils column of the table is nearly empty. For a heavy ion the SRIM tutorials
+      document a full-cascade run of 190 keV phosphorus in silicon: the ion itself deposits
+      44 % of the incident energy, almost all as ionization, and passes 56 % to recoils, which
+      spend 24 % on ionization, 3 % on vacancies and 29 % on phonons, producing about 2300
+      vacancies per ion. Phosphorus at 190 keV has ε ≈ 3.8, not far from the 5.4 of 100 keV
+      oxygen, so an oxygen run on silicon is expected to show the same character in somewhat
+      milder form, since ε alone does not fix the split: a large Recoils column, a phonon share
+      of tens of percent, and ionization far below the proton's 97 %. The exact partition is
+      what the run supplies.
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">Why recoils heat the lattice instead of ionizing it</p>
+      <p>
+        Target electrons take energy most efficiently from particles moving at speeds
+        comparable to their own. A recoiling silicon atom is launched with a fraction of the
+        ion's energy and nearly thirty times a proton's mass, so it moves far more slowly than
+        the ion that struck it, and its electronic stopping is correspondingly weak. It spends
+        its energy instead in further nuclear collisions, most of them below the displacement
+        threshold, and that energy ends as phonons. Transferring energy to recoils is therefore
+        the same thing as diverting it from ionization to heat and damage, which is why the
+        Recoils column of the energy-loss table tracks the ion's mass.
+      </p>
+    </div>
+
+    <h2>7 · The course configurations</h2>
+    <p>
+      Deck 7 pp. 21–25 define five setups, each built to show one effect. In each, the target
+      is thicker than the ion's range, so the whole track and its end lie inside it, and most
+      are given twice — once as a single material and once with an oxide on silicon — so that
+      the pair isolates what the oxide changes. The table gives, for each, what it is built
+      to show and what a correct run should return, from reference data that do not depend on
+      running SRIM.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Deck 7</th><th>Ion, energy</th><th>Targets</th><th>Built to show</th><th>Reference values</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>p. 21</td><td>H, 50 and 100 keV</td>
+            <td>1.5 µm Si; 0.5 µm SiO₂ on 1 µm Si</td>
+            <td>Range against energy; the effect of an oxide overlayer on a light ion</td>
+            <td>Projected range in Si 0.45 µm (50 keV), 0.84 µm (100 keV). In SiO₂ at 2.20 g/cm³, 0.57 µm at 50 keV. At least 97 % of the energy to ionization</td>
+          </tr>
+          <tr>
+            <td>p. 22</td><td>O, 100 keV</td>
+            <td>0.5 µm Si; 0.2 µm SiO₂ on 0.3 µm Si</td>
+            <td>A heavy ion against a light one at equal energy</td>
+            <td>Range a small fraction of the proton's; large Recoils column; phonons tens of percent of the energy (§6)</td>
+          </tr>
+          <tr>
+            <td>p. 23</td><td>Ar, 1 keV</td>
+            <td>0.02 µm Si; 0.01 µm SiO₂ and 0.01 µm Si</td>
+            <td>Sputtering, and an energy loss dominated by nuclear collisions near the surface</td>
+            <td>Needs Surface Sputtering (or Monolayer Collision Steps, or Full Damage Cascades). Si yield about 0.87 atoms/ion at normal incidence (reference fit)</td>
+          </tr>
+          <tr>
+            <td>p. 24</td><td>O, 100 keV</td>
+            <td>0.5 µm Ga₂O₃ (6.44 g/cm³) on 1 µm GaAs (5.32 g/cm³)</td>
+            <td>A non-silicon compound stack with densities entered by hand</td>
+            <td>Both densities typed in; the Ga₂O₃ value is that of the α phase (§4)</td>
+          </tr>
+          <tr>
+            <td>p. 25</td><td>H, 1 MeV</td>
+            <td>30 mm air</td>
+            <td>A gas target: the Gas option, gas composition and density</td>
+            <td>At 1.205×10⁻³ g/cm³: CSDA range 2.38 cm, projected range 2.35 cm</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">Proton ranges: NIST PSTAR (silicon, silicon dioxide, dry air near sea level), mass ranges divided by the stated densities. Sputtering: NPL reference values from the semi-empirical equation of Seah et al. (2005).</p>
+
+    <p>
+      <b>Protons, p. 21.</b> The two energies lie on either side of the 55 keV maximum of
+      proton electronic stopping in silicon, and neither produces a sharp Bragg peak: a
+      100 keV proton's stopping rises only slightly as it slows toward that maximum, and a
+      50 keV proton's falls only slowly at first while its path per unit depth lengthens as it
+      scatters. Both ionization profiles are therefore nearly level near the surface and fall
+      away across the stopping region. In the oxide-capped target the two energies behave differently:
+      the 50 keV projected range in SiO₂, 0.57 µm, barely exceeds the 0.5 µm oxide, so the
+      protons' stopping distribution straddles the oxide–silicon interface, while 100 keV
+      protons cross the oxide with about 43 keV remaining and stop in the silicon. The oxide
+      hardly changes the depth scale: the mass stopping powers of SiO₂ and silicon at 100 keV,
+      533 and 504 MeV·cm²/g, multiplied by their densities of 2.20 and 2.33 g/cm³, give
+      nearly equal linear stopping powers. What it changes is the charge: energy deposited in the oxide produces a
+      pair for every 17 eV rather than every 3.6 eV, nearly five times fewer carriers.
+    </p>
+    <p>
+      <b>Oxygen, p. 22</b>, repeats the comparison of §6 on thinner targets matched to its
+      shorter range. <b>Argon, p. 23</b>, at 1 keV has a reduced energy of about 0.014 in
+      silicon, where energy loss is overwhelmingly to nuclear collisions and the cascade stays
+      close to the surface. The 0.02 µm target, 200 Å, is four to five times the manual's
+      figure for ions heavier than 20 u and two-thirds of the tutorial's; the convergence test
+      of §5 decides whether it suffices. This is the only setup whose output list includes
+      the sputtering yield. In the oxide-capped version the yield is reported
+      separately for oxygen and silicon, and the top layer is the one sputtered.
+      <b>Ga₂O₃ on GaAs, p. 24</b>, is the only setup that prints its densities; as with SiO₂
+      on pp. 21–23, neither compound's density can be left to TRIM's proposal.
+    </p>
+    <p>
+      <b>Air, p. 25.</b> The 1 MeV proton's range of 2.38 cm in air at sea-level density
+      places the end of its track inside the 30 mm layer, provided the layer carries air's
+      density. The same configuration run at 250 MeV, near the maximum of the galactic
+      cosmic-ray proton spectrum at solar minimum (about 270 MeV in the 2009 minimum; the
+      population is introduced in <a href="m05-sun-particle-populations.html">M05 §7</a>), shows
+      the atmosphere acting as a shield. The PSTAR CSDA range is 42.9 g/cm², which is 356 m of
+      air at sea-level density. The atmosphere, however, is not a slab of uniform density;
+      its shielding is measured by its mass per unit area, 1033 g/cm² at sea level
+      (<a href="m06-magnetosphere-belts.html">M06 §10</a>), equal to 8.6 km of sea-level air.
+      A 250 MeV proton's electromagnetic range therefore ends within the top 4.2 % of the
+      atmosphere's mass, far above the ground.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 180" role="img" aria-labelledby="f13-10-t">
+        <title id="f13-10-t">The CSDA range of a 250 MeV proton in air compared with the total vertical mass of the atmosphere, both in grams per square centimetre</title>
+        <text x="20" y="22" class="dg-label-sm">top of atmosphere</text>
+        <text x="420" y="22" class="dg-label-sm" text-anchor="end">sea level</text>
+        <rect x="20" y="30" width="400" height="26" class="dg-fill"/>
+        <text x="220" y="48" class="dg-label" text-anchor="middle">atmosphere: 1033 g/cm²</text>
+        <rect x="20" y="70" width="16.6" height="26" class="dg-acc-f"/>
+        <text x="44" y="82" class="dg-label">250 MeV proton: 42.9 g/cm²</text>
+        <text x="44" y="96" class="dg-label-sm">(356 m of sea-level air)</text>
+        <line x1="20" y1="110" x2="21" y2="110" class="dg-ink" stroke-width="3"/>
+        <text x="44" y="116" class="dg-label-sm">1 MeV proton: 0.0029 g/cm² (2.4 cm of air)</text>
+        <line x1="20" y1="136" x2="420" y2="136" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="1"><line x1="20" y1="136" x2="20" y2="142"/><line x1="116.8" y1="136" x2="116.8" y2="142"/><line x1="213.6" y1="136" x2="213.6" y2="142"/><line x1="310.4" y1="136" x2="310.4" y2="142"/><line x1="407.2" y1="136" x2="407.2" y2="142"/></g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="20" y="154">0</text><text x="116.8" y="154">250</text><text x="213.6" y="154">500</text><text x="310.4" y="154">750</text><text x="407.2" y="154">1000</text>
+        </g>
+        <text x="220" y="174" class="dg-label" text-anchor="middle">mass per unit area traversed (g/cm²)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 10.</b> Drawn to scale in g/cm², the measure that decides shielding whatever
+        the density profile. The 250 MeV proton's electromagnetic range is a thin slice at the
+        top of the column; the 1 MeV proton's is invisible at this scale.
+        <span class="src">NIST PSTAR, dry air; column mass from standard sea-level pressure over
+        standard gravity.</span>
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">What the air calculation leaves out</p>
+      <p>
+        TRIM includes no nuclear reactions, and the SRIM manual notes that above about
+        5 MeV per nucleon an ion may lose energy inelastically in ways the calculation omits.
+        A 250 MeV proton is fifty times above that level. Crossing tens of g/cm² of air, such
+        a proton can strike a nucleus and knock out protons and neutrons, which carry part of
+        its energy deeper into the atmosphere than its own electromagnetic range. It lies
+        below the 280 MeV threshold for creating a pion in a collision between two free
+        nucleons; inside a nucleus the motion of the bound nucleons permits a small yield below
+        that threshold, but the muons that dominate the charged-particle flux at sea level come
+        from primaries of far higher energy. The TRIM run therefore describes where
+        the primary proton would stop by ionization alone. The same limit applies to any TRIM
+        run of high-energy protons into shielding, and to the PSTAR ranges, which are
+        stopping-power integrals.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>The air layer of Deck 7 p. 25 is entered with its density left at a solid-phase
+      value of order 1 g/cm³. What does the run report for the 1 MeV proton, and which output
+      reveals the error?</summary>
+      <div class="answer">
+        <p>
+          Equation (13.5): every depth scales as 1/ρ. The proton's mass range in air is
+          2.87×10⁻³ g/cm², which is 2.4 cm at 1.205×10⁻³ g/cm³ but about 29 µm at 1 g/cm³ — a
+          factor of roughly 800 shorter. The ion-range plot shows every proton stopping in the
+          first few hundredths of a millimetre of a 30 mm layer, and the ionization curve
+          collapses into the same sliver. The Gas box's stopping correction changes only the
+          stopping per atom, by less than 10 % at 1 MeV per nucleon, not the number of atoms
+          per cm³; only the density entry sets the depth scale.
+        </p>
+      </div>
+    </details>
+
+    <h2>8 · Accuracy and limits</h2>
+    <p>
+      A TRIM result carries three kinds of error, and a fourth category of physics lies outside
+      it altogether. Statistical error comes from the finite number of ions and shrinks with a
+      longer run (§3). Data error comes from the stopping powers and from the user's
+      densities, and is controlled by checking inputs. Model error comes from the damage
+      physics and the idealised target, and bounds what a TRIM number can be taken to mean.
+      The processes TRIM does not model at all determine which questions it cannot answer.
+    </p>
+    <p>
+      <b>Stopping powers.</b> The SRIM authors compare their stopping powers with the
+      experimental literature in two slightly different tables. The accuracy table on
+      srim.org ("Details of SRIM-2013") gives a mean deviation of 4.0 % for hydrogen ions
+      (8300 data points, 87 % of them within 10 %), 3.9 % for helium, 4.8 % for lithium and
+      5.8 % for heavier ions from beryllium to uranium, 4.6 % overall and 4.0 % once points
+      deviating by more than 25 % are set aside. Table 1 of the 2010 paper (Ziegler, Ziegler
+      and Biersack), over about 28,100 points, gives 3.9 % for hydrogen (about 9000 points,
+      85 % within 10 %), 3.5 % for helium, 4.6 % for lithium, 5.6 % from beryllium to uranium,
+      4.3 % overall and 3.9 % without those points. The larger heavy-ion figure partly reflects greater
+      scatter among the measurements themselves. Ranges, as integrals of the stopping, are
+      limited by the same uncertainty, and the least well constrained case is a heavy ion at
+      low velocity. <b>Inputs</b> add their own error: a
+      density error transfers one for one into every depth (13.5), the gas–solid phase
+      difference reaches a factor of nearly two below 200 keV per nucleon, and compound
+      bonding corrections reach 20 %.
+    </p>
+    <p>
+      <b>Damage.</b> The damage outputs are far less certain than the ranges, for reasons that
+      all follow from the assumptions of §2. A real cascade does not leave every displaced atom
+      where TRIM puts it: many vacancies and interstitials meet and recombine within the
+      cascade, and molecular-dynamics simulations in iron give about one-third of the
+      standard displacement count. A real target is not at 0 K: for a low dose of ions in
+      crystalline silicon the SRIM manual notes that more than 99 % of the damage may anneal
+      at room temperature, the process of <a href="m11-displacement-damage.html">M11 §8</a>. The
+      count also depends on the damage option (about a factor of two, §3) and on the threshold
+      energy (roughly inversely, §5). At high doses the opposite bias appears: damage lowers the
+      displacement energy of the material around it, which TRIM's zero-dose target cannot
+      represent, so accumulated damage may be underestimated.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">What a TRIM vacancy count measures</p>
+      <p>
+        A vacancy count from TRIM is a count of displacement events in a perfect, amorphous
+        target at 0 K, computed with a stated threshold energy and damage option. It is not the
+        density of defects that survive in a device. It is a useful relative measure when two runs share the same threshold and damage
+        option; for an exposure in displacements per atom the recommended route is the
+        damage energy of a quick-mode run converted through the standard formula (§3). The
+        electrically active defect population of <a href="m11-displacement-damage.html">M11</a>
+        is a small and temperature-dependent fraction of it.
+      </p>
+    </div>
+
+    <p>
+      <b>What TRIM does not model.</b> The program transports ions through static amorphous
+      matter and records where their energy goes; every process outside that description is
+      absent from its output.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Not modelled</th><th>Consequence</th><th>Treated in</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Photons as projectiles (X-rays, gamma rays)</td><td>No photoelectric, Compton or pair-production transport; photon shielding and dose need the attenuation law</td><td><a href="m10-photon-interaction.html">M10</a></td></tr>
+          <tr><td>Electrons as projectiles</td><td>No electron transport; srim.org distributes a separate program, SREM, for electron stopping and range</td><td><a href="m09-bremsstrahlung-xrays.html">M09</a></td></tr>
+          <tr><td>Neutrons</td><td>Accepted only indirectly, as a list of recoil atoms produced by another program</td><td><a href="m11-displacement-damage.html">M11</a></td></tr>
+          <tr><td>Nuclear reactions</td><td>Inelastic losses and secondary particles omitted; significant above about 5 MeV per nucleon</td><td>§7; <a href="m12-stopping-power-range.html">M12 §8</a></td></tr>
+          <tr><td>Crystal structure</td><td>No channeling and no dependence on crystal orientation</td><td>§2</td></tr>
+          <tr><td>Temperature</td><td>No diffusion of implanted atoms, no annealing, no recombination of defects</td><td>M11 §8</td></tr>
+          <tr><td>Dose accumulation</td><td>No build-up of implanted atoms or damage, no sputter erosion, no amorphization; each ion sees a perfect target</td><td>§2</td></tr>
+          <tr><td>Secondary-electron transport</td><td>No electrons are followed, so energy that fast secondary electrons carry away from the track is recorded where the ion lost it; matters for micrometre-scale volumes and fast heavy ions, not for the keV setups of Deck 7</td><td><a href="m08-ionization-excitation.html">M08 §4</a></td></tr>
+          <tr><td>Electric fields and charge collection</td><td>TRIM ends at energy deposition; how many carriers survive recombination, drift and are collected requires device physics</td><td>M08 §7–8; M15</td></tr>
+          <tr><td>Gas pressure</td><td>Gas-phase stopping corrections assume standard temperature and pressure</td><td>§4</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Photons are the most consequential omission for this course, because total-dose testing
+      uses gamma rays: a cobalt-60 exposure deposits its dose through Compton electrons, and
+      neither the photons nor the electrons are TRIM projectiles. The dose of such a test
+      follows from the attenuation coefficients of <a href="m10-photon-interaction.html">M10</a>,
+      and TRIM's role in total-dose work is limited to proton and ion exposures.
+    </p>
+
+    <h2>9 · Installing SRIM and saving results</h2>
+    <p>
+      SRIM is a Windows program written in Visual Basic 5, and it depends on support files
+      that current versions of Windows no longer include. Installing it is the main practical
+      obstacle to using it, and its outputs persist only if they are saved deliberately. This
+      section gives the installation route documented with the program and the files a run
+      produces.
+    </p>
+    <p>
+      <b>Installation.</b> The SRIM-2013 download from srim.org comes in two forms, Standard
+      (10 MB) and Pro (34 MB, which adds about 500 plots comparing experimental and
+      theoretical stopping). Both are self-extracting archives named SRIM-2013.e, a name chosen
+      so that firewalls that block executable downloads let the file through. The file is
+      placed in a new folder, renamed to SRIM-2013.exe, and run; it extracts more than 500
+      files. On a computer that has never run SRIM, the document <em>_SRIM Setup Message</em>
+      in that folder lists up to seven support files that may be missing: the Visual Basic 5
+      run-time (MSVBvm50.exe), five ActiveX controls (ComCtl32, ComDlg32, MSFlxGrd, RichTx32
+      and TabCtl32, each an .ocx file), and the LineDraw font. The SRIM-Setup folder supplies
+      them. Its batch file, <em>_SRIM-Setup (Right-Click).bat</em>, run with
+      <b>Run as Administrator</b>, installs the run-time, registers the five controls with the
+      Windows <code>regsvr32</code> utility from <code>C:\Windows\SysWOW64</code> on 64-bit
+      Windows, and opens the font for installation. If it fails, the same registration can be
+      done by hand: copy the five controls into <code>C:\Windows\SysWOW64</code> and, in a
+      command prompt opened as Administrator, register each in turn, for example
+      <code>C:\Windows\SysWOW64\regsvr32.exe COMCTL32.OCX</code>. A third route is to install
+      SRIM-2008 in a separate folder first, since its installer sometimes supplies the missing
+      files. Either version runs the setups of Deck 7.
+    </p>
+    <p>
+      Two further requirements govern a working installation. TRIM must run with the Windows
+      regional format set to English (United States): where the decimal separator is a comma,
+      the SRIM authors report erroneous results, and under languages that use 16-bit characters
+      TRIM hangs. The program can also crash mid-run; the SRIM tutorial's
+      advice is to return to TRIM Setup and press Save Input &amp; Run TRIM again. SRIM has no
+      native macOS or Linux version. It runs under the Wine compatibility layer, and nanoHUB
+      hosts SRIM-2013 as a browser-based tool behind a free login.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Results are overwritten by the next run</p>
+      <p>
+        Every text file TRIM writes goes to the <code>SRIM Outputs</code> folder under a fixed
+        name, and the next run writes over it. The SRIM manual instructs renaming the output
+        files after each calculation; the practical rule is to copy the whole folder to a
+        folder named for the run as soon as it finishes. A plot's File button writes the data
+        accumulated up to the moment it is pressed, so it is pressed after the run has reached
+        the intended number of ions, not before.
+      </p>
+    </div>
+
+    <p>
+      <b>Saving and resuming.</b> The setup itself is written to TRIM.IN in the SRIM folder
+      when the run starts; it is a text file that can be kept, edited and rerun. When TRIM is
+      closed it asks whether to save the calculation, and a saved calculation, stored as
+      <code>SRIM Restore\TDATA.sav</code>, is reloaded and continued with <b>Resume saved TRIM
+      calc.</b> in the setup window; AutoSave writes the same state every <em>N</em> ions. The
+      distributions are saved with the File buttons of §5, and the per-ion files are
+      requested in region 6 of the setup window (Figure 3) so that they record from the first
+      ion.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>File</th><th>Written by</th><th>Contents</th><th>Units</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>TRIM.IN</td><td>Save Input &amp; Run TRIM</td><td>The complete setup: ion, energy, angle, number of ions, damage option, seed, layers, elements and their damage energies</td><td>text</td></tr>
+          <tr><td>RANGE.txt</td><td>Ion Distribution, File</td><td>Depth distribution of stopped ions and relocated target atoms</td><td>atoms/(Å·ion)</td></tr>
+          <tr><td>LATERAL.txt</td><td>Lateral Range, File</td><td>Lateral and radial spread against depth</td><td>Å</td></tr>
+          <tr><td>IONIZ.txt</td><td>Ionization, File</td><td>Ionization by ions and by recoils against depth</td><td>eV/(Å·ion)</td></tr>
+          <tr><td>PHONON.txt</td><td>Phonons, File</td><td>Phonon energy by ions and by recoils against depth</td><td>eV/(Å·ion)</td></tr>
+          <tr><td>E2RECOIL.txt</td><td>Energy to Recoils, File</td><td>Energy passed from the ions to recoils, and energy absorbed by each target element</td><td>eV/(Å·ion)</td></tr>
+          <tr><td>VACANCY.txt</td><td>Damage Events, File</td><td>Vacancies produced by the ion's own collisions and by the cascades, per target element</td><td>vacancies/(Å·ion)</td></tr>
+          <tr><td>NOVAC.txt</td><td>Damage Events, File</td><td>Replacement collisions against depth</td><td>per (Å·ion)</td></tr>
+          <tr><td>BACKSCAT.txt, TRANSMIT.txt</td><td>Setup region 6</td><td>Each backscattered or transmitted ion: energy, exit position, direction</td><td>one line per ion</td></tr>
+          <tr><td>SPUTTER.txt</td><td>Setup region 6</td><td>Each sputtered atom: energy, exit position, direction</td><td>one line per atom</td></tr>
+          <tr><td>RANGE_3D.txt</td><td>Setup region 6 (ion ranges)</td><td>Final position of every ion in three dimensions</td><td>Å</td></tr>
+          <tr><td>COLLISON.txt</td><td>Setup region 6 (collision details)</td><td>Every collision that displaces an atom; can grow to gigabytes</td><td>one line per event</td></tr>
+          <tr><td>TDATA.sav</td><td>Closing TRIM with save; AutoSave</td><td>The full state of the calculation, for resuming</td><td>read by TRIM only</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">File names and units from the SRIM manual, chapters 8–9; COLLISON.txt is TRIM's own spelling. TDATA.sav is stored in the SRIM Restore folder, TRIM.IN in the SRIM folder, and every other file in SRIM Outputs.</p>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>
+          SRIM is the package; its Stopping/Range Tables give the averages of M12 for one ion in
+          one material. TRIM, the program the course uses, follows ions one at a time through up
+          to eight compound layers and returns every quantity as a distribution in depth.
+        </li>
+        <li>
+          TRIM computes binary collisions from the ZBL screened potential (13.1), with energy
+          transfer set by the mass factor 4<em>M</em><sub>1</sub><em>M</em><sub>2</sub>/(<em>M</em><sub>1</sub>
+          + <em>M</em><sub>2</sub>)² (13.2), and subtracts electronic loss from fitted stopping
+          tables between collisions. Compounds follow Bragg's rule in atom fractions (13.3). The
+          target is amorphous, at 0 K and at zero dose: no channeling, no annealing, no
+          accumulation.
+        </li>
+        <li>
+          The course's setup: quick Kinchin–Pease damage, which gives the same ion ranges and
+          the same ionization by the ion as full cascades, does not follow recoils, and is the
+          recommended option for damage calculations;
+          energy in keV; 0° for normal incidence; layers from the surface, each with its own
+          element table; 500 ions. The mean depth converges as σ/√<em>N</em> (13.4); depth
+          profiles converge slowly, about 45 % scatter per bin if 500 ions spread over all 100 bins.
+        </li>
+        <li>
+          Stoichiometry is entered as atom fractions, and a compound's density must be typed in:
+          SiO₂ 2.20, dry air 1.205×10⁻³ g/cm³; TRIM's 2.32 for Si is within 0.3 % of the
+          measured 2.329 g/cm³. Every depth scales as 1/ρ (13.5). The Gas box switches to
+          gas-phase stopping and, in SRIM-2013, to a gas-phase density estimate that still has
+          to be checked.
+        </li>
+        <li>
+          Every depth distribution is per ion per unit depth: per Å for ionization, phonons,
+          vacancies and the depth-distribution text files, RANGE.txt included; per cm, as
+          (atoms/cm³)/(atoms/cm²), for the ion-range plot, which multiplied by the fluence
+          gives a concentration (13.6). Integrate to obtain energy per ion (13.7), divide
+          by 3.6 eV (Si) or 17 eV (SiO₂) for pairs (13.8), and use Φ<em>E</em><sub>layer</sub>/(ρ<em>t</em>)
+          for dose (13.9). In silicon 1 eV/Å = 0.0429 MeV·cm²/mg = 0.445 fC/µm.
+        </li>
+        <li>
+          Displacements = vacancies + replacement collisions (13.10). TRIM's silicon threshold
+          is 15 eV, which gives about 1.4 times the vacancies of the 21 eV used elsewhere in the
+          course, somewhat more for recoils near threshold. Sputtering (13.11) needs an option
+          that follows recoils: Surface Sputtering or Monolayer Collision Steps, which the SRIM
+          manual calls essential for accurate yields, or Full Damage Cascades; 1 keV argon on
+          silicon yields about 0.87 atoms/ion.
+        </li>
+        <li>
+          At 50–100 keV a proton gives at least 97 % of its energy to ionization. A 100 keV
+          oxygen ion has a reduced energy (13.12) of 5.4 against the proton's 79; the
+          documented 190 keV phosphorus case passes 56 % of its energy to recoils, and oxygen
+          is expected to behave similarly in milder form.
+        </li>
+        <li>
+          A 1 MeV proton travels 2.38 cm in sea-level air. A 250 MeV proton's range, 42.9 g/cm²,
+          is 4.2 % of the atmosphere's 1033 g/cm²; TRIM omits the nuclear reactions such a
+          proton can undergo.
+        </li>
+        <li>
+          Stopping powers agree with experiment to 4–6 % on average; vacancy counts are
+          displacement events, not surviving defects. TRIM does not model photons, electrons,
+          nuclear reactions, channeling, temperature or charge collection. Outputs in SRIM
+          Outputs are overwritten by the next run.
+        </li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Opening, §1</td><td>Deck 7 pp. 19–20. SRIM introduction and "Details of SRIM-2013" pages, srim.org. J. F. Ziegler, M. D. Ziegler and J. P. Biersack, "SRIM – The stopping and range of ions in matter (2010)", <em>Nucl. Instrum. Methods B</em> <b>268</b>, 1818 (2010). SRIM Tutorial #1</td></tr>
+      <tr><td>§2</td><td>J. F. Ziegler, J. P. Biersack and M. D. Ziegler, <em>SRIM – The Stopping and Range of Ions in Matter</em> (SRIM Co., 2008), <a href="http://www.srim.org/SRIM/SRIM%2008.pdf">ch. 8, "TRIM – Setup and Input"</a>, pp. 8-1 to 8-12, and <a href="http://www.srim.org/SRIM/SRIM%2009.pdf">ch. 9, "TRIM: Output Files"</a>, p. 9-3. Universal potential and reduced energy after Ziegler, Biersack and Littmark, <em>The Stopping and Range of Ions in Solids</em> (Pergamon, 1985). J. P. Biersack and L. G. Haggmark, <em>Nucl. Instrum. Methods</em> <b>174</b>, 257 (1980). J. F. Ziegler and J. M. Manoyan, <em>Nucl. Instrum. Methods B</em> <b>35</b>, 215 (1988). Screening lengths and mass factors computed here</td></tr>
+      <tr><td>§3</td><td>Deck 7 p. 20 and Lecture 7 for the procedure and the course's choices. SRIM manual ch. 8, Fig. 8-1 and pp. 8-3 to 8-8, and p. 8-10 for the modified Kinchin–Pease count (Kinchin and Pease 1955; Sigmund 1969; Norgett, Robinson and Torrens 1975). SRIM Tutorials #1 and #4. R. E. Stoller, M. B. Toloczko, G. S. Was, A. G. Certain, S. Dwaraknath and F. A. Garner, "On the use of SRIM for computing radiation damage exposure", <em>Nucl. Instrum. Methods B</em> <b>310</b>, 75 (2013). Counting statistics standard</td></tr>
+      <tr><td>§4</td><td>Deck 7 pp. 20, 24, 25; Lecture 7 (the SiO₂ build, and the density change on ticking Gas). SRIM manual ch. 8 pp. 8-6, 8-11, 8-12, and p. 8-15 for TRIM's silicon default of 2.32 g/cm³; SRIM Tutorial #3 (SRIM-2003 era) for the gas-density step. Compound Dictionary contents: J. F. Ziegler, "The Stopping and Range in Compounds", srim.org. Dry-air density and composition: NIST PSTAR material data (atom fractions computed here). SiO₂ and Si densities as on the formula sheet. Ga₂O₃ X-ray densities computed here from the lattice constants of M. Marezio and J. P. Remeika, <em>J. Chem. Phys.</em> <b>46</b>, 1862 (1967) (α) and J. Åhman, G. Svensson and J. Albertsson, <em>Acta Cryst.</em> C<b>52</b>, 1336 (1996) (β); tabulated densities α 6.44 and β 5.88 g/cm³ as compiled for CAS 12024-21-4 (ChemicalBook)</td></tr>
+      <tr><td>§5</td><td>SRIM manual ch. 9 (plots, files and units) and ch. 8 p. 8-4 (sputtering options) and pp. 8-9 to 8-11 (collision accounting, sputtering); SRIM Tutorials #1, #2 (p. 3, sputtering thickness) and #4; Stoller et al. (2013). Pair creation energies: C. A. Klein, <em>J. Appl. Phys.</em> <b>39</b>, 2029 (1968) for Si; T. R. Oldham and F. B. McLean, <em>IEEE Trans. Nucl. Sci.</em> <b>50</b>, 483 (2003) for SiO₂. Sputtering reference: NPL sputter-yield values from M. P. Seah, C. A. Clifford, F. M. Green and I. S. Gilmore, <em>Surf. Interface Anal.</em> <b>37</b>, 444 (2005). Self-check from <a href="https://physics.nist.gov/PhysRefData/Star/Text/PSTAR.html">NIST PSTAR</a>, silicon dioxide</td></tr>
+      <tr><td>§6</td><td>Deck 7 pp. 21–22; Lecture 7. NIST PSTAR silicon, nuclear and total stopping integrated here. SRIM Tutorial #4 (190 keV P in Si, full damage cascades)</td></tr>
+      <tr><td>§7</td><td>Deck 7 pp. 21–25. NIST PSTAR (silicon, silicon dioxide, dry air). Atmospheric column from standard sea-level pressure over standard gravity, as in M06 §10. Galactic cosmic-ray proton maximum: E. E. Vos and M. S. Potgieter, arXiv:1608.01688 (2016). Muons at sea level: Particle Data Group, "Cosmic rays" review (2017). Nuclear reactions: SRIM manual ch. 8 p. 8-5. Free nucleon–nucleon pion threshold from the particle masses; sub-threshold π⁰ production in 190 MeV proton–nucleus collisions: L. Aphecetche et al., <em>Phys. Lett. B</em> <b>519</b>, 8 (2001). Sputtering thicknesses: SRIM manual ch. 8 p. 8-11 and SRIM Tutorial #2 p. 3</td></tr>
+      <tr><td>§8</td><td>Accuracy tables: "Details of SRIM-2013", srim.org, and Ziegler, Ziegler and Biersack (2010), Table 1. SRIM manual ch. 8–9; Stoller et al. (2013); SRIM Tutorial #1</td></tr>
+      <tr><td>§9</td><td>srim.org download and installation instructions and problem-solving notes; <em>_SRIM Setup Message</em> and setup batch file of the SRIM-2013 distribution; SRIM Tutorial #3; SRIM manual ch. 8 p. 8-23 and ch. 9. nanoHUB resource "SRIM 2013", doi:10.21981/TXZH-YH86</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m12-stopping-power-range.html"><span>Previous</span>M12 · Energy Loss, Range, and the Bragg Peak</a>
+      <a class="next" href="m14-total-ionizing-dose.html"><span>Next</span>M14 · Total Ionizing Dose</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

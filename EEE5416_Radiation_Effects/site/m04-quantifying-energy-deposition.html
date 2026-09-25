@@ -1,0 +1,1616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M04 · Quantifying Energy Deposition — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M04 · Quantifying Energy Deposition</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 04</p>
+    <h1>Quantifying Energy Deposition</h1>
+    <p class="lede">
+      How much energy a particle gives up per unit of path, where along that path it
+      gives it up, how much free charge and lattice damage the deposited energy produces,
+      and how a dose is measured rather than assumed. These are the numbers that turn the
+      mechanisms of M01 into predictions.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M01, M03</span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Deck 03 pp. 12–14, 16–23, 26–29, 34, 36–37, 39; Deck 07 p. 41; Lectures 3–4, 6; <em>Charge Generation and Dose Deposition</em> handout</span>
+    </div>
+
+    <p>
+      <a href="m01-radiation-and-matter.html">M01</a> established what each species does
+      to matter: a charged particle ionizes and excites continuously along its path, a
+      photon ionizes through the fast electron it liberates, a neutron through the
+      charged recoil it knocks loose. Every one of those statements is qualitative.
+      <a href="m02-space-radiation-environment.html">M02</a> and
+      <a href="m03-dose-shielding-terrestrial.html">M03</a> supplied the other half of
+      the problem — which species arrive, at what energies and in what fluence — and M03
+      defined absorbed dose as the measure of what the part receives. What is still
+      missing is the coefficient connecting the two: how much energy one particle of a
+      given species and energy leaves behind per micrometre of silicon.
+    </p>
+    <p>
+      That coefficient is the <b>stopping power</b>, and in its mass-normalised form it is
+      the <b>linear energy transfer</b> on which the rest of the course is built. This
+      module develops it and then follows it in three directions. First along the track:
+      energy loss per unit length is not constant, it rises to a maximum near the end of
+      the particle's range, and where that maximum falls inside a device decides whether a
+      heavy-ion test measures anything. Then into the material: deposited energy divides
+      into a large ionizing share, which liberates electron–hole pairs and is measured as
+      dose, and a small non-ionizing share, which displaces atoms and is measured as
+      non-ionizing energy loss. Finally out to the system, because the charge one particle
+      liberates does not stay where it was made — it appears as a current transient in
+      whatever circuit surrounds it, which is the origin of radiation-induced
+      electromagnetic interference.
+    </p>
+
+    <h2>1 · The rate of energy loss</h2>
+    <p>
+      A charged particle crossing a solid transfers energy to it in a very large number of
+      small independent encounters. Over any path containing many such encounters the
+      fluctuations average out and the energy loss becomes a smooth function of position.
+      The quantity that describes it is the <b>stopping power</b>: energy lost per unit
+      distance travelled.
+    </p>
+
+    <div class="eq" id="m04-eq-stopping">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> = −<span class="frac"><span class="num">d<em>E</em></span><span class="den">d<em>x</em></span></span></div>
+        <div class="eq-num">(4.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em> stopping power (MeV/cm) · <em>E</em> particle kinetic energy (MeV) ·
+        <em>x</em> distance along the path (cm). The minus sign makes <em>S</em> positive,
+        since the particle's energy falls as <em>x</em> increases. The course writes the
+        same quantity as LET = −d<em>E</em>/d<em>x</em>. On the formula sheet as
+        <a href="formula-sheet.html#eq-stopping">(4.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      Stopping power divides into two channels, distinguished by which subsystem of the
+      solid receives the energy. <b>Electronic stopping</b> is energy transferred to atomic
+      electrons, producing the ionization and excitation of
+      <a href="m01-radiation-and-matter.html">M01</a> §3. <b>Nuclear stopping</b> is energy
+      transferred to whole atoms in elastic collisions with their nuclei, which can knock
+      them off their lattice sites. For every particle and energy in this course electronic
+      stopping carries almost all of the energy; nuclear stopping becomes comparable only
+      near the very end of the range, once the ion’s velocity is no longer large compared
+      with that of the atomic electrons. Where that happens depends strongly on the ion: for
+      an alpha particle in silicon the two channels cross near 2 keV, while for a heavy ion
+      such as gold the crossover is at several MeV of total energy. The small non-ionizing share nevertheless matters
+      out of proportion to its size, because it is the only channel that produces permanent
+      lattice defects. Section 6 quantifies it separately.
+    </p>
+    <p>
+      Electronic stopping is described by the Bethe expression. The course slides do not
+      derive it; it is stated here because every scaling law used in the rest of the module
+      is read directly off it.
+    </p>
+
+    <div class="eq" id="m04-eq-bethe">
+      <div class="eq-body">
+        <div class="eq-math">−<span class="frac"><span class="num">1</span><span class="den"><em>ρ</em></span></span><span class="frac"><span class="num">d<em>E</em></span><span class="den">d<em>x</em></span></span> = <em>K z</em><sup>2</sup> <span class="frac"><span class="num"><em>Z</em></span><span class="den"><em>A</em></span></span> <span class="frac"><span class="num">1</span><span class="den"><em>β</em><sup>2</sup></span></span> <span class="dl">[</span> <span class="frac"><span class="num">1</span><span class="den">2</span></span> ln <span class="frac"><span class="num">2<em>m</em><sub>e</sub><em>c</em><sup>2</sup><em>β</em><sup>2</sup><em>γ</em><sup>2</sup><em>T</em><sub>max</sub></span><span class="den"><em>I</em><sup>2</sup></span></span> − <em>β</em><sup>2</sup> − <span class="frac"><span class="num"><em>δ</em></span><span class="den">2</span></span> <span class="dl">]</span></div>
+        <div class="eq-num">(4.2)</div>
+      </div>
+      <div class="eq-says">
+        Left side: mass electronic stopping power (<b>MeV·cm²/g</b>) ·
+        <em>K</em> = 4π<em>N</em><sub>A</sub><em>r</em><sub>e</sub><sup>2</sup><em>m</em><sub>e</sub><em>c</em><sup>2</sup> = 0.307075 MeV·cm²/mol ·
+        <em>z</em> charge of the incident particle in units of <em>e</em> ·
+        <em>Z</em>, <em>A</em> atomic number and relative atomic mass of the target
+        (14 and 28.09 for silicon, giving <em>Z</em>/<em>A</em> = 0.4985) ·
+        <em>β</em> = <em>v</em>/<em>c</em> of the incident particle · <em>γ</em> its Lorentz
+        factor · <em>m</em><sub>e</sub><em>c</em><sup>2</sup> = 0.511 MeV ·
+        <em>T</em><sub>max</sub> largest energy transferable to one electron in a single
+        collision (MeV) · <em>I</em> mean excitation energy of the target, a fitted material
+        constant, <b>173 eV for silicon</b> and 166 eV for aluminium · <em>δ</em>
+        density-effect correction, negligible below about 1 GeV for a proton and worth
+        several per cent above it. Valid while the projectile is fast compared with the
+        target's atomic electrons: below a few MeV for a proton it requires shell
+        corrections, and near the end of the range it fails entirely. On the formula sheet
+        as <a href="formula-sheet.html#eq-bethe">(4.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      Three dependences in equation (4.2) carry the physics, and the logarithm varies
+      slowly enough that they can be read straight off. Energy loss scales with the
+      <b>square of the projectile charge</b>, so an iron nucleus at a given velocity
+      deposits 26² = 676 times as much energy per unit path as a proton at the same
+      velocity. It scales with the <b>inverse square of the velocity</b>, so a slow particle
+      deposits far more per unit path than a fast one, and any particle deposits
+      progressively more as it slows. And it scales with the target's <b>electrons per unit
+      mass</b>, <em>Z</em>/<em>A</em>, which is near 0.5 across the light and middle of the
+      periodic table — 0.4998 for carbon, 0.4985 for silicon, 0.4818 for aluminium. That
+      dependence is the quantitative form of the areal-density argument of
+      <a href="m03-dose-shielding-terrestrial.html">M03</a> §5: expressed per gram per square
+      centimetre, energy loss is nearly the same across those materials. The near-universality
+      has limits at both ends. Hydrogen, carrying no neutrons, sits at 0.992, and
+      <em>Z</em>/<em>A</em> falls monotonically through the heavy elements to 0.403 for
+      tungsten, 0.401 for gold and 0.396 for lead — a 20% departure, and precisely the
+      materials §5 is about.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 680 350" role="img" aria-labelledby="m04f1-t">
+        <title id="m04f1-t">Mass stopping power of silicon for protons against proton kinetic energy</title>
+
+        <line x1="90" y1="290" x2="620" y2="290" class="dg-rule" stroke-width="1.2"/>
+        <line x1="90" y1="290" x2="90" y2="50" class="dg-rule" stroke-width="1.2"/>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="90" y="308">1</text>
+          <text x="220" y="308">10</text>
+          <text x="350" y="308">10²</text>
+          <text x="480" y="308">10³</text>
+          <text x="610" y="308">10⁴</text>
+        </g>
+        <g class="dg-rule" stroke-width="0.8">
+          <line x1="220" y1="290" x2="220" y2="295"/>
+          <line x1="350" y1="290" x2="350" y2="295"/>
+          <line x1="480" y1="290" x2="480" y2="295"/>
+          <line x1="610" y1="290" x2="610" y2="295"/>
+        </g>
+        <text x="355" y="332" class="dg-label" text-anchor="middle">Proton kinetic energy (MeV)</text>
+
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="82" y="294">1</text>
+          <text x="82" y="198">10</text>
+          <text x="82" y="102">100</text>
+        </g>
+        <g class="dg-rule" stroke-width="0.8">
+          <line x1="85" y1="194" x2="90" y2="194"/>
+          <line x1="85" y1="98" x2="90" y2="98"/>
+        </g>
+        <text x="28" y="170" class="dg-label" text-anchor="middle" transform="rotate(-90 28 170)">Mass stopping power (MeV·cm²/g)</text>
+
+        <path d="M90,73 L155,106 L220,142 L285,178 L350,216 L415,246 L480,266 L532,269 L570,267 L610,265"
+              class="dg-acc" stroke-width="2.2" fill="none"/>
+
+        <circle cx="350" cy="216" r="3.5" class="dg-ink"/>
+        <text x="360" y="212" class="dg-label-sm">100 MeV → 5.85</text>
+        <circle cx="532" cy="269" r="3.5" class="dg-ink"/>
+        <text x="505" y="246" class="dg-label-sm" text-anchor="end">minimum 1.66 near 2.5 GeV</text>
+        <line x1="510" y1="252" x2="529" y2="265" class="dg-rule" stroke-width="0.8"/>
+        <text x="120" y="66" class="dg-label-sm">1/<tspan class="dg-math">β</tspan>² alone would give slope −1;</text>
+        <text x="120" y="80" class="dg-label-sm">the logarithm flattens it to about −0.7</text>
+        <text x="590" y="240" class="dg-label-sm" text-anchor="middle">relativistic rise</text>
+      </svg>
+      <figcaption>
+        Mass electronic stopping power of silicon for protons, computed from equation (4.2)
+        with <em>I</em> = 173 eV. The fall is the 1/<em>β</em>² term and spans two orders of
+        magnitude between 1 MeV and 1 GeV. The curve flattens into a broad minimum of
+        1.66 MeV·cm²/g near 2.5 GeV, where a particle is called <b>minimum ionizing</b>, and
+        then rises slowly as the logarithm grows. A 100 MeV proton — a representative
+        penetrating inner-belt energy, and the standard proton-test energy — sits at
+        5.85 MeV·cm²/g, about 3.5 times minimum ionizing rather than at the minimum.
+      </figcaption>
+    </figure>
+
+    <div class="box insight">
+      <span class="box-title">Why heavy ions define the worst case</span>
+      <p>
+        Galactic cosmic rays are 1–2% heavy ions by number
+        (<a href="m02-space-radiation-environment.html">M02</a>), so a spacecraft encounters
+        vastly more protons than iron nuclei. The <em>z</em>² factor is what makes the rare
+        species the design driver: at equal velocity one iron nucleus deposits nearly three
+        orders of magnitude more energy per micrometre than a proton, which is enough to
+        exceed a circuit's upset threshold where a proton is not. Heavy-ion accelerator time
+        is spent for this reason, and it is why <a href="m11-single-event-effects.html">M11</a>
+        §6 characterises a part against energy deposition rather than against particle count.
+      </p>
+    </div>
+
+    <h2>2 · Linear energy transfer</h2>
+    <p>
+      Stopping power in MeV/cm mixes two things: how strongly the particle interacts, and
+      how much material there is per centimetre. Dividing by the mass density separates
+      them and leaves a quantity that describes the particle and its energy almost
+      independently of the target, for the reason given in §1 — every solid presents close
+      to the same number of electrons per gram. The result is the quantity the course uses
+      everywhere.
+    </p>
+
+    <div class="eq" id="m04-eq-let">
+      <div class="eq-body">
+        <div class="eq-math">LET = −<span class="frac"><span class="num">1</span><span class="den"><em>ρ</em></span></span> · <span class="frac"><span class="num">d<em>E</em></span><span class="den">d<em>x</em></span></span> = <span class="frac"><span class="num"><em>S</em></span><span class="den"><em>ρ</em></span></span></div>
+        <div class="eq-num">(4.3)</div>
+      </div>
+      <div class="eq-says">
+        LET linear energy transfer, equivalently mass stopping power
+        (<b>MeV·cm²/mg</b> in this course) · <em>ρ</em> density in <b>mg/cm³</b> to match, so
+        2,328 mg/cm³ for silicon · d<em>E</em>/d<em>x</em> in MeV/cm · <em>S</em> stopping power
+        from (4.1). The minus sign carries through from (4.1), so LET, like stopping power, is
+        positive. <b>From here on the symbol LET denotes this mass-normalised quantity</b>,
+        although §1 and Deck 03 p. 25 also use it for the linear one — the course writes the
+        same three letters for both, and only the unit distinguishes them. Three unit
+        conventions are in circulation: this course’s MeV·cm²/mg; the MeV·cm²/g of the
+        stopping-power tables (NIST, ICRU, the Particle Data Group), a factor of 1,000 larger;
+        and the linear keV/µm that ICRU 85 names as the special unit for LET, which needs the
+        density to convert at all — 1 MeV·cm²/mg is 233 keV/µm in silicon. On the formula
+        sheet as <a href="formula-sheet.html#eq-let">(4.3)</a>.
+      </div>
+    </div>
+
+    <p>
+      Stopping power and linear energy transfer are used interchangeably throughout the
+      course, and for its purposes that is sound. They are formally different quantities.
+      Stopping power counts the energy the <em>particle loses</em>; linear energy transfer
+      counts the energy <em>deposited locally</em>, close to the track. The two differ by
+      the energy carried off by delta rays — the secondary electrons of
+      <a href="m01-radiation-and-matter.html">M01</a> §3 that are energetic enough to travel
+      a significant distance and ionize elsewhere. The formal definition therefore restricts
+      the accounting to energy transfers below a cut-off Δ, written LET<sub>Δ</sub>, and the
+      unrestricted limit LET<sub>∞</sub> is exactly the electronic stopping power. The
+      distinction becomes quantitative only when the sensitive volume is small compared with
+      the delta-ray range, and that is where device-level Monte Carlo transport replaces a
+      single LET value altogether (<a href="m11-single-event-effects.html">M11</a> §11).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 210" role="img" aria-labelledby="m04f2-t">
+        <title id="m04f2-t">Linear energy transfer of representative species in silicon on a logarithmic scale</title>
+
+        <line x1="70" y1="150" x2="590" y2="150" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="70" y="168">10⁻³</text>
+          <text x="174" y="168">10⁻²</text>
+          <text x="278" y="168">10⁻¹</text>
+          <text x="382" y="168">1</text>
+          <text x="486" y="168">10</text>
+          <text x="590" y="168">10²</text>
+        </g>
+        <g class="dg-rule" stroke-width="0.8">
+          <line x1="174" y1="150" x2="174" y2="155"/>
+          <line x1="278" y1="150" x2="278" y2="155"/>
+          <line x1="382" y1="150" x2="382" y2="155"/>
+          <line x1="486" y1="150" x2="486" y2="155"/>
+        </g>
+        <text x="330" y="192" class="dg-label" text-anchor="middle">LET in silicon (MeV·cm²/mg)</text>
+
+        <line x1="150" y1="150" x2="150" y2="122" class="dg-line" stroke-width="1.4"/>
+        <text x="150" y="114" class="dg-label-sm" text-anchor="middle">100 MeV proton</text>
+        <text x="150" y="101" class="dg-label-sm" text-anchor="middle">5.9×10⁻³</text>
+
+        <line x1="375" y1="150" x2="375" y2="122" class="dg-line" stroke-width="1.4"/>
+        <text x="375" y="114" class="dg-label-sm" text-anchor="middle">5.5 MeV alpha</text>
+        <text x="375" y="101" class="dg-label-sm" text-anchor="middle">0.85 track average</text>
+
+        <g class="dg-acc" stroke-width="1.8">
+          <line x1="463" y1="150" x2="463" y2="70"/>
+          <line x1="507" y1="150" x2="507" y2="70"/>
+          <line x1="543" y1="150" x2="543" y2="70"/>
+        </g>
+        <text x="463" y="132" class="dg-label-sm" text-anchor="middle">6</text>
+        <text x="507" y="120" class="dg-label-sm" text-anchor="middle">16</text>
+        <text x="551" y="108" class="dg-label-sm" text-anchor="middle">35</text>
+        <text x="503" y="58" class="dg-label" text-anchor="middle"><tspan class="dg-acc-f">Cl · Cu · Ag, accelerator cocktail</tspan></text>
+      </svg>
+      <figcaption>
+        Four orders of magnitude separate a fast proton from an accelerator heavy ion, which
+        is why an environment cannot be summarised by a particle count. The ion values are
+        the chlorine, copper and silver lines of the Berkeley cocktail quoted on
+        Deck 13 p. 50; the proton and alpha values are computed in §1 and §3.
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <span class="box-title">Three quantities in this subject carry cm², and they are unrelated</span>
+      <p>
+        LET is MeV·cm²/mg — an energy per areal density. A single-event cross-section is
+        cm²/device — an area per part. The fluence-to-dose factor of
+        <a href="m03-dose-shielding-terrestrial.html#m03-eq-dose-let">(3.2)</a> carries cm²
+        because it converts a particle count per unit area into a dose. Each cm² arrives
+        from a different place: mass normalisation, an interaction probability, and a
+        particle count per unit area. Substituting one for another gives an answer wrong by
+        many orders of magnitude that is still dimensionally plausible.
+      </p>
+    </div>
+
+    <h2>3 · Range and the Bragg peak</h2>
+    <p>
+      Equation (4.2) makes stopping power a function of the particle's instantaneous
+      velocity, and the particle slows continuously as it travels. Energy loss per unit path
+      is therefore a function of depth, and the 1/<em>β</em>² term guarantees that it
+      increases as the particle penetrates. This section follows the consequence, which
+      governs how every heavy-ion experiment in the field is designed.
+    </p>
+    <p>
+      The <b>range</b> is the total path a particle traverses before coming to rest. Because
+      the particle loses its energy continuously and in small steps, the range follows from
+      the stopping power by integration.
+    </p>
+
+    <div class="eq" id="m04-eq-range">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em>(<em>E</em><sub>0</sub>) = ∫<sub>0</sub><sup><em>E</em><sub>0</sub></sup> <span class="frac"><span class="num">d<em>E</em></span><span class="den"><em>S</em>(<em>E</em>)</span></span></div>
+        <div class="eq-num">(4.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em> range, as a path length (cm or µm) or, dividing by density, as an areal
+        density (g/cm²) · <em>E</em><sub>0</sub> initial kinetic energy (MeV) ·
+        <em>S</em>(<em>E</em>) stopping power at each energy along the slowing-down history
+        (MeV/cm). This is the <b>continuous-slowing-down approximation</b> range: it assumes
+        the particle loses energy smoothly and travels in a straight line. Both assumptions
+        hold well for heavy charged particles, which are barely deflected by the electrons
+        they scatter from; they fail for electrons, whose path wanders, which is why
+        <a href="m03-dose-shielding-terrestrial.html#m03-eq-range">(3.5)</a> gives an
+        empirical extrapolated range instead. On the formula sheet as
+        <a href="formula-sheet.html#eq-range">(4.4)</a>.
+      </div>
+    </div>
+
+    <p>
+      Equation (4.4) is not evaluated by hand. Stopping powers and ranges are tabulated —
+      NIST PSTAR and ASTAR for protons and alphas, SRIM for heavy ions in arbitrary target
+      stacks — and the tabulation is what a test plan is built from. A 5.5 MeV alpha
+      particle, the energy emitted by the <sup>241</sup>Am source used on Deck 03 p. 12,
+      has a continuous-slowing-down range of 6.49 mg/cm² in silicon, which at 2.328 g/cm³ is
+      27.9 µm. Its energy divided by its range gives a track-average LET of
+      0.85 MeV·cm²/mg. The peak value is higher, and the reason is the subject of the rest of
+      this section. The straight-line depth reached, which ASTAR tabulates separately as the
+      projected range, is 6.40 mg/cm² — 1.4% shorter, because even an alpha particle scatters
+      a little.
+    </p>
+    <p>
+      Along the first part of the track the particle is fast, 1/<em>β</em>² is small, and
+      energy loss per micrometre is nearly constant. As the particle slows, the loss rate
+      climbs, and because the energy remaining falls at the same time, the climb accelerates
+      into a sharp maximum. That maximum is the <b>Bragg peak</b>. Immediately past it the
+      ion is slow enough to capture electrons from the medium; its effective charge falls,
+      the <em>z</em>² factor collapses, and the deposition drops to zero within a short
+      distance. The result is a strongly asymmetric depth profile: a long low plateau, a
+      narrow high peak, and an abrupt end.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 250" role="img" aria-labelledby="m04f3-t">
+        <title id="m04f3-t">Energy deposited per unit depth along an ion track, showing the Bragg peak</title>
+
+        <line x1="70" y1="200" x2="580" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="200" x2="70" y2="35" class="dg-rule" stroke-width="1.2"/>
+        <text x="325" y="232" class="dg-label" text-anchor="middle">Depth into the target</text>
+        <text x="26" y="120" class="dg-label" text-anchor="middle" transform="rotate(-90 26 120)">d<tspan class="dg-math">E</tspan>/d<tspan class="dg-math">x</tspan></text>
+
+        <path d="M70,175 C160,172 250,166 320,155 C370,146 400,132 425,105 C440,88 450,62 458,55 C466,62 472,110 478,158 C482,184 486,197 492,200"
+              class="dg-acc" stroke-width="2.2" fill="none"/>
+
+        <line x1="458" y1="55" x2="458" y2="200" class="dg-rule" stroke-dasharray="3 3" stroke-width="0.9"/>
+        <text x="458" y="45" class="dg-label" text-anchor="middle"><tspan class="dg-acc-f">Bragg peak</tspan></text>
+
+        <line x1="492" y1="200" x2="492" y2="212" class="dg-rule" stroke-width="1"/>
+        <text x="500" y="220" class="dg-label-sm">range <tspan class="dg-math">R</tspan></text>
+
+        <text x="120" y="192" class="dg-label-sm">plateau: fast particle, low d<tspan class="dg-math">E</tspan>/d<tspan class="dg-math">x</tspan></text>
+        <text x="502" y="120" class="dg-label-sm">electron capture</text>
+        <text x="502" y="134" class="dg-label-sm">ends the track</text>
+        <line x1="498" y1="126" x2="482" y2="150" class="dg-rule" stroke-width="0.8"/>
+      </svg>
+      <figcaption>
+        Shape only; the peak height and width depend on species and energy. Nearly all of
+        the deposited energy is concentrated in the last part of the path, so a
+        few-micrometre error in where the track ends changes the energy delivered to a
+        device layer by a large factor. Statistical variation in the number of collisions
+        gives the endpoint a spread of order one per cent of the range, called <b>range
+        straggling</b>, which broadens the peak.
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <span class="box-title">Which LET is being integrated</span>
+      <p>
+        Deck 03 p. 27 states that the integral of LET over the track length is the total
+        deposited energy. That is correct under the definition its own text gives on the same
+        page — LET as energy loss per unit <em>length</em>, which is also the definition
+        ICRU 85 uses. The figure on that slide, however, plots LET in MeV·cm²/mg, the
+        mass-normalised quantity of (4.3) and the one every LET value in this course is quoted
+        in. With a number in those units the integral over a length returns MeV·cm²/mg × cm,
+        which is not an energy: multiply by <em>ρ</em> first and integrate <em>ρ</em> · LET.
+        The distinction vanishes into the bookkeeping when one material runs the whole length
+        of the track. It matters as soon as the track crosses a layer stack, because
+        <em>ρ</em> then changes from layer to layer — precisely the case a heavy-ion test is
+        designed around.
+      </p>
+    </div>
+
+    <p>
+      A device is not a uniform block. It is a stack of passivation, metal and dielectric
+      layers over a thin active region in which the circuit actually stores and switches
+      charge, over a substrate that is hundreds of micrometres thick. Whether an ion
+      produces any measurable effect depends on where its Bragg peak lands in that stack.
+      An ion that stops in the passivation deposits all of its energy where nothing is
+      collected. An ion whose peak falls in the active region deposits the largest possible
+      charge in the volume that matters. An ion that crosses the whole structure without
+      slowing appreciably deposits only its plateau LET, which may be well below the
+      threshold the part is being characterised for.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 300" role="img" aria-labelledby="m04f4-t">
+        <title id="m04f4-t">Three ion trajectories relative to the active region of a device stack</title>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="120" y="24">peak in the overlayers</text>
+          <text x="350" y="24">peak in the active region</text>
+          <text x="580" y="24">ion passes through</text>
+        </g>
+
+        <!-- three identical stacks -->
+        <g>
+          <rect x="45" y="40" width="150" height="30" rx="3" class="dg-fill"/>
+          <rect x="45" y="70" width="150" height="34" rx="3" class="dg-fill"/>
+          <rect x="45" y="104" width="150" height="22" rx="3" class="dg-fill"/>
+          <rect x="45" y="126" width="150" height="80" rx="3" class="dg-fill"/>
+          <rect x="275" y="40" width="150" height="30" rx="3" class="dg-fill"/>
+          <rect x="275" y="70" width="150" height="34" rx="3" class="dg-fill"/>
+          <rect x="275" y="104" width="150" height="22" rx="3" class="dg-fill"/>
+          <rect x="275" y="126" width="150" height="80" rx="3" class="dg-fill"/>
+          <rect x="505" y="40" width="150" height="30" rx="3" class="dg-fill"/>
+          <rect x="505" y="70" width="150" height="34" rx="3" class="dg-fill"/>
+          <rect x="505" y="104" width="150" height="22" rx="3" class="dg-fill"/>
+          <rect x="505" y="126" width="150" height="80" rx="3" class="dg-fill"/>
+        </g>
+        <g class="dg-label-sm">
+          <text x="50" y="59">passivation</text>
+          <text x="50" y="91">metal / dielectric</text>
+          <text x="50" y="119">active region</text>
+          <text x="50" y="170">substrate</text>
+        </g>
+
+        <!-- tracks -->
+        <line x1="120" y1="34" x2="120" y2="60" class="dg-line" stroke-width="2"/>
+        <circle cx="120" cy="62" r="6" class="dg-acc-f"/>
+        <line x1="350" y1="34" x2="350" y2="110" class="dg-line" stroke-width="2"/>
+        <circle cx="350" cy="114" r="6" class="dg-acc-f"/>
+        <line x1="580" y1="34" x2="580" y2="212" class="dg-line" stroke-width="2"/>
+        <polygon points="580,220 574,208 586,208" class="dg-line"/>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="120" y="236">energy delivered where</text>
+          <text x="120" y="250">nothing collects it</text>
+          <text x="350" y="236">maximum charge in the</text>
+          <text x="350" y="250">volume that matters</text>
+          <text x="580" y="236">only the plateau LET is</text>
+          <text x="580" y="250">seen — the peak is buried</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="120" y="274">energy too low</text>
+          <text x="350" y="274"><tspan class="dg-acc-f">the test condition wanted</tspan></text>
+          <text x="580" y="274">energy too high</text>
+        </g>
+      </svg>
+      <figcaption>
+        The layer thicknesses are not to scale; the active region of a modern circuit is a
+        micrometre or less over a substrate hundreds of micrometres thick. The choice of ion
+        species and energy is the choice of which of these three cases occurs, and only the
+        middle one measures the quantity the test intends to measure.
+      </figcaption>
+    </figure>
+
+    <p>
+      Two practices follow. The first is that a heavy-ion experiment is simulated before it
+      is run. Stopping-power and range calculations through the real layer stack — SRIM for
+      the ion transport, Monte Carlo transport codes such as Geant4 and MRED where nuclear
+      reactions and secondary production matter — establish which species at which energy
+      places the peak in the active region of that particular part. Beam time is scarce and
+      an ion that stops early or passes straight through returns no usable information.
+    </p>
+    <p>
+      The second is the <b>variable-depth Bragg peak method</b>. A calibrated degrader foil
+      of known areal density is placed in the beam ahead of the part. The ion loses a known
+      amount of energy crossing it, so its residual range in the device is shortened by a
+      known amount, and the Bragg peak is translated through the stack in controlled steps.
+      Measuring the upset cross-section against degrader thickness maps out the depth at
+      which the sensitive volume actually lies, which is otherwise not directly observable.
+    </p>
+
+    <div class="box">
+      <span class="box-title">Where the Bragg peak is the point of the experiment</span>
+      <p>
+        Deck 03 pp. 28–29 report exactly this measurement on 4 Mbit static RAMs, with
+        energy deposition through a series of degraders computed beforehand and the upset
+        cross-section measured for each. The same physical fact — that a charged particle
+        concentrates its energy at the end of its range — is what makes proton therapy able
+        to deposit dose in a tumour while sparing the tissue in front of it. The application
+        differs; the curve is the same one.
+      </p>
+    </div>
+
+    <h2>4 · From deposited energy to free charge</h2>
+    <p>
+      Deposited energy is not itself what a device responds to. A circuit responds to
+      charge: to electrons and holes that are mobile, can be moved by an electric field, and
+      can be collected at a junction or trapped in an insulator. The conversion from one to
+      the other is a single material constant, and it is the hinge between the environment
+      and the device.
+    </p>
+    <p>
+      The <b>electron–hole pair creation energy</b> <em>E</em><sub>p</sub> is the mean energy
+      an ionizing particle must deposit in a material to produce one free electron–hole pair.
+      It exceeds the bandgap, because the deposited energy is shared between creating pairs,
+      exciting lattice vibrations, and leaving carriers with kinetic energy above the band
+      edges. Across semiconductors the relation is close to linear in the gap, an empirical
+      result due to Klein: <em>E</em><sub>p</sub> ≈ 2.8<em>E</em><sub>g</sub> plus a term
+      between 0 and 1 eV. Silicon, with a 1.12 eV gap, takes <b>3.6 eV</b> per pair. Silicon
+      dioxide takes <b>17 eV</b>, which against its roughly 9 eV gap is a smaller multiple
+      than the semiconductor trend, not a larger one.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 600 190" role="img" aria-labelledby="m04f5-t">
+        <title id="m04f5-t">Pairs generated per micrometre of track in silicon and in silicon dioxide for the same energy deposition</title>
+
+        <text x="300" y="22" class="dg-label" text-anchor="middle">Same deposited energy, two materials</text>
+
+        <rect x="60" y="50" width="230" height="46" rx="3" class="dg-fill"/>
+        <text x="175" y="70" class="dg-label" text-anchor="middle">Si · <tspan class="dg-math">E</tspan>_p = 3.6 eV</text>
+        <text x="175" y="88" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">g</tspan>₀ = 4×10¹³ pairs/cm³ per rad</text>
+
+        <rect x="310" y="50" width="230" height="46" rx="3" class="dg-fill"/>
+        <text x="425" y="70" class="dg-label" text-anchor="middle">SiO₂ · <tspan class="dg-math">E</tspan>_p = 17 eV</text>
+        <text x="425" y="88" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">g</tspan>₀ = 8.1×10¹² pairs/cm³ per rad</text>
+
+        <g class="dg-acc-f">
+          <circle cx="80" cy="120" r="4"/><circle cx="102" cy="120" r="4"/><circle cx="124" cy="120" r="4"/>
+          <circle cx="146" cy="120" r="4"/><circle cx="168" cy="120" r="4"/><circle cx="190" cy="120" r="4"/>
+          <circle cx="212" cy="120" r="4"/><circle cx="234" cy="120" r="4"/><circle cx="256" cy="120" r="4"/>
+          <circle cx="278" cy="120" r="4"/>
+        </g>
+        <g class="dg-acc-f">
+          <circle cx="330" cy="120" r="4"/><circle cx="374" cy="120" r="4"/>
+        </g>
+
+        <text x="175" y="150" class="dg-label-sm" text-anchor="middle">about five pairs</text>
+        <text x="425" y="150" class="dg-label-sm" text-anchor="middle">for every one</text>
+        <text x="300" y="176" class="dg-label-sm" text-anchor="middle">A MOS device contains both materials, and the two constants are not interchangeable</text>
+      </svg>
+      <figcaption>
+        The ratio 17/3.6 is 4.7, so the same energy density liberates almost five times as
+        much charge in silicon as in its own oxide. Every dose figure and every generation
+        calculation in this course must state which material it refers to, which is the same
+        discipline that <a href="m03-dose-shielding-terrestrial.html">M03</a> §1 imposes on
+        rad(Si) against rad(SiO₂).
+      </figcaption>
+    </figure>
+
+    <p>
+      With <em>E</em><sub>p</sub> fixed, a dose converts directly into a pair density.
+    </p>
+
+    <div class="eq" id="m04-eq-neh">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>eh</sub> = <span class="frac"><span class="num"><em>ρD</em></span><span class="den"><em>E</em><sub>p</sub></span></span></div>
+        <div class="eq-num">(4.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>eh</sub> electron–hole pairs generated per unit volume (m⁻³ as
+        written) · <em>ρ</em> density in <b>kg/m³</b>, 2,200 for SiO₂ and 2,328 for Si ·
+        <em>D</em> dose in <b>J/kg</b>, so 10 krad = 100 J/kg ·
+        <em>E</em><sub>p</sub> pair creation energy in <b>joules</b>, 17 eV = 2.72×10⁻¹⁸ J
+        for SiO₂ and 3.6 eV = 5.77×10⁻¹⁹ J for Si. Strict SI throughout; divide by 10⁶ to
+        reach cm⁻³. This counts pairs <em>generated</em>, before any recombination. On the
+        formula sheet as <a href="formula-sheet.html#eq-neh">(4.5)</a>.
+      </div>
+    </div>
+
+    <div class="eq" id="m04-eq-g0">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>eh</sub> = <em>g</em><sub>0</sub> · <em>D</em></div>
+        <div class="eq-num">(4.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>eh</sub> pairs per cm³ · <em>g</em><sub>0</sub> initial pair density
+        generated per rad (pairs/cm³ per rad): <b>8.1×10¹² for SiO₂</b>, 4×10¹³ for Si,
+        ~7×10¹³ for GaAs · <em>D</em> dose in <b>rad</b> of that same material.
+        Algebraically identical to (4.5) — <em>g</em><sub>0</sub> is
+        <em>ρ</em>/<em>E</em><sub>p</sub> with the rad and unit conversions folded in — but
+        it avoids the SI conversion and is the faster route when the dose is already in rad.
+        On the formula sheet as <a href="formula-sheet.html#eq-g0">(4.6)</a>.
+      </div>
+    </div>
+
+    <p>
+      The three values of <em>g</em><sub>0</sub> quoted on Deck 03 p. 19 are reproducible
+      from the densities and pair energies on the same slide, which is worth performing once
+      because it fixes the unit chain. One rad is 6.24×10¹³ eV/g. In silicon dioxide,
+      2.2 g/cm³ × 6.24×10¹³ eV/g ÷ 17 eV per pair = 8.1×10¹² pairs/cm³ per rad. The same
+      arithmetic in silicon gives 4.0×10¹³, and in gallium arsenide, with 5.32 g/cm³ and a
+      4.8 eV pair energy, 6.9×10¹³. That gallium arsenide pair energy is the value the
+      radiation-effects handbooks use and the one Klein’s relation predicts from a 1.42 eV
+      gap; measurements on high-purity detector material give a somewhat lower 4.2 eV.
+    </p>
+    <p>
+      For a single particle the more useful form counts charge per unit length of track
+      rather than per unit volume. Combining the LET of §2 with the pair energy gives the
+      charge liberated per micrometre of path, which is the quantity every single-event
+      calculation begins from.
+    </p>
+
+    <div class="box insight">
+      <span class="box-title">The anchor number for charge deposition</span>
+      <p>
+        Deck 03 p. 26 gives the deposited charge as
+        <em>Q</em><sub>col</sub> = 1.6×10⁻² · LET · <em>ρ</em>/<em>E</em><sub>p</sub>, with
+        LET in MeV·cm²/mg, <em>ρ</em> in g/cm³ and <em>E</em><sub>p</sub> in eV. Evaluated
+        for silicon it returns <b>10.4 fC per micrometre of track per unit of LET</b>.
+        Equivalently, an LET of 97 MeV·cm²/mg deposits almost exactly 1 pC/µm. The
+        expression is a charge <em>per unit length</em>, so reaching a collected charge
+        requires multiplying by a collection depth that the device geometry has to supply.
+        The relation is on the formula sheet as
+        <a href="formula-sheet.html#eq-qcoll">(11.1)</a>, where
+        <a href="m11-single-event-effects.html">M11</a> §4 compares the result against the
+        critical charge of the circuit.
+      </p>
+    </div>
+
+    <p>
+      Photons need one further step, because they deposit no energy directly. As
+      <a href="m01-radiation-and-matter.html">M01</a> §5 established, a photon transfers its
+      energy to an electron in a photoelectric, Compton or pair-production event, and the
+      resulting fast electron deposits energy by the mechanism of §1. Dose from a photon
+      field is therefore computed from the energy fluence and a tabulated coefficient that
+      already accounts for both steps.
+    </p>
+
+    <div class="eq" id="m04-eq-muen">
+      <div class="eq-body">
+        <div class="eq-math"><em>D</em> = <span class="dl">(</span><span class="frac"><span class="num"><em>µ</em><sub>en</sub></span><span class="den"><em>ρ</em></span></span><span class="dl">)</span><sub>mat</sub> · <em>Ψ</em></div>
+        <div class="eq-num">(4.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>D</em> absorbed dose in the named material (MeV/g, then converted:
+        1 rad = 6.24×10¹³ eV/g) · <em>µ</em><sub>en</sub>/<em>ρ</em> mass energy-absorption
+        coefficient of that material at the photon energy concerned (<b>cm²/g</b>, tabulated
+        by NIST) · <em>Ψ</em> energy fluence, the total photon energy crossing unit area
+        (<b>MeV/cm²</b>). Written as a rate on both sides it gives dose rate from energy
+        fluence rate, which is the form in the professor's <em>Charge Generation and Dose
+        Deposition</em> handout. The coefficient is strongly material- and energy-dependent,
+        which is the whole content of §5. On the formula sheet as
+        <a href="formula-sheet.html#eq-muen">(4.7)</a>.
+      </div>
+    </div>
+
+    <h2>5 · Dose enhancement near high-Z layers</h2>
+    <p>
+      Equation (4.7) treats dose as a property of the material the photons pass through. It
+      carries an assumption: that the fast electrons depositing the energy in a small volume
+      were liberated in the same material, so that as many enter the volume as leave it.
+      That condition is called <b>charged-particle equilibrium</b>, and it holds in the
+      interior of a uniform material. It fails at an interface between materials of
+      different atomic number, and a device is a stack of exactly such interfaces.
+    </p>
+    <p>
+      The reason is the atomic-number dependence of the photon interactions of
+      <a href="m01-radiation-and-matter.html">M01</a> §5. The photoelectric cross-section per
+      atom rises as roughly the fourth to fifth power of atomic number and falls steeply with
+      photon energy, while Compton scattering per atom rises only in proportion to atomic
+      number. At low photon energy, where photoelectric absorption dominates, a tungsten,
+      tantalum or gold layer therefore liberates far more secondary electrons per unit mass
+      than the silicon or silicon dioxide beside it. Those electrons do not respect the
+      boundary. They cross into the low-atomic-number material and deposit their energy
+      there, raising its local dose above the equilibrium value; the enhanced region extends
+      into the low-Z material to roughly the range of the secondary electrons.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 280" role="img" aria-labelledby="m04f6-t">
+        <title id="m04f6-t">Secondary electrons crossing from a high-Z layer into an adjacent oxide, and the resulting dose profile</title>
+
+        <text x="175" y="22" class="dg-label" text-anchor="middle">at the interface</text>
+        <text x="510" y="22" class="dg-label" text-anchor="middle">resulting dose against depth</text>
+
+        <!-- left panel: layers -->
+        <rect x="55" y="40" width="110" height="180" rx="3" class="dg-fill"/>
+        <rect x="165" y="40" width="130" height="180" rx="3" class="dg-fill"/>
+        <line x1="165" y1="40" x2="165" y2="220" class="dg-rule" stroke-width="1.6"/>
+        <text x="110" y="238" class="dg-label-sm" text-anchor="middle">high <tspan class="dg-math">Z</tspan></text>
+        <text x="110" y="252" class="dg-label-sm" text-anchor="middle">(W, Ta, Au)</text>
+        <text x="230" y="238" class="dg-label-sm" text-anchor="middle">low <tspan class="dg-math">Z</tspan></text>
+        <text x="230" y="252" class="dg-label-sm" text-anchor="middle">(SiO₂, Si)</text>
+
+        <!-- incoming photons -->
+        <g class="dg-line" stroke-width="1.4">
+          <path d="M20,70 q7,-7 14,0 q7,7 14,0" fill="none"/>
+          <path d="M20,130 q7,-7 14,0 q7,7 14,0" fill="none"/>
+          <path d="M20,190 q7,-7 14,0 q7,7 14,0" fill="none"/>
+        </g>
+        <text x="22" y="52" class="dg-label-sm">photons</text>
+
+        <!-- electrons crossing rightward -->
+        <g class="dg-acc" stroke-width="1.5">
+          <line x1="140" y1="70" x2="215" y2="62"/>
+          <line x1="132" y1="105" x2="198" y2="118"/>
+          <line x1="145" y1="150" x2="222" y2="142"/>
+          <line x1="130" y1="188" x2="205" y2="198"/>
+        </g>
+        <g class="dg-acc-f">
+          <circle cx="217" cy="62" r="3.2"/><circle cx="200" cy="118" r="3.2"/>
+          <circle cx="224" cy="142" r="3.2"/><circle cx="207" cy="198" r="3.2"/>
+        </g>
+        <text x="240" y="90" class="dg-label-sm">secondary</text>
+        <text x="240" y="104" class="dg-label-sm">electrons</text>
+
+        <!-- right panel: dose vs depth, after Long et al. Fig. 2-1 -->
+        <line x1="360" y1="220" x2="660" y2="220" class="dg-rule" stroke-width="1.2"/>
+        <line x1="360" y1="220" x2="360" y2="50" class="dg-rule" stroke-width="1.2"/>
+        <line x1="470" y1="50" x2="470" y2="220" class="dg-rule" stroke-width="1.6"/>
+        <text x="415" y="238" class="dg-label-sm" text-anchor="middle">high <tspan class="dg-math">Z</tspan></text>
+        <text x="565" y="238" class="dg-label-sm" text-anchor="middle">low <tspan class="dg-math">Z</tspan></text>
+        <text x="348" y="135" class="dg-label" text-anchor="middle" transform="rotate(-90 348 135)">dose</text>
+
+        <path d="M360,70 L470,70 L470,180 L660,180" class="dg-rule" stroke-dasharray="4 3" stroke-width="1" fill="none"/>
+        <text x="656" y="196" class="dg-label-sm" text-anchor="end">equilibrium dose in each material</text>
+
+        <path d="M360,70 L415,70 C440,74 456,84 470,106 C500,142 530,168 562,176 C596,179 628,180 660,180"
+              class="dg-acc" stroke-width="2.2" fill="none"/>
+        <text x="656" y="120" class="dg-label" text-anchor="end"><tspan class="dg-acc-f">actual dose profile</tspan></text>
+        <line x1="612" y1="124" x2="566" y2="172" class="dg-rule" stroke-width="0.8"/>
+
+        <text x="428" y="58" class="dg-label-sm" text-anchor="middle">deficit</text>
+        <line x1="436" y1="62" x2="452" y2="80" class="dg-rule" stroke-width="0.8"/>
+      </svg>
+      <figcaption>
+        Redrawn after Long <em>et al.</em> Figure 2-1, reproduced on Deck 03 p. 20 for a
+        gold–silicon interface with the photons incident on the gold. The dashed line is what
+        each material would absorb on its own: the high-atomic-number layer takes far more
+        energy per gram, so its equilibrium level sits well above the other’s and the
+        reference steps down at the boundary. The actual profile does not step. It leaves the
+        high-<em>Z</em> level <b>below</b> equilibrium approaching the interface, since that
+        material is losing electrons it would otherwise have reabsorbed, and it enters the
+        low-<em>Z</em> material <b>above</b> equilibrium, decaying to it over roughly one
+        secondary-electron range. The deficit and the excess are one redistribution of energy
+        seen from either side. A thin gate oxide can lie entirely inside the elevated region,
+        which is why the effect matters most for the thinnest and most sensitive layer in the
+        device.
+      </figcaption>
+    </figure>
+
+    <p>
+      The departure is quantified as a ratio.
+    </p>
+
+    <div class="eq" id="m04-eq-def">
+      <div class="eq-body">
+        <div class="eq-math">DEF = <span class="frac"><span class="num"><em>D</em><sub>sensitive region</sub></span><span class="den"><em>D</em><sub>equilibrium</sub></span></span></div>
+        <div class="eq-num">(4.8)</div>
+      </div>
+      <div class="eq-says">
+        DEF dose enhancement factor, dimensionless ·
+        <em>D</em><sub>sensitive region</sub> average dose actually deposited in the region of
+        the device that matters, usually the gate oxide ·
+        <em>D</em><sub>equilibrium</sub> dose that would be deposited under charged-particle
+        equilibrium, that is with no nearby high-atomic-number layer. Greater than one for a
+        low-Z region next to a high-Z one; below one on the far side of the same interface,
+        where the high-Z material loses electrons it would otherwise have reabsorbed. On the
+        formula sheet as <a href="formula-sheet.html#eq-def">(4.8)</a>.
+      </div>
+    </div>
+
+    <p>
+      Two photon energies bracket the effect for silicon, and both are standard test sources.
+      Ten keV X-rays interact with silicon almost entirely by photoelectric absorption, where
+      the atomic-number contrast is at its largest. Cobalt-60 gamma rays, at 1.17 and
+      1.33 MeV, interact by Compton scattering, where the cross-section per atom depends on
+      atomic number only linearly and the contrast between materials nearly disappears. Dose
+      enhancement is accordingly a significant issue for 10 keV X-ray irradiation and a minor
+      one for Co-60.
+    </p>
+    <p>
+      The largest enhancements reported are larger still. Deck 03 p. 21 gives factors of
+      <b>up to 8 to 10 in thin oxides</b> adjacent to very high-atomic-number layers such as
+      gold, observed at higher X-ray energies near 100 keV, against no more than 2 to 3 in the
+      photocurrent of a typical well junction. Two separate quantities set those bounds.
+    </p>
+    <p>
+      The first is where the atomic-number contrast actually peaks. It is not at the lowest
+      photon energies: at 10 keV silicon is itself almost entirely photoelectric, so it
+      generates secondary electrons nearly as readily per gram as its neighbour, and the ratio
+      of mass energy-absorption coefficients for gold against silicon is only about 3.4. As
+      photon energy rises, silicon’s photoelectric absorption collapses far faster than
+      gold’s — gold’s K edge at 80.7 keV holds it up — and by 100 keV the ratio has reached
+      about 46. The contrast is therefore greatest at intermediate energies, roughly 50 to
+      150 keV for gold against silicon, and collapses again above a few hundred keV where
+      Compton scattering, proportional only to atomic number, dominates in both materials.
+      That is why the largest factors are reported near 100 keV. The deck’s "largest for
+      low-energy photons" contrasts the X-ray regime as a whole against Co-60 at more than an
+      MeV, which is a different comparison.
+    </p>
+    <p>
+      The second is the thickness of the region whose dose is being asked about. The excess is
+      confined to roughly one secondary-electron range from the interface, so a region thin
+      compared with that range lies wholly inside it and takes the full enhancement, while a
+      thicker region averages the excess against unenhanced material further in. A gate oxide
+      is a few nanometres; a well junction is a fraction of a micrometre. That difference is
+      what separates 8–10 from 2–3 in the same irradiation.
+    </p>
+
+    <div class="box warn">
+      <span class="box-title">A device dose is not a property of the source alone</span>
+      <p>
+        Two parts irradiated side by side in the same beam to the same nominal dose absorb
+        different doses in their gate oxides if their metallisation and back-end materials
+        differ. A total-dose figure is therefore incomplete without the source and its photon
+        spectrum, and results from a 10 keV X-ray tester and a Co-60 cell cannot be compared
+        as if the dose axis meant the same thing in both. This is the mechanism behind the
+        dose-enhancement correction applied when an X-ray result is set against a Co-60 one
+        (<a href="m07-oxide-interface-trap-charge.html">M07</a> §2), which hardness assurance
+        needs because its qualification source is Co-60
+        (<a href="m15-hardness-assurance.html">M15</a> §5), and it is also why the difference between
+        rad(Si) and rad(SiO₂) — deferred in
+        <a href="m03-dose-shielding-terrestrial.html">M03</a> §1 — is not a single fixed
+        number but depends on the spectrum and on what surrounds the oxide.
+      </p>
+    </div>
+
+    <p>
+      Modern gate stacks have not removed the effect; they have made it harder to predict.
+      Deck 03 p. 22 reports calculations of X-ray dose in a hafnium-oxide gate stack, where the
+      gate dielectric is itself a high-atomic-number material and metal gates and
+      back-end-of-line layers sit directly above it. Enhancement factors of roughly 2 to 4
+      persist, and they depend on the whole stack rather than on one interface: adding
+      back-end metal layers changes the factor, and thinning the dielectric <em>lowers</em> it,
+      because a thinner layer collects proportionally less of the excess. Depending on the
+      photon energy and the overlayer materials the correction can even run the other way, as
+      attenuation rather than enhancement. The dose in the layer of interest was computed with
+      MRED, a Monte Carlo radiation transport code that follows individual particle histories
+      through the real device geometry, because with several materials within a
+      secondary-electron range of each other no analytic equilibrium argument applies.
+      Deck 07 p. 41 quotes a wider range, 2 to 8 times, for HfO₂/TiN capacitors, without
+      stating the stack or the photon spectrum. The two ranges do not conflict: the Deck 03
+      p. 22 values are one calculation over four TiN-gated stacks with 1 to 8 nm dielectrics,
+      and the factor changes with the overlayer materials and thicknesses, the dielectric
+      thickness and the photon spectrum — the study behind that slide (Dasgupta
+      <em>et al.</em>, 2011) computed 10 keV X-rays and 400 keV-endpoint bremsstrahlung
+      separately — so a factor quoted for one stack and source does not transfer to another
+      (<a href="m10-gate-oxide-processing.html">M10</a> §10).
+    </p>
+
+    <h2>6 · The non-ionizing channel</h2>
+    <p>
+      Everything from §2 to §5 has followed the energy that ends up as free charge. A small
+      part of the deposited energy takes the other channel identified in §1 and goes to the
+      nuclei instead, displacing atoms from their lattice sites. That share is small — the
+      slides state plainly that only a very small fraction of the energy deposition goes into
+      displacement damage — but the defects it creates are permanent, so it is accounted for
+      separately and with its own quantity.
+    </p>
+    <p>
+      An atom is not displaced by any transfer of energy. It sits in a potential well, and
+      leaving it permanently requires more than a threshold, the <b>displacement threshold
+      energy</b>. Below that value the transferred energy appears as lattice vibration and no
+      defect remains. For silicon the threshold is <b>21 eV</b>, worth holding beside the
+      3.6 eV needed to create an electron–hole pair: displacing an atom costs roughly six
+      times as much as liberating a carrier. That contrast governs how many defects a given
+      amount of non-ionizing energy produces. It is not the reason the non-ionizing share is
+      small in the first place — that follows from the ratio of electronic to nuclear stopping
+      power in §1, which runs to three or four orders of magnitude for every particle in this
+      course.
+    </p>
+    <p>
+      An atom that does receive more than the threshold is called a <b>primary knock-on
+      atom</b>. It leaves behind a <b>vacancy</b>, an empty lattice site, and comes to rest
+      somewhere else as an <b>interstitial</b>, an atom between lattice sites; the pair is
+      called a Frenkel pair. If the primary knock-on atom carries substantially more than the
+      threshold it displaces further atoms of its own, and the result is a cascade rather
+      than an isolated pair. Deck 03 p. 37 gives the scale: a 50 keV primary knock-on atom is
+      typical of what a 1 MeV neutron or a high-energy proton produces, and 50 keV is more
+      than two thousand times the threshold. Roughly 90% of the vacancies and interstitials
+      recombine promptly; the surviving 10% are the stable defects that introduce new energy
+      levels into the bandgap and degrade the device.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 640 250" role="img" aria-labelledby="m04f7-t">
+        <title id="m04f7-t">Partition of deposited energy between the ionizing and non-ionizing channels</title>
+
+        <rect x="40" y="40" width="150" height="42" rx="4" class="dg-fill"/>
+        <text x="115" y="60" class="dg-label" text-anchor="middle">energy deposited</text>
+        <text x="115" y="75" class="dg-label-sm" text-anchor="middle">by the incident particle</text>
+
+        <line x1="190" y1="50" x2="250" y2="50" class="dg-rule" stroke-width="1.2"/>
+        <line x1="190" y1="72" x2="250" y2="130" class="dg-rule" stroke-width="1.2"/>
+
+        <rect x="250" y="30" width="170" height="44" rx="4" class="dg-fill"/>
+        <text x="335" y="49" class="dg-label" text-anchor="middle">ionizing — nearly all</text>
+        <text x="335" y="65" class="dg-label-sm" text-anchor="middle">electron–hole pairs, dose</text>
+
+        <rect x="250" y="108" width="170" height="44" rx="4" class="dg-fill"/>
+        <text x="335" y="127" class="dg-label" text-anchor="middle"><tspan class="dg-acc-f">non-ionizing — a small share</tspan></text>
+        <text x="335" y="143" class="dg-label-sm" text-anchor="middle">atomic recoils, NIEL</text>
+
+        <line x1="420" y1="130" x2="470" y2="130" class="dg-rule" stroke-width="1.2"/>
+        <rect x="470" y="98" width="150" height="30" rx="4" class="dg-fill"/>
+        <text x="545" y="118" class="dg-label-sm" text-anchor="middle">recoil &lt; 21 eV → heat</text>
+        <rect x="470" y="134" width="150" height="30" rx="4" class="dg-fill"/>
+        <text x="545" y="154" class="dg-label-sm" text-anchor="middle">recoil &gt; 21 eV → defect</text>
+        <line x1="440" y1="130" x2="466" y2="113" class="dg-rule" stroke-width="0.9"/>
+        <line x1="440" y1="130" x2="466" y2="149" class="dg-rule" stroke-width="0.9"/>
+
+        <text x="335" y="196" class="dg-label-sm" text-anchor="middle">of the defects created, about 90% recombine within moments</text>
+        <text x="335" y="212" class="dg-label-sm" text-anchor="middle">the surviving 10% are what degrades minority-carrier lifetime</text>
+        <text x="335" y="232" class="dg-label-sm" text-anchor="middle">TID follows the upper branch · displacement damage follows the lower one</text>
+      </svg>
+      <figcaption>
+        The two branches are followed by separate quantities because they have separate
+        thresholds and separate consequences. Dose measures the upper branch. Non-ionizing
+        energy loss measures the lower one, counting only recoils above the displacement
+        threshold — and counting each of those only at the fraction of its energy that goes on
+        to move further atoms, since a recoil is itself a charged particle and ionizes as it
+        travels.
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Non-ionizing energy loss</b> is the part of the stopping power that goes into atomic
+      displacement, quoted in <b>MeV·cm²/g</b>. It is the exact counterpart of LET: the same
+      idea of energy lost per unit areal density, restricted to the other channel. Its
+      definition integrates over the recoil-energy spectrum from the displacement threshold
+      upward, and two factors inside that integral do the work. The threshold sets the lower
+      limit, so recoils too soft to displace an atom contribute nothing. And each recoil is
+      counted not at its full energy <em>T</em> but at
+      <em>T</em>·<em>L</em>(<em>T</em>), where <em>L</em> is the <b>Lindhard partition
+      function</b> — the fraction of a recoil’s own energy that goes into moving further atoms
+      rather than into ionization the recoil causes as it travels. A displaced silicon atom of
+      tens of keV is itself a charged particle, and it spends much of its energy exactly as §1
+      describes, on electrons. Without <em>L</em>(<em>T</em>) the integral would return the
+      total energy given to recoils, which is a larger and different quantity. The integral
+      form is on the formula sheet as <a href="formula-sheet.html#eq-niel">(12.2)</a>; the
+      quantity is tabulated for each particle, energy and target, and used from tables.
+    </p>
+    <p>
+      Multiplying by fluence gives the non-ionizing analogue of total dose.
+    </p>
+
+    <div class="eq" id="m04-eq-ddd">
+      <div class="eq-body">
+        <div class="eq-math">DDD = Φ · NIEL</div>
+        <div class="eq-num">(12.1)</div>
+      </div>
+      <div class="eq-says">
+        DDD displacement damage dose, the non-ionizing energy deposited per unit mass
+        (<b>MeV/g</b>) · Φ particle fluence (<b>cm⁻²</b>) · NIEL non-ionizing energy loss for
+        that particle and energy in that target (<b>MeV·cm²/g</b>). The equation carries the
+        number (12.1) because <a href="m12-displacement-damage.html">M12</a> owns the displacement-damage
+        set on the <a href="formula-sheet.html#eq-ddd">formula sheet</a>; it appears here
+        because it is the second of the two quantities that measure energy deposition, and it
+        stands in the same relation to NIEL that dose stands in to LET.
+      </div>
+    </div>
+
+    <p>
+      The reason NIEL is tabulated at all is the <b>NIEL scaling hypothesis</b>: that the
+      degradation of a device parameter — minority-carrier lifetime, bipolar gain, solar-cell
+      output, imager dark current — is proportional to the product of fluence and NIEL,
+      independent of which particle delivered it. If it holds, a damage factor measured with
+      one particle at one energy converts to any other by the ratio of the two NIEL values,
+      and a single measurement covers an entire mixed environment. The relation between
+      fluence, NIEL and degradation is therefore the whole practical content of displacement
+      damage analysis: fluence counts the particles, NIEL says how much displacement energy
+      each one deposits, and their product predicts how far the parameter moves.
+    </p>
+    <p>
+      The hypothesis is an approximation, and it is checked material by material rather than
+      assumed. Deck 03 p. 39 shows both outcomes. In silicon the correlation holds well across
+      proton and neutron damage factors, with a marked upper branch where some measurements
+      run above the proportionality. In gallium arsenide it fails in the other direction:
+      above roughly 40 MeV proton energy the measured damage factors fall progressively below
+      the NIEL calculation, because the recoil spectrum changes character as nuclear reactions
+      begin to dominate over elastic scattering, and the dense cascades those recoils leave
+      are not equivalent, defect for defect, to the isolated pairs a low-energy recoil makes.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 560 260" role="img" aria-labelledby="m04f8-t">
+        <title id="m04f8-t">Measured damage factor plotted against calculated non-ionizing energy loss</title>
+
+        <line x1="80" y1="210" x2="500" y2="210" class="dg-rule" stroke-width="1.2"/>
+        <line x1="80" y1="210" x2="80" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <text x="290" y="240" class="dg-label" text-anchor="middle">calculated NIEL (log scale)</text>
+        <text x="30" y="125" class="dg-label" text-anchor="middle" transform="rotate(-90 30 125)">measured damage factor</text>
+
+        <line x1="100" y1="195" x2="440" y2="60" class="dg-acc" stroke-width="2"/>
+        <text x="300" y="150" class="dg-label"><tspan class="dg-acc-f">slope 1: damage ∝ NIEL</tspan></text>
+
+        <path d="M300,128 C350,110 390,80 440,30" class="dg-line" stroke-width="1.8" stroke-dasharray="5 4" fill="none"/>
+        <text x="360" y="52" class="dg-label-sm">observed departure</text>
+        <text x="360" y="66" class="dg-label-sm">from linearity</text>
+
+        <g class="dg-ink">
+          <circle cx="130" cy="183" r="3"/><circle cx="170" cy="167" r="3"/>
+          <circle cx="215" cy="149" r="3"/><circle cx="258" cy="132" r="3"/>
+          <circle cx="300" cy="126" r="3"/><circle cx="340" cy="106" r="3"/>
+          <circle cx="385" cy="76" r="3"/>
+        </g>
+      </svg>
+      <figcaption>
+        Schematic, after the silicon panel of Deck 03 p. 39 and Srour <em>et al.</em> (2003).
+        A unity slope on logarithmic axes is the statement that damage scales with NIEL, and
+        measured proton and neutron damage factors in silicon follow it over orders of
+        magnitude. The deck marks a second, upper line where measured damage factors depart
+        from that proportionality. The correlation is checked against data for each material,
+        never assumed.
+      </figcaption>
+    </figure>
+
+    <p>
+      The devices most exposed to this channel are those whose operation depends on
+      minority-carrier lifetime or on the perfection of a transport path: <b>solar cells</b>,
+      whose collected current falls as recombination centres shorten the diffusion length;
+      <b>charge-coupled devices</b>, whose transfer of charge packets from pixel to pixel is
+      intercepted by traps, and whose dark current rises as defects generate carriers
+      thermally; and <b>bipolar transistors</b>, whose gain depends on minority carriers
+      crossing the base without recombining. Circuits whose function depends only on majority
+      carriers moving across a short channel, such as digital CMOS logic, are far less
+      affected at the same fluence. <a href="m12-displacement-damage.html">M12</a> develops the
+      defect physics in §2 and the device consequences in §3 and §6.
+    </p>
+
+    <h2>7 · From deposited charge to system disturbance</h2>
+    <p>
+      Sections 1 to 6 end at the material: so much energy per micrometre, so much charge, so
+      many defects. A device is not irradiated in isolation. It sits on a board, inside an
+      enclosure, connected by cables to power buses and to other subsystems, and the charge
+      that a particle liberates does not stay where it was created. It moves, and moving
+      charge is a current, and an unscheduled current in a system is interference.
+    </p>
+    <p>
+      <b>Electromagnetic interference</b> is unwanted electromagnetic energy that couples
+      into a circuit and degrades its function, whether conducted along a wire or radiated
+      through space. As a radiation category it is non-ionizing: the radio-frequency photons
+      that usually carry it are many orders of magnitude below the roughly 10 eV needed to
+      free an electron (<a href="m01-radiation-and-matter.html">M01</a> §1). The connection
+      made here runs the other way. Ionizing radiation, through the energy deposition of the
+      preceding sections, generates interference inside a system that no external
+      electromagnetic environment supplied. Deck 03 p. 13 identifies three routes.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 300" role="img" aria-labelledby="m04f9-t">
+        <title id="m04f9-t">Three routes by which an energetic particle produces electromagnetic interference in a system</title>
+
+        <rect x="120" y="55" width="500" height="165" rx="6" class="dg-fill"/>
+        <text x="612" y="72" class="dg-label-sm" text-anchor="end">enclosure wall</text>
+
+        <line x1="30" y1="30" x2="244" y2="142" class="dg-acc" stroke-width="2"/>
+        <polygon points="250,145 236,143 240,134" class="dg-acc-f"/>
+        <text x="30" y="22" class="dg-label-sm">energetic proton or heavy ion</text>
+
+        <g class="dg-line" stroke-width="1.3">
+          <line x1="120" y1="82" x2="170" y2="64"/>
+          <line x1="120" y1="82" x2="176" y2="104"/>
+          <line x1="120" y1="82" x2="152" y2="122"/>
+        </g>
+        <text x="200" y="76" class="dg-label-sm"><tspan class="dg-acc-f">2</tspan> · secondary electrons and X-rays</text>
+        <text x="200" y="90" class="dg-label-sm">made inside the enclosure</text>
+
+        <rect x="250" y="140" width="125" height="48" rx="4" class="dg-fill"/>
+        <text x="312" y="160" class="dg-label-sm" text-anchor="middle"><tspan class="dg-acc-f">1</tspan> · sensitive node</text>
+        <text x="312" y="178" class="dg-label-sm" text-anchor="middle">charge → current pulse</text>
+
+        <line x1="375" y1="164" x2="463" y2="164" class="dg-line" stroke-width="1.6"/>
+        <rect x="465" y="140" width="130" height="48" rx="4" class="dg-fill"/>
+        <text x="530" y="160" class="dg-label-sm" text-anchor="middle">power bus, ADC,</text>
+        <text x="530" y="178" class="dg-label-sm" text-anchor="middle">comparator</text>
+
+        <line x1="120" y1="248" x2="620" y2="248" class="dg-rule" stroke-width="1.4"/>
+        <text x="124" y="242" class="dg-label-sm"><tspan class="dg-acc-f">3</tspan> · dielectric or floating conductor</text>
+        <g class="dg-acc-f">
+          <circle cx="430" cy="241" r="3"/><circle cx="450" cy="241" r="3"/>
+          <circle cx="470" cy="241" r="3"/><circle cx="490" cy="241" r="3"/>
+          <circle cx="510" cy="241" r="3"/>
+        </g>
+        <path d="M520,251 L540,266 L560,251 L580,266" class="dg-acc" stroke-width="1.8" fill="none"/>
+        <text x="586" y="268" class="dg-label-sm">discharge</text>
+        <text x="360" y="288" class="dg-label-sm" text-anchor="middle">charge accumulates until the field breaks down, then couples as a fast broadband pulse</text>
+      </svg>
+      <figcaption>
+        The three routes act on different timescales. The collected current pulse rises in
+        tens of picoseconds and falls in a few hundred, with a diffusion tail that can reach
+        into the nanosecond range; secondary production is prompt but distributed through the
+        enclosure; surface charging accumulates over minutes to hours before discharging in a
+        single fast event.
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Transient currents from ionizing hits.</b> The charge computed in §4 is liberated
+      along the track in well under a picosecond — an ion at 10 MeV per nucleon crosses ten
+      micrometres in about 0.2 ps. Where the track crosses a reverse-biased junction
+      the field sweeps that charge out as a current pulse, and the pulse flows in whatever
+      circuit the junction belongs to. It is a current the design did not schedule, arriving
+      at a node with a finite impedance, so it produces a voltage excursion that propagates
+      along supply and signal nets and radiates from them.
+    </p>
+    <p>
+      <b>Secondary emission inside the enclosure.</b> An incident particle or gamma ray that
+      interacts in the wall of a box does not simply stop there. It generates secondary
+      X-rays and electron showers by the bremsstrahlung and photon-interaction mechanisms of
+      <a href="m01-radiation-and-matter.html">M01</a> §§4–5, and those secondaries are
+      created <em>inside</em> the shielded volume, where they deposit charge on boards,
+      cables and connectors that the primary would not have reached. This is the same physics
+      that limits the usefulness of shielding in
+      <a href="m03-dose-shielding-terrestrial.html">M03</a> §6: the shield is also a source.
+    </p>
+    <p>
+      <b>Charge accumulation on surfaces.</b> Dielectrics, cable jackets and any conductor
+      that is not bonded to the structure collect charge from the ambient plasma and from
+      penetrating electrons, while sunlit surfaces lose charge by photoemission. Because the
+      collection rates differ from surface to surface, potentials differ across the vehicle,
+      and differential potentials of kilovolts can develop. The eventual discharge is a
+      fast, high-current, broadband event — the classic spacecraft interference source, and
+      the reason the conductive bonded skin of
+      <a href="m03-dose-shielding-terrestrial.html">M03</a> §6 is a requirement rather than a
+      convenience.
+    </p>
+    <p>
+      The system-level symptoms Deck 03 p. 14 lists follow directly from these three routes.
+      Particle hits induce <b>voltage spikes on power buses and in regulators</b>, where a
+      transient current in a control loop appears as a load step. They cause <b>data
+      corruption in analogue-to-digital converters</b>, where charge injected during a
+      conversion adds to the sampled quantity and produces a wrong code rather than a
+      detectable fault. And they produce <b>false triggers in comparators</b>, where a
+      transient carries an input across the switching threshold and the following logic
+      records a transition that never occurred at the sensor.
+    </p>
+
+    <div class="box">
+      <span class="box-title">What reduces it</span>
+      <p>
+        Each mitigation addresses one of the three routes, and they are not
+        interchangeable. <b>Bonding and grounding</b> every conductive element to a common
+        structure, avoiding floating conductors, using conductive surface finishes and
+        limiting exposed dielectric area removes the third route by preventing the
+        potentials from developing; this is the substance of NASA-HDBK-4002A.
+        <b>Filtering and local decoupling</b> at the point of load, together with current
+        limiting and separation of noisy returns from sensitive analogue returns, keeps a
+        transient from propagating out of the circuit that received it. <b>Enclosure
+        material choice</b> trades against the second route, with the atomic-number argument
+        of <a href="m03-dose-shielding-terrestrial.html">M03</a> §6 applying unchanged: a
+        high-Z shield converts more of an electron's energy into penetrating photons than a
+        low-Z one of the same areal density. <b>Architectural measures</b> — redundancy,
+        watchdogs, error detection and correction — catch a disturbance that arrives anyway
+        rather than preventing it, and are developed in
+        <a href="index.html#roadmap">M14</a>. <b>Operational measures</b> reduce the
+        exposure itself, by safing or reconfiguring a spacecraft during a solar particle
+        event, which is available precisely because that environment is episodic and
+        forecastable (<a href="m02-space-radiation-environment.html">M02</a>).
+      </p>
+    </div>
+
+    <h2>8 · Measuring the dose</h2>
+    <p>
+      Every result so far computes a dose from a field that is already known — a stated fluence,
+      a stated LET, a stated energy fluence. In a laboratory none of those is known directly.
+      What exists is a source of uncertain output, a geometry, and an instrument that reports a
+      current. This section runs the chain of §4 backwards: from a measured current to the number
+      of photons that produced it, and from there to the dose rate in any material placed at the
+      same position. That procedure is what makes a number quoted in rad(SiO₂) mean something,
+      and it is the basis of every calibrated irradiation the rest of the course relies on.
+    </p>
+
+    <p>
+      Section 5 established that the mass energy-absorption coefficient is a property of the
+      material and of the photon energy, so the same beam deposits different doses per gram in
+      different materials standing in the same place. That makes an unqualified statement of dose
+      incomplete, and it is why every figure in this course carries its material in parentheses.
+    </p>
+    <p>
+      Microelectronics standardises on silicon dioxide, for a physical reason rather than a
+      conventional one. The charge that produces total-dose degradation is trapped in a
+      dielectric, and in silicon technology that dielectric is SiO₂. Where a high-permittivity
+      dielectric replaces it in a modern gate stack, the industry still quotes the
+      <b>equivalent oxide thickness</b> — the thickness of SiO₂ that would give the same
+      capacitance per unit area as the actual layer — so that device parameters remain comparable
+      across materials. Total-dose data in the device literature and from X-ray testers are
+      reported in rad(SiO₂) for the same reason, and that is the convention this course follows.
+    </p>
+    <p>
+      Military hardness-assurance levels are written the other way, in <b>rad(Si)</b>. The
+      radiation-hardness-assurance designators of MIL-PRF-38535 grade a part at 100 krad(Si),
+      300 krad(Si) or 1 Mrad(Si), and the dose-rate windows of MIL-STD-883 Test Method 1019 are
+      specified in rad(Si)/s. A qualification therefore routinely mixes the two labels — a
+      requirement stated in rad(Si) against laboratory data reported in rad(SiO₂) — and closing
+      that gap is exactly what the conversion below is for.
+    </p>
+
+    <div class="box defn">
+      <p>
+        <b>Equivalent oxide thickness (EOT).</b> For a gate dielectric of permittivity
+        <em>ε</em><sub>k</sub> and physical thickness <em>t</em><sub>k</sub>, the equivalent oxide
+        thickness is <em>t</em><sub>EOT</sub> = <em>t</em><sub>k</sub> ·
+        <em>ε</em><sub>ox</sub>/<em>ε</em><sub>k</sub>, the thickness of SiO₂ giving the same
+        <em>C</em><sub>ox</sub>, with <em>ε</em><sub>ox</sub> that of SiO₂, relative permittivity
+        3.9. A 4 nm layer of relative permittivity 15.6 therefore has an EOT of
+        4 × 3.9/15.6 = 1 nm. It is a
+        capacitance equivalence only: the physical layer is thicker, so it generates more pairs
+        per unit area for the same dose, and it traps charge according to its own defect
+        chemistry rather than that of SiO₂.
+      </p>
+    </div>
+
+    <p>
+      The instrument used for X-ray dosimetry in this field is a reverse-biased silicon p–i–n
+      photodiode. It is a diode with a thick, almost undoped layer — the intrinsic region —
+      between heavily doped p-type and n-type contacts. Under reverse bias that intrinsic region
+      is fully depleted, so an electric field exists throughout it. An electron–hole pair created
+      anywhere inside is separated by that field and swept to the contacts in a time short
+      compared with any recombination lifetime, so essentially every pair generated there is
+      collected. The diode therefore converts absorbed energy into charge with a known and nearly
+      perfect efficiency, which is what a dosimeter requires. The qualification matters: the
+      thickness entering the calculation is the <em>depleted</em> thickness, and the geometry has
+      to be chosen so that the absorption happens inside it. At 10 keV the attenuation length in
+      silicon is about 127 µm, so a device much thicker than that absorbs a large part of the beam
+      outside its depleted region, where the carriers either recombine or diffuse in without
+      belonging to the mass the dose is referred to.
+    </p>
+    <p>
+      The conversion constant is the pair creation energy of §4: one electron–hole pair per
+      3.6 eV absorbed in silicon. Reading the chain in reverse, the measured current gives the
+      pair generation rate, the pair rate gives the energy absorption rate, and the energy
+      absorption rate divided by the mass of the absorbing region gives a dose rate directly.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 250" role="img" aria-labelledby="m04f10-t">
+        <title id="m04f10-t">Chain from a measured photodiode current back to an absorbed dose rate</title>
+
+        <rect x="36" y="82" width="120" height="70" rx="4" class="dg-fill"/>
+        <text x="96" y="108" class="dg-label" text-anchor="middle">measured</text>
+        <text x="96" y="124" class="dg-label" text-anchor="middle">current</text>
+        <text x="96" y="142" class="dg-math" text-anchor="middle" font-size="14">I_ph</text>
+
+        <rect x="196" y="82" width="126" height="70" rx="4" class="dg-fill"/>
+        <text x="259" y="108" class="dg-label" text-anchor="middle">pairs per</text>
+        <text x="259" y="124" class="dg-label" text-anchor="middle">second</text>
+        <text x="259" y="142" class="dg-math" text-anchor="middle" font-size="14">I_ph / q</text>
+
+        <rect x="362" y="82" width="140" height="70" rx="4" class="dg-fill"/>
+        <text x="432" y="108" class="dg-label" text-anchor="middle">energy absorbed</text>
+        <text x="432" y="124" class="dg-label" text-anchor="middle">per second</text>
+        <text x="432" y="142" class="dg-math" text-anchor="middle" font-size="14">(I_ph / q) · E_p</text>
+
+        <rect x="542" y="82" width="146" height="70" rx="4" class="dg-fill"/>
+        <text x="615" y="108" class="dg-acc-f" text-anchor="middle" font-size="12.5" font-weight="600">dose rate</text>
+        <text x="615" y="124" class="dg-label" text-anchor="middle">divide by</text>
+        <text x="615" y="142" class="dg-math" text-anchor="middle" font-size="14">ρ · A · t</text>
+
+        <path d="M160,117 L192,117" class="dg-rule" stroke-width="1.6" marker-end="url(#m04f10-a)"/>
+        <path d="M326,117 L358,117" class="dg-rule" stroke-width="1.6" marker-end="url(#m04f10-a)"/>
+        <path d="M506,117 L538,117" class="dg-acc" stroke-width="1.8" marker-end="url(#m04f10-b)"/>
+
+        <text x="259" y="176" class="dg-label-sm" text-anchor="middle">every pair is collected —</text>
+        <text x="259" y="190" class="dg-label-sm" text-anchor="middle">the intrinsic region is fully depleted</text>
+        <text x="432" y="176" class="dg-label-sm" text-anchor="middle">3.6 eV per pair in Si</text>
+        <text x="615" y="176" class="dg-label-sm" text-anchor="middle">mass of the active region</text>
+
+        <text x="360" y="42" class="dg-label" text-anchor="middle">The dose rate obtained is in the detector's own material — here, rad(Si)/s</text>
+
+        <line x1="36" y1="216" x2="688" y2="216" class="dg-rule" stroke-width="1"/>
+        <text x="360" y="238" class="dg-label-sm" text-anchor="middle">To reach another material, step back one further stage to the incident photon fluence, then apply that material's μ_en/ρ.</text>
+
+        <defs>
+          <marker id="m04f10-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+          <marker id="m04f10-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 10.</b> The detector reports a current; everything else in the chain is a
+        material constant or a dimension. Nothing in this route requires the source output to be
+        known, which is the point — it measures the field rather than assuming it.
+      </figcaption>
+    </figure>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>Ḋ</em><sub>det</sub> = <span class="frac"><span class="num"><em>I</em><sub>ph</sub> <em>E</em><sub>p</sub></span><span class="den"><em>q ρ A t</em></span></span></div>
+        <div class="eq-num">(4.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>Ḋ</em><sub>det</sub> dose rate in the detector's own material (J/(g·s); divide by
+        10<sup>−5</sup> to reach rad/s, since 1 rad = 10<sup>−5</sup> J/g) ·
+        <em>I</em><sub>ph</sub> measured photocurrent, with the unirradiated dark current
+        subtracted (A) ·
+        <em>E</em><sub>p</sub> pair creation energy <b>in joules</b>
+        (3.6 eV = 5.77×10<sup>−19</sup> J for Si) ·
+        <em>q</em> = 1.602×10<sup>−19</sup> C ·
+        <em>ρ</em> density of the active region (g/cm³) ·
+        <em>A</em> active area (cm²) · <em>t</em> thickness of the depleted region (cm).
+        Assumes complete collection of the generated pairs and that all the energy absorbed in the
+        active volume goes into pair creation. <em>A</em> and <em>t</em> define the mass that the
+        dose is referred to, so a quoted dose rate is only as good as the detector geometry.
+        On the formula sheet as <a href="formula-sheet.html#eq-dosimetry">(4.9)</a>.
+      </div>
+    </div>
+
+    <p>
+      Transferring that result to a different material requires one step further back, to the
+      photon field itself, and two separate losses stand between the incident beam and the
+      collected charge. First, not every photon interacts at all: a slab of thickness <em>t</em>
+      removes a fraction 1 − exp(−(<em>μ</em>/<em>ρ</em>)<em>ρt</em>) of the incident photons from
+      the beam, and the rest pass straight through. Second, not all the energy carried by the
+      photons that do interact stays in the slab — a Compton scatter sends most of it onward as a
+      new photon, and a fluorescence photon can also escape. The fraction retained locally is
+      <em>μ</em><sub>en</sub>/<em>μ</em>, the ratio of the two coefficients. Dividing by both of
+      those factors, and by the area, recovers the energy fluence rate arriving at the detector,
+      which is a property of the beam rather than of the instrument.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>Ψ̇</em> = <span class="frac"><span class="num"><em>I</em><sub>ph</sub> <em>E</em><sub>p</sub></span><span class="den"><em>q A</em> <span class="dl">(</span><span class="frac"><span class="num"><em>μ</em><sub>en</sub></span><span class="den"><em>μ</em></span></span><span class="dl">)</span> <span class="dl">[</span>1 − <em>e</em><sup>−(<em>μ</em>/<em>ρ</em>)<em>ρt</em></sup><span class="dl">]</span></span></span>,&nbsp;&nbsp;&nbsp;&nbsp; <span class="frac"><span class="num"><em>Ḋ</em><sub>B</sub></span><span class="den"><em>Ḋ</em><sub>A</sub></span></span> = <span class="frac"><span class="num">(<em>μ</em><sub>en</sub>/<em>ρ</em>)<sub>B</sub></span><span class="den">(<em>μ</em><sub>en</sub>/<em>ρ</em>)<sub>A</sub></span></span></div>
+        <div class="eq-num">(4.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>Ψ̇</em> energy fluence rate incident on the detector (J/(cm²·s)) ·
+        <em>μ</em>/<em>ρ</em> mass <b>attenuation</b> coefficient of the detector material at the
+        photon energy (cm²/g) — how many photons interact at all ·
+        <em>ρt</em> areal thickness (g/cm²); the exponent is dimensionless ·
+        <em>μ</em><sub>en</sub>/<em>ρ</em> mass <b>energy-absorption</b> coefficient (cm²/g) — how
+        much of the interacting energy is deposited locally ·
+        <em>μ</em><sub>en</sub>/<em>μ</em> their ratio, dimensionless: 0.97 in silicon at 10 keV,
+        0.47 at 1.25 MeV. Both coefficients are needed, and they enter in different places —
+        <em>μ</em> in the exponent, because every interaction removes a photon from the beam, and
+        <em>μ</em><sub>en</sub>/<em>μ</em> in front, because only that share of the interacted
+        energy stays behind ·
+        <em>Ḋ</em><sub>A</sub>, <em>Ḋ</em><sub>B</sub> dose rates in two materials exposed to the
+        same photon field (any consistent unit).
+        The ratio form holds when both materials are thin enough that the field is not appreciably
+        attenuated within them and charged-particle equilibrium holds in each — that is, away from
+        the interface effects of §5. Combined with (4.7), of which it is the ratio.
+        On the formula sheet as <a href="formula-sheet.html#eq-dose-transfer">(4.10)</a>.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p>
+        The two coefficients in (4.10) are different quantities and are not interchangeable.
+        <em>μ</em>/<em>ρ</em> counts every interaction that removes a photon from the beam,
+        including a Compton scatter that carries most of the energy away. <em>μ</em><sub>en</sub>/<em>ρ</em>
+        counts only the energy transferred to electrons and deposited locally. They agree closely
+        where photoelectric absorption dominates and diverge where scattering does: in silicon at
+        10 keV they differ by about 3%, at 1.25 MeV by a factor of more than two.
+      </p>
+    </div>
+
+    <p>
+      The conversion between silicon and silicon dioxide illustrates why the material label on a
+      dose matters so much more for X-ray testing than for gamma testing. Both coefficients follow
+      from the elemental values weighted by mass fraction, since a compound absorbs as the sum of
+      its atoms: silicon dioxide is 46.7% silicon and 53.3% oxygen by mass, and oxygen is a much
+      weaker photoelectric absorber than silicon.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Photon energy</th><th>(<em>μ</em><sub>en</sub>/<em>ρ</em>)<sub>Si</sub></th><th>(<em>μ</em><sub>en</sub>/<em>ρ</em>)<sub>O</sub></th><th>(<em>μ</em><sub>en</sub>/<em>ρ</em>)<sub>SiO₂</sub></th><th><em>Ḋ</em><sub>SiO₂</sub> / <em>Ḋ</em><sub>Si</sub></th></tr>
+      </thead>
+      <tbody>
+        <tr><td>10 keV — X-ray test</td><td>32.89 cm²/g</td><td>5.565 cm²/g</td><td>18.34 cm²/g</td><td><b>0.558</b></td></tr>
+        <tr><td>1.25 MeV — Co-60</td><td>0.02652 cm²/g</td><td>0.02669 cm²/g</td><td>0.0266 cm²/g</td><td><b>1.003</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      <span class="src">Elemental coefficients from the NIST X-Ray Mass Attenuation Coefficients
+      tables; the SiO₂ column is their mass-weighted sum, 0.4674 silicon and 0.5326 oxygen.</span>
+    </p>
+
+    <p>
+      At Co-60 energies the two materials absorb equally to within a fraction of a per cent,
+      because Compton scattering dominates and its cross-section per unit mass depends only weakly
+      on composition. A dose quoted in rad(Si) and one quoted in rad(SiO₂) are then effectively
+      the same number, which is why the distinction is often left implicit in gamma work. At
+      10 keV photoelectric absorption dominates, its cross-section rises steeply with atomic
+      number, and the oxygen content of the compound pulls its absorption down: the same beam
+      deposits only 0.56 as much energy per gram in the oxide as in the silicon. Equivalently, a
+      stated dose in rad(SiO₂) corresponds to about 1.8 times as many rad(Si), and interchanging
+      the two labels at X-ray energies is a factor-of-1.8 error in the stated dose.
+    </p>
+    <p>
+      Both figures are <em>bulk</em> values, describing a slab thick enough to establish
+      charged-particle equilibrium in its own right. A gate oxide a few nanometres thick, buried
+      between silicon and polysilicon, does not meet that condition: almost every electron
+      depositing energy in it was liberated in the silicon around it and is merely passing through,
+      so the dose it receives is set by the electrons crossing it rather than by its own photon
+      absorption. That is the argument of §5 read at a different scale — a layer thin compared with
+      the secondary-electron range takes the dose of its surroundings rather than its own. The
+      material label still has to be tracked through a calculation, and (4.10) is how that is done;
+      what it does not do is predict the dose in a nanometre-scale layer embedded in a different
+      material.
+    </p>
+
+    <p>
+      The detector chain requires the photon energy, and in an X-ray irradiator that energy is set
+      by the anode material rather than chosen freely. Electrons accelerated through the tube
+      voltage strike a metal target and produce two distinct spectra. Deceleration in the nuclear
+      field of the target atoms gives the bremsstrahlung continuum of
+      <a href="m01-radiation-and-matter.html">M01</a> §4, which extends from zero up to an endpoint
+      equal to the full kinetic energy of the incident electrons and therefore moves with the tube
+      voltage. Superimposed on it are <b>characteristic lines</b>: an incident electron ejects a
+      bound electron from an inner shell of a target atom, an electron from a higher shell falls
+      into the vacancy, and the energy difference between the two levels is emitted as a photon.
+      Those energies are fixed by the target element and do not move with the tube voltage at all.
+    </p>
+    <p>
+      A characteristic line appears only when the accelerating voltage is high enough to create the
+      vacancy in the first place, which requires the incident electron to carry more energy than the
+      binding energy of that shell. For a tungsten target the L-shell binding energies are 10.2 to
+      12.1 keV, so the L lines — principally Lα₁ at 8.40 keV and Lβ₁ at 9.67 keV — are excited at
+      modest tube voltages and dominate the useful output. The K shell is bound at 69.5 keV, so no
+      K line appears until the tube exceeds roughly 70 kV, above which Kα emission near 59 keV is
+      added to a continuum that now reaches past 70 keV.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 250" role="img" aria-labelledby="m04f11-t">
+        <title id="m04f11-t">X-ray tube output: bremsstrahlung continuum with superimposed characteristic lines</title>
+
+        <line x1="64" y1="196" x2="480" y2="196" class="dg-rule" stroke-width="1.2"/>
+        <line x1="64" y1="196" x2="64" y2="34" class="dg-rule" stroke-width="1.2"/>
+        <text x="272" y="222" class="dg-label" text-anchor="middle">photon energy</text>
+        <text x="28" y="116" class="dg-label" text-anchor="middle" transform="rotate(-90 28 116)">intensity</text>
+
+        <path d="M84,192 C110,120 150,102 200,110 C260,120 330,158 400,192" class="dg-line" stroke-width="2"/>
+        <text x="300" y="150" class="dg-label-sm">bremsstrahlung continuum</text>
+
+        <line x1="130" y1="196" x2="130" y2="58" class="dg-acc" stroke-width="2.4"/>
+        <line x1="152" y1="196" x2="152" y2="86" class="dg-acc" stroke-width="2.4"/>
+        <text x="142" y="46" class="dg-acc-f" font-size="11.5" text-anchor="middle">characteristic L lines</text>
+
+        <line x1="400" y1="196" x2="400" y2="180" class="dg-rule" stroke-width="1"/>
+        <text x="400" y="212" class="dg-label-sm" text-anchor="middle">endpoint = tube voltage</text>
+        <path d="M406,186 L448,186" class="dg-rule" stroke-width="1.3" marker-end="url(#m04f11-a)"/>
+        <text x="454" y="190" class="dg-label-sm">moves</text>
+
+        <text x="130" y="238" class="dg-label-sm" text-anchor="middle">fixed by the target element</text>
+
+        <defs>
+          <marker id="m04f11-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Raising the tube voltage extends the continuum endpoint but leaves the line energies where
+        they are. Holding the voltage below the next shell's binding energy keeps one group of
+        lines dominant, which is what makes a nominally monoenergetic X-ray test possible.
+      </figcaption>
+    </figure>
+
+    <p>
+      That threshold behaviour is what the standard 10 keV X-ray irradiation exploits. Operated
+      below the K threshold, a tungsten-anode tube delivers a spectrum whose useful output is
+      concentrated in the L lines near 8 to 10 keV, and the beam can be treated as monoenergetic at
+      10 keV for the purpose of selecting a mass energy-absorption coefficient. Raising the tube
+      above the K threshold adds strong lines near 59 keV to a continuum reaching past 70 keV, and
+      the beam stops being usefully monoenergetic: no single tabulated coefficient describes it any
+      longer, the dose has to be integrated over the spectrum, and the dose-enhancement behaviour
+      of §5 changes with it. The tube voltage is therefore not a knob for adjusting dose rate
+      independently of everything else — it changes what the calculation is allowed to assume.
+    </p>
+
+    <div class="box insight">
+      <p>
+        Two reference sources bracket total-dose testing, and §5 explained why they do not agree.
+        A 10 keV X-ray source is compact, gives a high dose rate, and permits wafer-level probing,
+        but it interacts almost entirely by photoelectric absorption and is therefore strongly
+        sensitive to the atomic number of nearby layers. Cobalt-60, emitting at 1.17 and 1.33 MeV,
+        interacts by Compton scattering, which is nearly composition-independent — so dose
+        enhancement effectively vanishes and rad(Si) and rad(SiO₂) converge. The X-ray source is
+        the laboratory instrument; Co-60 is the military and space qualification standard. Relating
+        one to the other requires both a charge-yield correction and a dose-enhancement correction,
+        which <a href="m07-oxide-interface-trap-charge.html">M07</a> §2 supplies.
+      </p>
+    </div>
+
+    <h2>Where this leaves us</h2>
+    <p>
+      One coefficient now connects the environment to the device. Stopping power is the
+      energy a charged particle loses per unit path; divided by density it is the linear
+      energy transfer, which is nearly a property of the particle alone and is quoted in this
+      course in MeV·cm²/mg. Its two strong dependences — the square of the projectile charge
+      and the inverse square of its velocity — account for most of what the subject observes.
+      The <em>z</em>² term is why the 1–2% of the cosmic-ray flux that is heavy ions sets
+      the single-event requirement. The 1/<em>β</em>² term is why energy deposition concentrates at the end of
+      a track in the Bragg peak, and therefore why a heavy-ion test is a question about
+      geometry as much as about energy.
+    </p>
+    <p>
+      Two quantities then partition the deposited energy. Dose measures the ionizing share
+      and converts to free charge through a single material constant, 3.6 eV per pair in
+      silicon and 17 eV in its oxide; in track form the same conversion gives 10.4 fC per
+      micrometre per unit of LET. Non-ionizing energy loss measures the displacement share
+      and converts to lattice defects above a 21 eV threshold. Dose enhancement is the
+      correction that applies when the material receiving the dose sits next to one of very
+      different atomic number, which in a real device it always does.
+    </p>
+    <p>
+      Those two quantities are the axis along which the rest of the course divides. Ionizing
+      energy that becomes trapped charge is total ionizing dose; ionizing energy delivered by
+      one particle in one place is a single-event effect; non-ionizing energy is displacement
+      damage. <a href="m05-three-effects-taxonomy.html">M05</a> makes that division explicit and adds the
+      second axis — whether the effect accumulates over many particles or is complete after
+      one — which together generate the taxonomy the remainder of the course follows.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Quick reference</p>
+      <ul>
+        <li><b>Stopping power</b> <em>S</em> = −d<em>E</em>/d<em>x</em> (MeV/cm), in two channels: electronic, which ionizes, and nuclear, which displaces. Electronic dominates for every particle in this course.</li>
+        <li><b>Bethe scaling:</b> energy loss ∝ <em>z</em>²/<em>β</em>², times the target's <em>Z</em>/<em>A</em> ≈ 0.5. Iron deposits 676× a proton at equal velocity; any particle deposits more as it slows.</li>
+        <li><b>LET</b> = −(1/<em>ρ</em>)·d<em>E</em>/d<em>x</em> = <em>S</em>/<em>ρ</em>, <b>MeV·cm²/mg</b> here; MeV·cm²/g in stopping-power tables, a factor of 1,000; keV/µm in the radiological literature, which needs <em>ρ</em> to convert — 1 MeV·cm²/mg = 233 keV/µm in Si. Formally the local deposition, differing from stopping power by delta-ray escape.</li>
+        <li><b>Anchors in silicon:</b> minimum ionizing 1.66 MeV·cm²/g near 2.5 GeV; 100 MeV proton 5.85 MeV·cm²/g; 5.5 MeV alpha, CSDA range 27.9 µm, track average 0.85 MeV·cm²/mg; accelerator ions 6 to 35 MeV·cm²/mg.</li>
+        <li><b>Range</b> <em>R</em> = ∫d<em>E</em>/<em>S</em>, from SRIM or NIST tables — the CSDA path length, longer than the projected depth. <b>Bragg peak:</b> LET maximum near the end of the track, then a fall to zero as the ion captures electrons. Straggling gives the endpoint a spread of order 1%.</li>
+        <li><b>Test geometry:</b> charge collection is greatest when the Bragg peak coincides with the sensitive volume. Too little energy and the ion stops in the overlayers; too much and only the plateau LET is seen. Degrader foils translate the peak through the stack.</li>
+        <li><b>Total deposited energy</b> is the integral of d<em>E</em>/d<em>x</em>, not of LET — LET is already mass-normalised.</li>
+        <li><b>Pair creation:</b> <em>E</em><sub>p</sub> = 3.6 eV in Si, 17 eV in SiO₂, near <em>E</em><sub>p</sub> ≈ 2.8<em>E</em><sub>g</sub> + (0–1 eV). <em>N</em><sub>eh</sub> = <em>ρD</em>/<em>E</em><sub>p</sub> = <em>g</em><sub>0</sub><em>D</em>, with <em>g</em><sub>0</sub> = 8.1×10¹² (SiO₂), 4×10¹³ (Si), ~7×10¹³ (GaAs) pairs/cm³ per rad.</li>
+        <li><b>Charge per track length:</b> 10.4 fC/µm per unit LET in silicon; 1 pC/µm at LET = 97. A collected charge needs a collection depth as well.</li>
+        <li><b>Photon dose:</b> <em>D</em> = (<em>µ</em><sub>en</sub>/<em>ρ</em>)·<em>Ψ</em>, from energy fluence and the tabulated mass energy-absorption coefficient.</li>
+        <li><b>Dose enhancement</b> occurs because a high-<em>Z</em> layer emits more secondary electrons into a neighbouring low-<em>Z</em> layer than it receives, breaking charged-particle equilibrium. Deck 03 bounds it at <b>up to</b> 8–10× in thin oxides beside gold near 100 keV and <b>no more than</b> 2–3× in well photocurrent — the difference being layer thickness against the secondary-electron range. The atomic-number contrast peaks at intermediate photon energies, near 50–150 keV for gold against silicon; a significant issue for X-ray testing, minor for Co-60. HfO₂ gate stacks: roughly 2–4× calculated for TiN-gated stacks of 1–8 nm (Deck 03 p. 22), 2–8× quoted for HfO₂/TiN capacitors (Deck 07 p. 41) — each specific to its stack and photon spectrum.</li>
+        <li><b>Displacement threshold</b> in silicon is <b>21 eV</b>. A 50 keV primary knock-on atom is typical of a 1 MeV neutron or an energetic proton. About 90% of Frenkel pairs recombine; 10% remain.</li>
+        <li><b>NIEL</b> (MeV·cm²/g) is the non-ionizing counterpart of LET; <b>DDD = Φ · NIEL</b> is the counterpart of total dose. Damage scales with their product, which is what lets one measurement transfer between particles and energies — checked per material, since gallium arsenide departs from it above roughly 40 MeV protons.</li>
+        <li><b>Radiation-induced EMI</b> arises three ways: transient currents from ionizing hits, secondary electrons and X-rays generated inside enclosures, and surface charge accumulation that ends in a discharge. Symptoms are power-bus spikes, corrupted ADC conversions and false comparator triggers.</li>
+        <li><b>Photodiode dosimetry:</b> <em>Ḋ</em><sub>det</sub> = <em>I</em><sub>ph</sub><em>E</em><sub>p</sub>/(<em>q&rho;At</em>). A reverse-biased p&ndash;i&ndash;n diode collects every pair generated in its depleted intrinsic region, so the current <em>is</em> the energy absorption rate. Lengths in <b>cm</b>, <em>E</em><sub>p</sub> in <b>joules</b>, and 1 rad = 10<sup>&minus;5</sup> J/g.</li>
+        <li><b>Transferring a dose between materials:</b> <em>Ḋ</em><sub>B</sub>/<em>Ḋ</em><sub>A</sub> = (<em>&mu;</em><sub>en</sub>/<em>&rho;</em>)<sub>B</sub> / (<em>&mu;</em><sub>en</sub>/<em>&rho;</em>)<sub>A</sub>. At 10 keV, <b>SiO<sub>2</sub> takes only 0.56&times; the dose Si does</b> &mdash; so 1 rad(SiO<sub>2</sub>) &asymp; 1.8 rad(Si). At Co-60 energies the ratio is 1.00 and the two labels are interchangeable. <em>&mu;</em>/<em>&rho;</em> (attenuation) and <em>&mu;</em><sub>en</sub>/<em>&rho;</em> (energy absorption) are different quantities. <b>Bulk values</b> &mdash; a few-nm gate oxide buried in silicon takes the dose of the silicon around it, not this ratio.</li>
+        <li><b>Why rad(SiO<sub>2</sub>):</b> the trapping dielectric is SiO<sub>2</sub>, and high-<em>&kappa;</em> stacks are still quoted as equivalent oxide thickness, <em>t</em><sub>EOT</sub> = <em>t</em><sub>k</sub><em>&epsilon;</em><sub>ox</sub>/<em>&epsilon;</em><sub>k</sub> with <em>&epsilon;</em><sub>ox</sub> relative 3.9. <b>But military levels go the other way:</b> MIL-PRF-38535 RHA designators and MIL-STD-883 TM1019 dose rates are in <b>rad(Si)</b>, so a qualification mixes both labels.</li>
+        <li><b>X-ray tube output</b> = bremsstrahlung continuum, whose endpoint tracks the tube voltage, plus characteristic lines fixed by the anode element. A line appears only once the tube voltage exceeds that shell's binding energy. Tungsten: L lines at 8.40 and 9.67 keV (L edges 10.2&ndash;12.1 keV), K edge at 69.5 keV with K&alpha; near 59 keV &mdash; which is why the standard test runs below ~70 kV and can be treated as 10 keV.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 03 p. 27 for the two stopping channels and the definition. Equation (4.2) and the mean excitation energies are the standard Bethe treatment, added because the course states the scaling without its origin — after ICRU Report 49 (1993) and the Particle Data Group's <em>Passage of Particles Through Matter</em>. The plotted values are computed from (4.2)</td></tr>
+      <tr><td>§2</td><td>Deck 03 p. 27; Lecture 3 for the professor's use of stopping power and LET as one quantity. The restricted-LET definition is ICRU Report 85 (2011). Ion LET values from Deck 13 p. 50</td></tr>
+      <tr><td>§3</td><td>Deck 03 pp. 27–29 (after S. Buchner <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>58</b>, 2976 (2011)); Lecture 3, the extended exchange on placing the peak in the active region. Alpha range from NIST ASTAR; the <sup>241</sup>Am source is Deck 03 p. 12</td></tr>
+      <tr><td>§4</td><td>Deck 03 pp. 16, 19, 26; the professor's <em>Charge Generation and Dose Deposition</em> handout for (4.5) and (4.7). The Klein relation from C. A. Klein, <em>J. Appl. Phys.</em> <b>39</b>, 2029 (1968). The <em>g</em><sub>0</sub> values are checked against the densities and pair energies on Deck 03 p. 19</td></tr>
+      <tr><td>§5</td><td>Deck 03 pp. 18, 20–22 (after R. D. Evans, <em>The Atomic Nucleus</em> (1955); D. M. Long <em>et al.</em>, <em>Handbook for Dose Enhancement Effects in Electronic Devices</em>, DTIC ADA128490 (1983); D. E. Beutler <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>34</b>, 1544 (1987); A. Dasgupta <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>58</b>, 3139 (2011)). Deck 07 p. 41 for the 2–8× range in HfO₂/TiN capacitors; the 10 keV and 400 keV-endpoint bremsstrahlung spectra of the Dasgupta calculation are from that paper's abstract</td></tr>
+      <tr><td>§6</td><td>Deck 03 pp. 34, 36–37, 39 (after C. Poivey, ESA–CERN Workshop (2017); G. P. Summers, 1992 IEEE NSREC Short Course; J. R. Srour, C. J. Marshall and P. W. Marshall, <em>IEEE Trans. Nucl. Sci.</em> <b>50</b>, 653 (2003))</td></tr>
+      <tr><td>§7</td><td>Deck 03 pp. 13–14; Lecture 4 for the link between surface charging and interference. Charging mitigation practice from NASA-HDBK-4002A, <em>Mitigating In-Space Charging Effects</em>, added because the deck lists mechanisms without countermeasures</td></tr>
+      <tr><td>§8</td><td>Lecture 6, in which the professor works the photodiode dosimetry method through end to end and states the reasoning for silicon dioxide as the reference material and for holding the X-ray tube below the K threshold. The mass attenuation and mass energy-absorption coefficients are the NIST X-Ray Mass Attenuation Coefficients tabulations (J. H. Hubbell and S. M. Seltzer, NISTIR 5632); the silicon dioxide values are the mass-weighted sum of the elemental ones, which is how NIST constructs its own compound tables. Tungsten shell binding energies and characteristic line energies are the Lawrence Berkeley <em>X-Ray Data Booklet</em> and the NIST X-Ray Transition Energies database. Equivalent oxide thickness and the p&ndash;i&ndash;n structure are standard device-physics definitions, added because the course uses both without defining them</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m03-dose-shielding-terrestrial.html"><span>Previous</span>M03 · Dose, Shielding and Terrestrial Environments</a>
+      <a class="next" href="m05-three-effects-taxonomy.html"><span>Next</span>M05 · The Three Effects: A Taxonomy</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,2328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M07b · High-k Capacitor Dielectrics for DRAM and FeRAM — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M07b · High-k Capacitor Dielectrics for DRAM and FeRAM</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 07b</p>
+    <h1>High-k Capacitor Dielectrics for DRAM and FeRAM</h1>
+    <p class="lede">
+      Why a memory cell must keep its capacitance near 30 fF as it shrinks, the three ways that
+      was achieved, and the high-k dielectrics that took over when those ran out — tantalum
+      pentoxide, then barium strontium titanate — together with the electrodes, deposition
+      processes and integration problems each one brought. The same perovskite family, in
+      its ferroelectric form, makes a non-volatile memory.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m07-high-k-dielectrics.html">M07</a></span>
+      <span><b>Read time</b> ~65 min</span>
+      <span><b>Sources</b> Class notes pp. 52–64 (Chapter 4); Wolf Vol. 4 §4.2–4.5; Taur &amp; Ning ch. 12</span>
+    </div>
+
+    <p>
+      Chapter 4 of the notes opens by listing three uses for a high-k dielectric: the MOSFET
+      gate, the capacitor of a dynamic random-access memory (DRAM), and the capacitor of a
+      non-volatile ferroelectric memory (FeRAM). <a href="m07-high-k-dielectrics.html">M07</a>
+      treated the first. This module treats the other two, which the notes cover on pp. 52–64.
+      The driving problem is the same arithmetic — capacitance per unit area is
+      <em>ε</em><sub>0</sub><em>k</em>/<em>t</em>, so when the area shrinks either the film
+      thins or <em>k</em> rises — but the constraints are different. A memory capacitor must keep a
+      roughly fixed capacitance and hold its charge between refreshes rather than induce a
+      channel, it may be ten or
+      more nanometres thick, it sits between two electrodes of its own rather than on the
+      transistor channel, and the dielectrics it can use reach <em>k</em> values in the hundreds.
+    </p>
+    <p>
+      The module follows the order in which the problem unfolds. It starts with the memory cell
+      itself and the reasons its capacitance cannot fall with each generation (§1–§2), then the
+      three ways the industry held that capacitance while the cell shrank, and why they ran
+      out (§3). Any new dielectric needs electrodes it does not react with, which is the subject
+      of §4. Tantalum pentoxide, the first high-k capacitor dielectric, follows in §5. The
+      titanate dielectrics that were expected to replace it belong to a crystal family, the
+      perovskites, whose properties the notes assume rather than teach, so §6 supplies that
+      background before §7–§9 treat barium strontium titanate — its films, its deposition and its
+      integration. The same crystal family, used in its ferroelectric state, gives the
+      non-volatile memory of §10.
+    </p>
+
+    <h2 id="s1">1 · The one-transistor, one-capacitor cell</h2>
+
+    <p>
+      A random-access memory stores bits in an array of cells, any one of which can be read or
+      written in the same time regardless of its position. In a <b>static</b> RAM each cell is a
+      latch of cross-coupled transistors that holds its state for as long as power is applied. In
+      a <b>dynamic</b> RAM each cell stores its bit as the presence or absence of charge on a
+      capacitor. That charge leaks away over time, so every cell must be read and rewritten
+      periodically — the operation called <b>refresh</b> — and that need for continual refresh is
+      what "dynamic" refers to. The DRAM cell is far smaller than a static cell of six transistors,
+      which is why DRAM is the dense, cheap memory of a computer's main store (Taur &amp; Ning
+      §12.2).
+    </p>
+    <p>
+      The notes (p. 56) draw the cell as an equivalent circuit, Figure 1. It has one transistor and
+      one capacitor, the <b>1T1C</b> cell. The transistor is an n-channel MOSFET used as a switch;
+      the notes call it the <b>pass transistor</b>, and it is also called the access or transfer
+      device. Its gate is connected to the <b>word line</b>, a conductor that runs along a row of
+      the array and is shared by every cell in that row. One of its source/drain terminals is
+      connected to the <b>bit line</b>, a conductor that runs along a column and is shared by every
+      cell in that column. The other terminal is connected to one electrode of the capacitor. In
+      the notes' words, the MOS capacitor is connected to the bit line through the pass transistor
+      (MOSFET switch) whose gate is controlled by the word line.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 400 250" role="img" aria-labelledby="f1-t">
+        <title id="f1-t">Equivalent circuit of a one-transistor, one-capacitor DRAM cell: the word line drives the gate of an n-channel pass transistor that connects the bit line to the storage node of the cell capacitor, whose other plate is common</title>
+        <!-- word line -->
+        <line x1="30" y1="52" x2="385" y2="52" class="dg-line" stroke-width="2"/>
+        <text x="385" y="42" class="dg-label" text-anchor="end">word line</text>
+        <!-- bit line -->
+        <line x1="70" y1="22" x2="70" y2="238" class="dg-line" stroke-width="2"/>
+        <text x="80" y="232" class="dg-label">bit line</text>
+        <!-- gate lead and gate plate -->
+        <line x1="200" y1="52" x2="200" y2="108" class="dg-line" stroke-width="1.6"/>
+        <circle cx="200" cy="52" r="3.2" class="dg-ink"/>
+        <line x1="168" y1="108" x2="232" y2="108" class="dg-line" stroke-width="2.2"/>
+        <!-- channel -->
+        <line x1="164" y1="120" x2="236" y2="120" class="dg-line" stroke-width="2.6"/>
+        <!-- left terminal to bit line -->
+        <path d="M170,120 V148 H70" class="dg-line" stroke-width="1.6"/>
+        <circle cx="70" cy="148" r="3.2" class="dg-ink"/>
+        <!-- right terminal to storage node: the accent -->
+        <path d="M230,120 V148 H300 V176" class="dg-acc" stroke-width="2.4"/>
+        <circle cx="300" cy="148" r="4" class="dg-acc-f"/>
+        <!-- capacitor -->
+        <line x1="274" y1="176" x2="326" y2="176" class="dg-line" stroke-width="2.4"/>
+        <line x1="274" y1="188" x2="326" y2="188" class="dg-line" stroke-width="2.4"/>
+        <line x1="300" y1="188" x2="300" y2="208" class="dg-line" stroke-width="1.6"/>
+        <line x1="284" y1="208" x2="316" y2="208" class="dg-line" stroke-width="1.6"/>
+        <line x1="290" y1="214" x2="310" y2="214" class="dg-line" stroke-width="1.6"/>
+        <line x1="296" y1="220" x2="304" y2="220" class="dg-line" stroke-width="1.6"/>
+        <!-- labels -->
+        <text x="242" y="100" class="dg-label">pass transistor</text>
+        <text x="242" y="116" class="dg-label">(n-channel MOSFET)</text>
+        <text x="310" y="144" class="dg-label">storage node</text>
+        <text x="334" y="187" class="dg-label"><tspan class="dg-math">C</tspan><tspan baseline-shift="sub" style="font-size:88%">cell</tspan></text>
+        <text x="266" y="193" class="dg-label" text-anchor="end">plate electrode</text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The one-transistor, one-capacitor cell, after the notes' p. 56. Raising the
+        word line turns the pass transistor on and connects the bit line to the storage node
+        (accent); lowering it isolates the node, and the bit is the charge left on
+        <em>C</em><sub>cell</sub>. The other capacitor electrode, the plate, is common to the whole
+        array; the notes draw it tied to ground.
+      </figcaption>
+    </figure>
+
+    <p>
+      The two capacitor electrodes have names that the rest of this module uses. The electrode
+      connected to the transistor is the <b>storage node</b>; in a stacked cell it is the bottom
+      electrode. The other is the <b>plate electrode</b>, or cell plate, which is common to every
+      cell in the array; in a stacked cell it is the top electrode (notes p. 55).
+    </p>
+    <p>
+      A cell is written by raising its word line, which turns the pass transistor on, and driving
+      the bit line to the supply voltage <em>V</em><sub>dd</sub> for a "1" or to 0 V for a "0". The
+      word line is then lowered, which turns the transistor off and isolates whatever charge is on
+      the storage node. The word line is boosted above <em>V</em><sub>dd</sub> +
+      <em>V</em><sub>t</sub> during a write, because an n-channel switch passing
+      <em>V</em><sub>dd</sub> turns itself off once its source rises to within a threshold voltage
+      of its gate, which would leave the node short of <em>V</em><sub>dd</sub> (Taur &amp; Ning
+      §12.2.1).
+    </p>
+    <p>
+      A cell is read by charge sharing. The bit line is first precharged to
+      <em>V</em><sub>dd</sub>/2. The word line is raised, the cell capacitance is connected to the
+      far larger capacitance of the bit line — the wire itself plus the drain junctions of every
+      other cell on it — and the charge redistributes between them. The bit line moves slightly
+      above or below <em>V</em><sub>dd</sub>/2, according to whether the cell held a "1" or a "0",
+      and a <b>sense amplifier</b> at the end of the bit line compares it with a reference line
+      that was precharged identically. The sense amplifier is a cross-coupled latch: once
+      activated it drives the two lines apart to <em>V</em><sub>dd</sub> and 0, and because the
+      cell is still connected, that also writes the original value back into the cell. The read
+      itself destroys the stored charge; the write-back restores it.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>s</sub> = <span class="dl">(</span><em>V</em><sub>node</sub> −
+          <span class="frac"><span class="num"><em>V</em><sub>dd</sub></span><span class="den">2</span></span><span class="dl">)</span>
+          <span class="frac"><span class="num"><em>C</em><sub>cell</sub></span><span class="den"><em>C</em><sub>cell</sub> + <em>C</em><sub>bitline</sub></span></span></div>
+        <div class="eq-num">(7b.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>s</sub> read signal, the voltage difference between the bit line and its
+        reference (V) · <em>V</em><sub>node</sub> voltage stored on the cell, about
+        <em>V</em><sub>dd</sub> for a "1" and 0 for a "0" (V) · <em>V</em><sub>dd</sub> supply
+        voltage (V) · <em>C</em><sub>cell</sub> storage capacitance (F) ·
+        <em>C</em><sub>bitline</sub> bit-line capacitance (F); any consistent unit of capacitance
+        works, since only the ratio enters. <em>C</em><sub>cell</sub>/(<em>C</em><sub>cell</sub> +
+        <em>C</em><sub>bitline</sub>) is the <b>transfer ratio</b>. Assumes the bit line was
+        precharged to <em>V</em><sub>dd</sub>/2 and that no charge is lost during sharing. Taur
+        &amp; Ning Eq. (12.11); beyond the notes.
+      </div>
+    </div>
+
+    <p>
+      The numbers show why the cell capacitance matters. A bit line typically carries 256 to 1024
+      cells, and each unselected cell adds drain-junction and gate-fringe capacitance, so
+      <em>C</em><sub>bitline</sub> is of order 100–300 fF (1 fF = 10⁻¹⁵ F). With
+      <em>C</em><sub>cell</sub> = 30 fF the transfer ratio is therefore 30/(30 + 300) ≈ 0.09 on a
+      long bit line to 30/(30 + 100) ≈ 0.23 on a short one. Taur &amp; Ning (§12.2.1) take about
+      0.2, the short-bit-line end, so a cell charged to 1 V on a 1 V supply produces at most
+      (1 − 0.5) × 0.2 ≈ 0.1 V at the sense amplifier, and about half that on a long bit line.
+      The signal is a small fraction of the stored voltage, and it scales directly with
+      <em>C</em><sub>cell</sub>.
+    </p>
+    <p>
+      Between reads the stored charge leaks — through the subthreshold current of the pass
+      transistor, through the gate of the pass transistor, through the reverse-biased junction of
+      the storage node, and, once it is thin enough, through the capacitor dielectric itself. The
+      <b>retention time</b> is the longest interval over which the cell still reads correctly, and
+      the refresh interval is set shorter than it; a typical worst-case specification is about
+      100 ms. For a 30 fF capacitor charged to 1 V, which holds 30 fC, keeping the loss below 10%
+      over 100 ms allows a total leakage of about 30 fA from all paths together (Taur &amp; Ning
+      §12.2.2).
+    </p>
+    <p>
+      Taur &amp; Ning go on to say where that budget falls. In the cells they describe, the
+      capacitor insulator is thick enough for its tunnelling current to be
+      negligible, and the diffusion current of the storage junction is negligible too, so the
+      budget constrains mainly the pass transistor: its threshold voltage must be at least about
+      0.7 V at 25 °C, and its gate oxide thicker than about 2 nm, which is why the DRAM access
+      device cannot be scaled like a logic transistor (§12.2.2). The capacitor dielectric becomes a
+      leakage path of the first order when it is thinned toward the tunnelling limit — about 5 nm
+      for ONO (Wolf p. 151) — and with the high-k films of this module: for Ta₂O₅, Wolf (p. 155)
+      names a relatively high leakage current as the biggest drawback for DRAM. That is why
+      leakage returns in every section below.
+    </p>
+
+    <h2 id="s2">2 · Why the capacitance per cell stays near 30 fF</h2>
+
+    <p>
+      Every DRAM generation packs more cells onto a chip, so the silicon area available to each
+      cell, and to its capacitor, shrinks. The notes (p. 52) set out the resulting squeeze. The
+      operating voltage has fallen from 5 V to 3 V and may drop to 1 V. The charge storage
+      capacity of each cell, however, has stayed at about <b>30 fF per cell</b>, which the notes
+      state corresponds to about <b>1–2×10⁶ electrons per cell</b>, and "this number of stored
+      charges has not been decreased". What the 30 fF figure fixes is the capacitance; the charge
+      is that capacitance multiplied by the stored voltage.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em> = <em>C</em><sub>cell</sub><em>V</em>,&emsp;
+          <em>N</em> = <span class="frac"><span class="num"><em>C</em><sub>cell</sub><em>V</em></span><span class="den"><em>q</em></span></span></div>
+        <div class="eq-num">(7b.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em> stored charge (C) · <em>C</em><sub>cell</sub> cell capacitance (F) · <em>V</em>
+        voltage across the capacitor (V) · <em>N</em> number of stored electrons (dimensionless) ·
+        <em>q</em> elementary charge, 1.602×10⁻¹⁹ C. Useful scale: 1 fF × 1 V = 1 fC =
+        6.24×10³ electrons.
+      </div>
+    </div>
+
+    <p>
+      The notes give three reasons why this charge-storage capacity cannot be allowed to fall
+      with the cell area, and each is a separate physical constraint.
+    </p>
+
+    <h3>2.1 Soft errors</h3>
+    <p>
+      The first reason is soft errors (notes pp. 52–53). A <b>soft error</b> is a change in a stored
+      bit caused by a transient disturbance rather than by damage to the device: the cell is
+      rewritten correctly on the next write and works normally afterwards. The notes name two
+      causes. The first is <b>α-particles</b> — helium nuclei, two protons and two neutrons,
+      emitted by the radioactive decay of naturally occurring trace impurities, uranium and thorium
+      at parts-per-million levels, in the packaging material; May and Woods reported this
+      mechanism in dynamic memories in 1979. The second is cosmic rays, whose ground-level form is
+      described in the box below.
+    </p>
+    <p>
+      An energetic charged particle crossing silicon loses energy by ionisation, creating
+      electron–hole pairs along its track at an average cost of 3.6 eV per pair. An α-particle of
+      5 MeV that stops in silicon therefore creates about 5×10⁶ eV ÷ 3.6 eV ≈ 1.4×10⁶ pairs. The
+      notes put the consequence in one sentence: such energetic particles generate minority carriers
+      in silicon, whose charge can alter memory states. In a cell built on p-type silicon the
+      minority carriers are electrons; those generated near the storage node's n⁺ junction are
+      swept into it by the junction field or reach it by diffusion, and they discharge a node that
+      held a "1". Whether the bit flips depends on how the collected charge compares with the charge
+      that distinguishes a "1" from a "0" at the sense amplifier. By maintaining about 30 fF per cell,
+      the notes conclude, the <b>soft-error rate</b> (SER) can be kept low. A smaller capacitor
+      holding less charge would be upset by strikes that a larger one tolerates.
+    </p>
+
+    <div class="box">
+      <p class="box-title">What "cosmic rays" means at ground level — beyond the notes</p>
+      <p>
+        Primary cosmic rays — mostly protons and heavier nuclei from outside the solar system — do
+        not reach the ground. They collide with nitrogen and oxygen nuclei high in the atmosphere
+        and start a cascade of secondary particles, and the component of that cascade which upsets
+        memories at sea level is the <b>neutron</b>. A neutron carries no charge and ionises
+        nothing directly; it upsets a cell through a nuclear reaction with a silicon (or other)
+        nucleus, whose charged recoil and fragments then ionise the silicon exactly as an
+        α-particle does. The ground-level neutron environment, and the charge-collection and
+        critical-charge physics of the upset itself, are treated in EEE 5416:
+        <a href="../../EEE5416_Radiation_Effects/site/m03-dose-shielding-terrestrial.html">M03 §8</a>
+        for the atmospheric cascade and
+        <a href="../../EEE5416_Radiation_Effects/site/m11-single-event-effects.html">M11 §4</a> for
+        critical charge and the dynamic-memory upset.
+      </p>
+    </div>
+
+    <h3>2.2 Sense-amplifier signal and retention</h3>
+    <p>
+      The second reason is detection. The detection capability of DRAM sense amplifiers has
+      remained about the same across generations, so each cell still needs about the same charge
+      storage capacity for its state to be read (notes p. 53). Equation (7b.1) shows the mechanism:
+      the read signal is the stored voltage scaled by the transfer ratio
+      <em>C</em><sub>cell</sub>/(<em>C</em><sub>cell</sub> + <em>C</em><sub>bitline</sub>), and the
+      bit-line capacitance does not shrink in proportion to the cell because it is dominated by the
+      number of cells on the line and by the wire. A smaller <em>C</em><sub>cell</sub> means a
+      smaller signal at an amplifier that needs the same signal to decide reliably.
+    </p>
+    <p>
+      The third reason is retention. The data retention time has remained constant, requiring
+      about the same storage capacity per cell (notes p. 53). The leakage paths of §1 remove charge
+      at a rate set mainly by the transistor and the junction, which do not shrink with the
+      capacitor, so a smaller stored charge reaches the unreadable level sooner and the cell would have to be refreshed more
+      often, at a cost in power and in time the array is unavailable.
+    </p>
+
+    <h3>2.3 How many electrons 30 fF holds</h3>
+
+    <div class="example">
+      <div class="ex-head">Stored charge at 30 fF across the supply-voltage history</div>
+      <div class="ex-body">
+        <p class="ex-step">
+          <b>At 5 V.</b> <em>Q</em> = 30×10⁻¹⁵ F × 5 V = 1.5×10⁻¹³ C = 150 fC.
+          <em>N</em> = 1.5×10⁻¹³ C ÷ 1.602×10⁻¹⁹ C = <b>9.4×10⁵</b> electrons.
+        </p>
+        <p class="ex-step">
+          <b>At 3 V.</b> <em>Q</em> = 90 fC, <em>N</em> = 9.0×10⁻¹⁴ ÷ 1.602×10⁻¹⁹ =
+          <b>5.6×10⁵</b> electrons.
+        </p>
+        <p class="ex-step">
+          <b>At 1 V.</b> <em>Q</em> = 30 fC, <em>N</em> = 3.0×10⁻¹⁴ ÷ 1.602×10⁻¹⁹ =
+          <b>1.9×10⁵</b> electrons.
+        </p>
+        <p class="ex-step">
+          <b>The voltage the notes' count requires.</b> Inverting (7b.2),
+          <em>V</em> = <em>Nq</em>/<em>C</em><sub>cell</sub>. For 1×10⁶ electrons,
+          <em>V</em> = 1×10⁶ × 1.602×10⁻¹⁹ C ÷ 30×10⁻¹⁵ F = 5.3 V; for 2×10⁶ electrons, 10.7 V.
+        </p>
+        <p class="ex-answer">
+          A 30 fF cell holds 1.9×10⁵ electrons at 1 V and 9.4×10⁵ at 5 V. Holding 1–2×10⁶
+          electrons would take 5.3–10.7 V across the capacitor.
+        </p>
+        <p>
+          The answer also shows what "constant" means here. At fixed capacitance the stored charge
+          falls in proportion to the voltage, a factor of five from 5 V to 1 V. Keeping
+          <em>C</em><sub>cell</sub> near 30 fF was the most the designers could do; had the
+          capacitance also fallen with the cell area, the charge would have fallen with both.
+        </p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 262" role="img" aria-labelledby="f2-t">
+        <title id="f2-t">Number of electrons stored on a 30 fF capacitor against voltage: a straight line reaching 1.9 times ten to the fifth at 1 volt and 9.4 times ten to the fifth at 5 volts, crossing the notes' band of one to two million electrons only between 5.3 and 10.7 volts</title>
+        <!-- the notes' band -->
+        <rect x="62" y="68" width="338" height="76" class="dg-fill" style="fill-opacity:.85"/>
+        <line x1="62" y1="68" x2="400" y2="68" class="dg-guide" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="62" y1="144" x2="400" y2="144" class="dg-guide" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="72" y="88" class="dg-label">notes: 1–2 ×10<tspan baseline-shift="super" style="font-size:85%">6</tspan> electrons</text>
+        <!-- axes -->
+        <line x1="60" y1="220" x2="402" y2="220" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="220" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <!-- x ticks -->
+        <g class="dg-rule" stroke-width="1">
+          <line x1="116.7" y1="220" x2="116.7" y2="225"/><line x1="173.3" y1="220" x2="173.3" y2="225"/>
+          <line x1="230" y1="220" x2="230" y2="225"/><line x1="286.7" y1="220" x2="286.7" y2="225"/>
+          <line x1="343.3" y1="220" x2="343.3" y2="225"/><line x1="400" y1="220" x2="400" y2="225"/>
+          <line x1="55" y1="144" x2="60" y2="144"/><line x1="55" y1="68" x2="60" y2="68"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="60" y="238">0</text><text x="116.7" y="238">2</text><text x="173.3" y="238">4</text>
+          <text x="230" y="238">6</text><text x="286.7" y="238">8</text><text x="343.3" y="238">10</text>
+          <text x="400" y="238">12</text>
+        </g>
+        <text x="230" y="256" class="dg-label" text-anchor="middle">voltage across the cell (V)</text>
+        <g class="dg-label" text-anchor="end">
+          <text x="52" y="224">0</text><text x="52" y="148">1</text><text x="52" y="72">2</text>
+        </g>
+        <text x="22" y="126" class="dg-label" text-anchor="middle" transform="rotate(-90 22 126)">stored electrons (×10<tspan baseline-shift="super" style="font-size:85%">6</tspan>)</text>
+        <!-- where the line enters and leaves the band -->
+        <line x1="211.3" y1="144" x2="211.3" y2="220" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="362.6" y1="68" x2="362.6" y2="220" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="215" y="212" class="dg-label">5.3 V</text>
+        <text x="366" y="212" class="dg-label">10.7 V</text>
+        <!-- N = CV/q for 30 fF: the accent -->
+        <line x1="60" y1="220" x2="400" y2="49.2" class="dg-acc" stroke-width="2.4"/>
+        <text x="392" y="42" class="dg-label" text-anchor="end">30 fF</text>
+        <!-- supply history points -->
+        <g class="dg-ink">
+          <circle cx="88.3" cy="205.8" r="3.4"/><circle cx="145" cy="177.3" r="3.4"/><circle cx="201.7" cy="148.8" r="3.4"/>
+        </g>
+        <text x="95" y="214" class="dg-label">1 V</text>
+        <text x="152" y="192" class="dg-label">3 V</text>
+        <text x="197" y="173" class="dg-label" text-anchor="end">5 V</text>
+        <g class="dg-label">
+          <text x="252" y="165">1 V → 0.19 ×10<tspan baseline-shift="super" style="font-size:85%">6</tspan></text>
+          <text x="252" y="182">3 V → 0.56 ×10<tspan baseline-shift="super" style="font-size:85%">6</tspan></text>
+          <text x="252" y="199">5 V → 0.94 ×10<tspan baseline-shift="super" style="font-size:85%">6</tspan></text>
+        </g>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> Equation (7b.2) for a 30 fF cell (accent). The dots are the supply
+        voltages of the notes' history, 5, 3 and 1 V. The line enters the notes' band of 1–2×10⁶
+        electrons (shaded) only at 5.3 V and leaves it at 10.7 V, above every supply the notes
+        mention.
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">The notes' electron count does not follow from 30 fF</p>
+      <p>
+        The notes (p. 52) pair 30 fF per cell with "about 1–2×10⁶ electrons/cell". The same pairing
+        is printed in Wolf Vol. 4 p. 150, which the notes condense, so it is inherited rather than
+        introduced in transcription. The two figures are not consistent under <em>Q</em> =
+        <em>CV</em> at any voltage the same passage mentions: 30 fF stores 1.9×10⁵ electrons at 1 V,
+        5.6×10⁵ at 3 V and 9.4×10⁵ at 5 V, and 1–2×10⁶ electrons would need 5.3–10.7 V. The notes'
+        values are the ones stated above; the arithmetic is the physics. The 30 fF figure itself is
+        the well-attested one — Taur &amp; Ning (§12.2.1) give 30 fF as the typical storage
+        capacitance, and a DRAM process review of the 100 nm era describes the required value as
+        nearly constant at 30 fF per cell through every generation (Saino, 2004).
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>A cell is redesigned for 25 fF and a 1.2 V supply. How many electrons does it store, and by what factor has the stored charge fallen from a 30 fF cell at 3.3 V?</summary>
+      <div class="answer">
+        <p>
+          <em>Q</em> = 25×10⁻¹⁵ F × 1.2 V = 3.0×10⁻¹⁴ C = 30 fC, so <em>N</em> = 3.0×10⁻¹⁴ ÷
+          1.602×10⁻¹⁹ = 1.9×10⁵ electrons. The 30 fF cell at 3.3 V held 99 fC, or 6.2×10⁵
+          electrons. The charge has fallen by 99/30 = 3.3 times, almost all of it from the voltage:
+          the capacitance fell by only 30/25 = 1.2 times, and 3.3/1.2 = 2.75 is the voltage ratio.
+        </p>
+      </div>
+    </details>
+
+    <h2 id="s3">3 · Keeping the capacitance as the cell shrinks</h2>
+
+    <p>
+      A parallel-plate capacitor offers three quantities to work with, and the history of the
+      DRAM capacitor is the history of using them up in turn. The capacitance is
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em><sub>cell</sub> =
+          <span class="frac"><span class="num"><em>ε</em><sub>0</sub><em>kA</em></span><span class="den"><em>t</em></span></span>
+          = <span class="frac"><span class="num">3.9<em>ε</em><sub>0</sub><em>A</em></span><span class="den">EOT</span></span></div>
+        <div class="eq-num">(7b.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>cell</sub> capacitance (F) · <em>ε</em><sub>0</sub> permittivity of free
+        space, 8.854×10⁻¹⁴ F/cm = 8.854×10⁻¹² F/m — use the form that matches the length unit ·
+        <em>k</em> relative dielectric constant of the film (dimensionless) · <em>A</em> electrode
+        area actually covered by the dielectric (cm² or m²), which in a three-dimensional capacitor
+        is the whole folded surface, not the footprint · <em>t</em> physical dielectric thickness
+        (cm or m) · EOT equivalent oxide thickness, <em>t</em>(3.9/<em>k</em>), the SiO₂ thickness
+        giving the same capacitance, defined in <a href="m07-high-k-dielectrics.html#s3">M07 §3</a>
+        and extended to layered films in M07 §4. Parallel-plate form: neglects fringing
+        fields at edges and corners.
+      </div>
+    </div>
+
+    <p>
+      The area <em>A</em> can be increased without enlarging the cell's footprint by folding the
+      capacitor into the third dimension or roughening its surface; the thickness <em>t</em> can be
+      reduced; or <em>k</em> can be raised. The notes (pp. 53–54) list the three approaches that
+      were adopted to keep the charge storage per cell constant, and all of them work on the first
+      two quantities. When they were exhausted, <em>k</em> was the only lever left.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">A planar 30 fF capacitor</div>
+      <div class="ex-body">
+        <p class="ex-step">
+          <b>The area needed.</b> With 10 nm of SiO₂, solving (7b.3) for <em>A</em>:
+          <em>A</em> = <em>C</em><sub>cell</sub><em>t</em>/(<em>ε</em><sub>0</sub><em>k</em>) =
+          (30×10⁻¹⁵ F × 10×10⁻⁹ m) ÷ (8.854×10⁻¹² F/m × 3.9) = 8.7×10⁻¹² m² = 8.7 µm².
+        </p>
+        <p class="ex-answer">
+          About 9 µm² of flat capacitor — a square three micrometres on a side for one bit.
+        </p>
+        <p>
+          Taur &amp; Ning (§12.2.1) use this figure to show that a planar capacitor is excessively
+          large once design rules fall below 1 µm, and date the change: since the 4 Mb generation,
+          built with 1.2 µm features, DRAM capacitors have been either trenches or stacks.
+        </p>
+      </div>
+    </div>
+
+    <h3>3.1 Three-dimensional cells: trench and stack</h3>
+    <p>
+      The first approach is a three-dimensional structure that increases the cell's surface area:
+      trench or stacked capacitors (notes p. 53). A <b>trench capacitor</b> is etched down into the
+      silicon beside the pass transistor, so that its area comes from the depth of the trench while
+      its footprint is only the trench opening. The notes (p. 57) draw one, Figure 3: the trench wall
+      is lined with the capacitor dielectric, the silicon outside the dielectric holds the stored
+      charge, and a polysilicon capacitor plate fills the trench and spreads over the surface on a
+      layer of SiO₂.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 300" role="img" aria-labelledby="f3-t">
+        <title id="f3-t">Cross-section of a trench DRAM cell: a bit line contact and a word-line gate on p-type silicon, then a deep trench lined with capacitor dielectric and filled with a polysilicon capacitor plate, with charge stored in the silicon along the trench wall</title>
+        <defs>
+          <pattern id="f3-h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="6" class="dg-guide" stroke-width="1.2"/>
+          </pattern>
+        </defs>
+        <!-- substrate outline -->
+        <path d="M18,92 H234 M298,92 H404 M18,92 V286 H404 V92" class="dg-rule" stroke-width="1.2"/>
+        <text x="30" y="276" class="dg-label">p-Si</text>
+        <!-- n+ regions -->
+        <path d="M44,92 V104 Q44,114 56,114 H96 Q108,114 108,104 V92 Z" class="dg-fill"/>
+        <text x="76" y="108" class="dg-label" text-anchor="middle">n⁺</text>
+        <path d="M172,92 V104 Q172,114 184,114 H234 V92 Z" class="dg-fill"/>
+        <text x="200" y="108" class="dg-label" text-anchor="middle">n⁺</text>
+        <!-- gate oxide (insulator grey) and word-line gate (polysilicon hatch) -->
+        <rect x="108" y="86" width="64" height="6" class="dg-ink" style="fill-opacity:.4"/>
+        <rect x="108" y="64" width="64" height="22" class="dg-rule" stroke-width="1" style="fill:url(#f3-h)"/>
+        <text x="140" y="56" class="dg-label" text-anchor="middle">word line</text>
+        <!-- bit line to left n+ -->
+        <line x1="70" y1="24" x2="70" y2="92" class="dg-line" stroke-width="2.2"/>
+        <text x="62" y="30" class="dg-label" text-anchor="end">bit</text>
+        <text x="62" y="44" class="dg-label" text-anchor="end">line</text>
+        <!-- capacitor dielectric: a solid band lining the trench wall and floor -->
+        <path d="M234,92 V264 Q234,270 240,270 H292 Q298,270 298,264 V92 H293 V259 Q293,265 287,265 H245 Q239,265 239,259 V92 Z" class="dg-ink" style="fill-opacity:.4"/>
+        <!-- charge storage: silicon along the trench wall, against the dielectric (accent) -->
+        <path d="M232.5,100 V264 Q232.5,271.5 240,271.5 H292 Q299.5,271.5 299.5,264 V92" class="dg-acc" stroke-width="3"/>
+        <!-- SiO2 on the surface to the right -->
+        <rect x="298" y="84" width="106" height="8" class="dg-ink" style="fill-opacity:.4"/>
+        <text x="368" y="78" class="dg-label">SiO₂</text>
+        <!-- poly plate: fills the trench inside the dielectric and spreads over the SiO2 -->
+        <path d="M239,92 V259 Q239,265 245,265 H287 Q293,265 293,259 V92 H298 V84 H362 V64 H239 Z" class="dg-rule" stroke-width="1" style="fill:url(#f3-h)"/>
+        <!-- labels -->
+        <text x="300" y="38" class="dg-label">poly-Si</text>
+        <text x="300" y="52" class="dg-label">capacitor plate</text>
+        <line x1="298" y1="56" x2="280" y2="68" class="dg-guide" stroke-width="1"/>
+        <text x="312" y="190" class="dg-label">capacitor</text>
+        <text x="312" y="204" class="dg-label">dielectric</text>
+        <line x1="310" y1="194" x2="295.5" y2="194" class="dg-guide" stroke-width="1"/>
+        <circle cx="295.5" cy="194" r="1.8" class="dg-ink"/>
+        <text x="222" y="190" class="dg-label" text-anchor="end">charge</text>
+        <text x="222" y="204" class="dg-label" text-anchor="end">storage</text>
+        <line x1="224" y1="196" x2="231" y2="196" class="dg-guide" stroke-width="1"/>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> A trench cell, redrawn from the notes' p. 57 (their title: "DRAM cell"). The
+        capacitor is folded into the silicon: its area is the trench wall and floor, most of it
+        vertical, while its footprint is only the trench opening. The stored charge sits in the
+        silicon along the wall (accent), next to the n⁺ region of the pass transistor; the thin
+        capacitor dielectric (grey band) separates it from the polysilicon plate (hatched) that
+        fills the trench. Grey marks insulators, hatching polysilicon. Not to scale; real trenches
+        are many times deeper than they are wide.
+      </figcaption>
+    </figure>
+
+    <p>
+      A <b>stacked capacitor</b> is built above the silicon surface, over the transistor, after the
+      transistor is complete. A conducting <b>plug</b> rises from the pass transistor's
+      source/drain through the interlevel dielectric; the storage-node electrode sits on top of it,
+      the dielectric covers its top and sides, and the common cell plate covers everything. Its area
+      comes from the height of the storage node. The notes draw the stacked cell on p. 61 in the
+      context of barium strontium titanate, Figure 4, and the drawing follows Wolf's Fig. 4-11.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 300" role="img" aria-labelledby="f4-t">
+        <title id="f4-t">Cross-section of a stacked-capacitor DRAM cell: word lines and a bit line below, polysilicon plugs rising to a barrier, bottom-electrode pedestals on the plugs, a conformal dielectric covering their tops and sides, and a common cell plate on top</title>
+        <defs>
+          <pattern id="f4-h" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="5" class="dg-guide" stroke-width="1.1"/>
+          </pattern>
+          <pattern id="f4-x" width="7" height="7" patternUnits="userSpaceOnUse">
+            <path d="M0,0 L7,7 M7,0 L0,7" class="dg-guide" stroke-width="0.9"/>
+          </pattern>
+        </defs>
+        <!-- silicon -->
+        <rect x="16" y="246" width="290" height="40" class="dg-fill"/>
+        <text x="150" y="280" class="dg-label" text-anchor="middle">Si</text>
+        <!-- interlevel dielectric that buries the plugs, word lines and bit line -->
+        <rect x="16" y="130" width="290" height="116" class="dg-fill" style="stroke:none;fill-opacity:.45"/>
+        <text x="84" y="150" class="dg-label" text-anchor="middle">ILD</text>
+        <!-- n+ source/drain regions under the plug feet and the bit-line contact -->
+        <g class="dg-rule" stroke-width="1">
+          <path d="M28,246 V252 Q28,260 36,260 H64 Q72,260 72,252 V246" class="dg-soft" style="fill-opacity:.35"/>
+          <path d="M110,246 V252 Q110,260 116,260 H134 Q140,260 140,252 V246" class="dg-soft" style="fill-opacity:.35"/>
+          <path d="M182,246 V252 Q182,260 190,260 H228 Q236,260 236,252 V246" class="dg-soft" style="fill-opacity:.35"/>
+        </g>
+        <text x="50" y="273" class="dg-label" text-anchor="middle">n⁺</text>
+        <!-- isolation -->
+        <rect x="236" y="238" width="70" height="22" class="dg-rule" stroke-width="1" style="fill:url(#f4-x)"/>
+        <!-- word lines: gate stacks with spacers -->
+        <g>
+          <rect x="70" y="210" width="40" height="36" class="dg-fill"/>
+          <line x1="70" y1="222" x2="110" y2="222" class="dg-rule" stroke-width="0.8"/><line x1="70" y1="234" x2="110" y2="234" class="dg-rule" stroke-width="0.8"/>
+          <rect x="140" y="210" width="40" height="36" class="dg-fill"/>
+          <line x1="140" y1="222" x2="180" y2="222" class="dg-rule" stroke-width="0.8"/><line x1="140" y1="234" x2="180" y2="234" class="dg-rule" stroke-width="0.8"/>
+          <rect x="250" y="212" width="40" height="26" class="dg-fill"/>
+          <line x1="250" y1="224" x2="290" y2="224" class="dg-rule" stroke-width="0.8"/>
+        </g>
+        <!-- plugs -->
+        <rect x="36" y="130" width="28" height="116" class="dg-rule" stroke-width="1" style="fill:url(#f4-h)"/>
+        <rect x="198" y="130" width="28" height="116" class="dg-rule" stroke-width="1" style="fill:url(#f4-h)"/>
+        <!-- bit line and its contact -->
+        <rect x="112" y="238" width="24" height="8" class="dg-ink"/>
+        <rect x="118" y="178" width="12" height="60" class="dg-ink"/>
+        <rect x="88" y="164" width="84" height="16" class="dg-ink"/>
+        <!-- barrier on each plug -->
+        <rect x="24" y="124" width="80" height="6" class="dg-ink"/>
+        <rect x="170" y="124" width="84" height="6" class="dg-ink"/>
+        <!-- bottom electrodes (storage nodes) -->
+        <rect x="24" y="74" width="80" height="50" class="dg-fill"/>
+        <rect x="170" y="74" width="84" height="50" class="dg-fill"/>
+        <!-- dielectric: conformal over tops and sides (accent) -->
+        <path d="M20,130 V70 H108 V127 H166 V70 H258 V130" class="dg-acc" stroke-width="3.4"/>
+        <!-- cell plate -->
+        <path d="M8,132 V44 H300 V132 H260 V68 H164 V125 H110 V68 H18 V132 Z" class="dg-rule" stroke-width="1.1" style="fill:url(#f4-h)"/>
+        <!-- labels -->
+        <text x="314" y="52" class="dg-label">cell plate</text>
+        <line x1="312" y1="48" x2="296" y2="52" class="dg-guide" stroke-width="1"/>
+        <text x="314" y="80" class="dg-label">dielectric</text>
+        <text x="314" y="94" class="dg-label">(BST)</text>
+        <line x1="312" y1="84" x2="260" y2="96" class="dg-guide" stroke-width="1"/>
+        <text x="314" y="116" class="dg-label">bottom electrode</text>
+        <text x="314" y="130" class="dg-label">(storage node)</text>
+        <line x1="312" y1="112" x2="252" y2="104" class="dg-guide" stroke-width="1"/>
+        <text x="314" y="152" class="dg-label">barrier</text>
+        <line x1="312" y1="148" x2="254" y2="128" class="dg-guide" stroke-width="1"/>
+        <text x="314" y="176" class="dg-label">plug</text>
+        <line x1="312" y1="172" x2="227" y2="172" class="dg-guide" stroke-width="1"/>
+        <text x="130" y="156" class="dg-label" text-anchor="middle">bit line</text>
+        <text x="164" y="204" class="dg-label" text-anchor="middle">word line</text>
+        <text x="314" y="208" class="dg-label">passing</text>
+        <text x="314" y="222" class="dg-label">word line</text>
+        <line x1="312" y1="214" x2="291" y2="222" class="dg-guide" stroke-width="1"/>
+        <text x="314" y="252" class="dg-label">isolation</text>
+        <line x1="312" y1="248" x2="306" y2="248" class="dg-guide" stroke-width="1"/>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> A stacked cell, redrawn from the notes' p. 61 and its source, Wolf
+        Fig. 4-11. The word lines and the bit line are buried in the interlevel dielectric (ILD)
+        below the capacitor. Each storage-node electrode stands on a barrier over a conducting plug
+        that reaches the pass transistor's n⁺ source/drain; the bit line reaches the n⁺ region
+        shared by the two pass transistors. The dielectric (accent) covers each storage node's top
+        and all its sides, and the common cell plate covers the whole array. The area is the
+        pedestal's top plus its sidewalls, so a taller pedestal gives more capacitance on the same
+        footprint. Schematic; the third gate, on the isolation, is a passing word line that belongs
+        to a neighbouring cell.
+      </figcaption>
+    </figure>
+
+    <p>
+      The two geometries have different thermal histories, which decided where new dielectrics
+      could go. A trench capacitor is formed before the transistor's source and drain are
+      activated, so its dielectric must survive about 1000 °C, and oxide–nitride stacks remained
+      widely used in trench cells, though Al₂O₃ later entered them too; a stacked capacitor is
+      built afterwards, with a wider margin in process temperature, and it is the stacked cell in
+      which most of the high-k dielectrics of this module were developed (Saino, 2004, beyond the
+      notes).
+    </p>
+
+    <h3>3.2 Thinner dielectric</h3>
+    <p>
+      The second approach is to use thinner layers of dielectric in the capacitor (notes p. 53). The
+      dielectric of the SIS capacitor of §4 was SiO₂ (<em>k</em> = 3.9), silicon nitride (<em>k</em>
+      ≈ 7), or a combination (Wolf p. 150). The combination the notes name is the
+      <b>oxide–nitride–oxide</b> (ONO) multilayer, a sandwich of SiO₂, Si₃N₄ and SiO₂, whose nitride
+      raises the capacitance above that of oxide alone. The notes give its thickness as <b>50 Å</b>,
+      and Wolf (p. 151) identifies that as the minimum: below about 5 nm, tunnelling currents
+      through the film produce excessive leakage — the
+      same direct tunnelling that limits the gate oxide in
+      <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06</a>, but judged here against the
+      far stricter leakage budget of §1, tens of femtoamperes per cell.
+    </p>
+
+    <h3>3.3 Roughened electrodes: hemispherical grain polysilicon</h3>
+    <p>
+      The third approach increases the capacitor's surface area by a factor of about 2 by roughening
+      the surface of the polysilicon bottom electrode (notes pp. 53–54). The notes, following Wolf
+      (p. 151), say this is achieved by growing the bottom-electrode polysilicon with larger
+      grains, so that its surface is covered in rounded grains instead of being flat. The
+      resulting films are called <b>hemispherical silicon grain</b> (HSG) or <b>rough surface
+      polysilicon</b> (RSP). The dielectric deposited over them follows the bumps, and the
+      capacitance scales with the true surface area, not the projected one.
+    </p>
+    <p>
+      The grains grow at the surface, by a mechanism the notes do not describe. The electrode is
+      deposited as amorphous silicon and annealed near the temperature at which amorphous silicon crystallises, often after its
+      surface has been seeded with disilane (Si₂H₆) in vacuum. Crystal nuclei form on the surface,
+      silicon atoms migrate over the surface to them, and each nucleus grows into a hemispherical
+      grain (Watanabe <em>et al.</em>, 1995).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="f5-t">
+        <title id="f5-t">A smooth polysilicon electrode compared with a hemispherical-grain electrode of the same footprint: the dielectric following the rounded grains covers a longer surface</title>
+        <!-- smooth electrode -->
+        <text x="20" y="22" class="dg-label" style="font-weight:600">smooth poly-Si</text>
+        <rect x="20" y="52" width="380" height="30" class="dg-fill"/>
+        <line x1="20" y1="50.5" x2="400" y2="50.5" class="dg-acc" stroke-width="3"/>
+        <text x="210" y="40" class="dg-label" text-anchor="middle">dielectric: area = footprint</text>
+        <!-- HSG electrode -->
+        <text x="20" y="116" class="dg-label" style="font-weight:600">hemispherical-grain poly-Si</text>
+        <path d="M20,176 V160 A15.83,15.83 0 0 1 51.67,160 A15.83,15.83 0 0 1 83.33,160 A15.83,15.83 0 0 1 115,160 A15.83,15.83 0 0 1 146.67,160 A15.83,15.83 0 0 1 178.33,160 A15.83,15.83 0 0 1 210,160 A15.83,15.83 0 0 1 241.67,160 A15.83,15.83 0 0 1 273.33,160 A15.83,15.83 0 0 1 305,160 A15.83,15.83 0 0 1 336.67,160 A15.83,15.83 0 0 1 368.33,160 A15.83,15.83 0 0 1 400,160 V176 Z" class="dg-fill"/>
+        <path d="M20,152.3 A17.6,17.6 0 0 1 51.67,152.3 A17.6,17.6 0 0 1 83.33,152.3 A17.6,17.6 0 0 1 115.00,152.3 A17.6,17.6 0 0 1 146.67,152.3 A17.6,17.6 0 0 1 178.33,152.3 A17.6,17.6 0 0 1 210.00,152.3 A17.6,17.6 0 0 1 241.67,152.3 A17.6,17.6 0 0 1 273.33,152.3 A17.6,17.6 0 0 1 305.00,152.3 A17.6,17.6 0 0 1 336.67,152.3 A17.6,17.6 0 0 1 368.33,152.3 A17.6,17.6 0 0 1 400.00,152.3" class="dg-acc" stroke-width="3"/>
+        <text x="210" y="194" class="dg-label" text-anchor="middle">same footprint, larger area: ×2 in the notes</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> Hemispherical grain polysilicon. Above: a flat bottom electrode, whose
+        dielectric covers exactly the footprint. Below: the same electrode grown with large rounded
+        grains; the dielectric (accent) follows every grain, so the capacitor area and the
+        capacitance increase with no increase in footprint. The notes give a factor of about 2.
+        Schematic cross-section.
+      </figcaption>
+    </figure>
+
+    <p>
+      These approaches were combined rather than chosen between. ONO multilayers of 50 Å together
+      with HSG were used in 0.18 µm and 0.15 µm DRAMs (notes p. 54). Beyond that the combination
+      fails: because of unacceptable leakage currents, the notes write, this approach is not good
+      for memories of more than <b>256 MB</b>. The three-dimensional structures had also reached
+      the point where they could not be scaled further to add area (Wolf p. 151), and Wolf adds that
+      the capacitors suffered premature catastrophic breakdown even at reduced voltage. The notes'
+      solution: use a high-k dielectric to increase the capacitance per unit area. The film can then
+      be thick enough for low leakage and high reliability while still storing enough charge on a
+      shrinking area at a falling voltage.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">"256 MB" and "4 GB" mean megabits and gigabits</p>
+      <p>
+        The notes write 256 MB here and "memories up to 4 GB" for Ta₂O₅ on the same page (p. 54),
+        following Wolf p. 151, which also writes MB. A capital B denotes a byte of eight bits; a lower
+        case b denotes a bit. DRAM generations are named by the number of bits on one chip, and
+        these are the <b>256 Mb</b> and <b>4 Gb</b> generations. The notes themselves use the bit
+        unit elsewhere: the roadmap table of p. 56 lists DRAM capacity as 1 Gb, 4 Gb, 8 Gb, and p. 59
+        speaks of the 1 Gb and 4 Gb generations. The numbers are the notes'; only the unit needs
+        reading as bits.
+      </p>
+    </div>
+
+    <p>
+      The notes (p. 54) then name the two families that followed. <b>Ta₂O₅</b>, with <em>k</em> =
+      25, is used with good success for memories up to 4 Gb, and can be deposited by CVD, metal
+      organic CVD (MOCVD), sputtering or anodization (§5). Beyond it, "ferroelectrics or
+      near-ferroelectrics come into picture": combinations of barium and strontium with titanate
+      (BST), lead zirconium titanate (PZT) and other perovskite metal oxides, with <em>k</em> values
+      ranging from a few hundred to a few thousand that depend strongly on the composition and the
+      crystalline structure (§6–§7). The next example shows how large the required <em>k</em> is.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">A stacked cell at 0.15 µm — why k must reach the tens</div>
+      <div class="ex-body">
+        <p class="ex-step">
+          <b>The capacitor area.</b> Wolf (p. 162) describes a 0.15 µm DRAM whose storage node is a
+          pedestal 0.15 µm × 0.45 µm in footprint and 0.3 µm high. The dielectric covers the top and
+          the four sides: <em>A</em> = 0.15 × 0.45 + 2 × (0.15 + 0.45) × 0.3 = 0.0675 + 0.36 =
+          0.43 µm².
+        </p>
+        <p class="ex-step">
+          <b>The capacitance density.</b> For 30 fF: 30 fF ÷ 0.43 µm² = 70 fF/µm². Wolf quotes about
+          80 fF/µm² as the requirement for this cell, which on this area gives 34 fF; the two agree
+          to within the rounding of the target.
+        </p>
+        <p class="ex-step">
+          <b>The equivalent oxide thickness.</b> 80 fF/µm² = 0.080 F/m². From (7b.3),
+          EOT = 3.9<em>ε</em><sub>0</sub>/(<em>C</em>/<em>A</em>) = 3.9 × 8.854×10⁻¹² F/m ÷ 0.080 F/m²
+          = 4.3×10⁻¹⁰ m = 0.43 nm.
+        </p>
+        <p class="ex-step">
+          <b>The physical thickness for each dielectric.</b> <em>t</em> = EOT × <em>k</em>/3.9.
+          ONO would have to be about 0.4–0.8 nm (k between 3.9 and 7), against Wolf's 5 nm minimum. Ta₂O₅
+          at <em>k</em> = 25: 0.43 × 25/3.9 = 2.8 nm. BST at the notes' film value <em>k</em> = 90
+          (§7): 0.43 × 90/3.9 = 9.9 nm.
+        </p>
+        <p class="ex-answer">
+          This simple 0.3 µm-high stack needs an EOT of about 0.4 nm. Only a dielectric with
+          <em>k</em> near 100 does that in a film ten nanometres thick; Ta₂O₅ would have to be under
+          3 nm.
+        </p>
+        <p>
+          The cell is Wolf's illustration of the simplified stack that a titanate dielectric would
+          permit (pp. 162–163), not the geometry Ta₂O₅ cells used. Wolf (p. 159) puts the minimum
+          practical EOT of Ta₂O₅ at about 1.5 nm, so a Ta₂O₅ cell at the same node has to find the
+          missing capacitance in area instead — a storage node many times taller, roughened with
+          HSG (§5.5). Numbers from Wolf; the calculation is not in the notes.
+        </p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A later stacked cell has a storage-node pedestal 0.1 µm × 0.3 µm in footprint and 0.4 µm high, and must hold 25 fF. What capacitance density and EOT does it need, and how thick would the film be in Ta₂O₅ (k = 25) and in BST (k = 90)?</summary>
+      <div class="answer">
+        <p>
+          Area covered by the dielectric: top 0.1 × 0.3 = 0.03 µm², sides 2 × (0.1 + 0.3) × 0.4 =
+          0.32 µm², total 0.35 µm². Capacitance density: 25 fF ÷ 0.35 µm² = 71 fF/µm² = 0.071 F/m².
+          EOT = 3.9 × 8.854×10⁻¹² F/m ÷ 0.071 F/m² = 4.8×10⁻¹⁰ m = 0.48 nm. Physical thickness
+          <em>t</em> = EOT × <em>k</em>/3.9: Ta₂O₅, 0.48 × 25/3.9 = 3.1 nm; BST, 0.48 × 90/3.9 =
+          11 nm. The taller pedestal almost compensates for the smaller footprint, but the EOT is
+          still far below Ta₂O₅'s practical 1.5 nm, and only the titanate reaches it with a film
+          thick enough to hold down tunnelling.
+        </p>
+      </div>
+    </details>
+
+    <h2 id="s4">4 · Electrodes</h2>
+
+    <p>
+      A capacitor dielectric is never used alone: it sits between two electrodes, and the
+      interfaces with those electrodes are part of the capacitor. A dielectric with high
+      <em>k</em> gains nothing if an electrode reacts with it and leaves a low-<em>k</em> layer
+      between them. The move to high-k capacitor dielectrics therefore forced a move to new
+      electrode materials, and most of the integration difficulty of the rest of this module lies
+      in the electrodes rather than in the dielectric.
+    </p>
+
+    <h3>4.1 SIS, MIS and MIM</h3>
+    <p>
+      Doped polysilicon has been the material of the DRAM capacitor's bottom electrode, the storage
+      node, and either polysilicon or a metal has formed the plate electrode (notes p. 55). The
+      notes name the three combinations that result:
+    </p>
+    <ul>
+      <li><b>SIS</b> — polysilicon–insulator–polysilicon: silicon for both electrodes. This is the
+        structure of the ONO capacitors of §3 (notes p. 52).</li>
+      <li><b>MIS</b> — polysilicon–insulator–metal: silicon storage node, metal plate.</li>
+      <li><b>MIM</b> — metal–insulator–metal: metal for both electrodes.</li>
+    </ul>
+    <p>
+      Polysilicon has one decisive fault in contact with a high-k film: it forms a layer of SiO₂ at
+      the polysilicon/high-k interface, either as a native oxide present before the dielectric is
+      deposited or during later processing steps — the anneals that the dielectric itself needs,
+      or the CVD of the interlevel dielectric (ILD) deposited over the finished capacitor (notes
+      p. 55). Silicon oxidises readily, and a high-k oxide deposited or annealed in oxygen supplies
+      the oxygen. This interfacial SiO₂ increases the equivalent thickness of the overall capacitor
+      dielectric, which in turn reduces the cell capacitance.
+    </p>
+    <p>
+      The mechanism is series capacitance: the interfacial SiO₂ and the high-k film are two
+      capacitors in series, so their equivalent oxide thicknesses add, EOT<sub>total</sub> =
+      <em>t</em><sub>SiO₂</sub> + <em>t</em><sub>high-k</sub>(3.9/<em>k</em>), and the layer with the
+      lowest <em>k</em> dominates — the result derived for the gate stack in
+      <a href="m07-high-k-dielectrics.html#s4">M07 §4</a>. The higher the <em>k</em> of the main film, the
+      more a given interfacial oxide costs. Take 10 nm of a dielectric with <em>k</em> = 90, whose
+      EOT is 10 × 3.9/90 = 0.43 nm, and suppose 1 nm of SiO₂ forms at one electrode. The EOT
+      becomes 1.43 nm and the capacitance falls to 0.43/1.43 = 30% of its intended value: the
+      single nanometre of oxide has undone more than two-thirds of the benefit of the high-k film.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 222" role="img" aria-labelledby="f6-t">
+        <title id="f6-t">Three capacitor stacks side by side: silicon-insulator-silicon with an interfacial oxide at both electrodes, metal-insulator-silicon with an interfacial oxide at the bottom electrode only, and metal-insulator-metal with none</title>
+        <defs>
+          <pattern id="f6-h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="6" class="dg-guide" stroke-width="1.2"/>
+          </pattern>
+        </defs>
+        <g class="dg-label" text-anchor="middle" style="font-weight:600">
+          <text x="70" y="20">SIS</text><text x="210" y="20">MIS</text><text x="350" y="20">MIM</text>
+        </g>
+        <!-- SIS -->
+        <rect x="20" y="34" width="100" height="44" class="dg-rule" stroke-width="1" style="fill:url(#f6-h)"/>
+        <rect x="20" y="84" width="100" height="40" class="dg-fill"/>
+        <rect x="20" y="130" width="100" height="44" class="dg-rule" stroke-width="1" style="fill:url(#f6-h)"/>
+        <line x1="20" y1="81" x2="120" y2="81" class="dg-acc" stroke-width="5"/>
+        <line x1="20" y1="127" x2="120" y2="127" class="dg-acc" stroke-width="5"/>
+        <text x="70" y="61" class="dg-label" text-anchor="middle">poly-Si</text>
+        <text x="70" y="109" class="dg-label" text-anchor="middle">high-k</text>
+        <text x="70" y="157" class="dg-label" text-anchor="middle">poly-Si</text>
+        <!-- MIS -->
+        <rect x="160" y="34" width="100" height="47" class="dg-ink"/>
+        <rect x="160" y="81" width="100" height="43" class="dg-fill"/>
+        <rect x="160" y="130" width="100" height="44" class="dg-rule" stroke-width="1" style="fill:url(#f6-h)"/>
+        <line x1="160" y1="127" x2="260" y2="127" class="dg-acc" stroke-width="5"/>
+        <text x="210" y="109" class="dg-label" text-anchor="middle">high-k</text>
+        <text x="210" y="157" class="dg-label" text-anchor="middle">poly-Si</text>
+        <!-- MIM -->
+        <rect x="300" y="34" width="100" height="47" class="dg-ink"/>
+        <rect x="300" y="81" width="100" height="46" class="dg-fill"/>
+        <rect x="300" y="127" width="100" height="47" class="dg-ink"/>
+        <text x="350" y="109" class="dg-label" text-anchor="middle">high-k</text>
+        <!-- row labels -->
+        <text x="210" y="196" class="dg-label" text-anchor="middle">solid: metal · hatched: polysilicon</text>
+        <text x="210" y="214" class="dg-label" text-anchor="middle">accent: interfacial SiO₂ grown on polysilicon</text>
+      </svg>
+      <figcaption>
+        <b>Figure 6.</b> The notes' three capacitor structures (p. 55). Wherever polysilicon meets
+        the high-k film, an interfacial SiO₂ layer (accent) can form and add its thickness to the
+        EOT: at both electrodes of an SIS capacitor, at the storage node of an MIS capacitor, and at
+        neither in an MIM capacitor. Top electrode above, storage node below. Layer thicknesses
+        schematic.
+      </figcaption>
+    </figure>
+
+    <p>
+      As a result, a number of other electrode materials have been considered. The notes (p. 55)
+      list them: <b>Al, iridium, platinum, ruthenium, TaN, TiN and W</b> — "metals or near metallic
+      electrode materials", the last group being the conducting nitrides of tantalum and titanium,
+      and tungsten. If both electrodes are metal, the capacitor is MIM.
+    </p>
+
+    <h3>4.2 The platinum-group metals</h3>
+    <p>
+      Platinum, iridium and ruthenium belong to the <b>platinum-group metals</b> (PGMs), the six
+      noble metals of groups 8–10 in periods 5 and 6 of the periodic table (ruthenium, rhodium,
+      palladium, osmium, iridium and platinum). They are "noble" in the chemical sense: they
+      resist chemical attack and corrosion. The notes (p. 55) credit Pt, Ir and Ru with good
+      chemical corrosion properties, thermal stability and diffusion-barrier properties, and Wolf
+      (p. 153) adds low resistivity. Those are the properties an electrode needs next to an oxide
+      dielectric that is deposited and annealed in oxygen, but the three metals meet the oxygen
+      differently. Platinum does not oxidise under these conditions. Ruthenium oxidises easily
+      (Wolf p. 153), and iridium also forms an oxide; but RuO₂ and IrO₂ conduct like metals — "oxides
+      of these metals are also conductive" (Wolf p. 167) — so the oxide either metal grows at its
+      surface adds no low-<em>k</em> layer in series with the dielectric. §4.3 takes that idea
+      further.
+    </p>
+    <p>
+      Each has a problem of its own, which the notes (p. 56) list:
+    </p>
+    <ul>
+      <li><b>Platinum — adhesion and etch residue problems, and cost.</b> The chemical inertness
+        that makes platinum a good electrode also means it bonds poorly to most surfaces, so it
+        needs an adhesion ("glue") layer beneath it (Wolf p. 167). It forms no volatile compounds
+        in a plasma, so material removed during a dry etch tends to redeposit on the pattern as
+        residue rather than being pumped away (§9). And it is expensive: Wolf (pp. 153–154)
+        estimates about $1000 per 200 mm wafer to sputter 50 nm of platinum at 40% deposition
+        efficiency. In CVD only about 20% of the precursor deposits, and after later processing on
+        the order of only 1% of the starting material remains on the finished wafer; the rest is
+        removed by plasma etch or chamber cleaning, and for a metal this expensive it must be
+        reclaimed.</li>
+      <li><b>Ruthenium — forms RuO₄, a toxic by-product of the etch process.</b> Ruthenium is
+        etched in oxygen-containing plasmas precisely because it forms the volatile tetroxide
+        RuO₄; the property that makes it etchable is the one that makes the exhaust hazardous (see
+        the box in §4.3).</li>
+      <li><b>Susceptible to pinholes.</b> In Wolf's text (p. 153) this belongs to ruthenium, which
+        is susceptible to pinholes and notching because it oxidises easily.</li>
+    </ul>
+
+    <h3>4.3 Conducting oxides and barriers</h3>
+    <p>
+      A second route avoids interfacial oxidation by making the electrode an oxide to begin with.
+      Several metal oxides conduct like metals. The notes list <b>RuO₂</b> as a bottom electrode
+      with <b>ρ = 35 µΩ·cm</b> (p. 59), and IrO₂ and the conducting perovskite oxides
+      <b>SrRuO₃</b> and <b>(La,Sr)CoO₃</b> as top electrodes (p. 64). Because such an electrode is
+      already fully oxidised, it does not grow a dielectric oxide at its interface with the
+      high-k film during the thermal steps that follow (Wolf p. 158). The 35 µΩ·cm is about thirteen
+      times the resistivity of aluminium (2.7 µΩ·cm), and lies within the 30–40 µΩ·cm measured at room temperature on
+      single crystals of RuO₂; deposited films are usually higher. Wolf's text (p. 158) calls this number a
+      conductivity; its unit, µΩ·cm, makes it a resistivity, as the notes write it.
+    </p>
+    <p>
+      Whatever the electrode, it must not react with the silicon of the plug beneath it. Platinum
+      forms silicides with silicon, so a platinum electrode needs a diffusion barrier between it and
+      the polysilicon plug; the notes (p. 63) name a <b>Ti/TiN</b> bilayer, which also serves as the
+      glue layer platinum needs. TiN appears in both roles throughout this module: as a barrier
+      and, since it conducts, as an electrode in its own right.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">RuO₄ is a volatile oxidiser, not a fuel</p>
+      <p>
+        The notes (p. 64) state that RuO₂ is easy to etch but that one of the by-products is RuO₄,
+        "MP 25.4°", and that it "is both flamable and toxic gas", following Wolf (p. 168). The
+        melting point is right: ruthenium tetroxide melts at 25.4 °C, so at room temperature it is
+        a volatile solid or liquid close to its melting point and gives off vapour readily. Its
+        toxicity is also right. "Flammable" is the wrong word for its other hazard. RuO₄ does not
+        burn; it is a powerful oxidiser, classified as one under the GHS hazard system, and it
+        oxidises virtually any organic material it meets, which can ignite that material. The
+        hazard is the reverse of flammability — it supplies oxygen rather than fuel.
+      </p>
+    </div>
+
+    <h3>4.4 The roadmap the notes give</h3>
+    <p>
+      The notes (p. 56) reproduce a table of DRAM stack-capacitor requirements, from Wolf's
+      Table 4-2, which in turn reflects the industry roadmap of about 1999. It shows the structure
+      becoming MIM from the first generation listed and <em>k</em> rising by nearly two orders of
+      magnitude.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Year</th><th>1999</th><th>2002</th><th>2005</th><th>2008</th><th>2011</th><th>2014</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Technology node</td><td>180 nm</td><td>130 nm</td><td>100 nm</td><td>70 nm</td><td>50 nm</td><td>35 nm</td></tr>
+          <tr><td>DRAM capacity</td><td>1 Gb</td><td>4 Gb</td><td>8 Gb</td><td>24 Gb</td><td>64 Gb</td><td>192 Gb</td></tr>
+          <tr><td>Capacitor structure</td><td>MIM</td><td>MIM</td><td>MIM</td><td>MIM</td><td>MIM</td><td>MIM</td></tr>
+          <tr><td>Capacitor dielectric</td><td>Ta₂O₅</td><td>Ta₂O₅</td><td>BST</td><td>Epi BST</td><td>?</td><td>?</td></tr>
+          <tr><td>Capacitor <em>k</em></td><td>22</td><td>50</td><td>250</td><td>700</td><td>1500</td><td>1500</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Three details repay attention. The <em>k</em> values are requirements, not material
+      properties: Ta₂O₅ at <em>k</em> = 50 is double the bulk value the notes give (25–26), and
+      Wolf (p. 158) reports a comparable figure only for Ta₂O₅ crystallised on ruthenium (§5).
+      "Epi BST" is epitaxial BST, a film grown as a single crystal aligned with the crystal
+      beneath it rather than as the polycrystalline film of §7; the table assigns it
+      <em>k</em> = 700. And Wolf's table has
+      one more row that the notes drop, giving the storage-node shape: a cylinder in 1999, a
+      pedestal thereafter.
+    </p>
+
+    <div class="box">
+      <p class="box-title">What production actually used — beyond the notes</p>
+      <p>
+        The table is a forecast made around 2000, and the dielectrics that reached volume
+        production followed a different path. A 2004 review from a DRAM manufacturer describes
+        MIS Ta₂O₅, at an EOT of about 3.5 nm on a polysilicon storage node, and Al₂O₃ as the high-k
+        films then in mass production, with HfO₂-based films deposited by atomic layer deposition
+        as the next candidates; BST and SrTiO₃ between ruthenium or platinum electrodes had been the
+        research focus of the 1990s but had met integration problems — barrier formation, control
+        of stoichiometry in a three-dimensional cell, thermal stability and survival of a
+        forming-gas anneal (Saino, 2004). In 2006 a ZrO₂/Al₂O₃/ZrO₂ stack between TiN electrodes was
+        reported for the 45 nm DRAM generation, at an EOT of 0.63 nm, explicitly to replace
+        HfO₂-based dielectrics (Kil <em>et al.</em>, 2006). The MIM structure of the table arrived;
+        the perovskite dielectrics did not become the mainstream.
+      </p>
+    </div>
+
+    <h2 id="s5">5 · Tantalum pentoxide capacitors</h2>
+
+    <p>
+      Tantalum pentoxide, Ta₂O₅, was the first high-k dielectric to replace ONO in the DRAM
+      capacitor. The notes (pp. 54, 58) give it <b><em>k</em> = 25</b> — roughly three and a half
+      times that of silicon nitride and six times that of SiO₂ — and it had two practical
+      attractions: the industry had been developing techniques for depositing it since the early
+      1980s, and a Ta₂O₅ capacitor could replace an ONO capacitor without major process-integration
+      problems (Wolf pp. 151, 154–155).
+      Its principal drawback for DRAM is a relatively high leakage current, and most of the process
+      steps below exist to bring that leakage down.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Three values of <em>k</em> for Ta₂O₅ in the notes</p>
+      <p>
+        The notes' pages on the DRAM capacitor (pp. 54 and 58) give Ta₂O₅ <em>k</em> = 25. The
+        table of dielectrics that opens the chapter (p. 49) gives 26, and the roadmap table (p. 56)
+        lists 22 for Ta₂O₅ capacitors in 1999. All three are inherited from Wolf, who uses 25 in his
+        text, 26 in his Table 4-1 and 22 in his Table 4-2. Reported values run from about 22
+        (Robertson's 2004 review) to the mid-twenties (Wilk, Wallace &amp; Anthony's 2001 review
+        lists 26), and films vary with phase, deposition, crystallinity and the electrode beneath
+        them (below, a film crystallised on ruthenium
+        reached 65). The capacitor pages of the notes use 25; the other two are the notes'
+        figures in their own contexts.
+      </p>
+    </div>
+
+    <h3>5.1 Deposition, and why the regime matters</h3>
+    <p>
+      The notes (p. 58) list four ways to deposit Ta₂O₅:
+    </p>
+    <ol>
+      <li><b>LPCVD</b> — low-pressure chemical vapour deposition: precursor vapours flow over the
+        heated wafer at reduced pressure and react on its surface to leave the film.</li>
+      <li><b>MOCVD</b> — CVD in which the tantalum arrives in a metal-organic precursor molecule.</li>
+      <li><b>Sputtering of Ta followed by oxidation</b> — a tantalum metal film is deposited by
+        sputtering and then converted to oxide.</li>
+      <li><b>Anodic oxidation</b> — a deposited tantalum film is made the anode of an
+        electrochemical cell and oxidised electrolytically.</li>
+    </ol>
+    <p>
+      For the DRAM dielectric, LPCVD is the most common (Wolf p. 154). The films are formed by the
+      oxygen-assisted thermal decomposition of an organometallic precursor (notes p. 58), either
+      <b>tantalum ethylate</b>, Ta(OC₂H₅)₅, called TAETO — "ethylate" is an older name for
+      ethoxide, so this is tantalum pentaethoxide — or <b>tantalum tetraethoxy dimethylamino
+      ethoxide</b>, Ta(OC₂H₅)₄(OCH₂CH₂N(CH₃)₂), called TATDMAE. Each molecule already carries its
+      tantalum bonded to oxygen; the added O₂ burns off the organic groups at the wafer surface and
+      completes the oxide. The notes' conditions are a pressure of <b>1–4 Torr</b> and a temperature
+      of <b>450–485 °C</b>. Both precursors are liquids at room temperature and are vaporised at
+      about 170 °C and carried into the chamber by argon (Wolf p. 156).
+    </p>
+    <p>
+      The temperature window is chosen for a reason the notes leave implicit. Any CVD film grows
+      through two steps in series. The precursor must first be transported from the gas to the
+      surface — across the gas layer above the wafer, and down into any trench or opening — and it
+      must then react on the surface. Whichever step is slower sets the deposition rate. The surface
+      reaction is thermally activated, so its rate rises exponentially with temperature; the
+      transport depends on diffusion through the gas and changes only weakly with temperature.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em> = <em>R</em><sub>0</sub> exp&thinsp;<span class="dl">(</span>−<span class="frac"><span class="num"><em>E</em><sub>a</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span>,&emsp;
+          Δ<em>T</em><sub>×2</sub> = <span class="frac"><span class="num"><em>kT</em><sup>2</sup> ln 2</span><span class="den"><em>E</em><sub>a</sub></span></span></div>
+        <div class="eq-num">(7b.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em> deposition rate in the reaction-limited regime (e.g. nm/min) ·
+        <em>R</em><sub>0</sub> pre-exponential factor (same unit) · <em>E</em><sub>a</sub>
+        activation energy (eV) · <em>k</em> Boltzmann constant, <b>8.617×10⁻⁵ eV/K</b> here, to
+        match <em>E</em><sub>a</sub> in eV (the J/K form, 1.381×10⁻²³, needs <em>E</em><sub>a</sub>
+        in J) · <em>T</em> absolute temperature (K) · Δ<em>T</em><sub>×2</sub> the temperature rise
+        that doubles the rate near <em>T</em> (K, equal to °C intervals). The second form follows
+        from d(ln <em>R</em>)/d<em>T</em> = <em>E</em><sub>a</sub>/(<em>kT</em><sup>2</sup>).
+        Applies only in the reaction-limited regime; the symbol <em>k</em> here is Boltzmann's
+        constant, not a dielectric constant.
+      </div>
+    </div>
+
+    <p>
+      Wolf (p. 156) gives the numbers for TAETO. Between 450 and 485 °C the deposition is
+      <b>reaction-rate limited</b>, with an activation energy of 1.3 eV; above 485 °C it becomes
+      <b>mass-flow (transport) limited</b>. At 467 °C (740 K), equation (7b.4) gives
+      Δ<em>T</em><sub>×2</sub> = 8.617×10⁻⁵ × 740² × 0.693 ÷ 1.3 = 25 K: the rate doubles for every
+      25 °C, which is Wolf's figure, and which is why the temperature of a reaction-limited process
+      has to be held tightly.
+    </p>
+    <p>
+      The regime decides the shape of the film in a trench. <b>Step coverage</b>, or conformality,
+      is the ratio of the film thickness on a sidewall or at the bottom of a feature to its thickness
+      on the flat top surface, usually given in per cent; 100% is a perfectly conformal film. When
+      the surface reaction is the slow step, precursor molecules arrive faster than they are
+      consumed, so the gas everywhere — including the bottom of a deep trench — carries nearly the
+      same precursor concentration, and the film grows at the same rate on every surface. When the
+      reaction is fast, a molecule reacts close to where it first strikes, so the mouth of a trench
+      receives more than the bottom and the film grows thick at the top and thin below. A DRAM
+      capacitor, folded into trenches or around tall pedestals, needs conformal coverage, and so the
+      Ta₂O₅ deposition must be carried out in the reaction-rate-limited regime (Wolf p. 156).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 220" role="img" aria-labelledby="f7-t">
+        <title id="f7-t">Film deposited in a trench in two CVD regimes: uniform thickness when the surface reaction limits the rate, thick at the mouth and thin at the bottom when transport limits it</title>
+        <!-- left: reaction limited -->
+        <text x="100" y="18" class="dg-label" text-anchor="middle" style="font-weight:600">reaction-rate limited</text>
+        <path d="M20,40 H80 V190 H120 V40 H180 V206 H20 Z" class="dg-fill"/>
+        <path d="M20,34 H86 V184 H114 V34 H180 V40 H120 V190 H80 V40 H20 Z" class="dg-acc-f"/>
+        <text x="100" y="216" class="dg-label" text-anchor="middle">conformal, ≈100%</text>
+        <!-- right: transport limited -->
+        <text x="320" y="18" class="dg-label" text-anchor="middle" style="font-weight:600">mass-transport limited</text>
+        <path d="M240,40 H300 V190 H340 V40 H400 V206 H240 Z" class="dg-fill"/>
+        <path d="M240,30 H309 L302,186 H338 L331,30 H400 V40 H340 V190 H300 V40 H240 Z" class="dg-soft"/>
+        <text x="320" y="216" class="dg-label" text-anchor="middle">thick at the mouth, thin below</text>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> The same trench coated in the two CVD regimes. Left: the surface reaction
+        is slow, precursor reaches every surface at the same concentration, and the film (accent)
+        has one thickness everywhere. Right: the reaction is fast, molecules react near where they
+        land, and the film thickens at the mouth and thins toward the bottom. Low temperature
+        favours the left-hand regime. Schematic; film thickness exaggerated.
+      </figcaption>
+    </figure>
+
+    <h3>5.2 Protecting the bottom electrode, and the notes' "interfacial SiO₂"</h3>
+    <p>
+      The Ta₂O₅ is deposited on the doped-polysilicon storage node, and §4 showed what an oxide on
+      that polysilicon costs. The notes (p. 58) describe the preparation: Ta₂O₅ is deposited onto an
+      interfacial layer that is achieved by rapid thermal nitridation of the polysilicon. <b>Rapid
+      thermal nitridation</b> (RTN) is a short, lamp-heated anneal of the surface in a nitriding
+      gas — Wolf's example is 900 °C for 60 s in NH₃ (p. 156). It does two things. It converts any
+      native oxide already on the polysilicon into a nitride, and the nitride layer it forms is a
+      diffusion barrier to oxygen, so no new oxide can grow on the polysilicon during the anneals
+      that follow.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The RTN layer is a nitride, formed to prevent SiO₂</p>
+      <p>
+        The notes' sentence reads: "Ta₂O₅ is deposited on to an interfacial layer of SiO₂ that is
+        achieved by rapid thermal (polysi) nitridation." Nitridation cannot produce SiO₂. The
+        source the notes condense (Wolf p. 156) states the opposite purpose: the RTN step exists
+        "to eliminate the possibility of such an oxide layer" on the polysilicon, by nitriding the
+        native oxide and forming a nitride that blocks oxygen. The interfacial layer under the Ta₂O₅
+        is therefore a thin silicon nitride (or oxynitride where native oxide was nitrided), and
+        its job is to keep SiO₂ out. Even this nitride lowers the capacitance somewhat, because it
+        is a low-<em>k</em> layer in series (Wolf p. 158) — one reason metal and conducting-oxide
+        bottom electrodes were pursued (§5.4). <a href="m07-high-k-dielectrics.html#s4">M07 §4</a>
+        shows the size of the effect: Wolf's typical 10 nm Ta₂O₅ film on polysilicon has an EOT of
+        2.5 nm, of which only 1.56 nm is the Ta₂O₅ itself.
+      </p>
+    </div>
+
+    <h3>5.3 Densifying the film</h3>
+    <p>
+      As deposited, the Ta₂O₅ exhibits poor leakage-current characteristics, because it is
+      <b>oxygen deficient and amorphous</b> (notes p. 58). An oxygen-deficient oxide contains
+      oxygen vacancies, and a vacancy leaves metal orbitals unbonded, which introduces electron
+      states inside the band gap — the same kind of defect that forms oxide traps in SiO₂
+      (<a href="m05b-interface-defects-and-charge.html">M05b</a>). Electrons hop between such
+      states through the film, which is trap-assisted conduction
+      (<a href="m06-thin-gate-oxides-conduction-breakdown.html">M06 §3.3</a>). The film also
+      contains carbon and hydrogen left by the organometallic precursor (Wolf p. 157).
+    </p>
+    <p>
+      The remedy is to densify the film: Ta₂O₅ is usually densified using an <b>O₂ anneal or RTA in
+      oxygen at 600–700 °C</b>, and this annealing also <b>crystallises</b> the amorphous
+      as-deposited film (notes p. 58). Wolf (pp. 156–157) presents the mechanism as the accepted
+      interpretation rather than an established result: the oxygen is thought to fill the vacancies
+      and restore the stoichiometry, and the crystallisation is also thought to reduce the leakage.
+      The anneal also drives out some of the hydrocarbon residues and water, which shrinks the film
+      and reduces its EOT. Wolf describes two versions.
+      The conventional anneal is a furnace step at 500 °C in ozone generated by ultraviolet light.
+      The rapid thermal version oxygenates at 600 °C in an oxygen plasma and then ramps above
+      700 °C to crystallise the film; it has been reported to reduce the leakage at 1 V by up to six
+      orders of magnitude. Its peak temperature must stay below about 800 °C: above that, silicon
+      diffuses through the nitride barrier on the polysilicon and reacts with the Ta₂O₅ to form
+      SiO₂, and the EOT becomes too large.
+    </p>
+    <p>
+      The thermal budget remains constrained after the capacitor is finished. Furnace steps at
+      800 °C for an hour or more, such as the reflow of a borophosphosilicate-glass interlevel
+      dielectric or a source/drain activation anneal, make the leakage through the Ta₂O₅ rise
+      steeply, and one reported process kept every step after the Ta₂O₅ deposition at or below
+      500 °C (Wolf p. 159).
+    </p>
+
+    <h3>5.4 Electrodes for Ta₂O₅</h3>
+    <p>
+      The top electrode needs protection too. A <b>barrier layer of TiN or WN</b> is used between the
+      Ta₂O₅ and a top polysilicon electrode, to prevent the polysilicon from reacting with the Ta₂O₅
+      and forming a silicide; the other approach is to use <b>TiN as the top electrode</b> itself
+      (notes p. 58). A TiN plate over Ta₂O₅ on a polysilicon storage node is an MIS capacitor; Wolf
+      (p. 155) describes this replacement of the polysilicon plate by TiN as the change that
+      accompanied the move to Ta₂O₅.
+    </p>
+    <p>
+      To remove the polysilicon, and the nitride it needs, from the storage node as well, the bottom
+      electrode can be <b>Pt or RuO₂</b> (ρ = 35 µΩ·cm), or the whole capacitor can be
+      <b>Ru/Ta₂O₅/Ru</b>, with ruthenium deposited by sputtering (notes p. 59). In the Ru/Ta₂O₅/Ru
+      capacitor the annealed Ta₂O₅ reached <em>k</em> = 65, and Wolf (p. 158) reports the
+      speculation that the film crystallised on the ruthenium in a form with a much higher
+      <em>k</em> than on other electrodes; the same capacitors leaked much less after a forming-gas
+      anneal at 400 °C.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Platinum for Ta₂O₅: a top electrode in the source</p>
+      <p>
+        The notes (p. 59) list the bottom-electrode materials as Pt and RuO₂, and that is the
+        course's list. The passage they condense (Wolf p. 158) reports two alternatives to the
+        nitrided-polysilicon storage node: in one report <b>TiN</b> was the bottom electrode and
+        <b>Pt the top</b>; in another, reactively sputtered RuO₂ was the bottom electrode. So the
+        source's bottom electrodes are TiN and RuO₂, and platinum appears in it only as a top
+        electrode.
+      </p>
+    </div>
+
+    <h3>5.5 Aluminium-doped Ta₂O₅, etching, and the limit of Ta₂O₅</h3>
+    <p>
+      Another technique for depositing Ta₂O₅ is <b>metalorganic solution deposition</b> (MOSD), in
+      which a solution of metal-organic compounds is coated onto the wafer and then heated to
+      decompose the organics and form the oxide. Because the composition is set by what is dissolved
+      in the solution, the film can be doped with aluminium. A film with the composition
+      0.9Ta₂O₅–0.1Al₂O₃ exhibited <b><em>k</em> = 45</b> and a low leakage current density of
+      <b>6×10⁻⁸ A/cm²</b> (notes p. 59).
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Aluminium-doped Ta₂O₅: 45 in the notes, 42 in the source</p>
+      <p>
+        The notes' value is <em>k</em> = 45; the last digit sits at the clipped right margin of p. 59,
+        and reads as 5. Wolf (p. 159), whom the notes follow, gives <b>42</b>, and adds the condition
+        for the leakage figure: 6×10⁻⁸ A/cm² up to an applied field of 1 MV/cm (printed there as
+        "1 MeV/cm", another slip). A later paper on MOSD films of this composition, crystallised on
+        platinum, reports 42.8 at 100 kHz (Desu, Joshi &amp; Desu,
+        2003). The notes give 45; the published value is 42. Either way the doped film's <em>k</em> is well above undoped Ta₂O₅'s 25.
+      </p>
+    </div>
+
+    <p>
+      Ta₂O₅ is etched with fluorocarbon and related gases; the notes (p. 59) list C₂F₆, CH₄, CF₃Cl,
+      CHF₃ and "CCl₃F₂". The last formula is impossible — a carbon atom bonded to three chlorines
+      and two fluorines would have five bonds — and it is a misprint carried over from Wolf
+      (p. 159); the intended gas is presumably one of the chlorofluorocarbons CCl₂F₂ or CCl₃F. Wolf
+      also lists Cl₂, SF₆, N₂ and CH₄/H₂ discharges.
+    </p>
+    <p>
+      The notes close the DRAM part of the Ta₂O₅ story on p. 59: a hemispherical-grain polysilicon
+      storage node with Ta₂O₅ can be pursued for the <b>1 Gb and 4 Gb generations (0.15 µm node)</b>.
+      Wolf (p. 159) states the same and then adds a limit: the minimum Ta₂O₅ thickness
+      corresponds to an EOT of about 1.5 nm, so even with HSG and the thinnest possible film, the
+      limits of Ta₂O₅ technology "may be reached at the 1-Gb integration level". Wolf's own
+      forecast was an MIS RuO₂/Ta₂O₅/polysilicon capacitor at 0.13 µm, an MIM RuO₂/Ta₂O₅/RuO₂
+      capacitor at 0.1 µm, and BST in an MIM structure by 50 nm (p. 160).
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Ta₂O₅'s last generation: 4 Gb in the notes, "may be" 1 Gb in the same source</p>
+      <p>
+        The notes' statement is the course's: HSG with Ta₂O₅ serves the 1 Gb and 4 Gb generations
+        (0.15 µm node). Wolf prints that sentence and, immediately after it, one that puts the limit
+        possibly at 1 Gb; the two do not agree, and the notes keep the first. Neither is contradicted
+        by the 0.43 nm EOT computed at the end of §3, which belongs to Wolf's 0.3 µm-high simple
+        stack, the cell a titanate was meant to allow. Ta₂O₅ reached such nodes by area instead:
+        in production, MIS Ta₂O₅ on polysilicon ran at an EOT of about 3.5 nm, eight times 0.43 nm,
+        on tall concave or cylindrical storage nodes with HSG, and a 2004 review estimated that
+        extending it to the 70 nm generation would have needed bottom electrodes 3.6–4.6 µm high
+        (Saino, 2004, beyond the notes).
+      </p>
+    </div>
+
+
+    <h2 id="s6">6 · Perovskites and ferroelectricity</h2>
+
+    <p>
+      The notes introduce the titanates in a single sentence (p. 54): ferroelectrics or
+      near-ferroelectrics come into the picture — combinations of barium and strontium with
+      titanate (BST), lead zirconium titanate (PZT) and other perovskite metal oxides — with
+      <em>k</em> values from a few hundred to a few thousand that depend strongly on the composition
+      and the crystalline structure. Every term in that sentence is assumed rather than taught, and
+      the rest of the chapter depends on them: why BST is paraelectric for DRAM, why PZT is
+      ferroelectric for FeRAM, why the titanium content of a film matters to one per cent. This
+      section supplies them.
+    </p>
+
+    <div class="box defn">
+      <p class="box-title">Background — beyond the notes</p>
+      <p>
+        Everything in this section is context the notes assume. It is standard solid-state physics
+        (for example Kittel, <i>Introduction to Solid State Physics</i>, 8th ed., ch. 16, on
+        dielectrics and ferroelectrics) together with Wolf's own remarks on the Curie point (p. 163) and on ionic
+        polarisation (p. 162). The notes' own statements resume in §7.
+      </p>
+    </div>
+
+    <h3>6.1 The perovskite structure</h3>
+    <p>
+      A <b>perovskite</b> is a compound with the formula ABO₃ and a particular crystal structure,
+      named after the mineral perovskite, CaTiO₃. A is a large cation — Ba²⁺, Sr²⁺ or Pb²⁺ in the
+      materials here — and B is a small, highly charged cation, here Ti⁴⁺ or Zr⁴⁺. The charges
+      balance: +2 + 4 = +6 against three O²⁻. In the ideal, cubic form of the structure the B cation
+      sits at the centre of a cube, the six oxygens sit at the centres of the six faces, and the A
+      cations sit at the eight corners (Figure 8). Each titanium is therefore surrounded by an
+      <b>octahedron</b> of six oxygens, the TiO₆ octahedron; neighbouring octahedra share their
+      corner oxygens, so the crystal is a three-dimensional framework of Ti–O–Ti chains, and the
+      large A cations sit in the cavities between the octahedra, each with twelve oxygen neighbours.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 270" role="img" aria-labelledby="f8-t">
+        <title id="f8-t">Ideal cubic perovskite unit cell ABO3: titanium at the body centre inside an octahedron of six oxygens at the face centres, barium or strontium ions at the eight corners</title>
+        <!-- cube: back edges dashed, front edges solid -->
+        <g class="dg-guide" stroke-width="1">
+          <path d="M150,45 H300 V195 M150,45 V195 H300" stroke-dasharray="4 3"/>
+          <path d="M90,240 L150,195 M90,90 L150,45 M240,90 L300,45 M240,240 L300,195"/>
+          <path d="M90,90 H240 V240 H90 Z"/>
+        </g>
+        <!-- octahedron edges (accent) -->
+        <g class="dg-acc" stroke-width="1.6" stroke-dasharray="5 3">
+          <path d="M195,67.5 L120,142.5 L195,217.5 L270,142.5 Z"/>
+          <path d="M195,67.5 L225,120 L195,217.5 M120,142.5 L225,120 L270,142.5"/>
+          <path d="M195,67.5 L165,165 L195,217.5 M120,142.5 L165,165 L270,142.5"/>
+        </g>
+        <!-- back oxygen, then Ti, then its bonds -->
+        <circle cx="225" cy="120" r="8" class="dg-fill" stroke-width="1.4"/>
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="195" y1="142.5" x2="195" y2="75.5"/><line x1="195" y1="142.5" x2="195" y2="209.5"/>
+          <line x1="195" y1="142.5" x2="128" y2="142.5"/><line x1="195" y1="142.5" x2="262" y2="142.5"/>
+          <line x1="195" y1="142.5" x2="218.6" y2="124.8"/><line x1="195" y1="142.5" x2="171.4" y2="160.2"/>
+        </g>
+        <!-- titanium: small, as the B cation is small -->
+        <circle cx="195" cy="142.5" r="4" class="dg-soft"/>
+        <!-- remaining oxygens: top, bottom, left, right, front -->
+        <g class="dg-fill" stroke-width="1.4">
+          <circle cx="195" cy="67.5" r="8"/><circle cx="195" cy="217.5" r="8"/>
+          <circle cx="120" cy="142.5" r="8"/><circle cx="270" cy="142.5" r="8"/>
+          <circle cx="165" cy="165" r="8"/>
+        </g>
+        <!-- A-site cations at the corners: dashed circles (ionic) -->
+        <g class="dg-rule" stroke-width="1.3" stroke-dasharray="3 2" fill="none">
+          <circle cx="150" cy="45" r="11"/><circle cx="300" cy="45" r="11"/>
+          <circle cx="150" cy="195" r="11"/><circle cx="300" cy="195" r="11"/>
+          <circle cx="90" cy="90" r="11"/><circle cx="240" cy="90" r="11"/>
+          <circle cx="90" cy="240" r="11"/><circle cx="240" cy="240" r="11"/>
+        </g>
+        <!-- labels -->
+        <text x="318" y="42" class="dg-label">A = Ba or Sr</text>
+        <text x="318" y="56" class="dg-label">corners, 12-fold</text>
+        <line x1="316" y1="46" x2="312" y2="46" class="dg-guide" stroke-width="1"/>
+        <text x="318" y="180" class="dg-label">B = Ti</text>
+        <text x="318" y="194" class="dg-label">body centre,</text>
+        <text x="318" y="208" class="dg-label">6-fold</text>
+        <line x1="316" y1="176" x2="199" y2="145.8" class="dg-guide" stroke-width="1"/>
+        <text x="318" y="234" class="dg-label">O</text>
+        <text x="318" y="248" class="dg-label">face centres</text>
+        <line x1="316" y1="230" x2="203.5" y2="219" class="dg-guide" stroke-width="1"/>
+        <text x="20" y="160" class="dg-label">TiO₆</text>
+        <text x="20" y="174" class="dg-label">octahedron</text>
+        <line x1="86" y1="166" x2="133" y2="155.5" class="dg-guide" stroke-width="1"/>
+      </svg>
+      <figcaption>
+        <b>Figure 8.</b> The ideal cubic perovskite cell, ABO₃. Titanium (small filled circle) sits at
+        the body centre, bonded to six oxygens (open circles) at the face centres; the dashed accent
+        lines join the oxygens into the TiO₆ octahedron. The A cations (dashed circles, drawn dashed
+        as ions held ionically) sit at the corners; each corner is shared by eight cells, so the cell
+        contains one A, one Ti and 6 × ½ = 3 O. Oblique projection; the cube's back edges are dashed.
+        Symbols follow this site's glyph key, with titanium and the A-site ions added for this page.
+      </figcaption>
+    </figure>
+
+    <p>
+      The large <em>k</em> comes from <b>ionic polarisation</b>. In it, as
+      <a href="m07-high-k-dielectrics.html#s2">M07 §2</a> explains, an applied field pulls the
+      cation sublattice of a partly ionic solid one way and the anion sublattice the other, and the
+      resulting displacement of charge is a dipole moment per unit volume. Wolf (p. 162) attributes BST's large dielectric constant to exactly this, "the
+      strong ionic polarization in the material". In a titanate perovskite two things make that
+      polarisation unusually large. The restoring force that holds the Ti⁴⁺ ion at the centre of its
+      octahedron is unusually weak, so a given field displaces the titanium sublattice, relative to
+      the oxygens, much further than the ions of an ordinary oxide are displaced. And the charge
+      that moves with each displaced ion — its dynamical, or Born, effective charge — is larger than
+      its nominal ionic charge, about +7 for titanium against its formal +4, because the Ti–O
+      bond is partly covalent: titanium 3d and oxygen 2p orbitals hybridise, and the electron
+      density shifts along the bond as the ions move (Cohen, 1992; Zhong, King-Smith &amp;
+      Vanderbilt, 1994). A large displacement carrying a large effective charge is a large dipole,
+      and <em>k</em> reaches hundreds or thousands.
+    </p>
+
+    <h3>6.2 Ferroelectric and paraelectric</h3>
+    <p>
+      The weak restoring force has a further consequence. As such a crystal is cooled, the
+      restoring force for the titanium displacement weakens, and at a critical temperature it
+      vanishes: below it, the titanium moves off-centre spontaneously, with no field applied, and
+      the oxygens shift the opposite way. The cubic cell distorts (in BaTiO₃ it becomes tetragonal,
+      slightly elongated along the displacement), and every cell acquires a permanent dipole.
+      Neighbouring cells align theirs, so a macroscopic region — a <b>domain</b> — carries a
+      <b>spontaneous polarisation</b>. A material in this state is <b>ferroelectric</b>, and the
+      temperature at which the transition occurs is the <b>Curie point</b>,
+      <em>T</em><sub>c</sub>. Above it the titanium is centred on average, there is no spontaneous
+      polarisation, and the material is <b>paraelectric</b> (Figure 9). For BaTiO₃, <em>T</em><sub>c</sub>
+      is about 120 °C.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 215" role="img" aria-labelledby="f9-t">
+        <title id="f9-t">The perovskite cell viewed along one cube axis: above the Curie point titanium sits at the centre of its four in-plane oxygens with no net dipole; below it titanium is displaced off-centre and the cell carries a spontaneous polarisation</title>
+        <defs>
+          <marker id="f9-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+        <!-- left panel: centred -->
+        <text x="105" y="18" class="dg-label" text-anchor="middle" style="font-weight:600">above <tspan class="dg-math">T</tspan><tspan baseline-shift="sub" style="font-size:75%">c</tspan>: paraelectric</text>
+        <rect x="50" y="45" width="110" height="110" class="dg-guide" stroke-width="1"/>
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="105" y1="100" x2="105" y2="53"/><line x1="105" y1="100" x2="105" y2="147"/>
+          <line x1="105" y1="100" x2="58" y2="100"/><line x1="105" y1="100" x2="152" y2="100"/>
+        </g>
+        <circle cx="105" cy="100" r="4" class="dg-soft"/>
+        <g class="dg-fill" stroke-width="1.4"><circle cx="105" cy="45" r="8"/><circle cx="105" cy="155" r="8"/><circle cx="50" cy="100" r="8"/><circle cx="160" cy="100" r="8"/></g>
+        <g class="dg-rule" stroke-width="1.3" stroke-dasharray="3 2" fill="none">
+          <circle cx="50" cy="45" r="10"/><circle cx="160" cy="45" r="10"/><circle cx="50" cy="155" r="10"/><circle cx="160" cy="155" r="10"/>
+        </g>
+        <text x="105" y="182" class="dg-label" text-anchor="middle">Ti centred: no net dipole</text>
+        <!-- right panel: displaced -->
+        <text x="315" y="18" class="dg-label" text-anchor="middle" style="font-weight:600">below <tspan class="dg-math">T</tspan><tspan baseline-shift="sub" style="font-size:75%">c</tspan>: ferroelectric</text>
+        <rect x="260" y="45" width="110" height="110" class="dg-guide" stroke-width="1"/>
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="315" y1="86" x2="315" y2="55"/><line x1="315" y1="86" x2="315" y2="149"/>
+          <line x1="315" y1="86" x2="267.6" y2="100.6"/><line x1="315" y1="86" x2="362.4" y2="100.6"/>
+        </g>
+        <!-- where the titanium was: a dashed ghost at the cell centre -->
+        <circle cx="315" cy="100" r="4.5" class="dg-line" stroke-width="1.3" stroke-dasharray="2 1.5"/>
+        <text x="323" y="118" class="dg-label">centre</text>
+        <circle cx="315" cy="86" r="4" class="dg-soft"/>
+        <g class="dg-fill" stroke-width="1.4"><circle cx="315" cy="47" r="8"/><circle cx="315" cy="157" r="8"/><circle cx="260" cy="103" r="8"/><circle cx="370" cy="103" r="8"/></g>
+        <g class="dg-rule" stroke-width="1.3" stroke-dasharray="3 2" fill="none">
+          <circle cx="260" cy="45" r="10"/><circle cx="370" cy="45" r="10"/><circle cx="260" cy="155" r="10"/><circle cx="370" cy="155" r="10"/>
+        </g>
+        <line x1="395" y1="130" x2="395" y2="68" class="dg-acc" stroke-width="2.4" marker-end="url(#f9-a)"/>
+        <text x="390" y="62" class="dg-label" text-anchor="end"><tspan class="dg-math">P</tspan><tspan baseline-shift="sub" style="font-size:75%">s</tspan></text>
+        <text x="315" y="182" class="dg-label" text-anchor="middle">Ti off-centre: spontaneous</text>
+        <text x="315" y="197" class="dg-label" text-anchor="middle">polarisation</text>
+      </svg>
+      <figcaption>
+        <b>Figure 9.</b> Figure 8 viewed along one cube axis. The titanium and the four side-face
+        oxygens lie in one plane; the A cations at the corners lie in front of and behind that
+        plane, and the front and back oxygens, on the line of sight through the titanium, are
+        omitted. Left: above the Curie point the titanium sits at the centre of its octahedron and
+        the cell has no dipole. Right: below it the titanium has moved off-centre (the dashed ring
+        marks the centre) and the oxygens slightly the other way, so the cell carries a permanent dipole
+        and the domain a spontaneous polarisation <em>P</em><sub>s</sub> (accent), pointing the
+        way the positive titanium moved. Displacements greatly exaggerated.
+      </figcaption>
+    </figure>
+
+    <p>
+      A paraelectric perovskite just above its Curie point still has a very large <em>k</em>,
+      because the restoring force that is about to vanish is already weak; the permittivity peaks at
+      <em>T</em><sub>c</sub> and falls as the temperature rises above it, following the Curie–Weiss
+      law, <em>k</em> ∝ 1/(<em>T</em> − <em>T</em><sub>0</sub>) with <em>T</em><sub>0</sub> close to
+      <em>T</em><sub>c</sub>. This is what the notes' phrase "near-ferroelectrics" describes: a
+      material operated a little above its Curie point, where <em>k</em> is large but there is no
+      spontaneous polarisation.
+    </p>
+    <p>
+      The difference shows in how the polarisation responds to an applied field (Figure 10). In a
+      paraelectric the polarisation is a single-valued function of the field: it rises with the
+      field, flattens at high field, and returns to zero when the field is removed. In a
+      ferroelectric it traces a <b>hysteresis loop</b>. A field large enough to reverse the domains —
+      beyond the <b>coercive field</b> <em>E</em><sub>c</sub> — switches the polarisation, and when
+      the field is removed a <b>remanent polarisation</b> <em>P</em><sub>r</sub> remains, of either
+      sign depending on the direction of the last switching field. The capacitor's charge then
+      depends on its history, not only on its voltage.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 215" role="img" aria-labelledby="f10-t">
+        <title id="f10-t">Polarisation against electric field: a paraelectric gives a single S-shaped curve through the origin, a ferroelectric gives a hysteresis loop with remanent polarisation at zero field and coercive fields on the field axis</title>
+        <!-- left axes -->
+        <line x1="16" y1="108" x2="190" y2="108" class="dg-rule" stroke-width="1.1"/>
+        <line x1="102" y1="30" x2="102" y2="186" class="dg-rule" stroke-width="1.1"/>
+        <text x="188" y="124" class="dg-label" text-anchor="end"><tspan class="dg-math">E</tspan></text>
+        <text x="108" y="38" class="dg-label"><tspan class="dg-math">P</tspan></text>
+        <path d="M20.0,161.1 L25.9,160.3 L31.7,159.2 L37.6,157.9 L43.4,156.2 L49.3,154.1 L55.1,151.5 L61.0,148.4 L66.9,144.5 L72.7,140.0 L78.6,134.7 L84.4,128.8 L90.3,122.2 L96.1,115.2 L102.0,108.0 L107.9,100.8 L113.7,93.8 L119.6,87.2 L125.4,81.3 L131.3,76.0 L137.1,71.5 L143.0,67.6 L148.9,64.5 L154.7,61.9 L160.6,59.8 L166.4,58.1 L172.3,56.8 L178.1,55.7 L184.0,54.9" class="dg-line" stroke-width="2.2"/>
+        <text x="102" y="206" class="dg-label" text-anchor="middle">paraelectric (BST for DRAM)</text>
+        <!-- right axes -->
+        <line x1="232" y1="108" x2="406" y2="108" class="dg-rule" stroke-width="1.1"/>
+        <line x1="318" y1="30" x2="318" y2="186" class="dg-rule" stroke-width="1.1"/>
+        <text x="404" y="124" class="dg-label" text-anchor="end"><tspan class="dg-math">E</tspan></text>
+        <text x="300" y="38" class="dg-label" text-anchor="end"><tspan class="dg-math">P</tspan></text>
+        <path d="M236.0,171.0 L241.9,171.0 L247.7,171.0 L253.6,171.0 L259.4,170.9 L265.3,170.9 L271.1,170.8 L277.0,170.7 L282.9,170.5 L288.7,170.2 L294.6,169.7 L300.4,168.9 L306.3,167.7 L312.1,165.8 L318.0,162.8 L323.9,158.3 L329.7,151.8 L335.6,142.7 L341.4,130.9 L347.3,116.9 L353.1,102.0 L359.0,87.7 L364.9,75.5 L370.7,65.8 L376.6,58.8 L382.4,53.9 L388.3,50.7 L394.1,48.6 L400.0,47.3 L400.0,45.0 L394.1,45.0 L388.3,45.0 L382.4,45.0 L376.6,45.1 L370.7,45.1 L364.9,45.2 L359.0,45.3 L353.1,45.5 L347.3,45.8 L341.4,46.3 L335.6,47.1 L329.7,48.3 L323.9,50.2 L318.0,53.2 L312.1,57.7 L306.3,64.2 L300.4,73.3 L294.6,85.1 L288.7,99.1 L282.9,114.0 L277.0,128.3 L271.1,140.5 L265.3,150.2 L259.4,157.2 L253.6,162.1 L247.7,165.3 L241.9,167.4 L236.0,168.7 Z" class="dg-acc" stroke-width="2.2"/>
+        <circle cx="318" cy="53.2" r="3.4" class="dg-ink"/>
+        <circle cx="318" cy="162.8" r="3.4" class="dg-ink"/>
+        <text x="324" y="68" class="dg-label">+<tspan class="dg-math">P</tspan><tspan baseline-shift="sub" style="font-size:75%">r</tspan></text>
+        <text x="312" y="182" class="dg-label" text-anchor="end">−<tspan class="dg-math">P</tspan><tspan baseline-shift="sub" style="font-size:75%">r</tspan></text>
+        <circle cx="350.8" cy="108" r="3" class="dg-ink"/>
+        <circle cx="285.2" cy="108" r="3" class="dg-ink"/>
+        <text x="356" y="122" class="dg-label"><tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="281" y="100" class="dg-label" text-anchor="end">−<tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="318" y="206" class="dg-label" text-anchor="middle">ferroelectric (PZT, SBT for FeRAM)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 10.</b> Polarisation against applied field. Left: a paraelectric follows one curve
+        through the origin; its slope is the permittivity, largest at low field and falling at high
+        field. Right: a ferroelectric (accent) traces a loop. At zero field it holds either
+        +<em>P</em><sub>r</sub> or −<em>P</em><sub>r</sub>, according to the last field that switched
+        it — two stable states, which a non-volatile memory uses as its "1" and "0". Switching
+        requires a field beyond the coercive field ±<em>E</em><sub>c</sub>. Schematic shapes.
+      </figcaption>
+    </figure>
+
+    <h3>6.3 Composition sets the Curie point</h3>
+    <p>
+      The Curie point is a property of the composition, and it can be moved by substitution on the
+      A site. Replacing barium with strontium lowers <em>T</em><sub>c</sub> roughly in proportion to
+      the strontium fraction; SrTiO₃ itself does not become ferroelectric at any temperature. Wolf
+      (p. 163) states the design rule: strontium is added to BaTiO₃ to bring the Curie point below
+      room temperature, which ensures paraelectric operation. This is the reason for the two uses
+      the notes name:
+    </p>
+    <ul>
+      <li><b>DRAM</b> uses a paraelectric perovskite, BST. A DRAM cell must store a charge that
+        follows its voltage and gives it back on a read; a remanent polarisation would add charge
+        that depends on the cell's history. A composition just on the paraelectric side of its
+        Curie point gives the largest <em>k</em> without hysteresis.</li>
+      <li><b>FeRAM</b> uses a ferroelectric perovskite — PZT, lead zirconate titanate,
+        Pb(Zr,Ti)O₃ (the notes write "lead zirconium titanate"), or SBT (§10) — whose two remanent
+        states store a bit with no power applied.</li>
+    </ul>
+    <p>
+      Composition controls <em>k</em> as well as the phase, which is why the notes say the
+      dielectric constants of these materials depend strongly on their composition. Near the
+      barium-rich end of the DRAM range, bulk Ba<sub>0.7</sub>Sr<sub>0.3</sub>TiO₃ has its Curie
+      point close to room temperature; thin films of that composition show a Curie–Weiss response
+      above about 300 K with the ferroelectric transition itself suppressed (Basceri <em>et
+      al.</em>, 1997).
+    </p>
+
+    <h2 id="s7">7 · Barium strontium titanate films</h2>
+
+    <p>
+      Barium strontium titanate was, when the notes' source was written, the candidate of most
+      promise for the capacitor dielectric of future high-density DRAMs (Wolf p. 162). With §6 in
+      hand, its formula and its properties can be read directly. This section covers what the notes
+      say about the films themselves — their composition and <em>k</em>, how <em>k</em> varies with
+      frequency, and the microstructural conditions a film must meet to reach a high <em>k</em>.
+      How the films are deposited is §8; how they are built into a cell is §9.
+    </p>
+
+    <h3>7.1 Composition and dielectric constant</h3>
+    <p>
+      The notes (p. 60) write BST as <b>Ba<sub><em>x</em></sub>Sr<sub>1−<em>x</em></sub>TiO₃ with
+      0.5 &lt; <em>x</em> &lt; 0.7</b>. The subscript <em>x</em> is the fraction of the A sites of
+      Figure 8 occupied by barium, the rest being strontium, so a DRAM film is between half and
+      seven-tenths barium on the A site. That range places the bulk Curie point near or below room
+      temperature (§6.3): the films are paraelectric, and close enough to their Curie point for a
+      large <em>k</em>. BST films are polycrystalline — made of many small crystalline grains, each
+      with the perovskite structure (Wolf p. 162).
+    </p>
+    <p>
+      For those films the notes give <b><em>k</em> = 90</b> (p. 60). Wolf states it more precisely:
+      <em>k</em> = 88–90 in the film thickness range used in DRAM capacitors. That qualification
+      explains why the chapter gives three different numbers for BST.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">BST appears in the notes with k = 300, 250 and 90</p>
+      <p>
+        The table that opens the chapter (p. 49) lists BaSrTiO₃ at 300; the roadmap table (p. 56)
+        requires <em>k</em> = 250 of BST in 2005; and the BST pages (p. 60) give 90 for the films
+        actually used in DRAM capacitors. They are not in conflict once each is read in its context.
+        The 300 is a tabulated figure for the material, carried over from Wolf's Table 4-1; the 250
+        is a roadmap requirement, not a measurement; the 90 is what a DRAM-thickness film delivers.
+        All three are the notes' values. The reason the film value is so much lower is that
+        <em>k</em> in these materials depends on thickness and microstructure, not on composition
+        alone: the permittivity of BST films falls as the film is made thinner (measured on
+        Ba<sub>0.7</sub>Sr<sub>0.3</sub>TiO₃ films from 24 to 160 nm by Basceri <em>et al.</em>,
+        1997). A widely used description treats a thin, low-permittivity layer at each electrode
+        interface as a capacitor in series with the interior of the film — the series arithmetic of
+        §4 — so that the thinner the film, the more those layers dominate; small grains and
+        imperfect crystallinity lower the interior value as well. For BST <em>films</em> in a DRAM capacitor, the notes' value is 90.
+      </p>
+    </div>
+
+    <h3>7.2 Frequency dependence</h3>
+    <p>
+      A dielectric constant is measured by applying an alternating voltage and measuring the
+      charge that follows it, and in general the result depends on the frequency. Each polarisation
+      mechanism can follow the field only up to some characteristic frequency, and any slower
+      process in a film — the motion of defects or of charge at grain boundaries — stops
+      contributing once the field alternates faster than it can respond, so <em>k</em> falls as the
+      frequency rises. This fall is called <b>dispersion</b>. The permittivity of perovskite-oxide
+      films in particular tends to decrease at high frequencies (notes p. 60; Wolf p. 162). A DRAM
+      capacitor is written and read in nanoseconds, so its capacitance must hold at the rates of
+      circuit operation, not only at the low frequencies of a laboratory capacitance meter.
+    </p>
+    <p>
+      BST's dispersion is small. For MOCVD-deposited BST films, the notes give a decrease in
+      <em>k</em> of <b>2% from 100 Hz to 10 MHz</b> and <b>7% from 200 MHz to 2 GHz</b>; Wolf
+      (p. 162), the source, states both as upper bounds, "by &lt; 2%" and "by &lt; 7%", and judges
+      them sufficient for future DRAM generations. BST's standing as the leading candidate rested
+      on two separate properties: its high dielectric constant, and the small frequency dependence
+      of that dielectric constant (Wolf p. 162).
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">High k and small dispersion are two separate reasons</p>
+      <p>
+        The notes (p. 60) link the two causally: "Because of the high-k value, BST films exhibit
+        relatively small frequency dependence." The passage they condense does not. Wolf (p. 162)
+        says BST films are the leading candidates "because of their high dielectric constant … and
+        because the value of <em>k</em> in BST films exhibits a relatively small frequency
+        dependence" — two independent reasons joined by "and". A large <em>k</em> does not imply a
+        flat frequency response: the size of the permittivity and how well it holds up with
+        frequency are separate properties of a film, and the measured dispersion is a property that
+        had to be established by measurement. The notes' numbers (2%, 7%) stand; the causal link
+        does not.
+      </p>
+    </div>
+
+    <h3>7.3 What a film needs to reach high k</h3>
+    <p>
+      To obtain the high <em>k</em> values, the notes (p. 61) state, the films must be <b>free of
+      impurities</b>, have the <b>correct stoichiometry</b>, and be <b>crystalline</b>. Each follows
+      from §6. The large <em>k</em> is a property of the ordered perovskite framework, with its
+      titanium ions loosely held in corner-sharing octahedra; an amorphous film has no such
+      framework and does not show it. That is why the adducted precursors, whose films grown at
+      low temperature are mostly amorphous, could not serve the conformal low-temperature process,
+      and why that process needed the non-adducted precursors, which give perovskite BST as
+      deposited (§8.3). Impurities — carbon and hydrogen from organometallic
+      precursors are the obvious ones — disrupt that framework, and so does a cation ratio away from
+      the perovskite's one A per B.
+    </p>
+    <p>
+      The stoichiometry that matters most is the titanium content. The electrical properties are
+      determined by the amount of titanium in the film, expressed as a percentage of all the cations
+      (notes p. 63):
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">Ti% =
+          <span class="frac"><span class="num">[Ti]</span><span class="den">[Ba] + [Sr] + [Ti]</span></span> × 100</div>
+        <div class="eq-num">(7b.5)</div>
+      </div>
+      <div class="eq-says">
+        [Ti], [Ba], [Sr] amounts of each cation in the film, in any common unit (atoms per unit
+        volume, atomic per cent, moles) — only their ratio enters · Ti% titanium as a percentage of
+        all cations (%). Oxygen is not counted. A stoichiometric perovskite, one A cation (Ba or Sr)
+        per Ti, gives exactly 50%.
+      </div>
+    </div>
+
+    <p>
+      The highest capacitance density is found with a slight excess of titanium, about <b>51%</b>,
+      and it is critical that the amount of titanium incorporated during deposition is tightly
+      controlled (notes p. 63). Wolf (p. 166) quantifies the sensitivity: <em>k</em> drops by about
+      40% when the titanium content rises from 51% to 53%. In terms of the ratio of titanium to A
+      cations, 51% is 0.51/0.49 = 1.04 — four per cent more titanium than A sites — and 53% is
+      0.53/0.47 = 1.13. A two-point change in the percentage that is easy to overlook is a
+      nine-point change in the Ti:A ratio, and it removes two-fifths of the dielectric constant.
+    </p>
+    <p>
+      The last parameter the notes name is <b>surface roughness</b>: increased surface roughness
+      correlates with a lower <em>k</em> and higher leakage currents (notes p. 63). Wolf (pp. 166–167)
+      adds how roughness arises and how it is seen. It can be inherited from a rough underlayer or
+      produced when the film grows as separate islands rather than layer by layer; rough films look
+      hazy to the eye under bright light; and the growth-mode roughness is very sensitive to the
+      deposition conditions, with less haze generally at deposition temperatures above 600 °C.
+    </p>
+
+    <h2 id="s8">8 · Depositing BST</h2>
+
+    <p>
+      A BST film for a DRAM must satisfy §7's conditions — crystalline, stoichiometric to within a
+      per cent of titanium, free of impurities, smooth — and it must also coat the top and sides of
+      a storage node conformally. Those demands pull the deposition temperature in opposite
+      directions, and the notes' pp. 61–62 are about how that conflict was handled. The method
+      that won is metal-organic CVD, for reasons of conformality and composition control.
+    </p>
+
+    <h3>8.1 Four methods, and why MOCVD</h3>
+    <p>
+      The notes (p. 61) list four deposition methods:
+    </p>
+    <ul>
+      <li><b>PVD by RF sputtering</b> — physical vapour deposition in which argon ions from a plasma
+        knock atoms out of a solid target of the material, and the atoms travel to the wafer. The
+        plasma is driven at radio frequency because the target is an insulator, on which a DC
+        discharge would charge up.</li>
+      <li><b>Thermal MOCVD</b> — metal-organic precursor vapours react on the heated wafer
+        surface, as in §5.</li>
+      <li><b>Sol-gel</b> — a solution of metal-organic compounds is spun onto the wafer, converted
+        to a gel, and then fired to form the oxide.</li>
+      <li><b>Pulsed laser ablation</b> — short, intense laser pulses vaporise material from a
+        target, and the resulting plume deposits on the wafer.</li>
+    </ul>
+    <p>
+      The deciding property is conformality. MOCVD realises high conformality, <b>80%</b>, compared
+      with sputtering and sol-gel, <b>60%</b> (notes p. 61); Wolf (p. 163) gives these as bounds —
+      MOCVD can exceed 80%, while sputtered and sol-gel films are typically below 60%. The difference
+      follows from how material arrives. Sputtered atoms travel in nearly straight lines from the
+      target, so the walls of a narrow feature shadow its lower parts; a spun-on liquid flows toward
+      low areas rather than following the surface; a CVD precursor reaches every surface as a gas and
+      reacts there, and in the right regime (§5.1) it reacts equally everywhere.
+    </p>
+    <p>
+      Sputtering has a second difficulty, which the notes compress into one line: the life of the
+      sputtering target in a composite target, as the sputtering rates of the different elements
+      vary. To sputter BST, the target must itself contain barium, strontium, titanium and oxygen,
+      and Wolf (p. 163) states the consequence without a mechanism: because the elements sputter
+      at different rates, the useful lifetime of such a target is too short. For both reasons, BST
+      film deposition is most commonly done by MOCVD.
+    </p>
+    <p>
+      The mechanism lies beyond the notes. When a multicomponent target first sputters, the
+      faster-sputtering elements leave its surface first, and the top few nanometres become
+      enriched in the slower ones until a steady state is reached; from then on the sputtered flux carries the target's own composition. The
+      film's composition therefore depends on how faithfully that steady state is held and on what
+      happens to each species after it leaves the target: the elements leave with different
+      angular distributions and scatter differently in the gas, and in oxide sputtering energetic
+      negative oxygen ions from the target resputter the growing film (Ohring, ch. 5). Any change in
+      the target surface or the discharge over the target's life shifts the film composition, and a
+      BST film needs its titanium content held to about one per cent (§7.3).
+    </p>
+
+    <h3>8.2 Delivering the precursors</h3>
+    <p>
+      The MOCVD precursors for BST are solids at room temperature. They are dissolved in an organic
+      solvent for delivery as a liquid to a vaporiser; the liquid is <b>flash vaporised</b>, and then
+      transported as a gas to the CVD chamber (notes pp. 61–62). Flash vaporisation means that the
+      liquid is metered in small quantities onto a hot surface and vaporised at once, instead of a
+      reservoir of precursor being held hot to generate vapour continuously. The notes give the
+      reason: it minimises the time the precursors spend at elevated temperature, which minimises
+      their decomposition before they reach the wafer. The price, Wolf adds (p. 164), is chemical: the
+      solvent enters the reactor with the precursor.
+    </p>
+    <p>
+      The precursors themselves are adducts of barium and strontium <b>β-diketonates</b> together
+      with organometallic titanium compounds (notes p. 62; the notes write "β-diketones"). A
+      β-diketone is an organic molecule with two C=O groups separated by one carbon atom; losing a
+      hydrogen from that central carbon turns it into the β-diketonate anion, which grips a metal
+      ion through both oxygens. The one used for BST is THD, 2,2,6,6-tetramethyl-3,5-heptanedionate,
+      and each Ba²⁺ or Sr²⁺ carries two of them, written Ba(THD)₂ and Sr(THD)₂. Barium and strontium
+      are large ions, and two THD ligands leave room around them; an <b>adduct</b> fills that room
+      with an additional neutral molecule bound to the metal — tetraglyme or PMDTA in the
+      precursors Wolf lists — to give a discrete, volatile molecule. The titanium source is
+      (THD)₂Ti(i-Pr-O)₂, titanium carrying two THD and two isopropoxide groups (Wolf p. 164).
+    </p>
+
+    <h3>8.3 The temperature trade-off</h3>
+    <p>
+      The notes (p. 62) state the conflict directly. Low-temperature CVD processes for BST give better
+      conformality than high-temperature ones, and a trade-off occurs between a high deposition
+      temperature, to ensure good crystallinity of the perovskite phase, and a low temperature, to
+      achieve adequate conformality. The conformality half is the regime argument of §5.1. The
+      Arrhenius plot of BST deposition from the non-adducted precursors of the next paragraph shows
+      two regimes with a crossover near <b>480 °C</b> (Figure 11; Wolf pp. 164–165). Above it, the deposition rate is nearly independent of
+      temperature and growth is limited by mass transport from the vapour; the precursor reacts as
+      soon as it arrives and has no time to diffuse into narrow features, so conformality is poor.
+      Below it, growth is limited by the surface reaction; the precursor molecules can diffuse a long
+      way over the surface before they react, and the film is conformal. The crystallinity half is
+      the other side of the same coin: the perovskite phase forms more readily the hotter the
+      surface.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="f11-t">
+        <title id="f11-t">Schematic Arrhenius plot of BST deposition rate from non-adducted precursors against inverse temperature: a flat mass-transport-limited regime at high temperature and a steep surface-reaction-limited regime at low temperature, crossing near 480 degrees Celsius; 550 degrees Celsius, the temperature of the separate adducted process, is marked on the axis</title>
+        <!-- axes -->
+        <line x1="60" y1="200" x2="400" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="200" x2="60" y2="24" class="dg-rule" stroke-width="1.2"/>
+        <text x="230" y="238" class="dg-label" text-anchor="middle">1000/<tspan class="dg-math">T</tspan> (1/K) → lower temperature</text>
+        <text x="20" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 20 112)">log deposition rate</text>
+        <!-- ticks: 1000/T from 1.1 to 1.6 -->
+        <g class="dg-rule" stroke-width="1">
+          <line x1="80" y1="200" x2="80" y2="205"/><line x1="144" y1="200" x2="144" y2="205"/>
+          <line x1="208" y1="200" x2="208" y2="205"/><line x1="272" y1="200" x2="272" y2="205"/>
+          <line x1="336" y1="200" x2="336" y2="205"/><line x1="400" y1="200" x2="400" y2="205"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="80" y="219">1.1</text><text x="144" y="219">1.2</text><text x="208" y="219">1.3</text>
+          <text x="272" y="219">1.4</text><text x="336" y="219">1.5</text><text x="400" y="219">1.6</text>
+        </g>
+        <!-- mass-transport regime (flat) and surface-reaction regime (steep); crossover at 1000/T = 1.328 (480 C) -->
+        <path d="M84,62 C150,64 196,68 226,74" class="dg-line" stroke-width="2.2"/>
+        <path d="M226,74 L392,182" class="dg-acc" stroke-width="2.6"/>
+        <path d="M226,74 L200,57.1" class="dg-guide" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <!-- 480 C: the measured crossover, on the curve -->
+        <line x1="225.9" y1="74" x2="225.9" y2="200" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <circle cx="225.9" cy="74" r="3.2" class="dg-ink"/>
+        <text x="230" y="194" class="dg-label">480 °C</text>
+        <!-- 550 C: temperature of the separate adducted process; an axis marker only -->
+        <line x1="153.6" y1="120" x2="153.6" y2="200" class="dg-guide" stroke-width="1" stroke-dasharray="1.5 3"/>
+        <text x="157" y="180" class="dg-label">550 °C</text>
+        <text x="157" y="194" class="dg-label">(adducted)</text>
+        <!-- regime labels -->
+        <text x="66" y="30" class="dg-label">mass-transport limited</text>
+        <text x="66" y="46" class="dg-label">flat rate · poor conformality</text>
+        <text x="296" y="66" class="dg-label">surface-reaction</text>
+        <text x="296" y="80" class="dg-label">limited</text>
+        <text x="296" y="94" class="dg-label">steep · conformal</text>
+      </svg>
+      <figcaption>
+        <b>Figure 11.</b> Schematic Arrhenius plot for CVD of BST from non-adducted precursors, after
+        Wolf Fig. 4-12. Temperature falls to the right. At high temperature the rate barely changes
+        with temperature, because the supply of precursor limits it; below the crossover near
+        480 °C (dot) the rate falls steeply, because the surface reaction limits it (accent), and
+        that is the conformal regime. The extrapolated dashed line shows the rate the surface
+        reaction alone would allow. The dotted mark at 550 °C is only a temperature on the axis: it
+        is where the separate adducted-precursor process gives good films with poor conformality
+        (§8.3), and Wolf gives no Arrhenius curve for that chemistry. The axis span is chosen to
+        cover Wolf's data points (his axis runs from 1.0 to 1.7); the rates are schematic. Wolf's
+        figure labels the crossover about 475 °C, his text about 480 °C.
+      </figcaption>
+    </figure>
+
+    <p>
+      Wolf's account (pp. 164–165) also shows that the two ends of the trade-off belong to two
+      different precursor chemistries. Adducted β-diketonates dissolved in butyl acetate give BST
+      films of good quality at deposition temperatures around <b>550 °C</b>, but their conformality
+      there is typically poor and may not be acceptable for a three-dimensional capacitor; at low
+      temperature the same precursors give films that are mostly amorphous. A second set of
+      precursors — the non-adducted β-diketonates, dissolved in tetrahydrofuran — produces perovskite
+      BST in the low-temperature regime, with capacitance densities above 100 fF/µm² on planar
+      capacitors, leakage currents in the 10⁻⁸ A/cm² range, and <b>100% conformality at 480 °C</b>. Low
+      deposition temperature has one more advantage when the bottom electrode is ruthenium: it keeps
+      the ruthenium surface from oxidising in the oxygen of the BST deposition.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">480–550 °C and 80–100% are two regimes, not one window</p>
+      <p>
+        The notes (p. 62) write that several precursors have been used in the temperature range of
+        480–550 °C "to achieve better conformality (80–100%) acceptable for 3-D capacitor
+        fabrication". The range and the conformality belong to different processes. At the 550 °C end,
+        with adducted precursors, the films are crystalline but poorly conformal. At the 480 °C end,
+        with non-adducted precursors, conformality reaches 100% — and 480 °C is the crossover below
+        which the non-adducted deposition is reaction-limited (Wolf pp. 164–165). Read literally,
+        the notes' sentence would place a conformal process at 550 °C, where Wolf reports poor
+        conformality for the adducted chemistry — consistent with transport-limited growth, though
+        Wolf's crossover is measured for the non-adducted precursors only. The notes' numbers stand
+        as the range of temperatures used; the conformal process is the low-temperature one.
+      </p>
+    </div>
+
+    <h3>8.4 The post-deposition anneal</h3>
+    <p>
+      Films deposited at low temperature are then annealed to achieve the desired capacitance and
+      leakage-current behaviour, and the annealing is done <b>after the top electrode has been
+      deposited</b>, at <b>500–700 °C</b>, in oxidising (N₂O, O₂) or inert (N₂) ambients (notes
+      p. 62). Annealing after the top electrode has a specific purpose: if the top electrode is
+      deposited by a method that bombards the BST surface with energetic species, such as sputtering,
+      the anneal also heals the damage it did (Wolf p. 165). The temperature depends on how the film
+      was grown. Films grown at the higher temperature, about 550 °C, with adducted precursors need
+      only about 550 °C in oxygen; low-temperature depositions need temperatures closer to 700 °C.
+      The main benefit is a large reduction in leakage; the capacitance also rises, by roughly 25%
+      (Wolf pp. 165–166).
+    </p>
+
+    <h2 id="s9">9 · Integrating BST</h2>
+
+    <p>
+      A BST film contains a large amount of oxygen and has to be annealed in oxygen-containing
+      ambients at 500–700 °C (§8.4). Everything in contact with it during those steps must survive
+      them, and after deposition the whole stack must be patterned into individual capacitors. The
+      notes' pp. 63–64 collect the consequences under "BST integration issues", and close with a
+      complete process flow.
+    </p>
+
+    <h3>9.1 Which electrodes survive</h3>
+    <p>
+      The notes (p. 63) rule out the electrode materials used until then. <b>Aluminium</b> cannot
+      be used as the bottom electrode, because many of the process steps needed for integration run
+      at temperatures above <b>600 °C</b>. <b>TiN</b> is not very stable against oxidising species at
+      temperatures above <b>500 °C</b>. Wolf (p. 167) adds the third member of the list: polysilicon
+      is also excluded, because it oxidises, either with oxygen that diffuses out of the BST film or
+      with the oxygen of the annealing ambient — the interfacial-oxide problem of §4 in its most
+      severe form.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The aluminium limit: 600 °C in the notes, 500 °C in the source</p>
+      <p>
+        The notes give the reason aluminium is excluded as process temperatures "higher than
+        600 °C". Wolf (p. 167), the passage the notes condense, gives the BST anneals as
+        "&gt; 500 °C", the same threshold it gives for TiN. The notes' figure is 600 °C. Either temperature excludes aluminium by a wide margin: it melts at 660 °C,
+        oxidises readily, and in ordinary silicon processing nothing after its deposition is allowed
+        to exceed about 450 °C — the reason the hydrogen passivation anneal of
+        <a href="m05b-interface-defects-and-charge.html">M05b</a> is capped there.
+      </p>
+    </div>
+
+    <p>
+      What remains are the platinum-group metals of §4. The notes (p. 63) name the electrode
+      materials as <b>Pt, Ir and Ru, and the oxides of Ir and Ru, which also conduct</b>, and add that
+      <b>dry etching of these metals is challenging</b>. Platinum is the electrode most used for BST
+      in development work, because it does not react with BST and BST grows well on it (Wolf p. 167).
+      It also forms silicides, so it needs a barrier between it and the silicon below; the notes
+      (p. 63) specify a <b>Ti/TiN diffusion barrier</b>, and because platinum adheres poorly the same
+      layer serves as its glue. The whole bottom-electrode stack must then resist oxidation and stay
+      thermally stable through the BST deposition and anneals. Wolf (p. 168) lists TiN, TiAlN and
+      TiSiN among the barriers investigated for the layer between the bottom electrode and the
+      polysilicon plug.
+    </p>
+    <p>
+      Platinum is a poorer choice for the top electrode, for a reason tied to the end of the
+      process. The last thermal step of a wafer is a forming-gas anneal in hydrogen, which passivates
+      interface traps (<a href="m05b-interface-defects-and-charge.html">M05b</a>); platinum catalyses
+      the reduction of BST by that hydrogen instead of protecting it (Wolf p. 167). The notes
+      (p. 64) list the top-electrode materials: <b>Pt, Ru, RuO₂, IrO₂, and conducting perovskite
+      oxides such as SrRuO₃ and (La,Sr)CoO₃</b>. RuO₂ is easy to etch, with the RuO₄ by-product of §4.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Platinum in the top-electrode list: the notes' addition</p>
+      <p>
+        The notes' list of top-electrode materials is the course's and begins with Pt. Wolf's
+        corresponding list (p. 168) — Ru, RuO₂, IrO₂, SrRuO₃ and (La,Sr)CoO₃, "especially for the
+        top electrode" — does not include platinum, consistent with his warning on p. 167 that
+        platinum catalyses the reduction of BST in the forming-gas anneal and "is not a good
+        candidate for the top electrode". The two statements on this page come from the two
+        sources, and they disagree on platinum only.
+      </p>
+    </div>
+
+    <h3>9.2 Patterning without volatile products</h3>
+    <p>
+      Dry etching — plasma etching — normally removes a film by converting it into volatile compounds
+      that are pumped away; the ions of the plasma supply energy and direction, the chemistry
+      supplies the volatility. BST, like the other metal oxides and perovskites and the noble metals,
+      does <b>not have volatile by-products</b>, so its etching must be more physical, <b>like ion
+      milling</b>, and small feature sizes hinder that technique (notes p. 64). Ion milling removes
+      material by sputtering it with energetic inert-gas ions. With no chemistry to help, the removal
+      rate differs little between the film and the mask, and the sputtered material can land again on
+      the sidewalls of the feature being etched; both limit how small and how vertical a feature can
+      be. Wolf (p. 168) lists the approaches under development: dual-frequency plasmas, in which the
+      ion energy is set separately to maximise the physical effect while exploiting whatever chemistry
+      exists, and etching at high substrate temperature, above 350 °C, to improve etch rate and
+      profile.
+    </p>
+    <p>
+      Ruthenium and RuO₂ are the exceptions. In O₂/Cl₂ plasmas they form RuO₄, which is volatile, and
+      they etch chemically with fully anisotropic profiles, so a storage node of ruthenium can be
+      patterned with vertical sidewalls (Wolf p. 168). That is why the process flow the notes give is
+      built around ruthenium. The notes (p. 64) list the tools that introducing these materials
+      requires: <b>a sputtering system for electrode deposition, an MOCVD reactor for the high-k
+      layer, and a reactive etching system for patterning</b>.
+    </p>
+
+    <h3>9.3 The Ru/BST/Ru capacitor, step by step</h3>
+    <p>
+      The notes (p. 64) give the process flow for Ru/BST/Ru capacitors, after Wolf's Fig. 4-14, as
+      a list of steps beside four cross-sections, redrawn in Figure 12. The capacitor is stacked,
+      as in Figure 4, on polysilicon plugs that connect each storage node down to its pass
+      transistor.
+    </p>
+    <ol>
+      <li><b>Polysilicon plug formation.</b> Each plug fills a contact hole through the interlevel
+        dielectric down to a transistor's source/drain.</li>
+      <li><b>Barrier metal TiN/Ti deposition.</b> The barrier keeps the ruthenium from reacting with
+        the polysilicon of the plug during the BST deposition and anneals.</li>
+      <li><b>Ru deposition</b> — the storage-node metal, deposited by sputtering as the tooling list
+        specifies.</li>
+      <li><b>SiO₂ deposition</b> — a layer that will become a hard mask (panel a).</li>
+      <li><b>Lithography</b> — the storage-node pattern is printed in photoresist.</li>
+      <li><b>SiO₂ etch</b> — the pattern is transferred into the SiO₂. An organic photoresist would
+        itself be removed by the oxygen-containing plasma that etches ruthenium, so the SiO₂ carries
+        the pattern instead.</li>
+      <li><b>Ru and barrier metal etch</b> — the ruthenium and the TiN/Ti are etched through between
+        the hard-mask blocks, leaving one storage node over each plug (panel b).</li>
+      <li><b>SiO₂ removal</b> — the hard mask is stripped.</li>
+      <li><b>BST deposition, low-temperature two-step CVD</b> (panel c): a first deposition of a thin
+        <b>buffer layer</b>, a first anneal, a second deposition of the <b>main layer</b>, and a second
+        anneal. The low temperature gives the conformal coverage of §8.3 over the top and sides of
+        each ruthenium storage node, and keeps the ruthenium from oxidising during deposition.</li>
+      <li><b>Ru deposition</b> — the top electrode, the common cell plate, over the whole array
+        (panel d).</li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 420 330" role="img" aria-labelledby="f12-t">
+        <title id="f12-t">Four cross-sections of the ruthenium, BST, ruthenium capacitor process: blanket barrier, ruthenium and oxide over polysilicon plugs in the interlevel dielectric; hard-mask etch of the ruthenium; conformal BST over the ruthenium storage nodes; ruthenium top electrode over the BST</title>
+        <defs>
+          <pattern id="f12-h" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="5" class="dg-guide" stroke-width="1.1"/>
+          </pattern>
+          <marker id="f12-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+        <!-- panel a -->
+        <g transform="translate(0,0)">
+          <text x="4" y="16" class="dg-label" style="font-size:13px;font-weight:600">a · plug, TiN/Ti, Ru, SiO₂</text>
+          <rect x="5" y="90" width="190" height="50" class="dg-fill"/>
+          <rect x="40" y="90" width="20" height="50" class="dg-rule" stroke-width="1" style="fill:url(#f12-h)"/>
+          <rect x="140" y="90" width="20" height="50" class="dg-rule" stroke-width="1" style="fill:url(#f12-h)"/>
+          <rect x="5" y="86" width="190" height="4" class="dg-soft"/>
+          <rect x="5" y="62" width="190" height="24" class="dg-ink"/>
+          <rect x="5" y="44" width="190" height="18" class="dg-fill"/>
+          <text x="100" y="58" class="dg-label" style="font-size:13px" text-anchor="middle">SiO₂</text>
+          <text x="100" y="79" class="dg-label" style="font-size:13px;fill:var(--bg)" text-anchor="middle">Ru</text>
+          <!-- the barrier: a leader from its label up to the thin layer -->
+          <text x="100" y="108" class="dg-label" style="font-size:13px" text-anchor="middle">TiN/Ti</text>
+          <line x1="100" y1="97" x2="100" y2="90.5" class="dg-line" stroke-width="1"/>
+          <text x="100" y="133" class="dg-label" style="font-size:13px" text-anchor="middle">ILD</text>
+          <!-- the plugs: labelled from below -->
+          <text x="100" y="158" class="dg-label" style="font-size:13px" text-anchor="middle">poly-Si plugs</text>
+          <line x1="56" y1="152" x2="50" y2="141" class="dg-guide" stroke-width="1"/>
+          <line x1="144" y1="152" x2="150" y2="141" class="dg-guide" stroke-width="1"/>
+        </g>
+        <!-- panel b -->
+        <g transform="translate(215,0)">
+          <text x="4" y="16" class="dg-label" style="font-size:13px;font-weight:600">b · hard mask, etch Ru</text>
+          <rect x="5" y="90" width="190" height="50" class="dg-fill"/>
+          <rect x="40" y="90" width="20" height="50" class="dg-rule" stroke-width="1" style="fill:url(#f12-h)"/>
+          <rect x="140" y="90" width="20" height="50" class="dg-rule" stroke-width="1" style="fill:url(#f12-h)"/>
+          <rect x="25" y="86" width="50" height="4" class="dg-soft"/><rect x="125" y="86" width="50" height="4" class="dg-soft"/>
+          <rect x="25" y="62" width="50" height="24" class="dg-ink"/><rect x="125" y="62" width="50" height="24" class="dg-ink"/>
+          <rect x="25" y="44" width="50" height="18" class="dg-fill"/><rect x="125" y="44" width="50" height="18" class="dg-fill"/>
+          <g class="dg-line" stroke-width="1.4">
+            <line x1="14" y1="30" x2="14" y2="80" marker-end="url(#f12-a)"/>
+            <line x1="100" y1="30" x2="100" y2="80" marker-end="url(#f12-a)"/>
+            <line x1="186" y1="30" x2="186" y2="80" marker-end="url(#f12-a)"/>
+          </g>
+        </g>
+        <!-- panel c: BST drawn with its inner edge on the Ru and the ILD, no gap -->
+        <g transform="translate(0,170)">
+          <text x="4" y="16" class="dg-label" style="font-size:13px;font-weight:600">c · strip mask, 2-step BST</text>
+          <rect x="5" y="90" width="190" height="50" class="dg-fill"/>
+          <rect x="40" y="90" width="20" height="50" class="dg-rule" stroke-width="1" style="fill:url(#f12-h)"/>
+          <rect x="140" y="90" width="20" height="50" class="dg-rule" stroke-width="1" style="fill:url(#f12-h)"/>
+          <rect x="25" y="86" width="50" height="4" class="dg-soft"/><rect x="125" y="86" width="50" height="4" class="dg-soft"/>
+          <rect x="25" y="62" width="50" height="24" class="dg-ink"/><rect x="125" y="62" width="50" height="24" class="dg-ink"/>
+          <path d="M5,88 H23 V60 H77 V88 H123 V60 H177 V88 H195" class="dg-acc" stroke-width="4"/>
+          <text x="100" y="50" class="dg-label" style="font-size:13px" text-anchor="middle">BST</text>
+          <line x1="100" y1="54" x2="100" y2="85" class="dg-guide" stroke-width="1"/>
+          <text x="50" y="79" class="dg-label" style="font-size:13px;fill:var(--bg)" text-anchor="middle">Ru</text>
+          <text x="150" y="79" class="dg-label" style="font-size:13px;fill:var(--bg)" text-anchor="middle">Ru</text>
+        </g>
+        <!-- panel d -->
+        <g transform="translate(215,170)">
+          <text x="4" y="16" class="dg-label" style="font-size:13px;font-weight:600">d · Ru top electrode</text>
+          <rect x="5" y="90" width="190" height="50" class="dg-fill"/>
+          <rect x="40" y="90" width="20" height="50" class="dg-rule" stroke-width="1" style="fill:url(#f12-h)"/>
+          <rect x="140" y="90" width="20" height="50" class="dg-rule" stroke-width="1" style="fill:url(#f12-h)"/>
+          <rect x="25" y="86" width="50" height="4" class="dg-soft"/><rect x="125" y="86" width="50" height="4" class="dg-soft"/>
+          <rect x="25" y="62" width="50" height="24" class="dg-ink"/><rect x="125" y="62" width="50" height="24" class="dg-ink"/>
+          <path d="M5,88 H23 V60 H77 V88 H123 V60 H177 V88 H195" class="dg-acc" stroke-width="4"/>
+          <path d="M5,86 H21 V58 H79 V86 H121 V58 H179 V86 H195 V78 H187 V50 H113 V78 H87 V50 H13 V78 H5 Z" class="dg-ink"/>
+          <text x="100" y="42" class="dg-label" style="font-size:13px" text-anchor="middle">Ru plate</text>
+          <text x="50" y="79" class="dg-label" style="font-size:13px;fill:var(--bg)" text-anchor="middle">Ru</text>
+          <text x="150" y="79" class="dg-label" style="font-size:13px;fill:var(--bg)" text-anchor="middle">Ru</text>
+        </g>
+      </svg>
+      <figcaption>
+        <b>Figure 12.</b> The Ru/BST/Ru capacitor flow of the notes' p. 64 (after Wolf Fig. 4-14),
+        as four cross-sections. (a) Over the polysilicon plugs (hatched) in the interlevel
+        dielectric: blanket TiN/Ti barrier, ruthenium (solid) and an SiO₂ hard-mask layer. (b) The
+        SiO₂ is patterned by lithography and etch, and the ruthenium and barrier are etched through
+        between the mask blocks (arrows). (c) The mask is stripped, leaving a ruthenium storage node
+        on each plug, and BST (accent) is deposited conformally in two low-temperature CVD steps, each
+        followed by an anneal. (d) The ruthenium top electrode covers the array. Schematic; not to
+        scale.
+      </figcaption>
+    </figure>
+
+    <h2 id="s10">10 · Ferroelectric memory</h2>
+
+    <p>
+      The third application the notes name for a high-k dielectric is the capacitor of a
+      non-volatile ferroelectric memory, FeRAM (pp. 49, 57). A <b>non-volatile</b> memory keeps its
+      data with the power removed, which a DRAM cannot: its charge leaks away within the retention
+      time of §1. A ferroelectric capacitor stores its bit not as a quantity of charge but as the
+      direction of a remanent polarisation, one of the two stable states at zero field in Figure 10,
+      and that polarisation persists without power. The notes call FeRAM an emerging area.
+    </p>
+
+    <h3>10.1 The materials</h3>
+    <p>
+      The notes (p. 57) name two ferroelectric dielectrics — <b>PZT</b>, lead zirconium titanate, and
+      <b>SBT</b>, which they expand as strontium bismuth titanate — and give <b><em>k</em> =
+      1000–1500</b>. Wolf (p. 154), the source, attaches the 1000–1500 to PZT alone; SBT's value is
+      far lower (below). PZT — in standard usage lead zirconate titanate — is the perovskite
+      Pb(Zr,Ti)O₃, a solid solution of lead zirconate and lead titanate in which Zr⁴⁺ and Ti⁴⁺ share
+      the B site of Figure 8 and lead occupies the A site. Unlike the BST used for DRAM, its
+      composition is chosen to place the Curie point well above the operating temperature, so it is
+      ferroelectric in use (§6.3). Wolf states the consequence: because the ferroelectric
+      polarisation is retained almost indefinitely, no refresh is needed, and early FeRAMs were used
+      in game cartridges, where they held saved data without a battery.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">SBT is strontium bismuth tantalate, and its k is not 1000–1500</p>
+      <p>
+        The notes (p. 57) expand SBT as "Strontium Bismuth Titanate", as Wolf (p. 154) does. The
+        ferroelectric known as SBT is <b>SrBi₂Ta₂O₉, strontium bismuth tantalate</b>: it contains
+        tantalum, not titanium. It is a <b>layered</b> perovskite — perovskite-like slabs separated by
+        bismuth oxide layers — rather than the simple ABO₃ of Figure 8. It became important for FeRAM
+        because capacitors made from it with platinum electrodes do not suffer <b>fatigue</b>, the
+        gradual loss of switchable polarisation after many switching cycles, which PZT on platinum
+        does (Paz de Araujo <em>et al.</em>, 1995).
+      </p>
+      <p>
+        The notes' list places <em>k</em> = 1000–1500 beside both materials; Wolf gives it for PZT
+        only. SBT is a low-permittivity ferroelectric: its films are reported with <em>k</em> of a
+        few hundred at most, typically about 180–300 depending on thickness, grain size and
+        processing. The notes' 1000–1500 is the course's figure for the pair; it describes PZT.
+      </p>
+    </div>
+
+    <h3>10.2 The stacked FeRAM cell</h3>
+    <p>
+      The notes (p. 57) draw an FeRAM cell, Figure 13, redrawn from Wolf's Fig. 4-6. It is a 1T1C
+      cell like the DRAM cell of §1, with a stacked ferroelectric capacitor in place of the DRAM
+      capacitor. The pass transistor sits in a p-well, with a bit-line contact to one n⁺ region and a
+      word-line gate over the channel. A polysilicon plug rises from the other n⁺ region to the
+      capacitor, which is built as a stack: a <b>barrier layer</b> on the plug, a <b>platinum bottom
+      electrode</b>, the <b>ferroelectric layer</b>, and a <b>platinum top electrode</b>, with a
+      contact above. Field oxide isolates the cell from its neighbour.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 280" role="img" aria-labelledby="f13-t">
+        <title id="f13-t">Cross-section of a stacked FeRAM cell: pass transistor in a p-well with a bit-line contact and a word-line gate, a polysilicon plug rising to a barrier layer, platinum bottom electrode, ferroelectric layer and platinum top electrode, and field oxide at the right</title>
+        <defs>
+          <pattern id="f13-h" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="5" class="dg-guide" stroke-width="1.1"/>
+          </pattern>
+        </defs>
+        <!-- p-well -->
+        <path d="M10,212 H300 M10,212 V270 H410 V226" class="dg-rule" stroke-width="1.2"/>
+        <text x="24" y="260" class="dg-label">p-well</text>
+        <!-- n+ regions -->
+        <path d="M40,212 V222 Q40,232 50,232 H110 Q120,232 120,222 V212 Z" class="dg-fill"/>
+        <path d="M180,212 V222 Q180,232 190,232 H250 Q260,232 260,222 V212 Z" class="dg-fill"/>
+        <text x="100" y="228" class="dg-label" text-anchor="middle">n⁺</text>
+        <text x="240" y="228" class="dg-label" text-anchor="middle">n⁺</text>
+        <!-- field oxide: insulator grey, not the polysilicon hatch -->
+        <path d="M300,212 Q310,198 330,198 H410 V226 H330 Q310,226 300,212 Z" class="dg-ink" style="fill-opacity:.4"/>
+        <text x="344" y="190" class="dg-label">field oxide</text>
+        <!-- gate oxide and word-line gate -->
+        <rect x="120" y="206" width="60" height="6" class="dg-ink" style="fill-opacity:.4"/>
+        <rect x="122" y="184" width="56" height="22" class="dg-rule" stroke-width="1" style="fill:url(#f13-h)"/>
+        <text x="150" y="176" class="dg-label" text-anchor="middle">word line</text>
+        <!-- bit-line contact -->
+        <rect x="56" y="40" width="28" height="172" class="dg-rule" stroke-width="1" style="fill:url(#f13-h)"/>
+        <text x="70" y="32" class="dg-label" text-anchor="middle">bit-line contact</text>
+        <!-- poly plug -->
+        <rect x="208" y="112" width="22" height="100" class="dg-rule" stroke-width="1" style="fill:url(#f13-h)"/>
+        <!-- capacitor stack: barrier, Pt bottom electrode, ferroelectric (accent), Pt top electrode -->
+        <rect x="192" y="106" width="54" height="6" class="dg-ink"/>
+        <rect x="190" y="94" width="58" height="12" class="dg-soft"/>
+        <path d="M184,106 V88 H254 V106 H248 V94 H190 V106 Z" class="dg-acc-f"/>
+        <rect x="192" y="78" width="54" height="10" class="dg-soft"/>
+        <rect x="212" y="46" width="14" height="32" class="dg-rule" stroke-width="1" style="fill:url(#f13-h)"/>
+        <text x="206" y="60" class="dg-label" text-anchor="end">contact</text>
+        <!-- labels, each leader ending inside its own layer -->
+        <g class="dg-label">
+          <text x="276" y="66">top electrode (Pt)</text>
+          <text x="276" y="88">ferroelectric layer</text>
+          <text x="276" y="110">bottom electrode (Pt)</text>
+          <text x="276" y="132">barrier layer</text>
+          <text x="276" y="154">poly-Si plug</text>
+        </g>
+        <g class="dg-guide" stroke-width="1">
+          <line x1="274" y1="62" x2="238" y2="83"/>
+          <line x1="274" y1="84" x2="251" y2="98"/>
+          <line x1="274" y1="106" x2="238" y2="101"/>
+          <line x1="274" y1="128" x2="240" y2="109"/>
+          <line x1="274" y1="150" x2="229" y2="150"/>
+        </g>
+        <g class="dg-ink">
+          <circle cx="238" cy="83" r="1.8"/><circle cx="251" cy="98" r="1.8"/><circle cx="238" cy="101" r="1.8"/>
+          <circle cx="240" cy="109" r="1.8"/><circle cx="229" cy="150" r="1.8"/>
+        </g>
+      </svg>
+      <figcaption>
+        <b>Figure 13.</b> A stacked FeRAM cell, redrawn from the notes' p. 57 (after Wolf Fig. 4-6).
+        The pass transistor and bit line are those of a DRAM cell; the polysilicon plug carries the
+        storage node up to a capacitor of platinum, ferroelectric (accent) and platinum on a barrier
+        layer. The barrier keeps the platinum from forming a silicide with the plug (§9.1). Grey
+        marks the insulators (gate oxide, field oxide); hatching marks polysilicon and the contacts.
+        Not to scale.
+      </figcaption>
+    </figure>
+
+    <p>
+      Reading the cell differs from DRAM in one respect, beyond the notes. The bit is read by driving
+      the capacitor with a voltage pulse through the plate and sensing the charge that flows onto the
+      bit line: if the pulse reverses the polarisation, the switching releases a large charge, and if
+      the polarisation already points the way the pulse drives it, only a small one. The two charges
+      distinguish "1" from "0". A read that switches the polarisation destroys the stored state, so,
+      as in a DRAM, the sense amplifier writes the value back (Scott &amp; Paz de Araujo, 1989).
+    </p>
+    <p>
+      The notes (p. 57) list the considerations for integrating these capacitors: <b>controlling the
+      interfacial reactions between the dielectric and the electrode materials</b>, <b>maintaining the
+      thermal stability of the electrodes</b>, and <b>developing plasma-etching processes</b>. Wolf
+      (p. 154) observes that they are the same challenges met in bringing high-k dielectrics into the
+      DRAM, and they are the three problems of §4 and §9: electrodes that do not form low-<em>k</em>
+      or reacted layers against an oxide processed in oxygen, barriers and electrodes that survive
+      the anneals, and patterning of noble metals and perovskites whose etch products are not
+      volatile.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li><b>1T1C cell:</b> an n-channel pass transistor, gate on the word line, connects the bit
+          line to the storage node; the plate electrode is common. Read by charge sharing,
+          <em>V</em><sub>s</sub> = (<em>V</em><sub>node</sub> − <em>V</em><sub>dd</sub>/2)
+          <em>C</em><sub>cell</sub>/(<em>C</em><sub>cell</sub> + <em>C</em><sub>bitline</sub>) (7b.1);
+          the sense amplifier writes the value back; charge leaks, so cells are refreshed.</li>
+        <li><b>30 fF per cell</b> stays constant while the supply falls 5 → 3 → ~1 V, for three reasons
+          (notes pp. 52–53): soft errors from α-particles (U, Th in packaging) and cosmic rays
+          (at ground level, secondary neutrons); an unchanged sense-amplifier detection capability;
+          an unchanged retention time. The notes pair 30 fF with 1–2×10⁶ electrons; <em>N</em> =
+          <em>CV</em>/<em>q</em> (7b.2) gives 1.9×10⁵ at 1 V, 5.6×10⁵ at 3 V, 9.4×10⁵ at 5 V, and
+          1–2×10⁶ would need 5.3–10.7 V.</li>
+        <li><b>Three approaches</b> (pp. 53–54): 3-D trench or stacked capacitors; thinner dielectric
+          (ONO, 50 Å — Wolf's minimum); HSG/RSP roughened poly, area ×2. ONO + HSG served 0.18 and 0.15 µm DRAMs and
+          fails beyond 256 Mb (notes: "256 MB"). Then high-k: Ta₂O₅ (<em>k</em> = 25) up to 4 Gb, then
+          perovskites with <em>k</em> in the hundreds to thousands. <em>C</em> =
+          <em>ε</em><sub>0</sub><em>kA</em>/<em>t</em> (7b.3); Wolf's simple 0.3 µm-high stack at
+          0.15 µm needs an EOT of about 0.4 nm, which only a titanate reaches in a thick film.</li>
+        <li><b>Electrodes</b> (pp. 55–56, 59, 63–64): SIS, MIS, MIM. Poly grows interfacial SiO₂ that
+          adds to the EOT, so metals were considered: Al, Ir, Pt, Ru, TaN, TiN, W. Pt, Ir, Ru resist
+          corrosion, are thermally stable and are good barriers; Pt has adhesion, etch-residue and
+          cost problems; Ru's etch gives toxic RuO₄ (melts at 25.4 °C; an oxidiser rather than
+          "flammable"); pinholes. Conducting oxides RuO₂ (ρ = 35 µΩ·cm), IrO₂, SrRuO₃, (La,Sr)CoO₃.
+          Pt forms silicide, so it sits on a Ti/TiN barrier.</li>
+        <li><b>Ta₂O₅</b> (pp. 54, 58–59; <em>k</em> 25, also 26 and 22 in the notes' tables): LPCVD,
+          MOCVD, sputtered Ta + oxidation, anodic oxidation. LPCVD from TAETO or TATDMAE + O₂ at
+          1–4 Torr, 450–485 °C — the reaction-rate-limited, conformal regime (<em>E</em><sub>a</sub> =
+          1.3 eV, rate ×2 per 25 °C, (7b.4)). RTN of the poly first: a <em>nitride</em> that blocks
+          SiO₂ (the notes call it SiO₂). As deposited: oxygen deficient and amorphous, leaky; densify in
+          O₂ or oxygen RTA at 600–700 °C, which also crystallises it (keep below 800 °C). TiN or WN
+          barrier under a poly plate, or a TiN plate. Pt or RuO₂ bottom electrodes (Wolf's reports:
+          TiN or RuO₂ bottom, Pt top); Ru/Ta₂O₅/Ru. MOSD
+          0.9Ta₂O₅–0.1Al₂O₃: <em>k</em> 45 (Wolf 42), 6×10⁻⁸ A/cm². HSG + Ta₂O₅ for 1 and 4 Gb
+          (0.15 µm); Wolf's next sentence says the limit may be reached at 1 Gb (minimum EOT
+          ≈ 1.5 nm).</li>
+        <li><b>Perovskites</b> (beyond the notes): ABO₃, Ti in an O₆ octahedron. High <em>k</em> from
+          ionic polarisation. Below the Curie point Ti moves off-centre: ferroelectric, hysteresis,
+          remanent ±<em>P</em><sub>r</sub>. Above it: paraelectric, still high <em>k</em>. BaTiO₃
+          <em>T</em><sub>c</sub> ≈ 120 °C; Sr lowers it, so BST is paraelectric for DRAM; PZT and SBT
+          are ferroelectric for FeRAM.</li>
+        <li><b>BST films</b> (pp. 60–63): Ba<sub><em>x</em></sub>Sr<sub>1−<em>x</em></sub>TiO₃, 0.5 &lt;
+          <em>x</em> &lt; 0.7; <em>k</em> = 90 at DRAM film thickness (300 in the p. 49 table, 250 in the
+          roadmap). <em>k</em> falls 2% from 100 Hz to 10 MHz and 7% from 200 MHz to 2 GHz — small
+          dispersion and high <em>k</em> are two separate merits. Needs purity, correct stoichiometry,
+          crystallinity; best at Ti ≈ 51% of cations (7b.5); roughness lowers <em>k</em> and raises
+          leakage.</li>
+        <li><b>Depositing BST</b> (pp. 61–62): RF sputtering, thermal MOCVD, sol-gel, pulsed laser
+          ablation; MOCVD 80% conformal against 60%, and composite sputtering targets have too short
+          a useful life because the elements sputter at different rates. Solid
+          β-diketonate precursors dissolved, flash vaporised. Low temperature → conformal, high →
+          crystalline: 480 °C (100%, non-adducted) and 550 °C (adducted, poor conformality) are two
+          regimes. Anneal after the top electrode, 500–700 °C in N₂O, O₂ or N₂.</li>
+        <li><b>Integrating BST</b> (pp. 63–64): no Al (notes &gt; 600 °C; Wolf &gt; 500 °C), no TiN
+          above 500 °C, no poly; Pt, Ir, Ru and the conducting oxides IrO₂ and RuO₂, hard to
+          dry-etch; top electrodes Pt (notes; not in Wolf's list), Ru, RuO₂, IrO₂, SrRuO₃,
+          (La,Sr)CoO₃; BST has no volatile
+          etch products (ion milling). Tools: sputter, MOCVD, reactive etch. Ru/BST/Ru flow: plug →
+          TiN/Ti → Ru → SiO₂ → litho → SiO₂ etch → Ru/barrier etch → SiO₂ strip → two-step
+          low-temperature BST CVD (buffer + anneal, main + anneal) → Ru.</li>
+        <li><b>FeRAM</b> (p. 57): non-volatile; PZT and SBT (SrBi₂Ta₂O₉ — tantalate, not titanate),
+          <em>k</em> 1000–1500 in the notes, which is PZT's value (Wolf); SBT films are a few
+          hundred; stacked cell Pt/ferroelectric/Pt on a barrier and poly plug.
+          Considerations: interfacial reactions, electrode thermal stability, plasma etching.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Class notes pp. 55–56 (the cell, storage node, plate electrode). Write, read, sense amplifier, eq. (7b.1) = Eq. (12.11), bit-line capacitance, transfer ratio, retention time, the leakage budget and where it falls: Taur &amp; Ning, <i>Fundamentals of Modern VLSI Devices</i> 3/E, §12.2.1–12.2.2. Dielectric leakage: Wolf Vol. 4 p. 151 (ONO minimum), p. 155 (Ta₂O₅ leakage the biggest drawback)</td></tr>
+      <tr><td>§2</td><td>Class notes pp. 52–53; Wolf, <i>Silicon Processing for the VLSI Era</i> Vol. 4, §4.2, p. 150 (the same 30 fF / 1–2×10⁶ pairing). T. C. May &amp; M. H. Woods, "Alpha-particle-induced soft errors in dynamic memories," <i>IEEE Trans. Electron Devices</i> <b>ED-26</b>, 2 (1979). Pair energy 3.6 eV: EEE 5416 formula sheet. K. Saino, "Progress and issues in dielectric materials for sub-100nm DRAM technology," 206th Meeting of The Electrochemical Society, abstract 867 (2004), for 30 fF as the constant requirement. Ground-level neutrons and critical charge: EEE 5416 M03 §8 and M11 §4</td></tr>
+      <tr><td>§3</td><td>Class notes pp. 53–54, 57 (trench cell), 61 (stacked cell); Wolf Vol. 4 §4.2, pp. 150–152; Fig. 4-11 (p. 162); the 0.15 µm cell and 80 fF/µm², p. 162; minimum Ta₂O₅ EOT, p. 159; the simple stack a high-k film permits, pp. 162–163; ONO minimum 50 Å, p. 151. Planar-capacitor area and the 4 Mb transition: Taur &amp; Ning §12.2.1. Trench-cell thermal budget and dielectrics: Saino (2004). HSG formation: H. Watanabe <i>et al.</i>, "Hemispherical grained Si formation on in-situ phosphorus doped amorphous-Si electrode for 256Mb DRAM's capacitor," <i>IEEE Trans. Electron Devices</i> <b>42</b>, 1247 (1995)</td></tr>
+      <tr><td>§4</td><td>Class notes pp. 52, 55–56, 59, 63–64; Wolf Vol. 4 pp. 152–154 (electrodes, PGMs, Ru oxidation, cost and CVD utilisation, Table 4-2), p. 158 (RuO₂), pp. 167–168 (Pt, conducting PGM oxides, RuO₄). RuO₂ single-crystal resistivity 30–40 µΩ·cm: W. D. Ryden, A. W. Lawson &amp; C. C. Sartain, <i>Phys. Rev. B</i> <b>1</b>, 1494 (1970), and recent measurements (arXiv:2511.04278). RuO₄ melting point and GHS oxidiser classification (H271): standard chemical safety data for CAS 20427-56-9. Production history: Saino (2004); D.-S. Kil <i>et al.</i>, "Development of new TiN/ZrO₂/Al₂O₃/ZrO₂/TiN capacitors extendable to 45nm generation DRAMs replacing HfO₂ based dielectrics," <i>Symp. VLSI Technology</i> (2006)</td></tr>
+      <tr><td>§5</td><td>Class notes pp. 49, 54, 56, 58–59; Wolf Vol. 4 §4.4.1, pp. 151, 154–160 (industry experience, precursors, 450–485 °C regimes and 1.3 eV, RTN, densification and the 800 °C limit, TiN/Pt and RuO₂ electrode reports, Ru/Ta₂O₅/Ru, MOSD, etch gases, limits). Ta₂O₅ <em>k</em> ≈ 22: J. Robertson, <i>Eur. Phys. J. Appl. Phys.</i> <b>28</b>, 265 (2004), Table 2; 26: G. D. Wilk, R. M. Wallace &amp; J. M. Anthony, <i>J. Appl. Phys.</i> <b>89</b>, 5243 (2001). Production Ta₂O₅ (EOT ≈ 3.5 nm, electrode heights): Saino (2004). Al-doped Ta₂O₅ at 42.8: C. S. Desu, P. C. Joshi &amp; S. B. Desu, <i>J. Electroceram.</i> <b>10</b>, 209 (2003). Reaction- and transport-limited CVD and step coverage: Wolf p. 156, p. 165</td></tr>
+      <tr><td>§6</td><td>Beyond the notes. C. Kittel, <i>Introduction to Solid State Physics</i>, 8th ed. (Wiley 2005), ch. 16 (perovskite structure, ferroelectric and paraelectric states, Curie–Weiss law, BaTiO₃ <em>T</em><sub>c</sub> ≈ 120 °C). Wolf Vol. 4 p. 162 (ionic polarisation) and p. 163 (Curie point; paraelectric for DRAM, ferroelectric for FeRAM; strontium to lower <em>T</em><sub>c</sub>; <em>T</em><sub>c</sub> linear in composition). Wolf's printed Curie-point values on p. 163 are typesetting errors and are not used. SrTiO₃ never ferroelectric: K. A. Müller &amp; H. Burkard, <i>Phys. Rev. B</i> <b>19</b>, 3593 (1979). Born effective charges and Ti–O hybridisation: R. E. Cohen, "Origin of ferroelectricity in perovskite oxides," <i>Nature</i> <b>358</b>, 136 (1992); W. Zhong, R. D. King-Smith &amp; D. Vanderbilt, "Giant LO-TO splittings in perovskite ferroelectrics," <i>Phys. Rev. Lett.</i> <b>72</b>, 3618 (1994). Lead zirconate titanate: B. Jaffe, W. R. Cook &amp; H. Jaffe, <i>Piezoelectric Ceramics</i> (Academic Press 1971). Thin-film behaviour: C. Basceri, S. K. Streiffer, A. I. Kingon &amp; R. Waser, <i>J. Appl. Phys.</i> <b>82</b>, 2497 (1997)</td></tr>
+      <tr><td>§7</td><td>Class notes pp. 49, 54, 56, 60–61, 63; Wolf Vol. 4 §4.5, p. 162 (<em>k</em> = 88–90, the two reasons, dispersion), p. 165 (adducted and non-adducted films at low temperature), §4.5.2, pp. 166–167 (Ti content, −40% from 51% to 53%, roughness and haze); Basceri <i>et al.</i> (1997) for the thickness dependence</td></tr>
+      <tr><td>§8</td><td>Class notes pp. 61–62; Wolf Vol. 4 §4.5.1, pp. 163–166 (methods and conformality bounds, composite targets, liquid delivery, precursors, Fig. 4-12 for non-adducted precursors and the two regimes, the anneal). Multicomponent-target sputtering (steady-state altered layer, angular distribution, negative-ion resputtering): M. Ohring, <i>Materials Science of Thin Films</i>, 2nd ed. (Academic Press 2002), ch. 5</td></tr>
+      <tr><td>§9</td><td>Class notes pp. 63–64; Wolf Vol. 4 §4.5.3, pp. 167–169 (electrode incompatibilities, Pt, barriers, top-electrode list without Pt, etching, Ru exception, tooling, Fig. 4-14 flow)</td></tr>
+      <tr><td>§10</td><td>Class notes pp. 49, 57; Wolf Vol. 4 §4.3, p. 154 (PZT <em>k</em> 1000–1500); Fig. 4-6, p. 155. SBT film permittivity of a few hundred: e.g. "Low temperature crystallization of SrBi₂Ta₂O₉ thin films using microwave oven," <i>Thin Solid Films</i> (2004), and "Enhanced ferroelectric properties of multilayer SrBi₂Ta₂O₉/SrBi₂Nb₂O₉ thin films for NVRAM applications," <i>Mater. Sci. Eng. B</i> (2006). SBT as SrBi₂Ta₂O₉ and fatigue: C. A. Paz de Araujo <i>et al.</i>, "Fatigue-free ferroelectric capacitors with platinum electrodes," <i>Nature</i> <b>374</b>, 627 (1995). FeRAM read and write-back: J. F. Scott &amp; C. A. Paz de Araujo, "Ferroelectric memories," <i>Science</i> <b>246</b>, 1400 (1989)</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m07-high-k-dielectrics.html"><span>Previous</span>M07 · High-k Gate Dielectrics</a>
+      <a class="next" href="index.html#roadmap"><span>Next · not yet built</span>M08 · Well Engineering and Retrograde Wells</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

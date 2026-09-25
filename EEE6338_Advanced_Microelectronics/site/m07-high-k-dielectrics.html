@@ -1,0 +1,2621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M07 · High-k Gate Dielectrics — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M07 · High-k Gate Dielectrics</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 07</p>
+    <h1>High-k Gate Dielectrics</h1>
+    <p class="lede">
+      Why the gate dielectric of a deep-submicron MOSFET had to become a material with a higher
+      dielectric constant than silicon dioxide, how a physically thicker film is made to behave
+      electrically like a thinner one, what else a candidate must satisfy, how a film a few
+      nanometres thick is deposited, and the candidates the notes treat — Ta₂O₅, Al₂O₃, ZrO₂, HfO₂,
+      hafnium silicate and Pr₂O₃.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m05a-bonds-and-structure.html">M05a</a>, <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06</a></span>
+      <span><b>Read time</b> ~60 min</span>
+      <span><b>Sources</b> Class notes pp. 49–52, 59–60, 65–67 (Chapter 4); Lectures 2, 3, 6, 9; Wolf Vol. 4 ch. 4; Taur &amp; Ning §4.6.1.6; Wilk, Wallace &amp; Anthony (2001); Robertson (2004)</span>
+    </div>
+
+    <p>
+      <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06</a> ended with silicon dioxide
+      running out of room. Direct tunnelling grows exponentially as the film thins, and below about
+      1.4–1.5 nm the gate leaks as much current as the off-state channel it is meant to control.
+      The transistor, however, keeps demanding more gate capacitance per unit area, because the
+      inversion charge, the drive current and the gate's control over a short channel all scale
+      with it (<a href="m02-deep-submicron-roadmap.html">M02 §4</a>). Capacitance per unit area is
+      the product of two factors, the dielectric constant of the film and the reciprocal of its
+      thickness. Thinning had supplied every increase for forty years; once thinning stopped, the
+      only factor left was the dielectric constant. Chapter 4 of the notes is about high-k
+      dielectrics, which the notes define as materials whose dielectric constant exceeds that of
+      silicon nitride, <em>k</em> &gt; 7 (§1.1), and this module takes the half of that chapter that
+      concerns the gate.
+    </p>
+    <p>
+      The module runs from principle to material. It opens with the notes' definition of high-k and
+      the history that forced the change (§1), then the physical origin of a large dielectric
+      constant (§2), which the notes assume. The equivalent oxide thickness (§3) and its extension
+      to layered stacks (§4) are the quantitative core, and they explain why the lowest-k layer in a
+      stack sets the floor. §5 collects what else a replacement must satisfy: the notes' two device
+      criteria and their drawback of interface states, then the band-offset, thermodynamic and
+      crystallisation criteria that decided which candidates survived. §6 treats the thin silicon
+      dioxide layer left deliberately beneath the high-k film, §7 the deposition methods, with
+      atomic layer deposition in detail, and §8 the candidates in the notes' order — Ta₂O₅, Al₂O₃,
+      ZrO₂, HfO₂, hafnium silicate and Pr₂O₃. §9 closes on the gate electrode that sits on top of
+      the dielectric. Physics that the notes do not state but that is needed to reason about their
+      statements is marked <i>beyond the notes</i>. The chapter's other half, high-k dielectrics in
+      memory capacitors, is <a href="m07b-high-k-memory-capacitors.html">M07b</a>.
+    </p>
+
+    <h2 id="s1">1 · Why the dielectric constant has to rise</h2>
+
+    <p>
+      The notes open Chapter 4 with a definition, the three places a high-k film is used, a table of
+      candidates, and a date by which silicon dioxide was expected to fail. Each rests on one
+      relation, the capacitance per unit area of a planar insulating film, which
+      <a href="m03-threshold-voltage.html">M03 §2</a> introduced for the oxide:
+    </p>
+
+    <div class="eq" id="eq-cox">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em> =
+          <span class="frac"><span class="num"><em>k</em> <em>ε</em><sub>0</sub></span><span class="den"><em>t</em></span></span></div>
+        <div class="eq-num">(7.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em> capacitance per unit area of the film (F/cm²) ·
+        <em>k</em> its relative permittivity, the dielectric constant (dimensionless; 3.9 for SiO₂) ·
+        <em>ε</em><sub>0</sub> permittivity of free space, 8.85×10⁻¹⁴ F/cm — the centimetre form,
+        so that <em>t</em> must be in cm ·
+        <em>t</em> physical thickness of the film (cm; 1 nm = 10⁻⁷ cm). Parallel-plate result: valid
+        when the film is much thinner than the plate is wide, which every gate dielectric is. For
+        SiO₂ it is <em>C</em><sub>ox</sub> = 3.9<em>ε</em><sub>0</sub>/<em>t</em><sub>ox</sub>;
+        1.5 nm of SiO₂ gives 2.30×10⁻⁶ F/cm².
+      </div>
+    </div>
+
+    <p>
+      The symbol needs one remark. The notes write the dielectric constant three ways in this
+      chapter: <em>k</em> in the title and the text, <em>ε</em> at the head of the p. 49 table, and
+      <em>ε</em><sub>ox</sub>, <em>ε</em><sub>high-k</sub> in the thickness formulas of pp. 50–51.
+      All three mean the same dimensionless ratio of the film's permittivity to that of free space.
+      This module writes <em>k</em> throughout, and writes <em>ε</em><sub>0</sub> only for the
+      permittivity of free space.
+    </p>
+    <p>
+      Equation (7.1) offers two ways to raise <em>C</em>. Thinning the film was the route taken for
+      every generation up to the 90 nm generation (§1.2), and <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06
+      §2 and §7</a> showed where it ends: direct tunnelling current rises roughly six to seven
+      decades per nanometre of thinning, and a good thermal oxide crosses the 1 A/cm² leakage
+      criterion at about 1.4 nm. The notes restate the limit on p. 50: tunnelling current increases
+      exponentially with decreasing thickness, so it may not be feasible to use SiO₂ films thinner
+      than 1.5 nm. The other route is to raise <em>k</em>. A film with a larger dielectric constant
+      can be made thicker, which suppresses tunnelling, while giving the same capacitance and
+      therefore the same drive current as the thin oxide it replaces. That is the whole argument of
+      the chapter, and §3 makes it quantitative.
+    </p>
+
+    <h3>1.1 What counts as high-k</h3>
+
+    <p>
+      The notes define the class by a threshold: a <b>high-k dielectric</b> has <b>k &gt; 7</b>, that
+      is, a dielectric constant above that of silicon nitride (p. 49, following Wolf p. 145). The
+      threshold is a convention, and other authors draw it elsewhere. Some call any material above
+      SiO₂'s 3.9 high-k; Robertson's review asks for k above 10, and preferably 25–30, so that a
+      replacement lasts several generations before it too is scaled out. By the notes' definition the
+      nitrided oxides and oxynitrides of <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06
+      §9</a>, whose dielectric constant lies between 3.9 and 7, are not high-k; they were the bridge
+      that carried SiO₂-based films down to the limit.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 226" role="img" aria-labelledby="m7f1-t">
+        <title id="m7f1-t">Dielectric constants of the notes' candidate materials on a logarithmic axis from 3 to 2000, with three definitions of high-k marked: above 3.9, above 7 as in the notes, and above 10</title>
+        <line x1="30" y1="120" x2="420" y2="120" class="dg-rule" stroke-width="1.3"/>
+        <g class="dg-rule" stroke-width="1.1">
+          <line x1="30" y1="120" x2="30" y2="126"/>
+          <line x1="240.3" y1="120" x2="240.3" y2="126"/>
+          <line x1="378.4" y1="120" x2="378.4" y2="126"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="30" y="139">3</text>
+          <text x="240.3" y="139">100</text>
+          <text x="378.4" y="139">1000</text>
+        </g>
+        <text x="420" y="110" class="dg-label" text-anchor="end">k, log scale</text>
+        <!-- thresholds -->
+        <line x1="45.7" y1="42" x2="45.7" y2="120" class="dg-guide" stroke-width="1.1" stroke-dasharray="4 3"/>
+        <text x="49" y="38" class="dg-label">k &gt; 3.9 · some authors</text>
+        <line x1="80.8" y1="64" x2="80.8" y2="120" class="dg-acc" stroke-width="2"/>
+        <text x="84" y="60" class="dg-label">k &gt; 7 · the notes (above Si₃N₄)</text>
+        <line x1="102.2" y1="86" x2="102.2" y2="120" class="dg-guide" stroke-width="1.1" stroke-dasharray="4 3"/>
+        <text x="105" y="82" class="dg-label">k &gt; 10 · Robertson (2004)</text>
+        <!-- materials -->
+        <g class="dg-ink">
+          <circle cx="45.7" cy="120" r="3.6"/><circle cx="80.8" cy="120" r="3.6"/><circle cx="95.9" cy="120" r="3.6"/>
+          <circle cx="154.7" cy="120" r="3.6"/><circle cx="157.2" cy="120" r="3.6"/><circle cx="159.5" cy="120" r="3.6"/>
+          <circle cx="306.2" cy="120" r="3.6"/><circle cx="378.4" cy="120" r="3.6"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="45.7" y="158">SiO₂</text><text x="45.7" y="172">3.9</text>
+          <text x="306.2" y="158">BST 300</text>
+          <text x="378.4" y="158">PLZT 1000</text>
+        </g>
+        <line x1="80.8" y1="126" x2="80.8" y2="178" class="dg-guide" stroke-width="0.9"/>
+        <text x="80.8" y="192" class="dg-label" text-anchor="middle">Si₃N₄ 7</text>
+        <line x1="95.9" y1="126" x2="104" y2="146" class="dg-guide" stroke-width="0.9"/>
+        <text x="106" y="158" class="dg-label">Al₂O₃ 9</text>
+        <line x1="157.2" y1="126" x2="166" y2="146" class="dg-guide" stroke-width="0.9"/>
+        <text x="166" y="158" class="dg-label">HfO₂ 24</text>
+        <text x="166" y="172" class="dg-label">ZrO₂ 25</text>
+        <text x="166" y="186" class="dg-label">Ta₂O₅ 26</text>
+        <!-- application brackets -->
+        <path d="M92,204 V210 H168 V204" class="dg-rule" stroke-width="1"/>
+        <text x="130" y="223" class="dg-label" text-anchor="middle">gate candidates</text>
+        <path d="M284,176 V182 H414 V176" class="dg-rule" stroke-width="1"/>
+        <text x="349" y="196" class="dg-label" text-anchor="middle">memory capacitors</text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The dielectric constants of the notes' p. 49 table on a logarithmic axis.
+        The accent line is the notes' definition, k &gt; 7; the dashed lines are two other
+        conventions in use. The gate candidates cluster between 9 and 26; the perovskites BST and
+        PLZT, with dielectric constants in the hundreds and thousands, are the memory-capacitor
+        materials of <a href="m07b-high-k-memory-capacitors.html">M07b</a>, and §5 explains why
+        materials with dielectric constants that large cannot serve as a gate insulator.
+      </figcaption>
+    </figure>
+
+    <p>
+      The notes name three applications for such materials (p. 49): as the gate dielectric, replacing
+      SiO₂ in MOSFETs; as the dielectric of the storage capacitor in dynamic random-access memory
+      (DRAM); and as the dielectric of the capacitor in non-volatile ferroelectric memory (FeRAM).
+      They list the candidates Si₃N₄, Al₂O₃, Ta₂O₅, ZrO₂, HfO₂, barium strontium titanate (BST) and
+      lead lanthanum zirconium titanate (PLZT), and tabulate them:
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Material</th><th>k (the notes' ε)</th><th>Band gap <em>E</em><sub>g</sub> (eV)</th><th>Crystal structure</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>PbLaZrTiO₃ (PLZT)</td><td>1000</td><td>—</td><td>—</td></tr>
+          <tr><td>BaSrTiO₃ (BST)</td><td>300</td><td>—</td><td>—</td></tr>
+          <tr><td>Ta₂O₅</td><td>26</td><td>4.5</td><td>orthorhombic</td></tr>
+          <tr><td>ZrO₂</td><td>25</td><td>7.8</td><td>monoclinic</td></tr>
+          <tr><td>HfO₂</td><td>24</td><td>5.7</td><td>monoclinic</td></tr>
+          <tr><td>Al₂O₃</td><td>9</td><td>8.7</td><td>amorphous</td></tr>
+          <tr><td>Si₃N₄</td><td>7</td><td>5.1</td><td>amorphous</td></tr>
+          <tr><td>SiO₂</td><td>3.9</td><td>8.9</td><td>amorphous</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The table is the notes' p. 49, which reproduces Wolf's Table 4-1; that in turn follows Wilk,
+      Wallace and Anthony's 2001 review, except that Wilk gives HfO₂ a dielectric constant of 25. The
+      band-gap column carries no unit in the notes; the unit is the electron-volt. The notes quote
+      different values for three of these materials later in the chapter — Ta₂O₅ at k = 25, ZrO₂ at
+      <em>E</em><sub>g</sub> ≈ 5.1 eV, Al₂O₃ at <em>E</em><sub>g</sub> ≈ 8.3 eV — and §8 sets each
+      notes value beside the current literature value. Two columns of this table carry the rest of
+      the module: the band gap, which §2 and §5 show falls as the dielectric constant rises, and the
+      crystal structure, which §5 shows is the difference between a film that stays glassy and one
+      that grows grains.
+    </p>
+
+    <h3>1.2 When silicon dioxide was expected to fail</h3>
+
+    <p>
+      The notes date the problem (p. 49): in 2001, for the 0.13 µm device, the gate oxide had a
+      thickness of about 3.0 nm, and for the 0.1 µm device an oxide thickness under 1.5 nm is needed — the
+      figure of the 1999 International Technology Roadmap for Semiconductors, which Wolf cites. Set
+      against the tunnelling floor of the same page, 1.5 nm, the conclusion follows at once: the
+      generation after 0.13 µm would need a film at or below the thickness at which SiO₂ stops
+      being usable.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The notes' 3.0 nm at 0.13 µm describes a less aggressive oxide than leading-edge logic used</p>
+      <p>
+        The notes, like Wolf p. 145, give about 3.0 nm for the gate oxide of a 0.13 µm device in 2001.
+        The leading-edge 130 nm logic process published in 2000 used a 1.5 nm gate oxide at a 1.3 V
+        supply (Tyagi <i>et al.</i>, IEDM 2000), and the 2003 roadmap lists 1.5 nm for high-performance
+        logic at the 130 nm node. At 1.5 nm, high-performance logic had already reached the
+        tunnelling floor one generation earlier than the notes' dating implies, and SiO₂-based films
+        were then pushed to about 1.2 nm physical thickness at the 90 nm generation (Thompson
+        <i>et al.</i>, IEDM 2002) before high-k films entered production (§9). The notes' value is
+        3.0 nm; the physics of the argument does not depend on which generation first met the
+        floor.
+      </p>
+    </div>
+
+    <p>
+      The same limit applies in memory: a DRAM cell must hold a fixed charge in a capacitor whose
+      area shrinks every generation, which is the second application and the subject of
+      <a href="m07b-high-k-memory-capacitors.html">M07b</a>. The remainder of this module concerns
+      the gate.
+    </p>
+
+    <h2 id="s2">2 · Where a dielectric constant comes from</h2>
+
+    <p>
+      The notes give dielectric constants as values to be looked up. Why hafnium oxide has six times
+      the dielectric constant of silicon dioxide, and why its band gap is smaller, both follow from
+      how the bound charges of a solid respond to an electric field. This section is <i>beyond the
+      notes</i>. It is included because it turns the p. 49 table from a list into a pattern, and
+      because the pattern — a larger dielectric constant comes with a smaller band gap — is the
+      trade-off that §5 shows decided which candidates survived.
+    </p>
+    <p>
+      An insulator has no free carriers, but its bound charges move slightly when a field is applied:
+      positive charge shifts along the field and negative charge against it. Each displaced pair of
+      charges is an electric dipole, and the <b>polarisation</b> <em>P</em> is the dipole moment per
+      unit volume. The polarisation places a layer of bound charge on each face of the film, opposite
+      in sign to the charge on the adjacent plate, so that at a given voltage the plates must carry
+      more charge than they would across a vacuum. The factor by which the charge increases is the
+      dielectric constant: <em>k</em> = 1 + <em>χ</em>, where the susceptibility <em>χ</em> is
+      defined by <em>P</em> = <em>ε</em><sub>0</sub><em>χE</em>. A material has a large dielectric
+      constant when its charges are easily displaced.
+    </p>
+    <p>
+      Three mechanisms displace charge. In <b>electronic polarisation</b> the electron cloud of each
+      atom shifts relative to its nucleus. In <b>ionic polarisation</b>, also called lattice
+      polarisation, the positive and negative ions of a partly ionic solid shift relative to each
+      other, the whole cation sublattice moving along the field and the anion sublattice against it.
+      In <b>orientational polarisation</b> molecules that carry a permanent dipole rotate toward the
+      field; it operates in liquids such as water and does not operate in these solids (Wilk,
+      Wallace &amp; Anthony 2001). Gate dielectrics therefore have two contributions.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 214" role="img" aria-labelledby="m7f2-t">
+        <title id="m7f2-t">Two polarisation mechanisms under an applied field pointing right: left, an atom's electron cloud shifts left relative to its nucleus; right, a chain of alternating hafnium and oxygen ions in which the hafnium ions move right and the oxygen ions move left of their field-free positions</title>
+        <defs>
+          <marker id="m7f2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+          <marker id="m7f2-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+        <!-- applied field -->
+        <line x1="150" y1="22" x2="290" y2="22" class="dg-line" stroke-width="1.6" marker-end="url(#m7f2-a)"/>
+        <text x="220" y="14" class="dg-label" text-anchor="middle">applied field <tspan class="dg-math">E</tspan></text>
+        <!-- (a) electronic -->
+        <text x="12" y="52" class="dg-label" style="font-weight:600">(a) electronic</text>
+        <circle cx="70" cy="120" r="30" class="dg-guide" stroke-width="1.1" stroke-dasharray="3 3"/>
+        <circle cx="62" cy="120" r="30" class="dg-fill"/>
+        <circle cx="70" cy="120" r="3.5" class="dg-ink"/>
+        <text x="75" y="170" class="dg-label" text-anchor="middle">electron cloud shifts</text>
+        <text x="75" y="185" class="dg-label" text-anchor="middle">against <tspan class="dg-math">E</tspan></text>
+        <line x1="74" y1="84" x2="58" y2="84" class="dg-acc" stroke-width="1.6" marker-end="url(#m7f2-b)"/>
+        <text x="66" y="76" class="dg-label" text-anchor="middle">shift</text>
+        <line x1="74" y1="120" x2="104" y2="120" class="dg-rule" stroke-width="0.9"/>
+        <text x="107" y="124" class="dg-label">nucleus</text>
+        <!-- (b) ionic -->
+        <text x="178" y="52" class="dg-label" style="font-weight:600">(b) ionic</text>
+        <!-- field-free positions, dashed -->
+        <g class="dg-guide" stroke-width="1" stroke-dasharray="2.5 2.5">
+          <circle cx="200" cy="120" r="10"/><circle cx="250" cy="120" r="6.5"/><circle cx="300" cy="120" r="10"/><circle cx="350" cy="120" r="6.5"/><circle cx="400" cy="120" r="10"/>
+        </g>
+        <!-- bonds -->
+        <line x1="208" y1="120" x2="240" y2="120" class="dg-line" stroke-width="1.6"/>
+        <line x1="251" y1="120" x2="298" y2="120" class="dg-line" stroke-width="1.6"/>
+        <line x1="316" y1="120" x2="340" y2="120" class="dg-line" stroke-width="1.6"/>
+        <line x1="351" y1="120" x2="398" y2="120" class="dg-line" stroke-width="1.6"/>
+        <!-- Hf: filled hexagon (displaced +6) ; O: open circle (displaced -6) -->
+        <polygon points="216,120 211,128.7 201,128.7 196,120 201,111.3 211,111.3" class="dg-soft"/>
+        <polygon points="216,120 211,128.7 201,128.7 196,120 201,111.3 211,111.3" class="dg-line" stroke-width="1.3"/>
+        <circle cx="244" cy="120" r="6.5" class="dg-fill" stroke-width="0"/><circle cx="244" cy="120" r="6.5" class="dg-line" stroke-width="1.3"/>
+        <polygon points="316,120 311,128.7 301,128.7 296,120 301,111.3 311,111.3" class="dg-soft"/>
+        <polygon points="316,120 311,128.7 301,128.7 296,120 301,111.3 311,111.3" class="dg-line" stroke-width="1.3"/>
+        <circle cx="344" cy="120" r="6.5" class="dg-fill" stroke-width="0"/><circle cx="344" cy="120" r="6.5" class="dg-line" stroke-width="1.3"/>
+        <polygon points="416,120 411,128.7 401,128.7 396,120 401,111.3 411,111.3" class="dg-soft"/>
+        <polygon points="416,120 411,128.7 401,128.7 396,120 401,111.3 411,111.3" class="dg-line" stroke-width="1.3"/>
+        <!-- displacement arrows -->
+        <line x1="200" y1="96" x2="214" y2="96" class="dg-acc" stroke-width="1.6" marker-end="url(#m7f2-b)"/>
+        <line x1="300" y1="96" x2="314" y2="96" class="dg-acc" stroke-width="1.6" marker-end="url(#m7f2-b)"/>
+        <line x1="400" y1="96" x2="414" y2="96" class="dg-acc" stroke-width="1.6" marker-end="url(#m7f2-b)"/>
+        <line x1="250" y1="144" x2="236" y2="144" class="dg-acc" stroke-width="1.6" marker-end="url(#m7f2-b)"/>
+        <line x1="350" y1="144" x2="336" y2="144" class="dg-acc" stroke-width="1.6" marker-end="url(#m7f2-b)"/>
+        <text x="206" y="84" class="dg-label" text-anchor="middle">Hf</text>
+        <text x="306" y="84" class="dg-label" text-anchor="middle">Hf</text>
+        <text x="406" y="84" class="dg-label" text-anchor="middle">Hf</text>
+        <text x="244" y="164" class="dg-label" text-anchor="middle">O</text>
+        <text x="344" y="164" class="dg-label" text-anchor="middle">O</text>
+        <text x="300" y="188" class="dg-label" text-anchor="middle">cations move with <tspan class="dg-math">E</tspan>, anions against;</text>
+        <text x="300" y="203" class="dg-label" text-anchor="middle">dashed: field-free positions</text>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> The two polarisation mechanisms of a gate dielectric. (a) The electron cloud
+        of every atom shifts against the field relative to its nucleus. (b) In an ionic solid the
+        metal ions (here Hf, a filled hexagon — this module's glyph for hafnium) move along the field
+        and the oxygen ions (open circles) against it, stretching some metal–oxygen bonds and
+        compressing others. Both displacements are exaggerated many times; a one-dimensional chain
+        stands in for the three-dimensional lattice.
+      </figcaption>
+    </figure>
+
+    <p>
+      The electronic contribution is the dielectric constant the material shows at optical
+      frequencies, where only electrons are light enough to follow the field. It equals the square of
+      the refractive index, <em>n</em>². For silicon dioxide <em>n</em> ≈ 1.46, so the electronic
+      part is about 2.1 of its 3.9; for the wide-gap metal oxides of interest it is typically 4–5
+      (Robertson 2004). Electronic polarisation alone therefore cannot produce a dielectric constant
+      of 20–25. The remainder is ionic:
+    </p>
+
+    <div class="eq" id="eq-k-parts">
+      <div class="eq-body">
+        <div class="eq-math"><em>k</em> = <em>n</em><sup>2</sup> + <em>k</em><sub>lat</sub>, &nbsp;&nbsp;
+          <em>k</em><sub>lat</sub> ∝
+          <span class="frac"><span class="num"><em>N</em> <em>Z</em>*<sup>2</sup></span><span class="den"><em>μ</em> <em>ω</em><sub>TO</sub><sup>2</sup></span></span></div>
+        <div class="eq-num">(7.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>k</em> static dielectric constant (dimensionless) ·
+        <em>n</em> optical refractive index (dimensionless); <em>n</em>² is the electronic part ·
+        <em>k</em><sub>lat</sub> the ionic, or lattice, part ·
+        <em>N</em> number of ions per unit volume ·
+        <em>Z</em>* transverse, or Born, effective charge, in units of the electron charge: the
+        polarisation produced per unit displacement of an ion, which can exceed the ion's nominal
+        charge ·
+        <em>μ</em> reduced mass of the cation–anion pair ·
+        <em>ω</em><sub>TO</sub> angular frequency of the transverse optical phonon, the vibration in
+        which the two sublattices move against each other. In a harmonic lattice
+        <em>ω</em><sub>TO</sub><sup>2</sup> = <em>f</em>/<em>μ</em>, with <em>f</em> the restoring
+        force constant of that vibration (N/m), so the denominator
+        <em>μω</em><sub>TO</sub><sup>2</sup> is simply <em>f</em> and the masses cancel. Written as a proportionality to show the
+        dependences; Robertson (2004, eq. 11) gives the full expression. Applies at frequencies well
+        below the infrared, which includes every frequency a transistor operates at.
+      </div>
+    </div>
+
+    <p>
+      Equation (7.2) names what a large dielectric constant needs: a large effective charge, and a
+      soft restoring force against the displacement of one sublattice relative to the other — a
+      small force constant, which appears as a low optical-phonon frequency. The ionic masses do
+      not enter: a heavier ion lowers <em>ω</em><sub>TO</sub> but raises <em>μ</em> by exactly the
+      compensating amount, and in a harmonic lattice a static response cannot depend on how heavy
+      the ions are. The usual
+      first estimate of the effective charge is the ionic character of the bond, which can be
+      estimated from electronegativities with equation
+      (5a.1) of <a href="m05a-bonds-and-structure.html">M05a §1</a>. With Pauling electronegativities
+      of oxygen 3.44, silicon 1.90, aluminium 1.61, tantalum 1.5, zirconium 1.33 and hafnium 1.3,
+      the Si–O bond is 45% ionic, Al–O 57%, Ta–O 61%, Zr–O 67% and Hf–O 68%. For Hf–O the
+      electronegativity difference is 3.44 − 1.3 = 2.14, (2.14)²/4 = 1.14, and 1 − e<sup>−1.14</sup>
+      = 0.68.
+    </p>
+    <p>
+      Ionic character is only a rough guide, for two reasons. The first is that the effective
+      charge is not the static charge of the ion. In HfO₂ it is anomalously large — calculated as
+      5.85 for hafnium in cubic HfO₂, against a nominal ionic charge of +4 — because electronic
+      charge flows along the Hf–O bond as its length changes, which requires the bond to be partly
+      covalent; a purely ionic bond would give about the nominal charge (Zhao &amp; Vanderbilt
+      2002). The second is that (7.2) has a denominator as well as a numerator. Al₂O₃ is more ionic
+      than SiO₂ yet reaches only k = 9, because its Al–O bonds are stiff and its effective charges
+      modest. Hafnium and zirconium oxides combine large effective charges with soft polar
+      vibrations and reach 20–25; Robertson calls oxides of this kind incipient ferroelectrics,
+      materials whose polar vibration is so soft that the lattice is close to distorting
+      spontaneously into a polarised state. Ta₂O₅, less ionic than either by the electronegativity
+      estimate, matches them. Of HfO₂'s dielectric constant of about 24,
+      roughly 4 is electronic and roughly 20 ionic; of SiO₂'s 3.9, about 2.1 is electronic and 1.8
+      ionic.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 236" role="img" aria-labelledby="m7f3-t">
+        <title id="m7f3-t">Dielectric constant against frequency on a logarithmic axis: the static value including the ionic contribution holds up to about ten to the twelve hertz, falls to the electronic value n squared through the infrared, and falls to one above about ten to the fifteen hertz; the transistor operating band from 100 megahertz to 10 gigahertz lies far below both</title>
+        <!-- axes -->
+        <line x1="50" y1="190" x2="420" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="50" y1="190" x2="50" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <!-- decades 1e6..1e17 over 50..420: 33.6 px/decade -->
+        <g class="dg-rule" stroke-width="1">
+          <line x1="50" y1="190" x2="50" y2="195"/>
+          <line x1="150.9" y1="190" x2="150.9" y2="195"/>
+          <line x1="251.8" y1="190" x2="251.8" y2="195"/>
+          <line x1="352.7" y1="190" x2="352.7" y2="195"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="50" y="209">10<tspan baseline-shift="super" style="font-size:75%">6</tspan></text>
+          <text x="150.9" y="209">10<tspan baseline-shift="super" style="font-size:75%">9</tspan></text>
+          <text x="251.8" y="209">10<tspan baseline-shift="super" style="font-size:75%">12</tspan></text>
+          <text x="352.7" y="209">10<tspan baseline-shift="super" style="font-size:75%">15</tspan></text>
+        </g>
+        <text x="235" y="229" class="dg-label" text-anchor="middle">frequency (Hz), log scale</text>
+        <text x="56" y="26" class="dg-label">k</text>
+        <!-- CMOS band 1e8..1e10 -->
+        <rect x="117.3" y="36" width="67.3" height="154" class="dg-fill" stroke-width="0" opacity="0.55"/>
+        <text x="151" y="178" class="dg-label" text-anchor="middle">CMOS</text>
+        <!-- curve -->
+        <path d="M50,60 H245 C258,60 256,52 262,70 C268,90 270,142 284,142 H340 C350,142 350,136 356,152 C362,170 364,182 380,182 H420" class="dg-acc" stroke-width="2.2"/>
+        <!-- level labels -->
+        <text x="196" y="52" class="dg-label" text-anchor="middle">static: ionic + electronic</text>
+        <text x="312" y="134" class="dg-label" text-anchor="middle">n² only</text>
+        <text x="400" y="174" class="dg-label" text-anchor="middle">1</text>
+        <g class="dg-label" text-anchor="end">
+          <text x="44" y="64">≈ 24</text>
+          <text x="44" y="146">4–5</text>
+        </g>
+        <line x1="50" y1="142" x2="284" y2="142" class="dg-guide" stroke-width="0.9" stroke-dasharray="3 3"/>
+        <text x="254" y="96" class="dg-label" text-anchor="end">ions stop</text>
+        <text x="254" y="110" class="dg-label" text-anchor="end">following</text>
+        <text x="356" y="118" class="dg-label">electrons</text>
+        <text x="356" y="132" class="dg-label">stop</text>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> How each contribution drops out as the frequency rises, drawn for an oxide
+        like HfO₂. The ions can no longer follow the field in the infrared, near 10¹² Hz; above that
+        only the electronic part, <em>n</em>², remains, until the electrons too cease to follow, in
+        the ultraviolet near 10¹⁵ Hz. Transistors operate at 100 MHz–10 GHz (shaded), far below both
+        cut-offs, so the full static dielectric constant applies. Schematic: the resonance structure
+        at each step is smoothed and the vertical axis is not to scale. After Wilk, Wallace &amp;
+        Anthony (2001), Fig. 26.
+      </figcaption>
+    </figure>
+
+    <p>
+      The same electronic structure that gives a large dielectric constant gives a small band gap.
+      In SiO₂ the gap separates oxygen non-bonding states at the top of the valence band from Si–O
+      antibonding states at the bottom of the conduction band, and it is about 9 eV. In a
+      transition-metal oxide such as HfO₂, ZrO₂ or Ta₂O₅ the valence band is again oxygen-like, but
+      the conduction band is formed from the metal's empty d orbitals, which lie much lower in energy,
+      so the gap narrows to 4–6 eV (Wilk <i>et al.</i> 2001; Robertson 2004). Across the candidates the
+      dielectric constant and the band gap vary inversely. The relation is empirical, with
+      exceptions, but it holds well enough to make every high-k choice a trade.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 290" role="img" aria-labelledby="m7f4-t">
+        <title id="m7f4-t">Band gap against dielectric constant on a logarithmic axis for SiO2, Si3N4, Al2O3, HfO2, ZrO2, Ta2O5, TiO2 and SrTiO3: the gap falls from about 9 eV at k 3.9 to about 3 eV at k 2000; filled points are the notes' table, open points Robertson's 2004 values, and the notes' ZrO2 point at 7.8 eV lies off the trend</title>
+        <line x1="50" y1="250" x2="420" y2="250" class="dg-rule" stroke-width="1.2"/>
+        <line x1="50" y1="250" x2="50" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="1">
+          <line x1="114.5" y1="250" x2="114.5" y2="255"/><line x1="237.8" y1="250" x2="237.8" y2="255"/><line x1="361.1" y1="250" x2="361.1" y2="255"/>
+          <line x1="45" y1="250" x2="50" y2="250"/><line x1="45" y1="210" x2="50" y2="210"/><line x1="45" y1="170" x2="50" y2="170"/><line x1="45" y1="130" x2="50" y2="130"/><line x1="45" y1="90" x2="50" y2="90"/><line x1="45" y1="50" x2="50" y2="50"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="114.5" y="269">10</text><text x="237.8" y="269">100</text><text x="361.1" y="269">1000</text>
+        </g>
+        <text x="235" y="286" class="dg-label" text-anchor="middle">dielectric constant k, log scale</text>
+        <g class="dg-label" text-anchor="end">
+          <text x="42" y="254">0</text><text x="42" y="214">2</text><text x="42" y="174">4</text><text x="42" y="134">6</text><text x="42" y="94">8</text><text x="42" y="54">10</text>
+        </g>
+        <text x="56" y="36" class="dg-label"><tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">g</tspan> (eV)</text>
+        <!-- trend through Robertson's oxide points: SiO2, Al2O3, HfO2/ZrO2, TiO2, SrTiO3 -->
+        <path d="M60,66 C85,68 100,70 109,76 C125,88 140,125 160,146 C180,165 200,176 226,178 C280,183 340,186 404,187" class="dg-guide" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="300" y="173" class="dg-label">oxide trend</text>
+        <!-- Robertson 2004, open circles (x from log k, y = 250 - 20 Eg) -->
+        <g class="dg-fill" stroke-width="0">
+          <circle cx="64.1" cy="70" r="5.4"/><circle cx="95.4" cy="144" r="5.4"/><circle cx="108.8" cy="74" r="5.4"/><circle cx="156.7" cy="162" r="5.4"/><circle cx="163.6" cy="134" r="5.4"/><circle cx="225.8" cy="180" r="5.4"/><circle cx="398.2" cy="186" r="5.4"/>
+        </g>
+        <g class="dg-line" stroke-width="1.3" fill="none">
+          <circle cx="64.1" cy="70" r="5.4"/><circle cx="95.4" cy="144" r="5.4"/><circle cx="108.8" cy="74" r="5.4"/><circle cx="156.7" cy="162" r="5.4"/><circle cx="163.6" cy="134" r="5.4"/><circle cx="225.8" cy="180" r="5.4"/><circle cx="398.2" cy="186" r="5.4"/>
+        </g>
+        <!-- notes p.49, filled squares centred on their values -->
+        <g class="dg-ink">
+          <rect x="61.3" y="69.2" width="5.6" height="5.6"/><rect x="92.6" y="145.2" width="5.6" height="5.6"/><rect x="106" y="73.2" width="5.6" height="5.6"/><rect x="162.9" y="157.2" width="5.6" height="5.6"/><rect x="158.6" y="133.2" width="5.6" height="5.6"/>
+        </g>
+        <!-- the outlier: notes' ZrO2 at k 25, 7.8 eV -->
+        <rect x="159.6" y="90" width="8" height="8" class="dg-acc-f"/>
+        <!-- labels -->
+        <text x="72" y="60" class="dg-label">SiO₂</text>
+        <text x="118" y="82" class="dg-label">Al₂O₃</text>
+        <text x="87" y="166" class="dg-label" text-anchor="end">Si₃N₄</text>
+        <text x="174" y="98" class="dg-label">ZrO₂ 7.8 eV, notes' table</text>
+        <text x="172" y="132" class="dg-label">HfO₂, ZrO₂</text>
+        <text x="150" y="181" class="dg-label" text-anchor="end">Ta₂O₅</text>
+        <text x="226" y="200" class="dg-label" text-anchor="middle">TiO₂</text>
+        <text x="398" y="206" class="dg-label" text-anchor="middle">SrTiO₃</text>
+        <!-- legend -->
+        <rect x="282.2" y="54.2" width="5.6" height="5.6" class="dg-ink"/>
+        <text x="296" y="62" class="dg-label">notes, p. 49 table</text>
+        <circle cx="285" cy="78" r="5.4" class="dg-fill" stroke-width="0"/><circle cx="285" cy="78" r="5.4" class="dg-line" stroke-width="1.3"/>
+        <text x="296" y="82" class="dg-label">Robertson (2004)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> Band gap against dielectric constant. Filled squares are the notes' p. 49
+        values; open circles are Robertson's 2004 values, which add TiO₂ (k 80, 3.5 eV) and SrTiO₃
+        (k 2000, 3.2 eV) to show where the trend leads. Where the two sources nearly agree the square
+        sits inside the circle. Among the oxides the gap falls from 9 eV to about 3 eV as k rises
+        from 3.9 to 2000 (dashed guide); Si₃N₄, a nitride, lies below the oxides' trend. The notes'
+        ZrO₂ value of 7.8 eV (accent square) lies well above it. It is an older measurement, which the notes themselves
+        replace with 5.1 eV on p. 66; Robertson gives 5.8 eV, the same as HfO₂ (§8.3).
+      </figcaption>
+    </figure>
+
+    <p>
+      The consequence for the gate is a compromise. A dielectric constant in the hundreds, such as
+      that of the perovskite titanates, would allow a very thick film, but it comes with a band gap
+      near 3 eV and, as §5 shows, a barrier to electrons at the silicon interface that is close to
+      zero. The gate candidates therefore sit in the middle of Figure 4, at k between 9 and 26 and
+      band gaps between 4.5 and 9 eV.
+    </p>
+
+    <h2 id="s3">3 · Equivalent oxide thickness</h2>
+
+    <p>
+      A replacement dielectric must be thicker than the oxide it replaces, to cut the tunnelling
+      current, and yet must behave in the transistor exactly as that oxide did. The notes (p. 50)
+      reconcile the two with a single quantity, the equivalent oxide thickness. It is the most-used
+      number in the high-k literature, and every film in §8 is described by it.
+    </p>
+    <p>
+      The notes state the requirement: the replacement oxide should be thicker to reduce the
+      tunnelling current yet maintain the same MOSFET drive current capability, and it must be
+      possible to achieve the same equivalent thickness as required for SiO₂. The drive current, the
+      threshold voltage (<a href="m03-threshold-voltage.html">M03</a>) and the gate's control of the
+      channel all depend on the dielectric through its capacitance per unit area, so two films that
+      give the same capacitance are interchangeable as far as those quantities go. Setting the
+      capacitance of a high-k film, equation (7.1), equal to that of an SiO₂ film of thickness
+      <em>t</em><sub>ox,eq</sub> gives <em>k</em><em>ε</em><sub>0</sub>/<em>t</em><sub>high-k</sub> =
+      3.9<em>ε</em><sub>0</sub>/<em>t</em><sub>ox,eq</sub>, and so:
+    </p>
+
+    <div class="eq" id="eq-eot">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em><sub>ox,eq</sub> = <em>t</em><sub>high-k</sub>
+          <span class="dl">(</span><span class="frac"><span class="num"><em>ε</em><sub>ox</sub></span><span class="den"><em>ε</em><sub>high-k</sub></span></span><span class="dl">)</span> =
+          <em>t</em><sub>high-k</sub>
+          <span class="dl">(</span><span class="frac"><span class="num">3.9</span><span class="den"><em>k</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(7.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>ox,eq</sub> equivalent oxide thickness, EOT: the thickness of SiO₂ that gives
+        the same capacitance per unit area (nm or Å) ·
+        <em>t</em><sub>high-k</sub> physical thickness of the high-k film (the same unit) ·
+        <em>ε</em><sub>ox</sub> = 3.9, the dielectric constant of SiO₂ · <em>ε</em><sub>high-k</sub>
+        = <em>k</em>, that of the film (both dimensionless). The notes' form first, then this
+        module's. Any length unit works, since the ratio is dimensionless. For a single uniform film;
+        a stack of layers needs equation (7.6).
+      </div>
+    </div>
+
+    <p>
+      Equation (7.3) says the film is electrically thinner than it is physically by the factor
+      <em>k</em>/3.9. The notes' example (p. 50) is a high-k film 10 nm thick with
+      <em>k</em> = 20, which "will behave in the same way in a MOSFET as an SiO₂ layer with a
+      thickness of ~2 nm".
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The notes' case: 10 nm of a k = 20 dielectric</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>t</em><sub>high-k</sub> = 10 nm, <em>k</em> = 20. Find the equivalent
+          oxide thickness.</p>
+        <p class="ex-step"><b>Equation (7.3).</b> <em>t</em><sub>ox,eq</sub> = 10 nm × 3.9/20 =
+          10 nm × 0.195 = 1.95 nm.</p>
+        <p class="ex-answer"><em>t</em><sub>ox,eq</sub> = 1.95 nm ≈ 2 nm: five times thinner
+          electrically than physically.</p>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Changed numbers: the physical thickness for a 1.0 nm EOT</div>
+      <div class="ex-body">
+        <p><b>Given</b> a target EOT of 1.0 nm. Find the physical thickness required of HfO₂, taking
+          the notes' table value <em>k</em> = 24, and of Al₂O₃, <em>k</em> = 9.</p>
+        <p class="ex-step"><b>Rearrange (7.3).</b> <em>t</em><sub>high-k</sub> =
+          <em>t</em><sub>ox,eq</sub> × <em>k</em>/3.9.</p>
+        <p class="ex-step"><b>HfO₂.</b> 1.0 nm × 24/3.9 = 6.15 nm.</p>
+        <p class="ex-step"><b>Al₂O₃.</b> 1.0 nm × 9/3.9 = 2.31 nm.</p>
+        <p class="ex-answer">HfO₂ 6.2 nm, Al₂O₃ 2.3 nm. The HfO₂ film is six times thicker than the
+          1.0 nm of SiO₂ it replaces; the Al₂O₃ film gains only a factor of 2.3.</p>
+      </div>
+    </div>
+
+    <p>
+      What the extra thickness buys is fixed by tunnelling, whose probability depends on the
+      <b>physical</b> thickness, not the equivalent one. For direct tunnelling through a barrier of
+      height <em>qφ</em><sub>B</sub> and thickness <em>t</em>, the Wentzel–Kramers–Brillouin (WKB)
+      approximation — the standard estimate of the probability that a particle crosses a classically
+      forbidden region — gives, at low bias:
+    </p>
+
+    <div class="eq" id="eq-tunnel">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em> ≈ exp&thinsp;<span class="dl">(</span>−<span class="frac"><span class="num">2<em>t</em>√<span style="text-decoration:overline">2<em>m</em>*<em>qφ</em><sub>B</sub></span></span><span class="den"><em>ħ</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(7.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em> probability that an electron at the silicon conduction-band edge crosses the
+        dielectric (dimensionless) ·
+        <em>t</em> physical thickness of the dielectric (m) ·
+        <em>m</em>* effective mass of the electron inside the dielectric (kg) ·
+        <em>qφ</em><sub>B</sub> barrier height, the conduction-band offset between silicon and the
+        dielectric (J; 1 eV = 1.602×10⁻¹⁹ J) ·
+        <em>ħ</em> reduced Planck constant, 1.055×10⁻³⁴ J·s. SI units throughout. A rectangular
+        barrier at low bias; the current density is proportional to <em>T</em>. It shows the
+        dependences only — the absolute current needs the full calculation of
+        <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06 §1</a>.
+      </div>
+    </div>
+
+    <p>
+      The exponent is linear in the physical thickness, so at a fixed equivalent thickness a film
+      with a larger <em>k</em> is proportionally thicker and its tunnelling probability is smaller
+      by an exponential factor. The same exponent also contains the barrier height and the effective
+      mass, under a square root, and these are generally smaller in a high-k material than in SiO₂.
+      Taur and Ning therefore rank candidates by a figure of merit that combines all three,
+      <em>k</em>√(<em>m</em>*<em>φ</em><sub>B</sub>), relative to its value for SiO₂: a high
+      dielectric constant is worth little if it comes with a small barrier. §5.2 returns to the
+      barrier.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 244" role="img" aria-labelledby="m7f5-t">
+        <title id="m7f5-t">Two gate stacks with the same capacitance drawn to scale: 2 nanometres of silicon dioxide, and 10 nanometres of a dielectric with k equal to 20; the electron must tunnel through the full physical thickness of each</title>
+        <defs>
+          <marker id="m7f5-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="m7f5-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+        <!-- scale: 10 px per nm; both silicon surfaces at y = 186 -->
+        <!-- left stack: gate 116-166, SiO2 166-186 (20 = 2 nm), Si 186-226 -->
+        <rect x="40" y="116" width="130" height="50" class="dg-fill"/>
+        <text x="105" y="146" class="dg-label" text-anchor="middle">gate</text>
+        <rect x="40" y="166" width="130" height="20" class="dg-fill"/>
+        <rect x="40" y="166" width="130" height="20" class="dg-soft" opacity="0.28"/>
+        <text x="105" y="180" class="dg-label" text-anchor="middle">SiO₂</text>
+        <rect x="40" y="186" width="130" height="40" class="dg-fill"/>
+        <text x="105" y="212" class="dg-label" text-anchor="middle">p-Si</text>
+        <!-- right stack: gate 36-86, high-k 86-186 (100 = 10 nm), Si 186-226 -->
+        <rect x="260" y="36" width="130" height="50" class="dg-fill"/>
+        <text x="325" y="66" class="dg-label" text-anchor="middle">gate</text>
+        <rect x="260" y="86" width="130" height="100" class="dg-fill"/>
+        <rect x="260" y="86" width="130" height="100" class="dg-soft" opacity="0.28"/>
+        <text x="325" y="132" class="dg-label" text-anchor="middle">high-k,</text>
+        <text x="325" y="147" class="dg-label" text-anchor="middle">k = 20</text>
+        <rect x="260" y="186" width="130" height="40" class="dg-fill"/>
+        <text x="325" y="212" class="dg-label" text-anchor="middle">p-Si</text>
+        <!-- tunnelling paths -->
+        <line x1="185" y1="186" x2="185" y2="166" class="dg-line" stroke-width="1.6" marker-end="url(#m7f5-b)"/>
+        <text x="192" y="180" class="dg-label">2 nm</text>
+        <line x1="405" y1="186" x2="405" y2="86" class="dg-acc" stroke-width="2" marker-end="url(#m7f5-a)"/>
+        <text x="410" y="132" class="dg-label">10</text>
+        <text x="410" y="147" class="dg-label">nm</text>
+        <text x="220" y="22" class="dg-label" text-anchor="middle">same capacitance per unit area: EOT = 2 nm for both</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> The notes' example drawn to scale, 10 px per nanometre, dielectrics shaded. Both stacks give the
+        same capacitance and therefore the same channel charge; the left gate sits 2 nm above the
+        silicon, the right one 10 nm. An electron tunnelling from the channel must cross the physical
+        thickness (arrows), five times greater on the right, and the tunnelling probability of
+        equation (7.4) falls exponentially with that distance.
+      </figcaption>
+    </figure>
+
+    <p>
+      The notes put a number on the benefit for one real film (p. 67): an HfO₂ capacitor with an EOT
+      of 12 Å leaked four orders of magnitude less current than an SiO₂ capacitor of the same 12 Å.
+      The HfO₂ film was 38 Å thick (Wolf p. 175), about three times the SiO₂. Across the same 26 Å of
+      extra thickness, SiO₂'s own leakage would fall by far more than four decades (M06 §2 puts the
+      slope at six to seven decades per nanometre). The HfO₂ film gains less per nanometre because its
+      barrier to electrons is lower, about 1.4 eV against 3.1 eV for SiO₂ (§5.2), and its electron
+      effective mass is smaller: both enter the exponent of (7.4) through the square root.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Equivalent in the vertical direction only — beyond the notes</p>
+      <p>
+        EOT describes the field perpendicular to the channel, which sets the channel charge. A
+        short-channel transistor is also governed by the field that fringes from the drain through
+        the edges of the gate dielectric toward the source, and that field depends on the physical
+        thickness, not on <em>k</em>. Taur and Ning (§4.6.1.6) state that the physical thickness of
+        the gate insulator still needs to scale with the channel length however high <em>k</em> is,
+        and Robertson notes that a very large <em>k</em> gives undesirably strong fringing fields at
+        the source and drain. At a fixed equivalent thickness, therefore, the largest available
+        <em>k</em> is not automatically the best: it makes the film physically thick, and the drain's
+        field reaches the channel through the film's edges. §5.1 gives a second, separate reason for
+        an optimum dielectric constant, found at a fixed physical thickness.
+      </p>
+    </div>
+
+    <h2 id="s4">4 · Dielectrics in series</h2>
+
+    <p>
+      A high-k gate dielectric is almost never a single layer. A thin layer of silicon dioxide lies
+      between the high-k film and the silicon, sometimes grown on purpose (§6) and sometimes formed
+      unintentionally during deposition or annealing (§5.3), and the notes turn to it immediately
+      after the equivalent thickness: "an interfacial layer of SiO₂ will limit the highest possible
+      gate stack capacitance" (p. 50). This section derives the rule for a stack and the floor that
+      the lowest-k layer places under it.
+    </p>
+    <p>
+      In a stack of dielectric layers between the gate and the channel, the same charge per unit area
+      terminates on each interface, because no free charge sits between the layers, while the applied
+      voltage divides among the layers in proportion to their thickness divided by their dielectric
+      constant. That is the definition of capacitors in series, and the notes write it for two layers
+      (p. 51):
+    </p>
+
+    <div class="eq" id="eq-series">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>tot</sub></span></span> =
+          <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>1</sub></span></span> +
+          <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>2</sub></span></span></div>
+        <div class="eq-num">(7.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>tot</sub> capacitance per unit area of the whole stack (F/cm²) ·
+        <em>C</em><sub>1</sub>, <em>C</em><sub>2</sub> capacitances per unit area of the individual
+        layers, each from equation (7.1) (F/cm²). Extends to any number of layers by adding a term
+        per layer. Holds when the layers carry no charge of their own between them; trapped charge
+        shifts the threshold voltage but does not change the capacitance.
+      </div>
+    </div>
+
+    <p>
+      Each term 1/<em>C</em><sub>i</sub> = <em>t</em><sub>i</sub>/(<em>k</em><sub>i</sub><em>ε</em><sub>0</sub>)
+      is a thickness divided by a dielectric constant, so the reciprocal capacitances add as
+      thicknesses. Writing the stack's capacitance as 3.9<em>ε</em><sub>0</sub>/<em>t</em><sub>ox,eq</sub>
+      and multiplying through by 3.9<em>ε</em><sub>0</sub> converts every layer to its SiO₂
+      equivalent, and the equivalent thicknesses add. For an SiO₂ layer beneath a high-k film:
+    </p>
+
+    <div class="eq" id="eq-eot-stack">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em><sub>ox,eq</sub> = <em>t</em><sub>SiO₂</sub> + <em>t</em><sub>high-k</sub>
+          <span class="dl">(</span><span class="frac"><span class="num">3.9</span><span class="den"><em>k</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(7.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>ox,eq</sub> equivalent oxide thickness of the stack ·
+        <em>t</em><sub>SiO₂</sub> physical thickness of the SiO₂ interfacial layer, which counts at
+        full value because its <em>k</em> is 3.9 ·
+        <em>t</em><sub>high-k</sub> physical thickness of the high-k layer · <em>k</em> its dielectric
+        constant (dimensionless). All thicknesses in one unit (nm or Å). The notes' form (p. 51) and
+        Wolf's Eq. (4.3); the general rule is <em>t</em><sub>ox,eq</sub> = Σ
+        <em>t</em><sub>i</sub>(3.9/<em>k</em><sub>i</sub>) over all layers, so an interlayer of
+        another low-k material, such as an oxynitride, enters with its own <em>k</em>.
+      </div>
+    </div>
+
+    <p>
+      The notes draw the conclusion (p. 50): in a stack of several dielectric materials, the layer
+      with the lowest <em>k</em> value dominates the overall capacitance and also sets a limit on the
+      minimum equivalent thickness. The reason is visible in (7.6). Raising the high-k layer's
+      dielectric constant shrinks only the second term; the first term does not change, so however
+      high <em>k</em> becomes, the stack can never be electrically thinner than its interfacial
+      oxide. In Wolf's words, a bilayer approach necessarily compromises the performance of the
+      high-k film.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 214" role="img" aria-labelledby="m7f6-t">
+        <title id="m7f6-t">Equivalent oxide thickness of a stack of 0.6 nanometres of silicon dioxide under 3.8 nanometres of a high-k layer, for top-layer k of 9, 24, 80 and infinity: 2.25, 1.22, 0.79 and 0.60 nanometres, the interfacial oxide contributing a fixed 0.6 nanometres to every bar</title>
+        <!-- scale: 0..2.5 nm over x 110..410 -> 120 px/nm -->
+        <line x1="110" y1="176" x2="410" y2="176" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="1">
+          <line x1="110" y1="176" x2="110" y2="181"/><line x1="170" y1="176" x2="170" y2="181"/><line x1="230" y1="176" x2="230" y2="181"/><line x1="290" y1="176" x2="290" y2="181"/><line x1="350" y1="176" x2="350" y2="181"/><line x1="410" y1="176" x2="410" y2="181"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="110" y="195">0</text><text x="170" y="195">0.5</text><text x="230" y="195">1.0</text><text x="290" y="195">1.5</text><text x="350" y="195">2.0</text><text x="410" y="195">2.5</text>
+        </g>
+        <text x="260" y="211" class="dg-label" text-anchor="middle">equivalent oxide thickness (nm)</text>
+        <!-- floor line -->
+        <line x1="182" y1="20" x2="182" y2="176" class="dg-guide" stroke-width="1.1" stroke-dasharray="4 3"/>
+        <text x="186" y="18" class="dg-label">floor = 0.6 nm of SiO₂</text>
+        <!-- rows -->
+        <g class="dg-label" text-anchor="end">
+          <text x="102" y="46">top k = 9</text>
+          <text x="102" y="82">k = 24</text>
+          <text x="102" y="118">k = 80</text>
+          <text x="102" y="154">k → ∞</text>
+        </g>
+        <rect x="110" y="32" width="72" height="20" class="dg-acc-f"/>
+        <rect x="182" y="32" width="197.6" height="20" class="dg-fill"/>
+        <rect x="128" y="35" width="36" height="14" rx="2" class="dg-fill"/>
+        <text x="146" y="46" class="dg-label" text-anchor="middle">SiO₂</text>
+        <text x="280" y="46" class="dg-label" text-anchor="middle">high-k</text>
+        <text x="384" y="47" class="dg-label">2.25</text>
+        <rect x="110" y="68" width="72" height="20" class="dg-acc-f"/>
+        <rect x="182" y="68" width="74.1" height="20" class="dg-fill"/>
+        <text x="262" y="83" class="dg-label">1.22</text>
+        <rect x="110" y="104" width="72" height="20" class="dg-acc-f"/>
+        <rect x="182" y="104" width="22.2" height="20" class="dg-fill"/>
+        <text x="210" y="119" class="dg-label">0.79</text>
+        <rect x="110" y="140" width="72" height="20" class="dg-acc-f"/>
+        <text x="190" y="155" class="dg-label">0.60</text>
+      </svg>
+      <figcaption>
+        <b>Figure 6.</b> Equation (7.6) for a fixed physical stack, 0.6 nm of SiO₂ under 3.8 nm of
+        high-k film, as the top layer's dielectric constant rises. The interfacial oxide (accent)
+        contributes the same 0.6 nm to every bar; only the high-k share (open) shrinks, from 1.65 nm
+        at k = 9 to 0.62 nm at k = 24 and toward zero. At k = 24 the interfacial oxide is already half
+        of the total; at k = 80 it is three-quarters.
+      </figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">A two-layer stack</div>
+      <div class="ex-body">
+        <p><b>Given</b> 0.5 nm of SiO₂ under 3.0 nm of HfO₂, <em>k</em> = 24 (the notes' table).
+          Find the EOT.</p>
+        <p class="ex-step"><b>High-k term.</b> 3.0 nm × 3.9/24 = 0.49 nm.</p>
+        <p class="ex-step"><b>Equation (7.6).</b> <em>t</em><sub>ox,eq</sub> = 0.5 nm + 0.49 nm =
+          0.99 nm.</p>
+        <p class="ex-answer"><em>t</em><sub>ox,eq</sub> ≈ 1.0 nm, half of it from a layer one-seventh
+          of the stack's physical thickness.</p>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Reading an interlayer out of a measurement: the notes' 12 Å HfO₂ stack</div>
+      <div class="ex-body">
+        <p><b>Given</b> the HfO₂ capacitor of the notes (p. 67), EOT 12 Å, whose HfO₂ layer Wolf
+          (p. 175) reports as 38 Å thick. Take <em>k</em> = 24. How much SiO₂-equivalent thickness is
+          not accounted for by the HfO₂?</p>
+        <p class="ex-step"><b>HfO₂ term, (7.3).</b> 38 Å × 3.9/24 = 6.2 Å.</p>
+        <p class="ex-step"><b>Remainder, from (7.6).</b> 12 Å − 6.2 Å = 5.8 Å.</p>
+        <p class="ex-step"><b>Compare.</b> The same report's electron micrographs show an interfacial
+          layer of about 6 Å between the HfO₂ and the silicon substrate (Wolf Fig. 4-17).</p>
+        <p class="ex-answer">About 6 Å — half of the stack's equivalent thickness is the interlayer,
+          and the micrograph confirms it is there.</p>
+      </div>
+    </div>
+
+    <p>
+      The same arithmetic exposes an interlayer wherever a measured equivalent thickness exceeds what
+      (7.3) predicts for the high-k film alone. Wolf reports (p. 156) that a 10 nm Ta₂O₅ film,
+      deposited on the polysilicon electrode of a DRAM capacitor, has an equivalent thickness of
+      2.5 nm; equation (7.3) with the notes' <em>k</em> = 25 gives 10 × 3.9/25 = 1.56 nm, so about
+      0.9 nm of SiO₂-equivalent thickness is not accounted for by the Ta₂O₅ (with <em>k</em> = 26 the
+      remainder is 1.0 nm). Wolf names two lower-k layers in series that can hold it: the nitrided
+      surface of the polysilicon, and an oxide that grows beneath the Ta₂O₅ during its densifying
+      anneal in oxygen (pp. 156–157; <a href="m07b-high-k-memory-capacitors.html">M07b</a>). A film
+      whose <em>k</em> is below the bulk value shrinks the remainder: with Robertson's
+      <em>k</em> = 22 it is 0.7 nm. On a transistor the same remainder would be the interfacial
+      oxide.
+    </p>
+    <p>
+      The dielectric stack is not the only thing in series with the channel. The depleted layer at
+      the bottom of a polysilicon gate is a further series capacitance,
+      <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06 §6</a>, adding a few ångströms of
+      equivalent thickness. The inversion layer adds another few ångströms, because quantum
+      confinement holds the channel electrons a short distance below the interface rather than at
+      it. Robertson collects all three as an electrical thickness, EOT + <em>t</em><sub>gate</sub> +
+      <em>t</em><sub>Si</sub>. The gate term can be removed by a metal gate, which does not deplete
+      (§9); the channel term cannot.
+    </p>
+
+    <details class="check">
+      <summary>A process leaves 0.8 nm of interfacial SiO₂ that cannot be thinned further. What thickness of HfO₂ (k = 24) gives a stack EOT of 1.0 nm, and what does the answer say about the process? Can the same interlayer ever reach an EOT of 0.7 nm?</summary>
+      <div class="answer">
+        <p>
+          From (7.6), <em>t</em><sub>high-k</sub> = (<em>t</em><sub>ox,eq</sub> −
+          <em>t</em><sub>SiO₂</sub>) × <em>k</em>/3.9 = (1.0 − 0.8) nm × 24/3.9 = 1.23 nm. The whole
+          stack is then only 0.8 + 1.23 = 2.0 nm thick physically, against 1.0 nm for plain SiO₂ at the
+          same EOT: most of the leakage benefit of the high-k film has been spent on the interlayer,
+          and the high-k layer itself is barely thicker than a few atomic layers.
+        </p>
+        <p>
+          An EOT of 0.7 nm is impossible with this interlayer at any dielectric constant, because the
+          SiO₂ term alone is 0.8 nm and the high-k term cannot be negative. Reaching it requires a
+          thinner interlayer or an interlayer of higher <em>k</em> — the reason for the
+          silicate and oxynitride interfaces of §6.
+        </p>
+      </div>
+    </details>
+
+    <h2 id="s5">5 · What else a replacement must satisfy</h2>
+
+    <p>
+      A high dielectric constant is necessary and nowhere near sufficient. Silicon dioxide had been
+      the gate dielectric for forty years because it satisfied a long list of requirements at once —
+      the ten of <a href="m05-thin-gate-oxides-growth-charge.html">M05 §4</a> — and a replacement is
+      judged against the same list. The notes (p. 51) name two device consequences of a high-k gate
+      and one drawback. The literature adds the criteria that in the end decided which candidates
+      survived: an energy barrier high enough to stop electrons, chemical stability in contact with
+      silicon, and resistance to crystallisation. Robertson condenses the full list into six: enough
+      <em>k</em> to last several generations; thermodynamic stability on silicon; kinetic stability
+      through processing at 1000 °C for 5 s; band offsets with silicon above 1 eV; a good electrical
+      interface with silicon; and few electrically active defects in the bulk. §5.1 takes the notes'
+      points; §5.2–5.4 are <i>beyond the notes</i> and explain the fates of the candidates in §8.
+    </p>
+
+    <h3>5.1 Threshold roll-off, subthreshold swing and interface states</h3>
+
+    <p>
+      The notes' first point (p. 51): for MOSFETs scaled below 0.3 µm, the threshold voltage
+      <em>V</em><sub>T</sub> begins to decrease as the gate length is decreased, for a constant
+      channel doping and gate dielectric thickness. This is <b>threshold roll-off</b>, a short-channel
+      effect. In a long transistor the gate alone controls the depletion charge under it; in a short
+      one the source and drain junctions share control of part of that charge, so less gate voltage
+      is needed to invert the channel and <em>V</em><sub>T</sub> falls
+      (<a href="m05-thin-gate-oxides-growth-charge.html">M05 §3.1</a> treats the related
+      drain-induced barrier lowering). Wolf's Fig. 4-2a, from a two-dimensional device simulation
+      of silicon-on-insulator (SOI) transistors (<a href="m02-deep-submicron-roadmap.html">M02
+      §10</a>; Shimada and Ohmi 1996), shows smaller roll-off with
+      a Ta₂O₅ gate dielectric than with SiO₂. The explanation is the gate's share of control: at the
+      same physical thickness, a larger dielectric constant gives a larger gate capacitance per unit
+      area, which strengthens the gate's hold on the channel against the source and drain. At the
+      same equivalent thickness the argument weakens, for the reason given in the box at the end of
+      §3.
+    </p>
+    <p>
+      The second point concerns the <b>subthreshold swing</b>, <em>S</em><sub>t</sub> in the notes, which
+      they define as a measure of how effectively a MOSFET is turned off as the gate voltage is
+      decreased below <em>V</em><sub>T</sub>. Below threshold the drain current does not stop; it
+      falls exponentially with gate voltage (<a href="m05-thin-gate-oxides-growth-charge.html">M05
+      §3.1</a>), and the swing is the gate-voltage decrease needed to cut it by a factor of ten:
+    </p>
+
+    <div class="eq" id="eq-swing">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em><sub>t</sub> = 2.3
+          <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span>
+          <span class="dl">(</span>1 +
+          <span class="frac"><span class="num"><em>C</em><sub>d</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(7.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em><sub>t</sub> subthreshold swing, the gate voltage per decade of drain current
+        (mV/decade) · 2.3 ≈ ln 10 · <em>kT</em>/<em>q</em> thermal voltage, 25.85 mV at 300 K ·
+        <em>C</em><sub>d</sub> capacitance per unit area of the depletion layer in the silicon at
+        threshold (F/cm²) · <em>C</em><sub>ox</sub> gate dielectric capacitance per unit area, from
+        (7.1) or the stack rule (7.5) (F/cm²). Long-channel form, Taur &amp; Ning Eq. (5.40).
+        Interface traps add their own capacitance <em>C</em><sub>it</sub> to <em>C</em><sub>d</sub>,
+        in parallel with it (<a href="m05b-interface-defects-and-charge.html#s3">M05b §3.7</a>), and
+        raise the swing further.
+      </div>
+    </div>
+
+    <p>
+      The gate voltage divides between the dielectric and the silicon depletion layer, which act as
+      capacitors in series; only the part that reaches the silicon surface moves the current, so the
+      swing is the ideal value multiplied by 1 + <em>C</em><sub>d</sub>/<em>C</em><sub>ox</sub>. The
+      ideal, reached when <em>C</em><sub>ox</sub> is much larger than <em>C</em><sub>d</sub>, is
+      ln 10 × 25.85 mV = 59.5 mV per decade — the familiar 60 mV/decade at room temperature, which no
+      MOSFET can beat. The notes report that a value of 80 mV/decade can be achieved for a MOSFET
+      built with Ta₂O₅, and that a smaller value of <em>S</em><sub>t</sub> is better. Wolf adds
+      that values below 100 mV/decade are considered very good, and Taur and Ning give
+      70–100 mV/decade as typical.
+    </p>
+    <p>
+      The notes' 80 mV/decade is a short-channel figure. In Wolf's Fig. 4-2b, from the same
+      simulation as the roll-off data, it is the swing of the Ta₂O₅ device at the shortest channel
+      plotted, 0.05 µm, where the SiO₂ device reaches about 123 mV/decade; at 0.1 µm the pair is
+      about 65 and 75 mV/decade, and from 0.2 µm upward both lie near 60 mV/decade. Hence Wolf's
+      wording, that 80 mV/decade "can still be obtained" with the high-k film. The excess over
+      60 mV/decade at short channel lengths comes from the drain's influence on the channel, a
+      two-dimensional effect that equation (7.7) does not contain, so it is not a measure of
+      <em>C</em><sub>d</sub>/<em>C</em><sub>ox</sub>; the long-channel swing of the same device is
+      close to the ideal.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 240" role="img" aria-labelledby="m7f7-t">
+        <title id="m7f7-t">Drain current on a logarithmic axis against gate voltage below a threshold of 0.3 volts for swings of 60 and 80 millivolts per decade: at zero gate voltage the 60 millivolt device has fallen 5 decades and the 80 millivolt device 3.75 decades, a difference of 1.25 decades or a factor of 18 in off-current</title>
+        <!-- axes: x 0..0.4 V over 60..400 (850 px/V); y decades 30 px -->
+        <line x1="60" y1="210" x2="400" y2="210" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="210" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="1">
+          <line x1="60" y1="210" x2="60" y2="215"/><line x1="145" y1="210" x2="145" y2="215"/><line x1="230" y1="210" x2="230" y2="215"/><line x1="315" y1="210" x2="315" y2="215"/><line x1="400" y1="210" x2="400" y2="215"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="60" y="229">0</text><text x="145" y="229">0.1</text><text x="230" y="229">0.2</text><text x="315" y="229">0.3</text><text x="400" y="229">0.4</text>
+        </g>
+        <text x="372" y="200" class="dg-label" text-anchor="middle"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">G</tspan> (V)</text>
+        <text x="66" y="26" class="dg-label">log <tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">D</tspan>, one tick per decade</text>
+        <g class="dg-rule" stroke-width="1">
+          <line x1="55" y1="50" x2="60" y2="50"/><line x1="55" y1="80" x2="60" y2="80"/><line x1="55" y1="110" x2="60" y2="110"/><line x1="55" y1="140" x2="60" y2="140"/><line x1="55" y1="170" x2="60" y2="170"/><line x1="55" y1="200" x2="60" y2="200"/>
+        </g>
+        <!-- threshold marker -->
+        <line x1="315" y1="42" x2="315" y2="210" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="320" y="62" class="dg-label"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">T</tspan></text>
+        <!-- 60 mV/dec: from (315,50) to (60,200) -->
+        <path d="M60,200 L315,50 C340,36 370,32 400,31" class="dg-line" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <!-- 80 mV/dec: from (315,50) to (60,162.5) -->
+        <path d="M60,162.5 L315,50" class="dg-acc" stroke-width="2.2"/>
+        <text x="68" y="96" class="dg-label">80 mV/dec</text>
+        <text x="68" y="110" class="dg-label">(Ta₂O₅, notes)</text>
+        <text x="138" y="170" class="dg-label">60 mV/dec, ideal</text>
+        <!-- off-current bracket at V_G = 0 -->
+        <line x1="46" y1="163" x2="46" y2="199" class="dg-rule" stroke-width="1"/>
+        <line x1="42" y1="162.5" x2="50" y2="162.5" class="dg-rule" stroke-width="1"/>
+        <line x1="42" y1="200" x2="50" y2="200" class="dg-rule" stroke-width="1"/>
+        <text x="38" y="186" class="dg-label" text-anchor="end" style="font-weight:600">×18</text>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> Why a smaller swing is better. Two transistors with the same threshold,
+        0.3 V, and the same current there. Below threshold the current falls one decade for every
+        60 mV (dashed) or every 80 mV (accent). At zero gate voltage, the off state, the first has
+        fallen 300/60 = 5 decades and the second 300/80 = 3.75 decades, so the 80 mV/decade device
+        leaks 10<sup>1.25</sup> ≈ 18 times more. Above threshold the current saturates (drawn for
+        the dashed curve only).
+      </figcaption>
+    </figure>
+
+    <p>
+      Wolf adds a qualification the notes leave out: for a 5 nm dielectric the optimum dielectric
+      constant is 25, the value of Ta₂O₅, and for a given dielectric thickness there is a specific
+      <em>k</em> at which circuit performance is best. Wolf gives no mechanism; the result is
+      Shimada and Ohmi's device and circuit simulation, the source of Fig. 4-2, made at a fixed
+      physical thickness. Raising <em>k</em> raises the gate capacitance, but the drive current does
+      not rise in proportion, because the inversion layer's own capacitance — the few ångströms of
+      equivalent thickness by which the channel charge sits below the interface (§4) — is in series
+      with the dielectric's and caps the total. In their simulation the delay of a CMOS inverter
+      driving a 1 mm interconnect fell substantially as <em>k</em> rose to about 25, with little to
+      gain beyond it. This optimum is a circuit-speed limit at fixed physical thickness, separate
+      from the fringing-field limit of §3, which applies at fixed equivalent thickness.
+    </p>
+    <p>
+      The notes then name the drawback (p. 51): if high-k dielectrics are deposited directly onto
+      silicon, they tend to have a high level of interface states, <em>D</em><sub>it</sub> — the
+      density of interface traps per unit area and energy of
+      <a href="m05b-interface-defects-and-charge.html#s3">M05b §3</a>. Interface traps shift the
+      threshold voltage as they charge, scatter channel carriers, and add
+      <em>C</em><sub>it</sub> to equation (7.7), undoing part of the gain in swing. The interface
+      density can be reduced by growing a thin layer of SiO₂, one to two atomic layers, on the
+      silicon to passivate the surface. That layer is the interfacial oxide of §4 and §6: the
+      price of a good interface is a floor under the equivalent thickness.
+    </p>
+
+    <h3>5.2 The barrier to electrons: band offsets</h3>
+
+    <p>
+      Equation (7.4) showed that the tunnelling current depends on the barrier height as well as on
+      the thickness. A high-k film is useful only if it presents a substantial barrier to the
+      electrons in the channel and the holes beneath it. The notes do not discuss this, and it is,
+      with Ta₂O₅'s reactivity toward silicon (§5.3), one of the two criteria that eliminated Ta₂O₅ as
+      a gate dielectric.
+    </p>
+    <p>
+      When a dielectric is placed on silicon, its wider band gap straddles the silicon gap. The
+      <b>conduction-band offset</b>, Δ<em>E</em><sub>c</sub>, is the energy by which the dielectric's
+      conduction-band edge lies above silicon's; it is the barrier an electron in the silicon
+      conduction band faces. The <b>valence-band offset</b>, Δ<em>E</em><sub>v</sub>, is the energy
+      by which the dielectric's valence-band edge lies below silicon's, the barrier for holes. The
+      two offsets and the silicon gap together make up the dielectric's gap:
+      Δ<em>E</em><sub>c</sub> + <em>E</em><sub>g,Si</sub> + Δ<em>E</em><sub>v</sub> =
+      <em>E</em><sub>g</sub>. For SiO₂ they are the 3.1 eV and 4.6 eV of
+      <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06 §1.1</a>. An offset is not fixed by
+      the two gaps alone: how the gap of the dielectric is placed relative to silicon's depends on the
+      charge transferred across the bonds at the interface, and it has to be measured, by
+      photoemission, or calculated.
+    </p>
+    <p>
+      Robertson's criterion is that both offsets must exceed about 1 eV, to inhibit conduction by
+      Schottky emission — thermal emission of electrons or holes over the barrier into the
+      dielectric's bands. Wilk and co-authors put the same threshold on the conduction-band offset
+      and add the second route: with an offset much below 1 eV, electron transport by thermal
+      emission or by tunnelling gives unacceptably high leakage. In these oxides the conduction-band offset is usually the
+      smaller of the two, so in practice the dielectric needs a band gap above about 5 eV. Figure 8
+      sets out the offsets.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 282" role="img" aria-labelledby="m7f8-t">
+        <title id="m7f8-t">Band alignment of six dielectrics on silicon, to one energy scale: conduction-band offsets SiO2 3.1, Si3N4 2.4, Al2O3 2.8, Ta2O5 0.35, ZrO2 1.5 and HfO2 1.4 eV; valence-band offsets 4.6, 1.8, 4.9, 2.95, 3.2 and 3.3 eV; dashed lines 1 eV beyond each silicon band edge show that only Ta2O5 fails the 1 eV criterion</title>
+        <!-- 20 px/eV; Si Ec at y=120, Ev at y=142.4; bars at x = 80 + 56 i, 44 wide -->
+        <!-- 1 eV criterion lines -->
+        <line x1="14" y1="100" x2="428" y2="100" class="dg-guide" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="14" y1="162.4" x2="428" y2="162.4" class="dg-guide" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="428" y="96" class="dg-label" text-anchor="end">1 eV</text>
+        <text x="428" y="176" class="dg-label" text-anchor="end">1 eV</text>
+        <rect x="14" y="120" width="40" height="22.4" class="dg-soft"/>
+        <text x="34" y="112" class="dg-label" text-anchor="middle">Si</text>
+        <text x="34" y="156" class="dg-label" text-anchor="middle">1.12</text>
+        <!-- SiO2 3.1 / 4.6 -->
+        <rect x="80" y="58" width="44" height="176.4" class="dg-fill"/>
+        <text x="102" y="52" class="dg-label" text-anchor="middle">3.1</text>
+        <text x="102" y="228" class="dg-label" text-anchor="middle">4.6</text>
+        <!-- Si3N4 2.4 / 1.8 -->
+        <rect x="136" y="72" width="44" height="106.4" class="dg-fill"/>
+        <text x="158" y="66" class="dg-label" text-anchor="middle">2.4</text>
+        <text x="158" y="172" class="dg-label" text-anchor="middle">1.8</text>
+        <!-- Al2O3 2.8 / 4.9 -->
+        <rect x="192" y="64" width="44" height="176.4" class="dg-fill"/>
+        <text x="214" y="58" class="dg-label" text-anchor="middle">2.8</text>
+        <text x="214" y="234" class="dg-label" text-anchor="middle">4.9</text>
+        <!-- Ta2O5 0.35 / 2.95 -->
+        <rect x="248" y="113" width="44" height="88.4" class="dg-fill"/>
+        <rect x="248" y="113" width="44" height="7" class="dg-acc-f"/>
+        <text x="270" y="94" class="dg-label" text-anchor="middle" style="font-weight:600">0.35</text>
+        <text x="270" y="195" class="dg-label" text-anchor="middle">2.95</text>
+        <!-- ZrO2 1.5 / 3.2 -->
+        <rect x="304" y="90" width="44" height="116.4" class="dg-fill"/>
+        <text x="326" y="84" class="dg-label" text-anchor="middle">1.5</text>
+        <text x="326" y="200" class="dg-label" text-anchor="middle">3.2</text>
+        <!-- HfO2 1.4 / 3.3 -->
+        <rect x="360" y="92" width="44" height="116.4" class="dg-fill"/>
+        <text x="382" y="86" class="dg-label" text-anchor="middle">1.4</text>
+        <text x="382" y="204" class="dg-label" text-anchor="middle">3.3</text>
+        <!-- Si band edges, drawn over the bars so every offset reads as a distance -->
+        <line x1="14" y1="120" x2="406" y2="120" class="dg-rule" stroke-width="1.3"/>
+        <line x1="14" y1="142.4" x2="406" y2="142.4" class="dg-rule" stroke-width="1.3"/>
+        <text x="410" y="124" class="dg-label"><tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="410" y="147" class="dg-label"><tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <!-- key: the two offsets of SiO2 as brackets -->
+        <g class="dg-rule" stroke-width="1.1">
+          <line x1="72" y1="58" x2="72" y2="120"/><line x1="68" y1="58" x2="76" y2="58"/><line x1="68" y1="120" x2="76" y2="120"/>
+          <line x1="72" y1="142.4" x2="72" y2="234.4"/><line x1="68" y1="142.4" x2="76" y2="142.4"/><line x1="68" y1="234.4" x2="76" y2="234.4"/>
+        </g>
+        <text x="66" y="88" class="dg-label" text-anchor="end">Δ<tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="66" y="196" class="dg-label" text-anchor="end">Δ<tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <!-- names -->
+        <g class="dg-label" text-anchor="middle">
+          <text x="102" y="258">SiO₂</text><text x="158" y="258">Si₃N₄</text><text x="214" y="258">Al₂O₃</text><text x="270" y="258">Ta₂O₅</text><text x="326" y="258">ZrO₂</text><text x="382" y="258">HfO₂</text>
+        </g>
+        <text x="220" y="277" class="dg-label" text-anchor="middle">offsets in eV: conduction band above, valence band below</text>
+        <text x="14" y="36" class="dg-label">electron energy ↑</text>
+      </svg>
+      <figcaption>
+        <b>Figure 8.</b> Each bar spans a dielectric's band gap, positioned against silicon's band edges
+        <em>E</em><sub>c</sub> and <em>E</em><sub>v</sub> (solid lines, drawn across the bars) on one
+        energy scale. The number above a bar is its conduction-band offset, the distance from the bar's
+        top down to <em>E</em><sub>c</sub>; the number at its foot is its valence-band offset, the
+        distance from <em>E</em><sub>v</sub> down to the bar's bottom. The brackets beside SiO₂ show the
+        two distances. The dashed lines mark 1 eV beyond each silicon band edge. Ta₂O₅'s conduction band sits only 0.35 eV above silicon's (accent) — no barrier to
+        speak of. SiO₂ is drawn with the course's offsets, 3.1 and 4.6 eV (Taur &amp; Ning); the others
+        use Robertson's 2004 gaps and conduction-band offsets, with each valence-band offset taken as
+        the gap less 1.1 eV less the conduction-band offset. Robertson gives SiO₂ 3.2 eV.
+      </figcaption>
+    </figure>
+
+    <p>
+      Three results follow. First, Ta₂O₅ fails outright: with a conduction-band offset of 0.35 eV
+      (Robertson's calculated value; the measured value he tabulates is 0.3 eV), electrons in the channel face almost no
+      barrier, and the leakage advantage of its physical thickness is lost. This, together with its
+      reaction with silicon (§5.3), is why the material the notes put first — and the one the
+      industry tried first, as Lecture 2 recounted — did not become the gate dielectric; it remained
+      a capacitor dielectric (<a href="m07b-high-k-memory-capacitors.html">M07b</a>). Wilk's 2001
+      review lists its offset as 1–1.5 eV in its table, but the same review already cites
+      calculations (Robertson and Chen 1999) placing the conduction-band offsets of Ta₂O₅ and
+      SrTiO₃ below 0.5 eV; photoemission (Miyazaki 2001) then measured 0.3 eV. Second, HfO₂ and ZrO₂ pass, with offsets of 1.4 and 1.5 eV, less than half of SiO₂'s.
+      Third, the perovskites that carry dielectric constants of hundreds or thousands — SrTiO₃ and
+      the titanates of M07b — have conduction-band offsets near zero, which is why no material from
+      the right-hand end of Figure 4 can insulate a gate. Robertson observes that the oxides passing
+      the band-offset criterion are the same ones that pass the stability criterion of §5.3, because
+      in ionic compounds a large heat of formation goes with a wide band gap.
+    </p>
+
+    <h3>5.3 Chemical stability against silicon</h3>
+
+    <p>
+      The notes attach a stability statement to three candidates: ZrO₂ is "thermodynamically stable
+      with Si", Al₂O₃ "exhibits excellent thermal stability when it is in contact with Si", and HfO₂
+      "shows good thermal stability with Si" (p. 66). Silicon dioxide never raised the question,
+      because it is the product of silicon's own reaction with oxygen. Any other oxide placed on
+      silicon and heated may exchange its oxygen with the silicon.
+    </p>
+    <p>
+      For a metal oxide MO₂ in contact with silicon, the two reactions to avoid are (Robertson 2004)
+      MO₂ + Si → M + SiO₂ and MO₂ + 2Si → MSi + SiO₂. Both harm the gate. The SiO₂ they produce is
+      an extra low-k layer in series, which by equation (7.6) adds its full thickness to the EOT and
+      negates the point of the high-k film; the silicide MSi is generally metallic and would short
+      the dielectric. The oxide is stable against both when the metal holds its oxygen more tightly
+      than silicon would — when its heat of formation, counted per oxygen atom, exceeds that of
+      SiO₂. Hubbard and Schlom surveyed the binary oxides on this basis in 1996. The oxides that pass
+      are few: Al₂O₃, ZrO₂, HfO₂, Y₂O₃, La₂O₃ and the lanthanide oxides — Pr₂O₃ among them — plus
+      the alkaline-earth oxides, which react with water. Ta₂O₅, TiO₂ and the titanates SrTiO₃ and
+      BaTiO₃ fail.
+    </p>
+    <p>
+      Ta₂O₅ fails in the way that matters most. At equilibrium, Ta₂O₅ and silicon can coexist only
+      with SiO₂ between them, so a Ta₂O₅ film on silicon grows an oxide beneath itself. Wolf (p. 160)
+      reports that when Ta₂O₅ is deposited directly on silicon, or annealed in oxygen afterwards, as
+      much as 2 nm of SiO₂ grows under it — by equation (7.6), 2 nm of equivalent thickness added to
+      whatever the Ta₂O₅ contributes. The same reactivity at the top surface is why a polysilicon gate
+      on Ta₂O₅ needs a barrier layer (§8.1, §9).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 226" role="img" aria-labelledby="m7f9-t">
+        <title id="m7f9-t">Three gate stacks: Ta2O5 on silicon as intended, with no oxide between; the same stack as deposited or after an anneal, with up to 2 nanometres of silicon dioxide between the Ta2O5 and the silicon; and ZrO2 during an oxygen anneal, with oxygen diffusing through the film and growing silicon dioxide at the silicon interface</title>
+        <defs>
+          <marker id="m7f9-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+        <g class="dg-label" style="font-weight:600">
+          <text x="10" y="16">(a) intended</text>
+          <text x="152" y="16">(b) deposited</text>
+          <text x="152" y="30">or annealed</text>
+          <text x="294" y="16">(c) O₂ anneal</text>
+        </g>
+        <!-- (a) -->
+        <rect x="10" y="60" width="120" height="74" class="dg-fill"/>
+        <text x="70" y="101" class="dg-label" text-anchor="middle">Ta₂O₅</text>
+        <rect x="10" y="134" width="120" height="46" class="dg-fill"/>
+        <text x="70" y="162" class="dg-label" text-anchor="middle">Si</text>
+        <text x="70" y="200" class="dg-label" text-anchor="middle">no oxide between</text>
+        <text x="70" y="215" class="dg-label" text-anchor="middle">film and silicon</text>
+        <!-- (b) -->
+        <rect x="152" y="60" width="120" height="52" class="dg-fill"/>
+        <text x="212" y="91" class="dg-label" text-anchor="middle">Ta₂O₅</text>
+        <rect x="152" y="112" width="120" height="22" class="dg-acc-f"/>
+        <rect x="194" y="115" width="36" height="16" rx="2" class="dg-fill"/>
+        <text x="212" y="127.5" class="dg-label" text-anchor="middle">SiO₂</text>
+        <rect x="152" y="134" width="120" height="46" class="dg-fill"/>
+        <text x="212" y="162" class="dg-label" text-anchor="middle">Si</text>
+        <text x="212" y="200" class="dg-label" text-anchor="middle">up to 2 nm of SiO₂</text>
+        <text x="212" y="215" class="dg-label" text-anchor="middle">grows beneath (Wolf)</text>
+        <!-- (c) -->
+        <rect x="294" y="60" width="120" height="60" class="dg-fill"/>
+        <text x="354" y="96" class="dg-label" text-anchor="middle">ZrO₂</text>
+        <rect x="294" y="120" width="120" height="14" class="dg-acc-f"/>
+        <rect x="336" y="120" width="36" height="14" rx="2" class="dg-fill"/>
+        <text x="354" y="131.5" class="dg-label" text-anchor="middle">SiO₂</text>
+        <rect x="294" y="134" width="120" height="46" class="dg-fill"/>
+        <text x="354" y="162" class="dg-label" text-anchor="middle">Si</text>
+        <g class="dg-ink" stroke-width="1.4">
+          <line x1="316" y1="40" x2="316" y2="119" class="dg-line" stroke-dasharray="4 3" marker-end="url(#m7f9-a)"/>
+          <line x1="392" y1="40" x2="392" y2="119" class="dg-line" stroke-dasharray="4 3" marker-end="url(#m7f9-a)"/>
+        </g>
+        <text x="354" y="46" class="dg-label" text-anchor="middle">oxygen</text>
+        <text x="354" y="200" class="dg-label" text-anchor="middle">oxygen crosses the</text>
+        <text x="354" y="215" class="dg-label" text-anchor="middle">film; SiO₂ at the Si</text>
+      </svg>
+      <figcaption>
+        <b>Figure 9.</b> Two routes to an unwanted interfacial oxide (accent). (a) The stack as
+        intended. (b) Ta₂O₅ is not thermodynamically stable on silicon: on deposition or annealing,
+        up to 2 nm of SiO₂ forms between the two. (c) ZrO₂ is far more stable, but oxygen from the anneal ambient diffuses
+        through it and oxidises the silicon underneath — a kinetic route that stability does not
+        prevent. Thicknesses schematic.
+      </figcaption>
+    </figure>
+
+    <p>
+      Stability is necessary, not sufficient, because a stable film can still let oxygen through.
+      The notes record the remedy for ZrO₂ (p. 66): the addition of Al reduces the rate of oxygen
+      diffusion through ZrO₂. Wolf explains the problem it solves (p. 174): undoped ZrO₂ has a high
+      oxygen diffusivity, so oxygen from a post-deposition anneal crosses the film and reacts with the
+      silicon to form an interfacial SiO₂ layer, with significant growth at 400–600 °C even at low
+      oxygen partial pressure. The interfacial layer can therefore thicken under a film that does not
+      itself react with silicon, whenever the process supplies oxygen.
+    </p>
+    <p>
+      Among the three group IVA metals — titanium, zirconium, hafnium — hafnium forms the most stable
+      oxide, with the highest heat of formation, and HfO₂'s high density, 9.68 g/cm³, makes it
+      resistant to impurity diffusion and intermixing at the silicon interface (Wolf p. 175). Those
+      two properties are the chemical reasons HfO₂ displaced ZrO₂.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">"Thermodynamically stable with Si" for ZrO₂ was later revised</p>
+      <p>
+        The notes (p. 66), following Wolf p. 173 and the thermodynamic data then available, call ZrO₂
+        thermodynamically stable with silicon. Robertson's 2004 review reports that, with better
+        thermodynamic data, ZrO₂ turned out to be slightly unstable: it can react with silicon to form
+        the silicide ZrSi₂. That is one reason HfO₂ became the preferred high-k oxide over ZrO₂. The
+        notes' statement reflects the data of 2001; the current understanding is that HfO₂, not ZrO₂,
+        is the stable member of the pair.
+      </p>
+    </div>
+
+    <h3>5.4 Crystallisation</h3>
+
+    <p>
+      The last column of the notes' table (p. 49) gives each material's crystal structure: SiO₂,
+      Si₃N₄ and Al₂O₃ amorphous, HfO₂ and ZrO₂ monoclinic, Ta₂O₅ orthorhombic. For a gate dielectric
+      that column matters as much as the dielectric constant. An <b>amorphous</b> solid has no
+      long-range order: each atom has a regular set of neighbours, but the arrangement does not repeat
+      over distance. A <b>polycrystalline</b> film consists of many small crystals, or grains, each
+      ordered internally and each oriented differently; where two grains meet lies a <b>grain
+      boundary</b>, a thin disordered region of broken and strained bonds. The notes observe that
+      HfO₂ crystallises in a 1000 °C anneal (p. 67), and Wolf states the general rule (p. 177):
+      dielectric layers of MOS capacitors are ordinarily amorphous, and a film that becomes
+      polycrystalline becomes leaky.
+    </p>
+    <p>
+      Whether a solid stays amorphous depends on how many neighbours each atom has, its
+      <b>coordination number</b>. <a href="m05a-bonds-and-structure.html">M05a §3</a> built the SiO₂
+      network: each silicon bonds to 4 oxygens at the corners of a tetrahedron, each oxygen bridges 2
+      silicons, and the Si–O–Si angle at the bridge ranges, in the notes, from 110° to 180°
+      (X-ray diffraction of vitreous silica gives 120° to 180°, peaking at 144°; M05a §3). With so
+      few bonds per atom and a freely variable bridge, the network can absorb disorder without
+      breaking bonds — which makes SiO₂ an excellent glass former, and lets it stay amorphous through
+      any process step. HfO₂ and ZrO₂ are built differently. Their bonds are more ionic (§2) and
+      their coordination is high: in the monoclinic structure each metal atom has 7 oxygen
+      neighbours, and in the cubic and tetragonal forms 8, with each oxygen bonded to 4 metal atoms
+      (Robertson 2004); in monoclinic HfO₂ half the oxygens have 3 hafnium neighbours and half have
+      4 (Zhao &amp; Vanderbilt 2002).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 240" role="img" aria-labelledby="m7f10-t">
+        <title id="m7f10-t">Coordination compared: left, a silicon atom bonded to four oxygen atoms at the corners of a tetrahedron; right, a hafnium atom bonded to seven oxygen atoms, as in monoclinic HfO2, drawn as a schematic projection</title>
+        <text x="100" y="20" class="dg-label" text-anchor="middle" style="font-weight:600">SiO₂: Si has 4 O</text>
+        <text x="320" y="20" class="dg-label" text-anchor="middle" style="font-weight:600">monoclinic HfO₂: Hf has 7 O</text>
+        <!-- SiO4, after M05a figure geometry, centred at (100,118) -->
+        <line x1="100" y1="118" x2="98" y2="54" class="dg-line" stroke-width="1.6"/>
+        <polygon points="100,118 116.3,163.3 122.1,160.8" class="dg-soft"/>
+        <line x1="110.2" y1="121.3" x2="110.5" y2="118.2" class="dg-line" stroke-width="1.4"/><line x1="117.2" y1="122.3" x2="117.6" y2="118.6" class="dg-line" stroke-width="1.4"/><line x1="124.2" y1="123.3" x2="124.7" y2="119" class="dg-line" stroke-width="1.4"/><line x1="131.3" y1="124.3" x2="131.8" y2="119.4" class="dg-line" stroke-width="1.4"/><line x1="138.3" y1="125.3" x2="138.9" y2="119.8" class="dg-line" stroke-width="1.4"/><line x1="145.3" y1="126.3" x2="145.9" y2="120.3" class="dg-line" stroke-width="1.4"/>
+        <line x1="100" y1="118" x2="38" y2="136" class="dg-line" stroke-width="1.6"/>
+        <circle cx="152" cy="124" r="6.5" class="dg-fill" stroke-width="0"/><circle cx="152" cy="124" r="6.5" class="dg-line" stroke-width="1.3"/>
+        <circle cx="38" cy="136" r="6.5" class="dg-fill" stroke-width="0"/><circle cx="38" cy="136" r="6.5" class="dg-line" stroke-width="1.3"/>
+        <circle cx="100" cy="118" r="9" class="dg-ink"/>
+        <circle cx="98" cy="54" r="6.5" class="dg-fill" stroke-width="0"/><circle cx="98" cy="54" r="6.5" class="dg-line" stroke-width="1.3"/>
+        <circle cx="120" cy="166" r="6.5" class="dg-fill" stroke-width="0"/><circle cx="120" cy="166" r="6.5" class="dg-line" stroke-width="1.3"/>
+        <text x="100" y="200" class="dg-label" text-anchor="middle">each O bridges 2 Si</text>
+        <text x="100" y="216" class="dg-label" text-anchor="middle">45% ionic (Si–O)</text>
+        <!-- HfO7, schematic, Hf at (320,118) -->
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="320" y1="118" x2="318" y2="60"/>
+          <line x1="320" y1="118" x2="372" y2="88"/>
+          <line x1="320" y1="118" x2="378" y2="136"/>
+          <line x1="320" y1="118" x2="340" y2="174"/>
+          <line x1="320" y1="118" x2="280" y2="170"/>
+          <line x1="320" y1="118" x2="262" y2="120"/>
+        </g>
+        <!-- seventh O toward the reader: wedge -->
+        <polygon points="320,118 282,80 278.5,85.8" class="dg-soft"/>
+        <g class="dg-fill" stroke-width="0">
+          <circle cx="318" cy="60" r="6.5"/><circle cx="372" cy="88" r="6.5"/><circle cx="378" cy="136" r="6.5"/><circle cx="340" cy="174" r="6.5"/><circle cx="280" cy="170" r="6.5"/><circle cx="262" cy="120" r="6.5"/><circle cx="279" cy="81" r="6.5"/>
+        </g>
+        <g class="dg-line" stroke-width="1.3" fill="none">
+          <circle cx="318" cy="60" r="6.5"/><circle cx="372" cy="88" r="6.5"/><circle cx="378" cy="136" r="6.5"/><circle cx="340" cy="174" r="6.5"/><circle cx="280" cy="170" r="6.5"/><circle cx="262" cy="120" r="6.5"/><circle cx="279" cy="81" r="6.5"/>
+        </g>
+        <polygon points="330,118 325,126.7 315,126.7 310,118 315,109.3 325,109.3" class="dg-soft"/>
+        <polygon points="330,118 325,126.7 315,126.7 310,118 315,109.3 325,109.3" class="dg-acc" stroke-width="1.8"/>
+        <text x="348" y="123" class="dg-label">Hf</text>
+        <text x="320" y="200" class="dg-label" text-anchor="middle">each O bonds 3 or 4 Hf</text>
+        <text x="320" y="216" class="dg-label" text-anchor="middle">68% ionic (Hf–O)</text>
+        <line x1="210" y1="36" x2="210" y2="222" class="dg-guide" stroke-width="1"/>
+      </svg>
+      <figcaption>
+        <b>Figure 10.</b> Why one oxide stays glassy and the other crystallises. Left: the SiO₄
+        tetrahedron of <a href="m05a-bonds-and-structure.html">M05a</a>, silicon (solid) with four
+        oxygens (open); one bond rises toward the reader (wedge), one recedes (hashed). Right: hafnium
+        (filled hexagon, accent) with its seven oxygen neighbours in monoclinic HfO₂, one of them
+        toward the reader. The right-hand drawing is a schematic projection: it shows the count, not
+        the true geometry, and the Hf–O bonds do not all have the same length. Each oxygen's bonds to
+        further atoms are not drawn. Ionic percentages from equation (5a.1).
+      </figcaption>
+    </figure>
+
+    <p>
+      The greater ionic character of the bonding and the higher coordination numbers together make
+      HfO₂ and ZrO₂ poor glass formers (Robertson 2004): a network in which every atom is tied to
+      seven or four neighbours cannot absorb disorder by bending a two-bonded bridge, and it
+      crystallises at low temperature. Robertson's criterion is that a gate dielectric stay amorphous
+      through processing up to 1000 °C for 5 s; SiO₂ passes easily, Al₂O₃ is a reasonably good glass
+      former and the next best, Ta₂O₅ is a moderately good glass former that was eliminated because it
+      is reactive, and "all the other oxides crystallise well below 1000 °C". The same
+      structural rigidity explains why the high-k oxides carry many more electrically active defects
+      than SiO₂: a network that cannot relax cannot rebond around a broken bond, and oxygen vacancies
+      and interstitials persist as charge traps. Wolf reports electron trapping and reduced channel
+      mobility for Al₂O₃ and HfO₂ films (§8), with the cause of the trapping still unknown when his
+      account was written.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 206" role="img" aria-labelledby="m7f11-t">
+        <title id="m7f11-t">Two gate dielectric films in cross-section: an amorphous film with no internal boundaries, and a polycrystalline film made of columnar grains whose boundaries run from the gate to the silicon and act as leakage and diffusion paths</title>
+        <defs>
+          <marker id="m7f11-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <pattern id="m7f11-p1" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+            <line x1="0" y1="0" x2="0" y2="6" class="dg-guide" stroke-width="1"/>
+          </pattern>
+          <pattern id="m7f11-p2" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-40)">
+            <line x1="0" y1="0" x2="0" y2="6" class="dg-guide" stroke-width="1"/>
+          </pattern>
+          <pattern id="m7f11-p3" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(80)">
+            <line x1="0" y1="0" x2="0" y2="6" class="dg-guide" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <text x="10" y="18" class="dg-label" style="font-weight:600">(a) amorphous</text>
+        <text x="232" y="18" class="dg-label" style="font-weight:600">(b) polycrystalline</text>
+        <!-- (a) -->
+        <rect x="10" y="30" width="198" height="40" class="dg-fill"/>
+        <text x="109" y="55" class="dg-label" text-anchor="middle">gate</text>
+        <rect x="10" y="70" width="198" height="56" class="dg-fill"/>
+        <text x="109" y="102" class="dg-label" text-anchor="middle">amorphous film, no boundaries</text>
+        <rect x="10" y="126" width="198" height="40" class="dg-fill"/>
+        <text x="109" y="151" class="dg-label" text-anchor="middle">Si</text>
+        <!-- (b) -->
+        <rect x="232" y="30" width="198" height="40" class="dg-fill"/>
+        <text x="331" y="55" class="dg-label" text-anchor="middle">gate</text>
+        <rect x="232" y="70" width="198" height="56" class="dg-fill"/>
+        <polygon points="232,70 280,70 288,126 232,126" style="fill:url(#m7f11-p1)"/>
+        <polygon points="280,70 344,70 336,126 288,126" style="fill:url(#m7f11-p2)"/>
+        <polygon points="344,70 392,70 398,126 336,126" style="fill:url(#m7f11-p3)"/>
+        <polygon points="392,70 430,70 430,126 398,126" style="fill:url(#m7f11-p1)"/>
+        <g class="dg-rule" stroke-width="1.2">
+          <line x1="280" y1="70" x2="288" y2="126"/><line x1="344" y1="70" x2="336" y2="126"/><line x1="392" y1="70" x2="398" y2="126"/>
+        </g>
+        <line x1="344" y1="72" x2="336.5" y2="124" class="dg-acc" stroke-width="2.4"/>
+        <rect x="232" y="126" width="198" height="40" class="dg-fill"/>
+        <text x="331" y="151" class="dg-label" text-anchor="middle">Si</text>
+        <text x="331" y="186" class="dg-label" text-anchor="middle">grain boundaries run gate to Si:</text>
+        <text x="331" y="201" class="dg-label" text-anchor="middle">paths for leakage and for B, P</text>
+      </svg>
+      <figcaption>
+        <b>Figure 11.</b> (a) An amorphous film is uniform across the gate. (b) A polycrystalline film
+        is a row of grains, each ordered (hatching shows the lattice planes) and each oriented
+        differently. The boundaries between grains, one in accent, cross the whole film and are
+        paths for leakage current and for dopants diffusing from a polysilicon gate. The dielectric
+        constant can also differ from grain to grain. Schematic, not to scale.
+      </figcaption>
+    </figure>
+
+    <p>
+      Wilk and co-authors list the consequences of a polycrystalline gate film: grain boundaries
+      serve as high-leakage paths, and grain size and orientation change the dielectric constant
+      from place to place, giving irreproducible properties; Robertson adds that grain boundaries are
+      easy diffusion paths for boron or phosphorus from a polysilicon gate above. The leakage penalty
+      proved smaller than feared — Robertson cites a study that found crystallised HfO₂ leaking about
+      as much as amorphous HfO₂ — but the diffusion and uniformity arguments stand. The remedy is to
+      alloy the crystallising oxide with a glass former. A <b>silicate</b> — HfO₂ or ZrO₂ mixed with
+      SiO₂ — or an <b>aluminate</b>, mixed with Al₂O₃, stays amorphous to close to 1000 °C, and adding
+      nitrogen raises the crystallisation temperature further, enough for hafnium silicate to pass
+      Robertson's criterion. The cost is dielectric constant, which falls roughly in proportion to
+      the glass former added: HfSiO₄ has k ≈ 11 against 25 for HfO₂ (Robertson Table 2). The notes'
+      Zr-Al-Si-O and HfSiON (§8) are films of exactly this kind.
+    </p>
+
+    <h2 id="s6">6 · The interfacial layer</h2>
+
+    <p>
+      The thin SiO₂ layer under the high-k film has now appeared three times: as the floor under the
+      equivalent thickness (§4), as the notes' cure for interface states (§5.1), and as the product of
+      an unwanted reaction (§5.3). The gate stacks the notes describe keep one deliberately. This
+      section explains why a layer that costs equivalent thickness is worth keeping, what the notes
+      describe as the ideal version of it, and how thin it can be made.
+    </p>
+    <p>
+      The notes' reason is the interface-state density: deposited directly on silicon, high-k films
+      have a high <em>D</em><sub>it</sub>, and one to two atomic layers of SiO₂ passivate the surface
+      (p. 51). Lecture 3 put the same point in terms of how each interface is made. A thermally grown
+      oxide forms its interface by consuming silicon: oxygen reaches the silicon beneath the growing
+      film and reacts with it, so the Si/SiO₂ interface is created inside the original crystal, below
+      the old surface and whatever contamination it carried
+      (<a href="m05a-bonds-and-structure.html">M05a §4</a>) — in the lecture's words, the interface is
+      clean. A deposited film forms its interface at the surface as it was when deposition began.
+      Placing hafnium oxide or hafnium silicate directly on silicon leaves an interface that, again
+      in the lecture's words, "is not clean". The bonding reinforces the point. Robertson attributes
+      the quality of the Si/SiO₂ interface to SiO₂'s low coordination, which lets the network relax
+      and rebond around what would otherwise be dangling bonds; the ionic, highly coordinated high-k
+      oxides (§5.4) lack that freedom. And the channel carriers travel within a few ångströms of the
+      interface, so its defects scatter them and trap charge. A
+      layer of thermal SiO₂ keeps the interface that <a href="m05b-interface-defects-and-charge.html">M05b</a>
+      characterised, and the high-k film sits on top of it.
+    </p>
+    <p>
+      The notes describe the ideal (p. 52): a gate stack whose interface consists of a few atomic
+      layers of Si–O, possibly containing N, forming a <b>pseudo-binary oxide</b> — a mixture of two
+      oxides, such as SiO₂ and HfO₂, whose composition can vary continuously between the two pure end
+      members. Such an interface keeps the high quality of the SiO₂ interface while providing a higher
+      <em>k</em> than pure SiO₂, and a different, higher-k material can then be placed on top of it.
+      The stack the notes write at the head of the same page, SiON/Ta₂O₅/TiN, is one realisation:
+      an oxynitride interlayer, a Ta₂O₅ film and a titanium nitride gate, reported with an equivalent
+      thickness of 1.8 nm (Park <i>et al.</i>, IEDM 1998, as cited by Wolf). The notes' ZrO₂ films
+      grown by atomic layer deposition form another naturally: a 9 Å interfacial silicate layer
+      between the ZrO₂ and the silicon (p. 66) — a Zr–Si–O pseudo-binary layer of the kind p. 52
+      describes. Wolf adds that high-temperature annealing thickens that silicate and converts it
+      toward stoichiometric SiO₂ (p. 174).
+    </p>
+    <p>
+      Robertson (2004, §3.4) separates the deliberate layer from the accidental one. The accidental
+      layer under HfO₂ usually does not come from a reaction with the silicon, since HfO₂ was chosen to
+      avoid that; it comes from oxygen diffusing through the HfO₂ during the post-deposition anneal and
+      oxidising the silicon beneath, a process that HfO₂ and ZrO₂ even catalyse. Both belong to the
+      family of fluorite-related oxides, which conduct oxygen ions well. Alloying with SiO₂ or adding nitrogen
+      slows that diffusion (§5.4, §8.3). The deliberate layer earns its place three ways: it gives the
+      well-understood Si/SiO₂ interface, whose remaining defects forming-gas annealing can passivate;
+      it serves as the starting surface for atomic layer deposition (§7.2); and it spaces the channel
+      a few ångströms away from the high-k film, which reduces the loss of carrier mobility that the
+      high-k film causes (§8.4).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 250" role="img" aria-labelledby="m7f12-t">
+        <title id="m7f12-t">The notes' HfO2 capacitor drawn to scale: a polysilicon gate, 38 angstroms of HfO2, about 6 angstroms of interfacial SiO2 and the silicon substrate; beside it, its 12 angstrom equivalent thickness split into 6.2 angstroms from the HfO2 and 5.8 angstroms from the interlayer</title>
+        <!-- scale 3 px per angstrom -->
+        <rect x="60" y="20" width="160" height="50" class="dg-fill"/>
+        <text x="140" y="50" class="dg-label" text-anchor="middle">poly-Si gate</text>
+        <rect x="60" y="70" width="160" height="114" class="dg-fill"/>
+        <text x="140" y="124" class="dg-label" text-anchor="middle">HfO₂</text>
+        <text x="140" y="140" class="dg-label" text-anchor="middle">38 Å</text>
+        <rect x="60" y="184" width="160" height="18" class="dg-acc-f"/>
+        <rect x="60" y="202" width="160" height="40" class="dg-fill"/>
+        <text x="140" y="227" class="dg-label" text-anchor="middle">Si substrate</text>
+        <text x="54" y="197" class="dg-label" text-anchor="end">IL ≈ 6 Å</text>
+        <text x="54" y="74" class="dg-label" text-anchor="end">no layer</text>
+        <text x="54" y="89" class="dg-label" text-anchor="end">here</text>
+        <!-- EOT column, standing on the silicon surface (y = 202): 12 Å = 36 units -->
+        <rect x="300" y="166" width="60" height="18.6" class="dg-fill"/>
+        <rect x="300" y="184.6" width="60" height="17.4" class="dg-acc-f"/>
+        <line x1="292" y1="166" x2="292" y2="202" class="dg-rule" stroke-width="1"/>
+        <line x1="288" y1="166" x2="296" y2="166" class="dg-rule" stroke-width="1"/>
+        <line x1="288" y1="202" x2="296" y2="202" class="dg-rule" stroke-width="1"/>
+        <text x="330" y="156" class="dg-label" text-anchor="middle">EOT 12 Å</text>
+        <text x="368" y="179.5" class="dg-label">6.2 Å HfO₂</text>
+        <text x="368" y="197.5" class="dg-label">5.8 Å IL</text>
+        <line x1="228" y1="70" x2="228" y2="202" class="dg-rule" stroke-width="1"/>
+        <line x1="224" y1="70" x2="232" y2="70" class="dg-rule" stroke-width="1"/>
+        <line x1="224" y1="202" x2="232" y2="202" class="dg-rule" stroke-width="1"/>
+        <text x="236" y="112" class="dg-label">physical</text>
+        <text x="236" y="127" class="dg-label">44 Å</text>
+        <line x1="220" y1="202" x2="300" y2="202" class="dg-guide" stroke-width="0.9" stroke-dasharray="3 3"/>
+        <text x="330" y="222" class="dg-label" text-anchor="middle">same Si surface</text>
+      </svg>
+      <figcaption>
+        <b>Figure 12.</b> The notes' HfO₂ capacitor (p. 67, EOT 12 Å) to scale, 3 px per ångström,
+        with the physical thicknesses Wolf reports for it (p. 175 and Fig. 4-17): 38 Å of HfO₂ on an
+        interfacial layer of about 6 Å seen in the report's micrographs. With the notes'
+        <em>k</em> = 24 the HfO₂ contributes 6.2 Å of the 12 Å equivalent thickness (right, drawn from
+        the same silicon surface) and the interlayer (accent) the rest: a layer one-seventh of the
+        stack's thickness supplies half its EOT. The notes' "no interfacial layer" refers to the top
+        interface, against the polysilicon gate (§8.4).
+      </figcaption>
+    </figure>
+
+    <p>
+      The trade is the one §4 quantified. Every ångström of interlayer is an ångström of equivalent
+      thickness that no dielectric constant can remove, and Taur and Ning conclude that the interfacial
+      SiO₂ still needed for interface integrity and reliability makes it difficult for the composite
+      EOT to go significantly below 1.0 nm. Deposition adds a further constraint (§7): atomic layer
+      deposition of HfO₂ and ZrO₂ nucleates poorly on a bare, hydrogen-terminated silicon surface and
+      is usually started on a thin chemically grown oxide, which then becomes part of the interlayer.
+      The engineering target is therefore an interlayer a few ångströms thick, of the highest
+      quality, and where possible of raised <em>k</em> — nitrided, or graded into a silicate — which
+      is exactly the notes' pseudo-binary ideal.
+    </p>
+
+    <h2 id="s7">7 · Depositing a nanometre film</h2>
+
+    <p>
+      Silicon dioxide is grown from the wafer; every high-k film must be deposited onto it. The film
+      is a few nanometres thick, it must be uniform across the wafer to a small fraction of that
+      thickness, and on a transistor it must cover a surface that is not flat. The notes name the deposition method for
+      each candidate as they describe it (pp. 59–60, 66–67) and give one method, atomic layer
+      deposition, a page of its own (p. 65). This section collects the methods first, then treats
+      atomic layer deposition in detail.
+    </p>
+
+    <h3>7.1 The methods the notes use</h3>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Method</th><th>How the film forms</th><th>Where the notes use it</th><th>Strength and weakness (Robertson, Table 3)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Reactive sputtering (a physical vapour deposition, PVD)</td>
+            <td>Argon ions knock metal atoms from a metal target; oxygen in the Ar + O₂ plasma oxidises them on the wafer</td>
+            <td>ZrO₂ (p. 66); HfO₂ (p. 66); ZrO₂ doped by co-sputtering an Al target (p. 66)</td>
+            <td>Pure films, widely available; the worst rating for plasma damage, and line-of-sight coverage</td></tr>
+          <tr><td>Metal deposition, then oxidation</td>
+            <td>A thin metal film is deposited, then oxidised in a rapid thermal anneal</td>
+            <td>ZrO₂: "oxidizing Zr film in an RTA process" (p. 66)</td>
+            <td>Purer and less damaged than a sputtered oxide; only fair coverage and large-area uniformity</td></tr>
+          <tr><td>Chemical vapour deposition (CVD, MOCVD, RTCVD)</td>
+            <td>Precursor gases react on the heated wafer; MOCVD uses metal-organic precursors, RTCVD a rapid-thermal single-wafer chamber</td>
+            <td>Ta₂O₅ (p. 60); HfO₂ by in-situ RTCVD (p. 66)</td>
+            <td>Conformal, uniform over large areas; carbon, hydrogen or chlorine impurities from the precursor</td></tr>
+          <tr><td>Molecular beam epitaxy (MBE)</td>
+            <td>Beams of evaporated elements in ultra-high vacuum condense on a heated wafer</td>
+            <td>Pr₂O₃ at 625–725 °C, 0.1 Å/s (p. 67)</td>
+            <td>Not rated by Robertson; very slow growth (0.1 Å/s in the notes), crystalline films possible</td></tr>
+          <tr><td>Atomic layer deposition (ALD)</td>
+            <td>Two precursors pulsed alternately, each reacting with the surface to saturation</td>
+            <td>ZrO₂ from ZrCl₄ + H₂O (p. 66); Al₂O₃ from TMA + O₃ (p. 66, which names the precursors; Wolf p. 172 names the method)</td>
+            <td>Thinnest and most conformal films of all; slow growth, precursor impurities</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Sputtering is the removal of atoms from a solid target by energetic ions from a plasma, and the
+      ejected atoms condense on the wafer; in <b>reactive sputtering</b> a reactive gas, here oxygen,
+      is added so that the film forms as a compound. Because the atoms travel in straight lines from
+      the target, the film is thinner on vertical walls than on flat surfaces, and the ions and
+      energetic neutrals that strike the wafer can damage the thin interfacial layer beneath. In
+      <b>chemical vapour deposition</b> the film forms by chemical reaction of gases at the heated
+      wafer surface, which lets it reach surfaces that do not face a source. The notes' own contrast
+      (p. 65) is the key to what follows: in CVD, two or more gases are mixed in the reaction chamber,
+      where they react in the gas phase and deposit on the wafer surface. Wolf, whom the notes follow,
+      gives both paths — the gases react in the gas phase and fall on the wafer, or react on the wafer
+      surface (p. 171) — and Plummer, Deal and Griffin define CVD by the second, reaction of the gases
+      on the substrate surface (p. 511). Wolf's Ta₂O₅ process, for example, is run where the surface
+      reaction limits the rate, because that regime covers steps evenly (p. 156). What matters for
+      ALD is the feature common to both paths: in CVD the reactants are present together.
+    </p>
+
+    <h3>7.2 Atomic layer deposition</h3>
+
+    <p>
+      <b>Atomic layer deposition</b> separates the two reactions of CVD in time. In the notes' words
+      (p. 65): in ALD, one reactant gas is introduced at a time. A monolayer of the first gas is
+      adsorbed on the wafer surface by chemisorption. Individual precursors are pulsed onto the wafer
+      surface in a sequential manner, without mixing in the gas phase, and each reacts with the
+      surface in such a way that only one layer can form at a time: the surface reaction goes to
+      completion and permits no more than one layer to be deposited.
+    </p>
+    <p>
+      Two terms carry that description. <b>Chemisorption</b> is adsorption by the formation of a
+      chemical bond between a gas molecule and a reactive site on the surface — for oxides, usually a
+      surface hydroxyl group, –OH — as distinct from physisorption, in which a molecule is held only
+      by weak van der Waals forces and leaves again. A reaction is <b>self-limiting</b> when it stops
+      by itself once the surface sites are used up: when every site has reacted, further precursor
+      has nothing to bond to, and the excess stays in the gas and is purged. That property is what
+      separates ALD from CVD. Each pulse deposits a fixed amount of material however long the pulse
+      and however large the dose, so the thickness of the film is set by counting cycles, not by
+      controlling time, temperature and gas flow.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 206" role="img" aria-labelledby="m7f13-t">
+        <title id="m7f13-t">Gas pulse sequence of one atomic layer deposition cycle: a pulse of the metal precursor, an inert-gas purge, a pulse of the oxidant, and a second purge, repeated for as many cycles as the thickness requires</title>
+        <!-- rows -->
+        <g class="dg-label" text-anchor="end">
+          <text x="108" y="44">Al(CH₃)₃</text>
+          <text x="108" y="84">purge gas</text>
+          <text x="108" y="124">H₂O or O₃</text>
+        </g>
+        <g class="dg-guide" stroke-width="1">
+          <line x1="116" y1="48" x2="430" y2="48"/>
+          <line x1="116" y1="88" x2="430" y2="88"/>
+          <line x1="116" y1="128" x2="430" y2="128"/>
+        </g>
+        <!-- cycle 1: A 120-160, purge 160-210, B 210-250, purge 250-300 ; cycle 2 from 300 -->
+        <rect x="120" y="28" width="40" height="20" class="dg-acc-f"/>
+        <rect x="160" y="68" width="50" height="20" class="dg-fill"/>
+        <rect x="210" y="108" width="40" height="20" class="dg-acc-f"/>
+        <rect x="250" y="68" width="50" height="20" class="dg-fill"/>
+        <rect x="300" y="28" width="40" height="20" class="dg-acc-f"/>
+        <rect x="340" y="68" width="50" height="20" class="dg-fill"/>
+        <rect x="390" y="108" width="40" height="20" class="dg-acc-f"/>
+        <!-- cycle bracket -->
+        <path d="M120,146 V152 H300 V146" class="dg-rule" stroke-width="1.1"/>
+        <text x="210" y="168" class="dg-label" text-anchor="middle">one cycle: less than one monolayer</text>
+        <line x1="116" y1="186" x2="430" y2="186" class="dg-rule" stroke-width="1.1"/>
+        <text x="430" y="201" class="dg-label" text-anchor="end">time →</text>
+        <text x="120" y="201" class="dg-label">each step &lt; 1 s</text>
+      </svg>
+      <figcaption>
+        <b>Figure 13.</b> The pulse sequence for Al₂O₃ from trimethylaluminium, Al(CH₃)₃. The metal
+        precursor and the oxidant (accent) never share the chamber: an inert-gas purge separates every
+        pulse, so they react only with the surface and never with each other in the gas. The notes
+        give each switch as under a second (p. 65); Figure 14 shows what happens on the surface during
+        each step.
+      </figcaption>
+    </figure>
+
+    <p>
+      The notes' Al₂O₃ process uses trimethylaluminium, Al(CH₃)₃, abbreviated TMA, with ozone at
+      450 °C (p. 66); the notes do not name the method, and Wolf (p. 172) identifies it as ALD. Wolf's
+      illustration of the cycle (Fig. 4-15) uses water, and the two
+      half-reactions with water are the textbook example of ALD (George 2010). Writing ‖ for the
+      surface:
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Step</th><th>Surface reaction</th><th>By-product</th></tr></thead>
+        <tbody>
+          <tr><td>TMA pulse</td><td>‖–OH + Al(CH₃)₃ → ‖–O–Al(CH₃)₂ + CH₄</td><td>methane, CH₄</td></tr>
+          <tr><td>H₂O pulse</td><td>‖–Al–CH₃ + H₂O → ‖–Al–OH + CH₄</td><td>methane, CH₄</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The TMA pulse ends when every hydroxyl has reacted; the surface is then covered with methyl
+      groups, which do not react with TMA, so no second layer can form. The water pulse replaces the
+      methyls with hydroxyls, returning the surface to its starting state one Al–O layer thicker.
+      With ozone as the oxidant, the notes' choice, the methyl groups are oxidised instead of
+      hydrolysed, and the surface is again left ready for the next TMA pulse.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 372" role="img" aria-labelledby="m7f14-t">
+        <title id="m7f14-t">Four stages of one ALD cycle for Al2O3: a hydroxyl-terminated surface; after the trimethylaluminium pulse each hydroxyl carries an aluminium atom with two methyl groups and methane is released; an inert-gas purge removes the excess; after the water pulse the methyl groups are replaced by hydroxyl groups</title>
+        <defs>
+          <marker id="m7f14-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+        <!-- panel frames -->
+        <g class="dg-guide" stroke-width="1">
+          <rect x="2" y="2" width="214" height="176" rx="4"/>
+          <rect x="224" y="2" width="214" height="176" rx="4"/>
+          <rect x="2" y="190" width="214" height="176" rx="4"/>
+          <rect x="224" y="190" width="214" height="176" rx="4"/>
+        </g>
+        <g class="dg-label" style="font-weight:600">
+          <text x="10" y="20">1 · starting surface</text>
+          <text x="232" y="20">2 · Al(CH₃)₃ pulse</text>
+          <text x="10" y="208">3 · inert-gas purge</text>
+          <text x="232" y="208">4 · H₂O pulse</text>
+        </g>
+        <!-- substrates -->
+        <rect x="8" y="146" width="202" height="26" class="dg-fill"/>
+        <rect x="230" y="146" width="202" height="26" class="dg-fill"/>
+        <rect x="8" y="334" width="202" height="26" class="dg-fill"/>
+        <rect x="230" y="334" width="202" height="26" class="dg-fill"/>
+        <!-- ===== panel 1: Si-O-H at x 44,109,174 ===== -->
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="44" y1="146" x2="44" y2="118"/><line x1="109" y1="146" x2="109" y2="118"/><line x1="174" y1="146" x2="174" y2="118"/>
+          <line x1="44" y1="118" x2="44" y2="98"/><line x1="109" y1="118" x2="109" y2="98"/><line x1="174" y1="118" x2="174" y2="98"/>
+        </g>
+        <g class="dg-ink"><circle cx="44" cy="146" r="8"/><circle cx="109" cy="146" r="8"/><circle cx="174" cy="146" r="8"/></g>
+        <g class="dg-fill" stroke-width="0"><circle cx="44" cy="118" r="6.5"/><circle cx="109" cy="118" r="6.5"/><circle cx="174" cy="118" r="6.5"/></g>
+        <g class="dg-line" stroke-width="1.3" fill="none"><circle cx="44" cy="118" r="6.5"/><circle cx="109" cy="118" r="6.5"/><circle cx="174" cy="118" r="6.5"/></g>
+        <g class="dg-soft"><circle cx="44" cy="96" r="3.5"/><circle cx="109" cy="96" r="3.5"/><circle cx="174" cy="96" r="3.5"/></g>
+        <g class="dg-label"><text x="51" y="100">H</text><text x="116" y="100">H</text><text x="181" y="100">H</text></g>
+        <text x="54" y="122" class="dg-label">O</text>
+        <text x="57" y="165" class="dg-label">Si</text>
+        <text x="109" y="58" class="dg-label" text-anchor="middle">–OH on every site</text>
+        <!-- ===== panel 2: O-Al(CH3)2 at x 266,331,396 ===== -->
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="266" y1="146" x2="266" y2="118"/><line x1="331" y1="146" x2="331" y2="118"/><line x1="396" y1="146" x2="396" y2="118"/>
+          <line x1="266" y1="118" x2="266" y2="96"/><line x1="331" y1="118" x2="331" y2="96"/><line x1="396" y1="118" x2="396" y2="96"/>
+          <line x1="266" y1="96" x2="252" y2="80"/><line x1="266" y1="96" x2="280" y2="80"/>
+          <line x1="331" y1="96" x2="317" y2="80"/><line x1="331" y1="96" x2="345" y2="80"/>
+          <line x1="396" y1="96" x2="382" y2="80"/><line x1="396" y1="96" x2="410" y2="80"/>
+        </g>
+        <g class="dg-ink"><circle cx="266" cy="146" r="8"/><circle cx="331" cy="146" r="8"/><circle cx="396" cy="146" r="8"/></g>
+        <g class="dg-fill" stroke-width="0"><circle cx="266" cy="118" r="6.5"/><circle cx="331" cy="118" r="6.5"/><circle cx="396" cy="118" r="6.5"/></g>
+        <g class="dg-line" stroke-width="1.3" fill="none"><circle cx="266" cy="118" r="6.5"/><circle cx="331" cy="118" r="6.5"/><circle cx="396" cy="118" r="6.5"/></g>
+        <g class="dg-soft">
+          <polygon points="266,87 274.6,93.2 271.3,103.3 260.7,103.3 257.4,93.2"/>
+          <polygon points="331,87 339.6,93.2 336.3,103.3 325.7,103.3 322.4,93.2"/>
+          <polygon points="396,87 404.6,93.2 401.3,103.3 390.7,103.3 387.4,93.2"/>
+        </g>
+        <g class="dg-acc" stroke-width="1.6">
+          <polygon points="266,87 274.6,93.2 271.3,103.3 260.7,103.3 257.4,93.2"/>
+          <polygon points="331,87 339.6,93.2 336.3,103.3 325.7,103.3 322.4,93.2"/>
+          <polygon points="396,87 404.6,93.2 401.3,103.3 390.7,103.3 387.4,93.2"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="246" y="74">CH₃</text><text x="286" y="74">CH₃</text>
+        </g>
+        <text x="342" y="106" class="dg-label">Al</text>
+        <!-- gas phase: TMA arriving, methane leaving -->
+        <text x="234" y="44" class="dg-label">Al(CH₃)₃</text>
+        <line x1="296" y1="30" x2="296" y2="52" class="dg-line" stroke-width="1.4" marker-end="url(#m7f14-a)"/>
+        <text x="384" y="44" class="dg-label">CH₄</text>
+        <line x1="418" y1="52" x2="418" y2="30" class="dg-line" stroke-width="1.4" marker-end="url(#m7f14-a)"/>
+        <text x="432" y="66" class="dg-label" text-anchor="end">stops at saturation</text>
+        <!-- ===== panel 3: same as 2, offset (−222, +188) ===== -->
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="44" y1="334" x2="44" y2="306"/><line x1="109" y1="334" x2="109" y2="306"/><line x1="174" y1="334" x2="174" y2="306"/>
+          <line x1="44" y1="306" x2="44" y2="284"/><line x1="109" y1="306" x2="109" y2="284"/><line x1="174" y1="306" x2="174" y2="284"/>
+          <line x1="44" y1="284" x2="30" y2="268"/><line x1="44" y1="284" x2="58" y2="268"/>
+          <line x1="109" y1="284" x2="95" y2="268"/><line x1="109" y1="284" x2="123" y2="268"/>
+          <line x1="174" y1="284" x2="160" y2="268"/><line x1="174" y1="284" x2="188" y2="268"/>
+        </g>
+        <g class="dg-ink"><circle cx="44" cy="334" r="8"/><circle cx="109" cy="334" r="8"/><circle cx="174" cy="334" r="8"/></g>
+        <g class="dg-fill" stroke-width="0"><circle cx="44" cy="306" r="6.5"/><circle cx="109" cy="306" r="6.5"/><circle cx="174" cy="306" r="6.5"/></g>
+        <g class="dg-line" stroke-width="1.3" fill="none"><circle cx="44" cy="306" r="6.5"/><circle cx="109" cy="306" r="6.5"/><circle cx="174" cy="306" r="6.5"/></g>
+        <g class="dg-soft">
+          <polygon points="44,275 52.6,281.2 49.3,291.3 38.7,291.3 35.4,281.2"/>
+          <polygon points="109,275 117.6,281.2 114.3,291.3 103.7,291.3 100.4,281.2"/>
+          <polygon points="174,275 182.6,281.2 179.3,291.3 168.7,291.3 165.4,281.2"/>
+        </g>
+        <g class="dg-acc" stroke-width="1.6">
+          <polygon points="44,275 52.6,281.2 49.3,291.3 38.7,291.3 35.4,281.2"/>
+          <polygon points="109,275 117.6,281.2 114.3,291.3 103.7,291.3 100.4,281.2"/>
+          <polygon points="174,275 182.6,281.2 179.3,291.3 168.7,291.3 165.4,281.2"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="24" y="262">CH₃</text><text x="64" y="262">CH₃</text>
+        </g>
+        <line x1="20" y1="232" x2="204" y2="232" class="dg-line" stroke-width="1.4" marker-end="url(#m7f14-a)"/>
+        <text x="109" y="225" class="dg-label" text-anchor="middle">N₂ or Ar sweeps out</text>
+        <text x="200" y="247" class="dg-label" text-anchor="end">excess Al(CH₃)₃, CH₄</text>
+        <!-- ===== panel 4: O-Al(OH)2 at x 266,331,396 ===== -->
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="266" y1="334" x2="266" y2="306"/><line x1="331" y1="334" x2="331" y2="306"/><line x1="396" y1="334" x2="396" y2="306"/>
+          <line x1="266" y1="306" x2="266" y2="284"/><line x1="331" y1="306" x2="331" y2="284"/><line x1="396" y1="306" x2="396" y2="284"/>
+          <line x1="266" y1="284" x2="253" y2="266"/><line x1="266" y1="284" x2="279" y2="266"/>
+          <line x1="331" y1="284" x2="318" y2="266"/><line x1="331" y1="284" x2="344" y2="266"/>
+          <line x1="396" y1="284" x2="383" y2="266"/><line x1="396" y1="284" x2="409" y2="266"/>
+          <line x1="253" y1="266" x2="253" y2="252"/><line x1="279" y1="266" x2="279" y2="252"/>
+          <line x1="318" y1="266" x2="318" y2="252"/><line x1="344" y1="266" x2="344" y2="252"/>
+          <line x1="383" y1="266" x2="383" y2="252"/><line x1="409" y1="266" x2="409" y2="252"/>
+        </g>
+        <g class="dg-ink"><circle cx="266" cy="334" r="8"/><circle cx="331" cy="334" r="8"/><circle cx="396" cy="334" r="8"/></g>
+        <g class="dg-fill" stroke-width="0">
+          <circle cx="266" cy="306" r="6.5"/><circle cx="331" cy="306" r="6.5"/><circle cx="396" cy="306" r="6.5"/>
+          <circle cx="253" cy="266" r="6"/><circle cx="279" cy="266" r="6"/><circle cx="318" cy="266" r="6"/><circle cx="344" cy="266" r="6"/><circle cx="383" cy="266" r="6"/><circle cx="409" cy="266" r="6"/>
+        </g>
+        <g class="dg-line" stroke-width="1.3" fill="none">
+          <circle cx="266" cy="306" r="6.5"/><circle cx="331" cy="306" r="6.5"/><circle cx="396" cy="306" r="6.5"/>
+          <circle cx="253" cy="266" r="6"/><circle cx="279" cy="266" r="6"/><circle cx="318" cy="266" r="6"/><circle cx="344" cy="266" r="6"/><circle cx="383" cy="266" r="6"/><circle cx="409" cy="266" r="6"/>
+        </g>
+        <g class="dg-soft">
+          <polygon points="266,275 274.6,281.2 271.3,291.3 260.7,291.3 257.4,281.2"/>
+          <polygon points="331,275 339.6,281.2 336.3,291.3 325.7,291.3 322.4,281.2"/>
+          <polygon points="396,275 404.6,281.2 401.3,291.3 390.7,291.3 387.4,281.2"/>
+          <circle cx="253" cy="250" r="3.5"/><circle cx="279" cy="250" r="3.5"/><circle cx="318" cy="250" r="3.5"/><circle cx="344" cy="250" r="3.5"/><circle cx="383" cy="250" r="3.5"/><circle cx="409" cy="250" r="3.5"/>
+        </g>
+        <g class="dg-acc" stroke-width="1.6">
+          <polygon points="266,275 274.6,281.2 271.3,291.3 260.7,291.3 257.4,281.2"/>
+          <polygon points="331,275 339.6,281.2 336.3,291.3 325.7,291.3 322.4,281.2"/>
+          <polygon points="396,275 404.6,281.2 401.3,291.3 390.7,291.3 387.4,281.2"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="253" y="243">H</text><text x="279" y="243">H</text><text x="318" y="243">H</text><text x="344" y="243">H</text><text x="383" y="243">H</text><text x="409" y="243">H</text>
+        </g>
+        <text x="331" y="228" class="dg-label" text-anchor="middle">CH₃ → OH; CH₄ out</text>
+      </svg>
+      <figcaption>
+        <b>Figure 14.</b> One ALD cycle on the surface, after Wolf Fig. 4-15. Glyphs: silicon solid,
+        oxygen open, hydrogen a small labelled disc, and aluminium a filled pentagon (accent outline)
+        — this module's glyph for Al; a methyl group is written CH₃ as a group rather than drawn atom
+        by atom. (1) The surface carries hydroxyl groups. (2) Each TMA molecule chemisorbs on one
+        hydroxyl, releasing methane; once every site is taken the surface is methyl-covered and the
+        pulse can deposit nothing more; one methyl pair per panel is labelled. (3) Purge: the inert
+        gas sweeps out the unreacted TMA and the methane, and the surface is unchanged. (4) Water
+        converts each Al–CH₃ to Al–OH, releasing
+        methane again; after a second purge the surface is back at stage 1, one Al–O layer thicker.
+        Schematic: in the real film the aluminium atoms also bond to one another's oxygens, and a TMA
+        molecule can occupy more than one site.
+      </figcaption>
+    </figure>
+
+    <p>
+      ZrO₂ is grown the same way from zirconium tetrachloride and water (p. 66; Wolf Fig. 4-16), with
+      hydrogen chloride as the by-product. Robertson writes the two half-reactions, for a surface
+      terminated by hydroxyl groups at about 300 °C, as:
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Step</th><th>Surface reaction</th><th>By-product</th></tr></thead>
+        <tbody>
+          <tr><td>ZrCl₄ pulse</td><td>ZrCl₄ + 2 OH<sub>surface</sub> → ZrCl₂O₂ + 2 HCl</td><td>hydrogen chloride, HCl</td></tr>
+          <tr><td>H₂O pulse</td><td>ZrCl₂O₂ + 2 H₂O → ZrO₂(OH)₂ + 2 HCl</td><td>hydrogen chloride, HCl</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The chloride bonds to the surface through its reaction with two hydroxyls, keeping two chlorine
+      atoms; water replaces those chlorines with hydroxyls, ready for the next pulse. On an oxidised
+      silicon surface the hydroxyls of the first cycle are bonded to silicon, so the first zirconium
+      atoms are bonded through oxygen to silicon, Si–O–Zr. The notes' 9 Å interfacial silicate (§6) is
+      about three atomic layers thick, more than that single bonding plane, and Wolf reports it for
+      ZrO₂ films however they are deposited (p. 174): it belongs to the ZrO₂/silicon interface, not
+      to the ALD chemistry.
+    </p>
+    <p>
+      The notes list ALD's advantages (p. 65), and each follows from self-limiting chemisorption. It
+      deposits very thin films, because the thickness is a count of cycles. It runs at low
+      temperature, below 400 °C, because chemisorption needs only enough thermal energy to drive the
+      surface reaction (Wolf p. 172), and the temperature must in any case stay below that at which the
+      precursor decomposes on its own, which would turn the process back into CVD. The 400 °C figure
+      is typical rather than a limit: the notes' own Al₂O₃ process, ALD by Wolf's account, runs at
+      450 °C (p. 66). It achieves 100% step coverage
+      and excellent conformality, because every exposed surface saturates whatever its orientation or
+      depth in a trench, so the film follows the topography exactly. It accepts a wide range of
+      precursors and gives low impurity levels, and its composition can be controlled at the atomic
+      level, by alternating cycles of different precursors to build a mixed oxide such as an aluminate
+      or silicate layer by layer. Because the wafer needs only to be saturated, not uniformly supplied,
+      the chamber can be very small — Wolf gives 4 mm high — and switched quickly.
+    </p>
+
+    <div class="eq" id="eq-ald">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em> = <em>N</em><sub>cyc</sub> × <em>g</em></div>
+        <div class="eq-num">(7.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em> film thickness (Å) · <em>N</em><sub>cyc</sub> number of ALD cycles
+        (dimensionless) · <em>g</em> growth per cycle (Å/cycle), a property of the precursor pair,
+        the surface and the temperature, constant once the film has closed. Growth rate per unit time
+        is <em>g</em> multiplied by the cycle frequency. Excludes the slow first cycles of nucleation
+        on a bare surface.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">The notes' growth rate at Wolf's fastest cycling</div>
+      <div class="ex-body">
+        <p><b>Given</b> the notes' upper growth rate, 200 Å/min (p. 65), and Wolf's figure of up to
+          4 cycles per second in a small chamber (p. 172), taken to hold together. Find the growth
+          per cycle and the time to deposit the 38 Å HfO₂ film of §6 at that rate.</p>
+        <p class="ex-step"><b>Cycles per minute.</b> 4 cycles/s × 60 s = 240 cycles/min.</p>
+        <p class="ex-step"><b>Equation (7.8), per minute.</b> <em>g</em> = 200 Å ÷ 240 cycles =
+          0.83 Å/cycle.</p>
+        <p class="ex-step"><b>Time for 38 Å.</b> <em>N</em><sub>cyc</sub> = 38/0.83 ≈ 46 cycles;
+          at 4 cycles/s, about 11 s.</p>
+        <p class="ex-answer"><em>g</em> ≈ 0.8 Å per cycle, and a gate dielectric in about ten seconds
+          of cycling. The two figures are upper limits that Wolf does not say occur together: at one
+          cycle per second the same 200 Å/min would need 3.3 Å per cycle.</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">Growth per cycle is set by the surface, not by the lattice constant; "low impurity" is relative to CVD</p>
+      <p>
+        The notes state (p. 65), following Wolf p. 170, that the thickness of each cycle cannot exceed
+        a few ångströms "as determined by lattice constant of the materials", and that switching the
+        gases in under a second gives growth of 50–200 Å/min (Wolf gives "up to 200 Å/min"; the lower
+        figure is the notes' own). The upper bound is right; the reason is not. Robertson (2004) states
+        that each ALD cycle usually adds much less than an atomic layer, despite the name, because
+        precursor adsorption saturates below one monolayer through <b>steric hindrance</b>: the bulky
+        ligands of an adsorbed precursor molecule — the methyl groups of TMA, the chlorines of ZrCl₄ —
+        cover neighbouring surface sites and block them. The growth per cycle is therefore fixed by the
+        density of reactive sites and the size of the precursor. For TMA and water the measured growth
+        is 1.1–1.2 Å per cycle (George 2010); Wolf's two upper limits, taken together as in the worked
+        example above, are consistent with a figure of that order. The notes' bound of a few ångströms
+        per cycle holds; its cause is sub-monolayer adsorption, not the lattice constant.
+      </p>
+      <p>
+        The notes' "low impurity levels" is Wolf's comparison of ALD with conventional CVD (p. 170).
+        Robertson notes that ALD and MOCVD generally leave carbon, hydrogen or chlorine from the
+        precursor in the film, that careful annealing is needed to densify the films and remove them,
+        and he rates the purity of ALD films equal to that of MOCVD films and below that of sputtered
+        films or oxidised metal films (Table 3).
+      </p>
+    </div>
+
+    <p>
+      One limitation bears directly on §6. ALD of HfO₂ and ZrO₂ from chlorides and many metal-organic
+      precursors does not nucleate easily on the hydrogen-terminated silicon left by a final
+      hydrofluoric-acid clean: growth starts slowly, and a film three monolayers thick can still be a
+      set of islands rather than a closed layer. Nucleation proceeds readily on a slightly oxidised
+      surface, so production ALD is usually started on a thin chemical oxide formed by an ozone clean —
+      which then becomes part of the interfacial layer and part of the EOT floor (Robertson 2004).
+    </p>
+
+    <h2 id="s8">8 · The candidates, in the notes' order</h2>
+
+    <p>
+      With the criteria of §3–§5 and the methods of §7 in hand, the notes' candidates can be read as
+      a sequence of attempts, each failing or succeeding for reasons that are now visible. The notes
+      treat Ta₂O₅ as a gate dielectric first (pp. 59–60), then Al₂O₃, ZrO₂ and HfO₂ together
+      (pp. 66–67), with HfSiON and Pr₂O₃ at the end (p. 67). Lecture 2 told the same history as a
+      progression: tantalum pentoxide came first and "has got some problems"; the field moved to
+      hafnium oxide, "a better material"; and then to hafnium silicate, which is "more stable". Each
+      subsection gives the notes' statements first and then what they mean. A summary table closes
+      the section.
+    </p>
+
+    <h3>8.1 Tantalum pentoxide, Ta₂O₅</h3>
+
+    <p>
+      Ta₂O₅ has <em>k</em> = 25 in the notes' text (pp. 54, 58) and 26 in their table (p. 49); the
+      difference is inherited from Wolf, whose text and table disagree in the same way, and Robertson
+      gives 22. It came first partly because the industry had been developing Ta₂O₅ films since the early
+      1980s, for DRAM capacitors (Wolf §4.4; <a href="m07b-high-k-memory-capacitors.html">M07b</a>),
+      and its dielectric constant is six times that of SiO₂. The notes' subthreshold swing of 80 mV/decade (p. 51) was obtained with a
+      Ta₂O₅ gate, and Wolf's roll-off comparison behind the notes' first device point (Fig. 4-2) is
+      for Ta₂O₅ as well.
+    </p>
+    <p>
+      Its first problem is the reaction of §5.3: SiO₂ grows beneath it, up to 2 nm. The first
+      Ta₂O₅ MOSFETs therefore controlled the interlayer instead of fighting it. In the notes' account
+      (p. 59), a 2 nm thick oxide layer was grown on the silicon, followed by N₂ annealing at 800 °C
+      for 30 (nitridation); this nitrided SiO₂ acts as a diffusion barrier that prevents oxygen from
+      reaching the silicon, so no further oxide grows during later heat treatments, and a TiN gate
+      electrode is employed instead of polysilicon. The notes do not give the unit of the "30"; Wolf,
+      whose account the notes follow, gives 30 min (p. 160). Wolf reports that the leakage of this
+      transistor was equivalent to that of a MOSFET with an SiO₂ gate dielectric of identical
+      thickness.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">"N₂ annealing at 800 °C" as a nitridation</p>
+      <p>
+        The notes (p. 59) and Wolf (p. 160) describe the 2 nm interlayer as nitrided by annealing in
+        N₂ at 800 °C for 30 minutes. Molecular nitrogen is nearly inert toward SiO₂ at 800 °C: its
+        triple bond is too strong to dissociate at that temperature, which is why the nitridation
+        processes of Chapter 3 use ammonia, nitrous oxide or nitric oxide
+        (<a href="m06-thin-gate-oxides-conduction-breakdown.html">M06 §9</a>), and why Lecture 9
+        stressed that the oxide is nitrided in reactive gases, not in N₂ itself: "This is called nitric
+        oxide. Nitric Oxide. Not nitrogen." The notes' conditions are given above as written; the
+        original report (Momiyama <i>et al.</i>, VLSI Symposium 1997, as cited by Wolf) has not been
+        checked, and how much nitrogen such an anneal incorporated is uncertain.
+      </p>
+    </div>
+
+    <p>
+      The notes' second approach (p. 60) uses exactly the gas Chapter 3 recommends: grow an
+      interfacial layer on the silicon substrate with NO at 800 °C for 20 s, then deposit Ta₂O₅ by
+      CVD, to produce an equivalent thickness of 2.3 nm. The notes report that this structure showed
+      1000 times smaller leakage current. The comparison is between two interlayers under the same
+      Ta₂O₅: Wolf (p. 161) states that the leakage was 1000× smaller "than when an oxide was used as
+      the interfacial layer". A similar process nitrided the silicon surface in NH₃ at 800 °C for
+      30 s instead (Wolf p. 161).
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">1000× smaller than what</p>
+      <p>
+        The notes (p. 60) give the NO-interlayer result as "1000× times smaller leakage current" without
+        a comparator. The comparator in the source is a Ta₂O₅ stack of the same kind with an SiO₂
+        interlayer instead of the NO-grown one (Wolf p. 161) — not an SiO₂ gate dielectric of the same
+        equivalent thickness. The figure measures how much the interlayer matters, not how much Ta₂O₅
+        improves on SiO₂.
+      </p>
+    </div>
+
+    <p>
+      The top interface raises the same chemistry. The notes (p. 60): a barrier over the Ta₂O₅ is
+      needed to prevent silicide forming with a polysilicon gate, and usually TiN or WN is used. The
+      barrier must conduct, since it is part of the gate electrode, and in practice it becomes the
+      gate: the notes' drawing of the transistor (p. 60) has a TiN gate directly on the Ta₂O₅.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 206" role="img" aria-labelledby="m7f15-t">
+        <title id="m7f15-t">Cross-section of the notes' Ta2O5 gate transistor: p-type silicon with n-plus source and drain, a thin nitrided silicon dioxide interlayer, a Ta2O5 layer and a titanium nitride gate on top</title>
+        <defs>
+          <pattern id="m7f15-h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="6" class="dg-rule" stroke-width="1.1"/>
+          </pattern>
+        </defs>
+        <!-- substrate -->
+        <rect x="20" y="110" width="330" height="80" class="dg-fill"/>
+        <text x="185" y="178" class="dg-label" text-anchor="middle">p-Si</text>
+        <!-- S/D -->
+        <path d="M20,110 H120 C120,140 100,150 60,150 H20 Z" class="dg-fill"/>
+        <path d="M350,110 H250 C250,140 270,150 310,150 H350 Z" class="dg-fill"/>
+        <text x="62" y="134" class="dg-label" text-anchor="middle">n⁺</text>
+        <text x="308" y="134" class="dg-label" text-anchor="middle">n⁺</text>
+        <!-- gate stack: SiO2 (interlayer, accent) 104-110; Ta2O5 86-104; TiN 40-86 -->
+        <rect x="110" y="104" width="150" height="6" class="dg-acc-f"/>
+        <rect x="110" y="84" width="150" height="20" class="dg-fill"/>
+        <rect x="110" y="84" width="150" height="20" style="fill:url(#m7f15-h)"/>
+        <rect x="110" y="36" width="150" height="48" class="dg-fill"/>
+        <text x="185" y="65" class="dg-label" text-anchor="middle">TiN gate</text>
+        <!-- leaders -->
+        <g class="dg-rule" stroke-width="1">
+          <line x1="262" y1="94" x2="364" y2="80"/>
+          <line x1="262" y1="107" x2="364" y2="112"/>
+        </g>
+        <text x="368" y="84" class="dg-label">Ta₂O₅</text>
+        <text x="368" y="110" class="dg-label">SiO₂,</text>
+        <text x="368" y="125" class="dg-label">nitrided</text>
+        <text x="368" y="140" class="dg-label">(2 nm)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 15.</b> The notes' Ta₂O₅ transistor (p. 60), redrawn: a thin interfacial SiO₂ (accent),
+        nitrided so that oxygen cannot reach the silicon beneath it, the Ta₂O₅ film (hatched), and a
+        TiN gate in place of polysilicon, which Ta₂O₅ would react with. Layer thicknesses exaggerated.
+      </figcaption>
+    </figure>
+
+    <p>
+      The metal gate has its own cost, which the notes state (p. 60): a metallic gate increases
+      <em>V</em><sub>T</sub> by about 0.6 V, so proper <em>V</em><sub>T</sub> adjustments must be
+      employed, and this produces buried-channel MOSFETs, which degrades their short-channel
+      behaviour. §9 derives the 0.6 V from the work functions. The mechanism of the second half is
+      the one <a href="m02-deep-submicron-roadmap.html">M02 §8</a> and
+      <a href="m03-threshold-voltage.html">M03 §8</a> taught for an n⁺ polysilicon gate on a p-channel
+      device: lowering the threshold by implanting dopant of the opposite type near the surface moves
+      the conducting channel below the surface, where the gate controls it less well.
+    </p>
+    <p>
+      Ta₂O₅ then failed on the two criteria of §5 that the notes do not discuss. Its conduction-band
+      offset on silicon is only about 0.35 eV (§5.2), so it barely blocks electrons, and it is not
+      thermodynamically stable on silicon (§5.3). Robertson summarises that Ta₂O₅ was a moderately
+      good glass former but "was eliminated because it is reactive".
+    </p>
+
+    <h3>8.2 Aluminium oxide, Al₂O₃</h3>
+
+    <p>
+      The notes (p. 66): Al₂O₃ films are made with the precursor TMA (trimethylaluminium) and ozone at
+      450 °C, have <em>k</em> = 9 and <em>E</em><sub>g</sub> ≈ 8.3 eV, and exhibit excellent thermal
+      stability when in contact with silicon. The notes do not name the method; Wolf (p. 172) gives
+      it as atomic layer deposition, the cycle of §7.2. The virtues are the ones §5 predicts: a wide
+      band gap with a large conduction-band offset — 2.8 eV for bulk-like Al₂O₃ (Figure 8), and about
+      2.2 eV measured on ALD films, whose gap is smaller (Robertson Tables 2 and 5) — stability on
+      silicon (§5.3), and an amorphous film, since Al₂O₃ is the
+      best glass former after SiO₂ (§5.4). Wolf adds (pp. 172–173) that it is compatible with a
+      polysilicon gate without any barrier layer, and that its capacitors leak 2–3 orders of magnitude
+      less than SiO₂ capacitors of the same equivalent thickness.
+    </p>
+    <p>
+      Its weakness is its dielectric constant. At <em>k</em> = 9 a film is only 2.3 times thicker than
+      the SiO₂ it replaces (§3), and Wolf reports that the effective <em>k</em> of Al₂O₃ gate stacks is
+      lower still, 5.5–6.0, because a thin interfacial SiO₂ layer inevitably forms between the Al₂O₃ and
+      the silicon during deposition — equation (7.6) at work. Wolf judged that the improvement might be
+      adequate for only a single technology node. Transistors with Al₂O₃ gates also showed lower
+      channel mobility than SiO₂ ones, attributed to electron trapping in the Al₂O₃.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Al₂O₃'s band gap: 8.3 eV on p. 66, 8.7 eV on p. 49</p>
+      <p>
+        The notes give Al₂O₃ a band gap of 8.7 eV in the table on p. 49 and ≈ 8.3 eV on p. 66; Wolf's
+        table and text disagree in the same way. Robertson gives 8.8 eV for bulk Al₂O₃ and notes that films grown by
+        atomic layer deposition have a much smaller gap, about 6.8 eV, so the gap of a gate film depends
+        on how it was made. Both are the notes' values; the p. 49 figure is the closer to the bulk
+        value.
+      </p>
+    </div>
+
+    <h3>8.3 Zirconium oxide, ZrO₂</h3>
+
+    <p>
+      The notes (p. 66): ZrO₂ has <em>k</em> = 20–25, is thermodynamically stable with silicon, has
+      <em>E</em><sub>g</sub> ≈ 5.1 eV, and its lattice mismatch with silicon is only 2.1%. It is grown by
+      reactive sputtering in O₂ + Ar or by oxidising a Zr film in an RTA process; it can be etched in
+      HF solutions; and doping with Al, by co-sputtering from an Al target, produces films of better
+      uniformity. Wolf adds that the Al-doped films are amorphous and have a slightly lower dielectric
+      constant (p. 174) — the aluminate route of §5.4.
+    </p>
+    <p>
+      By ALD, the precursors are ZrCl₄ and H₂O (§7.2). The films form an interfacial silicate layer
+      9 Å thick (§6), and a post-deposition anneal in O₂ or inert gas, at 400–600 °C in the notes, is
+      required to reduce the leakage current. Films of aluminium-doped zirconium silicate, Zr-Al-Si-O,
+      have been studied as a high-k candidate: the addition of Al reduces the rate of oxygen diffusion
+      through ZrO₂ (§5.3), and the silicon and aluminium keep the film amorphous. Finally, the notes
+      record that yttria-stabilised zirconium oxide can also be used for MOSFETs. Adding yttrium oxide,
+      Y₂O₃, stabilises ZrO₂ in its cubic, fluorite structure (Robertson), and Wolf reports that such
+      films can be grown <b>epitaxially</b> on silicon — as a crystalline film whose lattice takes its
+      orientation from the substrate's — by pulsed laser ablation, without an interfacial oxide
+      (p. 174).
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Three ZrO₂ statements in the notes that the literature revises</p>
+      <p>
+        <b>Band gap.</b> The notes give 7.8 eV in the p. 49 table and ≈ 5.1 eV on p. 66; Wolf has the same
+        pair. The 7.8 eV value is an early one carried over from Wilk <i>et al.</i> (2001); Robertson
+        gives 5.8 eV, the same as HfO₂ (Figure 4).
+      </p>
+      <p>
+        <b>Lattice mismatch.</b> The notes, following Wolf p. 173, give 2.1%. Robertson gives lattice
+        constants of 5.43 Å for silicon and 5.07 Å for cubic ZrO₂, which differ by (5.43 − 5.07)/5.43 =
+        6.6%. The mismatch matters only for epitaxial films, such as the yttria-stabilised ones; the
+        amorphous films of a production gate have no lattice to match.
+      </p>
+      <p>
+        <b>Stability.</b> "Thermodynamically stable with Si" was the view in 2001; later data showed ZrO₂
+        to be slightly unstable against forming ZrSi₂ (§5.3).
+      </p>
+      <p>
+        One smaller difference: the notes' 400–600 °C anneal range is Wolf's range for significant SiO₂
+        growth at the ZrO₂/Si interface; Wolf gives 400–500 °C for the anneal that reduces leakage
+        (p. 174). The values in §8.3 are the notes'.
+      </p>
+    </div>
+
+    <h3>8.4 Hafnium oxide, HfO₂</h3>
+
+    <p>
+      The notes (pp. 66–67): HfO₂ has <em>k</em> = 24–40, shows good thermal stability with silicon, and
+      has <em>E</em><sub>g</sub> ≈ 5.7 eV. It is deposited by PVD (reactive sputtering) or by in-situ
+      RTCVD. It does not form an interfacial layer with polysilicon if the polysilicon deposition
+      temperature is kept below 600 °C and the RTA anneals are carried out at 1000 °C. Crystallisation
+      of the HfO₂ is observed. Leakage currents were four orders of magnitude smaller than those of an
+      SiO₂ MOS capacitor with the same 12 Å EOT.
+    </p>
+    <p>
+      Each statement connects to an earlier section. The stability is Hf's: the most stable oxide of
+      its group, dense and resistant to intermixing (§5.3). The band gap near 5.7 eV and the
+      conduction-band offset of about 1.4 eV (Figure 8) make it an insulator by Robertson's criterion,
+      though with less than half SiO₂'s barrier. The crystallisation is §5.4's weakness of an ionic,
+      seven-coordinated oxide. The 12 Å capacitor is the one worked in §4 and drawn in Figure 12 —
+      with the physical thicknesses Wolf reports, 38 Å of HfO₂ plus about 6 Å of interlayer — and
+      four decades less leakage than 12 Å of SiO₂. Wolf adds a problem and a result. Like the other
+      high-k films, HfO₂ traps electrons and degrades the carrier mobility in the channel; and in a
+      separate report (B. H. Lee <i>et al.</i>, IEDM 2000), HfO₂ films with a TaN metal gate, which
+      has no polysilicon-depletion layer, reached an EOT as small as 8 Å (§9). Robertson
+      traces part of the mobility loss to §2: the soft, low-frequency polar vibrations that give HfO₂
+      and ZrO₂ their large lattice contribution to <em>k</em> couple to the electrons in the channel
+      just beneath and scatter them, an effect that is small in Al₂O₃ and in the silicates, which lack
+      such soft modes.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">"No interfacial layer" refers to the gate side only</p>
+      <p>
+        The notes' sentence (pp. 66–67), that HfO₂ does not form an interfacial layer with polysilicon
+        under those conditions, describes the <b>top</b> interface, between the HfO₂ and the
+        polysilicon gate. The same report found an unwanted interfacial SiO₂ layer at the <b>bottom</b>
+        interface, between the HfO₂ and the silicon substrate, formed during the HfO₂ deposition, about
+        6 Å thick in its micrographs (Wolf p. 175 and Fig. 4-17; Kang <i>et al.</i>, IEDM 2000). HfO₂
+        does not sit directly on the silicon; the 12 Å EOT includes that layer.
+      </p>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">k = 24–40 for HfO₂</p>
+      <p>
+        The notes give <em>k</em> = 24–40 on p. 66 (after Wolf p. 175) and 24 in the p. 49 table. Measured
+        amorphous and monoclinic HfO₂ has <em>k</em> of about 20–25: Taur and Ning give 20–25, Wilk
+        <i>et al.</i> and Robertson 25. Higher values belong to the tetragonal and cubic phases, which
+        calculations predict to have larger dielectric constants than the monoclinic phase and which
+        are not the phases of an ordinary film. Use 24 for calculations, as the notes' own table does;
+        treat the upper end of 24–40 as phase-dependent, not as a property of a typical HfO₂ gate film.
+      </p>
+    </div>
+
+    <h3>8.5 Hafnium silicate and HfSiON</h3>
+
+    <p>
+      The notes give HfSiON one sentence (p. 67): it is also looked into as a possible candidate
+      high-k material, and exhibits smaller leakage currents than SiO₂ at the same equivalent oxide
+      thickness. The lectures gave it more weight than any other candidate: hafnium oxide and hafnium
+      silicate were named together in Lectures 2, 3 and 6, and Lecture 2 called the silicate the
+      more stable material.
+    </p>
+    <p>
+      A <b>hafnium silicate</b> is a mixture of HfO₂ and SiO₂, written HfSiO or
+      (HfO₂)<sub><em>x</em></sub>(SiO₂)<sub>1−<em>x</em></sub>; it is the pseudo-binary oxide of the
+      notes' ideal interface (§6), and the crystalline compound at <em>x</em> = 0.5 is HfSiO₄. HfSiON
+      is the same material with nitrogen added. Both are responses to the weaknesses of pure HfO₂
+      set out in §5, and each addition trades dielectric constant for stability:
+    </p>
+    <ul>
+      <li><b>Crystallisation.</b> SiO₂ is a glass former, so the silicate stays amorphous to close to
+        1000 °C, and nitrogen raises the crystallisation temperature further, enough for hafnium
+        silicate to pass the 1000 °C, 5 s criterion (Robertson). Wolf describes HfSiON as amorphous,
+        with films below 13 Å EOT showing good reliability (p. 176).</li>
+      <li><b>Barrier and interface.</b> Mixing in SiO₂ widens the band gap and raises the
+        conduction-band offset: Robertson gives HfSiO₄ a gap of 6.5 eV and an offset of 1.8 eV against
+        5.8 and 1.4 eV for HfO₂. Near the silicon, a silicon-rich composition approaches the SiO₂
+        interface the notes call ideal.</li>
+      <li><b>Dopant penetration.</b> Nitrogen in the film blocks boron diffusing from a p⁺ gate, as
+        it does in the oxynitrides of <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06
+        §9</a>, and an amorphous film has no grain boundaries to carry it (§5.4).</li>
+      <li><b>The cost.</b> The dielectric constant falls roughly in proportion to the SiO₂ added:
+        HfSiO₄ has <em>k</em> ≈ 11 against 25 for HfO₂ (Robertson). The composition is chosen to keep
+        enough hafnium for a useful <em>k</em> while keeping the film amorphous.</li>
+    </ul>
+    <p>
+      "More stable", in the lecture's sense, is therefore the whole of §5.3 and §5.4 applied at
+      once: a hafnium-based film that stays glassy, reacts less, keeps boron out and presents a
+      higher barrier, bought with part of the dielectric constant.
+    </p>
+
+    <h3>8.6 Praseodymium oxide, Pr₂O₃</h3>
+
+    <p>
+      The notes (p. 67): MOS capacitors based on Pr₂O₃ exhibited ultra-low leakage current densities
+      of 5 nA/cm² at 1 V with an EOT of 14 Å; <em>k</em> ≈ 31; no hysteresis is observed in the C–V
+      measurements. The films are deposited by MBE between 625 and 725 °C at a growth rate of 0.1 Å/s,
+      and subsequently annealed in a furnace at 600 °C in dry nitrogen, or by RTA at 1000 °C for 15 s
+      in N₂.
+    </p>
+    <p>
+      One term needs definition. <b>Hysteresis</b> in a C–V measurement is a difference between the
+      capacitance–voltage curve swept upward and the curve swept back down; it appears when charge is
+      trapped in the dielectric during one sweep and released during the other, so its absence shows
+      that the film has few traps able to charge and discharge on the time scale of the measurement.
+      The leakage figure, 5×10⁻⁹ A/cm², is small: Wolf, reporting the same work (Osten <i>et al.</i>,
+      IEDM 2000), calls it four orders of magnitude lower than the best results then reported for
+      other high-k materials. Wolf adds that the furnace anneal lasted 5 min, that the films survived
+      the 1000 °C, 15 s RTA with no change in structure or electrical properties, and that the Pr₂O₃
+      layers were polycrystalline — an exception to §5.4, since these crystalline films were not
+      leaky. The group that made the films describes them differently: Pr₂O₃ grown epitaxially
+      (§8.3) on Si(001), as domains in two perpendicular in-plane orientations (Osten <i>et al.</i>,
+      <i>Microelectron. Reliab.</i> 2001). Domains locked to the substrate in two orientations are a
+      far more ordered structure than the randomly oriented grains of Figure 11, so the low leakage
+      is less of an exception to §5.4 than Wolf's word suggests. The polysilicon/Pr₂O₃ interface was
+      rough, so the top electrodes were gold, evaporated
+      through a shadow mask. Praseodymium is a lanthanide, and the lanthanide oxides are among those
+      thermodynamically stable on silicon (§5.3).
+    </p>
+
+    <div class="box">
+      <p class="box-title">Cerium dioxide, CeO₂ — from Lecture 2, not in the notes</p>
+      <p>
+        Lecture 2 added a candidate the notes do not contain, from the professor's own research: cerium
+        dioxide, whose advantage is a very close lattice match to silicon, so that crystalline,
+        epitaxial gate insulators can be made. Epitaxial growth (§8.3) in a single orientation removes
+        grain boundaries altogether (§5.4) and can give an ordered interface. CeO₂ has the cubic fluorite structure, in
+        which each cerium has 8 oxygen neighbours and each oxygen 4 cerium neighbours, with a lattice
+        constant of 5.411 Å (ICDD reference pattern 43-1002) against 5.431 Å for silicon: a mismatch of
+        (5.431 − 5.411)/5.431 = 0.37%, against 6.6% for cubic ZrO₂. The same material appears later in
+        the course as a polishing abrasive in chemical–mechanical polishing (M13).
+      </p>
+    </div>
+
+    <h3>8.7 The candidates side by side</h3>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Material</th><th>k, notes</th><th>k, literature</th><th><em>E</em><sub>g</sub> (eV), notes</th><th><em>E</em><sub>g</sub> (eV), literature</th><th>CB offset (eV)</th><th>Stable on Si</th><th>Notes' deposition</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SiO₂</td><td>3.9</td><td>3.9</td><td>8.9</td><td>9</td><td>3.1 (3.2)</td><td>—</td><td>thermal growth</td></tr>
+          <tr><td>Si₃N₄</td><td>7</td><td>7</td><td>5.1</td><td>5.3</td><td>2.4</td><td>—</td><td>—</td></tr>
+          <tr><td>Al₂O₃</td><td>9</td><td>9</td><td>8.7 (p. 49); 8.3 (p. 66) ⚑</td><td>8.8</td><td>2.8 (ALD films ≈ 2.2)</td><td>yes</td><td>TMA + O₃, 450 °C (ALD, per Wolf)</td></tr>
+          <tr><td>Ta₂O₅</td><td>26 (p. 49); 25 (pp. 54, 58) ⚑</td><td>22</td><td>4.5</td><td>4.4</td><td>0.35</td><td>no</td><td>CVD on an NO or nitrided-oxide interlayer</td></tr>
+          <tr><td>ZrO₂</td><td>25 (p. 49); 20–25 (p. 66)</td><td>25</td><td>7.8 (p. 49); 5.1 (p. 66) ⚑</td><td>5.8</td><td>1.5</td><td>notes: yes; later: marginal ⚑</td><td>reactive sputtering; RTA oxidation of Zr; ALD, ZrCl₄ + H₂O</td></tr>
+          <tr><td>HfO₂</td><td>24 (p. 49); 24–40 (p. 66) ⚑</td><td>20–25</td><td>5.7</td><td>5.8</td><td>1.4</td><td>yes</td><td>reactive sputtering; RTCVD</td></tr>
+          <tr><td>HfSiO₄</td><td>—</td><td>11</td><td>—</td><td>6.5</td><td>1.8</td><td>yes</td><td>— (HfSiON named, p. 67)</td></tr>
+          <tr><td>Pr₂O₃</td><td>≈ 31</td><td>—</td><td>—</td><td>—</td><td>—</td><td>yes</td><td>MBE, 625–725 °C</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Notes' values from pp. 49, 54, 58, 66–67; ⚑ marks a notes value that differs within the notes or
+      from the literature, discussed in the box of the relevant subsection. Literature values:
+      dielectric constants, gaps and conduction-band offsets from Robertson (2004) Table 2, except the
+      HfO₂ <em>k</em> range from Taur and Ning, the offset measured on ALD Al₂O₃ from Robertson's
+      Table 5, and the SiO₂ offset, 3.1 eV, the value used throughout this course (Robertson's 3.2 eV
+      in brackets). Stability from Robertson's summary of Hubbard and Schlom.
+    </p>
+
+    <h2 id="s9">9 · The gate electrode</h2>
+
+    <p>
+      Changing the dielectric changes the electrode on top of it. The notes meet the problem three
+      times: a polysilicon gate reacts with Ta₂O₅ and needs a TiN or WN barrier (p. 60); a metal gate
+      raises the threshold voltage by about 0.6 V (p. 60); and a polysilicon gate on HfO₂ must be
+      deposited below 600 °C (p. 67). This section takes each in turn, and ends with what the industry
+      eventually built.
+    </p>
+    <p>
+      Doped polysilicon had been the gate electrode since the 1970s for the reasons of
+      <a href="m03-threshold-voltage.html">M03 §8</a>: it survives the source–drain anneal, it
+      self-aligns the source and drain, and its work function is set by its doping, n⁺ for the
+      n-channel transistor and p⁺ for the p-channel one. On a high-k film it has two problems. The
+      first is chemical. Silicon reacts with an oxide that is not stable against it (§5.3), forming a
+      silicide or SiO₂ at the top of the dielectric, which is why the notes' Ta₂O₅ needs a conductive
+      barrier, TiN or WN, between it and any polysilicon. HfO₂ is stable against silicon, so the
+      top interfacial layer that the notes avoid by depositing the polysilicon below 600 °C is not
+      that reaction; Wolf gives the temperature condition without a mechanism (p. 175). The second
+      problem is electrical: a polysilicon gate depletes at its bottom surface under bias
+      (<a href="m06-thin-gate-oxides-conduction-breakdown.html">M06 §6</a>), adding a few ångströms
+      of equivalent thickness in series with the dielectric. At an EOT of 12 Å those few ångströms
+      are a large fraction of the total. In a separate report, HfO₂ with a TaN metal gate, which does
+      not deplete, reached an EOT of 8 Å (Wolf p. 176, after B. H. Lee <i>et al.</i>, IEDM 2000).
+    </p>
+    <p>
+      A metal gate solves both problems and creates a third, which the notes state: it raises
+      <em>V</em><sub>T</sub> by about 0.6 V. The threshold voltage contains the work-function
+      difference <em>φ</em><sub>MS</sub> between the gate and the silicon
+      (<a href="m03-threshold-voltage.html">M03 §1</a>). With every other term unchanged, replacing one
+      gate material by another shifts the threshold by the difference of their work functions:
+    </p>
+
+    <div class="eq" id="eq-dvt-gate">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>T</sub> = <em>φ</em><sub>M,new</sub> − <em>φ</em><sub>M,old</sub></div>
+        <div class="eq-num">(7.9)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>T</sub> change in threshold voltage (V) ·
+        <em>φ</em><sub>M,new</sub>, <em>φ</em><sub>M,old</sub> work functions of the new and old gate
+        materials, expressed in volts (a work function of 4.6 eV is 4.6 V in the equation). Follows
+        from <em>φ</em><sub>MS</sub> = <em>φ</em><sub>M</sub> − <em>φ</em><sub>S</sub>, with the
+        silicon, the dielectric and its charges unchanged. For n⁺ polysilicon
+        <em>φ</em><sub>M</sub> ≈ 4.05 eV, the electron affinity of silicon, because its Fermi level is
+        at the conduction-band edge; for p⁺ polysilicon ≈ 4.05 + 1.12 = 5.17 eV. A metal's effective
+        work function on a high-k film can differ from its vacuum value.
+      </div>
+    </div>
+
+    <p>
+      TiN, the metal of the notes' Ta₂O₅ transistor, has a work function that places its Fermi level
+      near the middle of the silicon gap — a <b>midgap metal</b> (Wilk <i>et al.</i> 2001). Silicon's
+      midgap lies 4.05 + 1.12/2 = 4.61 eV below the vacuum level; Robertson takes 4.6 eV. Replacing an
+      n⁺ polysilicon gate on an n-channel transistor by a midgap metal therefore shifts the threshold
+      by 4.6 − 4.05 ≈ +0.55 V, the notes' "about 0.6 V". The p-channel transistor, with a p⁺
+      polysilicon gate at 5.17 eV, shifts by 4.6 − 5.17 ≈ −0.57 V, which is also an increase in the
+      magnitude of its (negative) threshold. A single midgap metal is the simplest metal gate — one
+      material, one mask, symmetrical thresholds — but both transistors come out with thresholds near
+      0.5 V in magnitude, which Wilk calls much too large for supply voltages at or below 1 V.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="m7f16-t">
+        <title id="m7f16-t">Work functions below the vacuum level on one scale: n-plus polysilicon at 4.05 electron-volts at the silicon conduction band, a midgap metal such as TiN at 4.6, and p-plus polysilicon at 5.17 at the valence band; replacing n-plus polysilicon by the midgap metal raises the n-channel threshold by about 0.55 volts</title>
+        <defs>
+          <marker id="m7f16-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="m7f16-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+        <!-- scale: 120 px/eV; vacuum level at y=24 (0 eV); broken axis to 3.8 eV at y=60 -->
+        <line x1="20" y1="24" x2="420" y2="24" class="dg-line" stroke-width="1.6"/>
+        <text x="420" y="18" class="dg-label" text-anchor="end">vacuum level</text>
+        <!-- scale break marks -->
+        <path d="M60,34 l8,-4 M60,40 l8,-4" class="dg-rule" stroke-width="1"/>
+        <line x1="64" y1="24" x2="64" y2="32" class="dg-rule" stroke-width="1"/>
+        <line x1="64" y1="42" x2="64" y2="214" class="dg-rule" stroke-width="1"/>
+        <!-- y(E) = 60 + (E-3.8)*120 : 4.05->90, 4.61->157.2, 5.17->224.4 (clip 214) -> use 110 px/eV: y=60+(E-3.8)*110 -->
+        <!-- 4.05 -> 87.5 ; 4.61 -> 149.1 ; 5.17 -> 210.7 -->
+        <g class="dg-label" text-anchor="end">
+          <text x="58" y="91.5">4.05</text>
+          <text x="58" y="153">4.61</text>
+          <text x="58" y="214.7">5.17</text>
+        </g>
+        <!-- silicon band edges -->
+        <rect x="80" y="87.5" width="110" height="123.2" class="dg-fill"/>
+        <line x1="80" y1="87.5" x2="190" y2="87.5" class="dg-line" stroke-width="1.8"/>
+        <line x1="80" y1="210.7" x2="190" y2="210.7" class="dg-line" stroke-width="1.8"/>
+        <line x1="80" y1="149.1" x2="190" y2="149.1" class="dg-guide" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="135" y="78" class="dg-label" text-anchor="middle">Si <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="135" y="144" class="dg-label" text-anchor="middle">midgap</text>
+        <text x="135" y="200" class="dg-label" text-anchor="middle">Si <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <!-- gate work functions -->
+        <line x1="220" y1="87.5" x2="300" y2="87.5" class="dg-line" stroke-width="2.2"/>
+        <text x="306" y="91.5" class="dg-label">n⁺ poly</text>
+        <line x1="220" y1="149.1" x2="300" y2="149.1" class="dg-acc" stroke-width="2.6"/>
+        <text x="306" y="153" class="dg-label">midgap metal (TiN)</text>
+        <line x1="220" y1="210.7" x2="300" y2="210.7" class="dg-line" stroke-width="2.2"/>
+        <text x="306" y="214.7" class="dg-label">p⁺ poly</text>
+        <!-- shift arrows -->
+        <line x1="240" y1="90" x2="240" y2="146" class="dg-acc" stroke-width="1.6" marker-end="url(#m7f16-a)"/>
+        <text x="246" y="124" class="dg-label">+0.55 V, n-channel</text>
+        <line x1="280" y1="208" x2="280" y2="152" class="dg-line" stroke-width="1.4" marker-end="url(#m7f16-b)"/>
+        <text x="286" y="186" class="dg-label">−0.57 V, p-channel</text>
+        <text x="72" y="60" class="dg-label">eV below vacuum</text>
+      </svg>
+      <figcaption>
+        <b>Figure 16.</b> Gate work functions on one energy scale, measured down from the vacuum level
+        (the scale is broken above 3.8 eV). Degenerately doped polysilicon puts the gate's Fermi level at
+        a silicon band edge; a midgap metal such as TiN puts it near the middle. Moving an n-channel
+        gate from n⁺ polysilicon to the midgap metal raises its threshold by the difference, about
+        0.55 V (accent) — the notes' 0.6 V — and the p-channel threshold moves by as much in the other
+        direction, becoming more negative. Energies from <a href="m03-threshold-voltage.html">M03</a>
+        (electron affinity 4.05 eV, gap 1.12 eV).
+      </figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Changed numbers: a midgap gate on a low-voltage transistor</div>
+      <div class="ex-body">
+        <p><b>Given</b> an n-channel transistor with an n⁺ polysilicon gate and
+          <em>V</em><sub>T</sub> = 0.25 V, run from a 1.0 V supply. The gate is replaced by a midgap
+          metal, 4.6 eV, with the channel doping and dielectric unchanged. Find the new threshold and
+          the gate overdrive <em>V</em><sub>DD</sub> − <em>V</em><sub>T</sub> before and after.</p>
+        <p class="ex-step"><b>Equation (7.9).</b> Δ<em>V</em><sub>T</sub> = 4.6 − 4.05 = 0.55 V, so
+          <em>V</em><sub>T</sub> = 0.25 + 0.55 = 0.80 V.</p>
+        <p class="ex-step"><b>Overdrive.</b> Before, 1.0 − 0.25 = 0.75 V; after, 1.0 − 0.80 = 0.20 V.</p>
+        <p class="ex-answer"><em>V</em><sub>T</sub> = 0.80 V, and the overdrive — which sets the drive
+          current — falls from 0.75 V to 0.20 V. The threshold must be brought back down.</p>
+      </div>
+    </div>
+
+    <p>
+      Bringing it down is the notes' "proper <em>V</em><sub>T</sub> adjustment", and they name its
+      price. Lowering the threshold of an n-channel device with a gate that cannot be changed means
+      implanting donors into the p-type channel region, counter-doping its surface. A donor dose large enough
+      to remove half a volt of threshold can make the surface layer n-type, and the channel then forms at the
+      bottom of that layer, below the surface, rather than at the interface: a <b>buried channel</b>, as
+      in the p-channel transistor with an n⁺ gate of <a href="m02-deep-submicron-roadmap.html">M02
+      §8</a>. A buried channel sits farther from the gate, so the gate's control weakens relative to the
+      drain's, and the short-channel behaviour — threshold roll-off, swing, drain-induced barrier
+      lowering — degrades, which is exactly what the notes say. The alternative that avoids
+      counter-doping is to use two metals, one for each transistor, with work functions near the two
+      silicon band edges: Robertson gives the targets as about 4.0 eV for the n-channel gate and
+      5.1 eV for the p-channel gate, noting that the first must be a reactive metal and the second a
+      noble one that is hard to etch.
+    </p>
+
+    <div class="box">
+      <p class="box-title">What the industry did next — beyond the notes</p>
+      <p>
+        The notes, like Wolf's 2002 text they follow, describe the field as it stood in 2001, when no
+        high-k material was yet ready for production and Wolf reported a forecast of about five years
+        before one could be introduced. The dated forecasts in the chapter — Ta₂O₅ first among the gate
+        candidates, ZrO₂ as one of the most promising, HfO₂ at <em>k</em> up to 40 — should be read as that
+        snapshot. What followed: in January 2007 Intel announced transistors with a hafnium-based high-k
+        gate dielectric and different metal gate electrodes for the n-channel and p-channel devices, and
+        its 45 nm logic process, described by Mistry <i>et al.</i> at IEDM 2007, put high-k plus metal
+        gate transistors into high-volume manufacturing for the first time, with a 1.0 nm EOT high-k
+        dielectric and dual band-edge work-function metal gates. The solution combined pieces of this
+        module: a hafnium-based dielectric (§8.4–8.5), with the thin interfacial oxide that Taur and
+        Ning describe as still needed beneath HfO₂ (§6), and two metals with band-edge work functions
+        in place of polysilicon, avoiding both poly depletion and the buried channel. Robertson's 2004 review, written as the choice was being made, already
+        named HfO₂ and hafnium silicate as the preferred oxides.
+      </p>
+    </div>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>High-k in the notes means <b>k &gt; 7</b>, above Si₃N₄ (others use &gt; 3.9 or &gt; 10). Three
+          uses: gate dielectric, DRAM capacitor, FeRAM capacitor. <em>C</em> = <em>kε</em><sub>0</sub>/<em>t</em>:
+          with thinning stopped at about 1.5 nm by direct tunnelling, only <em>k</em> can rise. Notes'
+          dating: ~3.0 nm at 0.13 µm in 2001, &lt; 1.5 nm needed for 0.1 µm (leading-edge 130 nm logic
+          already used 1.5 nm).</li>
+        <li>Notes' table (p. 49), k / <em>E</em><sub>g</sub>: Ta₂O₅ 26 / 4.5 orthorhombic; ZrO₂ 25 / 7.8
+          monoclinic; HfO₂ 24 / 5.7 monoclinic; Al₂O₃ 9 / 8.7, Si₃N₄ 7 / 5.1, SiO₂ 3.9 / 8.9 amorphous;
+          BST 300, PLZT 1000. Beyond the notes: <em>k</em> = <em>n</em>² + lattice term,
+          <em>k</em><sub>lat</sub> ∝ <em>NZ</em>*²/<em>μω</em><sub>TO</sub>²; the ionic
+          displacement supplies most of a large <em>k</em>, and needs a large Born effective charge
+          (anomalously large in HfO₂, 5.85 for Hf against a nominal +4) and a soft polar vibration —
+          the ionic masses cancel. Hf–O is 68% ionic, Si–O 45%. The d-state conduction band makes the
+          gap small: <em>k</em> and <em>E</em><sub>g</sub> run inversely.</li>
+        <li><b>EOT</b> = <em>t</em><sub>high-k</sub>(3.9/<em>k</em>): 10 nm at k = 20 behaves like ~2 nm
+          (1.95 nm) of SiO₂; a 1.0 nm EOT needs 6.2 nm of HfO₂ (k 24) or 2.3 nm of Al₂O₃. Tunnelling
+          falls exponentially with the <em>physical</em> thickness, but also with the square root of
+          barrier height and effective mass, both lower in high-k films.</li>
+        <li>In series, 1/<em>C</em> = 1/<em>C</em><sub>1</sub> + 1/<em>C</em><sub>2</sub>, so
+          EOT = <em>t</em><sub>SiO₂</sub> + <em>t</em><sub>high-k</sub>(3.9/<em>k</em>): the lowest-k
+          layer dominates and sets the minimum EOT. 38 Å HfO₂ at 12 Å EOT implies ≈ 6 Å of interlayer,
+          seen in micrographs.</li>
+        <li>Notes' integration points: below 0.3 µm <em>V</em><sub>T</sub> rolls off with gate length; a
+          high-k gate gives subthreshold swing <em>S</em><sub>t</sub> = 80 mV/decade with Ta₂O₅ (at a
+          0.05 µm channel, against ≈ 123 for SiO₂, in Wolf's figure), smaller is better (ideal
+          60 mV/decade; long-channel <em>S</em><sub>t</sub> = 2.3(<em>kT</em>/<em>q</em>)(1 +
+          <em>C</em><sub>d</sub>/<em>C</em><sub>ox</sub>)). Wolf: optimum <em>k</em> = 25 for a 5 nm
+          film, from a circuit simulation at fixed physical thickness. Drawback: high
+          <em>D</em><sub>it</sub> on bare Si, cured by 1–2 atomic layers of SiO₂.</li>
+        <li>Beyond the notes: band offsets must exceed ~1 eV (Ta₂O₅ 0.35 eV fails; HfO₂ 1.4, ZrO₂ 1.5,
+          Al₂O₃ 2.8, SiO₂ 3.1); the oxide must not react, MO₂ + Si → M or MSi + SiO₂ (Ta₂O₅ grows up to
+          2 nm SiO₂ beneath it; ZrO₂, "stable" in the notes, is marginal); and it should stay amorphous
+          — seven-coordinated ionic HfO₂ and ZrO₂ crystallise, and silicates, aluminates and nitrogen
+          raise the crystallisation temperature at a cost in <em>k</em>.</li>
+        <li>The interfacial SiO₂ is kept on purpose: a thermally grown interface is clean, a deposited
+          one is not. Ideal: a few atomic layers of Si–O(–N), a pseudo-binary oxide (the SiON/Ta₂O₅/TiN
+          stack). ZrO₂ by ALD forms a 9 Å interfacial silicate.</li>
+        <li><b>ALD</b>: one reactant at a time, chemisorbed to saturation, purged between pulses;
+          &lt; 400 °C, 100% step coverage, thickness by cycle count, 50–200 Å/min with &lt; 1 s switching.
+          Al₂O₃ from TMA + O₃ at 450 °C (ALD by Wolf's account); ZrO₂ from ZrCl₄ + H₂O. Growth per
+          cycle is below a monolayer (steric hindrance; TMA/H₂O 1.1–1.2 Å), not set by the lattice
+          constant.</li>
+        <li>Ta₂O₅ (k 25): 2 nm oxide nitrided in N₂ at 800 °C for 30 [min] + TiN gate; or NO at 800 °C,
+          20 s, then CVD Ta₂O₅ → EOT 2.3 nm and 1000× less leakage than with an SiO₂ interlayer; TiN or
+          WN barrier against poly. Al₂O₃: k 9, <em>E</em><sub>g</sub> ≈ 8.3 eV (8.7 in the table),
+          stable on Si. ZrO₂: k 20–25, <em>E</em><sub>g</sub> ≈ 5.1 eV (7.8 in the table), mismatch 2.1%
+          in the notes (6.6% from lattice constants), sputtered or RTA-oxidised, HF-etchable, Al-doped,
+          PDA 400–600 °C, Zr-Al-Si-O, YSZ.</li>
+        <li>HfO₂: k 24–40 (literature 20–25), <em>E</em><sub>g</sub> ≈ 5.7 eV, PVD or RTCVD; no layer
+          against poly deposited below 600 °C with 1000 °C RTA — the gate side; a ≈ 6 Å layer still forms
+          at the substrate; crystallises; 10⁴ less leakage than SiO₂ at 12 Å EOT. HfSiON: less leakage
+          than SiO₂ at equal EOT; silicates trade <em>k</em> for stability. Pr₂O₃: 5 nA/cm² at 1 V,
+          EOT 14 Å, k ≈ 31, no C–V hysteresis, MBE 625–725 °C at 0.1 Å/s, 600 °C N₂ or 1000 °C/15 s RTA.
+          CeO₂ (lecture only): 0.37% lattice mismatch, epitaxial.</li>
+        <li>Gate: poly reacts with and depletes on high-k; a metal gate removes depletion (TaN on HfO₂:
+          8 Å EOT) but a midgap metal such as TiN (≈ 4.6 eV against 4.05 eV for n⁺ poly) raises
+          <em>V</em><sub>T</sub> by ≈ 0.6 V; counter-doping to recover it gives a buried channel.
+          Production (2007, 45 nm): hafnium-based high-k with dual band-edge metal gates.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Class notes pp. 49–50; Wolf, <i>Silicon Processing for the VLSI Era</i> Vol. 4, pp. 145–146 and Table 4-1; G. D. Wilk, R. M. Wallace &amp; J. M. Anthony, <i>J. Appl. Phys.</i> <b>89</b>, 5243 (2001), Table I; J. Robertson, <i>Eur. Phys. J. Appl. Phys.</i> <b>28</b>, 265 (2004), §2.1 and Table 1 (2003 roadmap); Tyagi <i>et al.</i>, IEDM 2000 (130 nm, 1.5 nm oxide, 1.3 V); Thompson <i>et al.</i>, IEDM 2002 (90 nm, 1.2 nm oxide); the tunnelling floor from <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06</a> §2 and §7</td></tr>
+      <tr><td>§2</td><td>Beyond the notes. Wilk <i>et al.</i> (2001), the permittivity–band-gap discussion and Fig. 26; Robertson (2004) §4.1–4.2, Eq. (11) and Table 2; X. Zhao &amp; D. Vanderbilt, <i>Phys. Rev. B</i> <b>65</b>, 233106 (2002), Table II (Born effective charges) and the mixed ionic–covalent Hf–O bond; Pauling electronegativities in Allred's revision, with equation (5a.1) of <a href="m05a-bonds-and-structure.html">M05a</a></td></tr>
+      <tr><td>§3</td><td>Class notes pp. 50, 67; Wolf pp. 146, 175–176; Taur &amp; Ning, <i>Fundamentals of Modern VLSI Devices</i> 3/E, §4.6.1.6, pp. 157–158 (Eq. 4.109, the figure of merit, the fringing field); Robertson (2004) Eq. (2), §2.1</td></tr>
+      <tr><td>§4</td><td>Class notes pp. 50–51, 67; Wolf Eqs. (4.2)–(4.3), pp. 146–147; pp. 156–157 (10 nm Ta₂O₅, 2.5 nm; the nitrided poly and the oxide grown in the O₂ anneal, Fig. 4-8); pp. 175–176 and Fig. 4-17, after L. Kang <i>et al.</i>, IEDM 2000, p. 35; Robertson (2004) Eqs. (3)–(4); <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06</a> §6 for polysilicon depletion</td></tr>
+      <tr><td>§5</td><td>Class notes pp. 49, 51, 66–67; Wolf pp. 147–148 (Fig. 4-2, the optimum <em>k</em>), 160, 173–177, after H. Shimada &amp; T. Ohmi, <i>IEEE Trans. Electron Devices</i> <b>43</b>, 431 (1996) (Wolf ref. 3: 2-D device and circuit simulation of SOI MOSFETs, inversion capacitance, inverter delay into a 1 mm interconnect); Taur &amp; Ning 3/E Eq. (5.40), pp. 186–187; Robertson (2004) §2 (the six requirements, Table 2, Eqs. 5–6, the Ta–Si–O tie lines, kinetic stability, band offsets and Schottky emission), Table 5, §3.2, §4.1, §4.5, after K. J. Hubbard &amp; D. G. Schlom, <i>J. Mater. Res.</i> <b>11</b>, 2757 (1996); Wilk <i>et al.</i> (2001), film morphology, Table I and p. 5267 (thermal emission or tunnelling; J. Robertson &amp; C. W. Chen, <i>Appl. Phys. Lett.</i> <b>74</b>, 1168 (1999)); S. Miyazaki, <i>J. Vac. Sci. Technol. B</i> <b>19</b>, 2212 (2001), the measured Ta₂O₅ offset; Zhao &amp; Vanderbilt (2002) for the three- and four-fold oxygens of monoclinic HfO₂; <a href="m05a-bonds-and-structure.html">M05a</a> §3 for the Si–O–Si angle (after R. L. Mozzi &amp; B. E. Warren, <i>J. Appl. Cryst.</i> <b>2</b>, 164 (1969))</td></tr>
+      <tr><td>§6</td><td>Class notes pp. 51–52, 66–67; Lecture 3 (the "not clean" interface); Wolf pp. 148–149 (after D. Park <i>et al.</i>, IEDM 1998, p. 381), 174–176; Taur &amp; Ning §4.6.1.6; Robertson (2004) §3.1 and §3.4</td></tr>
+      <tr><td>§7</td><td>Class notes pp. 59–60, 65–67; Wolf p. 156 (reaction-rate-limited CVD), §4.6.1, pp. 170–172; Fig. 4-15 (p. 173); p. 174 and Fig. 4-16 (p. 175); Plummer, Deal &amp; Griffin, <i>Silicon VLSI Technology</i> (2000), p. 511 (CVD by surface reaction); Robertson (2004) §3.1, Table 3, Eqs. (7)–(8); S. M. George, <i>Chem. Rev.</i> <b>110</b>, 111 (2010), for the TMA–water half-reactions and the 1.1–1.2 Å growth per cycle</td></tr>
+      <tr><td>§8</td><td>Class notes pp. 49, 51, 54, 58–60, 66–67; Lectures 2, 3 and 6 (the candidate history and the hafnium silicate emphasis), Lecture 9 (nitric oxide, "not nitrogen"); Wolf §4.4.2, pp. 160–161 (after Y. Momiyama <i>et al.</i>, Symp. VLSI Tech. 1997, p. 135, and Wolf ref. 23, IEDM 1998, p. 609), §4.6.2–4.6.5, pp. 172–177 (Kang <i>et al.</i>; B. H. Lee <i>et al.</i>, IEDM 2000, p. 39; H. J. Osten <i>et al.</i>, IEDM 2000, p. 653); H. J. Osten <i>et al.</i>, "Epitaxial, high-K dielectrics on silicon: the example of praseodymium oxide", <i>Microelectron. Reliab.</i> <b>41</b> (2001); Robertson (2004) Table 2, Table 5 (ALD Al₂O₃ offset), §2.2–2.3, §4.1, §5.1; Taur &amp; Ning §4.6.1.6. CeO₂: Lecture 2; lattice constant from the ICDD reference pattern 43-1002</td></tr>
+      <tr><td>§9</td><td>Class notes pp. 60, 67; <a href="m03-threshold-voltage.html">M03</a> §1 and §8 for work functions; Wolf pp. 161, 169, 175–176 (the TaN-gate result after B. H. Lee <i>et al.</i>, IEDM 2000, p. 39); Wilk <i>et al.</i> (2001), midgap metals; Robertson (2004) §1.2; Intel press release, January 2007; K. Mistry <i>et al.</i>, IEDM 2007, pp. 247–250</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m06-thin-gate-oxides-conduction-breakdown.html"><span>Previous</span>M06 · Thin Gate Oxides: Conduction and Breakdown</a>
+      <a class="next" href="m07b-high-k-memory-capacitors.html"><span>Next</span>M07b · High-k Capacitor Dielectrics for DRAM and FeRAM</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,1728 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M12 · Displacement Damage and NIEL — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M12 · Displacement Damage and NIEL</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 12</p>
+    <h1>Displacement Damage and NIEL</h1>
+    <p class="lede">
+      How the kinematics of a single collision set the energy of the atomic recoils a particle
+      produces, how the recoil energy decides whether the damage is an isolated defect, a cluster or
+      a branching set of subcascades, what the surviving defects do to carrier lifetime, generation
+      and charge transfer, where the NIEL correlation holds and where it fails, how the damage
+      anneals, and what it does to imagers, solar cells and nanoscale devices.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M04, M05, M06</span>
+      <span><b>Read time</b> ~45 min</span>
+      <span><b>Sources</b> Deck 03 pp. 34–45; Deck 02 pp. 23–25; Deck 04 p. 35; course textbook; NSREC short courses 1999, 2021, 2024</span>
+    </div>
+
+    <p>
+      <a href="m04-quantifying-energy-deposition.html">M04</a> §6 introduced the non-ionizing
+      channel. A small share of the energy a particle deposits moves nuclei rather than electrons; an
+      atom given more than 21 eV in silicon leaves its lattice site as a primary knock-on atom; about
+      90% of the vacancy–interstitial pairs created recombine, and the surviving 10% form stable
+      defects whose accumulated measure is the displacement damage dose, fluence times NIEL.
+      <a href="m05-three-effects-taxonomy.html">M05</a> §3 placed the effect in the classification:
+      cumulative, non-ionizing, and located in the semiconductor bulk rather than in any insulator.
+      This module opens the quantities those pages took as given. It asks what sets the energy of a
+      recoil, what arrangement of damage a recoil of given energy leaves behind, and what the
+      surviving defects do to a device.
+    </p>
+    <p>
+      Displacement damage is decided in two steps. The incident particle decides the recoil spectrum
+      through the kinematics of the collision, and the recoil spectrum decides the spatial structure
+      of the damage — isolated point defects, a single cluster, or a tree of subcascades (§§1–2). The
+      surviving defects then act through their energy levels in the bandgap, and five electrical
+      processes — generation, recombination, trapping, compensation and tunnelling — account for
+      every device consequence (§3). NIEL compresses the first step into one number per particle,
+      energy and target, and it succeeds to the extent that a device responds to the number of
+      displacements rather than to their arrangement; §4 is about where that assumption fails. §5
+      follows the damage in time, §6 applies the whole chain to imagers and solar cells, the devices
+      most sensitive to it, and §7 takes the limit in which one cascade is as large as the device.
+    </p>
+    <p>
+      One contrast runs through the module. Total ionizing dose acts in the oxides and at the
+      oxide–silicon interface (<a href="m07-oxide-interface-trap-charge.html">M07</a>,
+      <a href="m08-tid-effects-devices-ics.html">M08</a>). Displacement damage acts in the crystal
+      itself — the base of a bipolar transistor, the buried channel of a charge-coupled device, the
+      absorber of a solar cell — and nothing done to an oxide changes it. The devices it limits are
+      therefore the ones whose operation depends on the silicon bulk: on minority carriers surviving
+      a diffusion path, or on a depleted volume staying free of generation centres.
+    </p>
+
+    <h2>1 · Collision kinematics and the recoil spectrum</h2>
+    <p>
+      The first event in displacement damage is a two-body collision between the incident particle
+      and a lattice nucleus. Its outcome is the kinetic energy <em>T</em> handed to the struck atom,
+      and the distribution of <em>T</em> over many collisions — the recoil, or primary knock-on atom
+      (PKA), spectrum — is set by the particle's mass, its charge and its energy. That spectrum is the
+      input to NIEL and to everything that follows in this module. Deck 03 pp. 35–36 make the point
+      in one line: the energy of the recoils is determined by the collision kinematics.
+    </p>
+    <p>
+      M04 §6 wrote the accumulated quantity as a fluence multiplied by the non-ionizing energy loss,
+      the non-ionizing counterpart of dose written as fluence times LET.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">DDD = Φ · NIEL</div>
+        <div class="eq-num">(12.1)</div>
+      </div>
+      <div class="eq-says">
+        DDD displacement damage dose, the non-ionizing energy deposited per unit mass (<b>MeV/g</b>) ·
+        Φ particle fluence (<b>cm⁻²</b>) · NIEL non-ionizing energy loss of that particle, at that
+        energy, in that target (<b>MeV·cm²/g</b>). For a spectrum of energies, integrate NIEL(<em>E</em>)
+        against the differential fluence dΦ/d<em>E</em>, and sum over particle species when there is
+        more than one. The number (12.1) is the one M04 §6 uses.
+        On the formula sheet as <a href="formula-sheet.html#eq-ddd">(12.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      NIEL itself is an integral over the recoil spectrum, and it has three ingredients that this
+      section supplies: the largest recoil energy a collision can produce, the cross-section for
+      producing each recoil energy below that limit, and the Lindhard partition <em>L</em>(<em>T</em>),
+      the fraction of a recoil's own energy that goes into moving further atoms rather than into the
+      ionization the recoil causes as it travels.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">NIEL(<em>E</em>) = <span class="frac"><span class="num"><em>N</em><sub>A</sub></span><span class="den"><em>A</em></span></span> ∫<sub><em>T</em><sub>d</sub></sub><sup><em>T</em><sub>max</sub></sup> <em>T</em> · <em>L</em>(<em>T</em>) · <span class="frac"><span class="num">d<em>σ</em>(<em>E</em>, <em>T</em>)</span><span class="den">d<em>T</em></span></span> d<em>T</em></div>
+        <div class="eq-num">(12.2)</div>
+      </div>
+      <div class="eq-says">
+        NIEL non-ionizing energy loss (MeV·cm²/g) · <em>E</em> kinetic energy of the incident particle
+        (MeV) · <em>N</em><sub>A</sub> Avogadro's number, 6.022×10²³ mol⁻¹ · <em>A</em> atomic weight
+        of the target (g/mol; 28.09 for silicon), so <em>N</em><sub>A</sub>/<em>A</em> is atoms per
+        gram · <em>T</em> recoil energy of the primary knock-on atom (MeV) · <em>L</em>(<em>T</em>)
+        Lindhard partition, dimensionless, well below 1 for recoils of tens of keV ·
+        d<em>σ</em>/d<em>T</em> <b>per-atom</b> differential cross-section for producing a recoil of
+        energy <em>T</em> (cm²/MeV) · <em>T</em><sub>d</sub> displacement threshold, 21 eV in silicon ·
+        <em>T</em><sub>max</sub> maximum transferable energy from (12.3). The units check as
+        (g⁻¹)(MeV)(cm²/MeV)(MeV) = MeV·cm²/g. Where several interaction channels contribute —
+        Coulomb scattering, nuclear elastic scattering, nuclear reactions — the integral is the sum of
+        the channels; for a compound it is the sum over the constituent atoms weighted by mole
+        fraction. Tabulated per particle, energy and target, and used from tables.
+        On the formula sheet as <a href="formula-sheet.html#eq-niel">(12.2)</a>.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p>
+        <b>The prefactor depends on which cross-section is meant.</b> Deck 03 p. 40 writes the
+        definition with a prefactor 1/<em>ρ</em>, the inverse target density, and labels
+        d<em>σ</em>/d<em>T</em> the differential scattering cross-section. Read as the usual per-atom
+        cross-section in cm²/MeV, that combination has units of MeV·cm⁵/g and is not an energy loss
+        per unit areal density; converting a per-atom cross-section into a per-gram quantity takes
+        <em>N</em><sub>A</sub>/<em>A</em>, as in (12.2). The slide's 1/<em>ρ</em> is correct if
+        d<em>σ</em>/d<em>T</em> is read instead as a macroscopic cross-section — the per-atom value
+        multiplied by the atomic density <em>n</em> = <em>ρN</em><sub>A</sub>/<em>A</em>, in
+        cm⁻¹·MeV⁻¹ — because (1/<em>ρ</em>)·<em>n</em> = <em>N</em><sub>A</sub>/<em>A</em>. The slide
+        also omits <em>L</em>(<em>T</em>); M04 §6 explains why, without it, the integral returns the
+        total energy given to recoils rather than the non-ionizing part. Use (12.2) with a per-atom
+        cross-section.
+      </p>
+    </div>
+
+    <p>
+      The upper limit follows from conservation of energy and momentum. A particle of mass
+      <em>m</em> and kinetic energy <em>E</em> transfers the most energy to a stationary nucleus of
+      mass <em>M</em> in a head-on collision, in which the nucleus recoils along the particle's
+      original direction. For an electron, whose kinetic energy in this subject is comparable with or
+      larger than its rest energy, the relativistic form is required.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em><sub>max</sub> = <span class="frac"><span class="num">4<em>mM</em></span><span class="den">(<em>m</em> + <em>M</em>)<sup>2</sup></span></span> <em>E</em> &nbsp;(proton, neutron), &nbsp;&nbsp; <em>T</em><sub>max</sub> = <span class="frac"><span class="num">2<em>E</em>(<em>E</em> + 2<em>m</em><sub>e</sub><em>c</em><sup>2</sup>)</span><span class="den"><em>Mc</em><sup>2</sup></span></span> &nbsp;(electron)</div>
+        <div class="eq-num">(12.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em><sub>max</sub> maximum energy transferred to the target atom (MeV) · <em>E</em>
+        kinetic energy of the incident particle (MeV) · <em>m</em>, <em>M</em> masses of the incident
+        particle and the target atom, in any common unit, since only their ratio enters ·
+        <em>m</em><sub>e</sub><em>c</em><sup>2</sup> = 0.511 MeV · <em>Mc</em><sup>2</sup> rest energy
+        of the target atom (MeV), 26,160 MeV for silicon (28.09 u × 931.5 MeV/u). For a proton or a
+        neutron on silicon the mass factor is <b>0.133</b>. The first form is non-relativistic and
+        holds for a proton to within about 5% up to 100 MeV; the second assumes
+        <em>M</em> ≫ <em>m</em><sub>e</sub> and holds at any electron energy. Elastic collisions only;
+        a nuclear reaction releases fragments whose energies these expressions do not bound.
+        On the formula sheet as <a href="formula-sheet.html#eq-tmax">(12.3)</a>.
+      </div>
+    </div>
+
+    <p>
+      The mass factor is why an electron produces so little damage per particle. A 1 MeV neutron can
+      give a silicon atom up to 133 keV and a 10 MeV proton up to 1.33 MeV. A 1 MeV electron, about
+      51,000 times lighter than the atom, can give it at most 155 eV — seven times the threshold,
+      enough for one or a few displacements but not for a cascade — and below about 0.22 MeV it cannot
+      displace a silicon atom at all. Electrons therefore produce only isolated point defects, and so
+      do cobalt-60 gamma rays, which cause displacements only through the Compton electrons they
+      liberate, of at most about 1 MeV. The same kinematics are worked in the sister course's
+      <a href="../../EEL5385_Space_Electronics/site/m11-displacement-damage.html">EEL5385 M11</a>
+      §§1 and 3.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 560 250" role="img" aria-labelledby="m12f1-t">
+        <title id="m12f1-t">Range of recoil energies a 1 MeV electron, a 1 MeV neutron and a 10 MeV proton can give a silicon atom, against the displacement threshold and the defect regimes</title>
+
+        <rect x="213.3" y="40" width="23.1" height="160" class="dg-faint" fill-opacity="0.3"/>
+        <rect x="296.1" y="40" width="17.0" height="160" class="dg-faint" fill-opacity="0.3"/>
+        <text x="149" y="32" class="dg-label-sm" text-anchor="middle">free defects</text>
+        <text x="266" y="32" class="dg-label-sm" text-anchor="middle">one cascade</text>
+        <text x="420" y="32" class="dg-label-sm" text-anchor="middle">subcascades</text>
+
+        <line x1="84.7" y1="40" x2="84.7" y2="200" class="dg-acc" stroke-width="2" stroke-dasharray="5 3"/>
+        <text x="80" y="52" class="dg-label-sm" text-anchor="end"><tspan class="dg-acc-f">T_d</tspan></text>
+
+        <text x="90" y="72" class="dg-label-sm">1 MeV electron</text>
+        <rect x="84.7" y="76" width="66.6" height="10" class="dg-fill"/>
+        <text x="157" y="85" class="dg-label-sm">T_max = 155 eV</text>
+
+        <text x="90" y="112" class="dg-label-sm">1 MeV neutron — flat spectrum</text>
+        <rect x="84.7" y="116" width="291.5" height="10" class="dg-fill"/>
+        <text x="382" y="125" class="dg-label-sm">133 keV</text>
+
+        <text x="90" y="152" class="dg-label-sm">10 MeV proton — Coulomb, falls as 1/T²</text>
+        <rect x="84.7" y="156" width="368.1" height="10" class="dg-fill"/>
+        <text x="458" y="165" class="dg-label-sm">1.33 MeV</text>
+        <path d="M159.7,170 L155.2,178 L164.2,178 Z" class="dg-ink"/>
+        <text x="170" y="185" class="dg-label-sm">mean ≈ 200 eV</text>
+
+        <line x1="60" y1="200" x2="520" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="1">
+          <line x1="60" y1="200" x2="60" y2="205"/><line x1="136.7" y1="200" x2="136.7" y2="205"/>
+          <line x1="213.3" y1="200" x2="213.3" y2="205"/><line x1="290" y1="200" x2="290" y2="205"/>
+          <line x1="366.7" y1="200" x2="366.7" y2="205"/><line x1="443.3" y1="200" x2="443.3" y2="205"/>
+          <line x1="520" y1="200" x2="520" y2="205"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="218">10 eV</text><text x="136.7" y="218">100 eV</text>
+          <text x="213.3" y="218">1 keV</text><text x="290" y="218">10 keV</text>
+          <text x="366.7" y="218">100 keV</text><text x="443.3" y="218">1 MeV</text>
+          <text x="514" y="218">10 MeV</text>
+        </g>
+        <text x="290" y="240" class="dg-label" text-anchor="middle">recoil energy T (log scale)</text>
+      </svg>
+      <figcaption>
+        Each bar runs from the 21 eV threshold to the kinematic limit of (12.3); the shaded bands are
+        the regime boundaries of §2. A 1 MeV electron cannot reach the cascade regime at all. The proton
+        can reach it, but its Coulomb recoils crowd toward the threshold, so the typical recoil is a few
+        hundred electron-volts. The neutron's recoils are spread evenly up to 133 keV.
+      </figcaption>
+    </figure>
+
+    <p>
+      The upper limit bounds the spectrum; the cross-section fills it in, and here charged and
+      uncharged particles differ in kind. A proton interacts with a nucleus through two forces. The
+      Coulomb force between the two nuclear charges has long range, so a proton passing a nucleus at
+      any distance is deflected slightly, and distant passes, which transfer little energy, far
+      outnumber close ones. The cross-section for Coulomb (Rutherford) scattering to transfer energy
+      <em>T</em> falls as 1/<em>T</em>², and the recoil spectrum is crowded toward the threshold. A
+      neutron carries no charge and interacts only through the short-range nuclear force, in a close
+      encounter or not at all. At low neutron energies these encounters approximate hard-sphere
+      collisions, which spread the recoil energies uniformly from zero to <em>T</em><sub>max</sub>:
+      a flat spectrum. Deck 03 p. 35 draws the two shapes, a falling spectrum for low-energy protons
+      and a flat one for neutrons, and assigns the first to isolated point defects and the second to
+      cascades and multiple cascades.
+    </p>
+    <p>
+      The falling spectrum has a characteristic recoil energy that barely depends on the proton
+      energy. For a 1/<em>T</em>² spectrum between <em>T</em><sub>d</sub> and
+      <em>T</em><sub>max</sub> ≫ <em>T</em><sub>d</sub>, the mean recoil energy is
+      <em>T</em><sub>d</sub> ln(<em>T</em><sub>max</sub>/<em>T</em><sub>d</sub>): about 230 eV for a
+      10 MeV proton in silicon and still under 300 eV at 100 MeV, since the upper limit enters only
+      through a logarithm. Hopkinson and Mohammadzadeh, in the course textbook, quote an average
+      proton-induced recoil of about 200 eV over a wide range of proton energies, and conclude that
+      proton elastic collisions tend to produce isolated defects.
+    </p>
+    <p>
+      Counting recoils and counting energy give different pictures, and NIEL counts energy. Weighted
+      by <em>T</em>, the 1/<em>T</em>² spectrum puts equal energy into every decade of recoil energy
+      between threshold and <em>T</em><sub>max</sub>, so the rare energetic Coulomb recoils carry as
+      much transferred energy per decade as the numerous near-threshold ones. The flat neutron
+      spectrum weighted the same way puts nearly all of its energy into the top decade below
+      <em>T</em><sub>max</sub>.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 290" role="img" aria-labelledby="m12f2-t">
+        <title id="m12f2-t">Coulomb and neutron recoil spectra, counted by number and weighted by energy</title>
+
+        <text x="200" y="22" class="dg-label" text-anchor="middle" font-weight="600">How many recoils</text>
+        <line x1="70" y1="240" x2="330" y2="240" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="240" x2="70" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="70" y="256">10 eV</text><text x="156.7" y="256">1 keV</text>
+          <text x="243.3" y="256">100 keV</text><text x="322" y="256">10 MeV</text>
+        </g>
+        <text x="200" y="278" class="dg-label" text-anchor="middle">recoil energy T</text>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="64" y="44">1</text><text x="64" y="144">10⁻⁵</text><text x="64" y="244">10⁻¹⁰</text>
+        </g>
+        <text x="24" y="140" class="dg-label" text-anchor="middle" transform="rotate(-90 24 140)">recoils per unit T</text>
+        <line x1="84" y1="40" x2="84" y2="240" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 3"/>
+        <text x="88" y="232" class="dg-label-sm">T_d</text>
+
+        <path d="M84,40 L292,232.1" class="dg-line" stroke-width="2"/>
+        <text x="100" y="150" class="dg-label-sm">10 MeV proton,</text>
+        <text x="100" y="164" class="dg-label-sm">Coulomb, ∝ T⁻²</text>
+        <path d="M84,41.5 L248.7,41.5 L248.7,240" class="dg-line" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="256" y="62" class="dg-label-sm">1 MeV neutron:</text>
+        <text x="256" y="76" class="dg-label-sm">flat to T_max</text>
+
+        <text x="560" y="22" class="dg-label" text-anchor="middle" font-weight="600">Where the energy goes</text>
+        <line x1="430" y1="240" x2="690" y2="240" class="dg-rule" stroke-width="1.2"/>
+        <line x1="430" y1="240" x2="430" y2="40" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="430" y="256">10 eV</text><text x="516.7" y="256">1 keV</text>
+          <text x="603.3" y="256">100 keV</text><text x="682" y="256">10 MeV</text>
+        </g>
+        <text x="560" y="278" class="dg-label" text-anchor="middle">recoil energy T</text>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="424" y="44">1</text><text x="424" y="144">10⁻⁴</text><text x="424" y="244">10⁻⁸</text>
+        </g>
+        <text x="384" y="140" class="dg-label" text-anchor="middle" transform="rotate(-90 384 140)">energy per decade of T</text>
+        <line x1="444" y1="40" x2="444" y2="240" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 3"/>
+
+        <path d="M444,41.5 L652,41.5" class="dg-acc" stroke-width="2.4"/>
+        <line x1="652" y1="41.5" x2="652" y2="240" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 3"/>
+        <text x="452" y="60" class="dg-label-sm"><tspan class="dg-acc-f">proton, Coulomb: equal</tspan></text>
+        <text x="452" y="74" class="dg-label-sm"><tspan class="dg-acc-f">energy per decade</tspan></text>
+        <path d="M444,230.1 L608.7,40" class="dg-line" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="572" y="132" class="dg-label-sm">neutron: energy</text>
+        <text x="572" y="146" class="dg-label-sm">near T_max</text>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> Exact slopes, arbitrary normalization: each curve is scaled to its own
+        maximum. Left, the number of recoils per unit energy — the Coulomb spectrum falls by ten
+        decades between threshold and the 1.33 MeV limit, so almost every recoil sits near
+        threshold. Right, the same spectra weighted by energy per logarithmic interval,
+        <em>T</em>²·d<em>N</em>/d<em>T</em>: the Coulomb spectrum is flat, so each decade of recoil
+        energy carries the same share, while the flat neutron spectrum rises as <em>T</em>² and puts
+        its energy at the top. Both panels omit the partition <em>L</em>(<em>T</em>) of (12.2), which
+        reduces the non-ionizing share of the most energetic recoils.
+      </figcaption>
+    </figure>
+
+    <p>
+      Two further channels open as the proton energy rises. <b>Nuclear elastic scattering</b> — the
+      proton deflected by the nuclear force rather than by the Coulomb field — gives recoils whose
+      spectrum resembles a neutron's, and <b>nuclear reactions</b> (inelastic collisions, including
+      spallation, in which the struck nucleus is excited or broken up) release recoiling fragments
+      with energies far above the elastic ones. Deck 03 p. 35 places the division for silicon:
+      below about 10 MeV Coulomb scattering dominates and the recoils are of low energy; above about
+      20 MeV inelastic collisions tend to dominate. The slide marks the Coulomb regime as extending to
+      higher proton energy in GaAs. A heavier nucleus is consistent with that on two counts. The
+      Rutherford cross-section per target atom, at a given proton energy, scales as
+      <em>Z</em>²/<em>M</em>, the square of the nuclear charge over the nuclear mass; for gallium
+      (<em>Z</em> = 31) and arsenic (<em>Z</em> = 33) that is about twice silicon's
+      (<em>Z</em> = 14). And the Coulomb barrier — the electrostatic repulsion a proton must overcome
+      to come within range of the nuclear force — rises with the nuclear charge, which holds off the
+      nuclear channels to higher proton energy.
+    </p>
+    <p>
+      Nuclear events are rare, and each one is large. For 63 MeV protons in silicon the textbook
+      chapter gives elastic and inelastic cross-sections of 318 and 0.52 barns. In a pixel volume of
+      900 µm³ exposed to 2×10¹⁰ protons/cm² that amounts to about 300 elastic collisions and 0.5
+      inelastic ones — yet each inelastic collision deposits roughly three orders of magnitude more
+      damage energy than an elastic one. The count of events and the damage they carry are dominated
+      by different collisions, which is why Deck 03 p. 36 concludes that the nature of displacement
+      damage depends strongly on particle type and energy.
+    </p>
+
+    <h2>2 · From recoil to defect: point defects, clusters and subcascades</h2>
+    <p>
+      A recoil's energy decides how the damage it leaves is arranged in space, and the arrangement
+      decides how much of it survives and what it does. Three regimes follow one another as the recoil
+      energy rises. Their boundaries are recoil energies, and Deck 03 p. 36 maps them onto the proton
+      energies at which the collision channels of §1 take over.
+    </p>
+    <p>
+      A recoiling silicon atom is itself an energetic ion inside the crystal, and it loses energy the
+      way any ion does (<a href="m04-quantifying-energy-deposition.html">M04</a> §1). The faster it
+      moves, the larger the share of its energy that goes to electrons; as it slows, the share that
+      goes into nuclear collisions grows, and its elastic scattering cross-section is largest over the
+      last few keV of its path. The displacements a recoil causes are therefore concentrated toward
+      the end of its path, which the sister course develops as the end-of-range effect
+      (<a href="../../EEL5385_Space_Electronics/site/m11-displacement-damage.html">EEL5385 M11</a>
+      §5). How far the damage spreads, and whether it breaks into separate pieces, depends on how much
+      energy the recoil started with.
+    </p>
+    <ul>
+      <li><b>Free defects, below about 1–2 keV.</b> The recoil displaces its own atom and has too
+        little energy to displace others in a connected cascade. The vacancy and the interstitial it
+        becomes form an isolated Frenkel pair, a few lattice spacings apart. This is the regime of
+        Coulomb recoils, and so of electrons and low-energy protons.</li>
+      <li><b>One cascade, from about 1–2 keV to about 12–20 keV.</b> The recoil displaces further
+        atoms, which displace others, in a single compact cascade; the dense region it leaves is
+        called a <b>cluster</b>. Nuclear elastic scattering produces recoils in this range.</li>
+      <li><b>Subcascades, above about 12–20 keV.</b> The recoil travels far enough between its
+        energetic collisions that the damage breaks into separate subcascades strung along its path,
+        branching into a tree. Nuclear reactions produce recoils in this range.</li>
+    </ul>
+
+    <figure>
+      <svg viewBox="0 0 720 320" role="img" aria-labelledby="m12f3-t">
+        <title id="m12f3-t">Number of recoils against recoil energy, with the free-defect, single-cascade and subcascade regimes and the proton energies at which each opens</title>
+
+        <line x1="90" y1="34" x2="660" y2="34" class="dg-rule" stroke-width="1" marker-end="url(#m12f3-a)"/>
+        <text x="662" y="24" class="dg-label-sm" text-anchor="end">proton energy</text>
+        <text x="270" y="26" class="dg-label-sm" text-anchor="middle">6–10 MeV</text>
+        <text x="450" y="26" class="dg-label-sm" text-anchor="middle">&gt; 20 MeV</text>
+        <line x1="270" y1="30" x2="270" y2="38" class="dg-rule" stroke-width="1"/>
+        <line x1="450" y1="30" x2="450" y2="38" class="dg-rule" stroke-width="1"/>
+
+        <line x1="90" y1="170" x2="660" y2="170" class="dg-rule" stroke-width="1.2" marker-end="url(#m12f3-a)"/>
+        <line x1="90" y1="170" x2="90" y2="48" class="dg-rule" stroke-width="1.2" marker-end="url(#m12f3-a)"/>
+        <text x="60" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 60 110)">log N</text>
+        <text x="700" y="184" class="dg-label-sm" text-anchor="end">PKA energy T</text>
+
+        <path d="M100,58 C170,92 260,110 360,118 C450,124 560,128 640,130" class="dg-acc" stroke-width="2.4"/>
+        <text x="112" y="112" class="dg-label-sm"><tspan class="dg-acc-f">N falls steeply with T</tspan></text>
+
+        <line x1="270" y1="48" x2="270" y2="300" class="dg-rule" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="450" y1="48" x2="450" y2="300" class="dg-rule" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="274" y="186" class="dg-label-sm">E_l ≈ 1–2 keV</text>
+        <text x="454" y="186" class="dg-label-sm">E_u ≈ 12–20 keV</text>
+
+        <text x="180" y="152" class="dg-label-sm" text-anchor="middle">free defects</text>
+        <text x="180" y="164" class="dg-label-sm" text-anchor="middle">(Coulomb)</text>
+        <text x="360" y="152" class="dg-label-sm" text-anchor="middle">one cascade</text>
+        <text x="360" y="164" class="dg-label-sm" text-anchor="middle">(nuclear elastic)</text>
+        <text x="550" y="152" class="dg-label-sm" text-anchor="middle">subcascades</text>
+        <text x="550" y="164" class="dg-label-sm" text-anchor="middle">(nuclear reactions)</text>
+
+        <line x1="96" y1="252" x2="664" y2="252" class="dg-line" stroke-width="1.4" marker-end="url(#m12f3-b)"/>
+        <g class="dg-line" stroke-width="1.2">
+          <line x1="130" y1="252" x2="138" y2="238"/><line x1="160" y1="252" x2="152" y2="264"/>
+          <line x1="190" y1="252" x2="198" y2="238"/><line x1="222" y1="252" x2="214" y2="265"/>
+        </g>
+        <line x1="340" y1="252" x2="352" y2="230" class="dg-line" stroke-width="1.2"/>
+        <ellipse cx="358" cy="222" rx="9" ry="13" transform="rotate(25 358 222)" class="dg-fill"/>
+        <g class="dg-line" stroke-width="1.2">
+          <line x1="490" y1="252" x2="512" y2="222"/><line x1="512" y1="222" x2="530" y2="214"/>
+          <line x1="512" y1="222" x2="506" y2="206"/><line x1="520" y1="252" x2="546" y2="278"/>
+          <line x1="546" y1="278" x2="566" y2="284"/><line x1="580" y1="252" x2="600" y2="224"/>
+          <line x1="600" y1="224" x2="616" y2="216"/><line x1="600" y1="224" x2="594" y2="208"/>
+          <line x1="610" y1="252" x2="632" y2="276"/>
+        </g>
+        <g class="dg-fill">
+          <ellipse cx="536" cy="211" rx="8" ry="5"/><ellipse cx="503" cy="200" rx="5" ry="8"/>
+          <ellipse cx="573" cy="287" rx="8" ry="5"/><ellipse cx="623" cy="213" rx="8" ry="5"/>
+          <ellipse cx="591" cy="201" rx="5" ry="8"/><ellipse cx="640" cy="283" rx="8" ry="6"/>
+        </g>
+        <text x="96" y="312" class="dg-label-sm">isolated Frenkel pairs</text>
+        <text x="300" y="312" class="dg-label-sm">one cluster</text>
+        <text x="490" y="312" class="dg-label-sm">a tree of subcascades</text>
+
+        <defs>
+          <marker id="m12f3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+          <marker id="m12f3-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> Schematic after Deck 02 p. 23 and Deck 03 p. 36, which reproduce
+        G. P. Summers' 1992 NSREC Short Course figure (the defect sketch after Wood <em>et al.</em>,
+        1981). Most collisions are Coulomb collisions that produce free defects. The far rarer nuclear
+        events are each far more damaging, and at higher proton energies they contribute a significant
+        fraction of the total displacement damage (Marshall and Marshall). The proton energies along the top mark where each regime opens in silicon: nuclear
+        elastic recoils above the lower boundary from about 6–10 MeV, reaction recoils above the upper
+        boundary beyond about 20 MeV. Deck 03 p. 36 writes the upper boundary as 10–20 keV and Deck 02
+        p. 23 as 12–20 keV.
+      </figcaption>
+    </figure>
+
+    <p>
+      Deck 03 p. 37 shows the scale. A 50 keV silicon recoil — typical, on that slide, of what a 1 MeV
+      neutron or a high-energy proton produces — leaves a branching track about 800 Å (80 nm) long,
+      with dense clusters at the ends of its branches. Marshall and Marshall's 1999 NSREC Short Course
+      summarizes the finer structure from Monte Carlo cascade calculations: a single cascade typically
+      carries two or three <b>terminal clusters</b>, each about 5 nm across, formed where a recoil
+      spends the last 5–10 keV of its energy, joined by strings of dilute displacements; transmission
+      electron microscopy of neutron-irradiated silicon finds damaged regions averaging about 4 nm.
+      Above the upper boundary the damage is more of the same: Wood <em>et al.</em> showed that cascade
+      damage looks alike however many subcascades it contains. The distinction that matters
+      electrically is therefore between isolated point defects and clustered damage.
+    </p>
+    <p>
+      The number of displacements a recoil produces follows from the energy it spends on atomic
+      collisions — its <b>damage energy</b>, the recoil energy multiplied by the Lindhard partition
+      of (12.2) — divided by the energy each displacement costs.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>d</sub> = <em>κ</em> · <span class="frac"><span class="num"><em>E</em><sub>d</sub></span><span class="den">2<em>E</em><sub>th</sub></span></span></div>
+        <div class="eq-num">(12.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>d</sub> number of atoms displaced by one recoil, dimensionless ·
+        <em>κ</em> displacement efficiency, <b>0.8</b> — a constant of the Norgett–Robinson–Torrens
+        (NRT) model applied to every material, not a silicon-specific value, although Deck 03 p. 40
+        quotes it for silicon · <em>E</em><sub>d</sub> damage energy of the recoil (eV) ·
+        <em>E</em><sub>th</sub> displacement threshold (eV; 21 for silicon). The expression is the
+        high-energy branch of a piecewise model: no displacement below <em>E</em><sub>th</sub>, exactly
+        one up to 2<em>E</em><sub>th</sub>/<em>κ</em>. The standard literature writes
+        <em>E</em><sub>d</sub> for the threshold and <em>T</em><sub>dam</sub> for the damage energy —
+        the reverse of the course's symbols, which are kept here. It counts displacements created,
+        before the roughly 90% that recombine.
+        On the formula sheet as <a href="formula-sheet.html#eq-nrt">(12.4)</a>.
+      </div>
+    </div>
+
+    <p>
+      The Lindhard partition also caps the damage. However energetic a silicon recoil is, no more than
+      about 300 keV of its energy goes into displacements, because the rest is lost to ionization;
+      Marshall and Marshall give that ceiling, and about 2 MeV for GaAs. By (12.4) a 300 keV damage
+      energy in silicon corresponds to about 5,700 displacements, so even the largest cascade a
+      single silicon recoil can form contains a few thousand vacancy–interstitial pairs before
+      recombination.
+    </p>
+    <p>
+      Of those pairs about 90% recombine promptly and about 10% survive (Deck 03 p. 34). The survivors
+      do not stay as they were created. The vacancy in silicon is mobile even at liquid-nitrogen
+      temperature, so surviving vacancies migrate until they meet another vacancy or an impurity atom
+      and form a stable complex: the <b>divacancy</b> (V–V), the <b>E centre</b> (a vacancy bound to a
+      phosphorus donor, V–P), and the <b>A centre</b> (a vacancy bound to an interstitial oxygen atom,
+      V–O). These complexes, not the vacancies and interstitials themselves, carry most of the
+      electrical activity of irradiated silicon. Which complexes form depends on the dopant and
+      impurity content of the silicon, which is why the doping type returns in §4.
+    </p>
+
+    <div class="box insight">
+      <p>
+        The recoil spectrum, not the identity of the incident particle, sets the defect structure.
+        Marshall and Marshall, summarizing Dale <em>et al.</em>, point out that the recoil spectrum of
+        a 60 MeV electron resembles that of a 10 MeV proton more closely than a 10 MeV proton's
+        resembles a 60 MeV proton's. A particle species is a poor label for displacement damage; the
+        fraction of the non-ionizing energy delivered below and above the cascade threshold is a good
+        one, and §4 uses it.
+      </p>
+    </div>
+
+    <h2>3 · Defects, carrier lifetime and bipolar gain</h2>
+    <p>
+      A stable defect matters electrically because it places allowed electron states inside the
+      bandgap, where the perfect crystal has none. Those states exchange carriers with the conduction
+      and valence bands, and the exchange takes one of five forms. Which form dominates depends on
+      where in the gap the level lies and on the carrier populations around it — a depleted region, a
+      neutral region under injection, a charge packet in transit — and each form maps onto a device
+      parameter. This section names the five, derives the lifetime law that governs the most
+      consequential of them, and carries it into the bipolar transistor, where it becomes the
+      Messenger–Spratt relation.
+    </p>
+    <p>
+      The complexes of §2 each sit at a characteristic depth. The E centre lies about 0.44 eV below
+      the conduction band, as does a level of the divacancy, and the A centre about 0.17 eV below it
+      (Hopkinson and Mohammadzadeh). A level near midgap, about 0.55 eV from either band in silicon, is
+      the most effective at generating and recombining carriers, because the two steps through it —
+      valence band to level, level to conduction band — then cost equal energies, and neither is the
+      bottleneck. Marshall and Marshall, after Gover and Srour, list the five processes by which such a
+      level acts.
+    </p>
+    <ol>
+      <li><b>Generation.</b> An electron is thermally excited from the valence band to the level and
+        then emitted to the conduction band, creating an electron–hole pair in two steps of about half
+        the gap each. In a depletion region the field separates the pair before it can recombine, so
+        every generated pair is current: leakage in a reverse-biased junction, dark current in an
+        imaging pixel.</li>
+      <li><b>Recombination.</b> A carrier of one sign is captured at the level and, before it is
+        re-emitted, a carrier of the other sign is captured as well, annihilating the pair. The
+        minority-carrier lifetime is set by this rate, so it degrades every device that relies on
+        minority carriers surviving a transit: bipolar gain, solar-cell current, photodetector
+        responsivity.</li>
+      <li><b>Trapping.</b> A carrier is captured and later re-emitted to the band it came from.
+        Nothing is lost permanently, but the carrier is withheld from its signal for the level's
+        emission time — the mechanism of charge transfer inefficiency in a CCD (§6).</li>
+      <li><b>Compensation.</b> Deep levels capture majority carriers supplied by the shallow dopants
+        and remove them from conduction without any recombination. The net carrier concentration
+        falls and the resistivity rises. This is <b>carrier removal</b>, and it acts first on lightly
+        doped regions, such as the collector of a bipolar transistor.</li>
+      <li><b>Tunnelling.</b> A level in the gap of a high-field junction lets carriers cross the
+        barrier in two shorter tunnelling steps, raising the reverse current. It matters most in
+        small-bandgap materials and at high fields.</li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 720 260" role="img" aria-labelledby="m12f5-t">
+        <title id="m12f5-t">The five electrical processes of a radiation-induced defect level in the bandgap</title>
+
+        <g class="dg-line" stroke-width="1.6">
+          <path d="M20,60 L140,60"/><path d="M20,180 L140,180"/>
+          <path d="M160,60 L280,60"/><path d="M160,180 L280,180"/>
+          <path d="M300,60 L420,60"/><path d="M300,180 L420,180"/>
+          <path d="M440,60 L560,60"/><path d="M440,180 L560,180"/>
+          <path d="M580,30 L700,140"/><path d="M580,100 L700,210"/>
+        </g>
+        <text x="22" y="53" class="dg-label-sm">E_c</text>
+        <text x="22" y="196" class="dg-label-sm">E_v</text>
+
+        <g class="dg-line" stroke-width="3.5">
+          <line x1="58" y1="120" x2="98" y2="120"/>
+          <line x1="198" y1="120" x2="238" y2="120"/>
+          <line x1="338" y1="88" x2="378" y2="88"/>
+          <line x1="478" y1="128" x2="518" y2="128"/>
+          <line x1="614" y1="110" x2="638" y2="110"/>
+        </g>
+        <line x1="446" y1="76" x2="554" y2="76" class="dg-rule" stroke-width="1.4" stroke-dasharray="6 4"/>
+
+        <line x1="70" y1="176" x2="70" y2="126" class="dg-line" stroke-width="1.6" marker-end="url(#m12f5-a)"/>
+        <line x1="86" y1="116" x2="86" y2="66" class="dg-line" stroke-width="1.6" marker-end="url(#m12f5-a)"/>
+
+        <line x1="210" y1="64" x2="210" y2="114" class="dg-acc" stroke-width="2.2" marker-end="url(#m12f5-b)"/>
+        <line x1="226" y1="124" x2="226" y2="174" class="dg-acc" stroke-width="2.2" marker-end="url(#m12f5-b)"/>
+
+        <line x1="348" y1="63" x2="348" y2="83" class="dg-line" stroke-width="1.6" marker-end="url(#m12f5-a)"/>
+        <line x1="368" y1="85" x2="368" y2="65" class="dg-line" stroke-width="1.6" marker-end="url(#m12f5-a)"/>
+        <text x="358" y="110" class="dg-label-sm" text-anchor="middle">held, then</text>
+        <text x="358" y="123" class="dg-label-sm" text-anchor="middle">re-emitted</text>
+
+        <line x1="470" y1="80" x2="470" y2="122" class="dg-line" stroke-width="1.6" marker-end="url(#m12f5-a)"/>
+        <text x="510" y="94" class="dg-label-sm" text-anchor="middle">donors</text>
+        <text x="498" y="146" class="dg-label-sm" text-anchor="middle">deep level</text>
+
+        <line x1="582" y1="110" x2="612" y2="110" class="dg-line" stroke-width="1.6"/>
+        <line x1="640" y1="110" x2="670" y2="110" class="dg-line" stroke-width="1.6" marker-end="url(#m12f5-a)"/>
+
+        <g text-anchor="middle">
+          <text x="80" y="226" class="dg-label">1 · generation</text>
+          <text x="220" y="226" class="dg-label"><tspan class="dg-acc-f">2 · recombination</tspan></text>
+          <text x="360" y="226" class="dg-label">3 · trapping</text>
+          <text x="500" y="226" class="dg-label">4 · compensation</text>
+          <text x="640" y="226" class="dg-label">5 · tunnelling</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="80" y="242">dark current, leakage</text>
+          <text x="220" y="242">lifetime, gain</text>
+          <text x="360" y="242">transfer loss (CTI)</text>
+          <text x="500" y="242">carrier removal</text>
+          <text x="640" y="242">junction leakage</text>
+        </g>
+
+        <defs>
+          <marker id="m12f5-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+          <marker id="m12f5-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> After Marshall and Marshall (1999), who follow Gover and Srour. Arrows are
+        electron transitions; the heavy bar is the defect level. The same level can act in more than
+        one way, and which process dominates is set by its depth and by the carriers around it: a
+        midgap level in a depletion region generates, the same level in a neutral region under
+        injection recombines, a shallower level in a CCD channel traps. The fifth panel is a
+        reverse-biased junction, whose bands bend steeply enough for an electron to cross from the
+        valence band on one side to the conduction band on the other through the level.
+      </figcaption>
+    </figure>
+
+    <p>
+      The five do not act at the same fluence. Semiconductor material is normally doped at least an
+      order of magnitude more heavily than its density of recombination and generation centres, and
+      irradiation adds to the second population, not the first. Minority-carrier lifetime and
+      generation lifetime therefore degrade long before the majority-carrier concentration does, and
+      mobility suffers only at very high damage levels (Marshall and Marshall). That ordering is why
+      displacement damage degrades bipolar transistors, solar cells, photodetectors, imagers and some
+      optocouplers, and leaves most MOS circuits — which conduct by majority carriers across a short
+      channel — largely unaffected. Charge-coupled and charge-injection devices are the MOS exception,
+      because they depend on generation lifetime and on trapping. In orbit, displacement damage usually
+      sets the useful life of imagers and solar cells (§6). A discrete bipolar transistor in orbit is
+      usually degraded more by total dose than by displacement damage; its role in displacement-damage
+      studies is that of a test vehicle, and among bipolar parts displacement damage remains a
+      particular concern in analog integrated circuits (Marshall and Marshall). Deck 03 p. 34 names the affected
+      applications as solar cells, CCDs and bipolar devices, and Deck 02 p. 23 adds other
+      minority-carrier devices; the sister course's
+      <a href="../../EEL5385_Space_Electronics/site/m11-displacement-damage.html">EEL5385 M11</a>
+      §§6–7 tabulates the same mapping device by device.
+    </p>
+    <p>
+      Recombination through a single defect level proceeds at a rate proportional to the defect
+      density, so the recombination lifetime is <em>τ</em> = 1/(<em>σv</em><sub>th</sub><em>N</em><sub>t</sub>),
+      with <em>σ</em> the capture cross-section for the minority carrier, <em>v</em><sub>th</sub> its
+      thermal velocity and <em>N</em><sub>t</sub> the defect density (IEEE NSREC 2024 Short Course,
+      Part I). Irradiation adds defects at a rate proportional to fluence, and independent
+      recombination paths add their rates, so the reciprocal lifetime grows linearly with fluence.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num">1</span><span class="den"><em>τ</em></span></span> = <span class="frac"><span class="num">1</span><span class="den"><em>τ</em><sub>0</sub></span></span> + <span class="frac"><span class="num">Φ</span><span class="den"><em>K</em><sub><em>τ</em></sub></span></span></div>
+        <div class="eq-num">(12.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>τ</em> minority-carrier (recombination) lifetime after irradiation (s) · <em>τ</em><sub>0</sub>
+        lifetime before irradiation (s) · Φ particle fluence (cm⁻²) · <em>K</em><sub><em>τ</em></sub>
+        lifetime damage constant (<b>cm⁻²·s</b>, particles·s per cm²), specific to the particle and its
+        energy and dependent on the material, its doping, the injection level, the temperature and the
+        time since irradiation (§5); a larger <em>K</em><sub><em>τ</em></sub> is a harder material.
+        Since the diffusion length is <em>L</em> = (<em>Dτ</em>)<sup>1/2</sup>, with <em>D</em> the
+        minority-carrier diffusion coefficient (cm²/s), the same law reads
+        1/<em>L</em>² = 1/<em>L</em><sub>0</sub>² + Φ/(<em>DK</em><sub><em>τ</em></sub>), the form used
+        for solar cells and photodetectors. Linear in fluence while the defect introduction rate and the
+        injection level stay fixed; very low and very high fluences can depart from it.
+        On the formula sheet as <a href="formula-sheet.html#eq-tau">(12.5)</a>.
+      </div>
+    </div>
+
+    <p>
+      In a bipolar transistor the law acts on the base.
+      <a href="m06-device-physics.html">M06</a> §7 divided the base current into back-injection
+      into the emitter, recombination in the emitter–base depletion region, and recombination in the
+      neutral base. Take the last. The minority carriers injected into the base form a stored charge
+      <em>Q</em><sub>B</sub> that crosses the base in the transit time <em>τ</em><sub>t</sub>, so the
+      collector current is <em>Q</em><sub>B</sub>/<em>τ</em><sub>t</sub>; the same charge recombines
+      at the rate <em>Q</em><sub>B</sub>/<em>τ</em>, which is the neutral-base recombination current.
+      Their ratio, <em>τ</em><sub>t</sub>/<em>τ</em>, is this component's contribution to 1/<em>β</em>.
+      Substituting (12.5), and writing the transit time through the cutoff frequency,
+      <em>τ</em><sub>t</sub> ≈ 1/(2π<em>f</em><sub>t</sub>) when base transit dominates the
+      transistor's delay, gives the reciprocal-gain law in the form Deck 04 p. 35 and Deck 05 p. 6
+      state it, after Messenger and Ash.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num">1</span><span class="den"><em>β</em></span></span> = <span class="frac"><span class="num">1</span><span class="den"><em>β</em><sub>0</sub></span></span> + <span class="frac"><span class="num"><em>K</em><sub>1</sub>Φ<sub><em>n</em></sub></span><span class="den">2π<em>f</em><sub>t</sub></span></span></div>
+        <div class="eq-num">(12.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>β</em> common-emitter current gain after irradiation, dimensionless · <em>β</em><sub>0</sub>
+        gain before irradiation · <em>K</em><sub>1</sub> damage constant (<b>cm²/(n·s)</b>), which
+        depends on the base resistivity; in the derivation above it is 1/<em>K</em><sub><em>τ</em></sub>
+        of the base material · Φ<sub><em>n</em></sub> fast-neutron fluence (<b>n/cm²</b>) ·
+        <em>f</em><sub>t</sub> cutoff frequency (Hz). Derived here for recombination in the neutral base;
+        the same reciprocal form holds when the lifetime that matters is that of the emitter–base
+        depletion region, with a different constant (Schrimpf, course textbook). Applies over the
+        fluence range where 1/<em>β</em> is linear, at fixed bias and temperature.
+        On the formula sheet as <a href="formula-sheet.html#eq-messenger">(12.6)</a>.
+      </div>
+    </div>
+
+    <p>
+      Three consequences follow. The reciprocal gain, not the gain, is linear in fluence, so
+      degradation data are plotted as Δ(1/<em>β</em>) against Φ and the damage constant is read from
+      the slope, while the gain itself falls hyperbolically. The cutoff frequency sits in the
+      denominator, so a transistor with a narrow base — short transit time, high <em>f</em><sub>t</sub>
+      — degrades less at the same fluence, which is Deck 04 p. 35's statement that high-speed bipolar
+      transistors degrade less because the base is narrower. And nothing in the derivation is specific
+      to neutrons: the same law describes displacement damage by protons, heavy ions and electrons,
+      each with its own constant, which is what allows a damage factor to be expressed as a 1 MeV
+      equivalent neutron fluence and converted between particles through NIEL (§4).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 230" role="img" aria-labelledby="m12f7-t">
+        <title id="m12f7-t">Reciprocal current gain against fast-neutron fluence for two transistors whose cutoff frequencies differ tenfold</title>
+
+        <line x1="70" y1="190" x2="430" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="190" x2="70" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <text x="250" y="214" class="dg-label" text-anchor="middle">fast-neutron fluence Φ_n</text>
+        <text x="30" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 30 110)">1/β</text>
+        <text x="64" y="174" class="dg-label-sm" text-anchor="end">1/β₀</text>
+        <text x="64" y="194" class="dg-label-sm" text-anchor="end">0</text>
+
+        <path d="M70,170 L420,50" class="dg-acc" stroke-width="2.4"/>
+        <text x="300" y="74" class="dg-label-sm" text-anchor="end"><tspan class="dg-acc-f">cutoff f_t: slope K₁/(2π f_t)</tspan></text>
+
+        <path d="M70,170 L420,158" class="dg-line" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="300" y="182" class="dg-label-sm" text-anchor="end">10 f_t: one tenth the slope</text>
+      </svg>
+      <figcaption>
+        Both transistors start at the same 1/<em>β</em><sub>0</sub>, and each line's slope is the damage
+        constant divided by 2π<em>f</em><sub>t</sub>. Plotting the reciprocal is what makes the data
+        straight; the gain itself drops quickly at first and then ever more slowly. Schematic.
+      </figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>A transistor with β₀ = 100 falls to β = 50 after a fast-neutron fluence. A second transistor of the same base material and the same β₀, with ten times the cutoff frequency, receives the same fluence. What is its gain, and why is it not 95?</summary>
+      <div class="answer">
+        <p>
+          Work in reciprocal gain, which (12.6) makes linear in fluence. The first transistor moved from
+          1/100 = 0.010 to 1/50 = 0.020, so Δ(1/<em>β</em>) = 0.010. With <em>K</em><sub>1</sub> and
+          Φ<sub><em>n</em></sub> unchanged and <em>f</em><sub>t</sub> ten times larger, Δ(1/<em>β</em>)
+          is ten times smaller, 0.001, so 1/<em>β</em> = 0.011 and <em>β</em> ≈ 91. Scaling the gain
+          loss itself — 50 lost, so 5 lost — gives 95, but the gain is not linear in fluence; its
+          reciprocal is.
+        </p>
+      </div>
+    </details>
+
+    <div class="box warn">
+      <p>
+        <b>Check where the constant sits before substituting a tabulated value.</b> The course, and
+        Schrimpf's chapter in the course textbook, put the damage constant in the numerator,
+        as in (12.6). The published Messenger–Spratt relation, and the damage constants tabulated from
+        it, put it in the denominator: Δ(1/<em>β</em>) = Φ<sub><em>n</em></sub>/(<em>ω</em><sub>T</sub><em>K</em>),
+        with <em>ω</em><sub>T</sub> = 2π<em>f</em><sub>t</sub> and <em>K</em> in n·s/cm², so
+        <em>K</em><sub>1</sub> = 1/<em>K</em>. Marshall and Marshall absorb everything into one factor,
+        Δ(1/<em>β</em>) = <em>K</em>(<em>E</em>)Φ. Substituting a tabulated <em>K</em> for
+        <em>K</em><sub>1</sub> inverts the answer. The relation also has a regime: the 2024 NSREC Short
+        Course lists heavy damage, a change of bias, operation at a temperature other than the
+        irradiation temperature, short base widths, high doping and recombination in the emitter–base
+        region as conditions under which it can mispredict; the last three are from Barnaby
+        <em>et al.</em> (2017).
+      </p>
+    </div>
+
+    <p>
+      Displacement damage and total dose both raise the base current of a bipolar transistor while
+      leaving the collector current alone, so both lower the gain, but they act in different places.
+      Total dose acts at the surface: interface traps where the emitter–base depletion region meets
+      the passivating oxide raise the surface recombination velocity
+      (<a href="m08-tid-effects-devices-ics.html">M08</a> §9), and the excess base current carries an
+      ideality factor near 2. Displacement damage acts in the bulk: it shortens the lifetime throughout
+      the neutral base, raising the ideality-1 component, and in the bulk of the emitter–base depletion
+      region. Studies that isolate displacement damage use the separation deliberately. They
+      pre-irradiate transistors with cobalt-60 to multi-megarad levels, to saturate the ionization
+      damage before the particle exposure, and avoid low-current bias, where surface currents dominate
+      (Marshall and Marshall).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 500 250" role="img" aria-labelledby="m12f6-t">
+        <title id="m12f6-t">Where total ionizing dose and displacement damage degrade a bipolar transistor: surface interface traps against bulk defects in the base</title>
+
+        <text x="250" y="20" class="dg-label-sm" text-anchor="middle">TID: interface traps where the E–B junction meets the oxide</text>
+        <line x1="222" y1="25" x2="184" y2="58" class="dg-line" stroke-width="1"/>
+        <line x1="278" y1="25" x2="318" y2="58" class="dg-line" stroke-width="1"/>
+
+        <rect x="40" y="66" width="420" height="140" class="dg-fill"/>
+        <rect x="110" y="66" width="280" height="90" class="dg-fill"/>
+        <rect x="190" y="66" width="120" height="38" class="dg-fill"/>
+        <rect x="40" y="48" width="420" height="18" class="dg-fill"/>
+        <text x="452" y="61" class="dg-label-sm" text-anchor="end">oxide</text>
+
+        <text x="250" y="90" class="dg-label-sm" text-anchor="middle">n⁺ emitter</text>
+        <text x="146" y="140" class="dg-label-sm" text-anchor="middle">p base</text>
+        <text x="250" y="192" class="dg-label-sm" text-anchor="middle">n collector</text>
+
+        <g class="dg-ink" font-size="13" text-anchor="middle">
+          <text x="172" y="71">×</text><text x="182" y="71">×</text>
+          <text x="318" y="71">×</text><text x="328" y="71">×</text>
+        </g>
+
+        <g class="dg-acc-f">
+          <circle cx="204" cy="118" r="3"/><circle cx="226" cy="132" r="3"/><circle cx="249" cy="116" r="3"/>
+          <circle cx="272" cy="138" r="3"/><circle cx="294" cy="122" r="3"/><circle cx="214" cy="148" r="3"/>
+          <circle cx="258" cy="150" r="3"/><circle cx="130" cy="92" r="3"/><circle cx="154" cy="114" r="3"/>
+          <circle cx="358" cy="96" r="3"/><circle cx="372" cy="128" r="3"/><circle cx="336" cy="146" r="3"/>
+        </g>
+        <g class="dg-soft">
+          <circle cx="80" cy="176" r="2.5"/><circle cx="142" cy="190" r="2.5"/><circle cx="334" cy="184" r="2.5"/>
+          <circle cx="420" cy="168" r="2.5"/><circle cx="430" cy="108" r="2.5"/><circle cx="70" cy="110" r="2.5"/>
+        </g>
+
+        <text x="250" y="228" class="dg-label-sm" text-anchor="middle"><tspan class="dg-acc-f">DD: recombination centres throughout the neutral base</tspan></text>
+        <text x="250" y="242" class="dg-label-sm" text-anchor="middle">and in every other bulk region. Schematic, not to scale.</text>
+      </svg>
+      <figcaption>
+        The same outcome — more base current, unchanged collector current, lower gain — from two
+        locations. Total dose concentrates its damage at the surface along the emitter–base perimeter;
+        displacement damage distributes it through the volume the injected carriers cross.
+      </figcaption>
+    </figure>
+
+    <p>
+      Protons deliver both kinds of damage at once, and the two are not simply additive. Pease's
+      chapter in the course textbook notes that a laboratory simulation with cobalt-60 and neutrons
+      must irradiate the same samples consecutively for that reason, and Schrimpf's chapter records
+      that proton irradiation can make linear bipolar circuits fail at much lower total doses than
+      gamma irradiation, sometimes by a different failure mechanism (Rax, Johnston and Miyahira,
+      1999). Johnston gives an example: an LM137 negative voltage regulator irradiated with 50 MeV
+      protons failed catastrophically at equivalent total doses of 18–35 krad(Si), through degradation
+      of its start-up circuit, a failure mode that did not occur in the equivalent cobalt-60 tests.
+    </p>
+
+    <h2>4 · NIEL scaling and where it fails</h2>
+    <p>
+      NIEL is worth tabulating only if device degradation scales with it, whatever particle delivered
+      it. <a href="m04-quantifying-energy-deposition.html">M04</a> §6 stated this NIEL scaling
+      hypothesis. This section states what it assumes physically, where the course's sources find it
+      holding, and the three places they find it failing.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>P</em> ∝ Φ · NIEL, &nbsp;&nbsp; Δ<em>P</em> = <em>k</em><sub>damage</sub> · DDD</div>
+        <div class="eq-num">(12.7)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>P</em> change in a device parameter within its linear range — Δ(1/<em>β</em>),
+        1/<em>τ</em> − 1/<em>τ</em><sub>0</sub>, a dark-current increase, a change in CTI, a loss of
+        solar-cell current · Φ fluence (cm⁻²) · NIEL (MeV·cm²/g) · <em>k</em><sub>damage</sub> damage
+        constant for that device and parameter, in the parameter's units per MeV/g · DDD from (12.1),
+        MeV/g. A damage factor measured with one particle at one energy converts to another by the ratio
+        of their NIEL values. Equivalently, an environment is quoted as the fluence of a reference
+        particle that delivers the same DDD — 1 MeV equivalent neutrons, or 10 MeV equivalent protons.
+        NIEL is also quoted as a displacement cross-section in MeV·mb: 100 MeV·mb = 2.144 keV·cm²/g in
+        silicon. The proportionality is Deck 03 p. 41's; the equality is the form Hopkinson and
+        Mohammadzadeh give in the course textbook.
+        On the formula sheet as <a href="formula-sheet.html#eq-dp">(12.7)</a>.
+      </div>
+    </div>
+
+    <p>
+      NIEL measures the energy that goes into creating vacancy–interstitial pairs, and about 90% of
+      those pairs recombine. For degradation to scale with it, two things must hold: the fraction of
+      pairs that survives must not depend on the recoil energy, and a surviving defect must affect the
+      device in the same way whether it came from an isolated pair or from inside a cluster (Marshall
+      and Marshall, after Dale <em>et al.</em>, 1988). Hopkinson and Mohammadzadeh put the condition
+      parameter by parameter: scaling holds when the concentration of the defect that dominates the
+      parameter is the same for point damage and for cluster damage. Huhtinen showed that it is for the
+      divacancy, while higher vacancy complexes may be more common in clusters. The correlation is
+      therefore an empirical result, checked for each material, device and parameter.
+    </p>
+    <p>
+      It holds remarkably often. Summers <em>et al.</em> (1993) found proton damage coefficients
+      linear in NIEL for silicon, GaAs and InP devices. Bipolar transistor damage factors measured with
+      protons, deuterons and helium ions, normalized to fission neutrons, match the calculated NIEL
+      ratios over a wide energy range with no fitted parameter (Summers <em>et al.</em>, 1987, as
+      reproduced by Marshall and Marshall). And in GaAs solar cells the damage coefficients of the
+      short-circuit current for electrons and protons lie close to one line across five decades of
+      NIEL on the log-log plot of Deck 02 p. 24. The 2024 NSREC Short Course states the consequence as
+      equal loss of output power for equal displacement damage dose from either particle (after
+      Messenger <em>et al.</em>), and that correlation is what allows a solar array to be specified in
+      displacement damage dose rather than particle by particle. For electrons the correlation holds
+      only after a correction to NIEL, which the box after Figure 7 sets out.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 300" role="img" aria-labelledby="m12f8-t">
+        <title id="m12f8-t">Damage coefficients against NIEL for GaAs solar cells and for silicon, redrawn from Summers et al. 1993</title>
+
+        <text x="195" y="18" class="dg-label" text-anchor="middle" font-weight="600">GaAs solar cells, J_sc</text>
+        <line x1="60" y1="240" x2="330" y2="240" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="240" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="256">10⁻³</text><text x="150" y="256">10⁻¹</text>
+          <text x="240" y="256">10¹</text><text x="326" y="256">10³</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="54" y="34">10⁻¹⁰</text><text x="54" y="124">10⁻¹³</text><text x="54" y="214">10⁻¹⁶</text>
+        </g>
+        <text x="195" y="280" class="dg-label" text-anchor="middle">NIEL (keV·cm²/g)</text>
+        <text x="14" y="135" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 14 135)">relative damage coefficient</text>
+
+        <path d="M76.0,226.5 L299.9,63.9" class="dg-line" stroke-width="1.8"/>
+        <g class="dg-ink">
+          <rect x="110.7" y="197.7" width="6" height="6"/><rect x="121.6" y="186.3" width="6" height="6"/>
+          <rect x="134.0" y="176.7" width="6" height="6"/><rect x="147.4" y="163.8" width="6" height="6"/>
+          <circle cx="232.8" cy="113.7" r="3.2"/><circle cx="253.4" cy="98.4" r="3.2"/>
+          <circle cx="272.7" cy="84.0" r="3.2"/><circle cx="284.3" cy="76.2" r="3.2"/>
+          <circle cx="293.3" cy="70.2" r="3.2"/><circle cx="299.9" cy="63.9" r="3.2"/>
+        </g>
+        <text x="128" y="214" class="dg-label-sm">electrons</text>
+        <text x="196" y="92" class="dg-label-sm">protons</text>
+
+        <text x="555" y="18" class="dg-label" text-anchor="middle" font-weight="600">Silicon</text>
+        <line x1="420" y1="240" x2="690" y2="240" class="dg-rule" stroke-width="1.2"/>
+        <line x1="420" y1="240" x2="420" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="420" y="256">10⁻²</text><text x="487.5" y="256">10⁻¹</text><text x="555" y="256">10⁰</text>
+          <text x="622.5" y="256">10¹</text><text x="686" y="256">10²</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="414" y="34">10⁻⁵</text><text x="414" y="104">10⁻⁷</text>
+          <text x="414" y="174">10⁻⁹</text><text x="414" y="244">10⁻¹¹</text>
+        </g>
+        <text x="555" y="280" class="dg-label" text-anchor="middle">NIEL (keV·cm²/g)</text>
+        <text x="376" y="135" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 376 135)">damage coefficient</text>
+
+        <path d="M420,160.2 L677.3,30" class="dg-line" stroke-width="1.8"/>
+        <g class="dg-line" stroke-width="1.6">
+          <path d="M586.9,74.5 L592.9,74.5 M589.9,71.5 L589.9,77.5"/>
+          <path d="M594.4,70.6 L600.4,70.6 M597.4,67.6 L597.4,73.6"/>
+          <path d="M599.1,68.2 L605.1,68.2 M602.1,65.2 L602.1,71.2"/>
+          <path d="M607.9,64.0 L613.9,64.0 M610.9,61.0 L610.9,67.0"/>
+          <path d="M629.6,52.8 L635.6,52.8 M632.6,49.8 L632.6,55.8"/>
+          <path d="M659.3,37.7 L665.3,37.7 M662.3,34.7 L662.3,40.7"/>
+        </g>
+        <g class="dg-ink">
+          <path d="M454.2,133.1 L458.2,137.1 L454.2,141.1 L450.2,137.1 Z"/>
+          <path d="M474.8,121.6 L478.8,125.6 L474.8,129.6 L470.8,125.6 Z"/>
+          <path d="M486.4,113.4 L490.4,117.4 L486.4,121.4 L482.4,117.4 Z"/>
+          <path d="M497.0,110.5 L501.0,114.5 L497.0,118.5 L493.0,114.5 Z"/>
+          <path d="M501.7,109.5 L505.7,113.5 L501.7,117.5 L497.7,113.5 Z"/>
+          <rect x="432.0" y="207.1" width="5" height="5"/><rect x="437.7" y="206.0" width="5" height="5"/>
+          <rect x="444.4" y="192.2" width="5" height="5"/><rect x="451.2" y="187.4" width="5" height="5"/>
+          <rect x="465.2" y="173.4" width="5" height="5"/><rect x="472.3" y="161.9" width="5" height="5"/>
+          <rect x="483.9" y="149.4" width="5" height="5"/><rect x="493.4" y="140.4" width="5" height="5"/>
+          <circle cx="502.7" cy="135.2" r="2.8"/>
+        </g>
+        <path d="M440.2,208.5 L502.7,135.2" class="dg-acc" stroke-width="2.2"/>
+        <text x="588" y="96" class="dg-label-sm">protons</text>
+        <text x="430" y="98" class="dg-label-sm">n-type Si, electrons</text>
+        <text x="514" y="186" class="dg-label-sm"><tspan class="dg-acc-f">p-type Si, electrons</tspan></text>
+        <text x="514" y="200" class="dg-label-sm">rise about as NIEL²</text>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> Redrawn from Deck 02 p. 24 (G. P. Summers <em>et al.</em>, IEEE TNS 40, 1372
+        (1993)), with positions digitized from the slide. Left: in GaAs solar cells, electron and proton
+        damage coefficients lie close to one line across five decades of NIEL; the line rises about
+        5.4 decades over those five, a slope near 1.1 rather than 1. Right: in silicon the proton
+        line passes through the electron data for n-type material, while electron damage in p-type
+        silicon lies below it and climbs about two decades per decade of NIEL — the quadratic dependence
+        Summers <em>et al.</em> report, which leaves p-type damage at 1 MeV about ten times below n-type.
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p>
+        <b>One line on a log-log plot is not equal damage per unit NIEL.</b> Deck 02 p. 24 draws the
+        GaAs electron and proton data on one line, and the 2024 Short Course treats electron and proton
+        displacement damage dose in GaAs cells as interchangeable; that is the version the course
+        uses. Marshall and Marshall qualify it on two counts. A plot spanning five decades on both axes
+        hides departures of a factor of 2–3, which matter in a prediction; on this page's digitization,
+        the slope near 1.1 in Figure 7 already amounts to a factor of about 3 between the two ends of
+        the line. And Walters <em>et al.</em> (1999), re-analysing the same GaAs data set, recommend
+        separate fits for the two particles. The maximum power after proton irradiation
+        correlates with NIEL from 0.2 to 9.5 MeV, but the electron data agree best over the widest
+        energy range with NIEL raised to the power 1.7, so the equivalent 1 MeV electron displacement
+        damage dose is defined as fluence times NIEL<sup>1.7</sup>, not by (12.1). The 2024 Short
+        Course's own figure for this result, its Fig. 10, plots the electron data against a separate axis of 1 MeV
+        electron equivalent dose, and its electron and proton curves have the same shape without
+        coinciding on one dose axis. An electron dose and a proton dose computed with plain NIEL are
+        therefore equivalent only after that correction.
+      </p>
+    </div>
+
+    <p>
+      The course's sources record three departures, and all three involve the arrangement of the
+      damage rather than its amount.
+    </p>
+    <p>
+      <b>Electrons in silicon depend on the doping type</b> (Deck 02 p. 24). Electron damage
+      coefficients in n-type silicon lie on the extension of the proton line; in p-type silicon they lie
+      below it and rise roughly as the square of NIEL. The exception arises under exactly the condition
+      that tests the scaling assumption hardest. An electron's damage consists entirely of isolated
+      point defects (§1), and what an isolated vacancy becomes depends on the impurities it meets as it
+      migrates (§2), which differ between phosphorus-doped and boron-doped silicon.
+    </p>
+    <p>
+      <b>Low-energy protons in n-type silicon damage more than NIEL predicts.</b> Deck 03 p. 39 (left
+      panel, after Dale <em>et al.</em>, 1989) plots proton damage factors, normalized to those of
+      1 MeV neutrons, against NIEL. The p-type 2N2222A transistor follows the unity-slope line. The
+      n-type devices — the 2N2970A transistor and a charge-injection device — follow a steeper upper
+      line toward high NIEL, which on that plot means low proton energy. Dale <em>et al.</em> (1988)
+      found that the size of such departures correlates with the fraction of the NIEL carried by recoils
+      below 1 keV: well-separated Frenkel pairs from low-energy recoils recombine less than pairs
+      created inside a dense cascade, so a spectrum rich in low-energy recoils leaves more surviving
+      defects per unit NIEL (Marshall and Marshall). M04 §6 draws the silicon panel.
+    </p>
+    <p>
+      <b>GaAs departs at high proton energy.</b> In the right panel of Deck 03 p. 39, measured damage
+      factors normalized to the GaAs NIEL calculation at 10 MeV fall progressively below it above about
+      40 MeV. Normalized at a high energy instead, the same data would show NIEL underestimating the
+      damage at low energy; the two descriptions are equivalent, and Barry <em>et al.</em> (1995)
+      explained their GaAs light-emitting-diode data the same way as the silicon case, by a
+      recombination efficiency of Frenkel pairs that varies with recoil energy. Close to the
+      displacement threshold further deviations are expected, but protons of those energies contribute
+      little to the damage behind typical spacecraft shielding.
+    </p>
+
+    <div class="box">
+      <p>
+        <b>The GaAs line and the GaAs departure do not conflict.</b> Deck 02 p. 24 shows GaAs
+        solar-cell damage on one line; Deck 03 p. 39 shows GaAs damage falling below NIEL. Marshall and
+        Marshall point out that the solar-cell data behind the first figure come from protons below
+        20 MeV — the energies relevant to lightly shielded solar arrays — while the departure begins
+        above 40 MeV, and that a later analysis of the same solar-cell data set shows the damage
+        coefficients falling below the GaAs NIEL at higher energies. The choice of damage function has
+        practical weight: depending on orbit and shielding, the predicted displacement damage dose for a
+        GaAs device can differ by a factor of two to three between calculated NIEL and measured damage
+        factors, and one CCD study found a factor of two in predicted on-orbit degradation. Their
+        recommendation follows: a device highly sensitive to displacement damage should be tested with
+        protons.
+      </p>
+    </div>
+
+    <h2>5 · Annealing of displacement damage</h2>
+    <p>
+      Displacement damage is not frozen at the moment of irradiation. The defect population keeps
+      evolving after the exposure ends, and a device parameter measured after a burst of particles
+      recovers in stages, quickly at first and then ever more slowly. Silicon anneals at room
+      temperature; unbiased GaAs essentially does not. The time between exposure and measurement is
+      therefore part of any displacement-damage result, and it decides how a test relates to the
+      application.
+    </p>
+    <p>
+      The earliest stages are over before any electrical measurement can be made. Most close Frenkel
+      pairs recombine in less than a millisecond, and the surviving vacancies, mobile even at
+      liquid-nitrogen temperature, settle into stable complexes on a timescale of seconds (Marshall and
+      Marshall). Deck 03 p. 38, after Srour, Marshall and Marshall (2003), follows what comes next in a
+      device held at room temperature. After a neutron burst the carrier lifetime, or the gain of a
+      transistor, drops abruptly and then recovers. The recovery period, <b>short-term annealing</b>,
+      begins shortly after the damage is created and is essentially complete within several minutes to
+      one hour. A <b>long-term anneal</b> then recovers part of the remaining damage slowly, over a
+      period the slide carries out to a year. The slide puts the damage left after short-term annealing
+      in quotation marks as "permanent" because it goes on recovering, only slowly, and it names the
+      mechanism: recombination, or annihilation, and rearrangement of defects.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 540 250" role="img" aria-labelledby="m12f9-t">
+        <title id="m12f9-t">Stages of displacement-damage evolution and annealing on a logarithmic time axis after a particle burst</title>
+
+        <text x="62" y="40" class="dg-label-sm">close Frenkel pairs recombine (under 1 ms)</text>
+        <rect x="60" y="46" width="98.6" height="10" class="dg-fill"/>
+
+        <text x="170" y="82" class="dg-label-sm">stable complexes form (seconds)</text>
+        <rect x="224.2" y="88" width="65.7" height="10" class="dg-fill"/>
+
+        <text x="180" y="124" class="dg-label-sm"><tspan class="dg-acc-f">short-term anneal: essentially complete in minutes to ~1 h</tspan></text>
+        <rect x="257.1" y="130" width="116.9" height="10" class="dg-acc-f"/>
+
+        <text x="300" y="166" class="dg-label-sm">long-term anneal: slow, to ~1 yr</text>
+        <rect x="374.0" y="172" width="129.8" height="10" class="dg-fill"/>
+
+        <line x1="60" y1="210" x2="520" y2="210" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="1">
+          <line x1="60" y1="210" x2="60" y2="215"/><line x1="158.6" y1="210" x2="158.6" y2="215"/>
+          <line x1="257.1" y1="210" x2="257.1" y2="215"/><line x1="315.6" y1="210" x2="315.6" y2="215"/>
+          <line x1="374.0" y1="210" x2="374.0" y2="215"/><line x1="419.3" y1="210" x2="419.3" y2="215"/>
+          <line x1="503.8" y1="210" x2="503.8" y2="215"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="64" y="228">1 µs</text><text x="158.6" y="228">1 ms</text><text x="257.1" y="228">1 s</text>
+          <text x="315.6" y="228">1 min</text><text x="374.0" y="228">1 h</text><text x="419.3" y="228">1 day</text>
+          <text x="503.8" y="228">1 yr</text>
+        </g>
+        <text x="290" y="246" class="dg-label" text-anchor="middle">time after the burst (log scale)</text>
+      </svg>
+      <figcaption>
+        Silicon at room temperature. The first two rows follow Marshall and Marshall (1999); the device
+        recovery follows Deck 03 p. 38 (after Srour <em>et al.</em>, 2003). The accent stage is the one a
+        measurement can fall inside: read during it, a parameter shows more damage than will persist.
+        Bar ends are indicative, not sharp.
+      </figcaption>
+    </figure>
+
+    <div class="box">
+      <p>
+        <b>Two clocks for "short-term".</b> Marshall and Marshall use the phrase for the evolution of
+        Frenkel pairs into stable room-temperature defects and put it within about a second, while
+        Deck 03 p. 38 shows device parameters still recovering for minutes to an hour after a neutron
+        burst. Recovery at the device level depends on temperature and on carrier injection, which
+        accelerates annealing (below), so the time over which it is observed depends on the device and
+        its operating state. This page follows Deck 03 p. 38 for device-level recovery.
+      </p>
+    </div>
+
+    <p>
+      The stable complexes differ in thermal stability — Marshall and Marshall give the divacancy as
+      stable to about 300 °C, the E centre to about 150 °C and the A centre to about 350 °C — so heating
+      removes them selectively, and the defect a parameter depends on sets the temperature needed to
+      recover it. Annealing out the traps that degrade charge transfer in a CCD requires more than
+      100 °C (Hopkinson and Mohammadzadeh). The same defect can also anneal differently according to how
+      it was made: E centres produced by 1 MeV electrons anneal at a significantly lower temperature than
+      those produced by protons (Marshall and Marshall), a difference between point and cluster damage
+      that NIEL, which counts only energy, cannot see. The material matters as well. Silicon anneals at
+      room temperature, while GaAs does not anneal appreciably unless heated to 200 °C or more (IEEE
+      NSREC 2024 Short Course, after Swift <em>et al.</em>, 2003).
+    </p>
+    <p>
+      Current through a forward-biased junction accelerates annealing in silicon, GaAs and GaN (IEEE
+      NSREC 2024 Short Course). In GaAs light-emitting diodes and laser diodes the effect is decisive:
+      little or no annealing takes place until current is applied, and recovery begins when it is
+      (Johnston). Marshall and Marshall attribute this to recombination-enhanced defect reactions — the
+      energy released when a carrier pair recombines non-radiatively through the defect moves the defect
+      itself — rather than to heating of the junction. A laser diode operated under forward bias during
+      irradiation therefore anneals while it is being damaged, and degrades less at a low particle flux
+      than at a laboratory one.
+    </p>
+    <p>
+      Three consequences follow for testing. First, a damage constant is incomplete without the time and
+      temperature of its measurement: a reading taken within the short-term window shows more damage
+      than persists, and the universal dark-current damage factor of §6 is defined at 300 K one week
+      after irradiation, after most of the annealing has run. Second, the test and the application can
+      run on different clocks. A pulsed exposure such as a neutron burst is followed at once by the
+      circuit's operation, so the early, unannealed damage is what the circuit experiences; a spacecraft
+      accumulates its fluence over months, and each increment completes its short-term recovery long
+      before the mission ends. Third, because long-term room-temperature annealing is usually small, a
+      device can often be exposed passively and characterized in the laboratory later, and its
+      degradation is generally independent of bias during irradiation. Compound-semiconductor photonic
+      devices, whose degradation and annealing depend on bias, are the stated exception (Marshall and
+      Marshall), and an unbiased GaAs device keeps its damage until it is powered.
+    </p>
+
+    <h2>6 · Imagers and solar cells</h2>
+    <p>
+      Imaging arrays and solar cells are the devices in which displacement damage most often sets the
+      useful life. An imager reads out charge packets from millions of nominally identical pixels, so a
+      single generation centre in one pixel, or a single trap in a transfer channel, is visible in the
+      image. A solar cell converts light into current only through minority carriers that survive a
+      diffusion path to its junction. Both depend on the silicon or GaAs bulk. Solar cells sit behind
+      only a thin cover glass. Imagers in space are often heavily shielded, which shifts the protons
+      that reach them to energies of typically 40–100 MeV (Marshall and Marshall), but they are
+      sensitive enough that the protons that do get through still set their useful life. Each process
+      of §3 appears here in a specific device symptom.
+    </p>
+
+    <h3>Charge transfer in a CCD</h3>
+    <p>
+      <a href="m06-device-physics.html">M06</a> §9 introduced the charge-coupled device: signal charge
+      held in potential wells under clocked gates and moved packet by packet along a buried channel to
+      one output amplifier, with the charge transfer inefficiency CTI = 1 − CTE the fraction left behind
+      at each transfer, compounded along the chain by (6.7). Displacement damage degrades a CCD in four
+      ways: it lowers the CTE, raises the average dark current, creates individual pixels of very high
+      dark current, and increases the noise of the output amplifier (Marshall and Marshall). Of these,
+      CTI is the one most directly tied to displacement damage. Total dose acts on a CCD through its
+      gate dielectrics: it shifts flat-band voltages and raises surface dark current through interface
+      traps (<a href="m08-tid-effects-devices-ics.html">M08</a> §9; Hopkinson and Mohammadzadeh §2).
+      The traps that capture signal charge in the buried channel are bulk defects, which only
+      displacement damage creates. The dominant such trap at moderately high operating temperatures has
+      a level about 0.44 eV below the conduction band and is attributed to the E centre, on its energy
+      and its annealing behaviour; it forms because the usual buried channel is n-type, doped with
+      phosphorus (Hopkinson and Mohammadzadeh). The two dark-current effects, which displacement damage
+      also produces directly, follow in the next subsection.
+    </p>
+    <p>
+      A trap degrades transfer through a race between two time constants. Its capture time,
+      <em>τ</em><sub>c</sub> = 1/(<em>σv</em><sub>th</sub><em>n</em><sub>s</sub>), with
+      <em>n</em><sub>s</sub> the local density of signal electrons, is shortest at the dense centre of a
+      packet and depends only weakly on temperature. Its emission time grows as
+      exp(<em>E</em><sub>t</sub>/<em>kT</em>), with <em>E</em><sub>t</sub> the depth of the level below
+      the conduction band, and so depends strongly on temperature. Charge is lost from a packet when a
+      trap captures within the packet's dwell time in the pixel and re-emits only after the packet has
+      moved on; the released electrons join a later packet. The image effect is <b>trailing</b>: charge
+      smeared behind bright features along the transfer direction, seen as streaks. Because capture
+      needs the packet's own electrons, a small signal loses a larger fraction than a large one; because
+      emission is thermally activated, the temperature and the clock rate decide which traps matter. A
+      linear CCD clocked at 1 MHz or faster is relatively immune, since the E centre's capture is too
+      slow for the short dwell time (Marshall and Marshall).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 220" role="img" aria-labelledby="m12f10-t">
+        <title id="m12f10-t">A trap in the buried channel captures electrons from a passing charge packet and releases them into the packets that follow</title>
+
+        <text x="40" y="22" class="dg-label-sm">capture in τ_c = 1/(σ v_th n_s): fast inside a dense packet</text>
+        <text x="40" y="36" class="dg-label-sm">emission after τ_e ∝ exp(E_t/kT): slow, and set by temperature</text>
+
+        <rect x="406" y="54" width="28" height="84" class="dg-soft"/>
+        <text x="420" y="50" class="dg-label-sm" text-anchor="middle">signal packet</text>
+        <g class="dg-acc-f">
+          <rect x="366" y="122" width="28" height="16"/><rect x="326" y="129" width="28" height="9"/>
+          <rect x="286" y="133" width="28" height="5"/>
+        </g>
+        <text x="220" y="96" class="dg-label-sm"><tspan class="dg-acc-f">released charge: the trail</tspan></text>
+        <line x1="300" y1="100" x2="340" y2="124" class="dg-line" stroke-width="1"/>
+
+        <g class="dg-fill">
+          <rect x="40" y="140" width="40" height="26"/><rect x="80" y="140" width="40" height="26"/>
+          <rect x="120" y="140" width="40" height="26"/><rect x="160" y="140" width="40" height="26"/>
+          <rect x="200" y="140" width="40" height="26"/><rect x="240" y="140" width="40" height="26"/>
+          <rect x="280" y="140" width="40" height="26"/><rect x="320" y="140" width="40" height="26"/>
+          <rect x="360" y="140" width="40" height="26"/><rect x="400" y="140" width="40" height="26"/>
+          <rect x="440" y="140" width="40" height="26"/>
+        </g>
+        <text x="180" y="158" class="dg-ink" font-size="14" text-anchor="middle">×</text>
+        <text x="180" y="182" class="dg-label-sm" text-anchor="middle">trap in the buried channel</text>
+
+        <line x1="60" y1="206" x2="470" y2="206" class="dg-line" stroke-width="1.4" marker-end="url(#m12f10-a)"/>
+        <text x="300" y="200" class="dg-label-sm" text-anchor="middle">transfer toward the output amplifier</text>
+
+        <defs>
+          <marker id="m12f10-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Charge per pixel after the bright packet has passed the trap. Electrons captured from the packet
+        are re-emitted later, into whichever pixels are over the trap at the time, so the packet is
+        followed by a tail that decays with the emission time. Schematic.
+      </figcaption>
+    </figure>
+
+    <p>
+      The tolerances are severe. Keeping signal loss below 10% over 1000 transfers requires a CTE of at
+      least 0.9999 per transfer, which for a pixel of about 50 µm³ means fewer than one
+      radiation-induced defect in every ten pixels (Marshall and Marshall), and CTI becomes a major
+      effect at equivalent 10 MeV proton fluences of about 10¹⁰ cm⁻² (Hopkinson and Mohammadzadeh).
+      Deck 03 p. 44 shows the dependence on signal size and on background for an EEV CCD02 after
+      7.2×10⁹ protons/cm² at 10 MeV, a fluence corresponding to about 4 krad(Si). With a dark-charge
+      background of 150 electrons the CTI approaches 5×10⁻⁴ for the smallest signals and falls as the
+      signal grows; a background of 16,000 electrons holds it near 7×10⁻⁵ at every signal size, because
+      the background keeps the traps filled and they cannot interact with the signal packet. The
+      improvement usually comes at the price of added noise, the background's own shot noise. Marshall
+      and Marshall compare the two cumulative effects in scientific CCDs: flat-band shifts and
+      dark-current increases at total doses below 10–20 krad(Si) are often manageable by adjusting
+      voltages and temperature, while significant CTE loss appears at proton exposures of less than
+      1 krad(Si).
+    </p>
+    <p>
+      The countermeasures follow from the trap physics. Cooling, often to about −80 °C, lengthens the
+      E centre's emission time until filled traps stay filled; a deliberately raised background charge
+      in every pixel, called a <b>fat zero</b>, or a charge packet injected ahead of the signal, fills
+      them electrically; a narrow implanted notch confines small packets to a
+      smaller volume and so to fewer traps; a p-channel CCD, whose boron-doped channel contains no
+      E centres, is harder; and an active pixel sensor, which reads each pixel in place instead of
+      transferring charge, has no CTI at all (Marshall and Marshall; Hopkinson and Mohammadzadeh). Where
+      none of these suffices the remaining option is shielding. Behind a thick tantalum shield, the
+      secondary neutrons produced in the shield itself come to dominate the displacement damage dose
+      beyond about 2 cm (Marshall and Marshall).
+    </p>
+
+    <h3>Dark current, hot pixels and random telegraph signals</h3>
+    <p>
+      The second symptom is generation, process 1 of §3. A defect in a pixel's depletion region
+      generates electron–hole pairs thermally, and the pixel collects them as dark signal. Averaged over
+      an array, the increase is proportional to the displacement damage dose and to the depleted volume,
+      with a constant that holds across devices, particles and doping.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>Ī</em><sub>dark</sub> = <em>K</em><sub>dark</sub> · DDD · <em>V</em><sub>dep</sub></div>
+        <div class="eq-num">(12.8)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>Ī</em><sub>dark</sub> mean increase in the dark generation rate of a pixel (<b>carriers/s</b>;
+        multiply by <em>q</em> for a current in A) · <em>K</em><sub>dark</sub> universal damage factor of
+        Srour and Lo, <b>(1.9 ± 0.6)×10⁵ carriers·cm⁻³·s⁻¹ per MeV/g</b> at 300 K, one week after
+        irradiation · DDD displacement damage dose (MeV/g) · <em>V</em><sub>dep</sub> depleted volume of
+        the pixel (<b>cm³</b>). Goiffon's per-µm³ form, about 0.1 carriers·s⁻¹·µm⁻³ per TeV/g at 22 °C
+        after six weeks of annealing, is the same constant after further annealing and at a lower
+        temperature. Holds for protons and neutrons from a few MeV to a few hundred MeV and where no strong
+        electric field enhances emission. It predicts the mean, not the pixel-to-pixel distribution.
+        On the formula sheet as <a href="formula-sheet.html#eq-kdark">(12.8)</a>.
+      </div>
+    </div>
+
+    <p>
+      The mean hides the feature that matters in an image. Displacement damage arrives as discrete
+      events, a few of them large, so the dark current varies strongly from pixel to pixel. Pixels that
+      received a nuclear reaction, or whose defect sits in a region of high electric field — about
+      10⁵ V/cm, where the field lowers the barrier for emission and multiplies the generation rate —
+      become <b>hot pixels</b>, dark-current spikes an order of magnitude or more above the mean.
+      Field-enhanced pixels show a lower activation energy, as low as about 0.4 eV against 0.63–0.65 eV
+      for ordinary generation, so they fade less on cooling and dominate cold images (Hopkinson and
+      Mohammadzadeh). The displacement damage dose sets the mean; the shape of the distribution depends
+      on the recoil spectrum and on the field inside each pixel.
+    </p>
+    <p>
+      The shape follows from counting statistics. Goiffon models the number of damaging interactions in
+      a pixel as Poisson-distributed, with a mean proportional to DDD × <em>V</em><sub>dep</sub>, and the
+      dark current each contributes as exponentially distributed; a pixel's dark current is the sum. At
+      low fluence most pixels receive no interaction or one, and the damaged pixels form an exponential
+      tail above the undamaged population. As the number of interactions per pixel grows, the sum of
+      many independent contributions approaches a Gaussian by the central limit theorem, and its width
+      relative to its mean falls as the inverse square root of the number of events. Deck 03 p. 45 shows
+      the approach, from Marshall and Marshall (after Marshall <em>et al.</em> and Dale
+      <em>et al.</em>): dark-current histograms of a 256 × 256 charge-injection device after 12 MeV
+      protons at 4×10¹⁰, 1×10¹¹ and 2×10¹¹ cm⁻², with <em>N</em> = 1967, 4918 and 9835 primary
+      interactions per pixel and <em>N</em><sub>i</sub> = 1.8, 4.5 and 9.0 inelastic interactions per
+      pixel. The thousands of elastic interactions add a nearly fixed amount to every pixel; the skew
+      comes from the few inelastic reactions, each of which deposits a large damage energy in one pixel.
+      The high-energy tail is conspicuous at the lowest fluence, and by the highest the distribution is
+      nearly symmetric — the tail is the low-fluence signature of single-particle damage, not a feature
+      that grows with exposure. Marshall and Marshall add that this nonuniformity is inherent in the
+      statistics of the collisions and cannot be hardened against.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 540 270" role="img" aria-labelledby="m12f11-t">
+        <title id="m12f11-t">Pixel dark-current distributions after three proton fluences, becoming more symmetric as the number of interactions per pixel rises</title>
+
+        <line x1="50" y1="220" x2="500" y2="220" class="dg-rule" stroke-width="1.2"/>
+        <line x1="50" y1="220" x2="50" y2="36" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="50" y="236">0</text><text x="125" y="236">1</text><text x="200" y="236">2</text>
+          <text x="275" y="236">3</text><text x="350" y="236">4</text><text x="425" y="236">5</text>
+          <text x="500" y="236">6</text>
+        </g>
+        <text x="275" y="258" class="dg-label" text-anchor="middle">damage energy per pixel (MeV)</text>
+        <text x="26" y="130" class="dg-label" text-anchor="middle" transform="rotate(-90 26 130)">relative frequency</text>
+        <text x="500" y="30" class="dg-label-sm" text-anchor="end">12 MeV protons, charge-injection device</text>
+
+        <path d="M80.0,220.0 C80.9,218.2 83.6,217.2 85.2,208.9 C86.9,200.7 88.1,183.0 89.8,170.7 C91.4,158.4 93.1,150.0 95.0,135.0 C96.9,120.0 99.2,93.6 101.0,80.6 C102.8,67.6 104.2,61.9 105.5,56.8 C106.8,51.7 107.0,48.5 108.9,50.0 C110.8,54.5 114.4,70.4 116.8,84.0 C119.1,97.6 120.4,117.7 122.8,131.6 C125.1,145.5 128.4,158.0 131.0,167.3 C133.6,176.7 135.6,181.8 138.5,187.7 C141.4,193.6 145.0,199.0 148.2,203.0 C151.5,207.0 154.4,209.2 158.0,211.5 C161.6,213.8 165.4,215.2 170.0,216.6 C174.6,218.0 183.1,219.4 185.8,220.0" class="dg-acc" stroke-width="2.2"/>
+        <path d="M158.0,220.0 C159.0,219.6 161.4,220.0 164.0,217.8 C166.6,214.4 171.1,207.4 173.8,199.9 C176.4,192.5 177.8,181.9 179.8,173.2 C181.8,164.4 183.4,156.2 185.8,147.5 C188.1,138.8 190.9,127.3 194.0,120.7 C197.1,114.2 201.1,108.5 204.5,108.5 C207.9,108.5 211.0,114.2 214.2,120.7 C217.5,127.3 221.1,139.5 224.0,147.5 C226.9,155.5 228.9,161.8 231.5,168.7 C234.1,175.6 236.9,183.2 239.7,188.8 C242.6,194.4 245.1,198.3 248.8,202.2 C252.4,206.1 257.2,209.6 261.5,212.2 C265.8,214.8 270.0,216.5 274.2,217.8 C278.5,219.1 284.9,219.6 287.0,220.0" class="dg-line" stroke-width="1.8"/>
+        <path d="M282.5,220.0 C284.2,219.6 289.1,219.3 293.0,217.6 C296.9,215.9 301.5,214.1 305.8,209.7 C310.0,205.4 314.2,197.5 318.5,191.6 C322.8,185.7 327.0,180.4 331.2,174.2 C335.5,168.1 339.9,159.7 344.0,154.5 C348.1,149.4 352.6,145.7 356.0,143.5 C359.4,141.3 360.5,139.3 364.3,141.1 C368.0,143.0 374.1,149.8 378.5,154.5 C382.9,159.3 386.4,164.4 390.5,169.5 C394.6,174.6 399.0,180.4 403.2,185.3 C407.5,190.2 411.8,194.9 416.0,198.7 C420.2,202.5 424.5,205.5 428.8,208.2 C433.0,210.8 436.8,212.9 441.5,214.5 C446.2,216.1 451.0,216.7 457.2,217.6 C463.5,218.6 475.4,219.6 479.0,220.0" class="dg-line" stroke-width="1.8"/>
+
+        <text x="122" y="52" class="dg-label-sm"><tspan class="dg-acc-f">4×10¹⁰ cm⁻²</tspan></text>
+        <text x="122" y="66" class="dg-label-sm">N_i = 1.8</text>
+        <text x="222" y="104" class="dg-label-sm">1×10¹¹ cm⁻²</text>
+        <text x="222" y="118" class="dg-label-sm">N_i = 4.5</text>
+        <text x="384" y="134" class="dg-label-sm">2×10¹¹ cm⁻²</text>
+        <text x="384" y="148" class="dg-label-sm">N_i = 9.0</text>
+      </svg>
+      <figcaption>
+        Redrawn approximately from Deck 03 p. 45 (C. J. Marshall and P. W. Marshall, 1999 NSREC Short
+        Course), each curve digitized from the slide's calculated distribution. The peaks sit near 0.8,
+        2.1 and 4.2 MeV, in proportion to fluence. The lowest-fluence curve carries a long high-energy
+        tail from single inelastic reactions; as the reactions per pixel rise from 1.8 to 9, the
+        distributions broaden in absolute terms but narrow relative to their means and become symmetric.
+      </figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>Between the lowest and highest fluence of Deck 03 p. 45 the fluence rises five-fold. By roughly what factor should the width of the dark-current distribution, relative to its peak position, fall, and does the slide bear it out?</summary>
+      <div class="answer">
+        <p>
+          The mean damage energy per pixel is proportional to the number of interactions, and so to
+          fluence. For a sum of independent events whose number is Poisson-distributed, the variance is
+          also proportional to that number, so the width grows only as its square root, and the width
+          relative to the mean falls as one over the square root of the fluence: by √5 ≈ 2.2. Read from
+          the slide, the full width at half maximum divided by the peak position is about 0.47 at
+          4×10¹⁰ cm⁻² and about 0.21 at 2×10¹¹ cm⁻², a factor of about 2.2.
+        </p>
+      </div>
+    </details>
+
+    <p>
+      The shape of the distribution also separates the two cumulative effects in an imager. Total dose
+      raises the dark current of every pixel through interface traps at much the same rate, shifting and
+      broadening the whole distribution as a pedestal; displacement damage produces the high-side tail of
+      hot pixels (M08 §9).
+    </p>
+    <p>
+      Some damaged pixels do not hold a steady dark current. Their generation rate switches between two
+      or more discrete levels at random times, a <b>random telegraph signal</b>, so a dark frame taken for
+      calibration no longer predicts the next exposure. Hopkinson and Mohammadzadeh report it in all
+      proton-irradiated CCDs and active pixel sensors examined, over proton energies from at least 1.5 to
+      60 MeV, with switching times near room temperature from seconds to hours, mostly of order minutes,
+      lengthening on cooling. In a CCD the probability of such a defect is about 1.6×10⁻⁵ per incident
+      10 MeV proton, so after 10¹⁰ protons/cm² about 40% of 20 µm × 20 µm pixels show it. Goiffon adds
+      that displacement damage is more effective than ionization at producing high-amplitude, multilevel
+      switching. The defects responsible are bistable or metastable, and Hopkinson and Mohammadzadeh note
+      that they had not been identified.
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>The proton hits in the SOHO images are ionization, not displacement damage.</b> Deck 03 p. 43
+        appears among the displacement-damage slides, under the statement that protons can damage
+        sensitive CCDs, and shows coronagraph images from the LASCO instrument on the SOHO spacecraft
+        taken during the coronal mass ejection of 6 November 1997; protons from the event reach the CCD and
+        pepper the lower two images. Those specks are single-event transients. Each proton generates
+        electron–hole pairs along its track, the pixels it crosses collect that charge as though it were
+        signal, and the event appears in the frame being integrated as a bright pixel or, for an oblique
+        track, a short streak; when the charge exceeds a pixel's full-well capacity it spills along the
+        column, which is blooming. The next readout clears it. Hopkinson and Mohammadzadeh describe such
+        events as short-lived and confined to the exposure in which they arrive
+        (<a href="m06-device-physics.html">M06</a> §9, <a href="m08-tid-effects-devices-ics.html">M08</a>
+        §9, and <a href="m11-single-event-effects.html">M11</a> §§1–2 for charge deposition and
+        collection). The same protons do deposit displacement damage, but it appears as hot pixels that
+        persist from frame to frame and as a gradual loss of transfer efficiency, not as the scattered
+        specks of a single frame.
+      </p>
+    </div>
+
+    <h3>Solar cells</h3>
+    <p>
+      A solar cell collects the minority carriers that light generates within about a diffusion length
+      <em>L</em> = (<em>Dτ</em>)<sup>1/2</sup> of its junction; carriers generated deeper recombine before
+      they reach it. Displacement damage shortens <em>τ</em>, the diffusion length falls as
+      1/<em>L</em>² = 1/<em>L</em><sub>0</sub>² + Φ/(<em>DK</em><sub><em>τ</em></sub>) by (12.5), and the
+      short-circuit current, and with it the output power, falls with fluence (IEEE NSREC 2024 Short
+      Course; Deck 02 p. 24 for <em>J</em><sub>sc</sub> in GaAs cells). Solar arrays are the least
+      shielded electronics on a spacecraft, behind only a thin cover glass, so they see low-energy
+      protons that heavier shielding would stop, and energetic electrons as well: Johnston notes that the
+      cover glass is ineffective against energetic electrons, which therefore damage solar cells along
+      with protons.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 230" role="img" aria-labelledby="m12f13-t">
+        <title id="m12f13-t">Collection depth of a solar cell before and after the diffusion length is reduced by displacement damage</title>
+
+        <text x="130" y="22" class="dg-label" text-anchor="middle">before</text>
+        <text x="330" y="22" class="dg-label" text-anchor="middle">after irradiation</text>
+
+        <rect x="70" y="50" width="120" height="150" class="dg-fill"/>
+        <rect x="270" y="50" width="120" height="150" class="dg-fill"/>
+        <rect x="70" y="70" width="120" height="100" class="dg-faint" fill-opacity="0.35"/>
+        <rect x="270" y="70" width="120" height="40" class="dg-faint" fill-opacity="0.35"/>
+        <rect x="270" y="110" width="120" height="60" class="dg-acc" stroke-width="1.6" stroke-dasharray="5 3"/>
+
+        <line x1="70" y1="70" x2="190" y2="70" class="dg-rule" stroke-width="1.6"/>
+        <line x1="270" y1="70" x2="390" y2="70" class="dg-rule" stroke-width="1.6"/>
+        <text x="64" y="74" class="dg-label-sm" text-anchor="end">junction</text>
+
+        <g class="dg-line" stroke-width="1.2">
+          <line x1="100" y1="32" x2="100" y2="60" marker-end="url(#m12f13-a)"/>
+          <line x1="130" y1="32" x2="130" y2="60" marker-end="url(#m12f13-a)"/>
+          <line x1="160" y1="32" x2="160" y2="60" marker-end="url(#m12f13-a)"/>
+          <line x1="300" y1="32" x2="300" y2="60" marker-end="url(#m12f13-a)"/>
+          <line x1="330" y1="32" x2="330" y2="60" marker-end="url(#m12f13-a)"/>
+          <line x1="360" y1="32" x2="360" y2="60" marker-end="url(#m12f13-a)"/>
+        </g>
+
+        <line x1="200" y1="70" x2="200" y2="170" class="dg-rule" stroke-width="1"/>
+        <text x="206" y="124" class="dg-label-sm">L₀</text>
+        <line x1="400" y1="70" x2="400" y2="110" class="dg-rule" stroke-width="1"/>
+        <text x="406" y="94" class="dg-label-sm">L</text>
+        <text x="330" y="144" class="dg-label-sm" text-anchor="middle"><tspan class="dg-acc-f">generated here,</tspan></text>
+        <text x="330" y="158" class="dg-label-sm" text-anchor="middle"><tspan class="dg-acc-f">now recombines</tspan></text>
+        <text x="230" y="222" class="dg-label-sm" text-anchor="middle">Light enters from the top. Schematic, not to scale.</text>
+
+        <defs>
+          <marker id="m12f13-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The shaded band is the depth from which photogenerated carriers still reach the junction. It
+        shrinks with the diffusion length, as the square root of the lifetime, so the current from light
+        absorbed deeper in the cell is lost first.
+      </figcaption>
+    </figure>
+
+    <p>
+      The NIEL correlation for GaAs cells (§4) is what makes displacement damage dose a workable basis
+      for predicting their degradation. The proton spectrum reduces to one dose by (12.1), the electron
+      spectrum to one equivalent 1 MeV electron dose computed with NIEL raised to the power 1.7 (the
+      correction in the box after Figure 7), and measured characteristic curves of power against dose
+      convert each dose into a power loss (Marshall and Marshall, after Walters <em>et al.</em>, 1999).
+      The 2024 NSREC Short Course cites Messenger <em>et al.</em> (2001) for the dose method, a study that
+      compares it with the alternative of converting the environment into an equivalent fluence of 1 MeV
+      electrons. At high
+      electron fluences a second mechanism appears: carrier removal, process 4 of §3, raises the base
+      resistivity and widens the depletion layer, and Johnston, after Yamaguchi <em>et al.</em> (1999),
+      shows that in silicon cells it can cause a catastrophic failure that models based on lifetime alone
+      do not predict.
+    </p>
+    <p>
+      Other minority-carrier optoelectronics follow the same logic, with one extreme case. Most
+      light-emitting diodes and laser diodes are relatively hard, because the carrier lifetime in their
+      active regions is already very short (Marshall and Marshall). Amphoterically doped AlGaAs
+      light-emitting diodes, used in optocouplers, are the exception: Johnston reports about half the
+      light output lost after about 2×10¹⁰ protons/cm² at 50 MeV, a fluence equivalent to about
+      3 krad(Si), with the loss due entirely to displacement damage.
+    </p>
+
+    <h2>7 · Single-particle displacement damage in nanoscale devices</h2>
+    <p>
+      Every result so far has treated displacement damage as a population: many defects in a volume
+      large enough that their number, not their placement, sets the parameter. That description fails
+      when the device is no larger than one cascade. A single recoil then either forms its cluster inside
+      the sensitive region or it does not, and the damage becomes a single-particle event produced by a
+      cumulative-effect mechanism — the edge case of the classification in
+      <a href="m05-three-effects-taxonomy.html">M05</a> §6.
+    </p>
+    <p>
+      The scales come from §2. A 50 keV silicon recoil spreads its displacements over about 80 nm and
+      concentrates them in terminal clusters about 5 nm across. An imaging pixel of 13–20 µm is
+      160 to 250 times the length of the whole cascade, so one cascade changes one pixel's dark current by a
+      discrete step within a statistical distribution — which is how single-particle displacement damage
+      was first seen, in the dark current of charge-injection-device pixels each exposed, statistically,
+      to a single particle (IEEE NSREC 2024 Short Course, after P. W. Marshall <em>et al.</em>, 1989).
+      Reverse-biased diodes have since shown step changes in leakage current that coincide with the
+      charge transients of single heavy ions (Auden <em>et al.</em>, 2012). In a transistor large
+      compared with a cascade, one cluster is too small to move any terminal quantity.
+      Deck 02 p. 25 draws what scaling changed: a nanoscale transistor in an integrated circuit is
+      comparable in size to a subcascade.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 540 200" role="img" aria-labelledby="m12f12-t">
+        <title id="m12f12-t">Sizes of a terminal cluster, a cascade and an imaging pixel on a logarithmic length scale, with the range of a nanoscale transistor</title>
+
+        <line x1="121.5" y1="62" x2="227.5" y2="62" class="dg-acc" stroke-width="2.4"/>
+        <line x1="121.5" y1="56" x2="121.5" y2="68" class="dg-acc" stroke-width="2"/>
+        <line x1="227.5" y1="56" x2="227.5" y2="68" class="dg-acc" stroke-width="2"/>
+        <text x="100" y="32" class="dg-label-sm"><tspan class="dg-acc-f">nanoscale transistor: comparable</tspan></text>
+        <text x="100" y="46" class="dg-label-sm"><tspan class="dg-acc-f">to a subcascade (Deck 02 p. 25)</tspan></text>
+
+        <line x1="121.5" y1="106" x2="121.5" y2="150" class="dg-rule" stroke-width="2"/>
+        <text x="121.5" y="88" class="dg-label-sm" text-anchor="middle">terminal</text>
+        <text x="121.5" y="102" class="dg-label-sm" text-anchor="middle">cluster ~5 nm</text>
+
+        <line x1="227.5" y1="106" x2="227.5" y2="150" class="dg-rule" stroke-width="2"/>
+        <text x="235" y="88" class="dg-label-sm" text-anchor="middle">cascade of a 50 keV</text>
+        <text x="235" y="102" class="dg-label-sm" text-anchor="middle">Si recoil, ~80 nm</text>
+
+        <rect x="422" y="110" width="16.5" height="40" class="dg-fill"/>
+        <text x="430" y="88" class="dg-label-sm" text-anchor="middle">imaging pixel</text>
+        <text x="430" y="102" class="dg-label-sm" text-anchor="middle">13–20 µm</text>
+
+        <line x1="60" y1="150" x2="500" y2="150" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="1">
+          <line x1="60" y1="150" x2="60" y2="155"/><line x1="148" y1="150" x2="148" y2="155"/>
+          <line x1="236" y1="150" x2="236" y2="155"/><line x1="324" y1="150" x2="324" y2="155"/>
+          <line x1="412" y1="150" x2="412" y2="155"/><line x1="500" y1="150" x2="500" y2="155"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="64" y="168">1 nm</text><text x="148" y="168">10 nm</text><text x="236" y="168">100 nm</text>
+          <text x="324" y="168">1 µm</text><text x="412" y="168">10 µm</text><text x="494" y="168">100 µm</text>
+        </g>
+        <text x="280" y="190" class="dg-label" text-anchor="middle">length (log scale)</text>
+      </svg>
+      <figcaption>
+        A pixel is 160 to 250 cascade lengths across, so a single cascade registers only as that
+        pixel's place in the dark-current distribution of §6. A nanoscale transistor is no larger than one
+        cascade, and a single cluster in its channel or junction is a change to the whole device.
+        Cascade and cluster sizes from Deck 03 p. 37 and Marshall and Marshall (1999); pixel sizes from
+        the devices Hopkinson and Mohammadzadeh report.
+      </figcaption>
+    </figure>
+
+    <p>
+      At that size one cluster changes one device. The 2024 NSREC Short Course collects the evidence.
+      Heavy-ion displacement damage reduces the drain current of 14 nm FinFETs; weak bits in
+      heavy-ion-irradiated SRAMs built with 5 nm FinFETs correlate with displacement damage rather than
+      with total dose; and simulations of FinFETs from the 22 nm down to the 6 nm node show that a
+      damage cluster at the top of the fin can severely degrade the drain current. In memories the
+      symptom is a bit that no longer behaves. Displacement damage increases the number of stuck bits in
+      SDRAM, and in DRAM both total dose and single-particle displacement damage produce stuck bits and
+      intermittently stuck bits (Goiffon <em>et al.</em>, 2020). A DRAM cell holds its bit as charge
+      on a capacitor between refreshes, so a defect cluster that raises the generation current of the
+      storage junction drains the cell early — the generation process of §3, which makes a hot pixel in
+      an imager, acting on a storage node. Deck 02 p. 25 draws the practical conclusion: bad or stuck
+      bits are likely, and error detection and correction (EDAC) is required to avoid or recover from
+      them.
+    </p>
+    <p>
+      EDAC stores check bits with each data word and recomputes them on every read, so that an error in
+      one bit of the word is detected and corrected. A stuck bit is corrected on every read, but it
+      occupies the code's correction capacity for that word for as long as it persists, and a second
+      error in the same word — a single-event upset, for example — then exceeds what a
+      single-error-correcting code can repair. Error-correcting codes and the other circuit-level
+      defences against single particles belong to the single-event hardening module on the
+      <a href="index.html#roadmap">course roadmap</a>.
+    </p>
+    <p>
+      Deck 02 p. 25 also warns that single-particle displacement damage is often difficult to
+      distinguish from micro-dose and from single-event effects. All three leave one cell permanently or
+      persistently changed after one particle, so the symptom at the memory's terminals is the same.
+      <b>Micro-dose</b> is the ionizing counterpart: an ion crossing the gate oxide of one small
+      transistor deposits enough dose in that oxide alone to shift that transistor, a total-dose effect
+      confined to one device. The stuck bits heavy ions produce in memories have long been attributed to
+      it (E. Normand's chapter in the course textbook; IEEE NSREC 2024 Short Course, Part III). A
+      destructive single event, such as the gate rupture of <a href="m11-single-event-effects.html">M11</a>
+      §10, leaves a third kind of trace, a damaged structure. The three differ in where the trace sits,
+      and the evidence that separates them is the evidence that identifies each kind of trace.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th></th><th>Single-particle displacement damage</th><th>Micro-dose</th><th>Destructive single event</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Where the change sits</td><td>A defect cluster in the silicon: channel, junction depletion region</td><td>Charge trapped in the gate or isolation oxide of one transistor</td><td>A ruptured dielectric or a damaged junction</td></tr>
+          <tr><td>What changes electrically</td><td>Generation leakage; reduced drive current</td><td>Threshold shift and leakage in that transistor</td><td>A permanent leakage path or short</td></tr>
+          <tr><td>How it recovers</td><td>As bulk defects anneal (§5)</td><td>As oxide charge anneals (<a href="m09-oxide-charge-kinetics.html">M09</a> §5)</td><td>It does not</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Where this leaves us</h2>
+    <p>
+      Displacement damage has now been followed from a single collision to a failed device. Kinematics
+      fix the largest recoil a particle can make, and the cross-section fixes how often it makes each
+      smaller one: charged particles make mostly low-energy recoils by Coulomb scattering, neutrons and
+      energetic protons make energetic recoils by nuclear scattering and nuclear reactions, and electrons
+      make only point defects. The recoil energy decides whether the damage is an isolated Frenkel pair,
+      a cluster or a tree of subcascades, and about a tenth of the pairs survive to form stable complexes
+      whose levels in the gap generate, recombine, trap, compensate and assist tunnelling.
+    </p>
+    <p>
+      Those processes map onto device parameters: recombination onto lifetime, and through it onto
+      bipolar gain by the reciprocal-gain law and onto solar-cell current by the diffusion length;
+      generation onto leakage and imager dark current; trapping onto CCD transfer; compensation onto
+      carrier removal. NIEL scaling compresses particle and energy into one number, and it works because,
+      to first order, the surviving fraction and the defect inventory do not depend on the recoil
+      spectrum. It fails where they do: electrons in p-type silicon, low-energy protons in n-type
+      silicon, and GaAs at high proton energy. Electron damage in GaAs solar cells tracks NIEL only
+      after a fitted exponent. The damage anneals in silicon and hardly at all in
+      unbiased GaAs, so every damage constant carries a time and a temperature. When a device shrinks to
+      the size of one cascade, the population picture ends and a single recoil becomes a stuck bit that
+      error correction must absorb.
+    </p>
+    <p>
+      The next built module, <a href="m15-hardness-assurance.html">M15</a>, turns to total-dose
+      hardness assurance: how parts are sampled and tested, and why the MOS test method fails for linear
+      bipolar parts. The circuit-hardening modules on the course roadmap take up error correction and
+      the other defences against single particles, and <a href="a1-key-literature.html">A1</a> §5 places
+      the displacement-damage literature cited here in the history of the field.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Quick reference</p>
+      <ul>
+        <li><b>Kinematics (12.3):</b> <em>T</em><sub>max</sub> = 4<em>mM</em>/(<em>m</em>+<em>M</em>)²·<em>E</em> = <b>0.133<em>E</em></b> for protons and neutrons in Si: 1 MeV n → 133 keV, 10 MeV p → 1.33 MeV. Electrons, relativistic: <em>T</em><sub>max</sub> = 2<em>E</em>(<em>E</em>+2<em>m</em><sub>e</sub><em>c</em>²)/<em>Mc</em>², <em>Mc</em>²(Si) = 26,160 MeV: 1 MeV e⁻ → <b>155 eV</b>; no displacement below <b>~0.22 MeV</b>. Electrons and cobalt-60 gammas make point defects only.</li>
+        <li><b>Recoil spectra:</b> Coulomb (Rutherford) d<em>σ</em>/d<em>T</em> ∝ 1/<em>T</em>², mean ≈ <em>T</em><sub>d</sub> ln(<em>T</em><sub>max</sub>/<em>T</em><sub>d</sub>) ≈ <b>200–300 eV</b>, equal energy per decade of <em>T</em>. Neutron (hard sphere): <b>flat</b> to <em>T</em><sub>max</sub>, energy at the top. Si: Coulomb dominates below <b>~10 MeV</b> protons (higher in GaAs); nuclear reactions dominate above <b>~20 MeV</b>. 63 MeV p: <em>σ</em><sub>el</sub> = 318 b, <em>σ</em><sub>inel</sub> = 0.52 b, but each inelastic event carries ~10³× the damage energy.</li>
+        <li><b>NIEL (12.2)</b> = (<em>N</em><sub>A</sub>/<em>A</em>)∫<em>T</em>·<em>L</em>(<em>T</em>)·(d<em>σ</em>/d<em>T</em>)d<em>T</em> with a <b>per-atom</b> cross-section; Deck 03 p. 40's 1/<em>ρ</em> needs a macroscopic one. <b>DDD (12.1)</b> = Φ·NIEL, MeV/g. 100 MeV·mb = 2.144 keV·cm²/g (Si).</li>
+        <li><b>Regimes:</b> free defects below <em>E</em><sub>l</sub> ≈ <b>1–2 keV</b>; one cascade to <em>E</em><sub>u</sub> ≈ <b>12–20 keV</b> (Deck 03: 10–20); subcascades above. Proton markers: <b>6–10 MeV</b> and <b>&gt;20 MeV</b>. 50 keV Si recoil → cascade <b>~80 nm</b>, 2–3 terminal clusters <b>~5 nm</b>. Damage-energy ceiling of one recoil: ~300 keV (Si), ~2 MeV (GaAs).</li>
+        <li><b>NRT (12.4):</b> <em>N</em><sub>d</sub> = <em>κE</em><sub>d</sub>/(2<em>E</em><sub>th</sub>), <em>κ</em> = 0.8 (universal), <em>E</em><sub>th</sub> = 21 eV. <b>~90% recombine, ~10% stable.</b> Complexes: divacancy V–V; <b>E centre</b> V–P, <em>E</em><sub>c</sub> − 0.44 eV; <b>A centre</b> V–O, <em>E</em><sub>c</sub> − 0.17 eV; stable to ~300, ~150, ~350 °C.</li>
+        <li><b>Five processes:</b> generation → leakage, dark current · <b>recombination → lifetime, gain, solar-cell current</b> · trapping → CTI · compensation → carrier removal · tunnelling → junction leakage. Lifetime fails before carrier concentration; mobility only at very high damage. Most sensitive: bipolar, solar cells, photodetectors, CCD/CID, optocouplers; MOS logic least. Life-limiting in orbit mainly for imagers and solar cells; a discrete bipolar part in orbit is usually degraded more by TID.</li>
+        <li><b>Lifetime (12.5):</b> 1/<em>τ</em> = 1/<em>τ</em><sub>0</sub> + Φ/<em>K</em><sub><em>τ</em></sub>; equivalently 1/<em>L</em>² = 1/<em>L</em><sub>0</sub>² + Φ/(<em>DK</em><sub><em>τ</em></sub>).</li>
+        <li><b>Messenger–Spratt (12.6):</b> 1/<em>β</em> = 1/<em>β</em><sub>0</sub> + <em>K</em><sub>1</sub>Φ<sub><em>n</em></sub>/(2π<em>f</em><sub>t</sub>). <b><em>K</em><sub>1</sub> = 1/<em>K</em></b> of the tabulated denominator form (n·s/cm²). The reciprocal is linear in fluence; high <em>f</em><sub>t</sub> (narrow base) degrades less. <b>TID acts at the surface</b> (interface traps at the E–B perimeter, <em>n</em> ≈ 2); <b>DD acts in the bulk</b> (base lifetime). Protons do both, not additively.</li>
+        <li><b>NIEL scaling (12.7):</b> Δ<em>P</em> = <em>k</em><sub>damage</sub>·DDD. Holds: protons in Si, GaAs, InP; transistors for p, d, α; GaAs solar-cell <em>J</em><sub>sc</sub> for e⁻ and p close to one line on a log-log plot (course version: equal DDD → equal power loss). <b>But GaAs-cell electrons fit NIEL<sup>1.7</sup></b> (Walters 1999), so electron DDD = Φ·NIEL<sup>1.7</sup>; log-log plots hide ×2–3. Fails: <b>e⁻ in p-type Si</b> (∝ NIEL², ~10× below n-type at 1 MeV); <b>low-energy protons in n-type Si</b> (upper line; recoils &lt;1 keV recombine less); <b>GaAs above ~40 MeV</b> (below NIEL). Damage-function choice moves predicted DDD by ×2–3. Test sensitive devices with protons.</li>
+        <li><b>Annealing:</b> Frenkel pairs &lt;1 ms; stable complexes ~seconds; <b>short-term anneal minutes to ~1 h</b>; long-term slow, to ~1 yr. Si anneals at room temperature; unbiased GaAs needs <b>≥200 °C</b>; forward bias anneals Si, GaAs, GaN. Quote every damage constant with its time and temperature.</li>
+        <li><b>CCD transfer:</b> DD lowers CTE, raises mean dark current, makes hot pixels, adds output-amplifier noise; <b>CTI is the effect most directly tied to DD</b> (TID gives flat-band shift and surface dark current). E centre in the n-type buried channel. <em>τ</em><sub>c</sub> = 1/(<em>σv</em><sub>th</sub><em>n</em><sub>s</sub>), <em>τ</em><sub>e</sub> ∝ exp(<em>E</em><sub>t</sub>/<em>kT</em>). <b>Trailing and streaking</b>; small signals worst. CCD02 at 7.2×10⁹ 10 MeV p/cm² (~4 krad(Si)): background 150 e⁻ → CTI ~5×10⁻⁴; 16,000 e⁻ → ~7×10⁻⁵. CTE ≥ 0.9999 for &lt;10% loss over 1000 transfers. Cooling (~−80 °C), fat zero (raised background charge) or charge injection, notch, p-channel; APS has no CTI.</li>
+        <li><b>Dark current (12.8):</b> Δ<em>Ī</em> = <em>K</em><sub>dark</sub>·DDD·<em>V</em><sub>dep</sub>, <em>K</em><sub>dark</sub> = <b>1.9×10⁵ carriers·cm⁻³·s⁻¹ per MeV/g</b> (300 K, 1 week). Hot pixels: nuclear reactions and field enhancement (~10⁵ V/cm, <em>E</em><sub>a</sub> down to ~0.4 eV). <b>Low fluence: exponential tail; more interactions: Gaussian</b> (Deck 03 p. 45, <em>N</em><sub>i</sub> 1.8 → 9.0); relative width ∝ 1/√fluence. TID = pedestal, DD = tail. RTS: ~1.6×10⁻⁵ per 10 MeV proton incident on a pixel.</li>
+        <li><b>SOHO/LASCO specks (Deck 03 p. 43)</b> are ionization transients — one frame, single pixels or streaks, blooming along the column. Displacement damage shows as persistent hot pixels and CTI.</li>
+        <li><b>Solar cells:</b> <em>I</em><sub>sc</sub> falls with <em>L</em> = (<em>Dτ</em>)<sup>1/2</sup>; thin cover glass admits electrons and low-energy protons; GaAs degradation predicted in DDD, the electron dose with NIEL<sup>1.7</sup>; carrier removal can fail Si cells at high electron fluence. Amphoteric AlGaAs LEDs: ~50% light loss at 2×10¹⁰ p/cm² (50 MeV).</li>
+        <li><b>Nanoscale:</b> device ≈ subcascade, so one cluster = one device: drive loss (14 nm FinFET), weak and stuck bits (5 nm FinFET SRAM, SDRAM, DRAM). <b>Requires EDAC</b>; a stuck bit uses up a word's correction. Confusable with <b>micro-dose</b> (oxide charge in one transistor) and destructive SEE.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Orientation</td><td><a href="m04-quantifying-energy-deposition.html">M04</a> §6 and <a href="m05-three-effects-taxonomy.html">M05</a> §3 for the material assumed; Deck 03 p. 34 for the 90/10 split and DDD</td></tr>
+      <tr><td>§1</td><td>Deck 03 pp. 34–36 for DDD, the collision-kinematics framing, the falling and flat recoil spectra, the &lt;10 MeV Coulomb and &gt;20 MeV inelastic divisions and "higher in GaAs"; Deck 03 p. 40 for the slide's NIEL form, whose 1/<em>ρ</em> prefactor is flagged. The <em>N</em><sub>A</sub>/<em>A</em> form with the Lindhard partition follows the IEEE NSREC 2024 Short Course, Part I (E. Auden), eq. 5, and C. J. Marshall and P. W. Marshall, "Proton effects and test issues for satellite designers, Part B: displacement effects," IEEE NSREC 1999 Short Course, §2.3, eqs. 1–2. <em>T</em><sub>max</sub> = 0.133<em>E</em>, the 1/<em>T</em>² Coulomb spectrum, the ~200 eV average recoil, the hard-sphere flat neutron spectrum and the 63 MeV cross-sections (318 and 0.52 b) are from G. R. Hopkinson and A. Mohammadzadeh, "Radiation effects in charge-coupled device (CCD) imagers and CMOS active pixel sensors," in R. D. Schrimpf and D. M. Fleetwood (eds.), <em>Radiation Effects and Soft Errors in Integrated Circuits and Electronic Devices</em> (World Scientific, 2004), §3. Supplied by this page from standard two-body kinematics: the relativistic electron form, 155 eV, the 0.22 MeV electron threshold (the sister course's EEL5385 M11 §1 gives ~220 keV), the mean-recoil expression and the ~5% accuracy of the non-relativistic form at 100 MeV. The <em>Z</em>²/<em>M</em> and Coulomb-barrier reading of the GaAs remark is this page's; the scaling follows from the Rutherford cross-section <em>σ</em>(<em>E</em>, <em>T</em>) = π<em>Z</em><sub>1</sub>²<em>Z</em><sub>2</sub>²<em>q</em>⁴(<em>M</em><sub>1</sub>/<em>M</em><sub>2</sub>)(1/<em>E</em>)(1/<em>T</em>²) of the IEEE NSREC 2024 Short Course, Part IV-B (C. Virmontois), eq. 3, and the barrier is standard nuclear physics</td></tr>
+      <tr><td>§2</td><td>Deck 03 pp. 36–37 and Deck 02 pp. 23, 25 (after G. P. Summers, IEEE NSREC 1992 Short Course; C. Poivey, ESA–CERN workshop 2017; S. Wood <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>28</b>, 4107 (1981)) for the regimes, the proton markers and the 50 keV cascade. Marshall and Marshall (1999) §2.1 for terminal clusters (after G. P. Mueller, N. D. Wilsey and M. Rosen, <em>ibid.</em> <b>29</b>, 1493 (1982); Marshall and Marshall's reference list prints 1293), the 4 nm TEM size, vacancy mobility, the divacancy, E and A centres, the 300 keV and 2 MeV damage-energy ceilings, and the 60 MeV electron comparison (after C. J. Dale, P. W. Marshall, E. A. Burke, G. P. Summers and E. A. Wolicki, <em>ibid.</em> <b>35</b>, 1208 (1988)); Hopkinson and Mohammadzadeh for Wood's similarity of cascade damage. NRT from Deck 03 p. 40 (M. J. Norgett, M. T. Robinson and I. M. Torrens, <em>Nucl. Eng. Des.</em> <b>33</b>, 50 (1975)); the 5,700-displacement figure is this page's arithmetic</td></tr>
+      <tr><td>§3</td><td>Marshall and Marshall (1999) §2.2 for the five processes (after J. E. Gover and J. R. Srour, Sandia report SAND-85-0776 (1985)), the ordering of lifetime before carrier concentration, and the device list; Hopkinson and Mohammadzadeh §3.1 for the 0.44 eV and 0.17 eV levels. IEEE NSREC 2024 Short Course, Part I, §5.2 for <em>τ</em> = 1/(<em>σv</em><sub>th</sub><em>N</em><sub>t</sub>) and §5.3 for the lifetime law — its eq. 10 prints the two lifetimes' subscripts interchanged; (12.5) is the standard form — with Marshall and Marshall eq. 3 for the diffusion-length form. Messenger–Spratt from Deck 04 p. 35 = Deck 05 p. 6 (after G. C. Messenger and M. S. Ash, <em>The Effects of Radiation on Electronic Systems</em>, 1986; G. C. Messenger and J. P. Spratt, <em>Proc. IRE</em> <b>46</b>, 1038 (1958)) and R. D. Schrimpf's chapter in the course textbook, eq. 9 and §§3.2–3.3; the charge-control derivation is this page's. Validity limits from the 2024 Short Course §5.3 (after H. J. Barnaby <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>64</b>, 149 (2017)). The surface-against-bulk contrast follows <a href="m08-tid-effects-devices-ics.html">M08</a> §9 and Schrimpf's chapter; the cobalt-60 pre-irradiation protocol, the on-orbit dominance of total dose in discrete bipolar transistors and the continuing displacement-damage concern for analog bipolar ICs are Marshall and Marshall §3.3.1. Non-additivity from R. L. Pease's chapter in the course textbook and Schrimpf's chapter (after B. G. Rax, A. H. Johnston and T. Miyahira, <em>ibid.</em> <b>46</b>, 1660 (1999)); the LM137 result from A. H. Johnston, "Radiation damage of electronic and optoelectronic devices in space," 4th International Workshop on Radiation Effects on Semiconductor Devices for Space Application, Tsukuba (2000)</td></tr>
+      <tr><td>§4</td><td>Deck 02 p. 24 (G. P. Summers, E. A. Burke, P. Shapiro, S. R. Messenger and R. J. Walters, <em>IEEE Trans. Nucl. Sci.</em> <b>40</b>, 1372 (1993)); the quadratic p-type dependence and the factor of ~10 at 1 MeV are from that paper's abstract, and the line positions in Figure 7 were measured on a 400 dpi rendering of the slide. Deck 03 p. 39 (after J. R. Srour, C. J. Marshall and P. W. Marshall, <em>ibid.</em> <b>50</b>, 653 (2003)); its left panel is from C. J. Dale <em>et al.</em>, <em>ibid.</em> <b>36</b>, 1872 (1989), its right panel's data include A. L. Barry <em>et al.</em>, <em>ibid.</em> <b>42</b>, 2104 (1995). Deck 03 p. 41 for Δ<em>P</em> ∝ Φ·NIEL; Hopkinson and Mohammadzadeh for the damage-constant form, the Huhtinen result and the MeV·mb conversion. Marshall and Marshall §§2.3–2.3.2 for the two assumptions, the transistor correlation (after G. P. Summers <em>et al.</em>, <em>ibid.</em> <b>34</b>, 1134 (1987)), Dale 1988's &lt;1 keV correlation, the &lt;20 MeV range of the GaAs solar-cell data, the later reanalysis, the factor of 2–3 and the CCD factor of two, and the advice to test with protons. The 2024 Short Course §4.5 and Fig. 10 for equal power loss per DDD in GaAs cells and the separate 1 MeV electron equivalent dose axis (after S. R. Messenger <em>et al.</em>, <em>Prog. Photovolt.</em> <b>9</b>, 103 (2001)). Marshall and Marshall §3.3.6, p. IV-98 and Figure 28, for the log-log caveat and the separate proton and NIEL<sup>1.7</sup> electron fits (after R. J. Walters, M. A. Xapsos, G. P. Summers and S. R. Messenger, 1999 GOMAC Proc., 434); the slope near 1.1 is measured on the Figure 7 digitization. The doping-type reading of the electron exception is this page's inference</td></tr>
+      <tr><td>§5</td><td>Deck 03 p. 38 (after Srour, Marshall and Marshall 2003) for short- and long-term annealing and its mechanism. Marshall and Marshall (1999) §2.1 for the millisecond and seconds stages, the "about a second" statement and the stability temperatures; §2.3.1 for electron-produced E centres; §3.2 for passive exposure and bias independence; §3.3.4 for forward-bias annealing in photonic devices. Hopkinson and Mohammadzadeh §3.3 for the &gt;100 °C CTI anneal. The 2024 Short Course §5.1 for room-temperature annealing in Si, the ≥200 °C requirement in GaAs (after G. M. Swift <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>50</b>, 1991 (2003)) and forward-bias annealing in Si, GaAs and GaN; Johnston (2000) for GaAs devices that anneal only under current. The contrast between pulsed and orbital clocks is this page's inference from those timescales</td></tr>
+      <tr><td>§6</td><td>Deck 03 pp. 42–45, all after C. J. Marshall and P. W. Marshall, IEEE NSREC 1999 Short Course — the deck prints the author as "S. J. Marshall" — with <a href="m06-device-physics.html">M06</a> §9 for CCD structure and (6.7). Hopkinson and Mohammadzadeh §§3–3.3 for the E centre as the dominant trap at moderately high temperatures, <em>τ</em><sub>c</sub> and <em>τ</em><sub>e</sub>, the 10¹⁰ cm⁻² onset, the fat zero and charge injection, the APS and p-channel alternatives, dark-current spikes, field enhancement and activation energies, random telegraph statistics, and the Srour–Lo universal damage factor. Marshall and Marshall §2.3.3 for the 40–100 MeV transported spectrum behind the heavy shielding of imagers; §3.3.2 for the four displacement-damage effects in CCDs, the CTE budget, the linear-CCD immunity, cooling, the notch, tantalum shielding, the TID-against-CTE comparison, Figure 19 (= Deck 03 p. 45, after Marshall <em>et al.</em> 1990 and Dale <em>et al.</em> 1989) and the unhardenable nonuniformity. V. Goiffon, "Hardening techniques for image sensors," IEEE NSREC 2021 Short Course, Part III, §3.1, for the per-µm³ damage factor, the Poisson–exponential model and multilevel RTS. The dark-current histogram figure of §6 redraws Deck 03 p. 45 approximately. Deck 03 p. 43's classification is flagged; the transient reading follows <a href="m08-tid-effects-devices-ics.html">M08</a> §9 and Hopkinson and Mohammadzadeh §1. Solar cells from the 2024 Short Course §6.1, Marshall and Marshall eq. 3, §2.3.2 and §3.3.6 (the NIEL<sup>1.7</sup> electron dose, after Walters <em>et al.</em> 1999), Deck 02 p. 24, and Johnston (2000) for cover glass, carrier removal (after M. Yamaguchi <em>et al.</em>, <em>IEEE Trans. Electron Devices</em> <b>46</b>, 2133 (1999)) and amphoterically doped LEDs</td></tr>
+      <tr><td>§7</td><td>Deck 02 p. 25 (image after Wood <em>et al.</em> 1981; NIEL scaling after Summers <em>et al.</em> 1993) for the subcascade-sized transistor, stuck bits, EDAC and the confusion with micro-dose and SEE; Deck 03 p. 37 and Marshall and Marshall for the cascade and cluster sizes. The 2024 Short Course, Part I, §§6.2, 6.3 and 7.1 for single-particle evidence (after P. W. Marshall <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>36</b>, 1831 (1989); E. C. Auden <em>et al.</em>, <em>ibid.</em> <b>59</b>, 3054 (2012); M. G. Esposito <em>et al.</em>, <em>ibid.</em> <b>68</b>, 724 (2021); L. D. Edmonds and L. Z. Scheick, <em>ibid.</em> <b>55</b>, 3265 (2008)) and Part III for stuck bits in SRAM and DRAM (after R. Koga <em>et al.</em>, <em>ibid.</em> <b>38</b>, 1507 (1991); V. Goiffon <em>et al.</em>, <em>ibid.</em> <b>67</b>, 234 (2020)). E. Normand's chapter in the course textbook for heavy-ion stuck bits as localized total dose. The operation of EDAC is standard coding practice; the storage-junction reading of DRAM stuck bits and the recovery row of the table are this page's inference</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m11-single-event-effects.html"><span>Previous</span>M11 · Single-Event Effects</a>
+      <a class="next" href="m15-hardness-assurance.html"><span>Next</span>M15 · Total-Dose Hardness Assurance</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

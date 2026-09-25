@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M03 · The Threshold Voltage Equation — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M03 · The Threshold Voltage Equation</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 03</p>
+    <h1>The Threshold Voltage Equation</h1>
+    <p class="lede">
+      The four terms that set the gate voltage at which a MOSFET turns on: where each
+      one comes from physically, what controls it in processing, and how the four
+      combine into a number.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m01-mosfet-and-how-one-is-made.html">M01</a>, <a href="m02-deep-submicron-roadmap.html">M02</a></span>
+      <span><b>Read time</b> ~50 min</span>
+      <span><b>Sources</b> Class notes pp. 2, 5, 10–11; Lectures 2, 3, 4</span>
+    </div>
+
+    <p>
+      The threshold voltage is the gate voltage at which the silicon surface beneath the
+      gate oxide reaches strong inversion and a conducting channel connects source to
+      drain. Everything a MOSFET does electrically is referred to it: the drain current
+      depends on <em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>, the supply voltage must
+      exceed it with margin, and the off-state leakage is set by how far below it the
+      gate sits when the device is meant to be off.
+    </p>
+    <p>
+      It is also the point where device physics and process engineering meet. The
+      threshold voltage is not a design parameter that can be specified directly; it is
+      the sum of four physically distinct contributions, each established by a different
+      step in the fabrication sequence. Three of the nine chapters of this course exist because of one term or another in
+      the equation below. Chapters 3 and 4 are both about the oxide capacitance
+      <em>C</em><sub>ox</sub>, and Chapter 3 is additionally where the interface charge
+      <em>Q</em><sub>i</sub> is accounted for — the low interface charge a thermally grown
+      oxide can reach is the reason the silicon–silicon dioxide system displaced every
+      competitor. Chapter 5 is largely about the depletion charge <em>Q</em><sub>d</sub>.
+    </p>
+    <p>
+      This module takes the equation apart term by term, establishes the physics behind
+      each, and then assembles a complete numerical answer. The last two sections deal
+      with the two levers process engineering has over the result: the choice of gate
+      material, and the threshold-adjust implant.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>T</sub> = <em>φ</em><sub>MS</sub> −
+          <span class="frac"><span class="num"><em>Q</em><sub>i</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> −
+          <span class="frac"><span class="num"><em>Q</em><sub>d</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> +
+          2<em>φ</em><sub>F</sub></div>
+        <div class="eq-num">(3.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>T</sub> threshold voltage (V) ·
+        <em>φ</em><sub>MS</sub> gate-to-semiconductor work function difference (V) ·
+        <em>Q</em><sub>i</sub> interface charge per unit area (C/cm²), a <b>charge</b>,
+        not a number density ·
+        <em>Q</em><sub>d</sub> depletion charge per unit area (C/cm²), signed ·
+        <em>C</em><sub>ox</sub> oxide capacitance <b>per unit area</b> (F/cm²) ·
+        <em>φ</em><sub>F</sub> Fermi potential of the body (V), signed.
+        Every quantity in this course is expressed in centimetre units:
+        <em>ε</em><sub>0</sub> = 8.85×10⁻¹⁴ F/cm, not 8.85×10⁻¹² F/m.
+      </div>
+    </div>
+
+    <p>
+      The first two terms dominate. The third and fourth always carry the same sign as
+      each other, so they add rather than cancelling — together they come to about a volt for
+      an n-channel device, and they partially offset the first two, which are each of order a
+      volt or more and of the opposite sign. Every term is reachable by processing, but not
+      equally: the oxide thickness moves both charge terms at once, the gate material moves
+      the first, and the channel doping moves the last two. The sections follow the order of
+      the equation.
+    </p>
+
+    <h2>1 · The work function difference, <em>φ</em><sub>MS</sub></h2>
+
+    <p>
+      A gate voltage of zero does not mean a flat band structure. Two dissimilar
+      materials in contact equalise their Fermi levels, and if their work functions
+      differ, a built-in potential appears across the structure. Some of the applied gate
+      voltage is consumed cancelling that built-in potential before any of it acts on the
+      channel. The first term of equation (3.1) is exactly that consumed voltage.
+    </p>
+
+    <h3>1.1 The work function</h3>
+
+    <p>
+      The <b>work function</b> of a material is the energy required to remove an electron
+      from it to a point just outside its surface with zero kinetic energy. That reference
+      point is the <b>vacuum level</b>. In a metal, electrons fill the available states up
+      to the Fermi level, so the work function is measured from the Fermi level to the
+      vacuum level.
+    </p>
+    <p>
+      The concept comes from the photoelectric effect, which is also how work functions
+      are measured. Light of frequency <em>ν</em> incident on a metal surface ejects
+      electrons only if the photon energy <em>hν</em> exceeds the work function; below
+      that threshold, no electrons are emitted regardless of how intense the light is.
+      Einstein's explanation, that light delivers its energy in quanta of <em>hν</em>
+      rather than continuously, is what makes the threshold behaviour intelligible. For
+      aluminium the work function is 4.1 eV, which corresponds to a photon in the
+      ultraviolet.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em> [eV] = <span class="frac"><span class="num">1.24</span><span class="den"><em>λ</em> [µm]</span></span></div>
+        <div class="eq-num">(3.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em> photon energy (eV) · <em>λ</em> free-space wavelength (µm).
+        The constant is <em>hc</em>/<em>q</em> expressed so that energy in electronvolts
+        pairs with wavelength in micrometres; its exact value is 1.2398. Use it in both
+        directions — to find the photon energy a given wavelength carries, and to find
+        the longest wavelength a material of given band gap can absorb.
+      </div>
+    </div>
+
+    <p>
+      Equation (3.2) is used constantly in this course, and not only for work functions.
+      Silicon has a band gap of 1.12 eV, so photons of wavelength longer than
+      1.24/1.12 = 1.107 µm cannot excite an electron across the gap and silicon is
+      transparent to them; at shorter wavelengths it absorbs. Gallium nitride, with a band
+      gap near 3.4 eV, begins absorbing only below 1.24/3.4 = 0.365 µm, in the
+      ultraviolet. The same relation sets the exposure wavelengths of lithography in
+      M11 and
+      M12.
+    </p>
+
+    <h3>1.2 Why silicon has no single work function</h3>
+
+    <p>
+      A metal's work function is a constant of the material. A semiconductor's is not,
+      because the Fermi level in a semiconductor moves with doping. In n-type silicon the
+      Fermi level lies close to the conduction band edge; in p-type silicon it lies close
+      to the valence band edge. The distance from the Fermi level up to the vacuum level
+      therefore differs between the two, and differs again with the doping concentration
+      within each type.
+    </p>
+    <p>
+      Because the work function is not fixed, a different quantity is used as the
+      reference for silicon: the <b>electron affinity</b>, the energy separating the
+      conduction band edge from the vacuum level. Unlike the work function, it is a property of the material alone at the doping levels
+      used in a body region, because the conduction band edge does not move with doping there.
+      For silicon the electron affinity is 4.05 eV. Above roughly 10¹⁸ cm⁻³ the statement stops
+      being exact: heavy doping narrows the band gap by tens of millielectronvolts, and by about
+      100 meV at 10²⁰ cm⁻³, which is the regime a degenerately doped polysilicon gate occupies.
+      The 4.05 and 5.17 eV limits below are the non-degenerate end points.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 400 222" role="img" aria-labelledby="m3f1-t">
+        <title id="m3f1-t">Band diagram showing the vacuum level, electron affinity, and the work function of heavily doped n-type and p-type silicon measured from their different Fermi levels, with the vertical scale broken between the vacuum level and the conduction band edge</title>
+        <line x1="24" y1="30" x2="300" y2="30" class="dg-rule" stroke-width="1.4"/>
+        <text x="306" y="34" class="dg-label">vacuum level</text>
+        <line x1="24" y1="96" x2="300" y2="96" class="dg-line" stroke-width="1.8"/>
+        <line x1="24" y1="206" x2="300" y2="206" class="dg-line" stroke-width="1.8"/>
+        <line x1="24" y1="151" x2="300" y2="151" class="dg-guide" stroke-width="1" stroke-dasharray="5 4"/>
+        <text x="306" y="100" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="306" y="155" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+        <text x="306" y="210" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <!-- electron affinity: fixed, vacuum level to E_c; scale broken at y 69-79 -->
+        <g class="dg-rule" stroke-width="1.4">
+          <line x1="44" y1="30" x2="44" y2="69"/>
+          <line x1="44" y1="79" x2="44" y2="96"/>
+          <line x1="38" y1="30" x2="50" y2="30"/>
+          <line x1="38" y1="96" x2="50" y2="96"/>
+        </g>
+        <text x="52" y="52" class="dg-label">χ = 4.05 eV</text>
+        <text x="52" y="68" class="dg-label">fixed</text>
+        <!-- the two Fermi levels -->
+        <line x1="128" y1="106" x2="196" y2="106" class="dg-line" stroke-width="1.6" stroke-dasharray="6 3"/>
+        <text x="128" y="126" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan> (n⁺)</text>
+        <line x1="214" y1="196" x2="282" y2="196" class="dg-line" stroke-width="1.6" stroke-dasharray="6 3"/>
+        <text x="208" y="200" class="dg-label" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan> (p⁺)</text>
+        <!-- the point: the work function is measured from E_F, so it moves -->
+        <g class="dg-acc" stroke-width="1.8">
+          <line x1="162" y1="30" x2="162" y2="69"/>
+          <line x1="162" y1="79" x2="162" y2="106"/>
+          <line x1="156" y1="106" x2="168" y2="106"/>
+          <line x1="248" y1="30" x2="248" y2="69"/>
+          <line x1="248" y1="79" x2="248" y2="196"/>
+          <line x1="242" y1="196" x2="254" y2="196"/>
+        </g>
+        <!-- scale-break marks across all three bars -->
+        <g class="dg-rule" stroke-width="1.3">
+          <line x1="37" y1="71" x2="51" y2="66"/><line x1="37" y1="82" x2="51" y2="77"/>
+          <line x1="155" y1="71" x2="169" y2="66"/><line x1="155" y1="82" x2="169" y2="77"/>
+          <line x1="241" y1="71" x2="255" y2="66"/><line x1="241" y1="82" x2="255" y2="77"/>
+        </g>
+        <text x="168" y="54" class="dg-label">φ<tspan baseline-shift="sub" style="font-size:75%">S</tspan> → 4.05</text>
+        <text x="254" y="54" class="dg-label">φ<tspan baseline-shift="sub" style="font-size:75%">S</tspan> → 5.17</text>
+      </svg>
+      <figcaption>
+        The work function is measured from the Fermi level to the vacuum level, and the
+        Fermi level moves with doping. The limits are 4.05 eV, when the Fermi level
+        reaches the conduction band edge in heavily doped n-type silicon, and
+        4.05 + 1.12 = 5.17 eV, when it reaches the valence band edge in heavily doped p-type
+        silicon. The vertical scale is broken between the vacuum level and
+        <em>E</em><sub>c</sub>, at the paired marks: drawn to the scale of the band gap,
+        <em>χ</em> would be 3.6 times the gap's height, so the two accented bars are
+        not in the 4.05 : 5.17 ratio of the energies they label.
+      </figcaption>
+    </figure>
+
+    <p>
+      The two limits in the figure bound the whole range. When silicon is doped n-type so
+      heavily that the Fermi level reaches the conduction band edge, its work function
+      equals the electron affinity, 4.05 eV. When it is doped p-type so heavily that the
+      Fermi level reaches the valence band edge, its work function is the electron
+      affinity plus the band gap, 4.05 + 1.12 = 5.17 eV. Every practical doping puts the
+      work function somewhere between those two values.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>φ</em><sub>MS</sub> = <em>φ</em><sub>M</sub> − <em>φ</em><sub>S</sub></div>
+        <div class="eq-num">(3.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>φ</em><sub>M</sub> work function of the gate material (eV, used as V) ·
+        <em>φ</em><sub>S</sub> work function of the silicon body (eV, used as V).
+        Energies in electronvolts are used directly as potentials in volts, because
+        dividing an energy in eV by the electronic charge gives the same number in volts.
+        For a p-type body, <em>φ</em><sub>S</sub> = <em>χ</em> +
+        <em>E</em><sub>g</sub>/2<em>q</em> + <em>φ</em><sub>F</sub> with <em>χ</em> = 4.05 V
+        and <em>E</em><sub>g</sub>/2<em>q</em> = 0.56 V; for an n-type body the last term
+        is subtracted. In this course <em>φ</em><sub>MS</sub> is read from a published
+        graph of work function difference against doping rather than computed.
+      </div>
+    </div>
+
+    <div class="box defn">
+      <p class="box-title">Reading <em>φ</em><sub>MS</sub> from a graph</p>
+      <p>
+        The course reads this term off a plot of <em>φ</em><sub>MS</sub> against
+        substrate doping, with separate curves for aluminium, n⁺ polysilicon and p⁺
+        polysilicon gates. For an aluminium gate on p-type silicon at
+        <em>N</em><sub>A</sub> = 10¹⁵ cm⁻³ the graph gives approximately −0.9 V, and that
+        is the value used in the worked example below.
+      </p>
+      <p>
+        Evaluating equation (3.3) directly from the course's own constants —
+        <em>φ</em><sub>M</sub>(Al) = 4.1 V, <em>χ</em> = 4.05 V,
+        <em>E</em><sub>g</sub>/2<em>q</em> = 0.56 V, <em>φ</em><sub>F</sub> = 0.288 V —
+        gives <em>φ</em><sub>S</sub> = 4.898 V and <em>φ</em><sub>MS</sub> = −0.80 V. The
+        0.1 V gap is systematic rather than a reading error: any curve built on
+        <em>φ</em><sub>M</sub>(Al) = 4.1 V passes through −0.80 V at this doping, so a published
+        curve reading −0.9 V assumes a slightly different aluminium work function. The figure
+        4.1 V is itself a MOS convention rather than a measured constant — the measured
+        polycrystalline aluminium work function is about 4.28 eV, which would move
+        <em>φ</em><sub>MS</sub> to −0.62 V, further from the graph rather than closer. Read the
+        graph for the course's answer, and use the formula to know what the graph assumes.
+      </p>
+    </div>
+
+    <h2>2 · The oxide capacitance, <em>C</em><sub>ox</sub></h2>
+
+    <p>
+      The gate and the channel are the two plates of a capacitor and the gate oxide is its
+      dielectric. Two of the four terms of equation (3.1) are a charge divided by this
+      capacitance, so it appears twice and it is the quantity the whole of Chapters 3 and
+      4 exists to control.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em><sub>ox</sub> =
+          <span class="frac"><span class="num"><em>ε</em><sub>r</sub><em>ε</em><sub>0</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(3.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>ox</sub> oxide capacitance per unit area (F/cm²) ·
+        <em>ε</em><sub>r</sub> relative permittivity of the dielectric, 3.9 for SiO₂
+        (dimensionless) · <em>ε</em><sub>0</sub> permittivity of free space,
+        8.85×10⁻¹⁴ F/cm · <em>t</em><sub>ox</sub> oxide thickness (cm).
+        The area has already been divided out. The parallel-plate capacitance of a real
+        gate is <em>C</em><sub>ox</sub> times its area; every equation in this course uses
+        the per-unit-area form, so a gate of 2 cm² has twice the capacitance and the same
+        <em>C</em><sub>ox</sub>.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">Ångströms to centimetres</p>
+      <p>
+        Oxide thicknesses are quoted in ångströms and every other quantity in this course
+        is in centimetres. One ångström is 10⁻⁸ cm, so 1000 Å is 10⁻⁵ cm and 20 Å is
+        2×10⁻⁷ cm. Substituting the number of ångströms directly into equation (3.4)
+        produces an answer wrong by eight orders of magnitude, and the error is invisible
+        because the result still has the units of a capacitance.
+      </p>
+    </div>
+
+    <p>
+      Equation (3.4) states the two ways to raise <em>C</em><sub>ox</sub>, and both are
+      chapters of this course. The first is to reduce <em>t</em><sub>ox</sub>, which
+      <a href="m05-thin-gate-oxides-growth-charge.html">M05</a> and
+      <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06</a> pursue until
+      tunnelling ends it. The second is to raise <em>ε</em><sub>r</sub> by replacing SiO₂
+      with a different material — tantalum pentoxide, Ta₂O₅, was an early candidate with a
+      relative permittivity of 25 to 26 in the notes (Chapter 4), some six and a half times
+      that of SiO₂. That is the subject of
+      <a href="m07-high-k-dielectrics.html">M07</a>.
+    </p>
+
+    <h2>3 · The interface charge term, <em>Q</em><sub>i</sub>/<em>C</em><sub>ox</sub></h2>
+
+    <p>
+      Charge sitting at the oxide–silicon boundary induces an image charge in the silicon
+      whether or not any gate voltage is applied. The gate must supply a voltage that cancels it
+      before it can begin inverting the surface, and for charge located <em>at</em> that boundary
+      the voltage required is exactly the charge per unit area divided by the capacitance per
+      unit area.
+    </p>
+    <p>
+      Position matters, and the qualification is not a technicality. A sheet of charge sitting
+      at distance <em>x</em> from the gate inside an oxide of thickness <em>t</em><sub>ox</sub>
+      shifts the threshold by only the fraction <em>x</em>/<em>t</em><sub>ox</sub> of what the
+      same sheet would do at the silicon interface, and charge resting against the gate itself
+      shifts it not at all. What enters equation (3.1) is therefore the charge weighted by its
+      distance from the gate — its centroid — and the unweighted form is exact only for charge
+      at the interface. For the interface charge this section is about, the two are the same
+      thing. <a href="m05b-interface-defects-and-charge.html">M05b</a> resolves
+      <em>Q</em><sub>i</sub> into four physically distinct components that sit at four different
+      depths, explains where each originates, and shows that their positions are exactly what
+      distinguishes them experimentally.
+    </p>
+    <p>
+      The charge is positive in practice — it consists chiefly of trapped positive charge
+      and of positive ions — so the term enters equation (3.1) with a minus sign and
+      drives the threshold voltage negative for both device types. In a p-channel device
+      this adds to an already negative threshold; in an n-channel device it fights against
+      the intended positive threshold. Reducing <em>Q</em><sub>i</sub> is therefore a
+      first-order manufacturing objective.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em><sub>i</sub> = <em>q</em> <em>N</em><sub>i</sub></div>
+        <div class="eq-num">(3.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em><sub>i</sub> interface charge per unit area (C/cm²) ·
+        <em>q</em> electronic charge, 1.6×10⁻¹⁹ C ·
+        <em>N</em><sub>i</sub> areal density of interface charges (cm⁻²), typically
+        5×10¹⁰ to 10¹³ cm⁻² depending on process quality.
+        Sources and lectures quote the density, in cm⁻², while equation (3.1) requires the
+        charge, in C/cm². The conversion is one multiplication and it is the single most
+        common route to a wrong answer here.
+      </div>
+    </div>
+
+    <h2>4 · The depletion charge term, <em>Q</em><sub>d</sub>/<em>C</em><sub>ox</sub></h2>
+
+    <p>
+      Before an inversion layer can form, the gate must first push the majority carriers
+      away from the surface and expose the fixed ionised dopant atoms left behind. Those
+      exposed dopant ions constitute the <b>depletion charge</b>, and supporting it
+      consumes gate voltage in exactly the same way the interface charge does.
+    </p>
+    <p>
+      The depletion region stops widening once the surface reaches strong inversion,
+      because from that point any further gate voltage is balanced by inversion carriers
+      rather than by additional exposed dopant. The width at that point is the maximum
+      depletion width <em>W</em><sub>m</sub>.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>W</em><sub>m</sub> =
+          <span class="sqrt"><span class="rad">√</span><span class="arg"><span class="frac"><span class="num">4<em>ε</em><sub>s</sub><em>φ</em><sub>F</sub></span><span class="den"><em>q</em><em>N</em><sub>A</sub></span></span></span></span></div>
+        <div class="eq-num">(3.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>W</em><sub>m</sub> maximum depletion width (cm) ·
+        <em>ε</em><sub>s</sub> permittivity of silicon,
+        11.8 × 8.85×10⁻¹⁴ = 1.044×10⁻¹² F/cm ·
+        <em>φ</em><sub>F</sub> Fermi potential magnitude (V) ·
+        <em>q</em> electronic charge (C) ·
+        <em>N</em><sub>A</sub> body doping (cm⁻³); use <em>N</em><sub>D</sub> for an
+        n-type body.
+        The factor 4 arises because the surface potential at strong inversion is
+        2<em>φ</em><sub>F</sub>, not <em>φ</em><sub>F</sub>. Use the magnitude of
+        <em>φ</em><sub>F</sub> here; the sign is carried by <em>Q</em><sub>d</sub> and by
+        the 2<em>φ</em><sub>F</sub> term separately.
+      </div>
+    </div>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em><sub>d</sub> = −<em>q</em><em>N</em><sub>A</sub><em>W</em><sub>m</sub>
+          &nbsp;&nbsp;(p-type body)&nbsp;&nbsp;·&nbsp;&nbsp;
+          <em>Q</em><sub>d</sub> = +<em>q</em><em>N</em><sub>D</sub><em>W</em><sub>m</sub>
+          &nbsp;&nbsp;(n-type body)</div>
+        <div class="eq-num">(3.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em><sub>d</sub> depletion charge per unit area (C/cm²), signed ·
+        <em>N</em><sub>A</sub>, <em>N</em><sub>D</sub> acceptor and donor concentration (cm⁻³) ·
+        <em>W</em><sub>m</sub> maximum depletion width (cm).
+        The sign is the physics: a p-type body depletes to expose ionised
+        <b>acceptors</b>, which carry negative charge; an n-type body exposes ionised
+        <b>donors</b>, which carry positive charge. Since equation (3.1) subtracts
+        <em>Q</em><sub>d</sub>/<em>C</em><sub>ox</sub>, this term is positive for an
+        n-channel device and negative for a p-channel device.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m3f2-t">
+        <title id="m3f2-t">MOS capacitor at strong inversion showing the inversion layer, the depletion region of maximum width containing ionised acceptors, and the neutral bulk</title>
+        <rect x="56" y="14" width="236" height="30" class="dg-fill"/>
+        <text x="174" y="34" class="dg-label" text-anchor="middle">gate</text>
+        <rect x="56" y="44" width="236" height="16" class="dg-fill"/>
+        <text x="174" y="57" class="dg-label" text-anchor="middle">SiO₂</text>
+        <rect x="56" y="60" width="236" height="126" class="dg-fill"/>
+        <rect x="56" y="60" width="236" height="7" class="dg-acc-f"/>
+        <line x1="296" y1="64" x2="306" y2="64" class="dg-rule" stroke-width="1"/>
+        <text x="310" y="68" class="dg-label">inversion layer</text>
+        <text x="310" y="84" class="dg-label">(electrons)</text>
+        <line x1="56" y1="132" x2="292" y2="132" class="dg-guide" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <g class="dg-label" style="font-size:16px;font-weight:700" text-anchor="middle">
+          <text x="84" y="94">−</text><text x="124" y="94">−</text><text x="164" y="94">−</text>
+          <text x="204" y="94">−</text><text x="244" y="94">−</text>
+          <text x="104" y="118">−</text><text x="144" y="118">−</text><text x="184" y="118">−</text>
+          <text x="224" y="118">−</text><text x="264" y="118">−</text>
+        </g>
+        <text x="310" y="104" class="dg-label">ionised acceptors,</text>
+        <text x="310" y="120" class="dg-label">fixed in the lattice</text>
+        <text x="174" y="164" class="dg-label" text-anchor="middle">neutral p-type bulk</text>
+        <line x1="40" y1="67" x2="40" y2="132" class="dg-rule" stroke-width="1.5"/>
+        <line x1="34" y1="67" x2="46" y2="67" class="dg-rule" stroke-width="1.5"/>
+        <line x1="34" y1="132" x2="46" y2="132" class="dg-rule" stroke-width="1.5"/>
+        <text x="30" y="104" class="dg-label" text-anchor="end">W<tspan baseline-shift="sub" style="font-size:75%">m</tspan></text>
+      </svg>
+      <figcaption>
+        At strong inversion the depletion region has reached its maximum width. The charge
+        the gate must balance is the ionised acceptors within it, which is why
+        <em>Q</em><sub>d</sub> is proportional to both the doping and the width.
+      </figcaption>
+    </figure>
+
+    <p>
+      Both factors in equation (3.7) depend on the doping, but in opposite directions:
+      raising <em>N</em><sub>A</sub> increases the charge density and narrows the
+      depletion region. The net effect is that |<em>Q</em><sub>d</sub>| rises as the square
+      root of the doping. This is the only lever the body doping gives, and it is a weak
+      one — which is why the professor emphasises that <em>V</em><sub>T</sub> is dominated
+      by the first two terms.
+    </p>
+
+    <h2>5 · The Fermi potential, <em>φ</em><sub>F</sub></h2>
+
+    <p>
+      The <b>Fermi potential</b> is the separation between the Fermi level and the
+      intrinsic level <em>E</em><sub>i</sub> — the position the Fermi level would occupy
+      in undoped silicon, near the middle of the band gap — expressed as a potential.
+      It measures how far doping has moved the Fermi level from midgap.
+    </p>
+    <p>
+      Strong inversion is defined as the condition where the surface potential equals
+      2<em>φ</em><sub>F</sub>: the bands at the surface have bent by twice the Fermi
+      potential, which places the surface as far on the inverted side of midgap as the
+      bulk is on the doped side. That is where the minority carrier concentration at the
+      surface equals the majority carrier concentration in the bulk, and it is the origin
+      of the factor of two in the fourth term.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>φ</em><sub>F</sub> =
+          <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span>
+          ln <span class="dl">(</span><span class="frac"><span class="num"><em>N</em><sub>A</sub></span><span class="den"><em>n</em><sub>i</sub></span></span><span class="dl">)</span>
+          &nbsp;&nbsp;(p-type)&nbsp;&nbsp;·&nbsp;&nbsp;
+          <em>φ</em><sub>F</sub> = −
+          <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span>
+          ln <span class="dl">(</span><span class="frac"><span class="num"><em>N</em><sub>D</sub></span><span class="den"><em>n</em><sub>i</sub></span></span><span class="dl">)</span>
+          &nbsp;&nbsp;(n-type)</div>
+        <div class="eq-num">(3.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>φ</em><sub>F</sub> Fermi potential (V), signed ·
+        <em>kT</em>/<em>q</em> thermal voltage, 0.0259 V at <em>T</em> = 300 K ·
+        <em>N</em><sub>A</sub>, <em>N</em><sub>D</sub> body doping (cm⁻³) ·
+        <em>n</em><sub>i</sub> intrinsic carrier concentration of silicon,
+        1.5×10¹⁰ cm⁻³ in this course.
+        The logarithm is natural, not base ten. The minus sign for n-type must be written
+        explicitly: substituting <em>N</em><sub>D</sub> into the logarithm returns a
+        positive number for either doping type, and only the sign convention distinguishes
+        them.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">The value of <em>n</em><sub>i</sub> used here is the classical one</p>
+      <p>
+        This course uses <em>n</em><sub>i</sub> = 1.5×10¹⁰ cm⁻³ for silicon at 300 K, the
+        textbook figure. The currently accepted measured value is 9.65×10⁹ cm⁻³. The
+        difference shifts <em>φ</em><sub>F</sub> by about 11 mV and 2<em>φ</em><sub>F</sub>
+        by about 23 mV. Use 1.5×10¹⁰ cm⁻³ throughout for consistency with the course, and
+        know that the smaller value is the physically correct one.
+      </p>
+    </div>
+
+    <h2>6 · Signs, by device type</h2>
+
+    <p>
+      Two of the four terms change sign between an n-channel and a p-channel device, and
+      keeping track of them is where most of the difficulty in using equation (3.1) lies.
+      The rules are these. The interface charge <em>Q</em><sub>i</sub> is positive
+      regardless of device type, so −<em>Q</em><sub>i</sub>/<em>C</em><sub>ox</sub> is
+      always negative. The work function difference <em>φ</em><sub>MS</sub> is negative for
+      both aluminium and n⁺ polysilicon gates on either body type. The remaining two terms
+      follow the body doping.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Term</th><th>n-channel (p-type body)</th><th>p-channel (n-type body)</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><em>φ</em><sub>MS</sub></td>
+          <td>negative</td><td>negative</td>
+          <td>Aluminium and n⁺ poly both have a lower work function than the silicon body</td>
+        </tr>
+        <tr>
+          <td>−<em>Q</em><sub>i</sub>/<em>C</em><sub>ox</sub></td>
+          <td>negative</td><td>negative</td>
+          <td>Interface charge is positive in both cases</td>
+        </tr>
+        <tr>
+          <td>−<em>Q</em><sub>d</sub>/<em>C</em><sub>ox</sub></td>
+          <td><b>positive</b></td><td>negative</td>
+          <td>Ionised acceptors are negative; ionised donors are positive</td>
+        </tr>
+        <tr>
+          <td>+2<em>φ</em><sub>F</sub></td>
+          <td><b>positive</b></td><td>negative</td>
+          <td><em>φ</em><sub>F</sub> is positive for p-type, negative for n-type</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      All four terms of a p-channel device are therefore negative and add, while an
+      n-channel device has two of each sign that partially cancel. That asymmetry is the
+      reason p-channel thresholds were historically much larger in magnitude than n-channel
+      thresholds, and a circuit containing both devices needs a supply that exceeds the larger
+      threshold with margin, so the p-channel device sets the supply voltage. Lecture 3 drew the
+      consequence from the two thresholds worked in §7, about −2.2 V for the n-channel device and
+      −4.9 V for the p-channel device on the same wafer: in the 1970s and early 1980s MOS
+      circuits needed about <b>six volts</b>, because of the p-channel device, where the
+      n-channel device alone would have needed much less. Reducing the magnitude of that
+      threshold is a substantial part of what the process developments in this course achieved,
+      and <a href="m05b-interface-defects-and-charge.html">M05b</a> identifies the oxide charge
+      that caused most of it.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Six volts, and the supplies the record shows</p>
+      <p>
+        Six volts is the lecture's figure and the course's statement of the point. The published
+        record gives larger magnitudes for the metal-gate era it describes. High-threshold
+        metal-gate p-channel logic of the mid-to-late 1960s ran from supplies of about −24 V to
+        −28 V, and most p-channel integrated circuits needed 17–24 V. The silicon-gate p-channel
+        parts that followed, whose gate work function removed about a volt of threshold (§8), ran
+        on about 15–16 V: −16 V, for example, for Intel's silicon-gate memories, while Intel's
+        4004 of 1971 used +5 V and −10 V rails. n-channel and CMOS logic then
+        standardised on +5 V, the value the class notes give as the starting point for the
+        reduction to 2 V at 0.18 µm (<a href="m02-deep-submicron-roadmap.html">M02</a> §6). The
+        mechanism the lecture draws from the sign table — the p-channel threshold sets the
+        supply — is the same at every one of these magnitudes.
+      </p>
+    </div>
+
+    <h2>7 · A complete calculation</h2>
+
+    <p>
+      The following is the calculation worked in Lecture 2, with every intermediate
+      quantity carried in centimetre units.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">n-channel MOSFET, aluminium gate</div>
+      <div class="ex-body">
+        <p>
+          <b>Given</b> p-type body with <em>N</em><sub>A</sub> = 10¹⁵ cm⁻³; interface charge
+          density <em>N</em><sub>i</sub> = 5×10¹¹ cm⁻²; oxide thickness
+          <em>t</em><sub>ox</sub> = 1000 Å; aluminium gate. Find <em>V</em><sub>T</sub>.
+        </p>
+        <p class="ex-step">
+          <b>Fermi potential.</b>
+          <em>φ</em><sub>F</sub> = 0.0259 × ln(10¹⁵ / 1.5×10¹⁰)
+          = 0.0259 × ln(6.667×10⁴) = 0.0259 × 11.107 = <b>0.288 V</b>.
+          Positive, because the body is p-type. Hence 2<em>φ</em><sub>F</sub> = 0.575 V.
+        </p>
+        <p class="ex-step">
+          <b>Work function difference.</b> Read from the graph for an aluminium gate on
+          p-type silicon at 10¹⁵ cm⁻³: <em>φ</em><sub>MS</sub> = <b>−0.9 V</b>.
+        </p>
+        <p class="ex-step">
+          <b>Oxide capacitance.</b> Convert first: 1000 Å = 1000 × 10⁻⁸ cm = 10⁻⁵ cm.
+          <em>C</em><sub>ox</sub> = (3.9 × 8.85×10⁻¹⁴) / 10⁻⁵ = <b>3.45×10⁻⁸ F/cm²</b>.
+        </p>
+        <p class="ex-step">
+          <b>Interface charge term.</b> Convert the density to a charge:
+          <em>Q</em><sub>i</sub> = 5×10¹¹ × 1.6×10⁻¹⁹ = 8×10⁻⁸ C/cm².
+          Then <em>Q</em><sub>i</sub>/<em>C</em><sub>ox</sub> = 8×10⁻⁸ / 3.45×10⁻⁸ = 2.32 V,
+          entering the equation as <b>−2.32 V</b>.
+        </p>
+        <p class="ex-step">
+          <b>Maximum depletion width.</b>
+          <em>W</em><sub>m</sub> = √[ 4 × (11.8 × 8.85×10⁻¹⁴) × 0.288 / (1.6×10⁻¹⁹ × 10¹⁵) ]
+          = √(1.202×10⁻¹² / 1.6×10⁻⁴) = √(7.51×10⁻⁹) = <b>0.867×10⁻⁴ cm</b>, that is
+          0.867 µm.
+        </p>
+        <p class="ex-step">
+          <b>Depletion charge term.</b>
+          |<em>Q</em><sub>d</sub>| = 1.6×10⁻¹⁹ × 10¹⁵ × 0.867×10⁻⁴ = <b>1.39×10⁻⁸ C/cm²</b>.
+          Then |<em>Q</em><sub>d</sub>|/<em>C</em><sub>ox</sub> = 0.402 V. The body is p-type so <em>Q</em><sub>d</sub> is negative, and the term
+          enters as <b>+0.402 V</b>.
+        </p>
+        <p class="ex-step">
+          <b>Sum.</b>
+          <em>V</em><sub>T</sub> = −0.9 − 2.32 + 0.402 + 0.575. (The lecture rounds the
+          last two to 0.403 and 0.576; the total is −2.24 V either way.)
+        </p>
+        <p class="ex-answer"><em>V</em><sub>T</sub> = −2.24 V</p>
+        <p>
+          The result is negative, which means this n-channel device conducts at zero gate
+          voltage and must be driven negative to turn off. It is a depletion-mode device, and it
+          is not what a logic circuit needs.
+        </p>
+        <p>
+          The remedy is almost entirely the interface charge term. At −2.32 V it is larger than
+          the other three combined, it is the one term that is a defect density rather than a
+          material property, and it shrinks both as processing cleans up and as
+          <em>C</em><sub>ox</sub> rises — <a href="m05b-interface-defects-and-charge.html">M05b</a>
+          is the account of how it was reduced by orders of magnitude. The threshold-adjust implant of section 9 supplies the remainder. Changing
+          the gate material does not help here: n⁺ polysilicon on this body gives
+          <em>φ</em><sub>MS</sub> = −(<em>E</em><sub>g</sub>/2<em>q</em> + <em>φ</em><sub>F</sub>)
+          = −0.85 V, slightly <em>more</em> negative than aluminium's −0.80 V, so it moves the
+          n-channel threshold the wrong way. Its value is for the p-channel device, where §8
+          takes it up.
+        </p>
+      </div>
+    </div>
+
+    <h3>7.1 The same device as a p-channel</h3>
+
+    <p>
+      Repeating the calculation for a p-channel device on an n-type body with
+      <em>N</em><sub>D</sub> = 10¹⁵ cm⁻³ and the same oxide, interface charge and gate material
+      flips the last two terms. <em>φ</em><sub>F</sub> becomes −0.288 V, so
+      2<em>φ</em><sub>F</sub> = −0.575 V. <em>Q</em><sub>d</sub> is now ionised donors and
+      is positive, so −<em>Q</em><sub>d</sub>/<em>C</em><sub>ox</sub> = −0.402 V. Only the
+      interface term is unchanged at −2.32 V. All four terms are negative and add to a
+      large negative threshold.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The quoted answer and what the terms give</p>
+      <p>
+        The answer stated in Lecture 3 is <b>−4.919 V</b>. Reproducing that total from the
+        three terms above requires <em>φ</em><sub>MS</sub> = −1.62 V.
+      </p>
+      <p>
+        Evaluating <em>φ</em><sub>MS</sub> from the course's own constants gives a
+        different figure. For n-type silicon, <em>φ</em><sub>S</sub> = <em>χ</em> +
+        (<em>kT</em>/<em>q</em>)ln(<em>N</em><sub>c</sub>/<em>N</em><sub>D</sub>) with
+        <em>N</em><sub>c</sub> = 2.8×10¹⁹ cm⁻³, which is 4.05 + 0.265 = 4.315 V, so
+        <em>φ</em><sub>MS</sub> = 4.1 − 4.315 = −0.215 V and the total comes to −3.51 V.
+      </p>
+      <p>
+        A <em>φ</em><sub>MS</sub> of −1.62 V is not reachable by any choice of gate. The
+        silicon work function at <em>N</em><sub>D</sub> = 10¹⁵ cm⁻³ is 4.315 V, so −1.62 V would
+        require a gate whose work function is 2.70 eV — lower than caesium, the lowest of the
+        elements at about 2.1 eV, and far below anything used in a process. The real options are
+        aluminium at −0.22 V, n⁺ polysilicon at −0.27 V and p⁺ polysilicon at +0.85 V. The gap
+        therefore cannot be closed by reading the graph differently; some other input to the
+        lecture calculation must have differed.
+      </p>
+      <p>
+        Use the professor's −4.919 V as the course's answer. The reason for stating the
+        discrepancy is that the sign analysis, not the arithmetic, is what the calculation is
+        for: every term negative, a threshold several times larger in magnitude than the
+        n-channel device on the same wafer, and a supply requirement set by the p-channel
+        device. That conclusion holds at either number.
+      </p>
+    </div>
+
+    <h2>8 · Why the gate material changed</h2>
+
+    <p>
+      Section 1 established that <em>φ</em><sub>MS</sub> is a property of the pair of
+      materials, and section 7 showed it contributing about a volt to a threshold that
+      needs to be a few tenths of a volt. An aluminium gate offers no way to adjust it,
+      because aluminium has one work function, 4.1 eV in this course. The class notes record
+      that polysilicon — silicon deposited as a film of small, randomly oriented crystal grains
+      — replaced aluminium as the gate material in the mid-1970s, and they write the threshold
+      equation beside that sentence. The equation is the reason.
+    </p>
+    <p>
+      <b>The work function becomes adjustable.</b> Polysilicon is silicon, so its work function
+      is set by its doping in exactly the way the body's is, anywhere between the 4.05 eV and
+      5.17 eV limits of §1.2. Replacing the aluminium gate with polysilicon therefore turns
+      <em>φ</em><sub>MS</sub> from a fixed penalty into a quantity the process chooses, without
+      touching the body doping or the oxide. Lecture 2 put it as a way to drive the first term of
+      equation (3.1) toward zero: a gate doped like the body would have the body's work function
+      and a <em>φ</em><sub>MS</sub> of nothing at all.
+    </p>
+    <p>
+      In practice the choice is between two values rather than a continuum. The gate has to be
+      doped degenerately, above about 10²⁰ cm⁻³, or it depletes under bias and adds a capacitance
+      in series with the oxide (<a href="m06-thin-gate-oxides-conduction-breakdown.html">M06</a>
+      treats that polysilicon depletion). Degenerate doping places the gate's Fermi level at one
+      band edge or the other, so the gate offers a work function near 4.05 eV (n⁺) or near
+      5.17 eV (p⁺). On the p-type body of the §7 calculation these give
+      <em>φ</em><sub>MS</sub> = −0.85 V and +0.27 V; on the n-type body of §7.1, −0.27 V and
+      +0.85 V. Either choice moves the threshold by the full 1.12 V band gap relative to the
+      other.
+    </p>
+    <p>
+      <b>The gate survives the heat.</b> A second property made polysilicon the better gate, and the
+      self-aligned structures it enables were proposed a few years before the first commercial
+      silicon-gate process, which was built for both reasons at once. Aluminium melts at 660 °C; polysilicon withstands the
+      source–drain activation anneal that follows implantation. The gate can therefore be
+      patterned <em>before</em> the source and drain are formed and then serve as the mask for
+      their implant, so that the source and drain edges are defined by the gate edges
+      themselves. This is the <b>self-aligned gate</b>. It removes the alignment tolerance of the
+      aluminium-gate flow (<a href="m01-mosfet-and-how-one-is-made.html">M01</a> §7.3), in which
+      the gate had to overlap source and drain deliberately to be sure of covering the channel,
+      and with it the gate-to-source and gate-to-drain overlap capacitance that overlap
+      creates. In many flows the same implant dopes the polysilicon gate as well.
+    </p>
+
+    <div class="box">
+      <p class="box-title">What the historical record adds</p>
+      <p>
+        Both reasons were present when the silicon gate went into production, in the opposite
+        order from the one above. Self-alignment was the earlier motivation: defining the
+        source and drain with the gate itself was proposed in 1965–66 — a self-aligned
+        silicon-gate structure described at General Microelectronics in 1965, and a
+        gate-as-mask transistor presented from Hughes at the 1966 International Electron Devices
+        Meeting — and self-aligned silicon-gate transistors were demonstrated at Bell Labs in
+        1967. The work-function argument arrived with the first commercial silicon-gate process,
+        at Fairchild in 1968, whose p⁺ silicon gate over an n-type body raised
+        <em>φ</em><sub>MS</sub> by about 1.1 V over aluminium's — from −0.22 V to +0.85 V on the
+        body of §7.1, the 5.17 − 4.1 eV of this module — and so took about 1.1 V off the
+        magnitude of the p-channel threshold. Accounts of the period state the same shift with
+        the opposite sign convention, <em>φ</em><sub>S</sub> − <em>φ</em><sub>M</sub>, as a
+        work-function difference 1.1 V <em>lower</em> than aluminium's. The 1969
+        <i>Electronics</i> account of the silicon-gate circuits led with speed and low threshold
+        together. The notes'
+        mid-1970s is the period by which polysilicon had become the standard gate across the
+        industry;
+        <a href="m02-deep-submicron-roadmap.html">M02</a> §3.1 records the dates.
+      </p>
+    </div>
+
+    <p>
+      n⁺ polysilicon, doped heavily with phosphorus, was the gate for both device types down
+      to 0.35 µm. It suits the n-channel device. At deep-submicron body doping the depletion and
+      Fermi terms of the n-channel threshold are large and positive, and a gate work function
+      at the conduction band edge is what keeps the sum at a few tenths of a volt; any remaining
+      correction is made with the boron implant of §9, which only adds acceptors to a surface
+      that is already p-type, so the channel stays at the surface. On the p-channel device the
+      same n⁺ gate leaves the threshold too negative. The boron correction then counter-dopes the
+      n-type surface into a thin p-type layer, and the holes flow in that layer below the
+      oxide interface rather than at it — a <b>buried channel</b>, which the gate controls less
+      tightly and which leaks too much in the off state once gate lengths reach 0.25 µm. p⁺
+      polysilicon over the p-channel device supplies the mirror-image work function, removes the
+      need for the counter-doping and restores a surface channel. That is dual-doped
+      polysilicon, and its cost is boron penetration through the gate oxide.
+      <a href="m02-deep-submicron-roadmap.html">M02</a> §8 states the trade, and
+      <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06</a> treats boron penetration
+      as an oxide problem.
+    </p>
+
+    <h2>9 · Threshold adjustment by implantation</h2>
+
+    <p>
+      Of the four terms, three are fixed once the wafer, the oxide and the gate material
+      are chosen. The depletion charge term is the exception: it depends on the doping in
+      the first fraction of a micrometre of silicon, and that doping can be changed after
+      the rest of the structure is determined, by <b>ion implantation</b> — firing dopant
+      ions at the wafer with enough energy to embed them at a controlled depth.
+    </p>
+    <h3>9.1 Boron, for both device types</h3>
+
+    <p>
+      The class notes specify the species: the threshold-adjust implant uses <b>boron</b> for
+      both n-channel and p-channel devices. The reason is the sign table of section 6. In an
+      n-channel device the body is p-type and −<em>Q</em><sub>d</sub>/<em>C</em><sub>ox</sub> is
+      already positive; adding boron raises <em>N</em><sub>A</sub>, increases
+      |<em>Q</em><sub>d</sub>| and makes that positive term larger, moving
+      <em>V</em><sub>T</sub> upward, which is what an n-channel device needs. In a p-channel
+      device the body is n-type and the same term is negative; boron is an acceptor, so it
+      partially compensates the donors, reduces the net donor concentration, reduces
+      |<em>Q</em><sub>d</sub>|, and makes that negative term smaller in magnitude. Both changes
+      move the threshold upward: to a positive value for the n-channel device, and to a
+      smaller negative value for the p-channel device.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 196" role="img" aria-labelledby="m3f3-t">
+        <title id="m3f3-t">Boron implanted through a thin oxide into the channel region of an n-channel device, raising the acceptor concentration in a shallow layer that lies inside the maximum depletion width</title>
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="80" y1="30" x2="80" y2="58" marker-end="url(#m3f3-ar)"/>
+          <line x1="130" y1="30" x2="130" y2="58" marker-end="url(#m3f3-ar)"/>
+          <line x1="180" y1="30" x2="180" y2="58" marker-end="url(#m3f3-ar)"/>
+          <line x1="230" y1="30" x2="230" y2="58" marker-end="url(#m3f3-ar)"/>
+          <line x1="280" y1="30" x2="280" y2="58" marker-end="url(#m3f3-ar)"/>
+        </g>
+        <text x="180" y="18" class="dg-label" text-anchor="middle">boron ions, 25–100 keV</text>
+        <rect x="50" y="62" width="260" height="18" class="dg-fill"/>
+        <text x="180" y="76" class="dg-label" text-anchor="middle">SiO₂</text>
+        <rect x="50" y="80" width="260" height="104" class="dg-fill"/>
+        <!-- implanted acceptors: shading falls with depth from a peak at the interface -->
+        <g class="dg-acc-f">
+          <rect x="50" y="80" width="260" height="6" opacity=".6"/>
+          <rect x="50" y="86" width="260" height="7" opacity=".42"/>
+          <rect x="50" y="93" width="260" height="8" opacity=".26"/>
+          <rect x="50" y="101" width="260" height="9" opacity=".12"/>
+        </g>
+        <!-- depletion edge at strong inversion -->
+        <line x1="50" y1="136" x2="310" y2="136" class="dg-guide" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <g class="dg-rule" stroke-width="1.4">
+          <line x1="38" y1="80" x2="38" y2="136"/>
+          <line x1="32" y1="80" x2="44" y2="80"/>
+          <line x1="32" y1="136" x2="44" y2="136"/>
+        </g>
+        <text x="28" y="112" class="dg-label" text-anchor="end">W<tspan baseline-shift="sub" style="font-size:75%">m</tspan></text>
+        <text x="180" y="166" class="dg-label" text-anchor="middle">p-type silicon body</text>
+        <line x1="314" y1="90" x2="324" y2="90" class="dg-rule" stroke-width="1"/>
+        <text x="328" y="88" class="dg-label">N<tspan baseline-shift="sub" style="font-size:75%">A</tspan> raised</text>
+        <text x="328" y="104" class="dg-label">near the</text>
+        <text x="328" y="120" class="dg-label">surface</text>
+        <line x1="314" y1="136" x2="324" y2="136" class="dg-rule" stroke-width="1"/>
+        <text x="328" y="140" class="dg-label">depletion</text>
+        <text x="328" y="156" class="dg-label">edge</text>
+        <defs>
+          <marker id="m3f3-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The implant raises the acceptor concentration in a shallow layer that lies inside the
+        depletion region, and leaves the bulk below the depletion edge unchanged. Only the
+        region the depletion layer occupies enters <em>Q</em><sub>d</sub>, so a shallow implant
+        is enough. Schematic: the shading falls with depth from the interface, and §9.2 gives
+        the profile itself.
+      </figcaption>
+    </figure>
+
+    <p>
+      Implanting phosphorus into the p-channel device would do the opposite: as a donor it
+      would raise the net donor concentration and drive the already too-negative threshold
+      further negative. One implant step with one species therefore serves both device
+      types, which is why boron appears at this stage of every CMOS flow.
+    </p>
+
+    <div class="box pitfall">
+      <p class="box-title">Net doping after a compensating implant</p>
+      <p>
+        When boron of concentration <em>N</em><sub>A</sub> is implanted into silicon
+        already doped n-type at <em>N</em><sub>D</sub>, the net doping is the difference
+        <em>N</em><sub>D</sub> − <em>N</em><sub>A</sub>, and the subtraction is of the
+        concentrations, not of the exponents. Implanting 10¹⁵ cm⁻³ of boron into 10¹⁶ cm⁻³
+        n-type silicon leaves
+      </p>
+      <p>
+        10¹⁶ − 10¹⁵ = 10×10¹⁵ − 1×10¹⁵ = <b>9×10¹⁵ cm⁻³</b>,
+      </p>
+      <p>
+        not 10¹. Bring both numbers to the same power of ten before subtracting. An error
+        here propagates into every subsequent quantity: <em>φ</em><sub>F</sub>, <em>W</em><sub>m</sub>,
+        <em>Q</em><sub>d</sub> and <em>V</em><sub>T</sub> all depend on the result.
+      </p>
+    </div>
+
+    <h3>9.2 Why the implant goes through an oxide</h3>
+
+    <p>
+      An implant does not place its dopant at the surface. Each ion slows by collisions with
+      the lattice and comes to rest at a random depth, and the resting depths of many ions
+      gather around a mean, the <b>projected range</b> <em>R</em><sub>p</sub>, with a spread
+      about it called the <b>straggle</b> Δ<em>R</em><sub>p</sub>. To first order the profile is
+      a Gaussian centred below the surface.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em>(<em>x</em>) = <em>C</em><sub>p</sub> exp&thinsp;<span class="dl">[</span>−<span class="frac"><span class="num">(<em>x</em> − <em>R</em><sub>p</sub>)<sup>2</sup></span><span class="den">2Δ<em>R</em><sub>p</sub><sup>2</sup></span></span><span class="dl">]</span></div>
+        <div class="eq-num">(3.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em>(<em>x</em>) implanted concentration at depth <em>x</em> (cm⁻³) ·
+        <em>C</em><sub>p</sub> peak concentration (cm⁻³) ·
+        <em>x</em> depth below the surface the ions enter (cm) ·
+        <em>R</em><sub>p</sub> projected range, the depth of the peak (cm) ·
+        Δ<em>R</em><sub>p</sub> straggle, the standard deviation of the depth distribution (cm).
+        <em>R</em><sub>p</sub> and Δ<em>R</em><sub>p</sub> both grow with ion energy and shrink
+        with ion mass, and <em>C</em><sub>p</sub> = <em>Q</em>/(√(2π)&thinsp;Δ<em>R</em><sub>p</sub>)
+        for an implanted dose <em>Q</em> (cm⁻²). A first-order model: real profiles are skewed,
+        and channelling in a crystal adds a deep tail.
+      </div>
+    </div>
+
+    <p>
+      The concentration therefore falls away on both sides of the peak — toward the surface as
+      well as into the bulk — and Lecture 3 drew the consequence twice, for an implant of the type
+      opposite to the background doping. A junction lies wherever the implanted concentration
+      equals the background concentration <em>N</em><sub>B</sub>, because the net doping changes
+      sign there. Implanted into bare silicon, a profile whose peak sits well below the surface
+      can fall below <em>N</em><sub>B</sub> on its shallow side as well as on its deep side, and it
+      then crosses the background twice: <b>two junctions</b>, with a buried layer of the implanted
+      type between a thin surface layer and the substrate. The remedy the lecture gives is to
+      implant through an oxide whose thickness places the peak at the Si/SiO₂ interface — half
+      the profile in the oxide, half in the silicon. The shallow half then lies in the oxide,
+      where there is no junction to form, and in the silicon the concentration only falls with
+      depth and crosses <em>N</em><sub>B</sub> once. Because silicon and silicon dioxide stop ions
+      at comparable rates, the oxide thickness that does this at a given energy is about
+      <em>R</em><sub>p</sub> itself.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 400 232" role="img" aria-labelledby="m3f4-t">
+          <title id="m3f4-t">Implanted profile on a logarithmic concentration axis against depth into bare silicon, crossing the background concentration twice and forming two junctions</title>
+          <text x="50" y="12" class="dg-label">(a) into bare silicon</text>
+          <line x1="50" y1="20" x2="50" y2="190" class="dg-rule" stroke-width="1.4"/>
+          <line x1="50" y1="190" x2="388" y2="190" class="dg-rule" stroke-width="1.4"/>
+          <text x="24" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 24 110)">log concentration</text>
+          <line x1="50" y1="134" x2="388" y2="134" class="dg-line" stroke-width="1.4"/>
+          <text x="392" y="126" class="dg-label" text-anchor="end">N<tspan baseline-shift="sub" style="font-size:75%">B</tspan></text>
+          <path d="M50,184.3 Q209.8,-84.3 369.6,184.3" class="dg-line" stroke-width="2"/>
+          <line x1="209.8" y1="50" x2="209.8" y2="190" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="209.8" y="40" class="dg-label" text-anchor="middle">peak at R<tspan baseline-shift="sub" style="font-size:75%">p</tspan></text>
+          <text x="104" y="88" class="dg-label" text-anchor="end">C(x)</text>
+          <g class="dg-acc" stroke-width="1.6">
+            <line x1="83.4" y1="134" x2="83.4" y2="198"/>
+            <line x1="336.2" y1="134" x2="336.2" y2="198"/>
+          </g>
+          <g class="dg-acc-f">
+            <circle cx="83.4" cy="134" r="4.5"/>
+            <circle cx="336.2" cy="134" r="4.5"/>
+          </g>
+          <text x="92" y="168" class="dg-label">junction</text>
+          <text x="328" y="168" class="dg-label" text-anchor="end">junction</text>
+          <g class="dg-label" text-anchor="middle" style="font-weight:700">
+            <text x="66.7" y="210">p</text>
+            <text x="209.8" y="210">n</text>
+            <text x="362" y="210">p</text>
+          </g>
+          <text x="219" y="228" class="dg-label" text-anchor="middle">depth below the silicon surface →</text>
+        </svg>
+        <figcaption>
+          A peak far enough below the surface leaves the concentration there under the
+          background, so the net type changes twice: p at the surface, n in a buried layer, p
+          below. Drawn for donors implanted into a p-type background; boron implanted into the
+          n-type body of a p-channel device is the mirror image, n / p / n.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 400 232" role="img" aria-labelledby="m3f5-t">
+          <title id="m3f5-t">The same implanted profile delivered through an oxide whose thickness equals the projected range, so the peak sits at the silicon–oxide interface and the profile crosses the background once</title>
+          <text x="50" y="12" class="dg-label">(b) through an oxide</text>
+          <rect x="50" y="20" width="159.8" height="170" class="dg-fill"/>
+          <text x="130" y="176" class="dg-label" text-anchor="middle">SiO₂</text>
+          <line x1="50" y1="20" x2="50" y2="190" class="dg-rule" stroke-width="1.4"/>
+          <line x1="50" y1="190" x2="388" y2="190" class="dg-rule" stroke-width="1.4"/>
+          <text x="24" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 24 110)">log concentration</text>
+          <line x1="209.8" y1="134" x2="388" y2="134" class="dg-line" stroke-width="1.4"/>
+          <text x="392" y="126" class="dg-label" text-anchor="end">N<tspan baseline-shift="sub" style="font-size:75%">B</tspan></text>
+          <path d="M50,184.3 Q209.8,-84.3 369.6,184.3" class="dg-line" stroke-width="2"/>
+          <text x="209.8" y="40" class="dg-label" text-anchor="middle">peak at the interface</text>
+          <line x1="336.2" y1="134" x2="336.2" y2="198" class="dg-acc" stroke-width="1.6"/>
+          <circle cx="336.2" cy="134" r="4.5" class="dg-acc-f"/>
+          <text x="328" y="168" class="dg-label" text-anchor="end">one junction</text>
+          <g class="dg-label" text-anchor="middle" style="font-weight:700">
+            <text x="273" y="210">n</text>
+            <text x="362" y="210">p</text>
+          </g>
+          <text x="219" y="228" class="dg-label" text-anchor="middle">depth below the oxide surface →</text>
+        </svg>
+        <figcaption>
+          The same profile at the same energy. An oxide as thick as <em>R</em><sub>p</sub> holds
+          the shallow half, so the silicon sees only the falling half and one junction. Both
+          panels are drawn to equation (3.9) with <em>R</em><sub>p</sub> = 4.7Δ<em>R</em><sub>p</sub>
+          and a peak 1000 times <em>N</em><sub>B</sub>.
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      Equation (3.9) states when the shallow crossing exists. It needs the concentration at the
+      surface, <em>C</em>(0), to lie below <em>N</em><sub>B</sub>, and setting <em>x</em> = 0 in
+      (3.9) turns that into a condition on how deep the peak sits.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>p</sub> &gt; Δ<em>R</em><sub>p</sub>&thinsp;<span class="sqrt"><span class="rad">√</span><span class="arg">2 ln&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>C</em><sub>p</sub></span><span class="den"><em>N</em><sub>B</sub></span></span><span class="dl">)</span></span></span></div>
+        <div class="eq-num">(3.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em><sub>p</sub> projected range (cm) · Δ<em>R</em><sub>p</sub> straggle (cm) ·
+        <em>C</em><sub>p</sub> peak implanted concentration (cm⁻³) ·
+        <em>N</em><sub>B</sub> background concentration of the opposite type (cm⁻³).
+        The condition for a second, shallow junction when implanting into bare silicon; the
+        logarithm is natural. For a peak 10⁴ times the background, 10¹⁹ cm⁻³ over
+        10¹⁵ cm⁻³, the right side is 4.3Δ<em>R</em><sub>p</sub>.
+      </div>
+    </div>
+
+    <p>
+      The ratio <em>R</em><sub>p</sub>/Δ<em>R</em><sub>p</sub> grows with implant energy, and
+      fastest for light ions, so the condition is met by deep, high-energy implants — the regime
+      in which buried layers and retrograde wells are made deliberately (M08).
+    </p>
+    <p>
+      The textbooks give the screen oxide a different job. Silicon is a crystal, and along
+      certain directions the lattice presents open corridors between rows of atoms down which
+      an ion can travel much further than it would through randomly arranged material. This is
+      <b>channelling</b>, and it adds a deep, poorly controlled tail to the profile. An ion that
+      crosses an amorphous oxide first is deflected before it reaches the silicon, enters at an
+      effectively random angle, and the channelled tail is suppressed. The oxide also keeps the
+      bare silicon surface from being sputtered and contaminated by the beam.
+    </p>
+    <p>
+      In both accounts the oxide does the same thing to the geometry. The ion spends part of its
+      range crossing it, so the profile in the silicon is <em>shallower</em> by about the oxide
+      thickness, and a deeper placement in the silicon needs a higher energy. Implant energies for
+      a threshold adjustment are in the range of 25 keV to 100 keV.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Two reasons for the screen oxide</p>
+      <p>
+        The lecture's reason — one junction instead of two, with the peak placed at the
+        interface — is the course's. The textbooks give channelling suppression and surface
+        protection instead, and treat the depth of the peak as a matter of choosing the energy.
+        The two are compatible but not interchangeable. The two-junction case needs an implant of
+        the type opposite to the background and a peak deep enough to satisfy equation (3.10). A
+        threshold-adjust implant is boron into p-type silicon for the n-channel device, which
+        forms no junction at all, and boron into n-type silicon for the p-channel device, which
+        forms one only where it over-compensates the surface — the buried-channel layer of §8.
+        Channelling, by contrast, affects every implant into crystalline silicon, which is why a
+        screen oxide is standard even where no second junction is possible.
+      </p>
+    </div>
+
+    <p>
+      Implantation is a violent process at the atomic scale. An incoming ion displaces
+      silicon atoms from their lattice sites as it slows. Above a threshold dose, about
+      10¹⁵ cm⁻² in Plummer's example, the implanted layer is left amorphous — the
+      crystalline order destroyed. A threshold adjustment, near 10¹² cm⁻²
+      (<a href="m02-deep-submicron-roadmap.html">M02</a> §8), lies far below it and leaves
+      the layer damaged but still crystalline. An anneal
+      after the implant restores the crystal and moves the implanted dopant onto
+      substitutional lattice sites, where it is electrically active; an atom sitting
+      between lattice sites contributes no carrier.
+      M09 treats the damage, the anneal, and
+      the placement of the implant peak in full.
+    </p>
+
+    <details class="check">
+      <summary>An n-channel device has <em>V</em><sub>T</sub> = −2.24 V. Halving the oxide thickness changes two terms. Which two, and does the threshold move up or down?</summary>
+      <div class="answer">
+        <p>
+          Halving <em>t</em><sub>ox</sub> doubles <em>C</em><sub>ox</sub> to 6.9×10⁻⁸ F/cm².
+          Both charge terms are divided by it, so both halve in magnitude:
+          −<em>Q</em><sub>i</sub>/<em>C</em><sub>ox</sub> goes from −2.32 V to −1.16 V, and
+          −<em>Q</em><sub>d</sub>/<em>C</em><sub>ox</sub> goes from +0.402 V to +0.201 V.
+          <em>φ</em><sub>MS</sub> and 2<em>φ</em><sub>F</sub> do not contain
+          <em>C</em><sub>ox</sub> and are unchanged.
+        </p>
+        <p>
+          The new total is −0.9 − 1.16 + 0.201 + 0.575 = −1.28 V. The threshold moves
+          upward, towards zero, by 0.96 V. The interface term shrank by 1.16 V while the
+          depletion term shrank by only 0.20 V, so the large negative term loses much more
+          than the small positive one — which is why thinning the oxide is an effective
+          threshold remedy as well as a drive-current remedy.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li><em>V</em><sub>T</sub> = <em>φ</em><sub>MS</sub> −
+          <em>Q</em><sub>i</sub>/<em>C</em><sub>ox</sub> −
+          <em>Q</em><sub>d</sub>/<em>C</em><sub>ox</sub> + 2<em>φ</em><sub>F</sub>, and the
+          first two terms dominate.</li>
+        <li>The work function is measured from the Fermi level to the vacuum level. Silicon
+          has no single work function because its Fermi level moves with doping, so the
+          electron affinity, 4.05 eV, is the fixed reference. The silicon work function
+          ranges from 4.05 eV to 4.05 + 1.12 = 5.17 eV.</li>
+        <li><em>E</em> [eV] = 1.24/<em>λ</em> [µm]: silicon absorbs below 1.107 µm, GaN
+          below 0.365 µm.</li>
+        <li><em>C</em><sub>ox</sub> = <em>ε</em><sub>r</sub><em>ε</em><sub>0</sub>/<em>t</em><sub>ox</sub>,
+          per unit area, in centimetre units, with <em>ε</em><sub>0</sub> = 8.85×10⁻¹⁴ F/cm.
+          Convert ångströms to centimetres first: 1 Å = 10⁻⁸ cm.</li>
+        <li><em>Q</em><sub>i</sub> = <em>q</em><em>N</em><sub>i</sub>. Sources quote the
+          density in cm⁻²; the equation needs the charge in C/cm².</li>
+        <li><em>W</em><sub>m</sub> = √(4<em>ε</em><sub>s</sub><em>φ</em><sub>F</sub>/<em>qN</em><sub>A</sub>),
+          then <em>Q</em><sub>d</sub> = ∓<em>qNW</em><sub>m</sub>: negative for a p-type body
+          (ionised acceptors), positive for an n-type body (ionised donors).</li>
+        <li><em>φ</em><sub>F</sub> = ±(<em>kT</em>/<em>q</em>)ln(<em>N</em>/<em>n</em><sub>i</sub>),
+          positive for p-type and negative for n-type, with the minus sign written
+          explicitly. <em>kT</em>/<em>q</em> = 0.0259 V and <em>n</em><sub>i</sub> =
+          1.5×10¹⁰ cm⁻³ in this course.</li>
+        <li>For an n-channel device the four terms are −, −, +, +; for a p-channel device
+          they are −, −, −, −. That asymmetry makes the p-channel threshold the larger, so the
+          p-channel device sets the supply: about six volts in the 1970s and early 1980s in
+          Lecture 3's account, and larger still — above 20 V — for the metal-gate p-channel
+          logic of the mid-to-late 1960s.</li>
+        <li>The reference calculation: <em>N</em><sub>A</sub> = 10¹⁵ cm⁻³,
+          <em>N</em><sub>i</sub> = 5×10¹¹ cm⁻², <em>t</em><sub>ox</sub> = 1000 Å, aluminium
+          gate → <em>φ</em><sub>F</sub> = 0.288 V, <em>C</em><sub>ox</sub> = 3.45×10⁻⁸ F/cm²,
+          <em>W</em><sub>m</sub> = 0.867 µm, <em>Q</em><sub>d</sub> = 1.39×10⁻⁸ C/cm²,
+          <em>V</em><sub>T</sub> = −2.24 V.</li>
+        <li>Polysilicon replaced aluminium in the mid-1970s because its work function, unlike
+          aluminium's, is set by its doping, so <em>φ</em><sub>MS</sub> becomes adjustable. It
+          also survives the source–drain anneal, which makes the self-aligned gate possible; the
+          first commercial silicon-gate process (Fairchild, 1968) was built for both reasons. Degenerate doping limits the choice to n⁺ or p⁺,
+          and n⁺ on the p-channel device gives a buried channel, hence dual-doped
+          polysilicon.</li>
+        <li>The threshold-adjust implant uses boron for both device types, and net doping after
+          compensation is a subtraction of concentrations, not exponents.</li>
+        <li>An implanted profile peaks below the surface, at <em>R</em><sub>p</sub>. Implanted
+          into bare silicon it can cross the background twice and form two junctions; through an
+          oxide chosen to place the peak at the Si/SiO₂ interface it crosses once. That is the
+          lecture's reason for the oxide; the textbooks' is suppression of channelling. Either way
+          the profile in the silicon is shallower by about the oxide thickness.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Lecture 2 (2026-08-27) for the work function, photoelectric effect, electron affinity and the 4.05–5.17 eV range. <em>φ</em><sub>MS</sub> read from the work-function-difference plot the professor distributed, after Streetman &amp; Banerjee, <i>Solid State Electronic Devices</i>. Photon relation checked against <em>hc</em>/<em>q</em> = 1.2398 eV·µm</td></tr>
+      <tr><td>§2</td><td>Lecture 2. Relative permittivity of SiO₂ 3.9 from Sze &amp; Ng, <i>Physics of Semiconductor
+      Devices</i> 3/E, appendix G. The value 11.8 for silicon is the professor's and is
+      Streetman &amp; Banerjee's, appendix III; Sze &amp; Ng give 11.9 and Taur &amp; Ning 11.7.
+      The course value is used throughout</td></tr>
+      <tr><td>§3–5</td><td>Lecture 2; class notes p. 2 for the four-term form. Strong-inversion condition <em>φ</em><sub>s</sub> = 2<em>φ</em><sub>F</sub> and the maximum depletion width from Sze &amp; Ng ch. 4, and Taur &amp; Ning, <i>Fundamentals of Modern VLSI Devices</i> 3/E, §2.3</td></tr>
+      <tr><td>§6</td><td>Lecture 2, sign-by-sign as worked at the board; Lecture 3 (2026-09-01) for the six-volt supply. Historical p-channel supplies from the Wikipedia article "PMOS logic" and its sources: −24 V to −28 V for metal gate (General Instrument, <i>Mogisters</i> brochure, 1965), 17–24 V typical (Fairchild, "CMOS, the ideal logic family", 1983), −16 V for silicon gate (<i>The Intel Memory Design Handbook</i>, 1973), and the 4004's +5 V/−10 V rails (Intel 4004 datasheet); the 5 V to 2 V reduction at 0.18 µm is class notes p. 9</td></tr>
+      <tr><td>§7</td><td>Lecture 2 for the n-channel calculation; Lecture 3 (2026-09-01) for the p-channel answer. Every intermediate value recomputed from the stated inputs. The <em>N</em><sub>c</sub> = 2.8×10¹⁹ cm⁻³ used in the discrepancy note is from Sze &amp; Ng appendix G</td></tr>
+      <tr><td>§8</td><td>Class notes p. 2 (polysilicon replaces aluminium, with the threshold equation beside it), pp. 10–11 (n⁺ poly to 0.35 µm, buried-channel p-channel leakage at 0.25 µm, p⁺ poly); Lecture 2 for the work-function reason; Lecture 3 for the self-aligned gate. History of the silicon gate: Computer History Museum, <i>The Silicon Engine</i>, "1968: Silicon Gate Technology Developed for ICs" (Watkins at General Microelectronics, 1965; Kerwin, Klein and Sarace at Bell Labs, 1967; Fairchild, 1968); R. W. Bower and H. D. Dill, "Insulated gate field effect transistors fabricated using the gate as source-drain mask", IEDM 1966; F. Faggin and T. Klein, "Silicon gate technology", <i>Solid-State Electron.</i> <b>13</b>, 1125 (1970), and the same authors in <i>Electronics</i>, 29 September 1969, pp. 88–94. The 1.1 V shift in the φ<sub>MS</sub> = φ<sub>M</sub> − φ<sub>S</sub> convention recomputed from the §7.1 values. Buried channel from counter-doping: Taur &amp; Ning 3/E §6.3.3</td></tr>
+      <tr><td>§9</td><td>Class notes p. 5 (boron for both device types); Lecture 2 for the boron argument and the net-doping arithmetic; Lecture 3 for the two-junction argument and the peak at the interface. Gaussian implant profile, Eq. (3.9), from Plummer, Deal &amp; Griffin ch. 8, Eq. (8.1); the dose relation <em>C</em><sub>p</sub> = <em>Q</em>/(√(2π)Δ<em>R</em><sub>p</sub>) is their Eq. (8.4); channelling and the screen oxide from the same, ch. 2 and ch. 8; the amorphisation threshold, about 10¹⁵ cm⁻², from their §8.5.8 (p. 484, Fig. 8-29). Equation (3.10) follows from (3.9) with <em>x</em> = 0</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m02-deep-submicron-roadmap.html"><span>Previous</span>M02 · The Deep-Submicron MOSFET: A Structural Roadmap</a>
+      <a class="next" href="m04-wafer-preparation.html"><span>Next</span>M04 · Silicon Wafer Preparation and the 300 mm Wafer</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

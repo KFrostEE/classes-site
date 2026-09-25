@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M01 · Radiation and Its Interaction with Matter — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M01 · Radiation and Its Interaction with Matter</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 01</p>
+    <h1>Radiation and Its Interaction with Matter</h1>
+    <p class="lede">
+      The particle and photon species that reach electronics, and the physical
+      mechanisms by which each transfers energy to a solid.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> none</span>
+      <span><b>Read time</b> ~40 min</span>
+      <span><b>Sources</b> Deck 03 pp. 4–11; Deck 01 pp. 6–7</span>
+    </div>
+
+    <p>
+      Every radiation effect in this course follows the same causal chain: a particle
+      deposits energy in a material, that energy generates mobile charge or displaces
+      atoms from lattice sites, the charge or damage changes a device parameter, and
+      the parameter change breaks a circuit. Total ionizing dose, single-event effects
+      and displacement damage are three outcomes of that one chain, distinguished only
+      by which mechanism dominates and whether the result accumulates.
+    </p>
+    <p>
+      This module covers the first link. It establishes what the incident species are
+      and how each couples to matter, because that coupling decides everything
+      downstream — which particles a spacecraft wall can stop, which reach a die,
+      which generate charge directly and which do so only through secondary products,
+      and which damage the lattice instead of the electrons. The environment modules
+      that follow (M02, M03) describe where these species come from and in what
+      quantity; the mechanism has to come first, because a population is only
+      hazardous in the ways its interaction physics allows.
+    </p>
+
+    <h2>1 · What radiation is</h2>
+    <p>
+      Radiation is the transport of energy through space or a material medium, as
+      either waves or particles. The term covers a wide range: thermal radiation,
+      electromagnetic radiation used for signalling, visible light, and — at the
+      energetic end — X-rays, gamma rays, and fast particles such as electrons,
+      protons, neutrons and atomic nuclei stripped of their electrons.
+    </p>
+    <p>
+      The division that matters for microelectronics is whether the radiation can
+      ionize.
+    </p>
+
+    <div class="box defn">
+      <span class="box-title">Definition</span>
+      <p>
+        <b>Ionizing radiation</b> carries enough energy per quantum to remove an
+        electron from an atom, producing an ion pair and breaking chemical bonds. The
+        conventional threshold is <b>10 eV</b>. <b>Non-ionizing radiation</b> falls
+        below it: it can heat a material, promote electrons to higher energy states,
+        and interfere with circuits electromagnetically, but it cannot ionize an atom
+        or break a covalent bond.
+      </p>
+    </div>
+
+    <p>
+      The 10 eV figure comes from the ionization potentials of the molecules that make
+      up ordinary matter — 12.1 eV for O₂, 15.6 eV for N₂, 12.6 eV for H₂O. It is
+      therefore a statement about atoms and molecules, not a claim that lower-energy
+      radiation produces no free charge at all. Promoting an electron across the
+      bandgap of a narrow-gap semiconductor takes far less: 1.12 eV in silicon. A
+      1.5 eV infrared photon generates a mobile electron–hole pair in silicon while
+      falling an order of magnitude short of ionizing an atom. That is ordinary
+      photoconductivity, and it is the basis of pulsed-laser testing, in which a
+      focused laser substitutes for a heavy ion to probe single-event response without
+      damaging the part.
+    </p>
+    <p>
+      What sub-threshold radiation cannot do is generate carriers in the wide-bandgap
+      insulators where total-dose damage originates — silicon dioxide has a bandgap
+      near 9 eV — or break bonds, or displace lattice atoms. Those are the processes
+      this course is about, which is why 10 eV is the right boundary for the subject
+      even though it is not the boundary for producing charge in silicon.
+    </p>
+
+    <p>
+      For electromagnetic radiation the energy carried by one quantum is fixed by its
+      frequency alone, so the ionizing boundary is a boundary in the spectrum.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em> = <em>hν</em> = <span class="frac"><span class="num"><em>hc</em></span><span class="den"><em>λ</em></span></span></div>
+        <div class="eq-num">(1.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em> photon energy (eV) · <em>h</em> Planck constant,
+        4.136×10⁻¹⁵ eV·s (use 6.626×10⁻³⁴ J·s if working in joules) ·
+        <em>ν</em> frequency (Hz) · <em>c</em> 2.998×10⁸ m/s ·
+        <em>λ</em> wavelength (m). In the convenient form
+        <em>E</em>[eV] · <em>λ</em>[nm] ≈ 1240, the 10 eV threshold sits at
+        λ ≈ 124 nm, in the vacuum ultraviolet.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 132" role="img" aria-labelledby="f1-t">
+        <title id="f1-t">The ionizing threshold at 10 eV on the electromagnetic spectrum</title>
+        <rect x="40"  y="40" width="122" height="26" class="dg-fill"/>
+        <rect x="162" y="40" width="130" height="26" class="dg-fill"/>
+        <rect x="292" y="40" width="13"  height="26" class="dg-fill"/>
+        <rect x="305" y="40" width="60"  height="26" class="dg-fill"/>
+        <rect x="365" y="40" width="122" height="26" class="dg-fill"/>
+        <rect x="487" y="40" width="82"  height="26" class="dg-fill"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="101" y="57">radio · microwave</text>
+          <text x="227" y="57">infrared</text>
+          <text x="335" y="57">UV</text>
+          <text x="426" y="57">X-ray</text>
+          <text x="528" y="57">gamma</text>
+          <text x="299" y="32">visible</text>
+        </g>
+        <line x1="299" y1="34" x2="299" y2="40" class="dg-rule" stroke-width="1"/>
+        <line x1="40" y1="66" x2="580" y2="66" class="dg-rule" stroke-width="1.1"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="40"  y="82">10⁻⁶</text>
+          <text x="162" y="82">10⁻³</text>
+          <text x="284" y="82">1</text>
+          <text x="406" y="82">10³</text>
+          <text x="528" y="82">10⁶</text>
+        </g>
+        <text x="310" y="102" class="dg-label" text-anchor="middle">photon energy (eV)</text>
+        <line x1="325" y1="18" x2="325" y2="72" class="dg-acc" stroke-width="2"/>
+        <text x="333" y="16" class="dg-label" font-weight="600">10 eV · ionization begins</text>
+        <line x1="45" y1="120" x2="318" y2="120" class="dg-rule" stroke-width="1"/>
+        <line x1="332" y1="120" x2="575" y2="120" class="dg-acc" stroke-width="1.4"/>
+        <text x="180" y="116" class="dg-label-sm" text-anchor="middle">non-ionizing</text>
+        <text x="455" y="116" class="dg-label-sm" text-anchor="middle">ionizing</text>
+      </svg>
+      <figcaption>
+        The threshold cuts through the ultraviolet band rather than falling at a band
+        boundary, so part of the ultraviolet range ionizes and part does not. Radio,
+        microwave, infrared and visible light all sit below it.
+      </figcaption>
+    </figure>
+
+    <h2>2 · The species that reach electronics</h2>
+    <p>
+      Six species account for essentially all radiation effects in microelectronics.
+      They differ in charge, in mass, and in energy, and those three properties
+      determine the interaction mechanism available to each.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Species</th><th>Charge</th><th>Rest mass</th><th>Where it is encountered</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Photon</b> (X-ray, gamma)</td><td>0</td><td>0</td><td>Bremsstrahlung inside shielding; Co-60 and X-ray test sources; nuclear weapon output</td></tr>
+        <tr><td><b>Electron</b> (beta)</td><td>−1<em>e</em></td><td>0.511 MeV/<em>c</em>²</td><td>Outer Van Allen belt; beta decay</td></tr>
+        <tr><td><b>Proton</b></td><td>+1<em>e</em></td><td>938 MeV/<em>c</em>²</td><td>Inner Van Allen belt; solar particle events; the bulk of galactic cosmic rays</td></tr>
+        <tr><td><b>Neutron</b></td><td>0</td><td>940 MeV/<em>c</em>²</td><td>Atmospheric cosmic-ray cascade; reactors; spallation sources</td></tr>
+        <tr><td><b>Alpha particle</b> (He nucleus)</td><td>+2<em>e</em></td><td>3727 MeV/<em>c</em>²</td><td>~9% of galactic cosmic rays; decay of trace radioisotopes in packaging</td></tr>
+        <tr><td><b>Heavy ion</b></td><td>+<em>Ze</em></td><td>varies</td><td>~1–2% of galactic cosmic rays; accelerator test beams</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>The classical names</h3>
+    <p>
+      Three of these species carry names inherited from the study of radioactivity,
+      and the names record where the particle came from rather than what it is.
+    </p>
+    <ul>
+      <li>
+        An <b>alpha particle (α)</b> is a helium-4 nucleus — two protons and two
+        neutrons, charge +2<em>e</em> — emitted when a heavy nucleus decays. Its double
+        charge and large mass make it densely ionizing over a very short range: a few
+        centimetres of air, or a sheet of paper, stops it. In microelectronics the
+        significant source is not space but the package itself, since trace uranium and
+        thorium in mould compound and solder emit alphas millimetres from the die.
+      </li>
+      <li>
+        A <b>beta particle (β)</b> is an electron, emitted from a nucleus during beta
+        decay. It is the same species as an atomic electron; the name only records the
+        nuclear origin. The positron (β⁺) is its antiparticle.
+      </li>
+      <li>
+        A <b>gamma ray (γ)</b> is a photon emitted when an excited nucleus drops to a
+        lower energy state.
+      </li>
+    </ul>
+    <p>
+      X-rays and gamma rays are physically the same thing — both are photons — and are
+      distinguished <em>by origin, not by wavelength</em>. Gamma rays come from nuclear
+      transitions. X-rays are produced outside the nucleus, either by inner-shell
+      electron transitions or by bremsstrahlung in a machine. Their energy ranges
+      overlap, so a 100 keV photon is called one or the other depending only on how it
+      was made. The two standard laboratory sources for total-dose testing are both
+      gamma emitters: cobalt-60, which emits at 1.17 and 1.33 MeV, and caesium-137, at
+      662 keV.
+    </p>
+
+    <p>
+      The organising distinction is charge. A charged particle interacts with every
+      atom it passes through the Coulomb force, and therefore loses energy
+      continuously along a well-defined path. An uncharged particle — a photon or a
+      neutron — has no such interaction and travels until it undergoes a single
+      discrete event. That difference sets penetration depth, shielding requirements,
+      and whether energy is deposited directly or through secondary products.
+    </p>
+
+    <p>
+      Deck 03 divides the interactions of charged particles into four types:
+      <b>ionization</b>, <b>excitation</b>, <b>bremsstrahlung</b> and <b>Cherenkov
+      radiation</b>. The first two remove energy from the particle into the target
+      material. The second two convert part of the particle's energy into emitted
+      electromagnetic radiation.
+    </p>
+
+    <h2>3 · Charged particles: ionization and excitation</h2>
+    <p>
+      A charged particle moving through a solid experiences the Coulomb force from
+      every atomic electron and nucleus near its path. Each encounter transfers a
+      small amount of energy and deflects the particle slightly. Because a solid
+      contains on the order of 10²³ atoms per cubic centimetre, these encounters are
+      continuous rather than occasional, and the particle slows down smoothly as it
+      travels.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 560 150" role="img" aria-labelledby="f2-t">
+        <title id="f2-t">Coulomb interaction between a charged particle and an atomic electron</title>
+        <!-- track -->
+        <line x1="30" y1="95" x2="470" y2="95" class="dg-acc" stroke-width="2"/>
+        <polygon points="470,95 458,90 458,100" class="dg-acc-f"/>
+        <text x="34" y="85" class="dg-label-sm">incident ion, charge +Ze</text>
+        <!-- atom -->
+        <circle cx="250" cy="45" r="7" class="dg-soft"/>
+        <text x="262" y="40" class="dg-label-sm">atomic electron</text>
+        <!-- force vector -->
+        <line x1="250" y1="88" x2="250" y2="55" class="dg-acc" stroke-width="1.6"/>
+        <polygon points="250,52 245,63 255,63" class="dg-acc-f"/>
+        <text x="196" y="70" class="dg-label-sm" text-anchor="end">F ∝ Ze²/r²</text>
+        <line x1="200" y1="66" x2="244" y2="70" class="dg-rule" stroke-width="1"/>
+        <!-- impact parameter -->
+        <line x1="250" y1="95" x2="250" y2="52" class="dg-rule" stroke-dasharray="2 3"/>
+        <text x="258" y="78" class="dg-label-sm">r</text>
+        <!-- outcomes -->
+        <text x="330" y="126" class="dg-label-sm">small r → ionization</text>
+        <text x="330" y="141" class="dg-label-sm">large r → excitation only</text>
+        <line x1="252" y1="100" x2="322" y2="122" class="dg-rule" stroke-width="1"/>
+      </svg>
+      <figcaption>
+        The energy transferred in a single encounter falls off with the distance of
+        closest approach. Close passes free an electron outright; distant passes only
+        promote it to a higher bound state.
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Ionization</b> occurs when the transferred energy exceeds the binding energy
+      of an atomic electron. The electron is stripped from the atom, leaving an
+      <b>ion pair</b>: the liberated electron is the negative member, the residual
+      atom the positive member. In a semiconductor the equivalent product is an
+      electron–hole pair, and it is this free charge — mobile, and able to be
+      collected by an electric field — that every ionizing radiation effect ultimately
+      depends on.
+    </p>
+    <p>
+      A liberated electron often carries enough kinetic energy to ionize further atoms
+      on its own account. Such an electron is called a <b>delta ray</b>. Delta rays
+      spread the ionization laterally away from the primary track, which widens the
+      volume from which a circuit node can collect charge and therefore matters
+      directly for single-event effects.
+    </p>
+    <p>
+      <b>Excitation</b> occurs when the transferred energy is insufficient to ionize.
+      The atomic electron is promoted to a higher energy shell and the atom later
+      de-excites, emitting a low-energy ultraviolet photon. Because it requires less
+      energy transfer, excitation happens at larger distances from the track than
+      ionization. Each excitation event still removes energy from the incident
+      particle, so it contributes to the slowing-down process even though it produces
+      no free charge.
+    </p>
+
+    <div class="box insight">
+      <span class="box-title">Why this is the central mechanism</span>
+      <p>
+        Ionization is the only process that produces mobile charge inside a device,
+        and mobile charge is what shifts a threshold voltage, upsets a memory cell, or
+        triggers latchup. Every other interaction in this module matters mainly
+        through how much ionization it eventually causes, directly or through the
+        secondary particles it creates.
+      </p>
+    </div>
+
+    <p>
+      Two material constants convert deposited energy into free charge. They differ by
+      roughly a factor of five, and using the wrong one is a common source of error
+      because a MOS device contains both materials.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Material</th><th>Energy per electron–hole pair</th><th>Initial pair density</th></tr></thead>
+      <tbody>
+        <tr><td>Silicon</td><td>3.6 eV</td><td>—</td></tr>
+        <tr><td>Silicon dioxide</td><td>17 eV</td><td><em>g</em><sub>0</sub> = 8.1×10¹² pairs/cm³ per rad(SiO₂)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>4 · Radiative losses: bremsstrahlung and Cherenkov radiation</h2>
+    <p>
+      Ionization and excitation transfer energy into the target. A charged particle
+      can also lose energy by radiating it away as electromagnetic waves. Two such
+      processes appear in this course, and both matter more for electrons than for
+      heavier particles.
+    </p>
+    <p>
+      <b>Bremsstrahlung</b> — German for braking radiation — is emitted when a charged
+      particle is deflected by the Coulomb field of an atomic nucleus. Acceleration of
+      a charge produces electromagnetic radiation, and the sharp deflection near a
+      nucleus is a large acceleration. The emitted photon can carry any energy up to
+      the full kinetic energy of the incident particle, so the spectrum is continuous
+      rather than discrete.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 150" role="img" aria-labelledby="f3-t">
+        <title id="f3-t">Bremsstrahlung emission when an electron is deflected by a nucleus</title>
+        <!-- nucleus -->
+        <circle cx="250" cy="96" r="11" class="dg-fill"/>
+        <text x="250" y="100" class="dg-label-sm" text-anchor="middle">+Ze</text>
+        <text x="250" y="128" class="dg-label-sm" text-anchor="middle">nucleus</text>
+        <!-- deflected electron path -->
+        <path d="M30,40 C150,44 214,66 240,84 C266,102 300,120 470,128"
+              class="dg-acc" stroke-width="2"/>
+        <polygon points="470,128 457,122 456,132" class="dg-acc-f"/>
+        <text x="34" y="32" class="dg-label-sm">incident electron</text>
+        <text x="400" y="118" class="dg-label-sm">deflected, slower</text>
+        <!-- emitted photon: wavy -->
+        <path d="M262,80 q8,-10 16,0 q8,10 16,0 q8,-10 16,0 q8,10 16,0 q8,-10 16,0"
+              class="dg-line" stroke-width="1.6"/>
+        <polygon points="360,80 348,75 348,85" class="dg-soft"/>
+        <text x="370" y="76" class="dg-label-sm">bremsstrahlung photon</text>
+        <text x="370" y="91" class="dg-label-sm">any energy up to E</text>
+      </svg>
+      <figcaption>
+        The photon is emitted at the expense of the particle's kinetic energy. Output
+        rises steeply with the atomic number of the absorbing material, which is why a
+        high-Z shield converts part of an electron flux into penetrating X-rays.
+      </figcaption>
+    </figure>
+
+    <p>
+      Radiative loss scales as <em>Z</em>² of the absorbing material and, for the
+      incident particle, as <em>E</em>/<em>m</em>² — linearly with its energy and
+      inversely with the square of its mass. The mass dependence is the reason
+      bremsstrahlung matters for electrons and beta particles and is negligible for
+      protons and heavy ions: a proton is 1836 times heavier than an electron, so the
+      same nuclear field deflects it far less and it radiates by a factor of order
+      10⁻⁷ as strongly. A useful engineering form is that the fraction of an
+      electron's energy lost to radiation rather than to ionization is roughly
+      <em>ZE</em>/800, with <em>E</em> in MeV — so radiation dominates only for
+      high-energy electrons in high-<em>Z</em> materials.
+    </p>
+    <p>
+      Because the emitted photons are penetrating, a high-atomic-number material
+      placed around a device can raise the dose that device receives rather than
+      lowering it. The shield converts stopped electrons into X-rays that pass
+      through it.
+    </p>
+
+    <div class="box warn">
+      <span class="box-title">Two things to check in deck 03</span>
+      <p>
+        <b>The energy scaling.</b> Deck 03 gives radiated power as proportional to
+        <em>Z</em>² × <em>E</em>². The accepted result is linear in <em>E</em>:
+        radiative stopping power is d<em>E</em>/d<em>x</em>|<sub>rad</sub> ≈
+        <em>E</em>/<em>X</em><sub>0</sub>, where the radiation length <em>X</em><sub>0</sub>
+        carries the <em>Z</em>² dependence. The value above is the standard one.
+      </p>
+      <p>
+        <b>The ELDRS label.</b> Deck 03 calls this dose-enhancement effect "Enhanced Low
+        Dose Rate Sensitivity (ELDRS)". They are distinct phenomena. Dose enhancement is
+        a <em>local</em> increase in absorbed dose near a high-Z/low-Z interface, caused
+        by the imbalance of secondary electrons crossing that boundary. ELDRS is a
+        <em>rate</em> effect in bipolar oxides, in which a given total dose causes more
+        degradation when delivered slowly than when delivered quickly; it is covered in
+        <a href="m08-tid-effects-devices-ics.html">M08</a> §9. Both worth raising with the
+        professor.
+      </p>
+    </div>
+
+    <p>
+      <b>Cherenkov radiation</b> is emitted when a charged particle travels through a
+      dielectric faster than the phase velocity of light in that medium. It is a
+      minor energy-loss channel in microelectronics but a significant source of
+      background in radiation detectors, and it is the origin of the blue glow around
+      an operating reactor core.
+    </p>
+
+    <h2>5 · Photons: three competing mechanisms</h2>
+    <p>
+      A photon carries no charge, so it does not interact continuously along a path.
+      It travels until it undergoes a single event that either destroys it or scatters
+      it, and that event transfers energy to an electron. Photons therefore ionize
+      <em>indirectly</em>: the photon itself deposits nothing, but the fast electron it
+      liberates then ionizes along its own track by the mechanism of §3.
+    </p>
+    <p>
+      Which event occurs depends on the photon energy and on the atomic number of the
+      material.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 300 160" role="img" aria-labelledby="f4a-t">
+          <title id="f4a-t">Photoelectric absorption</title>
+          <circle cx="120" cy="80" r="30" class="dg-rule" stroke-width="1.2"/>
+          <circle cx="120" cy="80" r="6" class="dg-soft"/>
+          <path d="M20,80 q8,-9 16,0 q8,9 16,0 q8,-9 16,0 q8,9 16,0"
+                class="dg-acc" stroke-width="1.8"/>
+          <polygon points="90,80 78,75 78,85" class="dg-acc-f"/>
+          <line x1="140" y1="62" x2="220" y2="34" class="dg-line" stroke-width="1.6"/>
+          <polygon points="224,32 211,32 216,42" class="dg-soft"/>
+          <text x="228" y="30" class="dg-label-sm">e⁻</text>
+          <text x="150" y="130" class="dg-label-sm" text-anchor="middle">photon absorbed entirely</text>
+          <text x="150" y="145" class="dg-label-sm" text-anchor="middle">σ rises steeply with Z</text>
+        </svg>
+        <figcaption><b>Photoelectric.</b> Dominant at low photon energy and high atomic
+        number. In silicon, 10 keV X-rays interact almost entirely this way.</figcaption>
+      </figure>
+
+      <figure class="compact">
+        <svg viewBox="0 0 300 160" role="img" aria-labelledby="f4b-t">
+          <title id="f4b-t">Compton scattering</title>
+          <circle cx="120" cy="80" r="30" class="dg-rule" stroke-width="1.2"/>
+          <circle cx="120" cy="80" r="6" class="dg-soft"/>
+          <path d="M20,80 q8,-9 16,0 q8,9 16,0 q8,-9 16,0 q8,9 16,0"
+                class="dg-acc" stroke-width="1.8"/>
+          <polygon points="90,80 78,75 78,85" class="dg-acc-f"/>
+          <path d="M146,68 q7,-8 14,0 q7,8 14,0 q7,-8 14,0 q7,8 14,0"
+                class="dg-acc" stroke-width="1.5"/>
+          <polygon points="220,68 208,63 208,73" class="dg-acc-f"/>
+          <text x="228" y="66" class="dg-label-sm">γ′</text>
+          <line x1="140" y1="96" x2="215" y2="122" class="dg-line" stroke-width="1.6"/>
+          <polygon points="219,124 206,120 212,131" class="dg-soft"/>
+          <text x="224" y="130" class="dg-label-sm">e⁻</text>
+          <text x="150" y="150" class="dg-label-sm" text-anchor="middle">photon survives, degraded</text>
+        </svg>
+        <figcaption><b>Compton.</b> Dominant at intermediate energy. Co-60 gammas
+        (1.17 and 1.33 MeV) interact with silicon by Compton scattering.</figcaption>
+      </figure>
+    </div>
+
+    <p>
+      In <b>photoelectric absorption</b> the photon is absorbed completely by a bound
+      electron, which is ejected with the photon energy less its binding energy. The
+      cross-section rises steeply as photon energy falls and as atomic number rises.
+      In <b>Compton scattering</b> the photon transfers only part of its energy to an
+      electron and continues at lower energy in a new direction. Above 1.022 MeV — twice
+      the electron rest energy — a third channel opens, <b>pair production</b>, in
+      which the photon converts into an electron–positron pair in the field of a
+      nucleus.
+    </p>
+    <p>
+      The strong atomic-number dependence of photoelectric absorption has a direct
+      practical consequence. At an interface between a high-Z material and a low-Z one
+      — a tungsten or tantalum layer against silicon dioxide, for instance — the
+      high-Z side generates far more secondary electrons than the low-Z side. Those
+      electrons cross the boundary and deposit their energy in the low-Z material,
+      raising its local dose well above what the incident photon fluence alone would
+      predict. The effect is largest for low photon energies and high atomic numbers, and
+      Deck 03 reports the largest measured factors — <b>8 to 10</b> in thin oxides — beside
+      very high-Z layers such as gold at X-ray energies near 100 keV. A part tested with a
+      10 keV X-ray source can therefore absorb substantially more dose than the same part
+      in a Co-60 gamma field at nominally the same dose, purely because of its packaging
+      and metallisation. <a href="m04-quantifying-energy-deposition.html">M04</a> §5
+      quantifies this as the dose enhancement factor.
+    </p>
+
+    <p>
+      Because each photon either interacts or does not, a photon beam is attenuated
+      exponentially and has no definite range. Adding shielding reduces the intensity
+      by a constant factor per unit thickness, but never to zero.
+    </p>
+
+    <h2>6 · Neutrons: no charge, no Coulomb interaction</h2>
+    <p>
+      The neutron is the species that behaves least like the others, and the reason is
+      simply that it has no electric charge. It cannot interact with atomic electrons
+      through the Coulomb force, so the continuous slowing-down process of §3 is
+      unavailable to it. A neutron passing through a solid is unaffected by the
+      electron cloud entirely. It interacts only when it comes within roughly a nuclear
+      diameter — about 10⁻¹² cm — of a nucleus.
+    </p>
+    <p>
+      A nucleus is around five orders of magnitude smaller in radius than an atom, so
+      that is a rare event. This single fact explains the neutron's behaviour: it
+      travels far, it is difficult to shield, and it deposits energy in a few large
+      discrete steps rather than many small continuous ones.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 215" role="img" aria-labelledby="f5-t">
+        <title id="f5-t">Comparison of a proton track and a neutron path in the same material</title>
+
+        <rect x="100" y="18" width="440" height="132" class="dg-fill"/>
+        <text x="104" y="12" class="dg-label-sm">material</text>
+
+        <!-- proton: continuous ionization, stops at a definite depth -->
+        <text x="8" y="58" class="dg-label-sm">proton</text>
+        <line x1="44" y1="62" x2="300" y2="62" class="dg-acc" stroke-width="2"/>
+        <g class="dg-acc-f">
+          <circle cx="140" cy="55" r="2.4"/><circle cx="140" cy="69" r="2.4"/>
+          <circle cx="170" cy="55" r="2.4"/><circle cx="170" cy="69" r="2.4"/>
+          <circle cx="200" cy="54" r="2.4"/><circle cx="200" cy="70" r="2.4"/>
+          <circle cx="230" cy="53" r="2.4"/><circle cx="230" cy="71" r="2.4"/>
+          <circle cx="258" cy="52" r="2.4"/><circle cx="258" cy="72" r="2.4"/>
+          <circle cx="282" cy="50" r="2.4"/><circle cx="282" cy="74" r="2.4"/>
+        </g>
+        <circle cx="300" cy="62" r="4" class="dg-acc-f"/>
+        <text x="312" y="58" class="dg-label-sm">stops — finite range</text>
+        <text x="312" y="73" class="dg-label-sm">ion pairs along the whole track</text>
+
+        <!-- neutron: no electronic interaction, then one nuclear event -->
+        <text x="8" y="118" class="dg-label-sm">neutron</text>
+        <line x1="44" y1="122" x2="400" y2="122" class="dg-line" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="150" y="114" class="dg-label-sm">no interaction with electrons</text>
+        <circle cx="400" cy="122" r="5" class="dg-acc-f"/>
+        <line x1="404" y1="119" x2="470" y2="96" class="dg-acc" stroke-width="1.6"/>
+        <line x1="404" y1="126" x2="462" y2="148" class="dg-acc" stroke-width="1.6"/>
+        <line x1="398" y1="128" x2="386" y2="166" class="dg-rule" stroke-width="1"/>
+        <text x="348" y="182" class="dg-label-sm">one nuclear collision</text>
+        <text x="348" y="197" class="dg-label-sm">recoil nuclei ionize densely</text>
+      </svg>
+      <figcaption>
+        Both particles ultimately produce ionization, but by different routes. The
+        proton ionizes directly and continuously and comes to rest at a predictable
+        depth. The neutron passes through unaffected until one nuclear collision, then
+        deposits its energy through charged recoil products created at that point.
+      </figcaption>
+    </figure>
+
+    <p>
+      When a neutron does interact, it does so with the nucleus, by one of four
+      routes. In <b>elastic scattering</b> it transfers kinetic energy to the nucleus,
+      which recoils as a charged ion and then ionizes densely over a short distance.
+      In <b>inelastic scattering</b> the nucleus is left excited and de-excites by
+      emitting a gamma ray. In <b>capture</b> the nucleus absorbs the neutron entirely
+      and emits a charged product — an (n,α) or (n,p) reaction. At high energy,
+      <b>spallation</b> breaks the nucleus apart into several charged fragments. Every
+      route ends in charged particles, so the neutron is an <em>indirectly ionizing</em>
+      particle in the same sense as the photon.
+    </p>
+    <p>
+      Capture matters far more than its share of the cross-section suggests, because it
+      is strongly favoured at low neutron energy while the scattering routes are not.
+      Boron-10 has an exceptionally large thermal-neutron capture cross-section and
+      undergoes <sup>10</sup>B(n,α)<sup>7</sup>Li, releasing about 2.8 MeV shared
+      between an alpha particle and a lithium recoil. Both products are charged, both
+      ionize densely, and both are created inside the die rather than arriving from
+      outside. Borophosphosilicate glass was for years a standard dielectric, and the
+      resulting thermal-neutron upsets became a leading terrestrial soft-error
+      mechanism in deep-submicron parts. This is why thermal-neutron testing is a
+      separate qualification step from high-energy neutron testing, and why boron
+      content in a process is a radiation-hardness question rather than only a doping
+      question.
+    </p>
+
+    <div class="box insight">
+      <span class="box-title">Why neutrons are hard to shield and protons are not</span>
+      <p>
+        A proton loses energy to every atom it passes, so its energy falls
+        continuously and it stops at a definite depth. Enough material always stops
+        it, and the required thickness is calculable.
+      </p>
+      <p>
+        A neutron only loses energy in a nuclear collision, and those are rare. It
+        cannot be stopped at a fixed depth — only attenuated exponentially, like a
+        photon. Adding material reduces the transmitted flux by a fixed fraction per
+        unit thickness and never eliminates it. Energy transfer in elastic scattering
+        is also most efficient when the target nucleus has a mass close to the
+        neutron's, which is why hydrogen-rich materials such as polyethylene and water
+        are effective moderators while dense high-Z metals are comparatively poor ones.
+        Shielding intuition built on stopping charged particles gives the wrong answer
+        for neutrons in both thickness and material choice.
+      </p>
+    </div>
+
+    <h2>7 · How protons cause single-event effects</h2>
+    <p>
+      Protons are the most abundant energetic particle in the space environment, and
+      their direct ionization is comparatively weak. A proton carries a single unit of
+      charge, so the density of electron–hole pairs along its track is low — for a long
+      time, reliably too low to deposit the charge needed to upset a memory cell
+      directly.
+    </p>
+    <p>
+      The hazard comes from a second route. A high-energy proton can undergo a nuclear
+      reaction with a silicon nucleus in the device itself, producing recoil nuclei and
+      alpha particles. These fragments are heavy and multiply charged, so they ionize
+      far more densely than the incident proton did, over a short path inside the
+      sensitive volume. The proton acts as a delivery mechanism for a locally produced
+      heavy ion.
+    </p>
+    <p>
+      This is why proton testing is a standard part of qualification even for parts
+      that will not encounter heavy ions directly, and why proton beams around
+      200 MeV — the energy available at most accelerator and medical facilities — are
+      used to reproduce single-event behaviour on the ground.
+    </p>
+
+    <div class="box warn">
+      <span class="box-title">Where the indirect-only picture stops holding</span>
+      <p>
+        The argument above assumes the charge needed to upset a node is large compared
+        with what a proton deposits directly. That assumption fails as devices scale.
+        Below roughly the 65 nm node the critical charge becomes small enough that
+        <b>direct</b> ionization by low-energy protons — ordinary Coulomb energy loss,
+        no nuclear reaction — can upset a cell on its own, and in some advanced
+        technologies and orbits it dominates the total proton upset rate.
+      </p>
+      <p>
+        The practical consequence is that both mechanisms must now be evaluated
+        separately, and the low-energy end of the proton spectrum, which older analyses
+        could safely discard, becomes the part that matters. The course materials
+        present the indirect mechanism without this qualification, which was correct
+        for the technology generations the classical results were established on.
+      </p>
+    </div>
+
+    <h2>8 · Two ways to deposit energy</h2>
+    <p>
+      Everything so far has concerned energy transferred to <em>electrons</em>. A
+      moving particle can also transfer energy directly to a <em>nucleus</em>, and if
+      that transfer exceeds the energy binding the atom to its lattice site, the atom
+      is knocked out of position. The two channels are distinguished by which
+      subsystem of the solid receives the energy.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 560 170" role="img" aria-labelledby="f6-t">
+        <title id="f6-t">Electronic stopping produces charge; nuclear stopping displaces atoms</title>
+        <!-- lattice -->
+        <g class="dg-rule" stroke-width="1">
+          <line x1="40" y1="46" x2="250" y2="46"/><line x1="40" y1="96" x2="250" y2="96"/>
+          <line x1="40" y1="146" x2="250" y2="146"/>
+          <line x1="75" y1="30" x2="75" y2="150"/><line x1="145" y1="30" x2="145" y2="150"/>
+          <line x1="215" y1="30" x2="215" y2="150"/>
+        </g>
+        <g class="dg-soft">
+          <circle cx="75" cy="46" r="5"/><circle cx="145" cy="46" r="5"/><circle cx="215" cy="46" r="5"/>
+          <circle cx="75" cy="96" r="5"/><circle cx="145" cy="96" r="5"/><circle cx="215" cy="96" r="5"/>
+          <circle cx="75" cy="146" r="5"/><circle cx="145" cy="146" r="5"/><circle cx="215" cy="146" r="5"/>
+        </g>
+        <g class="dg-acc-f">
+          <circle cx="110" cy="70" r="2.6"/><circle cx="180" cy="70" r="2.6"/>
+          <circle cx="110" cy="122" r="2.6"/><circle cx="180" cy="122" r="2.6"/>
+        </g>
+        <text x="145" y="18" class="dg-label-sm" text-anchor="middle">electronic stopping</text>
+        <text x="145" y="166" class="dg-label-sm" text-anchor="middle">lattice intact · free charge created</text>
+
+        <!-- displacement side -->
+        <g class="dg-rule" stroke-width="1">
+          <line x1="310" y1="46" x2="520" y2="46"/><line x1="310" y1="96" x2="520" y2="96"/>
+          <line x1="310" y1="146" x2="520" y2="146"/>
+          <line x1="345" y1="30" x2="345" y2="150"/><line x1="415" y1="30" x2="415" y2="150"/>
+          <line x1="485" y1="30" x2="485" y2="150"/>
+        </g>
+        <g class="dg-soft">
+          <circle cx="345" cy="46" r="5"/><circle cx="415" cy="46" r="5"/><circle cx="485" cy="46" r="5"/>
+          <circle cx="345" cy="96" r="5"/><circle cx="485" cy="96" r="5"/>
+          <circle cx="345" cy="146" r="5"/><circle cx="415" cy="146" r="5"/><circle cx="485" cy="146" r="5"/>
+        </g>
+        <circle cx="415" cy="96" r="6" class="dg-rule" stroke-dasharray="2 2"/>
+        <circle cx="452" cy="72" r="5" class="dg-acc-f"/>
+        <line x1="421" y1="93" x2="446" y2="76" class="dg-acc" stroke-width="1.4"/>
+        <text x="415" y="18" class="dg-label-sm" text-anchor="middle">nuclear stopping</text>
+        <text x="415" y="166" class="dg-label-sm" text-anchor="middle">vacancy + interstitial · permanent</text>
+      </svg>
+      <figcaption>
+        The same incident particle can do both. Which channel dominates depends on its
+        mass and energy: light, fast particles lose almost all their energy to
+        electrons, while heavy, slow ones transfer an increasing share to nuclei.
+      </figcaption>
+    </figure>
+
+    <p>
+      Energy given to electrons is <b>ionizing</b> energy loss. It creates free charge,
+      and in a dielectric that charge can become trapped, which is the origin of total
+      ionizing dose effects. Energy given to nuclei is <b>non-ionizing</b> energy loss,
+      quantified as NIEL. It creates a vacancy and an interstitial. Most such pairs recombine almost at once and part of the remainder anneals at room temperature over minutes to months, but the defects that survive are stable, and they introduce new energy levels in the bandgap (<a href="m12-displacement-damage.html">M12</a> §5). This is the origin of displacement damage.
+    </p>
+    <p>
+      The distinction between these two channels, crossed with whether the effect
+      accumulates over many particles or is caused by a single one, generates the
+      complete taxonomy of radiation effects. M04 quantifies both channels, and M05
+      builds the taxonomy from them.
+    </p>
+
+    <h2>Where this leaves us</h2>
+    <p>
+      Two properties organize everything in this module. The first is charge. A charged
+      particle interacts through the Coulomb force with every atom along its path, loses
+      energy continuously, and comes to rest at a calculable depth. An uncharged
+      particle interacts only in discrete events and is therefore attenuated rather than
+      stopped, with no definite range at all. That single distinction fixes what
+      shielding can achieve: a spacecraft wall can absorb trapped electrons completely,
+      but it can only thin a flux of galactic cosmic rays or atmospheric neutrons, never
+      eliminate it.
+    </p>
+    <p>
+      The second property is which subsystem of the solid receives the energy. Energy
+      delivered to electrons liberates charge; energy delivered to nuclei displaces
+      atoms from lattice sites. Both channels are open to most particles, and their
+      relative weight shifts with the particle's mass and velocity. The three effects
+      the field is named for are these two channels observed at different scales —
+      accumulated over an enormous number of particles, or resolved down to the passage
+      of one.
+    </p>
+    <p>
+      The behaviour of each species follows from those two axes. Photons ionize
+      indirectly, through the fast electron that a photoelectric or Compton event
+      liberates. Neutrons ionize indirectly, through the charged recoils and reaction
+      products of a nuclear collision — including the alpha and lithium nucleus that
+      thermal capture on boron-10 leaves inside the die. Protons do both: weakly and
+      directly along their own track, strongly and indirectly through the fragments of a
+      nuclear reaction, with the balance between the two now set by how small the
+      transistor is. Heavy ions need no intermediary, which is why they define the
+      worst case and why accelerator time is spent on them.
+    </p>
+    <p>
+      What is still missing is quantity. Nothing established here says how much energy a
+      given particle deposits per unit length, how many electron–hole pairs that
+      produces, or where along the track the deposition peaks. Those numbers are the
+      subject of M04, and they are what turn a mechanism into a prediction. M02 and M03
+      supply the other half of the problem — which of these species actually arrive, in
+      what flux, at a given orbit or altitude. Mechanism and environment together are
+      what make a radiation requirement computable rather than merely plausible.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Quick reference</p>
+      <ul>
+        <li><b>Ionizing radiation</b> exceeds roughly 10 eV per quantum and can free an electron. Below that, energy arrives as heat or excitation only.</li>
+        <li><b>Charged particles</b> interact with every atom they pass through the Coulomb force. They lose energy continuously, ionize directly and densely, and stop at a definite range.</li>
+        <li><b>Photons and neutrons</b> carry no charge, interact only in discrete events, are attenuated exponentially with no definite range, and ionize indirectly through the charged secondaries they produce.</li>
+        <li>Neutrons are hard to shield because nuclear collisions are rare; hydrogen-rich materials moderate them better than dense metals. Thermal neutrons are captured by <sup>10</sup>B, producing an alpha and a lithium recoil inside the die.</li>
+        <li>The four charged-particle interactions are <b>ionization</b> and <b>excitation</b> (energy into the target) and <b>bremsstrahlung</b> and <b>Cherenkov radiation</b> (energy radiated away).</li>
+        <li>Photon interaction is <b>photoelectric</b> at low energy and high Z, <b>Compton</b> at intermediate energy, <b>pair production</b> above 1.022 MeV. The Z dependence produces dose enhancement at high-Z interfaces — a significant issue for 10 keV X-ray testing, and reaching 8–10× in thin oxides beside gold near 100 keV.</li>
+        <li>Protons cause single-event effects <b>indirectly</b>, through nuclear reactions producing dense-ionizing recoils — and, below roughly 65 nm, also <b>directly</b> by their own ionization.</li>
+        <li>Energy to electrons → free charge → TID. Energy to nuclei → lattice defects → displacement damage. Pair creation costs <b>3.6 eV in Si</b>, <b>17 eV in SiO₂</b>.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 01 pp. 6–7; Deck 03 p. 3</td></tr>
+      <tr><td>§2</td><td>Deck 03 pp. 4–5; Deck 01 pp. 8, 12</td></tr>
+      <tr><td>§3</td><td>Deck 03 pp. 5–7 (ionization, excitation, delta rays); Deck 03 p. 19 (<em>g</em><sub>0</sub>)</td></tr>
+      <tr><td>§4</td><td>Deck 03 pp. 4, 8–9</td></tr>
+      <tr><td>§5</td><td>Deck 03 pp. 17–21; Evans, <em>The Atomic Nucleus</em> (1955); Long <em>et al.</em>, <em>Handbook for Dose Enhancement Effects in Electronic Devices</em> (1983, DTIC ADA128490)</td></tr>
+      <tr><td>§6</td><td>Deck 01 pp. 44–45; standard neutron interaction physics — not covered in the course slides, added as background</td></tr>
+      <tr><td>§7</td><td>Deck 03 p. 25</td></tr>
+      <tr><td>§8</td><td>Deck 03 pp. 3, 25; expanded in <a href="m04-quantifying-energy-deposition.html">M04</a> §6 and <a href="m12-displacement-damage.html">M12</a> §§1–2</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="index.html"><span>Back to</span>Course home</a>
+      <a class="next" href="m02-space-radiation-environment.html"><span>Next</span>M02 · The Space Radiation Environment</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

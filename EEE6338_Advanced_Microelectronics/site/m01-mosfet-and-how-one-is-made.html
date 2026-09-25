@@ -1,0 +1,1314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M01 · The MOSFET and How One Is Made — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M01 · The MOSFET and How One Is Made</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 01 · Background</p>
+    <h1>The MOSFET and How One Is Made</h1>
+    <p class="lede">
+      The metal–oxide–semiconductor field-effect transistor: what the structure is,
+      how a gate voltage creates a conducting channel, and the sequence of process
+      steps that produces one.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> none</span>
+      <span><b>Read time</b> ~45 min</span>
+      <span><b>Sources</b> Lecture 1; Streetman figs. 8-9 to 8-11; Plummer ch. 6, 10</span>
+    </div>
+
+    <p>
+      This course is about fabrication. Its subject is the sequence of physical and
+      chemical steps that turns a disc of silicon into several hundred million working
+      transistors, and its organising question is what breaks in that sequence each
+      time the transistor is made smaller. Answering that question requires a working
+      model of the device itself: what each region does, which dimension controls which
+      electrical parameter, and which process step establishes it.
+    </p>
+    <p>
+      This module supplies that model. It is background rather than new material — the
+      course assumes it and does not teach it, and it is the one module here built from
+      the lecture and from standard device texts rather than from the class notes. A
+      reader who has taken a semiconductor devices course will already have all of it
+      and can go directly to <a href="m02-deep-submicron-roadmap.html">M02</a>. Everything
+      that follows in the course is a modification of the structure and the process
+      described here, so the two are presented together: first the device and the
+      physics that makes it switch, then the mask-by-mask sequence that builds it.
+    </p>
+
+    <div class="box defn">
+      <p class="box-title">Assumed background</p>
+      <p>
+        This module takes as given: the distinction between conduction and valence
+        bands and the band gap between them; electrons and holes as the two mobile
+        carrier species; donor and acceptor doping, and the resulting n-type and p-type
+        material; majority and minority carriers; drift and diffusion as the two
+        transport mechanisms; carrier mobility; and the depletion region of a reverse-biased
+        pn junction. Silicon has a band gap of 1.12 eV at room temperature and an
+        intrinsic carrier concentration <em>n</em><sub>i</sub> of 1.5×10¹⁰ cm⁻³.
+      </p>
+      <p>
+        That value of <em>n</em><sub>i</sub> is the classical textbook figure, and it is
+        the one the class notes and every calculation in this course use. The currently
+        accepted measured value is 9.65×10⁹ cm⁻³. The difference is not cosmetic: it
+        shifts <em>φ</em><sub>F</sub> by about 11 mV and therefore 2<em>φ</em><sub>F</sub>
+        by about 23 mV in the threshold-voltage calculation of
+        <a href="m03-threshold-voltage.html">M03</a>. Use 1.5×10¹⁰ cm⁻³ for consistency
+        with the course, and know that the smaller value is the physically correct one.
+      </p>
+    </div>
+
+    <h2>1 · The MOS capacitor</h2>
+
+    <p>
+      The gate of a MOSFET is a capacitor, and every property of the transistor that
+      matters in this course follows from the behaviour of that capacitor. It is built
+      by growing an insulating layer of silicon dioxide on a silicon surface and placing
+      a conducting electrode on top. The three layers give the structure its name:
+      metal, oxide, semiconductor.
+    </p>
+    <p>
+      The distinguishing feature of this capacitor is that one of its two plates is a
+      semiconductor rather than a metal. A metal plate holds any charge placed on it in
+      a sheet a fraction of a nanometre thick, because its carrier density is around
+      10²² cm⁻³ and the charge needed is trivially available. Silicon doped at 10¹⁵ to
+      10¹⁶ cm⁻³ has six or seven orders of magnitude fewer carriers, so the charge that
+      balances the gate must be gathered from a layer hundreds of nanometres deep, and
+      the silicon side of the capacitor develops an internal electric field and a
+      position-dependent potential. That field is the mechanism the transistor uses.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 400 196" role="img" aria-labelledby="m1f1-t">
+        <title id="m1f1-t">Cross-section of a MOS capacitor: gate electrode on silicon dioxide on p-type silicon</title>
+        <rect x="70" y="36" width="220" height="28" class="dg-fill"/>
+        <rect x="70" y="64" width="220" height="18" class="dg-fill"/>
+        <rect x="70" y="82" width="220" height="88" class="dg-fill"/>
+        <text x="180" y="55" class="dg-label" text-anchor="middle">gate electrode</text>
+        <text x="180" y="77" class="dg-label" text-anchor="middle">SiO₂</text>
+        <text x="180" y="118" class="dg-label" text-anchor="middle">p-type silicon</text>
+        <text x="180" y="138" class="dg-label" text-anchor="middle">N<tspan baseline-shift="sub" style="font-size:75%">A</tspan> ≈ 10¹⁵–10¹⁶ cm⁻³</text>
+        <g class="dg-acc" stroke-width="1.6">
+          <line x1="304" y1="64" x2="304" y2="82"/>
+          <line x1="298" y1="64" x2="310" y2="64"/>
+          <line x1="298" y1="82" x2="310" y2="82"/>
+        </g>
+        <text x="316" y="78" class="dg-label">t<tspan baseline-shift="sub" style="font-size:75%">ox</tspan></text>
+        <line x1="180" y1="36" x2="180" y2="20" class="dg-rule" stroke-width="1.2"/>
+        <text x="190" y="18" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan></text>
+        <line x1="70" y1="171.5" x2="290" y2="171.5" class="dg-rule" stroke-width="3"/>
+        <line x1="290" y1="171.5" x2="316" y2="171.5" class="dg-rule" stroke-width="1.4"/>
+        <line x1="316" y1="171.5" x2="316" y2="180" class="dg-rule" stroke-width="1.4"/>
+        <line x1="306" y1="180" x2="326" y2="180" class="dg-rule" stroke-width="1.4"/>
+        <line x1="310" y1="185" x2="322" y2="185" class="dg-rule" stroke-width="1.2"/>
+        <line x1="314" y1="190" x2="318" y2="190" class="dg-rule" stroke-width="1"/>
+        <text x="180" y="190" class="dg-label" text-anchor="middle">substrate contact, grounded</text>
+      </svg>
+      <figcaption>
+        The oxide thickness <em>t</em><sub>ox</sub> is the only dimension in the
+        structure that sets how strongly the gate controls the silicon. Scaling it down
+        is the subject of two later modules. Not to scale: the oxide is between a few
+        nanometres and a tenth of a micrometre thick, the silicon hundreds of micrometres.
+      </figcaption>
+    </figure>
+
+    <p>
+      Because the oxide is an insulator, no steady current flows between the gate and
+      the silicon. The gate acts purely through the electric field it imposes, which is
+      the origin of the term <em>field-effect</em>. The capacitance per unit area of
+      the structure follows the parallel-plate result, with the oxide as the dielectric:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em><sub>ox</sub> = <span class="frac"><span class="num"><em>ε</em><sub>ox</sub> <em>ε</em><sub>0</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(1.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>ox</sub> oxide capacitance <b>per unit area</b> (F/cm²) ·
+        <em>ε</em><sub>ox</sub> relative permittivity of SiO₂, 3.9, dimensionless ·
+        <em>ε</em><sub>0</sub> permittivity of free space, 8.85×10⁻¹⁴ F/cm ·
+        <em>t</em><sub>ox</sub> oxide thickness (cm).
+        This course works in centimetres throughout, so <em>ε</em><sub>0</sub> takes the
+        F/cm value and a thickness quoted in ångströms must be converted with
+        1 Å = 10⁻⁸ cm.
+      </div>
+    </div>
+
+    <p>
+      Capacitance per unit area is the form used everywhere in this course, and the
+      division by area is performed immediately rather than carried through the algebra.
+      A capacitance for a specific device is recovered by multiplying by the gate area
+      at the end.
+    </p>
+
+    <h2>2 · What a gate voltage does to the silicon</h2>
+
+    <p>
+      Consider a p-type substrate, in which holes are the majority carriers and the
+      fixed, ionised acceptor atoms carry a matching negative charge. Applying a voltage
+      to the gate induces a compensating charge in the silicon, and the sign of that
+      voltage determines which of three physically distinct responses occurs.
+    </p>
+    <p>
+      A <b>negative</b> gate voltage draws holes toward the surface. The hole
+      concentration at the oxide interface rises above its bulk value, and the required
+      charge is supplied within a very thin surface layer because holes are abundant.
+      This is <b>accumulation</b>.
+    </p>
+    <p>
+      A <b>small positive</b> gate voltage repels holes from the surface. They move into
+      the bulk, leaving behind the ionised acceptor atoms, which are fixed in the lattice
+      and cannot move. The surface region is now stripped of mobile carriers and carries
+      a net negative charge from those exposed acceptors. This is <b>depletion</b>, and
+      the layer is a depletion region of exactly the kind found at a reverse-biased pn
+      junction. Increasing the gate voltage widens it, because more exposed acceptor
+      charge is needed to balance the larger gate charge.
+    </p>
+    <p>
+      A <b>large positive</b> gate voltage does something qualitatively different. Once
+      the surface has been depleted, further increases in gate voltage bend the silicon
+      bands far enough that the surface becomes energetically favourable for electrons —
+      the minority carriers. A thin layer of mobile electrons forms at the oxide
+      interface, on top of the depletion region beneath it. The surface of a p-type
+      substrate has become n-type. This is <b>inversion</b>, and the electron layer is
+      the <b>channel</b>. The gate voltage at which the channel is taken to have formed
+      is the <b>threshold voltage</b> <em>V</em><sub>T</sub>; §3 puts it to work, and
+      <a href="m03-threshold-voltage.html">M03</a> derives it term by term.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 440 234" role="img" aria-labelledby="m1f2-t">
+        <title id="m1f2-t">The three bias regimes of a MOS capacitor on p-type silicon: accumulation, depletion, and inversion</title>
+        <!-- accumulation -->
+        <text x="76" y="14" class="dg-label" text-anchor="middle" style="font-weight:700">accumulation</text>
+        <text x="76" y="30" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> &lt; 0</text>
+        <rect x="12" y="38" width="128" height="18" class="dg-fill"/>
+        <rect x="12" y="56" width="128" height="10" class="dg-fill"/>
+        <rect x="12" y="66" width="128" height="100" class="dg-fill"/>
+        <text x="76" y="51" class="dg-label" text-anchor="middle">gate</text>
+        <g class="dg-label" style="font-size:16px;font-weight:700" text-anchor="middle">
+          <text x="20" y="80">+</text><text x="36" y="80">+</text><text x="52" y="80">+</text><text x="68" y="80">+</text>
+          <text x="84" y="80">+</text><text x="100" y="80">+</text><text x="116" y="80">+</text><text x="132" y="80">+</text>
+          <text x="28" y="94">+</text><text x="60" y="94">+</text><text x="92" y="94">+</text><text x="124" y="94">+</text>
+        </g>
+        <text x="76" y="150" class="dg-label" text-anchor="middle">p-type bulk</text>
+        <text x="76" y="186" class="dg-label" text-anchor="middle">holes gather</text>
+        <text x="76" y="202" class="dg-label" text-anchor="middle">at the surface</text>
+        <!-- depletion -->
+        <text x="220" y="14" class="dg-label" text-anchor="middle" style="font-weight:700">depletion</text>
+        <text x="220" y="30" class="dg-label" text-anchor="middle">small V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> &gt; 0</text>
+        <rect x="156" y="38" width="128" height="18" class="dg-fill"/>
+        <rect x="156" y="56" width="128" height="10" class="dg-fill"/>
+        <rect x="156" y="66" width="128" height="100" class="dg-fill"/>
+        <text x="220" y="51" class="dg-label" text-anchor="middle">gate</text>
+        <g class="dg-label" style="font-size:16px;font-weight:700" text-anchor="middle">
+          <text x="172" y="88">−</text><text x="198" y="88">−</text><text x="224" y="88">−</text><text x="250" y="88">−</text><text x="272" y="88">−</text>
+          <text x="185" y="106">−</text><text x="211" y="106">−</text><text x="237" y="106">−</text><text x="263" y="106">−</text>
+        </g>
+        <line x1="156" y1="116" x2="284" y2="116" class="dg-guide" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <text x="220" y="150" class="dg-label" text-anchor="middle">p-type bulk</text>
+        <text x="220" y="186" class="dg-label" text-anchor="middle">acceptors exposed,</text>
+        <text x="220" y="202" class="dg-label" text-anchor="middle">no mobile carriers</text>
+        <!-- inversion -->
+        <text x="364" y="14" class="dg-label" text-anchor="middle" style="font-weight:700">inversion</text>
+        <text x="364" y="30" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> &gt; V<tspan baseline-shift="sub" style="font-size:75%">T</tspan></text>
+        <rect x="300" y="38" width="128" height="18" class="dg-fill"/>
+        <rect x="300" y="56" width="128" height="10" class="dg-fill"/>
+        <rect x="300" y="66" width="128" height="100" class="dg-fill"/>
+        <text x="364" y="51" class="dg-label" text-anchor="middle">gate</text>
+        <rect x="300" y="66" width="128" height="7" class="dg-acc-f"/>
+        <g class="dg-label" style="font-size:16px;font-weight:700" text-anchor="middle">
+          <text x="316" y="94">−</text><text x="342" y="94">−</text><text x="368" y="94">−</text><text x="394" y="94">−</text><text x="416" y="94">−</text>
+          <text x="329" y="112">−</text><text x="355" y="112">−</text><text x="381" y="112">−</text><text x="407" y="112">−</text>
+        </g>
+        <line x1="300" y1="122" x2="428" y2="122" class="dg-guide" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <text x="364" y="150" class="dg-label" text-anchor="middle">p-type bulk</text>
+        <text x="364" y="186" class="dg-label" text-anchor="middle">electron channel</text>
+        <text x="364" y="202" class="dg-label" text-anchor="middle">over the depletion layer</text>
+        <!-- key -->
+        <line x1="12" y1="212" x2="428" y2="212" class="dg-guide" stroke-width="1"/>
+        <text x="30" y="229" class="dg-label" style="font-size:16px;font-weight:700" text-anchor="middle">+</text>
+        <text x="40" y="228" class="dg-label">hole</text>
+        <text x="90" y="229" class="dg-label" style="font-size:16px;font-weight:700" text-anchor="middle">−</text>
+        <text x="100" y="228" class="dg-label">ionised acceptor, fixed</text>
+        <rect x="254" y="219" width="22" height="7" class="dg-acc-f"/>
+        <text x="282" y="228" class="dg-label">inversion electrons</text>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> The same capacitor — gate, thin oxide, p-type silicon — under
+        three gate biases. Only the third state puts electrons at the surface: an n-type
+        layer that can join an n⁺ source to an n⁺ drain (§3). The depletion region does
+        not disappear at inversion — it sits underneath the channel, and the charge it
+        contains is one of the four terms in the threshold voltage derived in
+        <a href="m03-threshold-voltage.html">M03</a>.
+      </figcaption>
+    </figure>
+
+    <p>
+      The transition to inversion is gradual in principle and is made definite by a
+      convention. The <b>Fermi potential</b> <em>φ</em><sub>F</sub> measures how far the
+      Fermi level sits from the middle of the band gap in the neutral bulk, and it is
+      fixed by the doping:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>φ</em><sub>F</sub> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> ln <span class="dl">(</span><span class="frac"><span class="num"><em>N</em><sub>A</sub></span><span class="den"><em>n</em><sub>i</sub></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(1.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>φ</em><sub>F</sub> Fermi potential (V) ·
+        <em>kT</em>/<em>q</em> thermal voltage, 0.0259 V at <em>T</em> = 300 K ·
+        <em>N</em><sub>A</sub> acceptor concentration (cm⁻³) ·
+        <em>n</em><sub>i</sub> intrinsic carrier concentration, 1.5×10¹⁰ cm⁻³ for silicon.
+        The logarithm is natural, not base ten. For an n-type substrate the Fermi level
+        lies above midgap and the potential changes sign:
+        <em>φ</em><sub>F</sub> = −(<em>kT</em>/<em>q</em>) ln(<em>N</em><sub>D</sub>/<em>n</em><sub>i</sub>).
+        The magnitude comes from the same expression with <em>N</em><sub>D</sub> in place
+        of <em>N</em><sub>A</sub>, but the minus sign has to be put in deliberately —
+        substituting alone returns a positive number for either doping type.
+      </div>
+    </div>
+
+    <p>
+      <b>Strong inversion</b> is defined as the condition in which the bands at the
+      surface have bent by twice this amount. At that point the electron concentration
+      at the surface equals the hole concentration in the bulk, so the surface is as
+      strongly n-type as the substrate is p-type:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>φ</em><sub>s</sub> = 2<em>φ</em><sub>F</sub></div>
+        <div class="eq-num">(1.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>φ</em><sub>s</sub> surface potential, the total band bending from the bulk to
+        the oxide interface (V) · <em>φ</em><sub>F</sub> Fermi potential from (1.2) (V).
+        This is a definition adopted by convention, not a sharp physical threshold;
+        inversion charge exists below it and grows continuously through it. Its value is
+        that it makes the threshold voltage a well-defined quantity, and the factor of
+        two appears directly in the threshold expression as the term 2<em>φ</em><sub>F</sub>.
+      </div>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 400 318" role="img" aria-labelledby="m1f3-t">
+        <title id="m1f3-t">Band diagram of p-type silicon at the onset of strong inversion, showing the surface potential equal to twice the Fermi potential</title>
+        <defs>
+          <marker id="m1f3-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+        <!-- oxide region and interface -->
+        <rect x="24" y="40" width="50" height="242" class="dg-fill"/>
+        <line x1="74" y1="40" x2="74" y2="282" class="dg-rule" stroke-width="1.2"/>
+        <text x="49" y="304" class="dg-label" text-anchor="middle">oxide</text>
+        <text x="240" y="306" class="dg-label" text-anchor="middle">p-type silicon</text>
+        <!-- bulk E_i reference, to measure the bending against -->
+        <line x1="74" y1="130" x2="260" y2="130" class="dg-guide" stroke-width="1" stroke-dasharray="3 4"/>
+        <!-- bands: lowest at the surface, relaxing upward into the bulk -->
+        <path d="M74,126 C124,126 152,74 204,70 L360,70" class="dg-line" stroke-width="2"/>
+        <path d="M74,186 C124,186 152,134 204,130 L360,130" class="dg-line" stroke-width="1.2" stroke-dasharray="5 3"/>
+        <line x1="74" y1="158" x2="360" y2="158" class="dg-line" stroke-width="1.6"/>
+        <path d="M74,246 C124,246 152,194 204,190 L360,190" class="dg-line" stroke-width="2"/>
+        <text x="366" y="74" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="366" y="134" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+        <text x="366" y="162" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="366" y="194" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <!-- phi_F in the neutral bulk -->
+        <g class="dg-rule" stroke-width="1.4">
+          <line x1="310" y1="130" x2="310" y2="158"/>
+          <line x1="304" y1="130" x2="316" y2="130"/>
+          <line x1="304" y1="158" x2="316" y2="158"/>
+        </g>
+        <text x="318" y="149" class="dg-label">qφ<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <!-- phi_s: total bending of E_i from bulk to surface, the point of the figure -->
+        <g class="dg-acc" stroke-width="1.8">
+          <line x1="88" y1="130" x2="88" y2="186"/>
+          <line x1="82" y1="130" x2="94" y2="130"/>
+          <line x1="82" y1="186" x2="94" y2="186"/>
+        </g>
+        <text x="92" y="44" class="dg-label">qφ<tspan baseline-shift="sub" style="font-size:75%">s</tspan> = 2qφ<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="92" y="60" class="dg-label">total band bending</text>
+        <line x1="96" y1="66" x2="89" y2="127" class="dg-acc" stroke-width="1.1"/>
+        <!-- crossing point where E_i drops below E_F -->
+        <circle cx="140.3" cy="158" r="4" class="dg-acc-f"/>
+        <line x1="148" y1="248" x2="141" y2="166" class="dg-acc" stroke-width="1.1" marker-end="url(#m1f3-ar)"/>
+        <text x="152" y="262" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan> crosses E<tspan baseline-shift="sub" style="font-size:75%">F</tspan> here; to its left</text>
+        <text x="152" y="282" class="dg-label">the surface is n-type</text>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> Positive gate bias lowers the electron energy near the oxide, so
+        the bands bend downward toward the interface while <em>E</em><sub>F</sub> stays
+        flat at equilibrium. In the neutral bulk <em>E</em><sub>i</sub> sits
+        <em>qφ</em><sub>F</sub> above <em>E</em><sub>F</sub>, which is the definition of
+        p-type. Strong inversion is reached when the total bending equals
+        2<em>qφ</em><sub>F</sub>, placing the surface <em>E</em><sub>i</sub> as far below
+        <em>E</em><sub>F</sub> as the bulk value lies above it. Where
+        <em>E</em><sub>i</sub> is below <em>E</em><sub>F</sub>, electrons outnumber holes.
+        Redrawn after Streetman, <i>Solid State Electronic Devices</i> 3/E, fig. 8-11;
+        the oxide barrier is omitted, as it lies about 3.1 eV above
+        <em>E</em><sub>c</sub> and far off the top of this scale.
+      </figcaption>
+    </figure>
+
+    <p>
+      Figure 3 shows only the semiconductor, which is where the physics of interest happens, but
+      it leaves out two thirds of the structure. The complete picture puts the gate and the oxide
+      on the same energy axis as the silicon, and it is worth having because it makes visible
+      something the semiconductor-only diagram cannot: where the applied gate voltage actually
+      goes. A gate voltage divides between the oxide and the silicon, and every quantity in the
+      threshold voltage equation of <a href="m03-threshold-voltage.html">M03</a> is a statement
+      about one part or other of that division.
+    </p>
+    <p>
+      Three conventions make the full diagram readable. Vertical position is electron energy, so
+      up is higher energy for an electron and therefore lower electrostatic potential — a
+      positive voltage on the gate pushes the gate's bands <em>down</em>. Horizontal position is
+      distance through the structure, gate on the left, then oxide, then silicon. And within the
+      oxide, the slope of the band edge is proportional to the electric field: the vertical axis
+      carries energy rather than potential, so the gradient of the band edge is
+      <em>q</em><b>ℰ</b> and not <b>ℰ</b> itself. Nothing in reading the figure depends on the
+      factor of <em>q</em> — a steeper slope still means a larger field, and a flat band edge
+      still means no field at all — provided the vertical drop across the oxide is read as
+      <em>qV</em><sub>ox</sub>, an energy, which divided by <em>q</em> gives the voltage
+      <em>V</em><sub>ox</sub>.
+    </p>
+
+    <figure>
+      <div class="figrow">
+      <svg viewBox="0 0 340 332" role="img" aria-labelledby="m1f4a-t">
+        <title id="m1f4a-t">MOS structure on p-type silicon at flat band: no field in the oxide and flat bands in the silicon</title>
+        <defs>
+          <marker id="m1f4a-a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+        <text x="40" y="14" class="dg-label" style="font-weight:700">(a) flat band</text>
+        <text x="200" y="14" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> = V<tspan baseline-shift="sub" style="font-size:75%">FB</tspan></text>
+        <rect x="110" y="24" width="34" height="252" class="dg-guide" stroke-width="1" stroke-dasharray="2 3"/>
+        <rect x="40" y="186" width="70" height="90" class="dg-fill"/>
+        <line x1="40" y1="186" x2="110" y2="186" class="dg-line" stroke-width="1.8"/>
+        <text x="36" y="190" class="dg-label" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <line x1="110" y1="70" x2="144" y2="70" class="dg-line" stroke-width="1.8"/>
+        <line x1="110" y1="70" x2="110" y2="186" class="dg-line" stroke-width="1.8"/>
+        <line x1="144" y1="70" x2="144" y2="130" class="dg-line" stroke-width="1.8"/>
+        <line x1="144" y1="130" x2="300" y2="130" class="dg-line" stroke-width="1.8"/>
+        <line x1="144" y1="170" x2="300" y2="170" class="dg-line" stroke-width="1.2" stroke-dasharray="5 3"/>
+        <line x1="144" y1="210" x2="300" y2="210" class="dg-line" stroke-width="1.6"/>
+        <line x1="144" y1="186" x2="300" y2="186" class="dg-line" stroke-width="1.4"/>
+        <text x="306" y="134" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="306" y="174" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+        <text x="306" y="194" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="306" y="216" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <line x1="252" y1="170" x2="252" y2="186" class="dg-acc" stroke-width="1.6" marker-start="url(#m1f4a-a)" marker-end="url(#m1f4a-a)"/>
+        <text x="236" y="158" class="dg-label">qφ<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="75" y="292" class="dg-label" text-anchor="middle">gate</text>
+        <text x="127" y="292" class="dg-label" text-anchor="middle">ox</text>
+        <text x="222" y="292" class="dg-label" text-anchor="middle">p-Si</text>
+        <text x="40" y="310" class="dg-label">Oxide band edge flat: no field,</text>
+        <text x="40" y="326" class="dg-label">no voltage across the oxide.</text>
+      </svg>
+      <svg viewBox="0 0 340 332" role="img" aria-labelledby="m1f4b-t">
+        <title id="m1f4b-t">MOS structure on p-type silicon in accumulation: bands bend up at the surface and holes gather there</title>
+        <text x="40" y="14" class="dg-label" style="font-weight:700">(b) accumulation</text>
+        <text x="200" y="14" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> below V<tspan baseline-shift="sub" style="font-size:75%">FB</tspan></text>
+        <rect x="110" y="24" width="34" height="252" class="dg-guide" stroke-width="1" stroke-dasharray="2 3"/>
+        <rect x="40" y="150" width="70" height="126" class="dg-fill"/>
+        <line x1="40" y1="150" x2="110" y2="150" class="dg-line" stroke-width="1.8"/>
+        <text x="36" y="154" class="dg-label" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <line x1="110" y1="34" x2="144" y2="54" class="dg-line" stroke-width="1.8"/>
+        <line x1="110" y1="34" x2="110" y2="150" class="dg-line" stroke-width="1.8"/>
+        <line x1="144" y1="54" x2="144" y2="114" class="dg-line" stroke-width="1.8"/>
+        <path d="M144,114 C156,121 176,128 210,130 L300,130" class="dg-line" stroke-width="1.8"/>
+        <path d="M144,154 C156,161 176,168 210,170 L300,170" class="dg-line" stroke-width="1.2" stroke-dasharray="5 3"/>
+        <path d="M144,194 C156,201 176,208 210,210 L300,210" class="dg-line" stroke-width="1.6"/>
+        <line x1="144" y1="186" x2="300" y2="186" class="dg-line" stroke-width="1.4"/>
+        <g class="dg-acc-f"><circle cx="150" cy="200" r="3.4"/><circle cx="159" cy="204" r="3.4"/><circle cx="168" cy="207" r="3.4"/><circle cx="177" cy="209" r="3.4"/></g>
+        <text x="186" y="232" class="dg-label">holes</text>
+        <text x="306" y="134" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="306" y="174" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+        <text x="306" y="194" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="306" y="216" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <text x="75" y="292" class="dg-label" text-anchor="middle">gate</text>
+        <text x="127" y="292" class="dg-label" text-anchor="middle">ox</text>
+        <text x="222" y="292" class="dg-label" text-anchor="middle">p-Si</text>
+        <text x="40" y="310" class="dg-label">Bands bend up at the surface;</text>
+        <text x="40" y="326" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan> approaches E<tspan baseline-shift="sub" style="font-size:75%">F</tspan>.</text>
+      </svg>
+      <svg viewBox="0 0 340 332" role="img" aria-labelledby="m1f4c-t">
+        <title id="m1f4c-t">MOS structure on p-type silicon in depletion: bands bend down at the surface over the depletion region, with the intrinsic level still above the Fermi level</title>
+        <text x="40" y="14" class="dg-label" style="font-weight:700">(c) depletion</text>
+        <text x="200" y="14" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> above V<tspan baseline-shift="sub" style="font-size:75%">FB</tspan></text>
+        <rect x="110" y="24" width="34" height="252" class="dg-guide" stroke-width="1" stroke-dasharray="2 3"/>
+        <rect x="40" y="214" width="70" height="62" class="dg-fill"/>
+        <line x1="40" y1="214" x2="110" y2="214" class="dg-line" stroke-width="1.8"/>
+        <text x="36" y="218" class="dg-label" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <line x1="110" y1="98" x2="144" y2="82" class="dg-line" stroke-width="1.8"/>
+        <line x1="110" y1="98" x2="110" y2="214" class="dg-line" stroke-width="1.8"/>
+        <line x1="144" y1="82" x2="144" y2="142" class="dg-line" stroke-width="1.8"/>
+        <path d="M144,142 C156,137 176,131 210,130 L300,130" class="dg-line" stroke-width="1.8"/>
+        <path d="M144,182 C156,177 176,171 210,170 L300,170" class="dg-line" stroke-width="1.2" stroke-dasharray="5 3"/>
+        <path d="M144,222 C156,217 176,211 210,210 L300,210" class="dg-line" stroke-width="1.6"/>
+        <line x1="144" y1="186" x2="300" y2="186" class="dg-line" stroke-width="1.4"/>
+        <g class="dg-acc" stroke-width="1.6">
+          <line x1="144" y1="252" x2="204" y2="252"/>
+          <line x1="144" y1="246" x2="144" y2="258"/>
+          <line x1="204" y1="246" x2="204" y2="258"/>
+        </g>
+        <text x="212" y="256" class="dg-label">depletion region</text>
+        <text x="306" y="134" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="306" y="174" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+        <text x="306" y="194" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="306" y="216" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <text x="75" y="292" class="dg-label" text-anchor="middle">gate</text>
+        <text x="127" y="292" class="dg-label" text-anchor="middle">ox</text>
+        <text x="222" y="292" class="dg-label" text-anchor="middle">p-Si</text>
+        <text x="40" y="310" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan> still above E<tspan baseline-shift="sub" style="font-size:75%">F</tspan> at the surface:</text>
+        <text x="40" y="326" class="dg-label">no channel yet.</text>
+      </svg>
+      <svg viewBox="0 0 340 332" role="img" aria-labelledby="m1f4d-t">
+        <title id="m1f4d-t">MOS structure on p-type silicon at strong inversion: the gate voltage divides into the oxide drop and a surface band bending of twice the Fermi potential, and the intrinsic level crosses below the Fermi level at the surface</title>
+        <defs>
+          <marker id="m1f4d-a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+        <text x="40" y="14" class="dg-label" style="font-weight:700">(d) strong inversion</text>
+        <text x="200" y="14" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> = V<tspan baseline-shift="sub" style="font-size:75%">T</tspan></text>
+        <rect x="110" y="24" width="34" height="252" class="dg-guide" stroke-width="1" stroke-dasharray="2 3"/>
+        <rect x="40" y="254" width="70" height="22" class="dg-fill"/>
+        <line x1="40" y1="254" x2="110" y2="254" class="dg-line" stroke-width="1.8"/>
+        <text x="36" y="258" class="dg-label" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <line x1="110" y1="138" x2="144" y2="102" class="dg-line" stroke-width="1.8"/>
+        <line x1="110" y1="138" x2="110" y2="254" class="dg-line" stroke-width="1.8"/>
+        <line x1="144" y1="102" x2="144" y2="162" class="dg-line" stroke-width="1.8"/>
+        <path d="M144,162 C156,148 176,133 210,130 L300,130" class="dg-line" stroke-width="1.8"/>
+        <path d="M144,202 C156,188 176,173 210,170 L300,170" class="dg-line" stroke-width="1.2" stroke-dasharray="5 3"/>
+        <path d="M144,242 C156,228 176,213 210,210 L300,210" class="dg-line" stroke-width="1.6"/>
+        <line x1="144" y1="186" x2="300" y2="186" class="dg-line" stroke-width="1.4"/>
+        <g class="dg-acc-f"><circle cx="150" cy="149.6" r="3.4"/><circle cx="157" cy="143.6" r="3.4"/><circle cx="164" cy="138.7" r="3.4"/><circle cx="171" cy="134.7" r="3.4"/></g>
+        <text x="150" y="124" class="dg-label">electrons</text>
+        <line x1="88" y1="138" x2="110" y2="138" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="88" y1="102" x2="144" y2="102" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="94" y1="102" x2="94" y2="138" class="dg-acc" stroke-width="1.6" marker-start="url(#m1f4d-a)" marker-end="url(#m1f4d-a)"/>
+        <text x="86" y="124" class="dg-label" text-anchor="end">qV<tspan baseline-shift="sub" style="font-size:75%">ox</tspan></text>
+        <line x1="144" y1="162" x2="240" y2="162" class="dg-guide" stroke-width="1" stroke-dasharray="1 3"/>
+        <line x1="234" y1="130" x2="234" y2="162" class="dg-acc" stroke-width="1.6" marker-start="url(#m1f4d-a)" marker-end="url(#m1f4d-a)"/>
+        <text x="212" y="112" class="dg-label">qψ<tspan baseline-shift="sub" style="font-size:75%">s</tspan> = 2qφ<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="306" y="134" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="306" y="174" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+        <text x="306" y="194" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="306" y="216" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <text x="75" y="292" class="dg-label" text-anchor="middle">gate</text>
+        <text x="127" y="292" class="dg-label" text-anchor="middle">ox</text>
+        <text x="222" y="292" class="dg-label" text-anchor="middle">p-Si</text>
+        <text x="40" y="310" class="dg-label">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan> has crossed below E<tspan baseline-shift="sub" style="font-size:75%">F</tspan>:</text>
+        <text x="40" y="326" class="dg-label">the surface is n-type.</text>
+      </svg>
+      </div>
+      <figcaption>
+        <b>Figure 4.</b> The same structure at four gate biases, gate and oxide included. Read the
+        oxide first: in (a) its band edge is flat, so there is no field across it and no voltage
+        is dropped on it; in (b), (c) and (d) it is tilted, and the vertical drop across it is
+        <em>qV</em><sub>ox</sub>. Read the silicon second, and read it by watching
+        <em>E</em><sub>i</sub> against <em>E</em><sub>F</sub>: wherever <em>E</em><sub>i</sub>
+        lies above <em>E</em><sub>F</sub> holes outnumber electrons, and wherever it lies below,
+        electrons outnumber holes. The doping does not change anywhere in these diagrams — the
+        substrate is p-type throughout — so what the crossing marks is a reversal of the local
+        carrier population, not of the doping. That reversal is the whole definition of
+        inversion, and it happens only in panel (d), within a few nanometres of the interface. The total band bending from the bulk
+        to the surface is the surface potential <em>ψ</em><sub>s</sub>; strong inversion is the
+        convention <em>ψ</em><sub>s</sub> = 2<em>φ</em><sub>F</sub> of equation (1.3). Vertical
+        distances are not to scale, and the oxide is compressed most: its conduction band edge
+        really sits 3.1 eV above the silicon <em>E</em><sub>c</sub>, nearly three times the
+        1.12 eV silicon gap, where the drawing makes it smaller than the gap. The oxide is
+        drawn as an outline only, a region of the structure rather than a band of occupied
+        states. The gate is drawn as a metal — a filled band of
+        electrons up to its Fermi level — and the panels are drawn for the idealised case
+        <em>φ</em><sub>MS</sub> = 0, so that flat band and zero applied bias coincide and
+        <em>E</em><sub>F</sub> runs continuously across the whole structure. A real
+        <em>φ</em><sub>MS</sub> offsets the gate levels without changing anything the figure is
+        drawn to show; <a href="m03-threshold-voltage.html">M03 §1</a> puts that offset back.
+      </figcaption>
+    </figure>
+
+    <p>
+      Two features of this diagram carry most of its value. First, the gate voltage is shared:
+      <em>V</em><sub>G</sub> − <em>V</em><sub>FB</sub> = <em>V</em><sub>ox</sub> +
+      <em>ψ</em><sub>s</sub>, so raising the gate voltage past threshold adds almost entirely to
+      <em>V</em><sub>ox</sub> rather than to <em>ψ</em><sub>s</sub>. The reason is the exponential dependence of inversion charge on
+      surface potential: the electron density at the surface goes as
+      exp(<em>qψ</em><sub>s</sub>/<em>kT</em>), so once the inversion layer exists, a further
+      millivolt of surface potential supplies a large amount of additional charge. Further gate
+      charge is therefore balanced by more inversion electrons rather than by deeper depletion,
+      and <em>ψ</em><sub>s</sub> creeps rather than climbs. That is the sense in which the surface
+      potential is pinned near 2<em>φ</em><sub>F</sub>, and why the depletion width is treated as
+      stopping at <em>W</em><sub>m</sub>, the maximum depletion width used in
+      <a href="m03-threshold-voltage.html">M03 §4</a>. Both are excellent approximations rather
+      than exact statements — <em>ψ</em><sub>s</sub> does continue to rise slowly above threshold,
+      by of order a few <em>kT</em>/<em>q</em> per decade of inversion charge.
+    </p>
+    <p>
+      Second, the oxide band edge in these diagrams is drawn as a straight line, which encodes an
+      assumption: that the oxide carries no charge, so the field inside it is uniform. Real oxides
+      carry charge, and charge inside the film makes the line depart from straight — a thin sheet
+      of charge produces a sharp kink at its position, while charge spread through the film curves
+      the line continuously. Either way the departure shifts the gate voltage needed to reach
+      inversion. That is the threshold voltage shift, and locating the charge
+      inside the oxide is the subject of
+      <a href="m05b-interface-defects-and-charge.html">M05b</a>. The same diagram redrawn
+      with the oxide conduction band as a barrier to be crossed rather than a region to drop
+      voltage across is where
+      <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06 §1</a> begins.
+    </p>
+
+    <h2>3 · The n-channel MOSFET</h2>
+
+    <p>
+      A MOS capacitor that can invert its surface becomes a transistor once two heavily
+      doped n-type regions are added, one at each end of the channel. These are the
+      <b>source</b> and the <b>drain</b>. They are written n⁺ because their doping,
+      typically 10¹⁹ to 10²⁰ cm⁻³, is three to five orders of magnitude above the
+      substrate. Their purpose is to supply electrons to the channel and collect them
+      from it, which a p-type substrate cannot do on its own.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 440 240" role="img" aria-labelledby="m1f5-t">
+        <title id="m1f5-t">Cross-section of an n-channel MOSFET biased on, with source, gate, drain, the inversion channel joining source to drain, and a grounded body contact</title>
+        <rect x="24" y="96" width="392" height="112" class="dg-fill"/>
+        <text x="220" y="198" class="dg-label" text-anchor="middle">p-type substrate (body)</text>
+        <!-- source and drain -->
+        <path d="M24,96 L130,96 L130,126 C130,134 120,140 108,140 L24,140 Z" class="dg-fill"/>
+        <path d="M310,96 L416,96 L416,140 L332,140 C320,140 310,134 310,126 Z" class="dg-fill"/>
+        <text x="72" y="124" class="dg-label" text-anchor="middle">n⁺ source</text>
+        <text x="368" y="124" class="dg-label" text-anchor="middle">n⁺ drain</text>
+        <!-- gate oxide + gate -->
+        <rect x="130" y="88" width="180" height="8" class="dg-fill"/>
+        <rect x="130" y="62" width="180" height="26" class="dg-fill"/>
+        <text x="220" y="80" class="dg-label" text-anchor="middle">gate</text>
+        <line x1="306" y1="92" x2="330" y2="68" class="dg-rule" stroke-width="1"/>
+        <text x="334" y="68" class="dg-label">gate oxide</text>
+        <!-- channel -->
+        <rect x="130" y="96" width="180" height="7" class="dg-acc-f"/>
+        <text x="220" y="122" class="dg-label" text-anchor="middle">inversion channel</text>
+        <!-- terminals -->
+        <line x1="50" y1="96" x2="50" y2="44" class="dg-rule" stroke-width="1.2"/>
+        <text x="50" y="37" class="dg-label" text-anchor="middle">source</text>
+        <text x="50" y="13" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">S</tspan> = 0</text>
+        <line x1="220" y1="62" x2="220" y2="44" class="dg-rule" stroke-width="1.2"/>
+        <text x="220" y="37" class="dg-label" text-anchor="middle">gate</text>
+        <text x="220" y="13" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> &gt; V<tspan baseline-shift="sub" style="font-size:75%">T</tspan></text>
+        <line x1="404" y1="96" x2="404" y2="44" class="dg-rule" stroke-width="1.2"/>
+        <text x="404" y="37" class="dg-label" text-anchor="middle">drain</text>
+        <text x="404" y="13" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">D</tspan> &gt; 0</text>
+        <!-- L dimension, between the metallurgical junction edges -->
+        <g class="dg-guide" stroke-width="1" stroke-dasharray="3 3">
+          <line x1="130" y1="128" x2="130" y2="154"/>
+          <line x1="310" y1="128" x2="310" y2="154"/>
+        </g>
+        <g class="dg-rule" stroke-width="1.4">
+          <line x1="130" y1="160" x2="310" y2="160"/>
+          <line x1="130" y1="154" x2="130" y2="166"/>
+          <line x1="310" y1="154" x2="310" y2="166"/>
+        </g>
+        <text x="220" y="178" class="dg-label" text-anchor="middle">channel length L</text>
+        <!-- body contact -->
+        <line x1="24" y1="209.5" x2="416" y2="209.5" class="dg-rule" stroke-width="3"/>
+        <line x1="220" y1="211" x2="220" y2="220" class="dg-rule" stroke-width="1.4"/>
+        <line x1="210" y1="220" x2="230" y2="220" class="dg-rule" stroke-width="1.4"/>
+        <line x1="214" y1="225" x2="226" y2="225" class="dg-rule" stroke-width="1.2"/>
+        <line x1="218" y1="230" x2="222" y2="230" class="dg-rule" stroke-width="1"/>
+        <text x="238" y="230" class="dg-label">body contact, grounded</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> The transistor on. With <em>V</em><sub>G</sub> &gt;
+        <em>V</em><sub>T</sub> the inverted surface is an n-type path joining source to drain,
+        so current bypasses the drain-side n⁺/p junction, which is reverse biased and blocks
+        current whenever the gate is off. The gate does not inject carriers; it creates the
+        path along which the source can deliver them.
+      </figcaption>
+    </figure>
+
+    <p>
+      With the source and substrate grounded and a positive voltage on the drain, the
+      structure contains two back-to-back pn junctions. The drain-side junction is
+      reverse biased, its depletion region blocks carrier flow, and the current between
+      source and drain is negligible regardless of how large the drain voltage becomes.
+      The transistor is off.
+    </p>
+    <p>
+      Raising the gate voltage above the threshold voltage <em>V</em><sub>T</sub> inverts
+      the surface between the two n⁺ regions. The channel is now n-type and continuous
+      with the source and drain, so the blocking junction no longer exists along that
+      path: there is an unbroken n-type route from source to drain. Electrons drift along
+      it under the drain field, and drain current flows. The transistor is on.
+    </p>
+    <p>
+      Because the channel is created by adding electrons to a region that had none, this
+      device is called an <b>enhancement-mode</b> n-channel MOSFET. Both the threshold
+      voltage and the amount of charge in the channel above threshold are set by the
+      capacitor of §1, which is why <em>C</em><sub>ox</sub> appears in every current
+      expression that follows.
+    </p>
+
+    <h2>4 · The drain characteristic</h2>
+
+    <p>
+      Once a channel exists, the charge per unit area available to carry current at any
+      point along it is set by how far the local gate-to-channel voltage exceeds
+      threshold. Near the source that excess is <em>V</em><sub>GS</sub> −
+      <em>V</em><sub>T</sub>. Near the drain the channel has been pulled up toward the
+      drain potential, so the excess is <em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub> −
+      <em>V</em><sub>DS</sub>. The channel is therefore thickest at the source end and
+      thinnest at the drain end, and integrating the drift current along its length gives
+      the drain current in the <b>linear region</b>:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D</sub> = <em>µ</em><sub>n</sub> <em>C</em><sub>ox</sub> <span class="frac"><span class="num"><em>Z</em></span><span class="den"><em>L</em></span></span> <span class="dl">[</span>(<em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>)<em>V</em><sub>DS</sub> − <span class="frac"><span class="num"><em>V</em><sub>DS</sub><sup>2</sup></span><span class="den">2</span></span><span class="dl">]</span></div>
+        <div class="eq-num">(1.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D</sub> drain current (A) ·
+        <em>µ</em><sub>n</sub> effective electron mobility in the channel (cm²/V·s).
+        The bulk drift mobility in lightly doped silicon is about 1450 cm²/V·s, but an
+        inversion layer is not bulk material: carriers travel within a few nanometres of
+        the oxide, and surface-phonon and surface-roughness scattering cut the effective
+        mobility to roughly half the bulk figure, falling further as the transverse field
+        across the oxide rises. It is that field, not the channel doping, that dominates
+        the degradation — which is why thinning the oxide costs mobility ·
+        <em>C</em><sub>ox</sub> oxide capacitance per unit area (F/cm²) from (1.1) ·
+        <em>Z</em> channel width (cm) · <em>L</em> channel length (cm) ·
+        <em>V</em><sub>GS</sub>, <em>V</em><sub>DS</sub> gate-to-source and
+        drain-to-source voltages (V) · <em>V</em><sub>T</sub> threshold voltage (V).
+        Valid only while <em>V</em><sub>DS</sub> &lt; <em>V</em><sub>GS</sub> −
+        <em>V</em><sub>T</sub>. This course writes the channel width as <em>Z</em>;
+        Wolf and Taur &amp; Ning write it as <em>W</em>.
+      </div>
+    </div>
+
+    <p>
+      When <em>V</em><sub>DS</sub> reaches <em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>,
+      the gate-to-channel voltage at the drain end falls to exactly the threshold and the
+      inversion charge there goes to zero. The channel is said to <b>pinch off</b> at that
+      end. Raising the drain voltage further does not increase the current: the extra
+      voltage is dropped across the short depleted region that has appeared near the
+      drain, while the rest of the channel continues to see the same conditions. The
+      current saturates at
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D,sat</sub> = <span class="frac"><span class="num"><em>µ</em><sub>n</sub> <em>C</em><sub>ox</sub> <em>Z</em></span><span class="den">2<em>L</em></span></span> (<em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>)<sup>2</sup></div>
+        <div class="eq-num">(1.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D,sat</sub> saturation drain current (A) — the value the current
+        holds at once the channel pinches off. All other symbols as in (1.4).
+        Obtained by substituting <em>V</em><sub>DS</sub> =
+        <em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub> into (1.4). Valid for
+        <em>V</em><sub>DS</sub> ≥ <em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub>.
+        The square dependence on gate overdrive, and the inverse dependence on channel
+        length, are the two reasons shorter channels were pursued for four decades.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 430 282" role="img" aria-labelledby="m1f6-t">
+        <title id="m1f6-t">Drain current versus drain-source voltage for three gate voltages, showing linear and saturation regions with saturation currents in the ratio 1 to 4 to 9</title>
+        <line x1="60" y1="230" x2="404" y2="230" class="dg-rule" stroke-width="1.4"/>
+        <line x1="60" y1="230" x2="60" y2="30" class="dg-rule" stroke-width="1.4"/>
+        <text x="232" y="256" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan></text>
+        <text x="30" y="130" class="dg-label" text-anchor="middle" transform="rotate(-90 30 130)">drain current I<tspan baseline-shift="sub" style="font-size:75%">D</tspan></text>
+        <!-- square law: overdrives 1, 2, 3 -> saturation currents 1, 4, 9 -->
+        <path d="M60,230 Q165,50 270,50 L396,50" class="dg-line" stroke-width="1.8"/>
+        <path d="M60,230 Q130,150 200,150 L396,150" class="dg-line" stroke-width="1.8"/>
+        <path d="M60,230 Q95,210 130,210 L396,210" class="dg-line" stroke-width="1.8"/>
+        <text x="396" y="42" class="dg-label" text-anchor="end">V<tspan baseline-shift="sub" style="font-size:75%">GS3</tspan></text>
+        <text x="396" y="142" class="dg-label" text-anchor="end">V<tspan baseline-shift="sub" style="font-size:75%">GS2</tspan></text>
+        <text x="396" y="202" class="dg-label" text-anchor="end">V<tspan baseline-shift="sub" style="font-size:75%">GS1</tspan></text>
+        <!-- relative saturation currents -->
+        <text x="412" y="28" class="dg-label" text-anchor="middle">ratio</text>
+        <g class="dg-label" style="font-weight:700" text-anchor="middle">
+          <text x="412" y="54">9</text>
+          <text x="412" y="154">4</text>
+          <text x="412" y="214">1</text>
+        </g>
+        <!-- pinch-off locus V_DS = V_GS - V_T -->
+        <path d="M60,230 Q165,230 270,50" class="dg-acc" stroke-width="1.8" stroke-dasharray="6 4"/>
+        <line x1="258" y1="186" x2="226" y2="120" class="dg-rule" stroke-width="0.9"/>
+        <text x="236" y="198" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> = V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan> − V<tspan baseline-shift="sub" style="font-size:75%">T</tspan></text>
+        <text x="72" y="126" class="dg-label">linear</text>
+        <text x="296" y="104" class="dg-label">saturation</text>
+      </svg>
+      <figcaption>
+        Each curve is one gate voltage, and the three are equally spaced: overdrives
+        <em>V</em><sub>GS</sub> − <em>V</em><sub>T</sub> of 1, 2 and 3 units. The dashed locus
+        separates the two regions; to its left equation (1.4) applies, to its right (1.5). The
+        saturation currents stand in the ratio 1 : 4 : 9, marked at the right, because they
+        depend on the <em>square</em> of the overdrive.
+      </figcaption>
+    </figure>
+
+    <h2>5 · The p-channel MOSFET</h2>
+
+    <p>
+      Every polarity in the preceding sections can be reversed. Starting from an n-type
+      substrate, in which electrons are the majority carriers, and forming two p⁺ regions
+      for the source and drain, a <b>negative</b> gate voltage repels electrons from the
+      surface, depletes it, and eventually inverts it to p-type. The channel then consists
+      of holes, and the device is a p-channel MOSFET.
+    </p>
+    <p>
+      The two device types are not electrically symmetric, for one material reason. Hole
+      mobility in silicon is roughly a third of electron mobility — 500 cm²/V·s against
+      1450 cm²/V·s for bulk drift mobility in lightly doped material at 300 K. Both fall
+      in an inversion layer, but the ratio between them survives. By equation (1.5), a
+      p-channel device of the same dimensions therefore delivers roughly a third of the
+      current at the same gate overdrive. In
+      circuit layout this is compensated by making the p-channel device wider, and that
+      asymmetry persists into every CMOS process in this course.
+    </p>
+
+    <div class="box">
+      <p class="box-title">Doping species in silicon</p>
+      <p>
+        Two elements do nearly all the work. <b>Phosphorus</b> and <b>arsenic</b> are
+        group-V donors and produce n-type silicon; phosphorus diffuses quickly and was
+        the standard choice for diffused source and drain regions, while arsenic moves
+        far less at the same thermal budget, which later made it preferable for shallow
+        junctions. <b>Boron</b> is the group-III acceptor and produces p-type silicon.
+        The difference in speed is not a matter of atomic mass. Substitutional dopants
+        diffuse by pairing with point defects, and the species differ in which defect
+        carries them: boron and phosphorus move largely with silicon self-interstitials,
+        which is fast; antimony moves predominantly by a vacancy mechanism, which is slow;
+        and arsenic uses both routes in roughly equal measure (M02 §5). <b>Indium</b> and <b>antimony</b> appear later in the
+        course as low-diffusivity substitutes for boron and phosphorus, chosen because a
+        profile implanted with them stays where it was put through the anneals that
+        follow — see M09.
+      </p>
+    </div>
+
+    <h2>6 · CMOS and the inverter</h2>
+
+    <p>
+      Neither device type is used alone in modern digital circuits. <b>Complementary
+      MOS</b>, or CMOS, places an n-channel and a p-channel transistor on the same die
+      and wires them so that one conducts whenever the other does not. The elementary
+      CMOS circuit is the inverter, and it is built by connecting both gates to the input,
+      both drains to the output, the p-channel source to the positive supply rail
+      <em>V</em><sub>DD</sub>, and the n-channel source to ground.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 380 260" role="img" aria-labelledby="m1f7-t">
+        <title id="m1f7-t">CMOS inverter schematic with p-channel transistor to the supply and n-channel transistor to ground</title>
+        <line x1="60" y1="20" x2="300" y2="20" class="dg-rule" stroke-width="1.2"/>
+        <text x="312" y="25" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">DD</tspan></text>
+        <line x1="220" y1="20" x2="220" y2="58" class="dg-rule" stroke-width="1.2"/>
+        <rect x="192" y="58" width="56" height="44" class="dg-fill"/>
+        <text x="220" y="85" class="dg-label" text-anchor="middle">pMOS</text>
+        <line x1="220" y1="102" x2="220" y2="150" class="dg-rule" stroke-width="1.2"/>
+        <rect x="192" y="150" width="56" height="44" class="dg-fill"/>
+        <text x="220" y="177" class="dg-label" text-anchor="middle">nMOS</text>
+        <line x1="220" y1="194" x2="220" y2="232" class="dg-rule" stroke-width="1.2"/>
+        <line x1="196" y1="232" x2="244" y2="232" class="dg-rule" stroke-width="1.4"/>
+        <line x1="204" y1="238" x2="236" y2="238" class="dg-rule" stroke-width="1.2"/>
+        <line x1="212" y1="244" x2="228" y2="244" class="dg-rule" stroke-width="1"/>
+        <line x1="192" y1="80" x2="120" y2="80" class="dg-rule" stroke-width="1.2"/>
+        <line x1="192" y1="172" x2="120" y2="172" class="dg-rule" stroke-width="1.2"/>
+        <line x1="120" y1="80" x2="120" y2="172" class="dg-rule" stroke-width="1.2"/>
+        <line x1="120" y1="126" x2="56" y2="126" class="dg-rule" stroke-width="1.2"/>
+        <text x="46" y="130" class="dg-label" text-anchor="end">in</text>
+        <line x1="220" y1="126" x2="330" y2="126" class="dg-acc" stroke-width="1.8"/>
+        <circle cx="220" cy="126" r="3.6" class="dg-acc-f"/>
+        <text x="340" y="130" class="dg-label">out</text>
+      </svg>
+      <figcaption>
+        The gates are tied together and the drains are tied together. The output node,
+        marked in accent, is driven either up to <em>V</em><sub>DD</sub> or down to ground,
+        never both.
+      </figcaption>
+    </figure>
+
+    <p>
+      With the input at ground, the n-channel gate-to-source voltage is zero, which is
+      below its positive threshold, so that device is off. The p-channel gate sits at
+      <em>V</em><sub>DD</sub> below its source, which is beyond its negative threshold, so
+      that device is on. The output is pulled up to <em>V</em><sub>DD</sub>. With the input
+      at <em>V</em><sub>DD</sub> the situation reverses exactly: the n-channel device
+      conducts, the p-channel device does not, and the output is pulled down to ground.
+    </p>
+    <p>
+      In both stable states one transistor in the pair is off, so no continuous path exists
+      from supply to ground and the circuit draws current only while switching. That property
+      is what made CMOS displace every earlier logic family, and it is also what makes the
+      off-state leakage current a central concern later in this course: when a transistor
+      that is nominally off conducts anyway, the defining advantage of CMOS erodes. A chip
+      contains hundreds of millions of these pairs, and a leakage current that is negligible
+      in one device is not negligible when multiplied by that number.
+    </p>
+
+    <h2>7 · Building an n-channel MOSFET</h2>
+
+    <p>
+      The device described above is produced by a sequence of steps in which layers are
+      grown or deposited over the whole wafer and then selectively removed. Nothing is
+      built up locally; every pattern is made by covering the whole surface and taking
+      material away where it is not wanted. The sequence below is the classic
+      three-mask aluminium-gate process. It is obsolete — later modules replace almost
+      every step in it — but it establishes the vocabulary, and each replacement in the
+      rest of the course is easier to justify against this baseline.
+    </p>
+
+    <h3>7.1 · Oxidation</h3>
+
+    <p>
+      Silicon reacts with oxygen to form silicon dioxide, and the resulting layer adheres
+      to the wafer, is chemically stable, and is an excellent insulator. The wafer is
+      loaded into a quartz tube in a resistively heated furnace at 1000–1100 °C and
+      exposed to an oxidising ambient. Two chemistries are used:
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Process</th><th>Reaction</th><th>Relative rate</th><th>Used for</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Dry oxidation</b></td>
+            <td>Si + O₂ → SiO₂</td>
+            <td>Slow</td>
+            <td>Thin gate oxides, where quality matters more than throughput</td>
+          </tr>
+          <tr>
+            <td><b>Wet oxidation</b></td>
+            <td>Si + 2H₂O → SiO₂ + 2H₂</td>
+            <td>Ten to twenty times faster at the same temperature</td>
+            <td>Thick masking and field oxides</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Wet oxidation is faster for a reason worth stating precisely, because the obvious
+      explanation is the wrong one. The two oxidants diffuse through silicon dioxide at
+      comparable rates; what separates them is <em>solubility</em>. Silicon dioxide
+      dissolves about 3×10¹⁹ cm⁻³ of water against about 5×10¹⁶ cm⁻³ of molecular oxygen
+      at 1100 °C, because water reacts with the glass network to form Si–OH pairs while
+      oxygen must sit interstitially. That difference in the
+      concentration available at the outer surface — a factor of six hundred — makes the
+      gradient driving oxidant across the film far steeper, and it is large enough to
+      overcome the fact that two water molecules are consumed for every one of oxygen. The reaction takes place at the silicon surface
+      underneath the oxide already grown, not at the outer surface, which means the
+      oxidant must cross the existing layer for growth to continue. Growth therefore
+      slows as the film thickens, and it consumes silicon as it proceeds — the interface
+      moves downward into the wafer. As Lectures 8 and 9 give it, 0.46 of the finished oxide
+      thickness lies below the original silicon surface and 0.54 above it, so growing 1 µm of
+      oxide consumes 0.46 µm of silicon. Textbooks quote 0.44–0.46 — Plummer, Deal &amp; Griffin
+      give 0.45 — and
+      <a href="m05a-bonds-and-structure.html">M05a</a> §4 derives the ratio. The quantitative growth model, and the reason it fails
+      for the very thin oxides that matter in this course, are the subject of
+      <a href="m06-thin-gate-oxides-conduction-breakdown.html">M06</a> §8.
+    </p>
+    <p>
+      Steam for wet oxidation is generated by bubbling oxygen through deionised water
+      held near 95 °C. The resulting ambient is mostly H₂O with some residual O₂ and is
+      called <em>wet O₂</em>; it is the ambient the standard wet-oxidation rate constants
+      are measured in. A nitrogen carrier, which gives a nominally pure steam ambient, was
+      also used and is what Lecture 1 described. Modern furnaces mostly abandon the
+      bubbler altogether and burn hydrogen and oxygen at the back of the tube to make
+      water directly, which is called pyrogenic steam. The purity of that water matters. Ordinary tap water
+      carries dissolved sodium, magnesium, zinc and other metal ions, and its resistivity
+      is only 1–5 kΩ·cm; deionised water is passed through ion-exchange columns until it
+      reaches about 18 MΩ·cm, close to the theoretical maximum for pure water at room
+      temperature. Sodium in particular is mobile in silicon dioxide, and sodium
+      contamination of a gate oxide produces a threshold voltage that drifts under bias.
+    </p>
+
+    <h3>7.2 · The masking sequence</h3>
+
+    <p>
+      Patterning is performed by <b>photolithography</b>. A light-sensitive polymer called
+      <b>photoresist</b> is spun onto the wafer as a liquid and baked to a solid film. A
+      <b>mask</b> — a transparent plate carrying opaque patterns — is aligned over the
+      wafer and the assembly is exposed to ultraviolet light. Exposure changes the
+      solubility of the resist where light reached it, and a developer then removes the
+      soluble regions, leaving a resist stencil that reproduces the mask pattern. The
+      layer underneath is etched wherever the stencil leaves it exposed, and the remaining
+      resist is stripped.
+    </p>
+    <p>
+      Silicon dioxide is removed with <b>buffered oxide etch</b>, a solution of
+      hydrofluoric acid buffered with ammonium fluoride. Hydrofluoric acid attacks SiO₂
+      but not silicon; the ammonium fluoride replenishes fluoride ions as they are
+      consumed, so the etch rate stays constant instead of falling away as the acid is
+      depleted, which is what makes a controlled, reproducible etch possible.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 440 336" role="img" aria-labelledby="m1f8-t">
+        <title id="m1f8-t">Six stages of the three-mask n-channel MOSFET process, from oxidised wafer to finished device, with the aluminium gate overlapping both n-plus regions</title>
+        <!-- column 1: x0 = 12; column 2: x0 = 228; rows at y0 = 0, 110, 220.
+             Windows at u 20-70 and 130-180; n+ spreads 4 under each mask edge (u 16-74, 126-184);
+             contacts at u 24-44 and 156-176; gate u 60-140 overlaps both n+ edges by 14 -->
+        <!-- 1 -->
+        <text x="12" y="14" class="dg-label" style="font-weight:700">1 · grow thick oxide</text>
+        <rect x="12" y="30" width="200" height="14" class="dg-fill"/>
+        <rect x="12" y="44" width="200" height="40" class="dg-fill"/>
+        <text x="112" y="40.5" class="dg-label" text-anchor="middle">SiO₂</text>
+        <text x="112" y="70" class="dg-label" text-anchor="middle">p-Si</text>
+        <!-- 2 -->
+        <text x="228" y="14" class="dg-label" style="font-weight:700">2 · mask 1, etch windows</text>
+        <rect x="228" y="44" width="200" height="40" class="dg-fill"/>
+        <rect x="228" y="30" width="20" height="14" class="dg-fill"/>
+        <rect x="298" y="30" width="60" height="14" class="dg-fill"/>
+        <rect x="408" y="30" width="20" height="14" class="dg-fill"/>
+        <text x="328" y="70" class="dg-label" text-anchor="middle">p-Si</text>
+        <!-- 3 -->
+        <text x="12" y="124" class="dg-label" style="font-weight:700">3 · diffuse phosphorus</text>
+        <rect x="12" y="154" width="200" height="40" class="dg-fill"/>
+        <path d="M28,154 L86,154 L86,166 C86,173 80,177 73,177 L41,177 C34,177 28,173 28,166 Z" class="dg-acc-f"/>
+        <path d="M138,154 L196,154 L196,166 C196,173 190,177 183,177 L151,177 C144,177 138,173 138,166 Z" class="dg-acc-f"/>
+        <rect x="12" y="140" width="20" height="14" class="dg-fill"/>
+        <rect x="82" y="140" width="60" height="14" class="dg-fill"/>
+        <rect x="192" y="140" width="20" height="14" class="dg-fill"/>
+        <text x="57" y="190" class="dg-label" text-anchor="middle">n⁺</text>
+        <text x="167" y="190" class="dg-label" text-anchor="middle">n⁺</text>
+        <!-- 4 -->
+        <text x="228" y="124" class="dg-label" style="font-weight:700">4 · strip, grow gate oxide</text>
+        <rect x="228" y="154" width="200" height="40" class="dg-fill"/>
+        <path d="M244,154 L302,154 L302,166 C302,173 296,177 289,177 L257,177 C250,177 244,173 244,166 Z" class="dg-acc-f"/>
+        <path d="M354,154 L412,154 L412,166 C412,173 406,177 399,177 L367,177 C360,177 354,173 354,166 Z" class="dg-acc-f"/>
+        <rect x="228" y="148" width="200" height="6" class="dg-fill"/>
+        <text x="328" y="180" class="dg-label" text-anchor="middle">p-Si</text>
+        <!-- 5 -->
+        <text x="12" y="234" class="dg-label" style="font-weight:700">5 · mask 2, open contacts</text>
+        <rect x="12" y="264" width="200" height="40" class="dg-fill"/>
+        <path d="M28,264 L86,264 L86,276 C86,283 80,287 73,287 L41,287 C34,287 28,283 28,276 Z" class="dg-acc-f"/>
+        <path d="M138,264 L196,264 L196,276 C196,283 190,287 183,287 L151,287 C144,287 138,283 138,276 Z" class="dg-acc-f"/>
+        <rect x="12" y="258" width="24" height="6" class="dg-fill"/>
+        <rect x="56" y="258" width="112" height="6" class="dg-fill"/>
+        <rect x="188" y="258" width="24" height="6" class="dg-fill"/>
+        <text x="112" y="296" class="dg-label" text-anchor="middle">p-Si</text>
+        <!-- 6 -->
+        <text x="228" y="234" class="dg-label" style="font-weight:700">6 · mask 3, aluminium</text>
+        <rect x="228" y="264" width="200" height="40" class="dg-fill"/>
+        <path d="M244,264 L302,264 L302,276 C302,283 296,287 289,287 L257,287 C250,287 244,283 244,276 Z" class="dg-acc-f"/>
+        <path d="M354,264 L412,264 L412,276 C412,283 406,287 399,287 L367,287 C360,287 354,283 354,276 Z" class="dg-acc-f"/>
+        <rect x="228" y="258" width="24" height="6" class="dg-fill"/>
+        <rect x="272" y="258" width="112" height="6" class="dg-fill"/>
+        <rect x="404" y="258" width="24" height="6" class="dg-fill"/>
+        <rect x="250" y="246" width="24" height="18" class="dg-ink"/>
+        <rect x="288" y="246" width="80" height="12" class="dg-ink"/>
+        <rect x="382" y="246" width="24" height="18" class="dg-ink"/>
+        <text x="262" y="322" class="dg-label" text-anchor="middle">S</text>
+        <text x="328" y="322" class="dg-label" text-anchor="middle">G</text>
+        <text x="394" y="322" class="dg-label" text-anchor="middle">D</text>
+        <text x="328" y="296" class="dg-label" text-anchor="middle">p-Si</text>
+      </svg>
+      <figcaption>
+        <b>Figure 8.</b> The three-mask aluminium-gate sequence. The oxide is used twice: as
+        the diffusion mask in steps 2–3, then regrown thin as the gate dielectric in step 4.
+        The phosphorus spreads sideways under the edge of the masking oxide as well as
+        downward, so each n⁺ region ends up wider than its window. Every pattern is produced
+        by covering the whole wafer and removing material, never by depositing it locally.
+        Each source and drain contact opening, and each source and drain pad, must land
+        inside its n⁺ region — metal touching bare p-substrate would short source or drain to
+        the body. The gate, by contrast, is drawn wider than the channel so that it overlaps
+        both n⁺ regions, and a misaligned mask 3 still leaves no ungated gap. Layers are not
+        to scale: the masking oxide is around 1 µm, the gate oxide around
+        0.1 µm, and the wafer itself is roughly 500 µm thick. Note that the thick oxide is entirely stripped at
+        step 4, so this flow leaves no isolation oxide anywhere on the wafer. A single
+        test transistor tolerates that; an integrated circuit does not, because the metal
+        running between devices would invert the silicon underneath it. Supplying that
+        missing isolation is what LOCOS and then shallow trench isolation exist to do —
+        see M15.
+      </figcaption>
+    </figure>
+
+    <h3>7.3 · The full sequence</h3>
+
+    <p>
+      Beginning with a p-type wafer doped at 10¹⁵ to 10¹⁶ cm⁻³:
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Step</th><th>Operation</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Grow ≈1 µm of SiO₂ by wet oxidation at 1000–1100 °C</td><td>Diffusion mask</td></tr>
+          <tr><td>2</td><td>Spin photoresist; expose through <b>mask 1</b>; develop; etch the oxide in buffered oxide etch; strip resist</td><td>Open windows over the future source and drain</td></tr>
+          <tr><td>3</td><td>Diffuse phosphorus at 1000–1150 °C</td><td>Form the n⁺ source and drain. Dopant enters only through the windows</td></tr>
+          <tr><td>4</td><td>Strip all remaining oxide; grow ≈0.1 µm of SiO₂ by dry oxidation</td><td>The gate dielectric. Grown dry for interface quality</td></tr>
+          <tr><td>5</td><td>Photoresist; <b>mask 2</b>; etch contact windows through the thin oxide</td><td>Expose bare silicon over the source and drain for metal contact</td></tr>
+          <tr><td>6</td><td>Evaporate aluminium over the entire wafer in a vacuum system</td><td>Conductor for gate and contacts</td></tr>
+          <tr><td>7</td><td>Photoresist; <b>mask 3</b>; etch the aluminium</td><td>Separate the blanket metal into source, gate and drain electrodes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Two features of this sequence carry through the whole course. The first is that
+      <b>the oxide is the diffusion mask</b>: dopant atoms diffusing at 1100 °C move
+      slowly enough through SiO₂ that a micron of it blocks them for the duration of the
+      drive-in, while they pass freely into the silicon exposed in the windows. One
+      material therefore provides both the gate insulator and the barrier that confines
+      the diffusion — though the oxide is itself patterned by the resist, not by itself.
+      The second is
+      that <b>each mask must be aligned to the pattern left by the one before it</b>.
+      Alignment marks etched at the first step are used to register each subsequent
+      exposure. Mask 3 defines the aluminium, and therefore where the gate electrode
+      sits; a misregistration between mask 1 and mask 3 places the gate off-centre over
+      the channel, leaving a gap at one end that no gate voltage can invert, and the
+      device then fails to conduct at all. The gate is therefore drawn wider than the channel,
+      overlapping source and drain by more than the alignment tolerance (Figure 8, step 6),
+      and that overlap adds gate-to-source and gate-to-drain capacitance that slows the
+      circuit. Alignment tolerance is one of the limits that
+      forced the abandonment of this process, and its replacement — the self-aligned gate,
+      in which the gate itself defines where the source and drain go — is introduced in
+      <a href="m03-threshold-voltage.html">M03</a> §8 and treated in full in M10.
+    </p>
+
+    <div class="box pitfall">
+      <p class="box-title">Wet etching undercuts the mask</p>
+      <p>
+        Buffered oxide etch is a liquid, and it removes material at the same rate in every
+        direction. While the etch proceeds downward through the oxide it also proceeds
+        sideways underneath the resist stencil, by the same distance. Etching through 1 µm
+        of oxide therefore widens the opening by about 1 µm on each side, so a 2 µm window
+        in the resist yields a 4 µm window in the oxide. The error is tolerable when
+        features are tens of microns across and fatal when they are one micron across. The
+        directional plasma processes that replace wet etching for fine features appear in
+        M10.
+      </p>
+    </div>
+
+    <h2>8 · Channel length, channel width, and why the length shrinks</h2>
+
+    <p>
+      Two dimensions of the finished device set its electrical behaviour, and they are
+      measured in the plane of the wafer surface rather than in the cross-sections drawn
+      so far. The <b>channel length</b> <em>L</em> is the source-to-drain separation,
+      measured along the direction of current flow. The <b>channel width</b> <em>Z</em> is
+      the perpendicular dimension, measured across the current path.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m1f9-t">
+        <title id="m1f9-t">Plan view of a MOSFET showing the channel length between source and drain and the larger channel width across the device</title>
+        <defs>
+          <marker id="m1f9-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+        <rect x="55" y="36" width="110" height="160" class="dg-fill"/>
+        <rect x="235" y="36" width="110" height="160" class="dg-fill"/>
+        <text x="110" y="100" class="dg-label" text-anchor="middle">source</text>
+        <text x="290" y="100" class="dg-label" text-anchor="middle">drain</text>
+        <rect x="165" y="22" width="70" height="188" class="dg-fill"/>
+        <text x="200" y="14" class="dg-label" text-anchor="middle">gate</text>
+        <g class="dg-acc" stroke-width="1.6">
+          <line x1="165" y1="226" x2="235" y2="226"/>
+          <line x1="165" y1="220" x2="165" y2="232"/>
+          <line x1="235" y1="220" x2="235" y2="232"/>
+        </g>
+        <text x="200" y="246" class="dg-label" text-anchor="middle">L — channel length</text>
+        <g class="dg-rule" stroke-width="1.4">
+          <line x1="364" y1="36" x2="364" y2="196"/>
+          <line x1="358" y1="36" x2="370" y2="36"/>
+          <line x1="358" y1="196" x2="370" y2="196"/>
+        </g>
+        <text x="386" y="116" class="dg-label" text-anchor="middle" transform="rotate(-90 386 116)">Z — channel width</text>
+        <line x1="120" y1="150" x2="280" y2="150" class="dg-rule" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#m1f9-ar)"/>
+        <text x="200" y="140" class="dg-label" text-anchor="middle">current</text>
+      </svg>
+      <figcaption>
+        Viewed from above. In a minimum-size device the width is usually the larger of the
+        two dimensions, despite the names. The gate overhangs the source and drain at both
+        ends, so <em>Z</em> is the width of the region under the gate that can invert, not
+        the length of the gate stripe.
+      </figcaption>
+    </figure>
+
+    <p>
+      Equations (1.4) and (1.5) show that drain current is proportional to
+      <em>Z</em>/<em>L</em>. Reducing the length therefore increases the current a single
+      device can deliver, which charges the capacitance of the next stage faster and makes
+      the circuit switch faster. It simultaneously reduces the area the device occupies, so
+      more devices fit in a given piece of silicon. Both effects push in the same direction,
+      and the history of the industry follows from that coincidence: the channel length has
+      been reduced in every generation since the first commercial MOS integrated circuits.
+    </p>
+    <p>
+      The professor's dating of that history, taken from the class notes:
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Year</th><th>Channel length, or technology node</th></tr></thead>
+        <tbody>
+          <tr><td>1970</td><td>10 µm</td></tr>
+          <tr><td>1980</td><td>3–5 µm</td></tr>
+          <tr><td>1985</td><td>2 µm</td></tr>
+          <tr><td>late 1980s</td><td>begins to fall below 1 µm</td></tr>
+          <tr><td>by the late 1990s</td><td>0.5–0.35 µm</td></tr>
+          <tr><td>2001–2002</td><td>0.25–0.13 µm <span class="small">(node names from here on — see below)</span></td></tr>
+          <tr><td>thereafter</td><td>90 nm, 65 nm, 45 nm</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">The table's dates, and where its node names part from gate length</p>
+      <p>
+        The table gives the notes' years. Volume production reached each generation earlier:
+        about 0.5 µm in 1993–94, 0.35 µm in 1995, 0.25 µm in 1997, 0.18 µm in 1999 and
+        0.13 µm in 2001, so the 0.25 µm generation, where node name and gate length part
+        company, belongs to 1997 rather than to 2001. The notes' calendar runs two to four
+        years behind from the mid-1990s on. The sequence of lengths is not in question.
+        <a href="m02-deep-submicron-roadmap.html">M02</a> sets the notes against the
+        literature row by row, in its closing table.
+      </p>
+      <p>
+        The figures down to 0.35 µm are physical gate lengths. From the 0.25 µm generation
+        onward they are <b>technology node names</b>, and the two quantities separate there,
+        with the physical gate length running <em>shorter</em> than the label: the 0.25 µm
+        generation had gates of about 200 nm, and the 130 nm generation shipped transistors
+        with gates of about 70 nm. At the 90 nm node the printed gate length was about 50 nm;
+        at 65 nm it was about 35 nm; at 45 nm about 25–35 nm. From the 22 nm generation onward
+        the label
+        detached from any physical dimension of the transistor altogether and became a
+        marketing name, and the physical gate length has been roughly flat near 20–30 nm
+        ever since, because short-channel effects made further reduction unprofitable.
+        Scaling continued through device geometry and wiring pitch instead.
+      </p>
+      <p>
+        This matters here because <em>L</em> in equations (1.4) and (1.5) is the physical
+        channel length, not the node name. Substituting "45 nm" for <em>L</em> in a
+        current calculation for a 45 nm-node device gives the wrong answer.
+      </p>
+    </div>
+
+    <p>
+      Nothing in this module explains why that progression was difficult. Equations (1.4)
+      and (1.5) contain <em>L</em> only as a divisor and would predict that shrinking it
+      is purely beneficial. It is not, and the reason is that several other quantities must
+      be changed alongside it: the oxide must thin, the substrate doping must rise, the
+      junctions must become shallower, and the supply voltage must fall. Each of those
+      changes breaks something else. The structure of the entire course is the catalogue of
+      those breakages and their fixes, and
+      <a href="m02-deep-submicron-roadmap.html">M02</a> lays out that catalogue.
+    </p>
+
+    <details class="check">
+      <summary>A process engineer proposes to grow the 0.1 µm gate oxide by wet oxidation instead of dry, to save furnace time. What is wrong with this?</summary>
+      <div class="answer">
+        <p>
+          Wet oxidation grows the film through the transport of water molecules across it,
+          and the resulting oxide is less dense and contains more defects and incorporated
+          hydrogen than one grown in dry oxygen. For a thick field oxide, whose job is only
+          to insulate and to mask diffusion, that does not matter. For the gate oxide it
+          matters greatly: this is the layer across which the full gate field is applied,
+          it forms the interface along which the channel carriers travel, and its defect
+          density sets both the breakdown voltage and the density of interface traps. The
+          furnace time being saved is real — 0.1 µm takes on the order of an hour to grow
+          dry at 1000–1100 °C against a few minutes wet — but it is bought back in
+          interface quality, breakdown field and trap density, and there is no other
+          layer in the device where those three matter as much.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>The MOSFET gate is a capacitor with a semiconductor for one plate.
+          <em>C</em><sub>ox</sub> = <em>ε</em><sub>ox</sub><em>ε</em><sub>0</sub>/<em>t</em><sub>ox</sub>,
+          always per unit area, always in centimetre units in this course.</li>
+        <li>A gate voltage drives the silicon surface into accumulation, depletion, or
+          inversion. Only inversion creates a channel. Strong inversion is defined by
+          <em>φ</em><sub>s</sub> = 2<em>φ</em><sub>F</sub>.</li>
+        <li>Above threshold the channel connects the n⁺ source and drain, and drain current
+          flows. It rises with <em>V</em><sub>DS</sub>, then saturates once the channel
+          pinches off at the drain end.</li>
+        <li>Drain current scales as <em>Z</em>/<em>L</em>, which is why the channel length
+          was reduced in every generation from 1970 until it stalled near 20–30 nm. From the
+          0.25 µm generation on, the technology node name and the physical gate length are
+          different numbers — the 130 nm generation had 70 nm gates.</li>
+        <li>Hole mobility is about a third of electron mobility, so p-channel devices are
+          made wider to match n-channel drive.</li>
+        <li>CMOS pairs the two types so that one is always off, and draws current only
+          while switching. Off-state leakage attacks that property directly.</li>
+        <li>The classic process uses three masks. Oxide is grown wet when thick and fast
+          matters, dry when thin and good matters, and it serves as both gate dielectric
+          and diffusion mask.</li>
+        <li>Each mask must be aligned to the previous one, and wet etching undercuts the
+          resist by roughly the depth etched. Both limits are removed later in the course.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1–2</td><td>Lecture 1 (2026-08-25); Streetman, <i>Solid State Electronic Devices</i> 3/E, figs. 8-9 to 8-11 (distributed as <i>MOSFETs Figures.pdf</i>)</td></tr>
+      <tr><td>§3–4</td><td>Lecture 1; Lecture 3 for the drain-current expression and the professor's <em>Z</em> notation; Sze, <i>Physics of Semiconductor Devices</i>, ch. 6</td></tr>
+      <tr><td>§5–6</td><td>Lecture 1. Bulk mobility values 1450 and 500 cm²/V·s from Sze &amp; Ng, <i>Physics of Semiconductor Devices</i> 3/E, appendix G; the professor quoted 1300 and 400–500 cm²/V·s in Lecture 3. Inversion-layer mobility degradation from Taur &amp; Ning, <i>Fundamentals of Modern VLSI Devices</i> 3/E, §5.2.1</td></tr>
+      <tr><td>§7</td><td>Lecture 1 — the class notes do not cover the classic process and the lecture audio is garbled in places. Oxidation chemistry, the solubility explanation for the wet/dry rate difference, and Deal–Grove growth times from Plummer, Deal &amp; Griffin, <i>Silicon VLSI Technology</i>, ch. 6 §6.5.1. Buffered oxide etch composition and the isotropic-undercut rule from the same, ch. 10 §10.2.1. The 0.46/0.54 split of the oxide about the original surface from Lectures 8 and 9 (2026-09-17, 09-22); Plummer, Deal &amp; Griffin ch. 6 for 0.45 (from the 2.2× volume expansion)</td></tr>
+      <tr><td>§8</td><td>Class notes p. 1 (channel-length history); Lectures 1 and 2. Production years for each generation as tabulated in M02's comparison with the literature (NTRS/ITRS node years; Intel's 0.25 µm generation of 1997). The node-name against gate-length separation from ITRS 2005/2007 PIDS tables, which list the two as separate rows; Tyagi <i>et al.</i>, IEDM 2000, "A 130 nm generation logic technology featuring 70 nm transistors"; and Thompson <i>et al.</i>, <i>Intel Technology Journal</i> 6(2), 2002 (90 nm node, 50 nm gate length)</td></tr>
+      <tr><td>Dopant diffusion mechanisms (§5 box)</td><td>Plummer, Deal &amp; Griffin ch. 7 §7.4; Fahey, Griffin &amp; Plummer, <i>Rev. Mod. Phys.</i> <b>61</b>, 289 (1989)</td></tr>
+    </table>
+
+    <p class="small">
+      <b>A note on one number.</b> The class notes give 2 µm for 1985; the Lecture 1
+      transcript says 1 µm for the same year. The notes are followed here, as the written
+      source outranks an auto-generated caption.
+    </p>
+
+    <nav class="pagination">
+      <span class="prev"></span>
+      <a class="next" href="m02-deep-submicron-roadmap.html"><span>Next</span>M02 · The Deep-Submicron MOSFET: A Structural Roadmap</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

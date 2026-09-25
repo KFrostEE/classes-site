@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M07 · Orbits and the Environment They See — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M07 · Orbits and the Environment They See</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 07</p>
+    <h1>Orbits and the Environment They See</h1>
+    <p class="lede">
+      Where each class of orbit sits relative to the trapped belts, how orbital speed
+      changes the exposure at a given altitude, and why the most heavily used navigation
+      orbit is also the worst radiation environment near Earth.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M06</span>
+      <span><b>Read time</b> ~40 min</span>
+      <span><b>Sources</b> Decks 4–5; Lectures 4–5</span>
+    </div>
+
+    <p>
+      <a href="m06-magnetosphere-belts.html">M06</a> established where the trapped
+      populations are: an inner proton belt between roughly 1.2 and 2.5 Earth radii, a
+      depleted slot, and a variable outer electron belt from 3 to 7. Those boundaries are
+      fixed by the geometry of the geomagnetic field and by the physics of trapping. What
+      an individual spacecraft experiences depends on where its orbit intersects them and
+      on how fast it is moving when it does.
+    </p>
+    <p>
+      This module converts the belt map into a design input. It defines the orbit classes
+      by altitude, derives the two relations that fix orbital speed and period, works
+      through the intersection of each orbit class with the belts, and presents the
+      radiation-risk comparison the course uses. It closes on the case that makes the
+      subject concrete: the Global Positioning System operates in the single worst orbit
+      available near Earth, for reasons that have nothing to do with radiation and cannot be
+      traded away.
+    </p>
+
+    <h2>1 · The orbit classes</h2>
+    <p>
+      Orbits near Earth are grouped by altitude, with the boundaries set by where the
+      trapped belts and the geosynchronous radius fall rather than by anything intrinsic to
+      orbital mechanics.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Class</th><th>Altitude</th><th>Period</th><th>Speed</th><th>Typical occupants</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>LEO</b> low Earth orbit</td>
+          <td>160–2,000 km</td>
+          <td>88–127 min</td>
+          <td>6.9–7.8 km/s</td>
+          <td>International Space Station (420 km), Hubble (535 km), Starlink (~550 km), most Earth-observation</td>
+        </tr>
+        <tr>
+          <td><b>MEO</b> medium Earth orbit</td>
+          <td>2,000–35,786 km</td>
+          <td>2–24 h</td>
+          <td>3.1–6.9 km/s</td>
+          <td>GPS (20,200 km), GLONASS (19,100 km), Galileo (23,222 km), BeiDou</td>
+        </tr>
+        <tr>
+          <td><b>GEO</b> geosynchronous / geostationary</td>
+          <td>35,786 km</td>
+          <td>23 h 56 min</td>
+          <td>3.07 km/s</td>
+          <td>Communications, weather (GOES), direct broadcast</td>
+        </tr>
+        <tr>
+          <td><b>HEO</b> highly elliptical orbit</td>
+          <td>perigee ~500 km, apogee ~40,000 km</td>
+          <td>~12 h</td>
+          <td>10.0 km/s at perigee, 1.5 km/s at apogee</td>
+          <td>Molniya and Tundra communications, high-latitude coverage</td>
+        </tr>
+        <tr>
+          <td><b>Lagrange points</b></td>
+          <td>1.5 million km (L1, L2)</td>
+          <td>1 year</td>
+          <td>matches Earth's orbital motion</td>
+          <td>SOHO (L1), James Webb and Roman telescopes (L2)</td>
+        </tr>
+        <tr>
+          <td><b>Interplanetary</b></td>
+          <td>beyond the magnetosphere</td>
+          <td>mission-specific</td>
+          <td>mission-specific</td>
+          <td>Planetary probes, sample-return, crewed deep-space concepts</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      A <b>geosynchronous</b> orbit is one whose period matches Earth's rotation, so the
+      spacecraft returns to the same point above the surface once per day. A
+      <b>geostationary</b> orbit is the special case that is also circular and equatorial,
+      so the spacecraft appears motionless from the ground. The distinction matters
+      operationally — a ground antenna can be fixed only for the geostationary case — and
+      not at all for radiation, since the altitude is the same.
+    </p>
+
+    <h2>2 · Speed, period, and why they are not free choices</h2>
+    <p>
+      Orbital altitude is not an independent design variable. Fixing it fixes both the
+      period and the speed, through two relations that follow from balancing gravitational
+      attraction against the centripetal acceleration of circular motion.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">
+          <em>v</em> = <span class="sqrt"><span class="frac"><span class="num"><em>GM</em></span><span class="den"><em>r</em></span></span></span>
+          &nbsp;&nbsp;&nbsp;
+          <em>T</em> = 2π <span class="sqrt"><span class="frac"><span class="num"><em>r</em>³</span><span class="den"><em>GM</em></span></span></span>
+        </div>
+        <div class="eq-num">(7.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>v</em> orbital speed for a circular orbit (m/s) ·
+        <em>T</em> orbital period (s) ·
+        <em>r</em> orbital radius measured from Earth's <b>centre</b> (m) — add the Earth
+        radius 6,371 km to any quoted altitude ·
+        <em>GM</em> standard gravitational parameter of Earth,
+        3.986 × 10<sup>14</sup> m³/s².
+        Circular orbits only; the elliptical generalisation is equation (7.2).
+        <a href="formula-sheet.html#eq-orbit">Formula sheet §6</a>
+      </div>
+    </div>
+
+    <p>
+      Speed falls as the inverse square root of radius, so a spacecraft in geostationary
+      orbit moves at 3.07 km/s against 7.66 km/s for the International Space Station &mdash;
+      less than half the speed, six times the radius. Period rises as the three-halves
+      power, from 93 minutes to 24 hours over the same range. For a radiation analysis both
+      matter: the period sets how often a repeating orbit re-enters a hazardous region, and
+      the speed sets how long it stays each time.
+    </p>
+
+    <p>
+      For an elliptical orbit the speed is no longer constant, and the relation that
+      replaces it is the vis-viva equation. It expresses the fact that the sum of kinetic
+      and gravitational potential energy is fixed by the semi-major axis alone.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">
+          <em>v</em>² = <em>GM</em>
+          <span class="dl">(</span>
+          <span class="frac"><span class="num">2</span><span class="den"><em>r</em></span></span>
+          −
+          <span class="frac"><span class="num">1</span><span class="den"><em>a</em></span></span>
+          <span class="dl">)</span>
+        </div>
+        <div class="eq-num">(7.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>v</em> instantaneous speed (m/s) ·
+        <em>r</em> current distance from Earth's centre (m) ·
+        <em>a</em> semi-major axis, half the sum of the perigee and apogee radii (m) ·
+        <em>GM</em> = 3.986 × 10<sup>14</sup> m³/s².
+        Reduces to equation (7.1) when <em>r</em> = <em>a</em>. The period depends on
+        <em>a</em> only, so a circular and an elliptical orbit with the same semi-major axis
+        share a period.
+        <a href="formula-sheet.html#eq-visviva">Formula sheet §6</a>
+      </div>
+    </div>
+
+    <h2>3 · Where each orbit meets the belts</h2>
+    <p>
+      Laying the orbit altitudes against the belt boundaries of
+      <a href="m06-magnetosphere-belts.html">M06</a> produces the whole comparison, and the
+      four cases are qualitatively different.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 350" role="img" aria-labelledby="f7-1-t">
+        <title id="f7-1-t">Orbit altitudes plotted against the inner and outer radiation belt boundaries</title>
+        <circle cx="110" cy="185" r="34" class="dg-fill"/>
+        <text x="110" y="190" class="dg-label-sm" text-anchor="middle">Earth</text>
+        <line x1="110" y1="185" x2="700" y2="185" class="dg-rule" stroke-width="0.9" stroke-dasharray="3 3"/>
+        <rect x="148" y="115" width="112" height="140" class="dg-fill" opacity="0.55"/>
+        <rect x="260" y="115" width="60" height="140" class="dg-faint" opacity="0.35"/>
+        <rect x="320" y="115" width="240" height="140" class="dg-fill" opacity="0.4"/>
+        <text x="204" y="108" class="dg-label-sm" text-anchor="middle">inner belt</text>
+        <text x="204" y="270" class="dg-label-sm" text-anchor="middle">protons</text>
+        <text x="290" y="108" class="dg-label-sm" text-anchor="middle">slot</text>
+        <text x="440" y="108" class="dg-label-sm" text-anchor="middle">outer belt</text>
+        <text x="440" y="270" class="dg-label-sm" text-anchor="middle">electrons</text>
+
+        <circle cx="140" cy="185" r="4" class="dg-acc-f"/>
+        <text x="140" y="312" class="dg-label-sm" text-anchor="middle">LEO</text>
+        <line x1="140" y1="185" x2="140" y2="300" class="dg-rule" stroke-width="0.9"/>
+        <text x="140" y="328" class="dg-label-sm" text-anchor="middle">below</text>
+
+        <circle cx="232" cy="185" r="4" class="dg-acc-f"/>
+        <text x="232" y="312" class="dg-label-sm" text-anchor="middle">MEO</text>
+        <line x1="232" y1="185" x2="232" y2="300" class="dg-acc" stroke-width="1.4"/>
+        <text x="232" y="328" class="dg-label-sm" text-anchor="middle">inside</text>
+
+        <circle cx="530" cy="185" r="4" class="dg-acc-f"/>
+        <text x="530" y="312" class="dg-label-sm" text-anchor="middle">GEO</text>
+        <line x1="530" y1="185" x2="530" y2="300" class="dg-rule" stroke-width="0.9"/>
+        <text x="530" y="328" class="dg-label-sm" text-anchor="middle">outer edge</text>
+
+        <path d="M124,185 C160,86 420,54 600,150 C640,170 660,180 665,185 C660,190 640,200 600,220 C420,316 160,284 124,185"
+              class="dg-line" stroke-width="1.8" fill="none" stroke-dasharray="6 4"/>
+        <text x="630" y="120" class="dg-label-sm" text-anchor="middle">HEO</text>
+        <text x="630" y="136" class="dg-label-sm" text-anchor="middle">crosses both,</text>
+        <text x="630" y="152" class="dg-label-sm" text-anchor="middle">fast</text>
+        <text x="404" y="40" class="dg-label-sm" text-anchor="middle">slow near apogee</text>
+        <text x="180" y="164" class="dg-label-sm" text-anchor="end">fast at</text>
+        <text x="180" y="178" class="dg-label-sm" text-anchor="end">perigee</text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> Low Earth orbit is beneath the belts, medium Earth orbit sits
+        inside them, geostationary orbit sits at the outer edge, and a highly elliptical
+        orbit crosses both at high speed. Radial scale is compressed.
+        <span class="src">Layout after Deck 4 p. 12, from K. A. LaBel, <em>Proton Single Event Effects (SEE) Guideline</em>, NASA NEPP, 2009.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Low Earth orbit lies below the inner belt.</b> At 400–600 km the spacecraft is
+      beneath the trapped proton population everywhere except over the South Atlantic, where
+      the offset dipole brings the belt down to meet it. Trapped exposure is therefore
+      concentrated into a few passes per day. Solar energetic particles are largely excluded
+      at low inclination by the geomagnetic cut-off, but reach the spacecraft freely over the
+      poles, so a polar low orbit sees a solar particle environment that an equatorial one
+      does not.
+    </p>
+    <p>
+      <b>Medium Earth orbit sits inside the belts.</b> At 20,200 km a GPS satellite is
+      within the outer electron belt continuously and passes through the region of highest
+      trapped-proton exposure of any near-Earth orbit. There is no respite: unlike low orbit
+      the exposure is not episodic, and unlike geostationary orbit the spacecraft cannot
+      move outside the belt. The NASA orbit table describes it as the highest near-Earth
+      proton exposure, and the course's fluence plot in
+      <a href="m05-sun-particle-populations.html">M05</a> puts the medium-orbit electron
+      curve at the top.
+    </p>
+    <p>
+      <b>Geostationary orbit sits at the outer edge of the outer belt.</b> At 6.6 Earth radii
+      it is beyond the trapped protons entirely — the NASA table records no trapped protons
+      at geostationary altitude — so at solar minimum the environment is benign. Exposure to
+      solar energetic particles is unobstructed, however, because the spacecraft is near the
+      magnetopause boundary where the geomagnetic shielding is weak. Risk is therefore low at
+      solar minimum and moderate at solar maximum: the environment is set almost entirely by
+      solar activity rather than by trapped particles.
+    </p>
+    <p>
+      <b>A highly elliptical orbit crosses everything.</b> A Molniya orbit with perigee near
+      500 km and apogee near 40,000 km passes through the inner belt, the slot and the outer
+      belt twice per revolution, and does so twice a day. It sees both trapped populations
+      and the solar particle environment at apogee. What saves it is speed, which is the
+      subject of §5.
+    </p>
+
+    <h2>4 · The risk comparison</h2>
+    <p>
+      The table below is the course's reference comparison, reproduced from the NASA Goddard
+      proton radiation-hardness assurance guide as it appears on Deck 4. The risk columns
+      report <b>proton single-event-effect risk</b> specifically, evaluated separately at
+      solar minimum and at solar maximum, so the entries should be read as a statement about
+      one hazard and not as an overall radiation ranking.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Orbit</th><th>Trapped protons</th><th>Solar particles</th>
+          <th>Proton SEE risk<br>solar min</th><th>Proton SEE risk<br>solar max</th><th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><b>GEO</b></td><td>No</td><td>Yes</td><td>Low</td><td>Moderate</td><td>Solar events are short-duration exposures, but operate-through constraints must be factored in</td></tr>
+        <tr><td><b>LEO</b> (low inclination)</td><td>Yes</td><td>No</td><td>Moderate</td><td>Low–Moderate</td><td>Trapped protons higher at solar minimum</td></tr>
+        <tr><td><b>LEO polar</b></td><td>Yes</td><td>Yes</td><td>Moderate</td><td>Moderate–High</td><td>Risk of solar events higher during solar maximum</td></tr>
+        <tr><td><b>Shuttle</b></td><td>Yes</td><td>No</td><td>Very Low–Moderate</td><td>Very Low–Moderate</td><td>Short-duration (weeks) exposures reduce risk</td></tr>
+        <tr><td><b>International Space Station</b></td><td>Yes</td><td>Yes, partial</td><td>Moderate</td><td>Moderate</td><td>Trapped protons higher during solar minimum, but solar events may add particles for a short time</td></tr>
+        <tr><td><b>Interplanetary</b></td><td>During phasing orbits; planetary belts possible</td><td>Yes — reduces farther from the Sun</td><td>Low–High</td><td>Low–High</td><td>Cruise phase is solar-particle only and lessens with distance from the Sun; planetary proton exposure varies by planet and must be evaluated case by case</td></tr>
+        <tr><td><b>MEO</b> (or high LEO)</td><td>Yes</td><td>Yes</td><td><b>Very High</b></td><td><b>High</b></td><td>The highest near-Earth proton exposure. The slot region between the belts is sometimes also called MEO and would be a moderate concern</td></tr>
+        <tr><td><b>HEO</b></td><td>Yes</td><td>Yes</td><td><b>High</b></td><td><b>Very High</b></td><td>Nearly as bad as MEO, but moves through the belts much more quickly, lessening daily proton exposure</td></tr>
+        <tr><td><b>Lagrange points</b></td><td>No</td><td>Yes</td><td>Low</td><td>Moderate</td><td>Solar events are short-duration exposures, but operate-through constraints must be factored in</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="src">
+      Deck 4 p. 12 and Deck 5 p. 5, reproducing the orbit table from K. A. LaBel,
+      <em>Proton Single Event Effects (SEE) Guideline</em>, NASA Electronic Parts and
+      Packaging Program, August 2009. The decks cite the file by its former Goddard
+      <em>radhome</em> address; the entries reproduced here match the published document.
+    </p>
+
+    <p>
+      Three features of the table are worth extracting, because each contradicts an
+      assumption that altitude alone would suggest.
+    </p>
+    <p>
+      <b>Higher is not worse.</b> Geostationary orbit is six times the altitude of medium
+      Earth orbit's lower boundary and carries a far lower proton risk, because it is
+      outside the trapped protons rather than inside them. Radiation exposure is set by belt
+      geometry, not by distance from the ground.
+    </p>
+    <p>
+      <b>Medium Earth orbit and highly elliptical orbit swap their worst case.</b> Medium
+      orbit is worst at solar minimum, highly elliptical orbit at solar maximum. Medium
+      orbit is dominated by trapped protons, which peak at solar minimum for the atmospheric
+      reason established in <a href="m06-magnetosphere-belts.html">M06</a>. A highly
+      elliptical orbit spends much of its period at high altitude where solar particles
+      reach it directly, so it follows solar activity instead. A mission's worst case is
+      therefore at a different phase of the cycle depending on which orbit it flies.
+    </p>
+    <p>
+      <b>Duration is part of the environment.</b> The Shuttle row records a very low risk for
+      an orbit that is otherwise identical to the low-orbit row above it, because a mission
+      of two weeks accumulates two weeks of fluence. The environment is a rate; the design
+      driver is the integral of that rate over the mission.
+    </p>
+
+    <h2>5 · Why an elliptical orbit is cheaper than its altitude suggests</h2>
+    <p>
+      A highly elliptical orbit passes through the most intense part of the trapped belts
+      twice per revolution and still carries a lower daily proton exposure than medium Earth
+      orbit. The reason is in equation (7.2): on an eccentric orbit the speed varies with
+      position, and it is highest exactly where the belts are.
+    </p>
+    <p>
+      Take a Molniya orbit with perigee at 600 km and apogee at 39,800 km. The semi-major
+      axis is 26,571 km, giving a 12-hour period. Equation (7.2) returns 10.0 km/s at
+      perigee and 1.5 km/s at apogee &mdash; a factor of 6.7. The spacecraft crosses the belts
+      near perigee, where it is moving fastest, and spends the bulk of its 12 hours near
+      apogee, far outside them. A circular medium orbit at the same mean radius moves at a
+      uniform 3.87 km/s and never leaves the belts at all.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 640 280" role="img" aria-labelledby="f7-2-t">
+        <title id="f7-2-t">Speed against position on a Molniya orbit compared with a circular medium Earth orbit</title>
+        <ellipse cx="330" cy="140" rx="270" ry="120" class="dg-line" stroke-width="1.6" fill="none"/>
+        <circle cx="96" cy="140" r="20" class="dg-fill"/>
+        <text x="96" y="145" class="dg-label-sm" text-anchor="middle">Earth</text>
+        <ellipse cx="96" cy="140" rx="76" ry="76" class="dg-fill" opacity="0.35"/>
+        <text x="96" y="236" class="dg-label-sm" text-anchor="middle">belts</text>
+        <g class="dg-acc">
+          <line x1="66" y1="126" x2="66" y2="154" stroke-width="3"/>
+          <line x1="74" y1="118" x2="74" y2="162" stroke-width="3"/>
+          <line x1="82" y1="112" x2="82" y2="168" stroke-width="3"/>
+        </g>
+        <text x="150" y="88" class="dg-label-sm">perigee: 10.0 km/s</text>
+        <text x="150" y="104" class="dg-label-sm">— crosses the belts fast</text>
+        <text x="600" y="132" class="dg-label-sm" text-anchor="end">apogee: 1.5 km/s</text>
+        <text x="600" y="148" class="dg-label-sm" text-anchor="end">— dwells here, outside them</text>
+        <g class="dg-faint">
+          <circle cx="540" cy="70" r="4"/><circle cx="580" cy="100" r="4"/>
+          <circle cx="598" cy="140" r="4"/><circle cx="580" cy="180" r="4"/>
+          <circle cx="540" cy="210" r="4"/>
+        </g>
+        <g class="dg-faint">
+          <circle cx="140" cy="66" r="4"/><circle cx="240" cy="30" r="4"/>
+        </g>
+        <text x="330" y="268" class="dg-label-sm" text-anchor="middle">markers at equal time intervals: widely spaced near perigee, bunched near apogee</text>
+      </svg>
+      <figcaption>Equal-time markers crowd together where the orbit is slow. The time integral of exposure, not the peak flux, is what the spacecraft accumulates.</figcaption>
+    </figure>
+
+    <p>
+      This is the same physical statement as Kepler's second law: the line from Earth to the
+      spacecraft sweeps equal areas in equal times, so the spacecraft must move quickly when
+      it is close. It is also why a highly elliptical orbit is used at all. Its purpose is to
+      provide long dwell times over high latitudes, which a geostationary satellite cannot
+      serve because it sits above the equator and appears too low on the horizon from polar
+      regions. The slow apogee that makes the orbit useful for communications is the same
+      slow apogee that keeps it out of the belts.
+    </p>
+
+    <div class="box">
+      <p>
+        A Molniya orbit is inclined at 63.4°, and the value is not arbitrary. Earth's
+        equatorial bulge perturbs an orbit so that the perigee point rotates within the
+        orbital plane, which would move the slow apogee away from the intended hemisphere
+        over a few years. At 63.4° the perturbation vanishes to first order, so the apogee
+        stays over the northern hemisphere for the life of the mission. This is the critical
+        inclination, and it is a rare case in which a geophysical constraint fixes an orbital
+        parameter exactly.
+      </p>
+    </div>
+
+    <h2>6 · Why GPS accepts the worst orbit near Earth</h2>
+    <p>
+      The Global Positioning System operates at 20,200 km altitude, in the region the risk
+      table marks very high. That choice was made deliberately and cannot be revised, and
+      the reasons are worth following because they are the clearest example in the course of
+      radiation losing a design trade.
+    </p>
+    <p>
+      <b>Navigation requires several satellites visible at once.</b> A receiver determines
+      its position by measuring the time each satellite's signal took to arrive and
+      multiplying by the speed of light to get a distance. Three such distances intersect at
+      a point, so three satellites would suffice if the receiver had a perfect clock. It does
+      not: a receiver clock error of one nanosecond corresponds to 30 cm of range error, and
+      no consumer device carries an atomic clock. A fourth measurement lets the receiver
+      solve for its own clock offset as a fourth unknown alongside the three coordinates. Four
+      satellites must therefore be simultaneously above the horizon, everywhere on Earth, at
+      all times.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 260" role="img" aria-labelledby="f7-3-t">
+        <title id="f7-3-t">Trilateration from four satellites solving for three position coordinates and a clock offset</title>
+        <g class="dg-fill">
+          <rect x="70" y="30" width="52" height="26" rx="3"/>
+          <rect x="215" y="20" width="52" height="26" rx="3"/>
+          <rect x="360" y="34" width="52" height="26" rx="3"/>
+          <rect x="500" y="24" width="52" height="26" rx="3"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="96" y="48">SV1</text><text x="241" y="38">SV2</text>
+          <text x="386" y="52">SV3</text><text x="526" y="42">SV4</text>
+        </g>
+        <g class="dg-line" stroke-width="1.2" fill="none">
+          <line x1="96" y1="60" x2="292" y2="186"/>
+          <line x1="241" y1="50" x2="298" y2="186"/>
+          <line x1="386" y1="64" x2="308" y2="186"/>
+        </g>
+        <line x1="526" y1="54" x2="316" y2="186" class="dg-acc" stroke-width="1.6"/>
+        <circle cx="303" cy="192" r="8" class="dg-acc-f"/>
+        <text x="303" y="220" class="dg-label" text-anchor="middle">receiver</text>
+        <text x="303" y="240" class="dg-label-sm" text-anchor="middle">solves for x, y, z and its own clock offset</text>
+        <text x="470" y="120" class="dg-label-sm">the fourth range</text>
+        <text x="470" y="136" class="dg-label-sm">removes the clock</text>
+        <text x="470" y="152" class="dg-label-sm">as an unknown</text>
+      </svg>
+      <figcaption>Three ranges fix a point; the fourth eliminates the receiver clock error. This is why the constellation size is set by simultaneous visibility rather than by coverage.</figcaption>
+    </figure>
+
+    <p>
+      <b>Altitude buys visibility.</b> The higher a satellite, the larger the area of Earth
+      from which it can be seen. Deck 4 records the consequence: a medium-orbit constellation
+      can give stable coverage of almost the entire globe with as few as six satellites, and
+      its sensors have far wider fields of view than those in low orbit. GPS flies more than
+      that — twenty-four operational satellites in six planes — precisely because the
+      requirement is four simultaneously visible rather than one, but the scaling is the
+      point. Providing the same service from low Earth orbit would take hundreds of
+      satellites, and each would be visible for only minutes at a time.
+    </p>
+    <p>
+      <b>The orbit must last.</b> GPS satellites are built for long service: the earlier
+      blocks carried a 7.5-year design life and the current ones 12 to 15 years, and in
+      practice many have operated well beyond twenty. At low altitude residual atmospheric drag
+      removes energy from the orbit continuously, so a low-orbit satellite must carry
+      propellant and expend it on reboost for its whole life, or accept re-entry. At
+      20,200 km there is no measurable atmosphere. Deck 4 lists this directly: medium orbit
+      is less fuel-intensive to operate than low orbit and easier to maintain station in.
+    </p>
+    <p>
+      The result is that the orbit is fixed by coverage geometry, constellation economics
+      and mission lifetime, and the radiation environment is a consequence to be engineered
+      around rather than a parameter to be traded. Navigation satellites accordingly carry
+      radiation-hardened parts, generous shielding on critical boxes, and a design dose in
+      the hundreds of kilorad — the compensating expenditure that
+      <a href="m03-space-electronics-gap.html">M03</a> described in the abstract, arising
+      here from a concrete and unavoidable requirement.
+    </p>
+
+    <h2>7 · Inclination, and the polar exception</h2>
+    <p>
+      Altitude alone does not determine the environment; the angle between the orbital plane
+      and the equator matters as well. <a href="m06-magnetosphere-belts.html">M06</a>
+      established that the geomagnetic cut-off — the minimum energy a charged particle needs
+      to reach a given location from outside — is highest at the equator and falls to zero
+      over the magnetic poles, where field lines run vertically and offer a direct path
+      inward.
+    </p>
+    <p>
+      A low Earth orbit at low inclination therefore sees essentially no solar energetic
+      particles, and the risk table records exactly that: solar particles "No" for
+      low-inclination low orbit, "Yes" for polar low orbit. The two rows sit at the same
+      altitude and differ only in the plane of the orbit. A polar orbit passes through the
+      open field-line regions on every revolution and accumulates solar-particle exposure
+      that an equatorial orbit at the same altitude never sees. Since sun-synchronous orbits
+      — used by almost all Earth-observation missions because they cross the equator at a
+      fixed local solar time — are necessarily near-polar, this exposure applies to a large
+      fraction of operational low-orbit spacecraft.
+    </p>
+
+    <h2>8 · Beyond the magnetosphere</h2>
+    <p>
+      At the Lagrange points and in interplanetary space the trapped populations are simply
+      absent: there is no magnetic field to trap anything. The table records no trapped
+      protons for Lagrange-point missions, and the risk drops to low at solar minimum and
+      moderate at maximum, entirely determined by solar particle events.
+    </p>
+    <p>
+      Interplanetary space is the one entry in the table with a range rather than a value,
+      low to high at both phases of the cycle, and the range is genuine. During the cruise
+      phase the environment is solar particles plus galactic cosmic rays, and the solar
+      component falls with distance from the Sun as the inverse square, so an outer-planet
+      mission has a quieter cruise than an inner-planet one. On arrival the environment is
+      whatever the destination provides. Jupiter has a magnetic field roughly twenty thousand
+      times Earth's magnetic moment and correspondingly severe trapped belts; the Juno
+      spacecraft carries its electronics inside a titanium vault for this reason. Mars has no
+      global field at all, and a spacecraft there is exposed to the unmodified interplanetary
+      environment while gaining a little shielding from the thin atmosphere. The table's
+      instruction to evaluate planetary exposure case by case is the only correct general
+      statement.
+    </p>
+
+    <h2>9 · From orbit to a number</h2>
+    <p>
+      A radiation analysis converts the orbit into a single set of design numbers by
+      integrating along the trajectory. The orbit is propagated for the mission duration; at
+      each point the trapped-particle models are evaluated for the local field coordinates;
+      the solar particle contribution is added using the 7-year-maximum, 4-year-minimum
+      convention of <a href="m05-sun-particle-populations.html">M05</a>; and the galactic
+      cosmic-ray contribution is added at the appropriate modulation level. The result is a
+      mission-integrated fluence spectrum for each species.
+    </p>
+    <p>
+      That spectrum is then transported through a model of the spacecraft structure to give
+      two design quantities: a <b>total ionising dose</b> behind a stated shield thickness,
+      quoted in krad(Si), which drives parts selection for cumulative degradation; and a
+      <b>linear energy transfer spectrum</b>, which drives the single-event rate prediction.
+      Both depend on how the intervening material redistributes the incident spectrum, and
+      that redistribution is the subject of Part III, beginning with
+      <a href="m08-ionization-excitation.html">M08</a>.
+    </p>
+
+    <details class="check">
+      <summary>A constellation must provide continuous coverage of the Arctic. Compare a highly elliptical orbit against a geostationary orbit and against a polar low Earth orbit, on coverage and on radiation.</summary>
+      <div class="answer">
+        <p>
+          <b>Geostationary orbit fails on coverage.</b> A geostationary satellite sits above
+          the equator at 35,786 km. Seen from the Arctic it is close to the horizon or below
+          it, so the link is obstructed by terrain and passes through a long slant path of
+          atmosphere. Its radiation environment is the best of the three — outside the
+          trapped protons, low risk at solar minimum — but the service cannot be delivered.
+        </p>
+        <p>
+          <b>A polar low orbit covers the Arctic but not continuously.</b> At 800 km each
+          satellite is visible for minutes per pass, so continuous coverage requires a large
+          constellation and handover between satellites. Radiation exposure is moderate:
+          below the belts except over the South Atlantic, but with full solar-particle access
+          through the polar cap, and with drag making the orbit expensive to maintain over a
+          long mission.
+        </p>
+        <p>
+          <b>A highly elliptical orbit is the conventional answer.</b> Apogee is placed over
+          the northern hemisphere, and equation (7.2) makes the spacecraft slow there, so it
+          dwells high over the Arctic for most of its 12-hour period and two or three
+          satellites give continuous coverage. The radiation cost is real — the orbit crosses
+          both belts twice per revolution and the table rates it high to very high — but the
+          perigee crossing is fast, so the daily accumulated exposure is below that of a
+          circular medium orbit. The design response is to harden the spacecraft rather than
+          to change the orbit, exactly as for GPS. This is why the Molniya orbit has been
+          used for high-latitude communications since the 1960s.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Orbital speed and period are fixed by radius: <em>v</em> = √(<em>GM</em>/<em>r</em>), <em>T</em> = 2π√(<em>r</em>³/<em>GM</em>), with <em>GM</em> = 3.986 × 10<sup>14</sup> m³/s² and <em>r</em> measured from Earth's centre. For eccentric orbits, <em>v</em>² = <em>GM</em>(2/<em>r</em> − 1/<em>a</em>).</li>
+        <li>LEO is below the belts except over the South Atlantic; MEO sits inside them continuously; GEO sits at the outer edge, beyond the trapped protons; HEO crosses both belts twice per revolution.</li>
+        <li>The course's risk table reports <em>proton single-event risk</em>: MEO very high at solar minimum and high at maximum; HEO high then very high; GEO and Lagrange points low then moderate; low-inclination LEO moderate then low–moderate.</li>
+        <li>MEO and HEO have opposite worst cases because MEO is trapped-proton-dominated (peaking at solar minimum) while HEO spends most of its time high, where solar particles dominate (peaking at solar maximum).</li>
+        <li>An elliptical orbit crosses the belts at up to 10.0 km/s near perigee and dwells at 1.5 km/s near apogee outside them, so its daily exposure is below that of a circular orbit at the same mean radius. The 63.4° critical inclination keeps apogee over the intended hemisphere.</li>
+        <li>GPS accepts the worst near-Earth orbit because navigation needs four satellites simultaneously visible, altitude buys that visibility with a small constellation, and there is no drag at 20,200 km to shorten a fifteen-year life.</li>
+        <li>Inclination is part of the environment: polar and sun-synchronous orbits receive solar energetic particles through the open polar field lines that low-inclination orbits at the same altitude never see.</li>
+        <li>Mission duration is part of the environment too — the Shuttle row is low-risk for the same orbit as the low-Earth row, because fluence is a time integral.</li>
+        <li>The analysis output is a mission-integrated fluence spectrum, converted behind a stated shield into a total ionising dose in krad(Si) and a linear energy transfer spectrum for single-event rate prediction.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 4 p. 12 and Deck 5 p. 5 (GEO, MEO, LEO and HEO defined; the orbit diagram); Lecture 4 (Starlink, Hubble and the International Space Station in low orbit). Altitude bands, periods and occupants from standard orbital references</td></tr>
+      <tr><td>§2</td><td>Circular-orbit and vis-viva relations from Newtonian two-body mechanics; <em>GM</em><sub>⊕</sub> = 3.986 × 10<sup>14</sup> m³/s² and <em>R</em><sub>⊕</sub> = 6,371 km standard values. Numerical speeds and periods computed for the altitudes in §1</td></tr>
+      <tr><td>§3</td><td>Deck 4 pp. 10, 12 (orbit positions against the belt structure); Lecture 4 (low orbit below the belts; medium orbit passing straight through; geostationary orbit outside them; medium-orbit planes tilted to reduce belt dwell)</td></tr>
+      <tr><td>§4</td><td>Deck 4 p. 12 and Deck 5 p. 5, reproducing the orbit table from K. A. LaBel, <em>Proton Single Event Effects (SEE) Guideline</em>, NASA Electronic Parts and Packaging Program, August 2009; Lecture 4 for the professor's reading of each row</td></tr>
+      <tr><td>§5</td><td>Lecture 4 (an elliptical orbit accelerates at perigee and slows at apogee, so it stays in the belt for less time than a medium orbit). Molniya geometry, vis-viva speeds and the 63.4° critical inclination computed and taken from standard orbital-mechanics references</td></tr>
+      <tr><td>§6</td><td>Deck 4 p. 13 and Deck 5 p. 6 (medium orbit less fuel-intensive and easier to station-keep than low orbit, wider sensor fields of view, near-global coverage with six satellites, less cloud obstruction, navigation satellites as the example); Lecture 4 (whole-Earth coverage requirement, trilateration from time of flight, long mission life). Constellation size, design lives and the clock-bias fourth unknown from published GPS system documentation</td></tr>
+      <tr><td>§7</td><td>Deck 4 p. 12 (solar particles present for polar low orbit and absent for low-inclination low orbit); geomagnetic cut-off rigidity and sun-synchronous orbit geometry from standard references</td></tr>
+      <tr><td>§8</td><td>Deck 4 p. 12 (interplanetary row: cruise phase solar-particle only, lessening with distance from the Sun; planetary belts evaluated case by case); Lecture 4 (Jupiter's radiation environment; Mars without a magnetic field). Jupiter's magnetic moment and the Juno vault from NASA mission documentation</td></tr>
+      <tr><td>§9</td><td>Deck 3 p. 23 and Deck 4 p. 7 (11-year integral fluence as the design quantity); Deck 4 p. 14 (solar cycle partition). Transport to dose behind shielding and to a linear energy transfer spectrum is the standard radiation-hardness assurance flow, developed in <a href="m12-stopping-power-range.html">M12</a> and <a href="index.html#roadmap">M15</a></td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m06-magnetosphere-belts.html"><span>Previous</span>M06 · Earth's Magnetosphere and the Trapped Belts</a>
+      <a class="next" href="m08-ionization-excitation.html"><span>Next</span>M08 · Ionization and Excitation</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>
