@@ -1,0 +1,1779 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M14 · Total Ionizing Dose — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M14 · Total Ionizing Dose</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 14</p>
+    <h1>Total Ionizing Dose</h1>
+    <p class="lede">
+      Total ionizing dose is the damage ionizing radiation accumulates in the oxides of a
+      device over a mission: positive charge trapped in the silicon dioxide and electronic
+      defects created at its interface with silicon. This module follows that charge from
+      the first electron–hole pair to the threshold shift, leakage current and circuit
+      failure it produces, and to the tests that qualify a part against it.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M01, M04, M08, M10</span>
+      <span><b>Read time</b> ~45 min</span>
+      <span><b>Sources</b> Deck 8 pp. 31–42; Lecture 8; Oldham &amp; McLean (2003); Schwank et al. (2008); Fleetwood et al. (1988)</span>
+    </div>
+
+    <p>
+      <a href="m08-ionization-excitation.html">M08</a> and
+      <a href="m10-photon-interaction.html">M10</a> established how charged particles and
+      photons give up energy by ionization, freeing electron–hole pairs, and M08 followed
+      those pairs in silicon, where the device's own fields collect them within picoseconds
+      and leave nothing behind. <a href="m11-displacement-damage.html">M11</a> followed the
+      non-ionizing share of the energy into displaced atoms. This module follows ionization
+      into the insulator. Silicon dioxide forms the gate dielectric and the isolation of
+      every MOS device, and in it the holes are nearly immobile, a fraction of them are
+      captured by defects for months, and hydrogen released along the way creates new
+      electronic states at the silicon surface. The accumulation of that charge and those
+      states with absorbed dose is the total ionizing dose effect, abbreviated TID.
+    </p>
+    <p>
+      TID sets the working lifetime of most electronics in orbit. Every trapped electron
+      and proton of the belts in <a href="m06-magnetosphere-belts.html">M06</a> contributes
+      to it, a mission's requirement is stated as a dose behind a shield
+      (<a href="m07-orbits-and-environment.html">M07</a> §9), and a commercial part can
+      fail after a few krad(Si). The module follows the order of Deck 8: the classes of
+      radiation effect, the symptoms of TID and a documented flash-memory failure, the
+      mechanism on the band diagram of an MOS structure, the threshold-voltage shift and
+      its two components, the role of oxide thickness, annealing, leakage through the
+      isolation oxide, and testing.
+    </p>
+    <p>
+      The treatment stops at the mechanism and its device consequences. Defect chemistry,
+      trapping kinetics and hardness-assurance statistics are developed in the Radiation
+      Effects course, in
+      <a href="../../EEE5416_Radiation_Effects/site/m07-oxide-interface-trap-charge.html">EEE 5416 M07</a>,
+      <a href="../../EEE5416_Radiation_Effects/site/m08-tid-effects-devices-ics.html">M08</a>,
+      <a href="../../EEE5416_Radiation_Effects/site/m09-oxide-charge-kinetics.html">M09</a> and
+      <a href="../../EEE5416_Radiation_Effects/site/m15-hardness-assurance.html">M15</a>, and linked
+      where they extend a point made here. The MOS background — the band diagram, the Fermi
+      level, inversion, the threshold voltage and the subthreshold swing — is in
+      <a href="m01-semiconductor-background.html">M01</a>.
+    </p>
+
+    <h2>1 · Three classes of radiation effect</h2>
+    <p>
+      Deck 8 p. 32 divides the effects of radiation on electronics into two groups, and the
+      division is by how the damage accumulates. Long-term effects grow with the integrated
+      exposure; every particle contributes a small share and no single one matters.
+      Transient, or single-particle, effects are caused by one particle at one place and one
+      instant, and can happen at the first particle of a mission as readily as at the last.
+    </p>
+    <p>
+      The long-term group has two members. <b>Total ionizing dose</b> is the damage done by
+      the energy deposited through ionization, measured as absorbed dose
+      (<a href="m04-radiation-species-decay.html">M04</a> §9) in rad or gray of a named
+      material. Its damage resides in insulators, above all SiO₂, and it affects every MOS
+      device. <b>Displacement damage</b> is the damage done by the non-ionizing share of the
+      energy loss, which knocks atoms out of their lattice sites
+      (<a href="m11-displacement-damage.html">M11</a>). Its damage resides in the
+      semiconductor crystal, it is measured by particle fluence at a stated energy, or as a
+      displacement damage dose, the product of fluence and non-ionizing energy loss
+      (<a href="m11-displacement-damage.html">M11</a> §4), not as ionizing dose, and it
+      degrades devices that depend on minority-carrier lifetime: bipolar transistors, solar
+      cells and optoelectronics.
+    </p>
+    <p>
+      The transient group is the <b>single-event effects</b> (SEE). A heavy ion by direct
+      ionization, or a proton through the secondaries of a nuclear reaction
+      (<a href="m12-stopping-power-range.html">M12</a> §8), deposits a dense column of charge
+      along its track, and a junction nearby collects it within nanoseconds
+      (<a href="m08-ionization-excitation.html">M08</a> §8). Whether that pulse matters depends
+      on the linear energy transfer of the particle and on where it strikes, not on the dose
+      accumulated so far. The consequence ranges from a flipped memory bit, which a rewrite
+      corrects, to latchup or burnout, which destroy the part; these are the subject of
+      <a href="index.html#roadmap">M15</a>. One particle species can produce all three
+      effects: a trapped proton ionizes along its whole path, displaces atoms along it, most
+      densely near the end, and occasionally triggers a nuclear reaction whose fragments
+      cause a single event.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 250" role="img" aria-labelledby="f14-1-t">
+        <title id="f14-1-t">The two classes of radiation effect, with dose-rate effects in their overlap</title>
+        <path d="M220,56.4 A95,95 0 0,1 220,203.6 A95,95 0 0,1 220,56.4 Z" class="dg-acc-f" opacity="0.18"/>
+        <circle cx="160" cy="130" r="95" class="dg-line" stroke-width="1.6" fill="none"/>
+        <circle cx="280" cy="130" r="95" class="dg-line" stroke-width="1.6" fill="none"/>
+        <text x="110" y="22" class="dg-label" text-anchor="middle">Long-term: dose effects</text>
+        <text x="335" y="22" class="dg-label" text-anchor="middle">Transient: single-event</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="125" y="104">total ionizing dose</text>
+          <text x="125" y="120">displacement damage</text>
+          <text x="125" y="150" class="dg-soft">grows with dose</text>
+          <text x="125" y="164" class="dg-soft">or fluence</text>
+          <text x="312" y="104">upset, transient</text>
+          <text x="312" y="120">latchup, burnout</text>
+          <text x="312" y="150" class="dg-soft">one particle,</text>
+          <text x="312" y="164" class="dg-soft">one strike</text>
+        </g>
+        <text x="220" y="126" class="dg-label" text-anchor="middle">dose-rate</text>
+        <text x="220" y="141" class="dg-label" text-anchor="middle">effects</text>
+        <text x="220" y="244" class="dg-label-sm" text-anchor="middle">uniform ionization of the whole die, delivered as one pulse</text>
+        <line x1="220" y1="232" x2="220" y2="206" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+      </svg>
+      <figcaption>
+        The deck's classification redrawn. Notice what places an effect in the overlap: its
+        cause is dose — the whole die is ionized, with no single particle responsible — but
+        its consequence is an event, because the dose arrives all at once.
+        <span class="src">After Deck 8 p. 32; the long-term and transient bullets follow
+        LaBel, NASA GSFC (2004).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The overlap is the regime in which dose arrives so fast that it acts as a single event.
+      The pulse of gamma rays from a nuclear detonation delivers from about 10⁸ to
+      10¹² rad(Si)/s. Silicon gains 4×10¹³ electron–hole pairs per cm³ for every rad(Si)
+      (§3), so each nanosecond of the pulse adds 4×10¹³ cm⁻³ at 10⁹ rad(Si)/s and
+      4×10¹⁶ cm⁻³ at 10¹² rad(Si)/s. Toward the top of the range, within tens of
+      nanoseconds, the excess carriers outnumber the dopants of lightly doped regions, and
+      at any rate in the range every reverse-biased junction on the die collects a large
+      photocurrent at the same moment. The results — upset of
+      every storage node, latchup, burnout, collapse of the supply rail — are single-event
+      consequences produced by a dose. MIL-STD-883 carries separate test methods for them:
+      Method 1020 for dose-rate-induced latchup, 1021 for dose-rate upset of digital
+      microcircuits and 1023 for the dose-rate response of linear microcircuits. These
+      prompt effects arise only in the nuclear-weapon environment and are not of direct
+      interest to civil and commercial space missions, where dose rates are many orders of
+      magnitude lower.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Two different phenomena share the name dose-rate effect</p>
+      <p>
+        Deck 8 p. 32 labels the whole overlap of its diagram "Dose-rate effects". That label
+        fits the prompt effects above. The same name is also used for a different
+        phenomenon: the dependence of ordinary total-dose damage on the rate at which a given
+        dose accumulates, at the low rates found in orbit. That dependence belongs entirely
+        inside the dose circle, because it concerns accumulated charge rather than a
+        transient. §6 shows that MOS gate oxides normally have no true dependence of this
+        kind — only a dependence on elapsed time — while bipolar linear circuits do have one,
+        called ELDRS, and so can some thick isolation oxides. The Radiation Effects course draws the same three-way division in
+        <a href="../../EEE5416_Radiation_Effects/site/m05-three-effects-taxonomy.html">EEE 5416 M05</a>.
+      </p>
+    </div>
+
+    <h2>2 · Total ionizing dose and what it does to a part</h2>
+    <p>
+      Deck 8 p. 33 defines TID as cumulative, long-term ionizing damage due to protons and
+      electrons, lists four symptoms, and notes that shielding mitigates it only partly. This
+      section makes each of those statements quantitative enough to use, and then examines the
+      measured failure the deck uses to illustrate them: a flash memory that lost the ability
+      to erase itself at 8 krad(Si).
+    </p>
+    <p>
+      The quantity is absorbed dose, the energy deposited per unit mass
+      (<a href="m04-radiation-species-decay.html">M04</a> equation (4.5)), and it always
+      belongs to a named material. Two materials matter here. Charge is trapped in SiO₂, so
+      the physics of §3 is written in rad(SiO₂); test standards and mission requirements are
+      written in rad(Si). For a photon field the two are related through the mass
+      energy-absorption coefficients of <a href="m10-photon-interaction.html">M10</a> §7.
+    </p>
+
+    <div class="eq" id="m14-eq-dose-ratio">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>D</em><sub>SiO₂</sub></span><span class="den"><em>D</em><sub>Si</sub></span></span> = <span class="frac"><span class="num">(µ<sub>en</sub>/ρ)<sub>SiO₂</sub></span><span class="den">(µ<sub>en</sub>/ρ)<sub>Si</sub></span></span></div>
+        <div class="eq-num">(14.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>D</em><sub>SiO₂</sub>, <em>D</em><sub>Si</sub> absorbed dose in each material for
+        the same photon fluence (rad) · µ<sub>en</sub>/ρ mass energy-absorption coefficient
+        (cm²/g), for SiO₂ the mass-weighted sum of silicon (46.74 %) and oxygen (53.26 %)
+        values. Valid under charged-particle equilibrium, when the secondary electrons that
+        carry the energy are produced and stopped in the same material. From the NIST
+        tables the ratio is <b>1.003 at 1.25 MeV</b>, the mean cobalt-60 energy, so rad(Si)
+        and rad(SiO₂) are interchangeable in a cobalt-60 test. It is <b>0.558 at 10 keV</b>,
+        so under a 10 keV X-ray source 1 rad(SiO₂) corresponds to about 1.8 rad(Si).
+        On the formula sheet as <a href="formula-sheet.html#eq-dose-ratio">(14.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      The two limits follow from the interaction that dominates. At 1.25 MeV essentially
+      every interaction is a Compton scatter, whose mass coefficient is proportional to
+      <em>Z</em>/<em>A</em>, and <em>Z</em>/<em>A</em> is 0.498 for silicon and 0.500 for
+      oxygen. At 10 keV photoelectric absorption dominates. Per atom it rises as roughly
+      <em>Z</em>⁴ to <em>Z</em>⁵ (<a href="m10-photon-interaction.html">M10</a>), and
+      per gram, since the mass number is about 2<em>Z</em>, as roughly <em>Z</em>³ to
+      <em>Z</em>⁴; oxygen (<em>Z</em> = 8) makes up 53 % of the oxide's mass, so silicon
+      absorbs 1.8 times more energy per gram than the oxide. The deck mixes units: p. 33 is in krad(Si), p. 39 in rad(SiO₂) and
+      p. 41 in krad with no material stated. Throughout this module every dose names its
+      material.
+    </p>
+    <p>
+      In orbit the dose comes from charged particles. Trapped electrons and protons in the
+      belts (<a href="m06-magnetosphere-belts.html">M06</a>) and protons from solar particle
+      events (<a href="m05-sun-particle-populations.html">M05</a>) deliver almost all of it;
+      galactic cosmic rays are too sparse to contribute appreciable dose, although they
+      dominate single-event effects. Shielding helps only partly because the populations
+      differ in range (<a href="m12-stopping-power-range.html">M12</a>). Low-energy protons
+      are stopped within the first millimetre or so of aluminium and the belt electrons
+      within about a centimetre, so the dose from them falls by orders of magnitude as the
+      shield thickens. High-energy protons have ranges of
+      many g/cm² and pass through any practical wall, and the electrons stopped in the shield
+      radiate bremsstrahlung (<a href="m09-bremsstrahlung-xrays.html">M09</a>), which
+      aluminium barely attenuates (<a href="m10-photon-interaction.html">M10</a> §10). For a
+      three-month geostationary-transfer orbit analysed by NASA, the electron dose at the
+      centre of an aluminium sphere is cut off near 0.9 cm of wall, and behind thicker walls
+      the dose is set by trapped and solar protons and a nearly flat bremsstrahlung floor.
+      Beyond about a centimetre, added mass buys little.
+    </p>
+    <p>
+      The four symptoms on Deck 8 p. 33 are the device-level and circuit-level faces of the
+      same trapped charge. <b>Threshold shifts</b> come from charge in the gate oxide and
+      states at its interface (§4). <b>Leakage current</b> comes from the negative threshold
+      shift of n-channel transistors and, far more strongly in modern parts, from charge in
+      the thick isolation oxide (§7). <b>Timing changes</b> follow because a shifted threshold
+      and a reduced carrier mobility both change the current a transistor delivers, and gate
+      delay is inversely proportional to that current (<a href="m01-semiconductor-background.html">M01</a>).
+      <b>Functional failure</b> is the point at which any of these carries a circuit outside
+      its operating margin.
+    </p>
+
+    <h3>The flash-memory example</h3>
+    <p>
+      A flash memory cell is an n-channel MOSFET with two gates stacked above the channel. The
+      lower one, the <b>floating gate</b>, is a layer of polysilicon enclosed entirely in
+      SiO₂: a thin <b>tunnel oxide</b> separates it from the channel and an interpoly
+      dielectric separates it from the <b>control gate</b> above. The floating gate has no
+      electrical connection, so electrons placed on it stay there for years, held in by the
+      energy barrier the oxide presents. Their negative charge partly screens the channel from
+      the control gate, and the threshold voltage measured at the control gate rises. A cell
+      with electrons stored is <b>programmed</b>: its threshold lies above the read voltage,
+      it does not conduct when read, and it reads as 0. A cell with the electrons removed is
+      <b>erased</b>: its threshold lies below the read voltage, it conducts, and it reads as
+      1. An erased byte therefore reads FF in hexadecimal.
+    </p>
+    <p>
+      Moving electrons through the oxide requires a high field. In a NAND-architecture cell
+      both programming and erasure use <b>Fowler–Nordheim tunnelling</b>, in which the field
+      thins the oxide barrier into a triangle narrow enough for electrons to tunnel through
+      it, between the floating gate and the silicon body. NOR-architecture cells program
+      instead by injecting hot electrons from the channel, and erase by Fowler–Nordheim
+      tunnelling to the source. NAND cells need about 20 V for erasure and programming and
+      NOR cells about 12 V, but the chips run from much lower supplies: 3.3 V for the
+      Samsung NAND part of Figure 3, 5 V for the Intel NOR parts tested alongside it. An
+      on-chip <b>charge pump</b> generates the difference: a chain of stages, each adding up
+      to one supply voltage less a transistor threshold. In the Samsung pump each stage is
+      built around a p-channel pass transistor in its own floating n-well.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 440 230" role="img" aria-labelledby="f14-2-t">
+          <title id="f14-2-t">Floating-gate flash cell cross-section and the threshold-voltage distributions of erased and programmed cells</title>
+          <rect x="20" y="150" width="240" height="60" class="dg-fill"/>
+          <rect x="30" y="150" width="60" height="24" class="dg-fill"/>
+          <rect x="190" y="150" width="60" height="24" class="dg-fill"/>
+          <rect x="80" y="141" width="120" height="9" class="dg-fill"/>
+          <rect x="80" y="108" width="120" height="33" class="dg-fill"/>
+          <rect x="80" y="99" width="120" height="9" class="dg-fill"/>
+          <rect x="80" y="68" width="120" height="31" class="dg-fill"/>
+          <text x="60" y="167" class="dg-label-sm" text-anchor="middle">n⁺</text>
+          <text x="220" y="167" class="dg-label-sm" text-anchor="middle">n⁺</text>
+          <text x="140" y="197" class="dg-label" text-anchor="middle">p-type substrate</text>
+          <text x="140" y="88" class="dg-label" text-anchor="middle">control gate</text>
+          <text x="140" y="121" class="dg-label-sm" text-anchor="middle">floating gate</text>
+          <g class="dg-acc-f">
+            <circle cx="98" cy="132" r="3.2"/><circle cx="114" cy="132" r="3.2"/>
+            <circle cx="130" cy="132" r="3.2"/><circle cx="146" cy="132" r="3.2"/>
+            <circle cx="162" cy="132" r="3.2"/><circle cx="178" cy="132" r="3.2"/>
+          </g>
+          <text x="206" y="107" class="dg-label-sm">interpoly oxide</text>
+          <text x="206" y="147" class="dg-label-sm">tunnel oxide</text>
+          <text x="20" y="40" class="dg-label">stored electrons raise V<tspan baseline-shift="sub" style="font-size:75%">T</tspan></text>
+          <line x1="300" y1="190" x2="430" y2="190" class="dg-rule" stroke-width="1.2"/>
+          <path d="M300,190 C315,190 318,140 325,140 C332,140 335,190 350,190" class="dg-line" stroke-width="1.8" fill="none"/>
+          <path d="M380,190 C395,190 398,140 405,140 C412,140 415,190 430,190" class="dg-line" stroke-width="1.8" fill="none"/>
+          <line x1="365" y1="96" x2="365" y2="190" class="dg-guide" stroke-width="1.2" stroke-dasharray="4 3"/>
+          <text x="365" y="88" class="dg-label-sm" text-anchor="middle">read level</text>
+          <text x="325" y="118" class="dg-label-sm" text-anchor="middle">erased</text>
+          <text x="325" y="132" class="dg-label-sm" text-anchor="middle">reads 1</text>
+          <text x="405" y="118" class="dg-label-sm" text-anchor="middle">programmed</text>
+          <text x="405" y="132" class="dg-label-sm" text-anchor="middle">reads 0</text>
+          <text x="365" y="210" class="dg-label-sm" text-anchor="middle">cell V<tspan baseline-shift="sub" style="font-size:75%">T</tspan> at the control gate</text>
+        </svg>
+        <figcaption>
+          Electrons on the isolated floating gate raise the threshold seen from the control
+          gate. At the read voltage a programmed cell stays off and an erased cell conducts;
+          the logic value is the conduction state, not the presence of charge.
+          <span class="src">After Nguyen et al., IEEE TNS 46, 1744 (1999), Figs. 1–3.</span>
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 440 240" role="img" aria-labelledby="f14-3-t">
+          <title id="f14-3-t">Voltage developed during the erase function of a 128-megabit NAND flash memory against total dose</title>
+          <line x1="60" y1="200" x2="420" y2="200" class="dg-rule" stroke-width="1.2"/>
+          <line x1="60" y1="200" x2="60" y2="32" class="dg-rule" stroke-width="1.2"/>
+          <g class="dg-label-sm" text-anchor="middle">
+            <text x="60" y="216">0</text><text x="132" y="216">2</text>
+            <text x="204" y="216">4</text><text x="276" y="216">6</text>
+            <text x="348" y="216">8</text><text x="420" y="216">10</text>
+          </g>
+          <g class="dg-label-sm" text-anchor="end">
+            <text x="54" y="204">0</text><text x="54" y="156">4</text>
+            <text x="54" y="108">8</text><text x="54" y="60">12</text>
+          </g>
+          <text x="240" y="234" class="dg-label" text-anchor="middle">Total dose, krad(Si)</text>
+          <text x="20" y="116" class="dg-label" text-anchor="middle" transform="rotate(-90 20 116)">Voltage during erase (V)</text>
+          <path d="M60,48.8 L96,48.8 L132,48.8 L168,48.8 L204,48.8 L240,48.8 L276,51.2 L312,58.4 L348,119.6" class="dg-acc" stroke-width="2.2" fill="none"/>
+          <g class="dg-acc-f">
+            <circle cx="60" cy="48.8" r="3"/><circle cx="96" cy="48.8" r="3"/>
+            <circle cx="132" cy="48.8" r="3"/><circle cx="168" cy="48.8" r="3"/>
+            <circle cx="204" cy="48.8" r="3"/><circle cx="240" cy="48.8" r="3"/>
+            <circle cx="276" cy="51.2" r="3"/><circle cx="312" cy="58.4" r="3"/>
+            <circle cx="348" cy="119.6" r="3"/>
+          </g>
+          <text x="340" y="146" class="dg-label-sm" text-anchor="middle">failed to erase</text>
+          <text x="340" y="160" class="dg-label-sm" text-anchor="middle">at 8 krad(Si)</text>
+          <text x="80" y="38" class="dg-label-sm">flat to 6 krad(Si), about 12.6 V</text>
+        </svg>
+        <figcaption>
+          The voltage recorded during erasure holds constant for three quarters of the
+          failure dose and then collapses within 2 krad(Si); a margin that is invisible in the
+          first measurements disappears abruptly.
+          <span class="src">Traced from Deck 8 p. 33, after LaBel, NASA GSFC (2004), who
+          gives no source for the curve; the part and its 8 krad(Si) biased and 45 krad(Si)
+          unbiased erase failures match the JPL cobalt-60 tests of Nguyen et al. (1999).</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      Figure 3 plots a 128-Mb NAND flash from Samsung. The slide gives no source for the
+      curve, but the part and its failure dose match the tests of Nguyen and co-workers at
+      JPL, in which parts were irradiated with cobalt-60 in steps while powered and given a
+      full erase, write and read test between steps. The part runs from a 3.3 V supply and
+      needs about 20 V for erasure. The slide labels its vertical axis only as the voltage
+      during the erase function and does not say at which node it is measured; at 12.6 V
+      before irradiation it is not the roughly 20 V the cells need. The plotted voltage stays
+      flat at about 12.6 V up to 6 krad(Si), falls slightly by 7 krad(Si), and collapses to about 6.7 V at
+      8 krad(Si), where the part fails to erase. In the JPL tests the same part left
+      unbiased during irradiation did not fail erasure until 45 krad(Si), which is the first
+      indication that the electric field inside the device controls the damage (§3).
+    </p>
+    <p>
+      Nguyen and co-workers attribute the failure to the charge pump rather than the memory
+      cells, and the pump's own transfer function shows why TID attacks it. Each stage passes charge through a p-channel
+      transistor and loses that transistor's threshold voltage in doing so.
+    </p>
+
+    <div class="eq" id="m14-eq-pump">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>out</sub> = <em>V</em><sub>cc</sub> − <em>V</em><sub>te</sub> + <span style="white-space:nowrap"><em>N</em><span class="dl">(</span>α<em>V</em><sub>cc</sub> − <em>V</em><sub>te</sub><span class="dl">)</span></span></div>
+        <div class="eq-num">(14.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>out</sub> open-circuit output of the pump (V) · <em>V</em><sub>cc</sub>
+        supply voltage, 3.3 V for the part of Figure 3 (V) · <em>V</em><sub>te</sub>
+        effective threshold voltage of a pass transistor, as a magnitude (V) · <em>N</em>
+        number of pumping stages · α coupling efficiency of each stage's capacitor, close to
+        1 at light load and falling rapidly as the current drawn rises. Open circuit: any
+        leakage from stage to stage lowers the output further.
+        Regrouped, <em>V</em><sub>out</sub> = (1 + <em>N</em>α)<em>V</em><sub>cc</sub> −
+        (<em>N</em> + 1)<em>V</em><sub>te</sub>, so a threshold shift in the pass transistors
+        is multiplied by the number of stages.
+        On the formula sheet as <a href="formula-sheet.html#eq-pump">(14.2)</a>.
+      </div>
+    </div>
+
+    <div class="box insight">
+      <p class="box-title">The likely weak link is the high-voltage generator, not the cells</p>
+      <p>
+        Total dose shifts the thresholds of the pump's p-channel pass transistors to larger
+        magnitudes and raises leakage between stages; equation (14.2) turns each millivolt of
+        threshold shift into <em>N</em> + 1 millivolts of lost output. Once the output falls
+        below the tunnelling voltage the cells need, the operation that needs the highest
+        voltage fails first. Nguyen and co-workers saw exactly that order in the 128-Mb part:
+        erasure, then programming, then reading. They attribute the failure to the pump on
+        that evidence and on the pump's transfer function; this part offers no way to bypass
+        its pump, so the attribution could not be tested directly. In an older Intel NOR
+        device that accepted its erase and write voltages from outside the chip, bypassing
+        the internal pump raised the failure dose substantially, which identified the pump as
+        the weak link there. The example therefore shows threshold shift and leakage — the
+        first two symptoms — most likely producing a functional failure in peripheral
+        circuitry while the storage array itself remains readable.
+      </p>
+    </div>
+
+    <p>
+      The JPL study irradiated at either 25 or 0.012 rad(Si)/s and does not say which rate
+      applied to this part. At the higher rate 8 krad(Si) accumulates in 320 s, about five
+      minutes; at the lower, in about eight days. A spacecraft accumulates the same dose over
+      months or years, and §6 shows that this difference in
+      time, rather than in rate, changes the outcome.
+    </p>
+
+    <h2>3 · From absorbed energy to trapped charge</h2>
+    <p>
+      Deck 8 pp. 34–37 set out the mechanism on the energy-band diagram of an MOS structure
+      with a positive voltage on the gate. The band diagram
+      (<a href="m01-semiconductor-background.html">M01</a>) plots electron energy against
+      position through the gate, the oxide and the silicon. A positive gate lowers electron
+      energy at the gate, so the oxide's bands tilt downward toward it: electrons in the
+      oxide move toward the gate and holes toward the silicon. Six steps then carry the
+      absorbed energy to two lasting populations — holes trapped in the oxide near the
+      silicon, and new electronic states at the silicon surface. Each step discards part of
+      the charge, and together the steps span more than twenty orders of magnitude in time,
+      from femtoseconds to years.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 440 300" role="img" aria-labelledby="f14-4-t">
+        <title id="f14-4-t">Band diagram of an MOS structure under positive gate bias showing the six steps from pair generation to hole trapping and interface-trap formation</title>
+        <defs>
+          <marker id="f14-4-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+          <marker id="f14-4-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+        <rect x="20" y="60" width="50" height="200" class="dg-fill"/>
+        <line x1="20" y1="170" x2="70" y2="170" class="dg-line" stroke-width="1.6"/>
+        <text x="45" y="164" class="dg-label-sm" text-anchor="middle">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="45" y="40" class="dg-label" text-anchor="middle">gate</text>
+        <text x="45" y="54" class="dg-label-sm" text-anchor="middle">+V<tspan baseline-shift="sub" style="font-size:75%">G</tspan></text>
+        <text x="195" y="40" class="dg-label" text-anchor="middle">SiO₂</text>
+        <text x="372" y="40" class="dg-label" text-anchor="middle">Si (p-type)</text>
+        <line x1="70" y1="60" x2="70" y2="275" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="320" y1="60" x2="320" y2="275" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <path d="M70,120 L320,78" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M70,262 L320,220" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M320,128 C345,120 360,113 425,112" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M320,146 C345,138 360,131 425,130" class="dg-line" stroke-width="1.8" fill="none"/>
+        <text x="262" y="80" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">C</tspan></text>
+        <text x="258" y="246" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">V</tspan></text>
+        <text x="425" y="106" class="dg-label-sm" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">C</tspan></text>
+        <text x="425" y="146" class="dg-label-sm" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">V</tspan></text>
+        <!-- 1 generation -->
+        <line x1="110" y1="250" x2="110" y2="121" class="dg-line" stroke-width="1.4" marker-end="url(#f14-4-a)"/>
+        <circle cx="110" cy="112" r="4" class="dg-ink"/>
+        <circle cx="110" cy="256" r="4" class="dg-fill"/>
+        <text x="116" y="184" class="dg-label-sm">① generation</text>
+        <!-- 2 electrons swept to gate -->
+        <line x1="150" y1="100" x2="80" y2="110" class="dg-line" stroke-width="1.4" marker-end="url(#f14-4-a)"/>
+        <text x="84" y="90" class="dg-label-sm">② electrons to gate</text>
+        <!-- 3 hole hopping -->
+        <path d="M120,250 L134,241 L146,247 L160,237 L172,243 L186,233 L198,239 L212,229 L224,235 L238,225 L250,231 L264,221 L276,227 L290,216" class="dg-acc" stroke-width="1.8" fill="none" marker-end="url(#f14-4-b)"/>
+        <text x="160" y="266" class="dg-label-sm">③ hole hopping</text>
+        <!-- 4 trapped holes -->
+        <g class="dg-acc-f">
+          <circle cx="306" cy="206" r="4.2"/><circle cx="313" cy="194" r="4.2"/><circle cx="304" cy="184" r="4.2"/>
+        </g>
+        <text x="296" y="178" class="dg-label-sm" text-anchor="end">④ trapped holes</text>
+        <!-- 5 H+ -->
+        <line x1="176" y1="150" x2="296" y2="150" class="dg-line" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#f14-4-a)"/>
+        <text x="176" y="142" class="dg-label-sm">⑤ H⁺ transport</text>
+        <!-- 6 interface traps -->
+        <g class="dg-rule" stroke-width="1.6">
+          <line x1="321" y1="131" x2="331" y2="131"/><line x1="321" y1="135" x2="331" y2="135"/>
+          <line x1="321" y1="139" x2="331" y2="139"/><line x1="321" y1="143" x2="331" y2="143"/>
+        </g>
+        <text x="330" y="176" class="dg-label-sm">⑥ interface traps</text>
+        <line x1="345" y1="166" x2="330" y2="146" class="dg-guide" stroke-width="1"/>
+        <text x="195" y="292" class="dg-label-sm" text-anchor="middle">oxide gap 8.9 eV, silicon gap 1.1 eV; not to scale in position</text>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> The accent traces the hole: created at ①, it hops toward the silicon
+        at ③ while the electron leaves at ②, and a fraction is captured at ④ within a few
+        nanometres of the interface. Hydrogen released on the way drifts to the interface
+        at ⑤ and creates states inside the silicon gap at ⑥. Dark dot: electron; open dot: hole;
+        accent dots: trapped holes.
+        <span class="src">Redrawn after Deck 8 pp. 34 and 37; Oldham &amp; McLean, IEEE TNS
+        50, 483 (2003), Fig. 2; Schwank et al., IEEE TNS 55, 1833 (2008), Fig. 1.</span>
+      </figcaption>
+    </figure>
+
+    <h3>① Pair generation</h3>
+    <p>
+      Incident radiation deposits its energy through a cascade of secondary electrons
+      (<a href="m08-ionization-excitation.html">M08</a>), which excite electrons across the
+      8.9 eV gap of SiO₂. Deck 8 p. 36 places generation on a femtosecond time scale. The
+      mean energy spent per pair is <b>17 eV in SiO₂</b> (Deck 8 p. 35; measured as
+      17 ± 1 eV by Benedetto and Boesch), against 3.6 eV in silicon; the pair energy exceeds
+      the gap because part of each deposit goes into lattice vibration and into electrons
+      left below the threshold for making further pairs. Dividing the energy a rad deposits
+      in a cubic centimetre of oxide by the pair energy gives the number of pairs created.
+    </p>
+
+    <div class="eq" id="m14-eq-g0">
+      <div class="eq-body">
+        <div class="eq-math"><em>g</em><sub>0</sub> = <span class="frac"><span class="num">ρ<sub>SiO₂</sub> · 6.24×10<sup>13</sup></span><span class="den"><em>E</em><sub>p</sub></span></span> = <span style="white-space:nowrap">8.1×10<sup>12</sup> cm<sup>−3</sup> rad(SiO₂)<sup>−1</sup></span></div>
+        <div class="eq-num">(14.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>g</em><sub>0</sub> generation constant, the number of electron–hole pairs created
+        per cm³ of oxide per rad(SiO₂) (cm⁻³ rad(SiO₂)⁻¹) · ρ<sub>SiO₂</sub> density of thermal oxide, 2.2 g/cm³ ·
+        6.24×10<sup>13</sup> energy deposited by 1 rad, in eV/g (1 rad = 100 erg/g) ·
+        <em>E</em><sub>p</sub> mean pair-creation energy, 17 eV in SiO₂. The dose must be
+        in rad(SiO₂); convert a rad(Si) figure with equation (14.1). The same construction
+        with silicon's 2.33 g/cm³ and 3.6 eV gives 4×10<sup>13</sup> pairs cm<sup>−3</sup>
+        rad(Si)<sup>−1</sup>.
+        On the formula sheet as <a href="formula-sheet.html#eq-g0">(14.3)</a>.
+      </div>
+    </div>
+
+    <h3>② Initial recombination and electron removal</h3>
+    <p>
+      A new electron and hole are close together and attract each other. Before the field
+      separates them, some pairs recombine; this <b>initial recombination</b> is complete
+      within about a picosecond. The fraction of holes that survives it is the
+      <b>fractional yield</b>, <em>f</em><sub>y</sub> (Deck 8 p. 36), and it depends on two
+      quantities. The oxide field pulls each pair apart; the stronger the field, the fewer
+      pairs recombine. The density of pairs along the track, set by the particle's linear
+      energy transfer (<a href="m12-stopping-power-range.html">M12</a>), decides how many
+      neighbours a carrier can recombine with. The fast secondary electrons of a cobalt-60
+      exposure leave isolated pairs, each of which can recombine only with its own partner,
+      so most survive. An alpha particle or a low-energy proton leaves a dense column in
+      which the carriers of neighbouring pairs overlap, and most recombine. At an oxide field
+      of 1 MV/cm the yield spans more than an order of magnitude across particle types.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 206" role="img" aria-labelledby="f14-5-t">
+        <title id="f14-5-t">Fractional hole yield at an oxide field of 1 MV/cm for five radiation types</title>
+        <line x1="150" y1="172" x2="410" y2="172" class="dg-rule" stroke-width="1.2"/>
+        <line x1="150" y1="172" x2="150" y2="26" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="150" y="186">0</text><text x="280" y="186">0.5</text><text x="410" y="186">1</text>
+        </g>
+        <rect x="150" y="32" width="234" height="16" class="dg-acc-f"/>
+        <rect x="150" y="60" width="234" height="16" class="dg-fill"/>
+        <rect x="150" y="88" width="143" height="16" class="dg-fill"/>
+        <rect x="150" y="116" width="39" height="16" class="dg-fill"/>
+        <rect x="150" y="144" width="18.2" height="16" class="dg-fill"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="144" y="44">cobalt-60 gamma</text>
+          <text x="144" y="72">12 MeV electrons</text>
+          <text x="144" y="100">5 keV electrons</text>
+          <text x="144" y="128">700 keV protons</text>
+          <text x="144" y="156">2 MeV alphas</text>
+        </g>
+        <g class="dg-label-sm">
+          <text x="390" y="44">≈0.9</text><text x="390" y="72">≈0.9</text>
+          <text x="299" y="100">≈0.55</text><text x="195" y="128">≈0.15</text>
+          <text x="174" y="156">≈0.07</text>
+        </g>
+        <text x="280" y="201" class="dg-label-sm" text-anchor="middle">fraction of holes escaping initial recombination</text>
+      </svg>
+      <figcaption>
+        Sparse ionization, from the fast electrons a cobalt-60 source liberates, lets almost
+        every hole escape; the dense track of an alpha particle returns more than nine in
+        ten to recombination. Values are read from published curves and are approximate.
+        <span class="src">Read at 1 MV/cm from Oldham &amp; McLean, IEEE TNS 50, 483 (2003),
+        Fig. 7, after McLean &amp; Oldham (1987). Schwank et al. (2008), Fig. 2, takes its
+        cobalt-60 and 10-keV X-ray curves from a different data set, Shaneyfelt et al., IEEE
+        TNS 38, 1187 (1991).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The electrons that escape recombination leave the oxide almost at once. Their mobility
+      in SiO₂ is about 20 cm²/V·s, and under a positive gate they drift to the gate
+      electrode in a picosecond or less. Deck 8 p. 36 notes that transport is by diffusion,
+      and by drift wherever a field is present; in a biased gate oxide drift dominates.
+      What remains is a sheet of holes spread through the oxide thickness.
+    </p>
+
+    <div class="eq" id="m14-eq-holes">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>h</sub> = <em>f</em><sub>y</sub>(<em>E</em><sub>ox</sub>) · <em>g</em><sub>0</sub> · <em>D</em> · <em>t</em><sub>ox</sub></div>
+        <div class="eq-num">(14.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>h</sub> areal density of holes that escape initial recombination
+        (cm⁻²) · <em>f</em><sub>y</sub> fractional yield, 0 to 1, a function of the oxide
+        field <em>E</em><sub>ox</sub> (MV/cm) and of the radiation type ·
+        <em>g</em><sub>0</sub> from (14.3) (cm⁻³ rad(SiO₂)⁻¹) · <em>D</em> dose
+        (rad(SiO₂)) · <em>t</em><sub>ox</sub> oxide thickness (<b>cm</b>). Assumes uniform
+        dose through the oxide, which fails next to high-<em>Z</em> layers under low-energy
+        photons, where dose enhancement raises the local dose.
+        On the formula sheet as <a href="formula-sheet.html#eq-holes">(14.4)</a>.
+      </div>
+    </div>
+
+    <h3>③ Hole transport</h3>
+    <p>
+      Holes in SiO₂ move many orders of magnitude more slowly than electrons. A hole in the
+      oxide is a <b>small polaron</b>: its charge distorts the surrounding atomic network,
+      and the distortion travels with it, so the hole moves by hopping from one localized
+      state to the next — randomly placed sites about 1 nm apart — carrying the distortion
+      along. Transport by this hopping is dispersive, spreading a single pulse of holes over
+      many decades of time; it speeds up with field; it is strongly thermally activated above
+      about 140 K and not activated below it, a transition that is the classic signature of
+      small-polaron hopping; and its duration rises steeply with thickness, roughly as the
+      fourth power. At room temperature it is normally over in much less than a second after
+      a pulse, and at low temperature it is orders of magnitude slower. In a hardened oxide
+      most holes that reach the interface pass into the silicon and recombine there, so the
+      positive charge in the oxide and the threshold shift it causes fall as transport
+      proceeds; in an unhardened oxide half or more of them are trapped (④).
+    </p>
+
+    <h3>④ Hole trapping near the interface</h3>
+    <p>
+      The holes that do not pass into the silicon are caught by defects in the last few
+      nanometres of oxide. Oxidation is incomplete there: the transition layer between
+      crystalline silicon and stoichiometric SiO₂ is oxygen-deficient and strained, and it
+      contains a high density of <b>oxygen vacancies</b>. A vacancy leaves two silicon atoms,
+      each still bonded to three oxygens, joined by a weak Si–Si bond where the oxygen should
+      be. A captured hole breaks that bond. The structure relaxes asymmetrically: one silicon
+      atom moves into the plane of its three oxygens and carries the positive charge, and
+      the other keeps an unpaired electron in a dangling bond. This is the <b>E′ centre</b>,
+      identified by electron spin resonance, which detects unpaired electrons through their
+      absorption of microwaves in a magnetic field; its correlation with trapped holes was
+      established by Lenahan and Dressendorfer in 1984. The same defect appears in the
+      process context of
+      <a href="../../EEE6338_Advanced_Microelectronics/site/m05b-interface-defects-and-charge.html">EEE 6338 M05b</a>
+      §5.2. The trapped hole sits far from both
+      band edges of the oxide — a deep trap — and at room temperature it persists for hours
+      to years.
+    </p>
+
+    <div class="eq" id="m14-eq-not">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>N</em><sub>ot</sub> = <em>f</em><sub>ot</sub> · <em>N</em><sub>h</sub></div>
+        <div class="eq-num">(14.5)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>N</em><sub>ot</sub> areal density of radiation-induced oxide-trapped charge,
+        in holes per cm² (cm⁻²) · <em>f</em><sub>ot</sub> fraction of the surviving holes
+        that are trapped, dimensionless · <em>N</em><sub>h</sub> from (14.4) (cm⁻²).
+        <em>f</em><sub>ot</sub> is a property of the process, not of the radiation: a few
+        percent in radiation-hardened oxides and 50 to 100 % in unhardened ones, and it
+        falls as the field rises. Holds before any annealing (§6).
+        On the formula sheet as <a href="formula-sheet.html#eq-not">(14.5)</a>.
+      </div>
+    </div>
+
+    <p>
+      In radiation-hardened gate oxides the trapped charge lies within about 3–4 nm of the
+      silicon interface, and in one study 90 % of it lay within 5 nm. In isolation oxides and
+      some commercial oxides the traps are distributed through the bulk. Processing controls
+      the vacancy density: a post-oxidation anneal in nitrogen above about 875 °C removes
+      oxygen from the film, creates vacancies, and sharply increases the trapped charge.
+    </p>
+
+    <h3>⑤ Hydrogen release and ⑥ interface-trap formation</h3>
+    <p>
+      A silicon surface terminated by oxide leaves some silicon atoms with only three
+      silicon neighbours and a fourth orbital, a dangling bond, pointing into the oxide. The
+      oxidized surface carries of order 10¹³ cm⁻² such sites, and hydrogen introduced during
+      processing passivates almost all of them as Si–H bonds (EEE 6338 M05b §4.1).
+      Radiation undoes the passivation in two stages. Holes release hydrogen bound in the
+      oxide as protons, H⁺, as they hop through it or as they are trapped near the silicon
+      interface. The protons then hop — in steps of about
+      0.26 nm, the spacing of oxygen atoms — toward the silicon under a positive gate, and at
+      the interface a proton reacts with an Si–H bond, leaves as H₂, and restores the
+      dangling bond. The restored site, a silicon atom back-bonded to three silicon atoms,
+      is the <b>P<sub>b</sub> centre</b>, the radiation-induced interface trap.
+    </p>
+    <p>
+      An interface trap differs from a trapped hole in two ways that decide its effect. It is
+      an electronic state with energy inside the silicon bandgap, located at the silicon
+      surface, so it exchanges electrons with the silicon quickly and its charge follows the
+      position of the Fermi level (§4). And it forms slowly, at the pace of proton transport:
+      after a short pulse, buildup is under way at 1 s, takes thousands of seconds to approach
+      saturation and in some oxides continues for months. Buildup is thermally activated,
+      with an activation energy of 0.82 eV. Its areal density is Δ<em>N</em><sub>it</sub>
+      (cm⁻²), or, per unit energy in the gap, <em>D</em><sub>it</sub> (cm⁻² eV⁻¹). Interface
+      traps need positive bias during the proton-transport stage; with the gate held negative
+      through irradiation and anneal, little or none forms.
+    </p>
+    <p>
+      Deck 8 p. 35 states that an electric field is needed. The field acts twice: it raises
+      the fractional yield, and it carries holes and protons to the silicon interface, where
+      the hole traps and the Si–H bonds are. Without an applied bias some charge still
+      builds, at lower yield, under the built-in field set by the gate and substrate work
+      functions. Under negative bias the holes collect near the gate, where §4 shows they
+      move the threshold far less. The field therefore controls how much charge survives and
+      where it ends up, and the biased flash memory of §2, which failed at less than a
+      fifth of the dose of the unbiased one, is an instance of it.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The deck's wording for the hole-trap precursors</p>
+      <p>
+        Deck 8 p. 35 reads: close to the interface, a large number of "oxide vacancies" due
+        to out-diffusion of oxygen in the oxide and "lattice mismatch". The review the slide
+        follows (Schwank, Sandia 2007, published as Schwank et al. 2008) says
+        <em>oxygen</em> vacancies, which is the defect described above. Thermal SiO₂ is
+        amorphous and has no lattice; the mismatch is the strain of the sub-stoichiometric
+        transition layer grown on crystalline silicon. The out-diffusion refers to oxygen
+        lost from the film during high-temperature processing, which is how the vacancies
+        form. The figures on pp. 34–36 also label the interface "Si/SO₂", for Si/SiO₂.
+      </p>
+    </div>
+
+    <h2>4 · The threshold-voltage shift</h2>
+    <p>
+      Deck 8 p. 38 writes the device consequence as one sum: the threshold-voltage shift is
+      the shift due to oxide-trapped charge plus the shift due to interface traps. The
+      threshold voltage is the gate voltage at which the silicon surface inverts
+      (<a href="m01-semiconductor-background.html">M01</a>). Any charge added to the oxide or
+      to the interface must be balanced by the gate before the surface reaches the same
+      condition, so it moves the threshold. The two populations of §3 move it by different
+      physics: oxide-trapped charge is fixed positive charge, while interface-trap charge
+      depends on where the Fermi level sits at the surface, and therefore on the device type.
+    </p>
+
+    <h3>Oxide-trapped charge</h3>
+    <p>
+      A sheet of positive charge inside the oxide is balanced by negative image charge,
+      partly on the gate and partly in the silicon. The share drawn from the silicon grows
+      linearly with the sheet's distance from the gate: a sheet at the silicon interface
+      draws its whole image from the silicon, and a sheet at the gate draws none. Only the
+      share in the silicon changes the surface, so each element of charge shifts the
+      threshold in proportion to its distance from the gate.
+    </p>
+
+    <div class="eq" id="m14-eq-vot">
+      <div class="eq-body">
+        <div class="eq-math"><span style="white-space:nowrap">Δ<em>V</em><sub>ot</sub> = − <span class="frac"><span class="num">1</span><span class="den"><em>C</em><sub>ox</sub></span></span></span> <span style="white-space:nowrap">∫<sub>0</sub><sup><em>t</em><sub>ox</sub></sup> <span class="frac"><span class="num"><em>x</em></span><span class="den"><em>t</em><sub>ox</sub></span></span> ρ<sub>ot</sub>(<em>x</em>) d<em>x</em></span> <span style="white-space:nowrap">= − <span class="frac"><span class="num"><em>q</em> Δ<em>N</em><sub>ot</sub> <em>x̄</em></span><span class="den">ε<sub>ox</sub></span></span></span> <span style="white-space:nowrap">→ − <span class="frac"><span class="num"><em>q</em> Δ<em>N</em><sub>ot</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span>,</span> &nbsp; <span style="white-space:nowrap"><em>C</em><sub>ox</sub> = <span class="frac"><span class="num">ε<sub>ox</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></span></div>
+        <div class="eq-num">(14.6)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>ot</sub> threshold shift from oxide-trapped charge (V) ·
+        <em>C</em><sub>ox</sub> oxide capacitance per unit area (<b>F/cm²</b>) ·
+        <em>x</em> depth into the oxide measured <b>from the gate</b> (cm) ·
+        ρ<sub>ot</sub>(<em>x</em>) trapped charge density (C/cm³) · <em>q</em> elementary
+        charge, 1.602×10⁻¹⁹ C · Δ<em>N</em><sub>ot</sub> from (14.5) (cm⁻²) ·
+        <em>x̄</em> centroid of the trapped charge, measured from the gate (cm) ·
+        ε<sub>ox</sub> permittivity of SiO₂, 3.45×10⁻¹³ F/cm · <em>t</em><sub>ox</sub>
+        oxide thickness (cm). The arrow is the limit <em>x̄</em> = <em>t</em><sub>ox</sub>,
+        all charge at the silicon interface, which holds for hardened gate oxides under
+        positive bias (§3) and gives the largest shift. Positive charge always gives a
+        negative shift.
+        On the formula sheet as <a href="formula-sheet.html#eq-vot">(14.6)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 210" role="img" aria-labelledby="f14-6-t">
+        <title id="f14-6-t">Weighting of trapped charge by its distance from the gate</title>
+        <rect x="30" y="40" width="30" height="110" class="dg-fill"/>
+        <rect x="360" y="40" width="50" height="110" class="dg-fill"/>
+        <line x1="60" y1="40" x2="360" y2="40" class="dg-rule" stroke-width="1"/>
+        <line x1="60" y1="150" x2="360" y2="150" class="dg-rule" stroke-width="1"/>
+        <text x="45" y="32" class="dg-label" text-anchor="middle">gate</text>
+        <text x="210" y="32" class="dg-label" text-anchor="middle">SiO₂</text>
+        <text x="385" y="32" class="dg-label" text-anchor="middle">Si</text>
+        <line x1="60" y1="150" x2="360" y2="40" class="dg-guide" stroke-width="1.4" stroke-dasharray="6 4"/>
+        <text x="236" y="112" class="dg-label-sm">weight <tspan class="dg-math">x</tspan> / t<tspan baseline-shift="sub" style="font-size:75%">ox</tspan></text>
+        <g class="dg-acc-f">
+          <circle cx="348" cy="58" r="4.5"/><circle cx="348" cy="80" r="4.5"/>
+          <circle cx="348" cy="102" r="4.5"/><circle cx="348" cy="124" r="4.5"/>
+        </g>
+        <g class="dg-soft">
+          <circle cx="74" cy="58" r="4.5"/><circle cx="74" cy="80" r="4.5"/>
+          <circle cx="74" cy="102" r="4.5"/><circle cx="74" cy="124" r="4.5"/>
+        </g>
+        <text x="62" y="168" class="dg-label-sm">near gate: weight ≈ 0</text>
+        <text x="358" y="168" class="dg-label-sm" text-anchor="end">near Si: weight ≈ 1</text>
+        <line x1="60" y1="184" x2="360" y2="184" class="dg-rule" stroke-width="1" marker-end="url(#f14-6-a)"/>
+        <text x="60" y="200" class="dg-label-sm" text-anchor="middle">x = 0</text>
+        <text x="360" y="200" class="dg-label-sm" text-anchor="middle">x = t<tspan baseline-shift="sub" style="font-size:75%">ox</tspan></text>
+        <text x="210" y="200" class="dg-label-sm" text-anchor="middle">depth measured from the gate</text>
+        <defs>
+          <marker id="f14-6-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The same number of trapped holes moves the threshold by the full amount when it sits
+        at the silicon interface and by almost nothing when it sits at the gate. Positive
+        bias puts the holes at the silicon; negative bias puts them at the gate.
+        <span class="src">Centroid weighting after Taur &amp; Ning, as derived in
+        <a href="../../EEE6338_Advanced_Microelectronics/site/m03-threshold-voltage.html">EEE 6338 M03</a>.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The shift is negative in both device types, because positive charge near the channel
+      draws electrons to the silicon surface — what Deck 8 p. 37 means by "brings electrons
+      to channel". An n-channel transistor moves toward depletion mode: its threshold falls,
+      its off-state current rises, and with enough charge it conducts at zero gate voltage.
+      A p-channel transistor, whose threshold is already negative, needs a more negative
+      gate to turn on and delivers less current at a given gate voltage.
+    </p>
+
+    <h3>Interface traps</h3>
+    <p>
+      An interface trap holds or releases an electron according to whether its energy lies
+      below or above the Fermi level at the surface. Two kinds of state behave differently
+      when they change occupancy. An acceptor-like state is neutral when empty and negative
+      when it holds an electron; a donor-like state is positive when empty and neutral when
+      it holds an electron. Radiation-induced interface traps are predominantly acceptor-like
+      in the upper half of the silicon gap and donor-like in the lower half, so their net
+      charge is zero when the surface Fermi level sits at midgap. Such states, able to take
+      either sign, are called amphoteric.
+    </p>
+    <p>
+      At threshold the surface of an n-channel device is inverted and its Fermi level lies
+      above midgap. The acceptor-like traps between midgap and the Fermi level are filled,
+      the interface carries net negative charge taken from the channel, and the gate needs a
+      more positive voltage to invert the surface: Δ<em>V</em><sub>it</sub> &gt; 0. At
+      threshold in a p-channel device the surface Fermi level lies below midgap. The
+      donor-like traps between the Fermi level and midgap are empty, the interface carries
+      net positive charge, and Δ<em>V</em><sub>it</sub> &lt; 0.
+    </p>
+
+    <div class="eq" id="m14-eq-vit">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>it</sub> = ± <span class="frac"><span class="num"><em>q</em> Δ<em>N</em><sub>it</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span>  &nbsp; <span style="white-space:nowrap">(+ n‑channel, − p‑channel)</span></div>
+        <div class="eq-num">(14.7)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>it</sub> threshold shift from interface traps (V) ·
+        Δ<em>N</em><sub>it</sub> radiation-induced interface traps that are charged when the
+        device is at threshold, per unit area (cm⁻²) · <em>q</em>, <em>C</em><sub>ox</sub>
+        as in (14.6) (C, F/cm²). The charge lies at the interface, so no centroid factor
+        enters. Evaluated at threshold: at other gate voltages the occupancy, and so the
+        charge, is different.
+        On the formula sheet as <a href="formula-sheet.html#eq-vit">(14.7)</a>.
+      </div>
+    </div>
+
+    <div class="eq" id="m14-eq-vth">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>th</sub> = Δ<em>V</em><sub>ot</sub> + Δ<em>V</em><sub>it</sub></div>
+        <div class="eq-num">(14.8)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>th</sub> total threshold-voltage shift (V), with
+        Δ<em>V</em><sub>ot</sub> from (14.6) and Δ<em>V</em><sub>it</sub> from (14.7).
+        Signs: Δ<em>V</em><sub>ot</sub> &lt; 0 for both types; Δ<em>V</em><sub>it</sub>
+        &gt; 0 for n-channel and &lt; 0 for p-channel. The two terms therefore oppose each
+        other in an n-channel transistor and add in a p-channel one. Deck 8 p. 38.
+        On the formula sheet as <a href="formula-sheet.html#eq-vth">(14.8)</a>.
+      </div>
+    </div>
+
+    <p>
+      Both terms scale with 1/<em>C</em><sub>ox</sub>, which is proportional to oxide
+      thickness. For illustration, 10¹¹ cm⁻² charged interface traps shift the threshold by
+      0.46 V under a 100 nm oxide, where <em>C</em><sub>ox</sub> = 3.45×10⁻⁸ F/cm², and by
+      0.046 V under a 10 nm oxide. Because the n-channel terms oppose each other and evolve on
+      different time scales (§6), an n-channel transistor can show a small net shift that
+      conceals large amounts of both kinds of charge.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 245" role="img" aria-labelledby="f14-7-t">
+        <title id="f14-7-t">Transfer characteristics of n-channel and p-channel transistors on a logarithmic current axis before and after irradiation</title>
+        <defs>
+          <marker id="f14-7-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+        <line x1="40" y1="200" x2="210" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="40" y1="200" x2="40" y2="36" class="dg-rule" stroke-width="1.2"/>
+        <line x1="250" y1="200" x2="420" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="250" y1="200" x2="250" y2="36" class="dg-rule" stroke-width="1.2"/>
+        <text x="125" y="24" class="dg-label" text-anchor="middle">n-channel</text>
+        <text x="335" y="24" class="dg-label" text-anchor="middle">p-channel</text>
+        <text x="20" y="118" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 20 118)">log |I<tspan baseline-shift="sub" style="font-size:75%">D</tspan>|</text>
+        <line x1="110" y1="200" x2="110" y2="40" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="370" y1="200" x2="370" y2="40" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="110" y="214">0</text><text x="370" y="214">0</text>
+          <text x="196" y="214">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan></text>
+          <text x="406" y="214">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan></text>
+        </g>
+        <!-- n-channel -->
+        <path d="M40,194 L118,192 L150,100 C160,75 180,62 205,56" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M40,194 L78,192 L110,100 C120,75 140,62 165,56 L205,54" class="dg-guide" stroke-width="1.6" stroke-dasharray="5 3" fill="none"/>
+        <path d="M40,194 L90,192 L134,100 C146,76 168,66 205,62" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <line x1="135" y1="140" x2="99" y2="140" class="dg-line" stroke-width="1.2" marker-end="url(#f14-7-a)"/>
+        <line x1="92" y1="156" x2="105" y2="156" class="dg-line" stroke-width="1.2" marker-end="url(#f14-7-a)"/>
+        <text x="156" y="144" class="dg-label-sm">ΔV<tspan baseline-shift="sub" style="font-size:75%">ot</tspan></text>
+        <text x="156" y="161" class="dg-label-sm">ΔV<tspan baseline-shift="sub" style="font-size:75%">it</tspan></text>
+        <text x="156" y="110" class="dg-label-sm">before</text>
+        <!-- p-channel -->
+        <path d="M420,194 L352,192 L322,100 C312,75 292,62 262,56" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M420,194 L332,192 L302,100 C292,75 272,62 252,57" class="dg-guide" stroke-width="1.6" stroke-dasharray="5 3" fill="none"/>
+        <path d="M420,194 L318,192 L276,100 C266,78 256,68 252,66" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <line x1="334" y1="140" x2="317" y2="140" class="dg-line" stroke-width="1.2" marker-end="url(#f14-7-a)"/>
+        <line x1="320" y1="156" x2="304" y2="156" class="dg-line" stroke-width="1.2" marker-end="url(#f14-7-a)"/>
+        <text x="378" y="144" class="dg-label-sm">ΔV<tspan baseline-shift="sub" style="font-size:75%">ot</tspan></text>
+        <text x="378" y="161" class="dg-label-sm">ΔV<tspan baseline-shift="sub" style="font-size:75%">it</tspan></text>
+        <text x="330" y="96" class="dg-label-sm">before</text>
+        <text x="125" y="236" class="dg-label-sm" text-anchor="middle">the two shifts oppose</text>
+        <text x="335" y="236" class="dg-label-sm" text-anchor="middle">the two shifts add</text>
+      </svg>
+      <figcaption>
+        Solid: before irradiation. Dashed: the effect of oxide-trapped charge alone. Accent:
+        after both. Notice that the oxide-trapped charge only translates each curve, while the
+        interface traps also flatten its subthreshold slope and lower its on-current, and that
+        the n-channel device now passes more current at zero gate voltage. Schematic; the
+        p-channel current is plotted as a magnitude.
+        <span class="src">After the linear-axis sketch of Deck 8 p. 38, redrawn on a
+        logarithmic axis.</span>
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">What an interface trap does to the channel</p>
+      <p>
+        Deck 8 p. 37 describes the interface component as "Interface Proton Trapping (it):
+        Brings electrons to channel; Some electrons move into the proton", and p. 38 defines
+        Δ<em>V</em><sub>it</sub> as due to "Interface Electron Trapping". The proton is not
+        trapped: at the interface it reacts with an Si–H bond, leaves as H₂, and creates the
+        P<sub>b</sub> dangling-bond state (Oldham &amp; McLean 2003, §III.E; the review the
+        slide cites, Schwank et al., IEEE TNS 55, 1833, 2008, labels the same end product
+        P<sub>b</sub>). That state then exchanges electrons with the silicon. In an
+        n-channel device at threshold it takes electrons <em>from</em> the channel and
+        becomes negative, which is why Δ<em>V</em><sub>it</sub> is positive — the rule the
+        deck itself gives on p. 38. In a p-channel device the traps are net positive, so
+        interface-trap charge is not electron trapping in general; its sign follows the
+        surface Fermi level. The p. 38 sign rules are correct and are the ones to use.
+      </p>
+    </div>
+
+    <h3>Mobility, drive current and subthreshold swing</h3>
+    <p>
+      Charged interface traps sit on the surface along which the channel carriers move, and
+      scatter those carriers by their Coulomb field, so the channel mobility
+      falls as they accumulate (Deck 8 p. 39). The dependence is usually written in one
+      empirical form.
+    </p>
+
+    <div class="eq" id="m14-eq-mobility">
+      <div class="eq-body">
+        <div class="eq-math">µ = <span class="frac"><span class="num">µ<sub>0</sub></span><span class="den">1 + α Δ<em>N</em><sub>it</sub></span></span></div>
+        <div class="eq-num">(14.9)</div>
+      </div>
+      <div class="eq-says">
+        µ channel mobility after irradiation (cm²/V·s) · µ<sub>0</sub> mobility before
+        irradiation (cm²/V·s) · Δ<em>N</em><sub>it</sub> radiation-induced interface-trap
+        density (cm⁻²) · α a fitted constant (cm²), specific to the technology. At short times
+        after exposure, trapped holes close to the interface also scatter carriers and the
+        form underestimates the loss.
+        On the formula sheet as <a href="formula-sheet.html#eq-mobility">(14.9)</a>.
+      </div>
+    </div>
+
+    <p>
+      Drive current is proportional to µ(<em>V</em><sub>GS</sub> −
+      <em>V</em><sub>th</sub>)² (the saturation-current expression of
+      <a href="m01-semiconductor-background.html">M01</a>), so both the mobility loss and the
+      threshold shift change the current a transistor delivers, and with it the delay of
+      every gate it drives: these are the timing changes of Deck 8 p. 33. In an n-channel
+      transistor the negative Δ<em>V</em><sub>ot</sub> raises the drive at first, and the
+      positive Δ<em>V</em><sub>it</sub> and the mobility loss lower it as interface traps
+      accumulate. In a p-channel transistor every term lowers it.
+    </p>
+    <p>
+      Interface traps also change the shape of the subthreshold characteristic. As the gate
+      sweeps the surface through the subthreshold range, the Fermi level passes through the
+      interface states, which fill or empty as it does; the gate must supply their charge in
+      addition to the depletion charge. They act as a capacitance in parallel with the
+      depletion capacitance, and the subthreshold swing of M01 acquires one more term.
+    </p>
+
+    <div class="eq" id="m14-eq-swing">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> <span style="white-space:nowrap">ln 10 <span class="dl">(</span>1 + <span class="frac"><span class="num"><em>C</em><sub>d</sub> + <em>C</em><sub>it</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span><span class="dl">)</span>,</span> &nbsp; <span style="white-space:nowrap"><em>C</em><sub>it</sub> = <em>q D</em><sub>it</sub></span></div>
+        <div class="eq-num">(14.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em> subthreshold swing (mV/decade) · <em>kT</em>/<em>q</em> thermal voltage,
+        25.9 mV at 300 K · <em>C</em><sub>d</sub> depletion capacitance (F/cm²) ·
+        <em>C</em><sub>it</sub> interface-trap capacitance (F/cm²) · <em>D</em><sub>it</sub>
+        interface-trap density per unit energy (<b>cm⁻² eV⁻¹</b>; with <em>q</em> in coulombs
+        this gives <em>C</em><sub>it</sub> in F/cm²) · <em>C</em><sub>ox</sub> from (14.6).
+        For illustration, <em>D</em><sub>it</sub> = 10¹² cm⁻² eV⁻¹ gives
+        <em>C</em><sub>it</sub> = 1.6×10⁻⁷ F/cm², which under a 10 nm oxide adds 0.46 to the
+        bracket and about 28 mV/decade to <em>S</em> at 300 K. Standard textbook result
+        (Sze &amp; Ng; Taur &amp; Ning).
+        On the formula sheet as <a href="formula-sheet.html#eq-swing">(14.10)</a>.
+      </div>
+    </div>
+
+    <p>
+      Oxide-trapped charge translates the transfer characteristic without changing its slope;
+      interface traps both translate and stretch it. That difference is what lets
+      measurements separate the two components, by the methods in
+      <a href="../../EEE5416_Radiation_Effects/site/m07-oxide-interface-trap-charge.html">EEE 5416 M07</a>
+      §9. Below threshold, the current changes by one decade for every <em>S</em> of gate
+      voltage, which fixes how strongly a negative shift raises the off-state current.
+    </p>
+
+    <div class="eq" id="m14-eq-ioff">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>I</em><sub>off</sub>(after)</span><span class="den"><em>I</em><sub>off</sub>(before)</span></span> = 10<sup>−Δ<em>V</em><sub>th</sub>/<em>S</em></sup></div>
+        <div class="eq-num">(14.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>off</sub> drain current of an n-channel transistor at a fixed gate
+        voltage below threshold, usually zero (A) · Δ<em>V</em><sub>th</sub> threshold shift
+        (V), negative for a transistor moving toward depletion mode · <em>S</em> subthreshold
+        swing (<b>V/decade</b> here, to match Δ<em>V</em><sub>th</sub>). Holds while the gate
+        voltage stays in the subthreshold region and <em>S</em> is unchanged. With
+        <em>S</em> = 80 mV/decade, a shift of −0.1 V multiplies the off-state current by
+        18, −0.2 V by 316, and −0.3 V by 5.6×10³.
+        On the formula sheet as <a href="formula-sheet.html#eq-ioff">(14.11)</a>.
+      </div>
+    </div>
+
+    <p>
+      A die holding billions of n-channel transistors multiplies that factor across all of
+      them, so a threshold shift of a few hundred millivolts appears first as a rise in the
+      static supply current of the whole chip, long before any single transistor stops
+      switching.
+    </p>
+
+    <h2>5 · Oxide thickness</h2>
+    <p>
+      Deck 8 p. 35 states that thick oxides are particularly sensitive. Oxide thickness is the
+      single strongest structural variable in total-dose response, and equations (14.4) to
+      (14.6) already contain the reason. It governs which oxides in a modern part still
+      matter, and it explains why the problem moved from the gate to the isolation (§7).
+    </p>
+    <p>
+      Thickness enters twice. The number of holes generated per unit area is proportional to
+      the volume of oxide beneath that area, so <em>N</em><sub>h</sub> grows with
+      <em>t</em><sub>ox</sub>. And the threshold shift produced by a given sheet of charge at
+      the interface is inversely proportional to <em>C</em><sub>ox</sub>, which also grows
+      with <em>t</em><sub>ox</sub>. Substituting (14.4) and (14.5) into the interface limit of
+      (14.6) gives the scaling law.
+    </p>
+
+    <div class="eq" id="m14-eq-tox2">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>ot</sub> = − <span class="frac"><span class="num"><em>q</em> <em>f</em><sub>ot</sub> <em>f</em><sub>y</sub> <em>g</em><sub>0</sub> <em>D</em></span><span class="den">ε<sub>ox</sub></span></span> <em>t</em><sub>ox</sub><sup>2</sup></div>
+        <div class="eq-num">(14.12)</div>
+      </div>
+      <div class="eq-says">
+        <em>q</em> elementary charge (C) · <em>f</em><sub>ot</sub> trapped fraction from
+        (14.5) · <em>f</em><sub>y</sub> fractional yield from (14.4) · <em>g</em><sub>0</sub>
+        8.1×10¹² cm⁻³ rad(SiO₂)⁻¹ · <em>D</em> dose (rad(SiO₂)) · ε<sub>ox</sub>
+        3.45×10⁻¹³ F/cm · <em>t</em><sub>ox</sub> oxide thickness (<b>cm</b>). Assumes all
+        trapped charge at the silicon interface and no annealing. Measured exponents of the
+        shifts run from about 1.5 to 2 rather than exactly 2. The law fails in thin films: the
+        shift falls below it from roughly 12–20 nm and is about an order of magnitude below
+        it at 10 nm (Figure 8 and the box below).
+        On the formula sheet as <a href="formula-sheet.html#eq-tox2">(14.12)</a>.
+      </div>
+    </div>
+
+    <p>
+      The table evaluates (14.12) for 10 krad(SiO₂) of cobalt-60 exposure at 1 MV/cm
+      (<em>f</em><sub>y</sub> ≈ 0.9). The first shift column takes every surviving hole as
+      trapped, an upper bound; the second takes an illustrative trapped fraction of 5 %, not
+      a measured value for any process. A tenfold increase in thickness gives a hundredfold
+      increase in shift.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Oxide thickness</th><th>Surviving holes (cm⁻²)</th><th>Shift, all holes trapped</th><th>Shift, 5 % trapped (illustrative)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>10 nm (thin gate oxide)</td><td>7.3×10¹⁰</td><td>−0.034 V</td><td>−0.0017 V</td></tr>
+          <tr><td>100 nm (older gate oxide)</td><td>7.3×10¹¹</td><td>−3.4 V</td><td>−0.17 V</td></tr>
+          <tr><td>500 nm (isolation-oxide thickness)</td><td>3.6×10¹²</td><td>−85 V</td><td>−4.2 V</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">Computed from equations (14.4) and (14.12) with <em>g</em><sub>0</sub> = 8.1×10¹² cm⁻³ rad(SiO₂)⁻¹,
+    ε<sub>ox</sub> = 3.45×10⁻¹³ F/cm. The 10 nm row ignores tunnelling, which removes most of that charge
+    (Figure 8). The 500 nm row holds the field at 1 MV/cm, which across that thickness is 50 V; an
+    isolation oxide under a gate at a few volts sees about 0.1 MV/cm or less, where the cobalt-60
+    yield on the curves behind Figure 5 is about 0.4, so its shift is about half the tabulated one.
+    The hundredfold thickness scaling is unaffected.</p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 250" role="img" aria-labelledby="f14-8-t">
+        <title id="f14-8-t">Magnitude of the oxide-trapped-charge threshold shift against oxide thickness on logarithmic axes</title>
+        <line x1="70" y1="210" x2="400" y2="210" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="210" x2="70" y2="26" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="70" y="224">1</text><text x="180" y="224">10</text>
+          <text x="290" y="224">100</text><text x="400" y="224">1000</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="64" y="214">10⁻⁴</text><text x="64" y="154">10⁻²</text>
+          <text x="64" y="94">1</text><text x="64" y="34">10²</text>
+        </g>
+        <text x="235" y="243" class="dg-label" text-anchor="middle">oxide thickness (nm)</text>
+        <text x="22" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 22 118)">|ΔV<tspan baseline-shift="sub" style="font-size:75%">ot</tspan>| (V)</text>
+        <line x1="70" y1="194.1" x2="180" y2="134.1" class="dg-guide" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <line x1="180" y1="134.1" x2="370.7" y2="30" class="dg-line" stroke-width="1.6"/>
+        <path d="M370.7,30 L223.8,110.2 C219.7,112.4 216.7,115.5 213.1,118.9 C209.6,122.3 206.5,126.1 202.5,130.8 C198.4,135.6 192.5,141.8 188.7,147.4 C185,152.9 182.3,159.3 180,164.1 C177.7,168.8 176.7,171.9 175,175.8 C173.2,179.8 171.3,183.3 169.3,187.9 C167.3,192.5 164.5,199.7 163,203.3 C161.4,207 161.1,207.8 160.2,210" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <circle cx="290" cy="74.1" r="3.5" class="dg-ink"/>
+        <circle cx="366.9" cy="32.2" r="3.5" class="dg-ink"/>
+        <text x="298" y="86" class="dg-label-sm">3.4 V</text>
+        <text x="376" y="44" class="dg-label-sm">85 V</text>
+        <text x="140" y="80" class="dg-label-sm">slope 2: (14.12),</text>
+        <text x="140" y="94" class="dg-label-sm">all holes trapped</text>
+        <text x="192" y="172" class="dg-label-sm">tunnel annealing;</text>
+        <text x="192" y="186" class="dg-label-sm">schematic trend</text>
+        <line x1="290" y1="196" x2="400" y2="196" class="dg-rule" stroke-width="1"/>
+        <text x="345" y="190" class="dg-label-sm" text-anchor="middle">isolation oxides</text>
+        <line x1="84" y1="44" x2="180" y2="44" class="dg-rule" stroke-width="1"/>
+        <text x="132" y="38" class="dg-label-sm" text-anchor="middle">modern gate oxides</text>
+      </svg>
+      <figcaption>
+        On logarithmic axes the <em>t</em><sub>ox</sub>² law is a straight line of slope 2,
+        evaluated here at 10 krad(SiO₂). From roughly 20 nm downward the measured shift falls
+        below it — by about an order of magnitude at 10 nm and by far more in thinner films —
+        because trapped charge within tunnelling range of both electrodes is neutralized. The
+        accent curve follows the shape of the 80 K data compiled by Oldham and McLean and is
+        schematic, not measured data.
+        <span class="src">Line computed from (14.12); thin-oxide trend after Oldham &amp;
+        McLean (2003), Fig. 25 (80 K, from Saks, Ancona &amp; Modolo, IEEE TNS 31, 1249,
+        1984), and Saks, Ancona &amp; Modolo, IEEE TNS 33, 1185 (1986).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The measured thickness dependence of the shifts is slightly weaker than the ideal square
+      law. Schwank and co-workers report both Δ<em>V</em><sub>ot</sub> and
+      Δ<em>V</em><sub>it</sub> falling as <em>t</em><sub>ox</sub><sup>1.5</sup> to
+      <em>t</em><sub>ox</sub><sup>1.8</sup> for dry and wet oxides. "Roughly
+      <em>t</em><sub>ox</sub>²", with measured exponents between about 1.5 and 2, is the
+      working statement for threshold shifts. An exponent quoted for a trap density is a
+      different quantity: because <em>C</em><sub>ox</sub> ∝ 1/<em>t</em><sub>ox</sub>, the
+      shift carries one more power of <em>t</em><sub>ox</sub> than the areal density that
+      causes it. Oldham and McLean note that processing varies enough for a particular oxide
+      to depart from the square law, although no other dependence has been shown to hold in
+      general.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Where the square law stops: the thin-oxide limit</p>
+      <p>
+        A hole trapped within a few nanometres of an electrode is neutralized by an electron
+        that tunnels to it from the silicon or the gate (§6). The reachable distance is about
+        4 nm at 80 K; at room temperature estimates run from about 4 nm to at most 6 nm. For
+        oxides thinner than about
+        12 nm, Saks, Ancona and Modolo found interface-trap buildup and trapped-hole shifts far
+        below the power-law extrapolation from thicker films — for a 6 nm oxide, the rate of
+        interface-trap buildup was a factor of 16 below it — and they cite a 5 nm tunnel oxide that showed no measurable increase in
+        interface-trap density after 8 Mrad. When the oxide is thin enough, the tunnelling
+        regions from the two electrodes meet in the middle and no net positive charge
+        survives. Below about 10 nm a gate oxide is therefore nearly immune to total dose,
+        and the gate oxides of current commercial processes, a few nanometres thick, trap
+        almost no net charge. The thinning that scaling imposed for performance reasons
+        hardened the gate oxide as a side effect.
+      </p>
+    </div>
+
+    <p>
+      The consequence reverses the historical picture. When gate oxides were about 100 nm
+      thick, the gate oxide set a part's total-dose tolerance, and hardening meant growing a
+      thin, low-trap oxide under tightly controlled conditions. With commercial gate oxides
+      now below 10 nm, the gate-oxide problem is essentially solved, and what remains are the
+      oxides that did not thin: the isolation between transistors, hundreds of nanometres
+      thick, which by (14.12) develops hundreds to thousands of times the threshold shift of
+      a thin gate oxide for the same dose (§7).
+    </p>
+
+    <h2>6 · Annealing and time dependence</h2>
+    <p>
+      The charge of §3 does not stay fixed once it forms. Deck 8 pp. 39–40 show that
+      oxide-trapped charge is neutralized over time after irradiation, while interface traps
+      do not anneal at room temperature and continue to form for thousands of seconds. The
+      two components therefore evolve in opposite directions after an exposure, the net
+      threshold shift of an n-channel transistor can change sign, and the outcome of a test
+      depends on how long it lasts. This time dependence is what total-dose test methods are
+      designed around (§8).
+    </p>
+
+    <h3>Neutralizing the trapped holes</h3>
+    <p>
+      Deck 8 p. 40 names two processes. In <b>tunnel annealing</b>, an electron from the
+      silicon conduction band tunnels through the 3.1 eV barrier at the Si/SiO₂ interface
+      into a trap holding a hole and neutralizes it. The tunnelling probability falls
+      exponentially with distance, so traps close to the interface are emptied first and the
+      boundary between neutralized and still-charged traps moves into the oxide as the
+      logarithm of time. At room temperature only traps within about 4–6 nm of the interface
+      are reachable this way (§5).
+      The rate depends on how the traps are distributed in space and on bias, which changes
+      the shape of the barrier.
+    </p>
+
+    <div class="eq" id="m14-eq-front">
+      <div class="eq-body">
+        <div class="eq-math"><em>x</em><sub>m</sub>(<em>t</em>) = <em>x</em><sub>m</sub>(<em>t</em><sub>0</sub>) + <span style="white-space:nowrap">λ log<sub>10</sub><span class="dl">(</span><span class="frac"><span class="num"><em>t</em></span><span class="den"><em>t</em><sub>0</sub></span></span><span class="dl">)</span></span></div>
+        <div class="eq-num">(14.13)</div>
+      </div>
+      <div class="eq-says">
+        <em>x</em><sub>m</sub> depth of the tunnelling front, measured into the oxide from the
+        Si/SiO₂ interface (nm); trapped holes nearer the interface than
+        <em>x</em><sub>m</sub> have been neutralized · <em>t</em> time since the charge was
+        trapped (s) · <em>t</em><sub>0</sub> a reference time (s) · λ advance per decade of
+        time, 0.2–0.4 nm. Holds while the front is within the tunnelling range, about 4–6 nm
+        at room temperature; it produces the recovery of Δ<em>V</em><sub>ot</sub> linear in log <em>t</em>
+        shown in Figure 9.
+        On the formula sheet as <a href="formula-sheet.html#eq-front">(14.13)</a>.
+      </div>
+    </div>
+
+    <p>
+      In <b>thermal annealing</b>, an electron is thermally emitted from the oxide valence
+      band into the trap — equivalently, the trapped hole is emitted into the valence band.
+      The rate depends on how far the trap level lies above the oxide valence band and rises
+      exponentially with temperature, but does not depend on the trap's position. A
+      thermal-emission front therefore sweeps upward through the distribution of trap
+      energies, also as the logarithm of time. Near room temperature tunnelling dominates;
+      at raised temperature thermal emission takes over. Both give a recovery linear in
+      log <em>t</em>. Neutralization is not always removal: some trapped holes are
+      compensated by an electron trapped next to them, and a later negative bias can return
+      about half of the apparently annealed charge, as
+      <a href="../../EEE5416_Radiation_Effects/site/m09-oxide-charge-kinetics.html">EEE 5416 M09</a>
+      §6 develops.
+    </p>
+    <p>
+      Interface traps behave differently (Deck 8 p. 39). They do not anneal at room
+      temperature; some annealing at 100 °C has been reported, and higher temperatures are
+      normally needed to remove them. Meanwhile they continue to form as protons arrive at
+      the interface. Their effect on mobility (14.9) persists for the same reason.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 292" role="img" aria-labelledby="f14-9-t">
+        <title id="f14-9-t">Interface-trap and oxide-trapped-charge threshold shifts against time for irradiations spanning eleven orders of magnitude in dose rate</title>
+        <!-- panel a -->
+        <line x1="70" y1="120" x2="410" y2="120" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="120" x2="70" y2="24" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="64" y="124">0</text><text x="64" y="79">0.5</text><text x="64" y="34">1.0</text>
+        </g>
+        <text x="22" y="74" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 22 74)">ΔV<tspan baseline-shift="sub" style="font-size:75%">it</tspan> (V)</text>
+        <path d="M94.1,94.8 L112.5,93 L132.8,91.2 L155,87.6 L175.3,80.4 L197.5,74.1 L217.8,67.8 L240,60.6 L260.3,54.3 L282.5,51.6 L325,50.7 L367.5,49.8 L393.1,48" class="dg-line" stroke-width="2.2" fill="none"/>
+        <text x="250" y="96" class="dg-label-sm">interface traps build up</text>
+        <text x="78" y="36" class="dg-label-sm">(a)</text>
+        <!-- panel b -->
+        <line x1="70" y1="160" x2="410" y2="160" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="250" x2="410" y2="250" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="160" x2="70" y2="250" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="64" y="164">0</text><text x="64" y="209">−1</text><text x="64" y="254">−2</text>
+        </g>
+        <text x="22" y="205" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 22 205)">ΔV<tspan baseline-shift="sub" style="font-size:75%">ot</tspan> (V)</text>
+        <path d="M95.6,225.3 L112.5,219.4 L132.8,214 L155,208.6 L175.3,205 L197.5,202.3 L240,197.4 L282.5,191.1 L325,184.3 L367.5,178 L393.1,174.4" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <text x="200" y="236" class="dg-label-sm">oxide-trapped charge anneals</text>
+        <text x="78" y="176" class="dg-label-sm">(b)</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="70" y="264">0.1</text><text x="155" y="264">10</text>
+          <text x="240" y="264">10³</text><text x="325" y="264">10⁵</text><text x="410" y="264">10⁷</text>
+        </g>
+        <text x="240" y="284" class="dg-label" text-anchor="middle">time since irradiation began (s)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 9.</b> Each curve collects five exposures, from a two-pulse linear
+        accelerator at 6×10⁹ rad(SiO₂)/s to caesium-137 at 0.05 rad(SiO₂)/s, all to
+        100 krad(SiO₂), and every one falls on the same line once plotted against time since
+        irradiation began. In these devices interface traps build over 10³–10⁴ s and then
+        hold; oxide-trapped charge recovers linearly in log <em>t</em>. By 4×10⁶ s the traced
+        curves give Δ<em>V</em><sub>ot</sub> ≈ −0.3 V against Δ<em>V</em><sub>it</sub> ≈
+        +0.8 V, a net positive shift. Hardened n-channel polysilicon-gate transistors, 60 nm
+        oxide, +6 V, room-temperature anneal. Panel (a) of the slide also carries a dashed
+        comparison curve labelled "Winokur et al. 1987", from another data set, that leaves
+        these points after about 10⁵ s and keeps rising past 1 V; it is omitted here. Some
+        oxides do show interface-trap buildup continuing for months (§3).
+        <span class="src">Traced from Deck 8 p. 39; data of Fleetwood, Winokur &amp;
+        Schwank, IEEE TNS 35, 1497 (1988).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Figure 9 is the deck's evidence for the dose-rate statements on p. 39. The dose rates
+      span eleven orders of magnitude, so the exposure times do too: the linear accelerator
+      delivered 100 krad(SiO₂) in two pulses, while the slowest caesium-137 source needed
+      2×10⁶ s, about 23 days. Plotted against time since irradiation began, all five fall on
+      one curve for each component. Fleetwood and co-workers report that, to within the
+      ±10 % uncertainty of their dosimetry, these transistors show no true dose-rate effect
+      and both trap densities are linear in dose. What looks like a dose-rate dependence in
+      these gate oxides is a time dependence: a slow exposure is a long one, and during it
+      oxide-trapped charge anneals while interface traps accumulate. That is the normal
+      behaviour of MOS gate oxides, whose response does not normally depend on dose rate
+      outside the prompt pulses of §1 (Oldham and McLean). It is not universal. The thick,
+      low-field isolation oxides of §7 can show a true enhancement at low dose rate, as the
+      bipolar oxides below do: Johnston, Swimm and Miyahira measured more off-state leakage
+      from the shallow-trench isolation of 0.18 µm n-channel transistors at low dose rate
+      than at high, and Esqueda and co-workers found a low-dose-rate enhancement in
+      field-oxide transistors of a 90 nm process.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">What "independent of dose rate" means, and what it does not</p>
+      <p>
+        Deck 8 p. 39 describes interface-trap buildup as "independent of the dose-rate of the
+        radiation source" and oxide-charge neutralization as following "a transient annealing
+        curve which is independent of dose rate". Both statements hold when curves are
+        compared at equal time since irradiation began, which is how Figure 9 is plotted.
+        They do not mean that the damage a part shows at the end of an exposure is
+        independent of how fast the dose was delivered. At the end of a fast laboratory
+        exposure a part sits at the left of Figure 9, with large negative
+        Δ<em>V</em><sub>ot</sub> and little Δ<em>V</em><sub>it</sub>; at the end of a
+        mission's slow exposure the same dose leaves it at the right, with most of the oxide
+        charge annealed and the interface traps fully formed. For an n-channel transistor
+        these two states can have opposite signs.
+      </p>
+    </div>
+
+    <p>
+      The opposite signs have a direct consequence called <b>rebound</b>. Oldham and McLean
+      describe an n-channel transistor irradiated to 1 Mrad whose net threshold shift
+      immediately afterward was below 1 V, because the positive oxide-trapped charge was
+      compensated by negative interface-trap charge. As the trapped holes annealed, the
+      interface traps remained, and the final shift was about +3.5 V — enough to fail the
+      device — reached equally at 25 °C and at 125 °C; the heat only reached it sooner. A
+      p-channel transistor cannot rebound, because both of its terms are negative. The same
+      balance can make a circuit's measured tolerance depend on test rate in a
+      non-monotonic way: one circuit tested across rates failed at a few krad at a high rate,
+      from oxide charge, failed at a somewhat higher dose at a low rate, from interface traps,
+      and survived to a far higher dose at one intermediate rate where the two terms
+      balanced. A single high-rate test therefore cannot predict the end-of-mission state of
+      an n-channel device.
+    </p>
+
+    <div class="box">
+      <p class="box-title">ELDRS: a true dose-rate effect, in bipolar circuits</p>
+      <p>
+        Bipolar linear circuits — operational amplifiers, comparators, voltage references —
+        behave oppositely to MOS gate oxides. Their total-dose damage lies in the thick,
+        low-field oxides that passivate the base region: interface traps there, joined in
+        n-p-n transistors by the oxide-trapped charge, raise the base current through surface
+        recombination and reduce the transistor's gain. In 1991 Enlow and co-workers found
+        that bipolar transistors from advanced processes degraded more at low dose rates than
+        at the moderate rates used for qualification, at equal dose, and in 1994 Johnston,
+        Swift and Rax found the same enhancement in linear integrated circuits; in such
+        circuits it appears at rates below about 1 rad(Si)/s. This is enhanced
+        low-dose-rate sensitivity, ELDRS, and it is a true dose-rate effect, linked to
+        space-charge effects of slowly moving charge in those low-field oxides. It makes a high-rate test non-conservative: the part looks harder
+        in the laboratory than it is in orbit. The competing models are compared in
+        <a href="../../EEE5416_Radiation_Effects/site/m08-tid-effects-devices-ics.html">EEE 5416 M08</a>
+        §9, and the low-rate test flows in
+        <a href="../../EEE5416_Radiation_Effects/site/m15-hardness-assurance.html">M15</a>
+        §7–8.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>An n-channel transistor with a 60 nm hardened gate oxide is irradiated under
+      positive bias at a high dose rate and measured within minutes. Its threshold has barely
+      moved and its subthreshold slope is slightly shallower. Is the transistor essentially
+      undamaged, and what happens if it is then held under bias for a week at 100 °C?</summary>
+      <div class="answer">
+        <p>
+          It is not undamaged. A small net shift in an n-channel device is the sum of a
+          negative Δ<em>V</em><sub>ot</sub> and a positive Δ<em>V</em><sub>it</sub>
+          (14.8), and the shallower subthreshold slope is the signature of interface traps
+          (14.10): charge of both kinds is present and nearly cancels.
+        </p>
+        <p>
+          During the bake, thermal emission and tunnelling neutralize the trapped holes, so
+          Δ<em>V</em><sub>ot</sub> moves toward zero, while the interface traps do not anneal
+          at 100 °C to any comparable extent and may still be forming. The net shift
+          therefore moves positive, possibly far beyond its initial value — rebound. The
+          threshold rises, drive current falls with both the shift and the mobility loss
+          (14.9), and timing fails even though the immediate post-irradiation measurement
+          passed. That is the failure the elevated-temperature step of the test method in §8
+          is designed to expose.
+        </p>
+      </div>
+    </details>
+
+    <h2>7 · Leakage through the isolation oxide</h2>
+    <p>
+      Deck 8 p. 41 shows the total-dose failure that dominates commercial parts today: charge
+      trapped in the isolation acts as a lateral parasitic leakage path. The gate oxide of
+      §5 has thinned to near-immunity, but every transistor on a die is surrounded by a much
+      thicker oxide that separates it from its neighbours, and by (14.12) that oxide develops
+      threshold shifts of volts at doses that leave the gate oxide untouched.
+    </p>
+
+    <div class="box defn">
+      <p class="box-title">Isolation oxides</p>
+      <p>
+        <b>LOCOS</b>, local oxidation of silicon, grows a thick thermal oxide wherever a
+        silicon-nitride mask leaves the surface exposed; oxidant diffusing sideways under the
+        mask edge produces a tapered wedge called the <b>bird's beak</b>, where the thick oxide
+        thins into the gate oxide. In LOCOS technology the thick oxide is called field oxide.
+        <b>Shallow-trench isolation</b> (STI) etches a trench around each active area and fills
+        it with deposited oxide; the industry moved from LOCOS to trenches below about
+        0.35 µm. The isolation oxide is 100 to 1000 nm thick. LOCOS oxide is grown and STI
+        fill is deposited, but in either case its trapping properties are poorly controlled
+        and can differ considerably from those of the gate oxide, and it is not thinned by
+        scaling.
+      </p>
+    </div>
+
+    <p>
+      The gate electrode of each transistor runs across the active area and continues up
+      over the isolation oxide at both edges of the channel. Where it does, the gate, the
+      isolation oxide and the silicon beneath form a second MOS transistor at each channel
+      edge, in parallel with the intended one and sharing its source and drain. Before
+      irradiation this parasitic transistor has a thick oxide and a threshold far above the
+      supply voltage, so it never turns on. Positive charge trapped in the isolation oxide,
+      and especially in the bird's beak or the STI sidewall next to the channel edge, gives
+      it a large negative threshold shift. Once the shift is large enough, the p-type
+      surface along the edge inverts at zero gate voltage and conducts from source to drain
+      while the intended transistor is off.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 440 215" role="img" aria-labelledby="f14-10-t">
+          <title id="f14-10-t">Cross-section across the width of an n-channel transistor with LOCOS isolation, showing trapped charge in the bird's beak inverting the channel edges</title>
+          <rect x="20" y="118" width="400" height="90" class="dg-fill"/>
+          <path d="M20,72 L105,72 C125,74 138,96 170,114 L170,118 C140,122 125,140 105,148 L20,148 Z" class="dg-fill"/>
+          <path d="M420,72 L335,72 C315,74 302,96 270,114 L270,118 C300,122 315,140 335,148 L420,148 Z" class="dg-fill"/>
+          <rect x="170" y="114" width="100" height="4" class="dg-fill"/>
+          <path d="M40,58 L105,58 C125,60 138,86 170,100 L270,100 C302,86 315,60 335,58 L400,58 L400,72 L335,72 C315,74 302,96 270,114 L170,114 C138,96 125,74 105,72 L40,72 Z" class="dg-fill"/>
+          <text x="220" y="48" class="dg-label" text-anchor="middle">polysilicon gate</text>
+          <text x="20" y="20" class="dg-label-sm">section across the channel width</text>
+          <text x="62" y="114" class="dg-label-sm" text-anchor="middle">field oxide</text>
+          <text x="377" y="114" class="dg-label-sm" text-anchor="middle">field oxide</text>
+          <g class="dg-acc-f">
+            <circle cx="146" cy="112" r="3.2"/><circle cx="156" cy="118" r="3.2"/><circle cx="140" cy="124" r="3.2"/>
+            <circle cx="294" cy="112" r="3.2"/><circle cx="284" cy="118" r="3.2"/><circle cx="300" cy="124" r="3.2"/>
+          </g>
+          <path d="M146,129 C156,125 164,121 176,120" class="dg-acc" stroke-width="3" fill="none"/>
+          <path d="M294,129 C284,125 276,121 264,120" class="dg-acc" stroke-width="3" fill="none"/>
+          <text x="220" y="138" class="dg-label-sm" text-anchor="middle">main channel, off</text>
+          <text x="220" y="162" class="dg-label-sm" text-anchor="middle">trapped holes in the bird's beak</text>
+          <text x="220" y="176" class="dg-label-sm" text-anchor="middle">invert both edges: leakage paths</text>
+          <text x="220" y="202" class="dg-label" text-anchor="middle">p-type substrate</text>
+        </svg>
+        <figcaption>
+          Source and drain lie in front of and behind the page. The trapped holes sit where
+          the thick oxide thins toward the channel, and the p-type surface beneath them
+          inverts into two thin n-type strips that bypass the gate.
+          <span class="src">After Deck 8 p. 41 and Schwank et al. (2008), Fig. 12.</span>
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 440 240" role="img" aria-labelledby="f14-11-t">
+          <title id="f14-11-t">Drain current against gate voltage on a logarithmic axis for an n-channel transistor with LOCOS isolation at increasing dose</title>
+          <line x1="60" y1="200" x2="420" y2="200" class="dg-rule" stroke-width="1.2"/>
+          <line x1="60" y1="200" x2="60" y2="36" class="dg-rule" stroke-width="1.2"/>
+          <g class="dg-label-sm" text-anchor="middle">
+            <text x="96" y="214">−4</text><text x="240" y="214">0</text><text x="384" y="214">4</text>
+          </g>
+          <g class="dg-label-sm" text-anchor="end">
+            <text x="54" y="204">10⁻¹²</text><text x="54" y="124">10⁻⁸</text><text x="54" y="44">10⁻⁴</text>
+          </g>
+          <text x="240" y="234" class="dg-label" text-anchor="middle">gate voltage (V)</text>
+          <text x="16" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 16 118)">drain current (A)</text>
+          <path d="M60,194 L248,194 L262,100 C275,70 320,52 420,42" class="dg-line" stroke-width="1.8" fill="none"/>
+          <path d="M60,191 L132,192 C170,176 214,140 240,122 L252,110 L262,100" class="dg-guide" stroke-width="1.6" stroke-dasharray="5 3" fill="none"/>
+          <path d="M60,92 C150,88 230,84 272,83" class="dg-acc" stroke-width="2.2" fill="none"/>
+          <text x="266" y="192" class="dg-label-sm">0 krad</text>
+          <text x="162" y="150" class="dg-label-sm">30 krad</text>
+          <text x="80" y="80" class="dg-label-sm">50 krad</text>
+          <text x="300" y="80" class="dg-label-sm">on-state unchanged</text>
+          <line x1="228" y1="190" x2="228" y2="88" class="dg-line" stroke-width="1" marker-end="url(#f14-11-a)"/>
+          <defs>
+            <marker id="f14-11-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+            </marker>
+          </defs>
+        </svg>
+        <figcaption>
+          The intended transistor turns on at the same gate voltage and reaches the same
+          on-current at every dose; what changes is a parasitic path that turns on first,
+          visible as a hump that grows until the off-state current at zero gate voltage has
+          risen by about six orders of magnitude. Schematic of the measured family.
+          <span class="src">After Deck 8 p. 41: 0.8 µm CMOS with LOCOS isolation,
+          experiment and simulation at 0–50 krad (material not stated on the slide).</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      The measured family on Deck 8 p. 41 shows exactly this signature. The turn-on of the
+      intended transistor near +0.5 V and its on-state current near 10⁻⁴ A do not move
+      between 0 and 50 krad, because its gate oxide is thin. Below threshold a second
+      characteristic appears and moves to more negative gate voltage with dose, and the
+      off-state current at zero gate voltage rises from about 10⁻¹² A to about 10⁻⁶ A. The
+      trapped charge has not changed the transistor; it has added a second one beside it.
+    </p>
+    <p>
+      Several features follow from the geometry. The problem is confined to n-channel
+      transistors: positive charge over n-type silicon accumulates the surface rather than
+      inverting it, and raises the threshold of the parasitic p-channel device instead of
+      lowering it. A second path runs beneath the isolation from the n⁺ source or drain of one
+      transistor to a neighbouring n-well, so leakage appears between devices as well as
+      within one. The worst bias during irradiation is the on state, gate at the supply
+      voltage with source, drain and substrate grounded, because it places the largest field
+      across the isolation oxide; the thinning of the oxide at the top corners of an STI
+      trench concentrates that field further. The circuit symptom is a rise in static supply
+      current, because every n-channel transistor on the die leaks at once; functional
+      failure follows when the leakage overwhelms the circuit's margins. A dose of about
+      10 krad(Si) in the isolation oxide is enough to cause IC failure in some commercial
+      devices, and charge in the isolation oxide is the main cause of total-dose failure in
+      advanced commercial technologies.
+    </p>
+    <p>
+      The remedies act on the geometry or on the oxide, and belong to hardening
+      (<a href="index.html#roadmap">M16</a>). An enclosed-layout, or annular, transistor
+      surrounds the drain with the gate so that no isolation edge connects source to drain.
+      A p⁺ guard ring or channel-stop implant raises the doping of the p-type surface beneath
+      the isolation so that far more charge is needed to invert it. A hardened isolation
+      process lowers the trap density itself; such recipes are generally proprietary. The
+      Radiation Effects course treats all three in
+      <a href="../../EEE5416_Radiation_Effects/site/m08-tid-effects-devices-ics.html">EEE 5416 M08</a>
+      §5–6.
+    </p>
+
+    <details class="check">
+      <summary>A commercial microcontroller with a gate oxide a few nanometres thick fails a
+      cobalt-60 test at about 10 krad(Si). Its supply current rose by several orders of
+      magnitude before the first logic error. Which oxide failed, by what mechanism, and why
+      did the thin gate oxide not protect the part?</summary>
+      <div class="answer">
+        <p>
+          The isolation oxide failed. The gate oxide is thin enough that by (14.12) its
+          shift is negligible, and below about 10 nm tunnelling removes most of what little
+          charge it traps. The shallow-trench isolation around each transistor is hundreds of
+          nanometres thick: the ratio of squared thicknesses alone is 10³ to 10⁴, and a
+          deposited oxide traps a larger fraction of its holes than a hardened gate oxide.
+        </p>
+        <p>
+          Positive charge in the trench sidewall inverts the p-type edge of every n-channel
+          transistor, opening a parasitic source-to-drain path in parallel with the intended
+          channel. Each transistor's off-state current rises, and since all n-channel
+          transistors share the effect, the static supply current of the chip rises by
+          orders of magnitude first; logic errors appear only when leakage collapses the
+          margins of the weakest nodes or starves circuits such as charge pumps. The thin
+          gate oxide is irrelevant, because the failing oxide is a different one. The fixes
+          are layout — enclosed transistors, guard rings — or a hardened isolation process.
+        </p>
+      </div>
+    </details>
+
+    <h2>8 · Testing a part for total dose</h2>
+    <p>
+      A part's total-dose tolerance is measured, not calculated. The trapped fraction of
+      (14.5) and the interface-trap yield depend on processing details that vary between
+      manufacturers and between wafer lots of the same part, so no datasheet parameter
+      predicts them. A total-dose test irradiates parts under bias with a calibrated source,
+      measures their electrical parameters at a series of dose steps, and then follows the
+      anneal. Each element of the procedure answers one of the physical effects of §3–§6,
+      and the logic of the standard test methods follows from them.
+    </p>
+
+    <h3>Sources</h3>
+    <p>
+      The reference source is cobalt-60, whose 1.173 and 1.332 MeV gamma rays
+      (<a href="m04-radiation-species-decay.html">M04</a> §8,
+      <a href="m10-photon-interaction.html">M10</a> §9) interact mainly by Compton scattering,
+      and almost exclusively so in the light elements of the die. The dose is therefore
+      nearly uniform through the die and, by (14.1), equal in silicon and in its oxide to
+      0.3 %. Low-energy photons scattered from the surroundings would still enhance the dose
+      next to layers of high atomic number, so the part sits inside an enclosure of at least
+      1.5 mm of lead lined with at least 0.7 mm of aluminium, which ESCC 22900 recommends:
+      it filters those photons and establishes charged-particle equilibrium at the die.
+      MIL-STD-883 Test Method 1019 has used cobalt-60 exclusively
+      since its 1991 revision; the European ESCC Basic Specification 22900 also allows an
+      electron beam of at least 1 MeV.
+    </p>
+    <p>
+      Laboratory X-ray testers operating near 10 keV irradiate bare dies and whole wafers
+      cheaply and without a radioactive source, and they appear in Figure 9. Their dose
+      needs three corrections before it can be compared with cobalt-60: photoelectric
+      absorption makes 1 rad(SiO₂) equal to about 1.8 rad(Si) (14.1); the low-energy
+      secondary electrons ionize densely and give a lower fractional yield (Figure 5); and
+      next to layers of high atomic number, such as metallization, the dose in the oxide is
+      enhanced (<a href="../../EEE5416_Radiation_Effects/site/m04-quantifying-energy-deposition.html">EEE 5416 M04</a>
+      §5). The correlation factor depends on the oxide field and on the layer stack, and is
+      established experimentally for each technology. Caesium-137 irradiators, with a single
+      662 keV gamma ray, provide the lowest rates in Figure 9.
+    </p>
+
+    <h3>The test sequence</h3>
+    <p>
+      A standard irradiation delivers the dose at a rate high enough to finish in hours:
+      50–300 rad(Si)/s under Test Method 1019 (revision 1019.9, current as of 2019), and
+      0.1–50 rad(Si)/s under ESCC 22900. Parts are biased in the condition that gives the
+      largest shift — for isolation leakage, the on state of §7. By §6, a high rate places
+      the part at the left of Figure 9: in a gate oxide it overstates the oxide-trapped charge
+      that a slow mission exposure would leave and understates the interface traps. The two
+      MOS supplements correct for each error. An isolation oxide with a true low-dose-rate
+      enhancement (§6) is outside that reasoning, because in it a high rate can understate
+      the charge as well.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Step</th><th>What it does</th><th>Physical reason</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Extended room-temperature anneal (TM 1019)</td><td>A part that fails at high rate is kept biased at room temperature and retested until it recovers; the rated dose divided by the recovery time gives a dose rate it tolerates in service</td><td>Failure driven by oxide-trapped charge anneals during a slow exposure (Figure 9b)</td></tr>
+          <tr><td>MOS accelerated anneal, or rebound test (TM 1019)</td><td>Irradiate to the rated dose and test; irradiate a further 50 % without testing; bake under bias at 100 °C for 168 h; test</td><td>The bake anneals trapped holes while leaving interface traps, bringing the part to the end state of a long exposure (§6 rebound); a hotter bake would anneal the interface traps too</td></tr>
+          <tr><td>Post-irradiation sequence (ESCC 22900)</td><td>Evaluation: biased room-temperature anneal with measurements at 24, 48 and 168 h, then 168 h at 100 °C under bias. Qualification and lot acceptance: 24 h biased room-temperature anneal, then 168 h at 100 °C under bias</td><td>Tracks both components through the annealing curve</td></tr>
+          <tr><td>Low-rate test for bipolar linear parts</td><td>TM 1019 condition D, at or below 10 mrad(Si)/s with a 1.5× overtest. ESCC: an integrated circuit irradiated at 0.01 rad(Si)/s or below is compared with parts from the same wafer lot irradiated at least 100 times faster, and is ELDRS-sensitive if the enhancement in the median of its most sensitive parameter exceeds 1.5; ESCC's low-rate window 2, 0.01–0.1 rad(Si)/s, is used whenever strong time-dependent or true dose-rate effects are identified or suspected</td><td>ELDRS is a true dose-rate effect, so a high rate is non-conservative (§6)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">Test Method 1019 content as summarized by Turflinger, Kruckmeyer &amp; van Vonno,
+    NEPP Electronics Technology Workshop (2019); ESCC Basic Specification 22900, Issue 5 (2016).</p>
+
+    <h3>Tolerance levels</h3>
+    <p>
+      Published tests place many commercial parts in the low tens of krad(Si) or below. The
+      128-Mb NAND flash of §2 failed to erase at 8 krad(Si) when biased, and a multilevel
+      NOR flash from the same study stopped functioning at 12 krad(Si) under bias; some commercial
+      devices fail from isolation leakage at about 10 krad(Si); and commercial analog
+      parts have failed as low as 1 krad(Si). Against that, more than 90 % of NASA missions
+      before 2004 required a device tolerance of 100 krad(Si) or less, stated behind a
+      nominal shield such as 70 mils (1.78 mm) of aluminium and with a radiation design
+      margin of at least 2, often more to cover ELDRS and uncertainty in the environment.
+      A mission's dose follows from its orbit and shield as in
+      <a href="m07-orbits-and-environment.html">M07</a> §9.
+    </p>
+    <p>
+      Parts sold as radiation-hardened carry a letter giving the total dose to which each lot
+      has been qualified. Under the US specification MIL-PRF-38535 the levels in krad(Si)
+      are M 3, D 10, P 30, L 50, R 100, F 300, G 500 and H 1000; ESCC uses a different
+      letter scheme, in which F denotes 50 krad(Si). A hardened processor such as the
+      RAD750 of <a href="m03-space-electronics-gap.html">M03</a> §7 reaches hundreds of
+      krad(Si) to about a megarad, depending on variant. A designation certifies a lot, a
+      bias and a test method, not a universal property, and it says nothing about
+      single-event effects.
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">What the test sequence encodes</p>
+      <p>
+        Each step of a total-dose test corresponds to a mechanism on this page. The source is
+        chosen so that rad(Si) and rad(SiO₂) coincide (§2). The bias is chosen to maximize
+        the field that sets both the fractional yield and the destination of the holes
+        (§3). The anneal steps exist because the two components of (14.8) evolve in opposite
+        directions after exposure (§6), and the low-rate test exists because bipolar oxides
+        do not follow the time-equivalence of MOS gate oxides. How a designer then makes a part pass —
+        through the process, the layout, the circuit, the system or the shield — is the
+        subject of <a href="index.html#roadmap">M16</a>, and the statistics of lot acceptance
+        are developed in
+        <a href="../../EEE5416_Radiation_Effects/site/m15-hardness-assurance.html">EEE 5416 M15</a>.
+      </p>
+    </div>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>
+          Radiation effects divide into long-term effects — total ionizing dose and
+          displacement damage, which grow with dose or fluence — and single-event effects,
+          caused by one particle. Prompt dose-rate effects, from weapon pulses of
+          10⁸–10¹² rad(Si)/s, lie in the overlap.
+        </li>
+        <li>
+          Dose always names a material. At cobalt-60 energies 1 rad(Si) = 1 rad(SiO₂) to
+          0.3 %; under 10 keV X-rays 1 rad(SiO₂) ≈ 1.8 rad(Si).
+        </li>
+        <li>
+          TID symptoms are threshold shifts, leakage, timing changes and functional failure.
+          A 128-Mb NAND flash failed to erase at 8 krad(Si), most likely because its internal
+          charge pump, built from p-channel stages, lost output as their thresholds shifted;
+          reading survived to higher doses than erasing and writing.
+        </li>
+        <li>
+          Mechanism: pairs form at 17 eV each (<em>g</em><sub>0</sub> = 8.1×10¹² cm⁻³
+          rad(SiO₂)⁻¹); a fraction <em>f</em><sub>y</sub> escapes initial recombination,
+          about 0.9 for cobalt-60 at 1 MV/cm and below 0.1 for alphas; electrons leave in
+          about a picosecond; holes hop to the silicon; a fraction is trapped at oxygen
+          vacancies within a few nm of the interface; released protons create interface
+          traps over thousands of seconds.
+        </li>
+        <li>
+          Δ<em>V</em><sub>th</sub> = Δ<em>V</em><sub>ot</sub> + Δ<em>V</em><sub>it</sub>.
+          Δ<em>V</em><sub>ot</sub> = −<em>q</em>Δ<em>N</em><sub>ot</sub>/<em>C</em><sub>ox</sub>
+          at the interface, negative for both types; Δ<em>V</em><sub>it</sub> is positive
+          for n-channel and negative for p-channel. The terms oppose in n-channel devices and
+          add in p-channel ones.
+        </li>
+        <li>
+          Interface traps also lower mobility and stretch the subthreshold swing; a threshold
+          shift Δ<em>V</em><sub>th</sub> multiplies the off-state current by
+          10<sup>−Δ<em>V</em><sub>th</sub>/<em>S</em></sup>.
+        </li>
+        <li>
+          Δ<em>V</em><sub>ot</sub> scales roughly as <em>t</em><sub>ox</sub>², with measured
+          exponents of 1.5 to 2: thick oxides are the sensitive ones. Below about 10 nm,
+          tunnelling removes trapped holes and a gate oxide is nearly immune.
+        </li>
+        <li>
+          Oxide-trapped charge anneals linearly in log <em>t</em> by tunnelling (a front
+          advancing 0.2–0.4 nm per decade) and thermal emission; interface traps do not
+          anneal at room temperature. MOS gate oxides normally show no true dose-rate effect —
+          none across eleven decades in the hardened oxide of Figure 9 — only a time
+          dependence, which produces rebound in n-channel devices. Bipolar linear parts show a
+          true one, ELDRS, and so can some thick isolation oxides.
+        </li>
+        <li>
+          Charge in isolation oxides 100–1000 nm thick inverts the p-type edges of n-channel
+          transistors and opens parasitic leakage paths; this is the dominant TID failure
+          of modern commercial parts.
+        </li>
+        <li>
+          Tests use cobalt-60 at 50–300 rad(Si)/s (TM 1019) with a 50 % overtest and a
+          168 h, 100 °C biased bake for MOS, and low-rate tests for bipolar linear parts.
+        </li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 8 p. 32; bullets after K. A. LaBel, "Radiation Effects on Electronics 101," NASA GSFC NEPP (2004); prompt dose-rate regime from Barnes &amp; Selva, JPL, "Radiation Effects in MMIC Devices," ch. 10; Oldham &amp; McLean, IEEE TNS 50, 483 (2003) §IV.B</td></tr>
+      <tr><td>§2</td><td>Deck 8 p. 33 and Lecture 8; D. N. Nguyen, S. M. Guertin, G. M. Swift, A. H. Johnston, "Radiation effects on advanced flash memories," IEEE TNS 46, 1744 (1999); mass energy-absorption coefficients from NIST Standard Reference Database 126 (Hubbell &amp; Seltzer); dose–depth behaviour after LaBel (2004)</td></tr>
+      <tr><td>§3</td><td>Deck 8 pp. 34–37; Oldham &amp; McLean (2003) §III; J. R. Schwank et al., "Radiation effects in MOS oxides," IEEE TNS 55, 1833 (2008), and its Sandia preprint SAND2007-3309C; pair energy after Benedetto &amp; Boesch, IEEE TNS 33, 1318 (1986); fractional yield after McLean &amp; Oldham, HDL-TR-2129 (1987); two-stage hydrogen model after McLean, IEEE TNS 27, 1651 (1980)</td></tr>
+      <tr><td>§4</td><td>Deck 8 pp. 37–38; Schwank et al. (2008) §II; H⁺ + Si–H reaction after Oldham &amp; McLean (2003) §III.E; centroid form after Taur &amp; Ning, <em>Fundamentals of Modern VLSI Devices</em>; mobility form after Sexton &amp; Schwank, IEEE TNS 32, 3975 (1985); subthreshold swing after Sze &amp; Ng, <em>Physics of Semiconductor Devices</em>, 3rd ed.</td></tr>
+      <tr><td>§5</td><td>Deck 8 p. 35; Oldham &amp; McLean (2003) §IV.F; Schwank et al. (2008) §III; N. S. Saks, M. G. Ancona, J. A. Modolo, IEEE TNS 31, 1249 (1984) and 33, 1185 (1986); table computed from (14.4) and (14.12)</td></tr>
+      <tr><td>§6</td><td>Deck 8 pp. 39–40; Figure 9 traced from p. 39, data of Fleetwood, Winokur &amp; Schwank, IEEE TNS 35, 1497 (1988); tunnelling front after McWhorter, Miller &amp; Miller, IEEE TNS 37, 1682 (1990) and Campbell &amp; Bogdan, SAND2008-5112; rebound after Oldham &amp; McLean (2003) §IV.A; apparent dose-rate effects after Oldham &amp; McLean (2003) §IV.B; low-dose-rate enhancement in isolation oxides after A. H. Johnston, R. T. Swimm, T. F. Miyahira, IEEE TNS 57, 3279 (2010) and I. S. Esqueda et al., IEEE TNS 58, 2945 (2011); ELDRS after Enlow et al., IEEE TNS 38, 1342 (1991), A. H. Johnston, G. M. Swift, B. G. Rax, IEEE TNS 41, 2427 (1994), and Barnes &amp; Selva, JPL, ch. 10</td></tr>
+      <tr><td>§7</td><td>Deck 8 p. 41 (source of the measured family not identified on the slide); Schwank et al. (2008) §V; Oldham &amp; McLean (2003) §V; M. R. Shaneyfelt et al., IEEE TNS 45, 2584 (1998)</td></tr>
+      <tr><td>§8</td><td>T. Turflinger, K. Kruckmeyer, N. van Vonno, "Test Method 1019 (Total Ionizing Dose)," NEPP Electronics Technology Workshop (2019); ESCC Basic Specification 22900, Issue 5 (2016); LaBel (2004) for mission requirements and design margin; RHA designators per MIL-PRF-38535, letter values as tabulated from revision J (2010) — the specification is at revision M (November 2022) — and checked against the ESCC 22900 Issue 5 §4.2 scheme</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m13-srim-trim.html"><span>Previous</span>M13 · SRIM and TRIM</a>
+      <a class="next" href="index.html"><span>Next</span>M15 · Single-Event Effects — awaiting the lecture</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

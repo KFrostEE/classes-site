@@ -1,0 +1,2074 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M01 · Semiconductors and Devices — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M01 · Semiconductors and Devices</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 01</p>
+    <h1>Semiconductors and Devices: the Working Background</h1>
+    <p class="lede">
+      The solid-state physics and device picture on which total ionizing dose and every
+      later radiation effect rest: energy bands, carriers and the Fermi level, doping and
+      its temperature limits, band bending under an applied voltage, the p–n junction, the
+      MOS capacitor, and the MOSFET as a barrier-controlled switch.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> none</span>
+      <span><b>Read time</b> ~75 min</span>
+      <span><b>Sources</b> Decks 2, 5, 8; Lecture 8; Sze &amp; Ng; Pierret; Hu</span>
+    </div>
+
+    <p>
+      Every effect this course studies is ultimately a change to one of a small number of
+      quantities inside a semiconductor device: how many mobile charges there are, where
+      they are, how fast they move, and how long they survive. Radiation creates charge
+      where there should be none and defects where the lattice should be perfect.
+      Temperature changes how many carriers exist and how easily they move. Packaging
+      changes the mechanical and thermal boundary conditions those devices sit inside.
+      None of that can be reasoned about without a working picture of the device itself.
+    </p>
+    <p>
+      This module supplies that picture. Lecture 8 taught it as the foundation for total
+      ionizing dose, in an order this page follows: the band gap as a consequence of
+      periodicity, dopants and the temperature range over which they control the carrier
+      population, the rule that converts a voltage into an electron energy, and then the
+      MOS structure read through its band diagram — first vertically through the gate,
+      where a positive gate voltage bends the bands and inverts the surface, and then along
+      the channel, where the transistor appears as an energy barrier that the gate and drain
+      voltages raise and lower. The junction, transport and speed material comes from
+      Lectures 2, 4 and 5, which used it before it was taught.
+    </p>
+    <p>
+      Three things here are load-bearing later and are treated in more detail than a first
+      course would: the <b>reverse-biased p–n junction</b>, which is the object that
+      collects radiation-generated charge in <a href="m08-ionization-excitation.html">M08</a>
+      and <a href="index.html#roadmap">M15</a>; the <b>MOS band diagram under positive gate
+      bias</b>, on which <a href="m14-total-ionizing-dose.html">M14</a> follows
+      radiation-generated charge through the oxide; and <b>off-state leakage</b>, which is
+      the quantity that both radiation and temperature attack.
+    </p>
+
+    <h2>1 · From atomic levels to energy bands</h2>
+    <p>
+      An isolated atom holds its electrons in discrete energy levels. An electron may
+      occupy one of those levels or another, and nothing between: absorbing exactly the
+      energy difference moves it up, and falling back emits a photon of exactly that
+      energy. This is why an isolated atom of hydrogen, helium or mercury emits a line
+      spectrum — a set of sharp wavelengths characteristic of that element rather than a
+      continuous band of colour.
+    </p>
+    <p>
+      Bringing two identical atoms close enough that their electron wavefunctions overlap
+      changes this. The Pauli exclusion principle forbids two electrons in the same
+      quantum state, so each shared level must split into two levels of slightly different
+      energy. Four atoms split it into four. A crystal of silicon holds about
+      5.0 × 10<sup>22</sup> atoms per cubic centimetre, so every atomic level splits into
+      of order 10<sup>23</sup> levels spaced so finely that they are indistinguishable from
+      a continuous range of allowed energies. That range is an <b>energy band</b>.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 570 230" role="img" aria-labelledby="m01f1-t">
+        <title id="m01f1-t">Discrete atomic levels splitting into bands as atoms are brought together</title>
+        <line x1="60" y1="200" x2="430" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="200" x2="60" y2="25" class="dg-rule" stroke-width="1.2"/>
+        <text x="245" y="222" class="dg-label" text-anchor="middle">decreasing interatomic spacing →</text>
+        <text x="22" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 22 112)">energy</text>
+
+        <!-- upper level splits into conduction band -->
+        <path d="M70,70 L180,70 C250,70 280,58 400,40" class="dg-line" stroke-width="1.6" fill="none"/>
+        <path d="M70,70 L180,70 C250,70 280,84 400,104" class="dg-line" stroke-width="1.6" fill="none"/>
+        <path d="M180,70 C250,70 280,70 400,72" class="dg-faint" stroke-width="1" fill="none"/>
+        <!-- lower level splits into valence band -->
+        <path d="M70,160 L180,160 C250,160 280,150 400,140" class="dg-line" stroke-width="1.6" fill="none"/>
+        <path d="M70,160 L180,160 C250,160 280,172 400,188" class="dg-line" stroke-width="1.6" fill="none"/>
+        <path d="M180,160 C250,160 280,160 400,164" class="dg-faint" stroke-width="1" fill="none"/>
+
+        <text x="76" y="63" class="dg-label-sm">one atom: sharp levels</text>
+        <text x="408" y="44" class="dg-label-sm">conduction band</text>
+        <text x="408" y="192" class="dg-label-sm">valence band</text>
+
+        <!-- the gap -->
+        <line x1="368" y1="104" x2="368" y2="140" class="dg-acc" stroke-width="1.8"
+              marker-start="url(#m01f1-a)" marker-end="url(#m01f1-a)"/>
+        <text x="360" y="128" class="dg-label" text-anchor="end">E<tspan dy="3" font-size="8">g</tspan></text>
+
+        <defs>
+          <marker id="m01f1-a" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Each atomic level splits once per added atom. At the equilibrium lattice spacing on
+        the right the split levels have merged into two continuous bands, separated by a
+        range of energies no electron in the crystal can hold.
+      </figcaption>
+    </figure>
+
+    <p>
+      Between the bands lies a range of energies with no allowed states, called the
+      <b>bandgap</b>, <em>E</em><sub>g</sub>. The gap is a consequence of the crystal's
+      periodicity. An electron in a periodic potential behaves as a wave, and a wave whose
+      wavelength is twice the lattice spacing, <em>λ</em> = 2<em>a</em>, meets the Bragg
+      condition and is reflected by every atomic plane at once. Incident and reflected waves
+      superpose into two standing waves of the same wavevector: one piles electron density
+      onto the ion cores, the other between them. Those two arrangements have different
+      potential energies, and that difference is the gap.
+    </p>
+    <p>
+      The gap follows from periodicity alone and appears for any wave in a periodic
+      medium. Lecture 8 demonstrated it with an elastic wave (Deck 8 p. 5). A finite-element
+      simulation drives a vibration along a beam perforated by a regular row of holes of
+      period <em>a</em>. At 17.8 MHz the wave travels the length of the beam. At 25.5 MHz
+      its amplitude decays along the beam and arrives at the fiftieth period about 70 dB
+      below its input. The dispersion relation of the
+      beam — the frequency of each mode it supports against that mode's wavevector — shows
+      why. The lower band rises until its wavevector reaches the Brillouin-zone boundary,
+      <em>k</em> = π/<em>a</em>, at 24 MHz, where the wavelength is 2<em>a</em> and each
+      period reflects the wave in phase with the reflections from every other period. The
+      next band begins at the same boundary at 27.5 MHz. Between the two no real wavevector
+      exists: a vibration at 25.5 MHz has a complex wavevector, so its amplitude decays
+      exponentially along the beam instead of propagating. At the zone boundary the two
+      standing waves distribute the vibration differently within each period, and their
+      frequency difference is the width of the forbidden range, which acoustics calls a
+      <b>stop band</b>.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 420 250" role="img" aria-labelledby="m01f9-t">
+          <title id="m01f9-t">Dispersion of a periodically perforated beam showing a stop band between 24 and 27.5 MHz at the zone boundary</title>
+          <rect x="60" y="86.75" width="240" height="33.25" class="dg-fill"/>
+          <line x1="60" y1="215" x2="300" y2="215" class="dg-rule" stroke-width="1.2"/>
+          <line x1="60" y1="215" x2="60" y2="25" class="dg-rule" stroke-width="1.2"/>
+          <line x1="300" y1="215" x2="300" y2="25" class="dg-guide" stroke-width="1" stroke-dasharray="4 4"/>
+          <path d="M132,215 L168,205.5 L192,196 L218.4,177 L244.8,158 L266.4,139 L283.2,126.65 L300,120" class="dg-line" stroke-width="2" fill="none"/>
+          <path d="M300,86.75 L283.2,77.25 L268.8,63 L244.8,39.25 L228,25" class="dg-line" stroke-width="2" fill="none"/>
+          <line x1="60" y1="178.9" x2="217" y2="178.9" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="217" cy="178.9" r="3.5" class="dg-ink"/>
+          <text x="66" y="172" class="dg-label-sm">17.8 MHz: travels</text>
+          <line x1="60" y1="105.75" x2="300" y2="105.75" class="dg-acc" stroke-width="1.8" stroke-dasharray="6 3"/>
+          <text x="180" y="100" class="dg-label" text-anchor="middle">stop band</text>
+          <text x="306" y="91" class="dg-label-sm">27.5 MHz</text>
+          <text x="306" y="109" class="dg-label-sm">25.5 MHz: decays</text>
+          <text x="306" y="127" class="dg-label-sm">24 MHz</text>
+          <g class="dg-label-sm" text-anchor="end">
+            <text x="54" y="219">14</text><text x="54" y="162">20</text>
+            <text x="54" y="105">26</text><text x="54" y="48">32</text>
+          </g>
+          <g class="dg-label-sm" text-anchor="middle">
+            <text x="60" y="230">0</text><text x="180" y="230">π/2a</text><text x="300" y="230">π/a</text>
+          </g>
+          <text x="180" y="246" class="dg-label" text-anchor="middle">wavevector k</text>
+          <text x="20" y="120" class="dg-label" text-anchor="middle" transform="rotate(-90 20 120)">frequency (MHz)</text>
+        </svg>
+        <figcaption>
+          The perforated beam of Deck 8 p. 5, redrawn with frequency on the vertical axis to
+          match a band diagram. The lower band ends at the zone boundary at 24 MHz and the next
+          begins there at 27.5 MHz. A drive at 25.5 MHz has no propagating mode and decays; one
+          at 17.8 MHz lies on the lower band and travels. Curves traced from the slide; only the
+          two bands that bound the gap are drawn.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 420 250" role="img" aria-labelledby="m01f10-t">
+          <title id="m01f10-t">Electron energy against wavevector in a periodic lattice, with the gap at the zone boundary and the two standing waves that bound it</title>
+          <line x1="40" y1="215" x2="225" y2="215" class="dg-rule" stroke-width="1.2"/>
+          <line x1="40" y1="215" x2="40" y2="30" class="dg-rule" stroke-width="1.2"/>
+          <line x1="180" y1="215" x2="180" y2="30" class="dg-guide" stroke-width="1" stroke-dasharray="4 4"/>
+          <path d="M40.0,215.0 L54.0,213.9 L68.0,210.6 L82.0,205.1 L96.0,197.4 L110.0,187.5 L124.0,175.4 L138.0,161.1 L152.0,144.6 L166.0,125.9 L180.0,105.0 L194.0,81.9 L208.0,56.6" class="dg-guide" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+          <path d="M40.0,215.2 L45.6,215.1 L51.2,214.5 L56.8,213.7 L62.4,212.4 L68.0,210.9 L73.6,209.0 L79.2,206.7 L84.8,204.1 L90.4,201.1 L96.0,197.8 L101.6,194.1 L107.2,190.1 L112.8,185.7 L118.4,181.0 L124.0,176.0 L129.6,170.6 L135.2,164.8 L140.8,158.8 L146.4,152.4 L152.0,145.7 L157.6,138.7 L163.2,131.6 L168.8,124.5 L174.4,118.1 L177.2,115.8 L180.0,114.9" class="dg-line" stroke-width="2" fill="none"/>
+          <path d="M180.0,95.1 L182.8,94.1 L185.6,91.6 L191.2,84.1 L196.8,75.2 L202.4,65.6 L208.0,55.5 L215.0,42.2" class="dg-line" stroke-width="2" fill="none"/>
+          <line x1="170" y1="113" x2="170" y2="97" class="dg-acc" stroke-width="1.8" marker-start="url(#m01f10-a)" marker-end="url(#m01f10-a)"/>
+          <text x="163" y="109" class="dg-label" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">g</tspan></text>
+          <text x="32" y="36" class="dg-label" text-anchor="end">E</text>
+          <text x="229" y="219" class="dg-label">k</text>
+          <g class="dg-label-sm" text-anchor="middle"><text x="40" y="230">0</text><text x="180" y="230">π/a</text></g>
+          <line x1="184" y1="95" x2="246" y2="80" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+          <line x1="184" y1="115" x2="246" y2="168" class="dg-guide" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="330" y="36" class="dg-label-sm" text-anchor="middle">upper band edge:</text>
+          <text x="330" y="49" class="dg-label-sm" text-anchor="middle">density between cores</text>
+          <path d="M250.0,185.0 L254.0,181.8 L258.0,173.3 L262.0,162.7 L266.0,154.2 L270.0,151.0 L274.0,154.2 L278.0,162.7 L282.0,173.3 L286.0,181.8 L290.0,185.0 L294.0,181.8 L298.0,173.3 L302.0,162.7 L306.0,154.2 L310.0,151.0 L314.0,154.2 L318.0,162.7 L322.0,173.3 L326.0,181.8 L330.0,185.0 L334.0,181.8 L338.0,173.3 L342.0,162.7 L346.0,154.2 L350.0,151.0 L354.0,154.2 L358.0,162.7 L362.0,173.3 L366.0,181.8 L370.0,185.0 L374.0,181.8 L378.0,173.3 L382.0,162.7 L386.0,154.2 L390.0,151.0 L394.0,154.2 L398.0,162.7 L402.0,173.3 L406.0,181.8 L410.0,185.0" transform="translate(0,-90)" class="dg-line" stroke-width="1.6" fill="none"/>
+          <g class="dg-ink"><circle cx="250" cy="99" r="3"/><circle cx="290" cy="99" r="3"/><circle cx="330" cy="99" r="3"/><circle cx="370" cy="99" r="3"/><circle cx="410" cy="99" r="3"/></g>
+          <text x="330" y="126" class="dg-label-sm" text-anchor="middle">lower band edge:</text>
+          <text x="330" y="139" class="dg-label-sm" text-anchor="middle">density on cores</text>
+          <path d="M250.0,61.0 L254.0,64.2 L258.0,72.7 L262.0,83.3 L266.0,91.8 L270.0,95.0 L274.0,91.8 L278.0,83.3 L282.0,72.7 L286.0,64.2 L290.0,61.0 L294.0,64.2 L298.0,72.7 L302.0,83.3 L306.0,91.8 L310.0,95.0 L314.0,91.8 L318.0,83.3 L322.0,72.7 L326.0,64.2 L330.0,61.0 L334.0,64.2 L338.0,72.7 L342.0,83.3 L346.0,91.8 L350.0,95.0 L354.0,91.8 L358.0,83.3 L362.0,72.7 L366.0,64.2 L370.0,61.0 L374.0,64.2 L378.0,72.7 L382.0,83.3 L386.0,91.8 L390.0,95.0 L394.0,91.8 L398.0,83.3 L402.0,72.7 L406.0,64.2 L410.0,61.0" transform="translate(0,90)" class="dg-line" stroke-width="1.6" fill="none"/>
+          <g class="dg-ink"><circle cx="250" cy="189" r="3"/><circle cx="290" cy="189" r="3"/><circle cx="330" cy="189" r="3"/><circle cx="370" cy="189" r="3"/><circle cx="410" cy="189" r="3"/></g>
+          <text x="330" y="208" class="dg-label-sm" text-anchor="middle">ion cores, spacing a</text>
+          <defs>
+            <marker id="m01f10-a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+            </marker>
+          </defs>
+        </svg>
+        <figcaption>
+          The same construction for an electron, in one dimension. The dashed parabola is a free
+          electron. The lattice splits it at <em>k</em> = π/<em>a</em> into two standing waves of
+          wavelength 2<em>a</em>: the one that piles density onto the positive ion cores lies
+          lower in energy, the one that piles it between them lies higher, and the difference is
+          <em>E</em><sub>g</sub>. Silicon's real bands are three-dimensional and its gap is
+          indirect, but the gap has this origin.
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      Two bands matter. The <b>valence band</b> is the highest band that is full of
+      electrons at absolute zero; its electrons are bound into chemical bonds and carry no
+      net current, because for every electron moving one way there is another moving the
+      opposite way. The <b>conduction band</b> is the lowest empty band; an electron placed
+      in it has empty states immediately above it in energy, so an applied electric field
+      can accelerate it and it carries current. The size of the gap between them separates
+      the three classes of solid.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 560 190" role="img" aria-labelledby="m01f2-t">
+        <title id="m01f2-t">Band structure of a metal, a semiconductor and an insulator compared</title>
+
+        <!-- metal -->
+        <rect x="40" y="40" width="110" height="50" class="dg-fill"/>
+        <rect x="40" y="90" width="110" height="55" class="dg-fill"/>
+        <text x="95" y="164" class="dg-label" text-anchor="middle">metal</text>
+        <text x="95" y="178" class="dg-label-sm" text-anchor="middle">bands overlap</text>
+
+        <!-- semiconductor -->
+        <rect x="225" y="32" width="110" height="42" class="dg-fill"/>
+        <rect x="225" y="104" width="110" height="42" class="dg-fill"/>
+        <line x1="280" y1="74" x2="280" y2="104" class="dg-acc" stroke-width="1.8"
+              marker-start="url(#m01f2-a)" marker-end="url(#m01f2-a)"/>
+        <text x="288" y="93" class="dg-label-sm">1.12 eV</text>
+        <text x="280" y="164" class="dg-label" text-anchor="middle">semiconductor</text>
+        <text x="280" y="178" class="dg-label-sm" text-anchor="middle">small gap, thermally crossable</text>
+
+        <!-- insulator -->
+        <rect x="410" y="20" width="110" height="30" class="dg-fill"/>
+        <rect x="410" y="118" width="110" height="28" class="dg-fill"/>
+        <line x1="465" y1="50" x2="465" y2="118" class="dg-line" stroke-width="1.4"
+              marker-start="url(#m01f2-b)" marker-end="url(#m01f2-b)"/>
+        <text x="473" y="88" class="dg-label-sm">8.9 eV</text>
+        <text x="465" y="164" class="dg-label" text-anchor="middle">insulator (SiO₂)</text>
+        <text x="465" y="178" class="dg-label-sm" text-anchor="middle">gap not crossable thermally</text>
+
+        <text x="36" y="36" class="dg-label-sm" text-anchor="end">E<tspan dy="3" font-size="8">c</tspan></text>
+        <text x="36" y="142" class="dg-label-sm" text-anchor="end">E<tspan dy="3" font-size="8">v</tspan></text>
+
+        <defs>
+          <marker id="m01f2-a" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="m01f2-b" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Shaded blocks are allowed bands. Silicon's 1.12 eV gap is small enough that thermal
+        energy promotes a measurable number of electrons across it at room temperature and
+        large enough that most stay put. Silicon dioxide's 8.9 eV gap makes it the gate
+        insulator; the same gap is what makes trapped charge in the oxide permanent, which
+        is the subject of <a href="m14-total-ionizing-dose.html">M14</a>.
+      </figcaption>
+    </figure>
+
+    <div class="box defn">
+      <span class="box-title">Silicon at 300 K</span>
+      <p>
+        Diamond cubic lattice, constant 5.431 Å, 5.0 × 10<sup>22</sup> atoms/cm³.
+        <em>E</em><sub>g</sub> = 1.12 eV at 300 K, rising to 1.17 eV at 0 K: the gap narrows
+        monotonically as temperature increases. Relative permittivity 11.7 — Sze &amp; Ng use
+        11.9 and Pierret 11.8, which moves every depletion width below by under 1 %. The
+        lectures round the gap to <b>1.1 eV</b> and that value is used in the course's
+        arithmetic.
+      </p>
+    </div>
+
+    <h2>2 · Electrons, holes, and the Fermi level</h2>
+    <p>
+      At any temperature above absolute zero, lattice vibrations supply energy in a
+      statistical spread, and a small fraction of valence electrons receive more than
+      <em>E</em><sub>g</sub> and are promoted into the conduction band. Each promotion
+      leaves an empty state in the valence band. Because the valence band is otherwise
+      full, a neighbouring electron can move into that empty state, leaving a new empty
+      state behind it. The vacancy propagates through the crystal and responds to an
+      electric field as though it were a particle of charge +<em>q</em>. That quasiparticle is
+      a <b>hole</b>. Within the semiclassical band model it carries exactly the net current and
+      crystal momentum of all the remaining valence electrons, which is what makes it useful;
+      it describes that collective motion rather than any real particle, and silicon in fact
+      has heavy-hole, light-hole and split-off bands whose differing effective masses the
+      single symbol averages over.
+    </p>
+    <p>
+      Promotion therefore always produces a pair, and this is the single most important
+      fact for everything that follows: <b>ionizing radiation deposits energy in a
+      semiconductor and the energy appears as electron–hole pairs.</b> The mechanism is
+      identical to thermal generation; only the energy source differs.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 180" role="img" aria-labelledby="m01f3-t">
+        <title id="m01f3-t">Generation of an electron-hole pair across the silicon bandgap</title>
+        <line x1="60" y1="45" x2="380" y2="45" class="dg-line" stroke-width="1.8"/>
+        <line x1="60" y1="135" x2="380" y2="135" class="dg-line" stroke-width="1.8"/>
+        <text x="390" y="49" class="dg-label-sm">E<tspan dy="3" font-size="8">c</tspan></text>
+        <text x="390" y="139" class="dg-label-sm">E<tspan dy="3" font-size="8">v</tspan></text>
+
+        <line x1="180" y1="133" x2="180" y2="49" class="dg-acc" stroke-width="1.8"
+              marker-end="url(#m01f3-a)"/>
+        <text x="190" y="95" class="dg-label-sm">energy ≥ E<tspan dy="3" font-size="8">g</tspan></text>
+        <text x="190" y="110" class="dg-label-sm">(thermal, photon, or particle)</text>
+
+        <circle cx="180" cy="38" r="5" class="dg-acc-f"/>
+        <text x="180" y="26" class="dg-label-sm" text-anchor="middle">electron, mobile in E<tspan dy="3" font-size="8">c</tspan></text>
+        <circle cx="180" cy="142" r="5" class="dg-ink" fill="none" stroke-width="1.6"/>
+        <text x="180" y="163" class="dg-label-sm" text-anchor="middle">hole, mobile in E<tspan dy="3" font-size="8">v</tspan></text>
+
+        <g class="dg-faint">
+          <circle cx="90" cy="142" r="4"/><circle cx="120" cy="142" r="4"/>
+          <circle cx="270" cy="142" r="4"/><circle cx="300" cy="142" r="4"/>
+          <circle cx="330" cy="142" r="4"/>
+        </g>
+
+        <defs>
+          <marker id="m01f3-a" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        One promotion creates two mobile carriers of opposite sign, which then move in
+        opposite directions under a field and so add rather than cancel. The energy that
+        drives it may be thermal, optical, or deposited by a passing charged particle.
+      </figcaption>
+    </figure>
+
+    <p>
+      How many electrons reach the conduction band depends on two things: how many allowed
+      states the band offers near its edge, and the probability that a state at a given
+      energy is occupied. Electrons obey the exclusion principle, so that probability is the
+      Fermi–Dirac function.
+    </p>
+
+    <div class="eq" id="m01-eq-fermi">
+      <div class="eq-body">
+        <div class="eq-math"><em>f</em>(<em>E</em>) = <span class="frac"><span class="num">1</span><span class="den">1 + exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>E</em> − <em>E</em><sub>F</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span></span></span></div>
+        <div class="eq-num">(1.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>f</em>(<em>E</em>) probability that an allowed state at energy <em>E</em> holds an
+        electron (dimensionless, 0 to 1); 1 − <em>f</em>(<em>E</em>) is the probability that
+        it is empty, which in the valence band means it holds a hole ·
+        <em>E</em> energy of the state (eV) · <em>E</em><sub>F</sub> Fermi level (eV) ·
+        <em>k</em> Boltzmann constant in the eV form, 8.617 × 10<sup>−5</sup> eV/K ·
+        <em>T</em> absolute temperature (K); <em>kT</em> = 0.02585 eV at 300 K. More than
+        3<em>kT</em> above <em>E</em><sub>F</sub> the function equals the Boltzmann tail
+        exp[−(<em>E</em> − <em>E</em><sub>F</sub>)/<em>kT</em>] to within 5 %, and more than
+        3<em>kT</em> below it equals 1 to the same accuracy. Thermal equilibrium only.
+        On the formula sheet as <a href="formula-sheet.html#eq-fermi">(1.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      The <b>Fermi level</b> <em>E</em><sub>F</sub> is the energy at which a state, were one
+      present, would be occupied with probability one half, at any temperature. In a
+      semiconductor it normally lies inside the gap, where no states exist, and serves as the
+      reference from which each band's population is read: the farther a band edge lies from
+      <em>E</em><sub>F</sub>, the emptier of electrons (conduction band) or of holes (valence
+      band) that band is. At absolute zero <em>f</em>(<em>E</em>) is a step. At 300 K the
+      step rounds off: occupancy falls from 95 % to 5 % across 6<em>kT</em>, about 0.15 eV,
+      which is small against the 1.12 eV gap. In pure silicon the conduction band edge sits 0.56 eV above
+      <em>E</em><sub>F</sub>, where <em>f</em> = 4 × 10<sup>−10</sup>, so only the
+      exponential tail of the distribution reaches the band. That tail is the reason carrier
+      populations depend exponentially on energy and on 1/<em>T</em> throughout this course.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m01f11-t">
+        <title id="m01f11-t">Fermi-Dirac occupation probability against energy relative to the Fermi level at 0 K and 300 K</title>
+        <line x1="60" y1="200" x2="380" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="200" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <line x1="178.6" y1="200" x2="178.6" y2="40" class="dg-guide" stroke-width="1" stroke-dasharray="2 3"/>
+        <line x1="261.4" y1="200" x2="261.4" y2="40" class="dg-guide" stroke-width="1" stroke-dasharray="2 3"/>
+        <text x="220" y="30" class="dg-label-sm" text-anchor="middle">±3kT = ±78 meV at 300 K</text>
+        <path d="M60,40 L220,40 L220,200 L380,200" class="dg-line" stroke-width="1.4" stroke-dasharray="6 4" fill="none"/>
+        <path d="M60.0,40.0 L113.3,40.1 L140.0,40.5 L156.0,41.5 L166.7,43.3 L177.3,46.9 L188.0,54.3 L193.3,60.2 L198.7,68.1 L204.0,78.2 L209.3,90.5 L214.7,104.7 L220.0,120.0 L225.3,135.3 L230.7,149.5 L236.0,161.8 L241.3,171.9 L246.7,179.8 L252.0,185.7 L262.7,193.1 L273.3,196.7 L284.0,198.5 L300.0,199.5 L326.7,199.9 L380.0,200.0" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <circle cx="220" cy="120" r="3.5" class="dg-ink"/>
+        <text x="228" y="116" class="dg-label-sm">f = ½ at E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="226" y="62" class="dg-label-sm">0 K</text>
+        <text x="268" y="150" class="dg-label-sm">300 K</text>
+        <text x="296" y="186" class="dg-label-sm">Boltzmann tail</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="216">−0.3</text><text x="113.3" y="216">−0.2</text><text x="166.7" y="216">−0.1</text>
+          <text x="220" y="216">0</text><text x="273.3" y="216">0.1</text><text x="326.7" y="216">0.2</text><text x="380" y="216">0.3</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="54" y="204">0</text><text x="54" y="124">0.5</text><text x="54" y="44">1</text>
+        </g>
+        <text x="220" y="238" class="dg-label" text-anchor="middle">E − E<tspan baseline-shift="sub" style="font-size:75%">F</tspan> (eV)</text>
+        <text x="22" y="120" class="dg-label" text-anchor="middle" transform="rotate(-90 22 120)">occupation f(E)</text>
+      </svg>
+      <figcaption>
+        Drawn to scale. The fall from 95 % to 5 % occupancy spans about 0.15 eV at room
+        temperature, a small fraction of silicon's gap. A band edge more
+        than 3<em>kT</em> from <em>E</em><sub>F</sub> sees only the exponential tail, and
+        every expression for <em>n</em> and <em>p</em> below is built from that tail.
+      </figcaption>
+    </figure>
+
+    <p>
+      In a pure crystal the two populations are equal, and their common value is the
+      <b>intrinsic carrier concentration</b>, <em>n</em><sub>i</sub>. Its magnitude follows
+      from the Boltzmann tail of equation (1.1) multiplied by the number of states near each
+      band edge. The Fermi level of the pure crystal is the <b>intrinsic level</b>,
+      <em>E</em><sub>i</sub>. It lies within about 1 meV of midgap in silicon at 300 K,
+      because the two bands offer nearly equal numbers of states near their edges, and
+      Deck 8 draws it as the dashed line through the centre of the gap.
+    </p>
+
+    <div class="eq" id="m01-eq-ni">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em><sub>i</sub> = <span class="sqrt"><span class="rad">√</span><span class="arg"><em>N</em><sub>c</sub><em>N</em><sub>v</sub></span></span> · exp&thinsp;<span class="dl">(</span>−<span class="frac"><span class="num"><em>E</em><sub>g</sub></span><span class="den">2<em>kT</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(1.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em><sub>i</sub> intrinsic carrier concentration (cm<sup>−3</sup>) ·
+        <em>N</em><sub>c</sub> effective density of states in the conduction band,
+        2.86 × 10<sup>19</sup> cm<sup>−3</sup> for silicon at 300 K ·
+        <em>N</em><sub>v</sub> the same for the valence band, 3.10 × 10<sup>19</sup> cm<sup>−3</sup> ·
+        <em>E</em><sub>g</sub> bandgap, 1.124 eV in the set these two belong to (eV) ·
+        <em>k</em> Boltzmann constant, <b>use the eV form,
+        8.617 × 10<sup>−5</sup> eV/K</b>, so that <em>kT</em> = 0.02585 eV at 300 K ·
+        <em>T</em> absolute temperature (K). <b>Take <em>N</em><sub>c</sub>,
+        <em>N</em><sub>v</sub> and <em>E</em><sub>g</sub> from one self-consistent set</b>:
+        mixing tabulations is the commonest way to get a wrong answer from this expression.
+        With the values above it returns 1.08 × 10<sup>10</sup> cm<sup>−3</sup>. The measured
+        value long quoted at 300 K is 1.00 × 10<sup>10</sup> cm<sup>−3</sup>; a 2003
+        reanalysis that accounts for band-gap narrowing gives 9.65 × 10<sup>9</sup>, the
+        value Sze &amp; Ng adopt; older textbooks carry 1.45 × 10<sup>10</sup>; and this course
+        uses 1.0 × 10<sup>10</sup> throughout, 8 % below what the formula returns with
+        this constant set.
+        On the formula sheet as <a href="formula-sheet.html#eq-ni">(1.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      Two features of equation (1.2) do most of the work in this course. First, the
+      prefactor is around 10<sup>19</sup> cm<sup>−3</sup> and the answer is
+      10<sup>10</sup> cm<sup>−3</sup>, so the exponential suppresses the carrier
+      population by nine orders of magnitude: only about one silicon atom in
+      5 × 10<sup>12</sup> contributes a conduction electron. Second, that exponential
+      contains <em>E</em><sub>g</sub>/<em>kT</em>, so <em>n</em><sub>i</sub> roughly doubles
+      for every 10 K rise near room temperature and climbs by orders of magnitude over the
+      temperature range a spacecraft sees. This single dependence is why silicon fails at
+      high temperature and why wide-bandgap materials replace it, which is the subject of
+      <a href="index.html#roadmap">M17</a>.
+    </p>
+
+    <h2>3 · Doping</h2>
+    <p>
+      An intrinsic crystal is a poor conductor and, worse, its conductivity is set entirely
+      by temperature. Devices need carrier populations that are fixed by design. That is
+      achieved by <b>doping</b> — substituting a small fraction of the silicon atoms with
+      atoms from a neighbouring column of the periodic table.
+    </p>
+    <p>
+      Silicon has four valence electrons and forms four covalent bonds. A phosphorus atom
+      has five. Substituted onto a lattice site it satisfies the four bonds and has one
+      electron left over, bound to the phosphorus ion so weakly that 45 meV releases it —
+      less than twice <em>kT</em> at room temperature, so essentially every such atom is
+      ionized at 300 K. In band terms, phosphorus introduces an allowed level 45 meV below
+      the conduction band edge, and its electron is promoted from there rather than from
+      across the full gap. Phosphorus, arsenic and antimony are <b>donors</b>, and the
+      result is <b>n-type</b> silicon.
+    </p>
+    <p>
+      Boron has three valence electrons. Substituted onto a lattice site it leaves one bond
+      unsatisfied, and an electron from a neighbouring bond fills it at a cost of 45 meV,
+      leaving a mobile hole behind. Boron introduces a level just above the valence band
+      edge and is an <b>acceptor</b>; the result is <b>p-type</b> silicon.
+    </p>
+    <p>
+      The level is shallow because the leftover electron is bound to the P⁺ ion by a Coulomb
+      attraction that the surrounding silicon weakens twice over: the lattice's relative
+      permittivity of 11.7 screens the charge, and the electron moves with the
+      conduction-band effective mass, about a quarter of the free-electron mass. Treating
+      the pair as a hydrogen atom with those two substitutions scales hydrogen's 13.6 eV
+      binding energy down to a few tens of meV and stretches the orbit to a radius of about
+      2 nm, several lattice constants. The state is therefore localized at the dopant in
+      space but lies only just below <em>E</em><sub>c</sub> in energy. The differences
+      between species — 33 meV for lithium, 54 meV for arsenic — come from the potential
+      close to the ion core, where the screened-Coulomb picture fails and each element's
+      own core structure sets the correction.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 500 175" role="img" aria-labelledby="m01f4-t">
+        <title id="m01f4-t">Donor and acceptor levels within the silicon bandgap</title>
+
+        <!-- n-type -->
+        <line x1="40" y1="40" x2="215" y2="40" class="dg-line" stroke-width="1.8"/>
+        <line x1="40" y1="130" x2="215" y2="130" class="dg-line" stroke-width="1.8"/>
+        <g class="dg-acc" stroke-width="1.6" stroke-dasharray="7 5">
+          <line x1="60" y1="53" x2="195" y2="53"/>
+        </g>
+        <text x="127" y="68" class="dg-label-sm" text-anchor="middle">E<tspan dy="3" font-size="8">d</tspan> — donors, 45 meV below E<tspan dy="3" font-size="8">c</tspan></text>
+        <text x="127" y="152" class="dg-label" text-anchor="middle">n-type (phosphorus)</text>
+        <text x="127" y="166" class="dg-label-sm" text-anchor="middle">electrons are the majority carrier</text>
+        <circle cx="90" cy="34" r="4" class="dg-acc-f"/>
+        <circle cx="127" cy="34" r="4" class="dg-acc-f"/>
+        <circle cx="164" cy="34" r="4" class="dg-acc-f"/>
+
+        <!-- p-type -->
+        <line x1="285" y1="40" x2="460" y2="40" class="dg-line" stroke-width="1.8"/>
+        <line x1="285" y1="130" x2="460" y2="130" class="dg-line" stroke-width="1.8"/>
+        <g class="dg-acc" stroke-width="1.6" stroke-dasharray="7 5">
+          <line x1="305" y1="117" x2="440" y2="117"/>
+        </g>
+        <text x="372" y="108" class="dg-label-sm" text-anchor="middle">E<tspan dy="3" font-size="8">a</tspan> — acceptors, 45 meV above E<tspan dy="3" font-size="8">v</tspan></text>
+        <text x="372" y="152" class="dg-label" text-anchor="middle">p-type (boron)</text>
+        <text x="372" y="166" class="dg-label-sm" text-anchor="middle">holes are the majority carrier</text>
+        <circle cx="335" cy="137" r="4" class="dg-ink" fill="none" stroke-width="1.5"/>
+        <circle cx="372" cy="137" r="4" class="dg-ink" fill="none" stroke-width="1.5"/>
+        <circle cx="409" cy="137" r="4" class="dg-ink" fill="none" stroke-width="1.5"/>
+
+        <text x="36" y="44" class="dg-label-sm" text-anchor="end">E<tspan dy="3" font-size="8">c</tspan></text>
+        <text x="36" y="134" class="dg-label-sm" text-anchor="end">E<tspan dy="3" font-size="8">v</tspan></text>
+      </svg>
+      <figcaption>
+        A dopant supplies a carrier for 45 meV instead of 1.12 eV, so doping controls the
+        carrier population at a cost thermal energy can meet. Radiation-induced defects
+        introduce levels in the same gap but at very different depths, which is why their
+        effects differ so completely — see <a href="m11-displacement-damage.html">M11</a>.
+      </figcaption>
+    </figure>
+
+    <p>
+      Typical doping densities run from 10<sup>15</sup> cm<sup>−3</sup> in a lightly doped
+      substrate to 10<sup>20</sup> cm<sup>−3</sup> in a contact region. Against silicon's
+      5.0 × 10<sup>22</sup> atoms/cm³, a doping of 10<sup>18</sup> cm<sup>−3</sup>
+      replaces one atom in 5 × 10<sup>4</sup>, and even 10<sup>20</sup> replaces only one in
+      five hundred. The host's bands, gap and bonding survive essentially unchanged; what
+      the dopant adds is a new localized level inside the gap, and it raises the electron
+      population ten orders of magnitude above intrinsic. Doping is a controlled
+      introduction of foreign atoms into an otherwise perfect lattice — the same class of
+      perturbation that displacement damage produces, differing in that the dopant sits
+      substitutionally on a lattice site and produces a shallow level, while a radiation
+      defect generally does neither.
+    </p>
+    <p>
+      A useful dopant has to pass three tests at once. Its level must be shallow enough for
+      thermal energy to ionize it fully at the operating temperature. It must dissolve
+      substitutionally in silicon to the concentration the device needs, up to about
+      10<sup>20</sup> cm<sup>−3</sup> in a contact region. And it must stay where it is put.
+      Deck 8 p. 9 reproduces the standard compilation of measured impurity levels in
+      silicon; several elements pass the first test, and only phosphorus, arsenic and boron
+      pass all three, which is why they are the dopants of silicon technology. Arsenic and
+      phosphorus dissolve to about 10<sup>21</sup> cm<sup>−3</sup>, boron to several times
+      10<sup>20</sup>.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m01f13-t">
+        <title id="m01f13-t">Measured ionization energies of shallow donors and acceptors and of gold in silicon, drawn to scale within the 1.12 eV gap</title>
+        <line x1="40" y1="40" x2="398" y2="40" class="dg-line" stroke-width="1.8"/>
+        <line x1="40" y1="210" x2="398" y2="210" class="dg-line" stroke-width="1.8"/>
+        <line x1="40" y1="125" x2="398" y2="125" class="dg-guide" stroke-width="1" stroke-dasharray="5 4"/>
+        <text x="402" y="44" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="402" y="214" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <text x="220" y="121" class="dg-label-sm" text-anchor="middle">midgap</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="62" y="32">Li</text><text x="94" y="32">Sb</text><text x="126" y="32">P</text>
+          <text x="158" y="32">As</text><text x="190" y="32">Bi</text><text x="380" y="32">Au</text>
+          <text x="236" y="226">B</text><text x="268" y="226">Al</text><text x="300" y="226">Ga</text><text x="332" y="226">In</text>
+        </g>
+        <g class="dg-line" stroke-width="3">
+          <line x1="51" y1="45.0" x2="73" y2="45.0"/><line x1="83" y1="45.9" x2="105" y2="45.9"/>
+          <line x1="179" y1="50.5" x2="201" y2="50.5"/>
+          <line x1="257" y1="199.8" x2="279" y2="199.8"/><line x1="289" y1="199.1" x2="311" y2="199.1"/>
+          <line x1="321" y1="185.7" x2="343" y2="185.7"/>
+          <line x1="369" y1="122" x2="391" y2="122"/><line x1="369" y1="166" x2="391" y2="166"/>
+        </g>
+        <g class="dg-acc" stroke-width="3">
+          <line x1="115" y1="46.8" x2="137" y2="46.8"/><line x1="147" y1="48.2" x2="169" y2="48.2"/>
+          <line x1="225" y1="203.2" x2="247" y2="203.2"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="62" y="64">.033</text><text x="94" y="64">.039</text><text x="126" y="64">.045</text>
+          <text x="158" y="64">.054</text><text x="190" y="64">.069</text>
+          <text x="236" y="192">.045</text><text x="268" y="192">.067</text><text x="300" y="192">.072</text>
+          <text x="332" y="178">.16</text>
+          <text x="380" y="114">.54</text><text x="380" y="160">.29</text>
+        </g>
+        <text x="126" y="84" class="dg-label-sm" text-anchor="middle">donors: depth below E<tspan baseline-shift="sub" style="font-size:75%">c</tspan> (eV)</text>
+        <text x="284" y="158" class="dg-label-sm" text-anchor="middle">acceptors: height above E<tspan baseline-shift="sub" style="font-size:75%">v</tspan> (eV)</text>
+        <text x="380" y="86" class="dg-label-sm" text-anchor="middle">deep</text>
+      </svg>
+      <figcaption>
+        Drawn to scale within silicon's gap, values from Deck 8 p. 9. The shallow donors hang
+        a few hundredths of an electronvolt below <em>E</em><sub>c</sub> and the shallow
+        acceptors sit as close above <em>E</em><sub>v</sub>; the three used in production —
+        phosphorus, arsenic and boron — are highlighted. Gold's two levels lie near midgap,
+        where thermal energy cannot ionize them. Infrared spectroscopy gives slightly
+        different shallow values, for antimony 43 meV rather than 39.
+      </figcaption>
+    </figure>
+
+    <p>
+      The other shallow elements each fail a different test. Antimony dissolves only to
+      10<sup>19</sup>–10<sup>20</sup> cm<sup>−3</sup> and diffuses slowly, which suits it to
+      buried layers rather than contacts. Aluminium, gallium, indium and bismuth dissolve at
+      most to a few times 10<sup>19</sup> cm<sup>−3</sup>, gallium to about
+      4 × 10<sup>19</sup> and indium and bismuth to about 10<sup>18</sup>. Aluminium is the
+      fastest-diffusing acceptor, and gallium diffuses rapidly through SiO₂, so an oxide
+      layer cannot mask it during processing. Indium's level lies 0.16 eV above
+      <em>E</em><sub>v</sub>, about 6<em>kT</em> at 300 K, so only part of it is ionized —
+      roughly 70 % at 10<sup>16</sup> cm<sup>−3</sup> and a third at
+      10<sup>17</sup> cm<sup>−3</sup> — and the ionized fraction changes with temperature,
+      so the hole density it supplies is not fixed by design. Lithium has the shallowest donor level on
+      the chart but sits between lattice sites rather than on them. As an interstitial it
+      diffuses orders of magnitude faster than any substitutional dopant, and the Li⁺ ion
+      drifts in an applied field at modestly raised temperature. Radiation-detector makers
+      exploit that drift to compensate thick silicon into lithium-drifted detectors; the same
+      property rules lithium out of any device whose doping profile must survive bias.
+    </p>
+    <p>
+      Elements whose levels lie near midgap, such as gold, are not ionized by thermal energy
+      and do not dope. They act instead as generation–recombination centres, capturing and
+      emitting carriers to and from both bands, which is the role the defects of
+      <a href="m11-displacement-damage.html">M11</a> play.
+    </p>
+    <p>
+      Doping does not rise without limit. Above about 2–3 × 10<sup>20</sup> cm<sup>−3</sup>,
+      arsenic atoms combine with vacancies into electrically inactive clusters, and boron
+      beyond its solubility forms clusters with silicon interstitials and precipitates, so
+      the chemical concentration keeps rising while the electrically active concentration
+      saturates. Dopant atoms themselves move only by thermal diffusion at processing
+      temperatures of several hundred to over a thousand degrees Celsius. At operating
+      temperature they are fixed; only the carriers they release move, and once released a
+      carrier's motion does not depend on where the individual dopant atoms sit.
+    </p>
+    <p>
+      At high concentration the dopants also stop behaving as isolated centres. When their
+      bound orbits, a few nanometres across, begin to overlap, the discrete donor levels
+      broaden into an impurity band that merges with the conduction band. In
+      phosphorus-doped silicon this insulator–metal transition occurs at
+      3.7 × 10<sup>18</sup> cm<sup>−3</sup>; above it the material conducts even at absolute
+      zero. Slightly below that, near 1.4 × 10<sup>18</sup> cm<sup>−3</sup> at 300 K,
+      <em>E</em><sub>F</sub> comes within 3<em>kT</em> of <em>E</em><sub>c</sub> and the
+      Boltzmann tail no longer describes the occupancy. Material beyond these limits is
+      <b>degenerate</b>. The source and drain of a MOSFET, at 10<sup>19</sup> to beyond
+      10<sup>20</sup> cm<sup>−3</sup>, are degenerate, with <em>E</em><sub>F</sub> at or
+      above <em>E</em><sub>c</sub>.
+    </p>
+    <p>
+      In doped material the two carrier populations are no longer equal, but their product
+      is fixed at a given temperature.
+    </p>
+
+    <div class="eq" id="m01-eq-massaction">
+      <div class="eq-body">
+        <div class="eq-math"><em>n p</em> = <em>n</em><sub>i</sub><sup>2</sup> &nbsp;&nbsp;&nbsp; <em>n</em> ≈ <em>N</em><sub>d</sub> &nbsp;(n-type) &nbsp;&nbsp; <em>p</em> ≈ <em>N</em><sub>a</sub> &nbsp;(p-type)</div>
+        <div class="eq-num">(1.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em>, <em>p</em> electron and hole concentrations (cm<sup>−3</sup>) ·
+        <em>N</em><sub>d</sub>, <em>N</em><sub>a</sub> donor and acceptor concentrations
+        (cm<sup>−3</sup>). Valid in thermal equilibrium only, with the dopants fully ionized
+        and <em>N</em><sub>d</sub> or <em>N</em><sub>a</sub> ≫ <em>n</em><sub>i</sub>.
+        <b>It does not hold under illumination, under bias, or while radiation-generated
+        carriers are present</b> — those are exactly the non-equilibrium conditions the rest
+        of the course studies. In n-type silicon doped 10<sup>16</sup> cm<sup>−3</sup>,
+        <em>p</em> = 10<sup>20</sup>/10<sup>16</sup> = 10<sup>4</sup> cm<sup>−3</sup>: the
+        minority population is twelve orders of magnitude below the majority, which is why
+        a small injected charge changes it completely.
+        On the formula sheet as <a href="formula-sheet.html#eq-massaction">(1.3)</a>.
+      </div>
+    </div>
+
+    <div class="box insight">
+      <span class="box-title">Minority carriers are the sensitive quantity</span>
+      <p>
+        A device is disturbed when a carrier population changes appreciably. Adding
+        10<sup>10</sup> electrons per cubic centimetre to a region holding
+        10<sup>16</sup> majority electrons changes nothing measurable. Adding the same
+        10<sup>10</sup> holes to a region holding 10<sup>4</sup> of them changes the hole
+        population by six orders of magnitude. Every radiation effect that appears as a
+        current — junction leakage, single-event transients, solar-cell degradation —
+        is a minority-carrier effect for this reason.
+      </p>
+    </div>
+
+    <p>
+      Doping moves the Fermi level. Donors add electrons to the crystal, so the energy at
+      which occupancy is one half rises toward <em>E</em><sub>c</sub>; acceptors remove
+      them and it falls toward <em>E</em><sub>v</sub>. Measured from the intrinsic level,
+      the displacement fixes both populations, and it defines the potential that §7 uses
+      to locate the onset of inversion.
+    </p>
+
+    <div class="eq" id="m01-eq-efermi">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em> = <em>n</em><sub>i</sub> exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>E</em><sub>F</sub> − <em>E</em><sub>i</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span> &nbsp;&nbsp; <em>p</em> = <em>n</em><sub>i</sub> exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>E</em><sub>i</sub> − <em>E</em><sub>F</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span> &nbsp;&nbsp; <em>φ</em><sub>F</sub> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> ln <span class="frac"><span class="num"><em>N</em><sub>a</sub></span><span class="den"><em>n</em><sub>i</sub></span></span></div>
+        <div class="eq-num">(1.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em>, <em>p</em> electron and hole concentrations (cm<sup>−3</sup>) ·
+        <em>E</em><sub>F</sub> Fermi level and <em>E</em><sub>i</sub> intrinsic level (eV) ·
+        <em>kT</em> in eV, 0.02585 eV at 300 K · <em>φ</em><sub>F</sub> <b>bulk Fermi
+        potential</b> of p-type material, (<em>E</em><sub>i</sub> −
+        <em>E</em><sub>F</sub>)/<em>q</em> in the neutral bulk (V) · <em>kT</em>/<em>q</em>
+        thermal voltage, 0.02585 V · <em>N</em><sub>a</sub> acceptor concentration
+        (cm<sup>−3</sup>). An energy difference in eV divided by <em>q</em> is the same
+        number in volts. For n-type material the magnitude is (<em>kT</em>/<em>q</em>)
+        ln(<em>N</em><sub>d</sub>/<em>n</em><sub>i</sub>) with <em>E</em><sub>F</sub> above
+        <em>E</em><sub>i</sub>. With <em>n</em><sub>i</sub> = 1.0 × 10<sup>10</sup>
+        cm<sup>−3</sup>, <em>φ</em><sub>F</sub> = 0.298, 0.357, 0.417 and 0.476 V for
+        <em>N</em><sub>a</sub> = 10<sup>15</sup>, 10<sup>16</sup>, 10<sup>17</sup> and
+        10<sup>18</sup> cm<sup>−3</sup>. Non-degenerate material only, with the dopants
+        fully ionized. The product of the first two expressions is equation (1.3).
+        On the formula sheet as <a href="formula-sheet.html#eq-efermi">(1.4)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 210" role="img" aria-labelledby="m01f12-t">
+        <title id="m01f12-t">Position of the Fermi level in intrinsic, n-type and p-type silicon doped to 10^16 per cubic centimetre</title>
+        <g class="dg-label" text-anchor="middle">
+          <text x="95" y="30">intrinsic</text><text x="210" y="30">n-type</text><text x="325" y="30">p-type</text>
+        </g>
+        <g class="dg-line" stroke-width="1.8">
+          <line x1="45" y1="50" x2="145" y2="50"/><line x1="45" y1="162" x2="145" y2="162"/>
+          <line x1="160" y1="50" x2="260" y2="50"/><line x1="160" y1="162" x2="260" y2="162"/>
+          <line x1="275" y1="50" x2="375" y2="50"/><line x1="275" y1="162" x2="375" y2="162"/>
+        </g>
+        <g class="dg-guide" stroke-width="1.2" stroke-dasharray="2 3">
+          <line x1="45" y1="106" x2="145" y2="106"/><line x1="160" y1="106" x2="260" y2="106"/><line x1="275" y1="106" x2="375" y2="106"/>
+        </g>
+        <g class="dg-acc" stroke-width="2" stroke-dasharray="8 4">
+          <line x1="45" y1="106" x2="145" y2="106"/><line x1="160" y1="70.3" x2="260" y2="70.3"/><line x1="275" y1="141.7" x2="375" y2="141.7"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="40" y="54">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+          <text x="40" y="110">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+          <text x="40" y="166">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        </g>
+        <text x="95" y="100" class="dg-label-sm" text-anchor="middle">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan> = E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+        <text x="256" y="65" class="dg-label-sm" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="371" y="155" class="dg-label-sm" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <line x1="190" y1="104" x2="190" y2="73" class="dg-rule" stroke-width="1" marker-start="url(#m01f12-a)" marker-end="url(#m01f12-a)"/>
+        <text x="196" y="93" class="dg-label-sm">0.36 eV</text>
+        <line x1="305" y1="108" x2="305" y2="139" class="dg-rule" stroke-width="1" marker-start="url(#m01f12-a)" marker-end="url(#m01f12-a)"/>
+        <text x="311" y="127" class="dg-label-sm">qφ<tspan baseline-shift="sub" style="font-size:75%">F</tspan> = 0.36 eV</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="95" y="182">n = p = n<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+          <text x="210" y="182">n = 10¹⁶, p = 10⁴</text>
+          <text x="325" y="182">p = 10¹⁶, n = 10⁴</text>
+        </g>
+        <defs>
+          <marker id="m01f12-a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Drawn to scale for 10<sup>16</sup> cm<sup>−3</sup> of phosphorus (centre) and of boron
+        (right), concentrations in cm<sup>−3</sup>. Each factor of ten in doping moves
+        <em>E</em><sub>F</sub> by <em>kT</em> ln 10 = 59.5 meV. The p-type panel is the body
+        of an n-channel MOSFET: its Fermi level sits <em>qφ</em><sub>F</sub> below
+        <em>E</em><sub>i</sub>, and making its surface as strongly n-type as the bulk is
+        p-type requires bending <em>E</em><sub>i</sub> the same distance below
+        <em>E</em><sub>F</sub> — the inversion condition of §7.
+      </figcaption>
+    </figure>
+
+    <h2>4 · Temperature: freeze-out, extrinsic and intrinsic</h2>
+    <p>
+      Doping fixes the carrier population only over a window of temperature. Below the
+      window the dopants keep their carriers bound; inside it the doping alone sets the
+      carrier density; above it thermal generation across the full gap overwhelms the
+      doping. Deck 8 p. 10 asks for the shape of this curve to be remembered, and every
+      temperature effect in <a href="index.html#roadmap">M17</a> is a departure from its
+      flat middle.
+    </p>
+    <p>
+      At absolute zero every donor electron is bound and <em>n</em> = 0: the crystal is an
+      insulator. As temperature rises, the Boltzmann tail of equation (1.1) reaches the
+      donor level first, because that level lies only 45 meV below <em>E</em><sub>c</sub>,
+      while the valence band lies 1.12 eV below it. The cartoon of Deck 8 p. 7 draws the donors ionized
+      by about 50 K. Ionization is under way there but not complete: for
+      10<sup>15</sup> cm<sup>−3</sup> of phosphorus the ionized fraction is about 15 % at
+      50 K, one half at 65 K and 90 % at 92 K. This low-temperature range, in which
+      <em>n</em> &lt; <em>N</em><sub>d</sub>, is <b>freeze-out</b>.
+    </p>
+    <p>
+      From roughly 150 K to 450 K essentially every donor is ionized while
+      <em>n</em><sub>i</sub> remains far below <em>N</em><sub>d</sub>, so
+      <em>n</em> = <em>N</em><sub>d</sub>: the doping alone sets the population. This
+      <b>extrinsic</b> plateau is the working range of a silicon device. Its carrier density,
+      and with it resistance, junction behaviour and threshold voltage, stays fixed by design
+      across a range of 300 K.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m01f14-t">
+        <title id="m01f14-t">Electron density relative to donor density against temperature for silicon doped with 10^15 phosphorus atoms per cubic centimetre, showing freeze-out, extrinsic and intrinsic regimes</title>
+        <line x1="55" y1="205" x2="395" y2="205" class="dg-rule" stroke-width="1.2"/>
+        <line x1="55" y1="205" x2="55" y2="35" class="dg-rule" stroke-width="1.2"/>
+        <line x1="55" y1="120" x2="395" y2="120" class="dg-guide" stroke-width="0.8" stroke-dasharray="2 3"/>
+        <line x1="107.1" y1="205" x2="107.1" y2="40" class="dg-guide" stroke-width="1" stroke-dasharray="4 4"/>
+        <line x1="341.8" y1="205" x2="341.8" y2="40" class="dg-guide" stroke-width="1" stroke-dasharray="4 4"/>
+        <path d="M270.3,204.8 L276.0,204.7 L281.7,204.5 L287.3,204.2 L293.0,203.8 L298.7,203.2 L304.3,202.2 L310.0,200.9 L315.7,199.1 L321.3,196.5 L327.0,193.0 L332.7,188.2 L338.3,181.9 L344.0,173.5 L349.7,162.5 L355.3,148.4 L361.0,130.2 L366.7,107.2 L372.3,78.2 L378.0,41.9" class="dg-line" stroke-width="1.6" stroke-dasharray="5 4" fill="none"/>
+        <path d="M63.5,205.0 L69.2,205.0 L72.0,204.7 L74.8,203.8 L77.7,201.8 L80.5,197.9 L83.3,191.8 L86.2,183.6 L89.0,173.8 L91.8,163.4 L94.7,153.6 L97.5,145.0 L100.3,138.2 L103.2,133.1 L106.0,129.5 L108.8,126.9 L111.7,125.1 L125.8,121.4 L140.0,120.5 L154.2,120.3 L168.3,120.1 L196.7,120.1 L225.0,120.0 L267.5,120.0 L295.8,120.0 L310.0,119.8 L315.7,119.6 L321.3,119.2 L327.0,118.3 L332.7,116.8 L338.3,114.1 L344.0,109.6 L349.7,102.4 L355.3,91.7 L361.0,76.5 L366.7,55.9 L369.5,43.2" class="dg-acc" stroke-width="2.4" fill="none"/>
+        <circle cx="107.1" cy="128.5" r="3.5" class="dg-ink"/>
+        <text x="114" y="146" class="dg-label-sm">90 % ionized at 92 K</text>
+        <circle cx="363.8" cy="120" r="3.5" class="dg-ink"/>
+        <line x1="338" y1="95" x2="360" y2="116" class="dg-rule" stroke-width="0.8"/>
+        <text x="335" y="92" class="dg-label-sm" text-anchor="end">n<tspan baseline-shift="sub" style="font-size:75%">i</tspan> = N<tspan baseline-shift="sub" style="font-size:75%">d</tspan> at 545 K</text>
+        <text x="190" y="112" class="dg-label-sm" text-anchor="middle">extrinsic: n = N<tspan baseline-shift="sub" style="font-size:75%">d</tspan></text>
+        <text x="80" y="58" class="dg-label-sm" text-anchor="middle">freeze-</text>
+        <text x="80" y="70" class="dg-label-sm" text-anchor="middle">out</text>
+        <text x="364" y="152" class="dg-label-sm">intrinsic</text>
+        <text x="322" y="176" class="dg-label-sm" text-anchor="end">n<tspan baseline-shift="sub" style="font-size:75%">i</tspan> / N<tspan baseline-shift="sub" style="font-size:75%">d</tspan></text>
+        <text x="225" y="28" class="dg-label-sm" text-anchor="middle">Si, N<tspan baseline-shift="sub" style="font-size:75%">d</tspan> = 10¹⁵ cm⁻³</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="55" y="221">0</text><text x="111.7" y="221">100</text><text x="168.3" y="221">200</text>
+          <text x="225" y="221">300</text><text x="281.7" y="221">400</text><text x="338.3" y="221">500</text><text x="395" y="221">600</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="49" y="209">0</text><text x="49" y="166">0.5</text><text x="49" y="124">1</text>
+          <text x="49" y="81">1.5</text><text x="49" y="39">2</text>
+        </g>
+        <text x="225" y="240" class="dg-label" text-anchor="middle">temperature (K)</text>
+        <text x="20" y="120" class="dg-label" text-anchor="middle" transform="rotate(-90 20 120)">n / N<tspan baseline-shift="sub" style="font-size:75%">d</tspan></text>
+      </svg>
+      <figcaption>
+        Computed for the case of Deck 8 pp. 10–11 (after Pierret): phosphorus at
+        45 meV, <em>N</em><sub>c</sub> and <em>N</em><sub>v</sub> scaled as
+        <em>T</em><sup>3/2</sup>, and a temperature-dependent gap. The guides mark 90 %
+        ionization at 92 K and <em>n</em> = 1.1 <em>N</em><sub>d</sub> at 506 K. The flat
+        middle is the only range in which the doping, not the temperature, sets the carrier
+        density.
+      </figcaption>
+    </figure>
+
+    <p>
+      Above the plateau <em>n</em><sub>i</sub> climbs exponentially, as equation (1.2)
+      requires, and eventually overtakes the doping. Charge neutrality — electrons balance
+      holes plus ionized donors — then fixes the electron density.
+    </p>
+
+    <div class="eq" id="m01-eq-neutral">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em> = <span class="frac"><span class="num"><em>N</em><sub>d</sub></span><span class="den">2</span></span> + <span class="sqrt"><span class="rad">√</span><span class="arg"><span class="dl">(</span><span class="frac"><span class="num"><em>N</em><sub>d</sub></span><span class="den">2</span></span><span class="dl">)</span><sup>2</sup> + <em>n</em><sub>i</sub><sup>2</sup></span></span> &nbsp;&nbsp;&nbsp; <em>p</em> = <span class="frac"><span class="num"><em>n</em><sub>i</sub><sup>2</sup></span><span class="den"><em>n</em></span></span></div>
+        <div class="eq-num">(1.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em>, <em>p</em> electron and hole concentrations (cm<sup>−3</sup>) ·
+        <em>N</em><sub>d</sub> donor concentration (cm<sup>−3</sup>), all ionized ·
+        <em>n</em><sub>i</sub> intrinsic concentration at the temperature in question, from
+        equation (1.2) (cm<sup>−3</sup>). Follows from <em>n</em> = <em>p</em> +
+        <em>N</em><sub>d</sub> with <em>np</em> = <em>n</em><sub>i</sub><sup>2</sup>. It
+        reduces to <em>n</em> = <em>N</em><sub>d</sub> when <em>n</em><sub>i</sub> ≪
+        <em>N</em><sub>d</sub> and to <em>n</em> = <em>n</em><sub>i</sub> when
+        <em>n</em><sub>i</sub> ≫ <em>N</em><sub>d</sub>; at <em>n</em><sub>i</sub> =
+        <em>N</em><sub>d</sub> it gives <em>n</em> = 1.62 <em>N</em><sub>d</sub>. Covers the
+        extrinsic-to-intrinsic transition only; freeze-out needs the incomplete ionization of
+        the donors as well. For p-type material exchange <em>n</em> and <em>p</em> and use
+        <em>N</em><sub>a</sub>.
+        On the formula sheet as <a href="formula-sheet.html#eq-neutral">(1.5)</a>.
+      </div>
+    </div>
+
+    <p>
+      For 10<sup>15</sup> cm<sup>−3</sup>, <em>n</em><sub>i</sub> reaches
+      <em>N</em><sub>d</sub> near 545 K. Beyond that point the material is <b>intrinsic</b>:
+      the electron density follows <em>n</em><sub>i</sub>, the hole density rises to meet
+      it, and n-type and p-type regions converge toward the same composition. A junction
+      then stops rectifying and a MOSFET can no longer be turned off. The conductivity keeps
+      rising with temperature, as a semiconductor's does; what the device loses is control
+      of the carrier density by doping. A more heavily doped region stays extrinsic to higher
+      temperature, because <em>n</em><sub>i</sub> must climb further to overtake it.
+    </p>
+    <p>
+      A narrower gap moves the whole curve down in temperature. Germanium's gap is 0.66 eV
+      and its <em>n</em><sub>i</sub> at 300 K is about 2 × 10<sup>13</sup> cm<sup>−3</sup>,
+      three orders of magnitude above silicon's; at the same 10<sup>15</sup> cm<sup>−3</sup> its
+      <em>n</em><sub>i</sub> reaches <em>N</em><sub>d</sub> near 390 K rather than 545 K.
+      Deck 8 p. 12 plots germanium at several compensating acceptor densities; that example,
+      with the rest of the temperature dependence of devices, belongs to
+      <a href="index.html#roadmap">M17</a>.
+    </p>
+
+    <h2>5 · How carriers move</h2>
+    <p>
+      A carrier in a crystal does not accelerate freely. It is scattered by lattice
+      vibrations and by ionized dopant atoms, so under a steady electric field it reaches
+      an average <b>drift velocity</b> proportional to the field. The constant of
+      proportionality is the <b>mobility</b>, <em>µ</em>.
+    </p>
+
+    <div class="eq" id="m01-eq-drift">
+      <div class="eq-body">
+        <div class="eq-math"><em>v</em><sub>d</sub> = <em>µ</em>ℰ &nbsp;&nbsp;&nbsp;&nbsp; <em>J</em> = <em>q</em><span class="dl">(</span><em>nµ</em><sub>n</sub> + <em>pµ</em><sub>p</sub><span class="dl">)</span>ℰ</div>
+        <div class="eq-num">(1.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>v</em><sub>d</sub> drift velocity (cm/s) · <em>µ</em> mobility
+        (<b>cm²/V·s</b>) · ℰ electric field (<b>V/cm</b>, not V/m — this course and
+        the semiconductor literature work in centimetres throughout) ·
+        <em>J</em> current density (A/cm²) · <em>q</em> = 1.602 × 10<sup>−19</sup> C.
+        In lightly doped silicon at 300 K, <em>µ</em><sub>n</sub> ≈ 1,450 cm²/V·s and
+        <em>µ</em><sub>p</sub> ≈ 505 cm²/V·s (Sze &amp; Ng). Tabulations differ by up to
+        10 % — 1,350 to 1,500 and 450 to 505 — so name the source whenever a numerical
+        answer turns on it. Both fall as doping rises, because ionized dopants scatter
+        carriers, and both fall as temperature rises across the range this course uses,
+        because lattice vibrations scatter them harder. In doped material the trend reverses
+        below roughly 100 K, where ionized-impurity scattering takes over and mobility rises
+        with temperature instead. Equation (1.6) fails at high field, where velocity
+        saturates near 10<sup>7</sup> cm/s in silicon.
+        On the formula sheet as <a href="formula-sheet.html#eq-drift">(1.6)</a>.
+      </div>
+    </div>
+
+    <p>
+      Carriers also move down a concentration gradient by random thermal motion, which is
+      <b>diffusion</b>. Both mechanisms operate at once, and both matter here: when a
+      particle strike deposits a dense column of charge, the carriers within the junction's
+      electric field are swept out by drift within picoseconds, while those outside it
+      arrive later by diffusion. That two-stage response is visible in the current
+      transient of <a href="index.html#roadmap">M15</a> and was shown in
+      Lecture 4 as a fast spike followed by a slow tail.
+    </p>
+    <p>
+      The electron mobility being nearly three times the hole mobility is why n-channel devices
+      are faster than p-channel ones at the same size, and why silicon strained by
+      embedded silicon–germanium is used in production: the strain distorts the band
+      structure and raises the mobility, which Lecture 2 identified as one of the steps
+      that kept scaling going.
+    </p>
+    <p>
+      A band diagram plots electron energy against position, and an electric field appears
+      in it as a slope. Deck 8 p. 13 reduces the relation to a rule of thumb: the field
+      points from high potential to low, and electron energy is low where the potential is
+      high. Every band diagram in the rest of this module, and the whole MOS analysis of
+      <a href="m14-total-ionizing-dose.html">M14</a>, is read with that rule.
+    </p>
+    <p>
+      The rule follows from the sign of the electron's charge. An electron at a point where
+      the electrostatic potential is <em>V</em> has potential energy −<em>qV</em>, so raising
+      the potential of a region lowers every electron energy in it by the same amount:
+      <em>E</em><sub>c</sub>, <em>E</em><sub>i</sub> and <em>E</em><sub>v</sub> move down
+      together and the gap between them is unchanged. A uniform field, which is a potential
+      falling linearly with distance, therefore tilts the whole diagram upward in the
+      direction the field points. A conduction electron moves down the slope of
+      <em>E</em><sub>c</sub>, toward high potential and against the field. A hole moves up
+      the slope of <em>E</em><sub>v</sub>, because hole energy increases downward on an
+      electron-energy diagram, and so travels with the field.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 260" role="img" aria-labelledby="m01f15-t">
+        <title id="m01f15-t">Band diagram of a semiconductor in a uniform electric field, with the potential above it, showing electrons moving toward high potential and holes toward low potential</title>
+        <line x1="70" y1="40" x2="360" y2="80" class="dg-line" stroke-width="1.8"/>
+        <text x="70" y="32" class="dg-label-sm">high V</text>
+        <text x="360" y="96" class="dg-label-sm" text-anchor="end">low V</text>
+        <text x="34" y="62" class="dg-label" text-anchor="middle" transform="rotate(-90 34 62)">potential</text>
+        <line x1="150" y1="112" x2="280" y2="112" class="dg-line" stroke-width="1.6" marker-end="url(#m01f15-b)"/>
+        <text x="215" y="106" class="dg-label" text-anchor="middle">ℰ</text>
+        <line x1="70" y1="165" x2="360" y2="130" class="dg-line" stroke-width="1.8"/>
+        <line x1="70" y1="195" x2="360" y2="160" class="dg-guide" stroke-width="1.2" stroke-dasharray="6 4"/>
+        <line x1="70" y1="225" x2="360" y2="190" class="dg-line" stroke-width="1.8"/>
+        <g class="dg-label-sm">
+          <text x="366" y="134">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+          <text x="366" y="164">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+          <text x="366" y="194">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        </g>
+        <text x="34" y="190" class="dg-label" text-anchor="middle" transform="rotate(-90 34 190)">electron energy</text>
+        <circle cx="252" cy="137" r="4.5" class="dg-acc-f"/>
+        <line x1="244" y1="140" x2="186" y2="147" class="dg-acc" stroke-width="1.8" marker-end="url(#m01f15-a)"/>
+        <text x="140" y="132" class="dg-label-sm" text-anchor="middle">electron: down the E<tspan baseline-shift="sub" style="font-size:75%">c</tspan> slope</text>
+        <circle cx="150" cy="221" r="4.5" class="dg-ink" fill="none" stroke-width="1.6"/>
+        <line x1="158" y1="219" x2="216" y2="212" class="dg-acc" stroke-width="1.8" marker-end="url(#m01f15-a)"/>
+        <text x="250" y="240" class="dg-label-sm" text-anchor="middle">hole: up the E<tspan baseline-shift="sub" style="font-size:75%">v</tspan> slope</text>
+        <defs>
+          <marker id="m01f15-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="m01f15-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        After Streetman &amp; Banerjee Fig. 4.15 (Deck 8 p. 13). The potential falls to the
+        right, so the field points right and every band edge rises to the right by the same
+        amount. Electrons roll toward high potential; holes, whose energy increases downward,
+        rise toward low potential. Both motions are the drift of equation (1.6).
+      </figcaption>
+    </figure>
+
+    <div class="eq" id="m01-eq-bandtilt">
+      <div class="eq-body">
+        <div class="eq-math">ℰ = −<span class="frac"><span class="num">d<em>V</em></span><span class="den">d<em>x</em></span></span> = <span class="frac"><span class="num">1</span><span class="den"><em>q</em></span></span> <span class="frac"><span class="num">d<em>E</em><sub>i</sub></span><span class="den">d<em>x</em></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>E</em> = −<em>qV</em></div>
+        <div class="eq-num">(1.7)</div>
+      </div>
+      <div class="eq-says">
+        ℰ electric field (V/cm) · <em>V</em> electrostatic potential (V) · <em>x</em> position
+        (cm) · <em>E</em><sub>i</sub> intrinsic level, or equally <em>E</em><sub>c</sub> or
+        <em>E</em><sub>v</sub>, which move in parallel (J, or eV) · <em>q</em> elementary
+        charge, 1.602 × 10<sup>−19</sup> C · <em>E</em> potential energy of an electron at
+        potential <em>V</em> (J, or eV). With energies in eV, (1/<em>q</em>)
+        d<em>E</em><sub>i</sub>/d<em>x</em> is simply the slope in eV/cm read as V/cm: bands
+        that rise 1 eV across 1 µm hold a field of 10<sup>4</sup> V/cm. The field points up the
+        slope of the bands. Applies wherever the electrostatic potential varies — across a
+        depletion region, through a gate oxide, along a channel.
+        On the formula sheet as <a href="formula-sheet.html#eq-bandtilt">(1.7)</a>.
+      </div>
+    </div>
+
+    <div class="box insight">
+      <span class="box-title">Reading any band diagram</span>
+      <p>
+        A positive voltage applied to a region brings its bands down by <em>q</em> times
+        that voltage; a negative voltage raises them. The field points from high voltage to
+        low, which is up the slope of the bands. Electrons roll down the slope of
+        <em>E</em><sub>c</sub>; holes rise along <em>E</em><sub>v</sub>. The MOS capacitor
+        of §7, the barrier picture of the MOSFET in §8 and the transport of
+        radiation-generated charge through the gate oxide in
+        <a href="m14-total-ionizing-dose.html">M14</a> all follow from these three
+        statements.
+      </p>
+    </div>
+
+    <h2>6 · The p–n junction</h2>
+    <p>
+      Joining p-type and n-type silicon within a single crystal produces the structure on
+      which almost every device is built, and the one that concerns this course most
+      directly. Electrons diffuse from the n-side into the p-side and holes the other way.
+      Each departure leaves behind an ionized dopant atom that cannot move — negative
+      acceptors on the p-side, positive donors on the n-side. Those fixed charges build an
+      electric field that opposes further diffusion, and the system settles where drift and
+      diffusion cancel exactly.
+    </p>
+    <p>
+      The region stripped of mobile carriers is the <b>depletion region</b>, and the
+      potential step across it is the <b>built-in potential</b>.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 660 250" role="img" aria-labelledby="m01f5-t">
+        <title id="m01f5-t">p-n junction under reverse bias showing the depletion region and its internal field</title>
+
+        <rect x="60" y="40" width="210" height="90" class="dg-fill"/>
+        <rect x="270" y="40" width="120" height="90" class="dg-fill"/>
+        <rect x="390" y="40" width="210" height="90" class="dg-fill"/>
+
+        <text x="165" y="90" class="dg-label" text-anchor="middle">p-type</text>
+        <text x="165" y="106" class="dg-label-sm" text-anchor="middle">holes mobile</text>
+        <text x="495" y="90" class="dg-label" text-anchor="middle">n-type</text>
+        <text x="495" y="106" class="dg-label-sm" text-anchor="middle">electrons mobile</text>
+        <text x="330" y="30" class="dg-label" text-anchor="middle">depletion region</text>
+        <text x="330" y="148" class="dg-label-sm" text-anchor="middle">no mobile carriers · fixed ionized dopants only</text>
+
+        <!-- fixed charges -->
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="288" y="62">−</text><text x="308" y="62">−</text><text x="288" y="112">−</text><text x="308" y="112">−</text>
+          <text x="352" y="62">+</text><text x="372" y="62">+</text><text x="352" y="112">+</text><text x="372" y="112">+</text>
+        </g>
+
+        <!-- internal field -->
+        <line x1="372" y1="87" x2="288" y2="87" class="dg-acc" stroke-width="2" marker-end="url(#m01f5-a)"/>
+        <text x="330" y="79" class="dg-label-sm" text-anchor="middle">ℰ</text>
+
+        <!-- carrier sweep -->
+        <circle cx="330" cy="180" r="5" class="dg-acc-f"/>
+        <circle cx="330" cy="205" r="5" class="dg-ink" fill="none" stroke-width="1.6"/>
+        <line x1="340" y1="180" x2="400" y2="180" class="dg-acc" stroke-width="1.6" marker-end="url(#m01f5-a)"/>
+        <line x1="320" y1="205" x2="260" y2="205" class="dg-acc" stroke-width="1.6" marker-end="url(#m01f5-a)"/>
+        <text x="410" y="184" class="dg-label-sm">electrons swept to n-side</text>
+        <text x="250" y="209" class="dg-label-sm" text-anchor="end">holes swept to p-side</text>
+        <text x="330" y="236" class="dg-label-sm" text-anchor="middle">any pair created inside the region is separated and collected as current</text>
+
+        <defs>
+          <marker id="m01f5-a" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The depletion region holds a strong field and almost no mobile charge. That
+        combination makes it the collecting element of every photodiode and solar cell, and
+        the vulnerable element of every digital circuit: an electron–hole pair created
+        anywhere inside it is separated and delivered to the terminals before it can
+        recombine.
+      </figcaption>
+    </figure>
+
+    <div class="eq" id="m01-eq-vbi">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>bi</sub> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> ln <span class="frac"><span class="num"><em>N</em><sub>a</sub><em>N</em><sub>d</sub></span><span class="den"><em>n</em><sub>i</sub><sup>2</sup></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>W</em> = <span class="sqrt"><span class="rad">√</span><span class="arg"><span class="frac"><span class="num">2<em>ε</em><sub>s</sub>(<em>V</em><sub>bi</sub> + <em>V</em><sub>R</sub>)</span><span class="den"><em>q</em></span></span> <span class="dl">(</span><span class="frac"><span class="num">1</span><span class="den"><em>N</em><sub>a</sub></span></span> + <span class="frac"><span class="num">1</span><span class="den"><em>N</em><sub>d</sub></span></span><span class="dl">)</span></span></span></div>
+        <div class="eq-num">(1.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>bi</sub> built-in potential (V) · <em>kT</em>/<em>q</em> thermal
+        voltage, <b>0.02585 V at 300 K</b> · <em>W</em> depletion width (cm) ·
+        <em>V</em><sub>R</sub> applied reverse bias (V), taken positive ·
+        <em>ε</em><sub>s</sub> permittivity of silicon = 11.7 × 8.854 × 10<sup>−14</sup>
+        = 1.036 × 10<sup>−12</sup> <b>F/cm</b> · <em>N</em><sub>a</sub>,
+        <em>N</em><sub>d</sub> in cm<sup>−3</sup>. For
+        <em>N</em><sub>a</sub> = <em>N</em><sub>d</sub> = 10<sup>16</sup> cm<sup>−3</sup>,
+        <em>V</em><sub>bi</sub> = 0.71 V and <em>W</em> = 0.43 µm unbiased, widening to
+        1.22 µm at 5 V reverse. <b>The width grows as the square root of
+        (<em>V</em><sub>bi</sub> + <em>V</em><sub>R</sub>)</b>, tending to
+        √<em>V</em><sub>R</sub> only once the reverse bias is large compared with the
+        built-in potential, so a
+        reverse-biased junction presents a larger sensitive volume to radiation than a
+        forward-biased one — a fact used in <a href="index.html#roadmap">M15</a>.
+        On the formula sheet as <a href="formula-sheet.html#eq-vbi">(1.8)</a>.
+      </div>
+    </div>
+
+    <p>
+      Applying forward bias — positive to the p-side — opposes the built-in field, narrows
+      the depletion region and allows majority carriers to cross in large numbers, so
+      current rises exponentially. Applying reverse bias does the opposite: it widens the
+      region, deepens the potential step, and leaves only a small current carried by
+      minority carriers that happen to be generated within a diffusion length of the
+      depletion region and are then swept across it.
+    </p>
+
+    <div class="eq" id="m01-eq-diode">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em> = <em>I</em><sub>0</sub> <span class="dl">[</span> exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>qV</em></span><span class="den"><em>nkT</em></span></span><span class="dl">)</span> − 1 <span class="dl">]</span></div>
+        <div class="eq-num">(1.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em> diode current (A), positive in forward bias · <em>I</em><sub>0</sub>
+        ideal diffusion saturation current (A), 10<sup>−12</sup> to
+        10<sup>−15</sup> A for a small silicon junction — the reverse current actually
+        measured is larger, because generation inside the depletion region dominates it in
+        silicon at and below room temperature · <em>V</em> applied voltage (V),
+        negative for reverse bias · <em>n</em> ideality factor, 1 for pure diffusion
+        current and approaching 2 when generation inside the depletion region dominates ·
+        <em>kT</em>/<em>q</em> = 0.02585 V at 300 K. For <em>V</em> more negative than about
+        −0.1 V the exponential vanishes and <em>I</em> → −<em>I</em><sub>0</sub>: the current
+        saturates and stops depending on voltage. <em>I</em><sub>0</sub> is proportional to
+        <em>n</em><sub>i</sub><sup>2</sup>, so it carries twice the temperature sensitivity of
+        equation (1.2) and doubles roughly every 5 K. The familiar rule that leakage doubles
+        every 10 °C belongs to the depletion-region <em>generation</em> current, which is
+        proportional to <em>n</em><sub>i</sub> rather than its square and is the term that
+        dominates measured silicon reverse current near 300 K.
+        On the formula sheet as <a href="formula-sheet.html#eq-diode">(1.9)</a>.
+      </div>
+    </div>
+
+    <p>
+      The reverse-biased junction is the structure to keep in mind for the rest of the
+      course. It is designed to pass almost no current, it contains a strong field across a
+      volume of order a cubic micrometre, and it collects any charge generated in that
+      volume. A photodiode exploits this deliberately. A digital circuit does not: every
+      node in a CMOS chip sits on a reverse-biased junction to the substrate, and every one
+      of them is a charge collector whether or not that was intended. Lecture 5 made the
+      consequence explicit — under sufficient carrier generation, a reverse-biased diode
+      stops behaving as a diode and conducts like a resistor.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 480 250" role="img" aria-labelledby="m01f6-t">
+        <title id="m01f6-t">Diode current on a logarithmic scale showing reverse saturation and its increase under irradiation</title>
+
+        <line x1="70" y1="200" x2="440" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="230" y1="200" x2="230" y2="30" class="dg-rule" stroke-width="1.2"/>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="90" y="218">−5</text>
+          <text x="160" y="218">−2.5</text>
+          <text x="230" y="218">0</text>
+          <text x="325" y="218">+0.4</text>
+          <text x="420" y="218">+0.8</text>
+        </g>
+        <text x="255" y="240" class="dg-label" text-anchor="middle">applied voltage (V)</text>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="64" y="194">10⁻¹²</text>
+          <text x="64" y="144">10⁻⁸</text>
+          <text x="64" y="94">10⁻⁴</text>
+          <text x="64" y="44">10⁰</text>
+        </g>
+        <text x="24" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 24 118)">|current| (A)</text>
+
+        <!-- dark curve -->
+        <path d="M80,190 L230,188 L270,150 L310,110 L350,72 L400,42" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <!-- irradiated curve -->
+        <path d="M80,144 L230,142 L262,134 L300,118 L350,74 L400,42" class="dg-line" stroke-width="1.8"
+              stroke-dasharray="7 4" fill="none"/>
+
+        <text x="96" y="182" class="dg-label-sm">reverse saturation, I₀</text>
+        <text x="96" y="136" class="dg-label-sm">after irradiation</text>
+        <text x="360" y="104" class="dg-label-sm" text-anchor="end">forward: exponential</text>
+      </svg>
+      <figcaption>
+        Reverse current is flat against voltage and tiny — the flatness is what makes the
+        junction useful. Carrier generation, whether from heat, light or radiation damage,
+        lifts the whole reverse branch bodily. Four orders of magnitude, as sketched here,
+        is enough to overwhelm the circuit the diode sits in.
+      </figcaption>
+    </figure>
+
+    <h2>7 · The MOS capacitor</h2>
+    <p>
+      A MOSFET is built around a capacitor: a conducting gate, a thin layer of insulating
+      silicon dioxide, and the silicon body beneath. Deck 8 cuts the transistor vertically
+      through the gate and reads that stack as a band diagram before considering current at
+      all. Where the gate voltage bends the bands, and how far, decides whether the silicon
+      surface holds holes, nothing, or electrons, and the gate voltage at which it first
+      holds electrons in quantity is the threshold voltage. The same diagram, with charge
+      added to the oxide, is where <a href="m14-total-ionizing-dose.html">M14</a> begins.
+    </p>
+    <p>
+      In the capacitor of Deck 8 p. 16 the gate is n⁺ polysilicon, doped so heavily that it is
+      degenerate and its Fermi level coincides with its conduction band edge. The body is
+      p-type silicon. The oxide between them has a gap of 8.9 eV, which the figure rounds to
+      9 eV, and two band offsets fix where its bands sit relative to silicon's. The oxide
+      conduction band lies 3.1 eV above silicon's (3.1–3.2 eV in photoemission measurements),
+      and the oxide valence band lies about 4.4 eV below silicon's (4.35–4.55 eV in
+      photoemission measurements). The offsets and the gap come from different measurements
+      and do not sum exactly. Each offset is a barrier: an electron in silicon needs 3.1 eV
+      to enter the oxide, a hole about 4.4 eV.
+      Neither is crossed thermally when <em>kT</em> is 25.85 meV, which is what makes the
+      oxide an insulator in operation and makes charge placed inside it stay there.
+    </p>
+    <p>
+      With no voltage applied, gate and body are connected through the external circuit and
+      share one Fermi level. In isolation the gate's Fermi level would sit at its conduction
+      band edge and the body's near its valence band edge, about 1 eV lower. Bringing the two
+      levels into line requires a potential difference between gate and body equal to the
+      difference of their <b>work functions</b> — the energy needed to remove an electron
+      from the Fermi level to the vacuum. That difference, <em>φ</em><sub>ms</sub>, appears
+      partly across the oxide, which tilts, and partly in the silicon, whose bands bend down
+      toward the surface. The zero-bias diagram is therefore already bent.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 285" role="img" aria-labelledby="m01f16-t">
+        <title id="m01f16-t">Band diagram of an n-plus polysilicon, silicon dioxide, p-type silicon capacitor with no applied voltage</title>
+        <path d="M140,65 L185,46 L185,231 L140,250 Z" class="dg-fill"/>
+        <line x1="40" y1="140" x2="140" y2="140" class="dg-line" stroke-width="1.8"/>
+        <line x1="40" y1="175" x2="140" y2="175" class="dg-line" stroke-width="1.8"/>
+        <path d="M185,121 Q222,110 260,110 L398,110" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M185,138.5 Q222,127.5 260,127.5 L398,127.5" class="dg-guide" stroke-width="1.2" stroke-dasharray="2 3" fill="none"/>
+        <path d="M185,156 Q222,145 260,145 L398,145" class="dg-line" stroke-width="1.8" fill="none"/>
+        <line x1="40" y1="140" x2="398" y2="140" class="dg-acc" stroke-width="1.6" stroke-dasharray="8 3 2 3"/>
+        <text x="44" y="133" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan> = E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="44" y="190" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <g class="dg-label-sm">
+          <text x="402" y="113">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+          <text x="402" y="127">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+          <text x="402" y="141">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+          <text x="402" y="156">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        </g>
+        <line x1="128" y1="137" x2="128" y2="68" class="dg-rule" stroke-width="1" marker-start="url(#m01f16-a)" marker-end="url(#m01f16-a)"/>
+        <text x="122" y="106" class="dg-label-sm" text-anchor="end">3.1 eV</text>
+        <line x1="198" y1="118" x2="198" y2="49" class="dg-rule" stroke-width="1" marker-start="url(#m01f16-a)" marker-end="url(#m01f16-a)"/>
+        <text x="204" y="86" class="dg-label-sm">3.1 eV</text>
+        <line x1="198" y1="159" x2="198" y2="228" class="dg-rule" stroke-width="1" marker-start="url(#m01f16-a)" marker-end="url(#m01f16-a)"/>
+        <text x="204" y="198" class="dg-label-sm">≈ 4.4 eV</text>
+        <line x1="162" y1="60" x2="162" y2="92" class="dg-rule" stroke-width="1" marker-start="url(#m01f16-a)"/>
+        <line x1="162" y1="132" x2="162" y2="238" class="dg-rule" stroke-width="1" marker-end="url(#m01f16-a)"/>
+        <text x="166" y="112" class="dg-label-sm" transform="rotate(-90 166 112)" text-anchor="middle">8.9 eV</text>
+        <g class="dg-label" text-anchor="middle">
+          <text x="90" y="272">n⁺ poly gate</text><text x="162" y="272">SiO₂</text><text x="300" y="272">p-type Si body</text>
+        </g>
+        <defs>
+          <marker id="m01f16-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        After Hu (Deck 8 p. 16), energies not to scale. One Fermi level, the accented line,
+        runs through the whole stack. The oxide conduction band sits 3.1 eV above silicon's on
+        both faces; the tilt of the oxide and the downward bend of the silicon bands at the
+        surface together absorb the work-function difference between gate and body, so the
+        surface is already depleted with no voltage applied.
+      </figcaption>
+    </figure>
+
+    <p>
+      The gate voltage that exactly cancels this built-in difference leaves the silicon bands
+      flat all the way to the oxide. It is the <b>flat-band voltage</b>, and any fixed charge
+      in the oxide adds to it, because that charge induces an opposite charge in the silicon
+      that the gate must remove.
+    </p>
+
+    <div class="eq" id="m01-eq-vfb">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>FB</sub> = <em>φ</em><sub>ms</sub> − <span class="frac"><span class="num"><em>Q</em><sub>ox</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>C</em><sub>ox</sub> = <span class="frac"><span class="num"><em>ε</em><sub>ox</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(1.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>FB</sub> flat-band voltage (V) · <em>φ</em><sub>ms</sub> gate work
+        function minus body work function (V); for an n⁺-polysilicon gate on p-type silicon
+        <em>φ</em><sub>ms</sub> ≈ −(<em>E</em><sub>g</sub>/2<em>q</em> +
+        <em>φ</em><sub>F</sub>), about −0.98 V at <em>N</em><sub>a</sub> =
+        10<sup>17</sup> cm<sup>−3</sup> · <em>Q</em><sub>ox</sub> fixed oxide charge per unit
+        area, taken as a sheet at the Si/SiO₂ interface (C/cm²), positive for positive charge
+        · <em>C</em><sub>ox</sub> oxide capacitance per unit area (F/cm²) ·
+        <em>ε</em><sub>ox</sub> permittivity of SiO₂, 3.9 × 8.854 × 10<sup>−14</sup> =
+        3.45 × 10<sup>−13</sup> F/cm · <em>t</em><sub>ox</sub> oxide thickness (cm), so
+        10 nm gives <em>C</em><sub>ox</sub> = 3.45 × 10<sup>−7</sup> F/cm². Positive oxide
+        charge makes <em>V</em><sub>FB</sub> more negative. Charge spread through the oxide
+        counts in proportion to its distance from the gate, so a sheet at the interface
+        counts fully.
+        On the formula sheet as <a href="formula-sheet.html#eq-vfb">(1.10)</a>.
+      </div>
+    </div>
+
+    <p>
+      Sweeping the gate voltage carries the capacitor through four regimes, each identified
+      by the charge the silicon surface holds (Deck 8 p. 18). The rule of §5 does all the
+      work: a gate voltage above <em>V</em><sub>FB</sub> lowers the surface bands, one below
+      it raises them, and <em>E</em><sub>F</sub> in the silicon stays flat because no current
+      crosses the oxide.
+    </p>
+    <p>
+      At <b>flat band</b>, <em>V</em><sub>G</sub> = <em>V</em><sub>FB</sub>, the silicon is
+      neutral up to the interface. In <b>accumulation</b>, <em>V</em><sub>G</sub> &lt;
+      <em>V</em><sub>FB</sub>, the surface bands rise, <em>E</em><sub>v</sub> approaches
+      <em>E</em><sub>F</sub> there, and holes — the majority carriers — gather in a thin
+      sheet at the interface to balance negative charge on the gate. In <b>depletion</b>,
+      <em>V</em><sub>FB</sub> &lt; <em>V</em><sub>G</sub> &lt; <em>V</em><sub>th</sub>, the
+      surface bands fall, holes are pushed away, and the uncovered acceptor ions form a
+      negative space charge of width <em>W</em> that balances the positive gate. Once the
+      surface bending reaches <em>φ</em><sub>F</sub>, <em>E</em><sub>i</sub> at the surface
+      falls below <em>E</em><sub>F</sub> and by equation (1.4) the surface electron density
+      exceeds the hole density: the surface is weakly inverted, still below threshold. In
+      strong <b>inversion</b>, <em>V</em><sub>G</sub> &gt; <em>V</em><sub>th</sub>, the
+      bending reaches 2<em>φ</em><sub>F</sub> and the surface holds a thin n-type layer as
+      dense in electrons as the bulk is in holes. Because that electron density grows
+      exponentially with further band bending, additional gate charge is balanced by
+      electrons in the layer rather than by a wider depletion region, and <em>W</em> stops
+      growing at its maximum. Deck 8 draws the four cases for an ideal capacitor; with an
+      n⁺ polysilicon gate on p-type silicon <em>V</em><sub>FB</sub> is about −1 V, so
+      accumulation requires a negative gate voltage and depletion already exists at zero.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 410" role="img" aria-labelledby="m01f17-t">
+        <title id="m01f17-t">Band diagrams and charge distributions of an ideal MOS capacitor on p-type silicon in flat band, accumulation, depletion and inversion</title>
+        <text x="105" y="13" class="dg-label" text-anchor="middle">flat band</text>
+        <text x="105" y="27" class="dg-label-sm" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> = V<tspan baseline-shift="sub" style="font-size:75%">FB</tspan></text>
+        <path d="M58,36 L70,36 L70,142 L58,142 Z" class="dg-fill"/>
+        <line x1="14" y1="88" x2="58" y2="88" class="dg-line" stroke-width="1.8"/>
+        <path d="M70,52 L200,52" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M70,96 L200,96" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M70,74 L200,74" class="dg-guide" stroke-width="1.2" stroke-dasharray="2 3" fill="none"/>
+        <line x1="70" y1="88" x2="200" y2="88" class="dg-rule" stroke-width="1.2" stroke-dasharray="7 3"/>
+        <line x1="30" y1="176" x2="200" y2="176" class="dg-rule" stroke-width="0.8"/>
+        <text x="135" y="170" class="dg-label-sm" text-anchor="middle">no charge</text>
+        <text x="196" y="48" class="dg-label-sm" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="196" y="70" class="dg-label-sm" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+        <text x="160" y="84" class="dg-label-sm" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="196" y="109" class="dg-label-sm" text-anchor="end">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+        <text x="36" y="82" class="dg-label-sm" text-anchor="middle">gate</text>
+        <text x="64" y="154" class="dg-label-sm" text-anchor="middle">oxide</text>
+        <text x="150" y="128" class="dg-label-sm" text-anchor="middle">p-type Si</text>
+        <text x="315" y="13" class="dg-label" text-anchor="middle">accumulation</text>
+        <text x="315" y="27" class="dg-label-sm" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> &lt; V<tspan baseline-shift="sub" style="font-size:75%">FB</tspan></text>
+        <path d="M268,18 L280,29 L280,142 L268,142 Z" class="dg-fill"/>
+        <line x1="224" y1="70" x2="268" y2="70" class="dg-line" stroke-width="1.8"/>
+        <path d="M280,45 Q295,52 310,52 L410,52" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M280,89 Q295,96 310,96 L410,96" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M280,67 Q295,74 310,74 L410,74" class="dg-guide" stroke-width="1.2" stroke-dasharray="2 3" fill="none"/>
+        <line x1="280" y1="88" x2="410" y2="88" class="dg-rule" stroke-width="1.2" stroke-dasharray="7 3"/>
+        <line x1="240" y1="176" x2="410" y2="176" class="dg-rule" stroke-width="0.8"/>
+        <rect x="262.0" y="176.0" width="6.0" height="16.0" class="dg-acc-f"/>
+        <rect x="280.0" y="152.0" width="4.0" height="24.0" class="dg-acc-f"/>
+        <text x="258" y="190" class="dg-label-sm" text-anchor="end">−Q</text>
+        <text x="290" y="164" class="dg-label-sm" text-anchor="start">+Q: holes</text>
+        <text x="105" y="218" class="dg-label" text-anchor="middle">depletion</text>
+        <text x="105" y="232" class="dg-label-sm" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">FB</tspan> &lt; V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> &lt; V<tspan baseline-shift="sub" style="font-size:75%">th</tspan></text>
+        <path d="M58,263 L70,253 L70,347 L58,347 Z" class="dg-fill"/>
+        <line x1="14" y1="315" x2="58" y2="315" class="dg-line" stroke-width="1.8"/>
+        <path d="M70,269 Q100,257 130,257 L200,257" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M70,313 Q100,301 130,301 L200,301" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M70,291 Q100,279 130,279 L200,279" class="dg-guide" stroke-width="1.2" stroke-dasharray="2 3" fill="none"/>
+        <line x1="70" y1="293" x2="200" y2="293" class="dg-rule" stroke-width="1.2" stroke-dasharray="7 3"/>
+        <line x1="30" y1="381" x2="200" y2="381" class="dg-rule" stroke-width="0.8"/>
+        <rect x="52.0" y="367.7" width="6.0" height="13.3" class="dg-acc-f"/>
+        <rect x="70.0" y="381.0" width="40.0" height="2.0" class="dg-acc-f"/>
+        <text x="48" y="377" class="dg-label-sm" text-anchor="end">+Q</text>
+        <text x="72" y="397" class="dg-label-sm" text-anchor="start">−Q: ionized acceptors</text>
+        <text x="315" y="218" class="dg-label" text-anchor="middle">inversion</text>
+        <text x="315" y="232" class="dg-label-sm" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">G</tspan> &gt; V<tspan baseline-shift="sub" style="font-size:75%">th</tspan></text>
+        <path d="M268,287 L280,269 L280,347 L268,347 Z" class="dg-fill"/>
+        <line x1="224" y1="339" x2="268" y2="339" class="dg-line" stroke-width="1.8"/>
+        <path d="M280,285 Q320,257 360,257 L410,257" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M280,329 Q320,301 360,301 L410,301" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M280,307 Q320,279 360,279 L410,279" class="dg-guide" stroke-width="1.2" stroke-dasharray="2 3" fill="none"/>
+        <line x1="280" y1="293" x2="410" y2="293" class="dg-rule" stroke-width="1.2" stroke-dasharray="7 3"/>
+        <line x1="240" y1="381" x2="410" y2="381" class="dg-rule" stroke-width="0.8"/>
+        <rect x="262.0" y="355.3" width="6.0" height="25.7" class="dg-acc-f"/>
+        <rect x="280.0" y="381.0" width="4.0" height="8.0" class="dg-acc-f"/>
+        <rect x="284.0" y="381.0" width="61.0" height="2.0" class="dg-acc-f"/>
+        <text x="258" y="373" class="dg-label-sm" text-anchor="end">+Q</text>
+        <text x="290" y="401" class="dg-label-sm" text-anchor="start">electrons</text>
+        <text x="350" y="376" class="dg-label-sm" text-anchor="start">acceptors</text>
+      </svg>
+      <figcaption>
+        After Deck 8 p. 18, drawn for an ideal capacitor with no work-function difference or
+        oxide charge, so <em>V</em><sub>FB</sub> = 0. Upper part of each panel: gate Fermi
+        level, oxide, and silicon bands along the vertical cut; the dashed line is
+        <em>E</em><sub>F</sub>, the dotted line <em>E</em><sub>i</sub>. Lower part: charge
+        per unit volume, with equal areas on either side of the oxide. The gate Fermi level
+        falls by <em>q</em><em>V</em><sub>G</sub> from panel to panel; part of that drop
+        appears across the oxide and the rest as band bending in the silicon.
+      </figcaption>
+    </figure>
+
+    <p>
+      Deck 8 states the onset of inversion in words: the surface is inverted once
+      <em>E</em><sub>i</sub> there lies as far below <em>E</em><sub>F</sub> as it lies above
+      <em>E</em><sub>F</sub> in the bulk. The bulk separation is <em>qφ</em><sub>F</sub>
+      (equation (1.4) and the p-type panel of the <em>E</em><sub>F</sub> figure in §3), so the
+      band bending at the surface must then be 2<em>φ</em><sub>F</sub>, and the surface
+      electron density equals the bulk hole density <em>N</em><sub>a</sub>. The gate voltage
+      needed to reach that condition is the threshold voltage.
+    </p>
+
+    <div class="eq" id="m01-eq-vt">
+      <div class="eq-body">
+        <div class="eq-math"><em>ψ</em><sub>s</sub> = 2<em>φ</em><sub>F</sub> &nbsp;&nbsp;&nbsp;&nbsp; <em>V</em><sub>th</sub> = <em>V</em><sub>FB</sub> + 2<em>φ</em><sub>F</sub> + <span class="frac"><span class="num"><span class="sqrt"><span class="rad">√</span><span class="arg">2<em>ε</em><sub>s</sub><em>qN</em><sub>a</sub> · 2<em>φ</em><sub>F</sub></span></span></span><span class="den"><em>C</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(1.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>ψ</em><sub>s</sub> <b>surface potential</b>, the band bending between the neutral
+        bulk and the surface divided by <em>q</em> (V), positive when the bands bend down ·
+        <em>φ</em><sub>F</sub> bulk Fermi potential from (1.4) (V) · <em>V</em><sub>th</sub>
+        threshold voltage (V) · <em>V</em><sub>FB</sub> from (1.10) (V) ·
+        <em>ε</em><sub>s</sub> permittivity of silicon, 1.036 × 10<sup>−12</sup> F/cm ·
+        <em>q</em> = 1.602 × 10<sup>−19</sup> C · <em>N</em><sub>a</sub> body doping
+        (cm<sup>−3</sup>) · <em>C</em><sub>ox</sub> from (1.10) (F/cm²). The square root is the
+        depletion charge per unit area at threshold (C/cm²), which the gate must support before
+        any inversion charge appears. The three terms are the voltage that flattens the bands,
+        the voltage that bends them to inversion, and the voltage dropped across the oxide.
+        For <em>N</em><sub>a</sub> = 10<sup>17</sup> cm<sup>−3</sup>, 10 nm of oxide, an
+        n⁺-polysilicon gate and no oxide charge: 2<em>φ</em><sub>F</sub> = 0.83 V, the
+        oxide term is 0.48 V, <em>V</em><sub>FB</sub> = −0.98 V, so
+        <em>V</em><sub>th</sub> ≈ 0.34 V. Long channel, uniform doping.
+        On the formula sheet as <a href="formula-sheet.html#eq-vt">(1.11)</a>.
+      </div>
+    </div>
+
+    <p>
+      Equations (1.10) and (1.11) together say what oxide charge does to a transistor: a
+      charge <em>Q</em><sub>ox</sub> shifts <em>V</em><sub>FB</sub>, and therefore
+      <em>V</em><sub>th</sub>, by −<em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub>. Ionizing
+      radiation creates electron–hole pairs in the oxide; under positive gate bias the
+      holes drift toward the silicon interface, and those that are trapped there add
+      positive <em>Q</em><sub>ox</sub>. <a href="m14-total-ionizing-dose.html">M14</a> follows
+      that sequence on this diagram. The full threshold-voltage derivation, including the
+      signs for each device type and threshold adjustment by implantation, is in
+      <a href="../../EEE6338_Advanced_Microelectronics/site/m03-threshold-voltage.html">EEE 6338
+      M03</a>.
+    </p>
+
+    <h2>8 · The MOSFET</h2>
+    <p>
+      The metal–oxide–semiconductor field-effect transistor is the switch that digital
+      electronics is built from, and it is what Lecture 2's scaling discussion is about.
+      Its structure is four elements: a lightly doped substrate, two heavily doped regions
+      called <b>source</b> and <b>drain</b>, a thin insulating layer of silicon dioxide over
+      the substrate between them, and a conducting <b>gate</b> on top of that oxide.
+      Beneath the gate it is the capacitor of §7; the source and drain add a supply and a
+      sink of electrons at either end of the surface that the gate controls.
+    </p>
+    <p>
+      Consider an n-channel device: an n-type source and drain in a p-type substrate. With
+      the gate grounded, the path from source to drain crosses two p–n junctions back to
+      back, one of which is always reverse biased, so no current flows. Raising the gate
+      voltage takes the surface beneath the oxide through depletion into inversion, as §7
+      showed. Above the <b>threshold voltage</b> <em>V</em><sub>th</sub> of equation (1.11)
+      the surface holds enough electrons to be locally n-type — it has been
+      <b>inverted</b> — and this inversion layer is a continuous conducting
+      <b>channel</b> from source to drain, supplied with electrons by the source rather than
+      by slow thermal generation. The transistor is on.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 640 240" role="img" aria-labelledby="m01f7-t">
+        <title id="m01f7-t">Cross-section of an n-channel MOSFET with the inversion channel formed</title>
+
+        <rect x="80" y="90" width="480" height="110" class="dg-fill"/>
+        <rect x="100" y="90" width="90" height="42" class="dg-fill"/>
+        <rect x="450" y="90" width="90" height="42" class="dg-fill"/>
+        <rect x="210" y="78" width="220" height="12" class="dg-fill"/>
+        <rect x="210" y="52" width="220" height="26" class="dg-fill"/>
+
+        <text x="145" y="116" class="dg-label" text-anchor="middle">n⁺ source</text>
+        <text x="495" y="116" class="dg-label" text-anchor="middle">n⁺ drain</text>
+        <text x="320" y="70" class="dg-label" text-anchor="middle">gate</text>
+        <text x="320" y="170" class="dg-label" text-anchor="middle">p-type substrate</text>
+        <text x="600" y="88" class="dg-label-sm" text-anchor="end">gate oxide, t<tspan dy="3" font-size="8">ox</tspan></text>
+        <line x1="520" y1="84" x2="435" y2="84" class="dg-rule" stroke-width="0.8"/>
+
+        <!-- channel -->
+        <rect x="190" y="90" width="260" height="7" class="dg-acc-f"/>
+        <text x="320" y="112" class="dg-label-sm" text-anchor="middle" >inversion channel — electrons drawn to the surface</text>
+
+        <!-- dimension -->
+        <line x1="210" y1="40" x2="430" y2="40" class="dg-rule" stroke-width="1"
+              marker-start="url(#m01f7-a)" marker-end="url(#m01f7-a)"/>
+        <text x="320" y="33" class="dg-label-sm" text-anchor="middle">gate length L</text>
+
+        <text x="320" y="222" class="dg-label-sm" text-anchor="middle">with source and body grounded, the drain junction is reverse biased and blocks</text>
+
+        <defs>
+          <marker id="m01f7-a" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Current flows in a sheet a few nanometres thick at the oxide interface. Its
+        proximity to the oxide is why charge trapped in that oxide shifts the threshold
+        voltage so effectively, and why the interface quality dominates both radiation
+        response and noise.
+      </figcaption>
+    </figure>
+
+    <p>
+      The capacitor picture says when a channel exists; it does not show how current
+      crosses it. For that Deck 8 turns the cut through 90° and follows the silicon surface
+      from source to drain (pp. 19–23). Drawn as three separate pieces, the n⁺ source, the
+      p-type region under the gate and the n⁺ drain have their Fermi levels in different
+      places: at or above <em>E</em><sub>c</sub> in the source and drain, near
+      <em>E</em><sub>v</sub> in the p-type region. Joined into one crystal in equilibrium
+      they share a single Fermi level, since a gradient in <em>E</em><sub>F</sub> would
+      drive a current with nothing to sustain it. The bands of the region under the gate
+      therefore sit higher than those of the source and drain by the built-in potential of
+      the n⁺/p junctions, and the conduction band edge becomes a function of position along
+      the channel.
+    </p>
+
+    <div class="eq" id="m01-eq-ecx">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>c</sub>(<em>x</em>) = <em>E</em><sub>c0</sub> − <em>qψ</em>(<em>x</em>) &nbsp;&nbsp;&nbsp;&nbsp; <em>E</em><sub>v</sub>(<em>x</em>) = <em>E</em><sub>v0</sub> − <em>qψ</em>(<em>x</em>)</div>
+        <div class="eq-num">(1.12)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>c</sub>(<em>x</em>), <em>E</em><sub>v</sub>(<em>x</em>) band edges at
+        position <em>x</em> along the surface from source to drain (eV) ·
+        <em>E</em><sub>c0</sub>, <em>E</em><sub>v0</sub> their values where
+        <em>ψ</em> = 0 (eV) · <em>ψ</em>(<em>x</em>) electrostatic potential at the surface
+        at <em>x</em> (V) · <em>q</em> elementary charge; with energies in eV,
+        <em>qψ</em> in eV equals <em>ψ</em> in volts. This is <em>E</em> = −<em>qV</em> of
+        equation (1.7) applied point by point. Deck 8 labels <em>ψ</em>(<em>x</em>) the
+        built-in potential: with no voltage applied that is what it is, the potential step
+        of the source and drain junctions, and under bias <em>ψ</em>(<em>x</em>) also
+        carries the gate and drain voltages.
+        On the formula sheet as <a href="formula-sheet.html#eq-ecx">(1.12)</a>.
+      </div>
+    </div>
+
+    <p>
+      The result is a smooth energy barrier that rises from the source into the channel and
+      falls again at the drain (Deck 8 p. 23). Electrons in the source sit at its foot. How
+      far its top lies above the source Fermi level decides how many of them have the energy
+      to cross, and both the gate and the drain act on it through the rule of §5: a positive
+      voltage brings <em>E</em><sub>c</sub> down (Deck 8 pp. 24–29).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 330" role="img" aria-labelledby="m01f18-t">
+        <title id="m01f18-t">Conduction band edge along the channel of an n-channel MOSFET for four combinations of gate and drain voltage</title>
+        <text x="105" y="14" class="dg-label-sm" text-anchor="middle">(a) low V<tspan baseline-shift="sub" style="font-size:75%">G</tspan>, V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> = 0: off</text>
+        <line x1="62" y1="24" x2="148" y2="24" class="dg-rule" stroke-width="4"/>
+        <path d="M10,110 L50,110 C60,110 62,40 75,40 L135,40 C148,40 150,110 160,110 L200,110" class="dg-line" stroke-width="2" fill="none"/>
+        <line x1="10" y1="102" x2="50" y2="102" class="dg-rule" stroke-width="1.2" stroke-dasharray="6 3"/>
+        <line x1="162" y1="102" x2="200" y2="102" class="dg-rule" stroke-width="1.2" stroke-dasharray="6 3"/>
+        <circle cx="24" cy="94" r="3.5" class="dg-acc-f"/>
+        <line x1="30" y1="94" x2="54" y2="94" class="dg-acc" stroke-width="1.6" marker-end="url(#m01f18-a)"/>
+        <g class="dg-label-sm" text-anchor="middle"><text x="30" y="146">source</text><text x="105" y="146">channel</text><text x="180" y="146">drain</text></g>
+        <text x="184" y="125" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+        <text x="176" y="97" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">F</tspan></text>
+        <text x="105" y="36" class="dg-label-sm" text-anchor="middle">gate</text>
+        <text x="315" y="14" class="dg-label-sm" text-anchor="middle">(b) high V<tspan baseline-shift="sub" style="font-size:75%">G</tspan>, V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> = 0: I<tspan baseline-shift="sub" style="font-size:75%">D</tspan> = 0</text>
+        <line x1="272" y1="24" x2="358" y2="24" class="dg-rule" stroke-width="4"/>
+        <path d="M220,110 L260,110 C270,110 272,40 285,40 L345,40 C358,40 360,110 370,110 L410,110" class="dg-guide" stroke-width="1.2" stroke-dasharray="4 3" fill="none"/>
+        <path d="M220,110 L260,110 C268,110 272,88 285,88 L345,88 C358,88 362,110 370,110 L410,110" class="dg-line" stroke-width="2" fill="none"/>
+        <line x1="220" y1="102" x2="260" y2="102" class="dg-rule" stroke-width="1.2" stroke-dasharray="6 3"/>
+        <line x1="372" y1="102" x2="410" y2="102" class="dg-rule" stroke-width="1.2" stroke-dasharray="6 3"/>
+        <circle cx="234" cy="96" r="3.5" class="dg-acc-f"/>
+        <path d="M239,92 Q262,62 294,80" class="dg-acc" stroke-width="1.6" fill="none" marker-end="url(#m01f18-a)"/>
+        <circle cx="396" cy="96" r="3.5" class="dg-acc-f"/>
+        <path d="M391,92 Q368,62 336,80" class="dg-acc" stroke-width="1.6" fill="none" marker-end="url(#m01f18-a)"/>
+        <text x="105" y="179" class="dg-label-sm" text-anchor="middle">(c) high V<tspan baseline-shift="sub" style="font-size:75%">G</tspan>, high V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan>: on</text>
+        <line x1="62" y1="189" x2="148" y2="189" class="dg-rule" stroke-width="4"/>
+        <path d="M10,275 L50,275 C58,275 62,255 75,255 C100,255 120,265 138,290 C146,302 152,305 162,305 L200,305" class="dg-line" stroke-width="2" fill="none"/>
+        <line x1="10" y1="267" x2="50" y2="267" class="dg-rule" stroke-width="1.2" stroke-dasharray="6 3"/>
+        <line x1="162" y1="297" x2="200" y2="297" class="dg-rule" stroke-width="1.2" stroke-dasharray="6 3"/>
+        <circle cx="24" cy="249" r="3.5" class="dg-acc-f"/>
+        <line x1="30" y1="249" x2="194" y2="249" class="dg-acc" stroke-width="1.6" marker-end="url(#m01f18-a)"/>
+        <line x1="180" y1="269" x2="180" y2="295" class="dg-rule" stroke-width="1" marker-start="url(#m01f18-b)" marker-end="url(#m01f18-b)"/>
+        <text x="176" y="286" class="dg-label-sm" text-anchor="end">qV<tspan baseline-shift="sub" style="font-size:75%">DS</tspan></text>
+        <text x="315" y="179" class="dg-label-sm" text-anchor="middle">(d) low V<tspan baseline-shift="sub" style="font-size:75%">G</tspan>, high V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan>: off</text>
+        <line x1="272" y1="189" x2="358" y2="189" class="dg-rule" stroke-width="4"/>
+        <path d="M260,275 C270,275 272,223 285,223 C308,223 322,235 340,270 C351,295 360,305 372,305" class="dg-guide" stroke-width="1.2" stroke-dasharray="4 3" fill="none"/>
+        <path d="M220,275 L260,275 C270,275 272,205 285,205 C310,205 325,220 342,265 C352,293 360,305 372,305 L410,305" class="dg-line" stroke-width="2" fill="none"/>
+        <line x1="220" y1="267" x2="260" y2="267" class="dg-rule" stroke-width="1.2" stroke-dasharray="6 3"/>
+        <line x1="372" y1="297" x2="410" y2="297" class="dg-rule" stroke-width="1.2" stroke-dasharray="6 3"/>
+        <circle cx="234" cy="259" r="3.5" class="dg-acc-f"/>
+        <line x1="240" y1="259" x2="264" y2="259" class="dg-acc" stroke-width="1.6" marker-end="url(#m01f18-a)"/>
+        <text x="343" y="211" class="dg-label-sm">dashed: short</text>
+        <text x="343" y="223" class="dg-label-sm">channel (DIBL)</text>
+        <defs>
+          <marker id="m01f18-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="m01f18-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        After Deck 8 pp. 25–29. <em>E</em><sub>c</sub> along the surface from source to
+        drain; the short dashed lines are the source and drain Fermi levels, drawn above
+        <em>E</em><sub>c</sub> because both regions are degenerate. The gate lowers the
+        channel section of the barrier; the drain lowers the drain end and separates the two
+        Fermi levels by <em>qV</em><sub>DS</sub>. In (b) the dashed curve repeats (a). In (d)
+        it shows a short channel, whose barrier top the drain also pulls down.
+      </figcaption>
+    </figure>
+
+    <p>
+      In (a), with the gate low and no drain voltage, the barrier top lies far above the
+      source Fermi level and almost no source electron can reach it. In (b) a positive gate
+      voltage raises the electrostatic potential of the channel and lowers the barrier.
+      Electrons from both source and drain can now enter the channel, but with
+      <em>V</em><sub>DS</sub> = 0 the two flows are equal and opposite and
+      <em>I</em><sub>D</sub> = 0. In (c) a drain voltage lowers the drain end of the diagram
+      by <em>qV</em><sub>DS</sub> and tilts the channel. Electrons that cross the barrier from
+      the source now descend toward the drain, while electrons from the drain face a barrier
+      higher by <em>qV</em><sub>DS</sub>, so a net current flows: small and proportional to
+      <em>V</em><sub>DS</sub> at low drain voltage, large once the gate holds the barrier low
+      and the drain voltage is high, which is the on-state. In (d) the gate is low and the
+      drain voltage high. The drain end is pulled down, but in a well-designed transistor
+      the top of the barrier near the source stays where it was, the source electrons still
+      cannot cross it, and the device stays off. Turning the transistor on takes both
+      voltages: the gate to lower the barrier and the drain to collect what crosses it.
+    </p>
+    <p>
+      The current over the barrier is set by the same Boltzmann tail as every carrier
+      population in this module. An electron from the source crosses if it arrives at the
+      top of the barrier with enough energy, and the fraction that does falls by a factor
+      e for every <em>kT</em> of barrier height. Crossing a barrier by thermal energy in this
+      way is <b>thermionic emission</b>.
+    </p>
+
+    <div class="eq" id="m01-eq-thermionic">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D</sub> ∝ exp&thinsp;<span class="dl">(</span>−<span class="frac"><span class="num"><em>E</em><sub>B</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(1.13)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D</sub> drain current (A) · <em>E</em><sub>B</sub> barrier height,
+        <em>E</em><sub>c</sub> at the top of the source-end barrier minus
+        <em>E</em><sub>F</sub> in the source (eV) · <em>kT</em> in eV, 0.02585 eV at 300 K.
+        Lowering <em>E</em><sub>B</sub> by <em>kT</em> ln 10 = 59.5 meV at 300 K multiplies
+        the current by ten. Holds while the barrier top lies more than a few <em>kT</em>
+        above the source Fermi level: the off-state and the subthreshold region. Above
+        threshold the gate pulls the barrier top down toward the source Fermi level, and the
+        current is limited instead by the channel charge and its velocity, as equation (1.14)
+        describes.
+        On the formula sheet as <a href="formula-sheet.html#eq-thermionic">(1.13)</a>.
+      </div>
+    </div>
+
+    <p>
+      Two consequences follow. The off-state leakage is set by the height of the barrier the
+      gate leaves in place, so anything that lowers that barrier — a hotter crystal, positive
+      charge in the gate oxide, a drain reaching through a short channel — raises
+      <em>I</em><sub>off</sub> exponentially. And the on-state works by the same mechanism:
+      an electron crosses the low barrier at the source end by thermal energy and then
+      descends the steep drain-side slope, where nothing remains to cross. Quantum-mechanical
+      tunnelling from source to drain through the barrier becomes significant only for
+      channels well below 10 nm, and there it adds to the off-state leakage.
+    </p>
+
+    <p>
+      Two properties of this structure set everything in
+      <a href="m02-scaling-of-electronics.html">M02</a>. The first is the current the
+      device delivers when on.
+    </p>
+
+    <div class="eq" id="m01-eq-idsat">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D,sat</sub> = <span class="frac"><span class="num"><em>µ</em><sub>n</sub><em>C</em><sub>ox</sub></span><span class="den">2</span></span> · <span class="frac"><span class="num"><em>W</em></span><span class="den"><em>L</em></span></span> · <span class="dl">(</span><em>V</em><sub>GS</sub> − <em>V</em><sub>th</sub><span class="dl">)</span><sup>2</sup> &nbsp;&nbsp;&nbsp;&nbsp; <em>C</em><sub>ox</sub> = <span class="frac"><span class="num"><em>ε</em><sub>ox</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(1.14)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D,sat</sub> saturated drain current (A) · <em>µ</em><sub>n</sub>
+        channel electron mobility (cm²/V·s), lower than bulk because of surface
+        scattering · <em>C</em><sub>ox</sub> gate oxide capacitance per unit area
+        (<b>F/cm²</b>) · <em>ε</em><sub>ox</sub> permittivity of SiO₂
+        = 3.9 × 8.854 × 10<sup>−14</sup> = 3.45 × 10<sup>−13</sup> F/cm ·
+        <em>t</em><sub>ox</sub> oxide thickness (cm) · <em>W</em>, <em>L</em> channel width
+        and gate length, entering only as their ratio · <em>V</em><sub>GS</sub> gate–source
+        voltage (V). Valid in saturation, <em>V</em><sub>DS</sub> &gt;
+        <em>V</em><sub>GS</sub> − <em>V</em><sub>th</sub>, and for long channels; short
+        devices approach a linear rather than square-law dependence because carrier
+        velocity saturates. On the formula sheet as
+        <a href="formula-sheet.html#eq-idsat">(1.14)</a>.
+      </div>
+    </div>
+
+    <p>
+      Equation (1.14) explains the whole geometric history of the transistor. Current scales
+      with <em>W</em>/<em>L</em>, so widening the channel or shortening the gate delivers
+      more drive. It scales with <em>C</em><sub>ox</sub>, so thinning the gate oxide does
+      the same. And <em>W</em> is the <b>perimeter of the channel</b>, not a planar width —
+      which is why folding the silicon into a fin, and then wrapping the gate all the way
+      around it, increases the current a device of a given footprint can pass. That
+      argument is the spine of <a href="m02-scaling-of-electronics.html">M02</a> §3.
+    </p>
+    <p>
+      Deck 8 p. 30 shows what this produces at the terminals: the measured drain
+      characteristics of a 2007 n-channel MOSFET with a 100 nm gate, drain current per
+      micrometre of width against <em>V</em><sub>DS</sub> for a series of gate voltages,
+      reaching above 1,100 µA/µm at 1.2 V. At small <em>V</em><sub>DS</sub> the channel acts
+      as a resistor whose conductance the gate sets, and <em>I</em><sub>D</sub> rises
+      linearly with <em>V</em><sub>DS</sub>: the <b>linear region</b>. At larger
+      <em>V</em><sub>DS</sub> the current levels off: the <b>saturation region</b>. The drain
+      has pulled its end of the barrier far below the source end, and further drain voltage
+      no longer changes how many electrons cross at the source. In the long-channel square
+      law saturation begins at <em>V</em><sub>DS,sat</sub> = <em>V</em><sub>GS</sub> −
+      <em>V</em><sub>th</sub>. In the 100 nm device the current saturates earlier, because
+      carrier velocity approaches its limit near 10<sup>7</sup> cm/s, and keeps rising
+      slowly beyond saturation, because the drain still lowers the barrier slightly.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m01f19-t">
+        <title id="m01f19-t">Long-channel MOSFET output characteristics, drain current against drain voltage for four gate overdrives, with the boundary between linear and saturation regions</title>
+        <line x1="60" y1="200" x2="380" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="200" x2="60" y2="20" class="dg-rule" stroke-width="1.2"/>
+        <path d="M60.0,200.0 L73.3,195.9 L86.7,193.0 L100.0,191.2 L113.3,190.6 L380.0,190.6" class="dg-line" stroke-width="1.8" fill="none"/>
+        <text x="384" y="194.6" class="dg-label-sm">0.2</text>
+        <path d="M60.0,200.0 L73.3,191.2 L86.7,183.6 L100.0,177.1 L113.3,171.9 L126.7,167.8 L140.0,164.8 L153.3,163.1 L166.7,162.5 L380.0,162.5" class="dg-line" stroke-width="1.8" fill="none"/>
+        <text x="384" y="166.5" class="dg-label-sm">0.4</text>
+        <path d="M60.0,200.0 L73.3,186.5 L86.7,174.2 L100.0,163.1 L113.3,153.1 L126.7,144.3 L140.0,136.7 L153.3,130.3 L166.7,125.0 L180.0,120.9 L193.3,118.0 L206.7,116.2 L220.0,115.6 L380.0,115.6" class="dg-line" stroke-width="1.8" fill="none"/>
+        <text x="384" y="119.6" class="dg-label-sm">0.6</text>
+        <path d="M60.0,200.0 L73.3,181.8 L86.7,164.8 L100.0,149.0 L113.3,134.4 L126.7,120.9 L140.0,108.6 L153.3,97.5 L166.7,87.5 L180.0,78.7 L193.3,71.1 L206.7,64.6 L220.0,59.4 L233.3,55.3 L246.7,52.3 L260.0,50.6 L273.3,50.0 L380.0,50.0" class="dg-line" stroke-width="1.8" fill="none"/>
+        <text x="384" y="54.0" class="dg-label-sm">0.8 V</text>
+        <path d="M60.0,200.0 L73.3,199.4 L86.7,197.7 L100.0,194.7 L113.3,190.6 L126.7,185.4 L140.0,178.9 L153.3,171.3 L166.7,162.5 L180.0,152.5 L193.3,141.4 L206.7,129.1 L220.0,115.6 L233.3,101.0 L246.7,85.2 L260.0,68.2 L273.3,50.0 L286.7,30.7" class="dg-acc" stroke-width="1.8" stroke-dasharray="6 4" fill="none"/>
+        <text x="282" y="24" class="dg-label-sm" text-anchor="end">V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> = V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan> − V<tspan baseline-shift="sub" style="font-size:75%">th</tspan></text>
+        <text x="96" y="70" class="dg-label">linear</text>
+        <text x="300" y="40" class="dg-label">saturation</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="216">0</text><text x="166.7" y="216">0.4</text><text x="273.3" y="216">0.8</text><text x="380" y="216">1.2</text>
+        </g>
+        <text x="220" y="238" class="dg-label" text-anchor="middle">drain voltage V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> (V)</text>
+        <text x="24" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 24 112)">drain current I<tspan baseline-shift="sub" style="font-size:75%">D</tspan></text>
+      </svg>
+      <figcaption>
+        Long-channel square law for four gate overdrives <em>V</em><sub>GS</sub> −
+        <em>V</em><sub>th</sub>, labelled in volts at the right; current in arbitrary units.
+        Left of the accented boundary the channel is a gate-controlled resistor; right of it
+        the current is fixed at the value of equation (1.14). The measured curves of Deck 8
+        p. 30 have this shape, with an earlier and softer saturation.
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <span class="box-title">The insets on Deck 8 p. 30 come from a different device</span>
+      <p>
+        The two insets on Deck 8 p. 30 plot electron energy against position at
+        <em>V</em><sub>DS</sub> = 0.05 V and 1.0 V as the gate voltage steps up. Their
+        position axis runs from −15 to +15 nm and their barrier is roughly 10–15 nm long:
+        they are simulated conduction-band profiles of a transistor about a tenth the length
+        of the 100 nm device whose measured curves they sit beside. They show the mechanism
+        correctly — the gate lowering the barrier, the drain pulling down its end. They are
+        not the band profile of the 100 nm transistor, whose barrier would extend over most
+        of its 100 nm channel.
+      </p>
+    </div>
+
+    <p>
+      The second property is what happens below threshold. A mechanical switch carries no
+      current when open. A MOSFET does. Below <em>V</em><sub>th</sub> the channel is not
+      absent but merely sparse, and its carrier population falls exponentially rather than
+      abruptly, because it is set by a thermal barrier. Equation (1.13) makes this
+      quantitative. The gate moves the barrier through the surface potential, but only by a
+      fraction of its own voltage change: the gate voltage divides between the oxide
+      capacitance and the depletion capacitance <em>C</em><sub>d</sub> beneath it, which act
+      in series, so <em>ψ</em><sub>s</sub> changes by Δ<em>V</em><sub>G</sub>/(1 +
+      <em>C</em><sub>d</sub>/<em>C</em><sub>ox</sub>). One decade of current therefore costs
+      (1 + <em>C</em><sub>d</sub>/<em>C</em><sub>ox</sub>)(<em>kT</em>/<em>q</em>) ln 10 of
+      gate voltage.
+    </p>
+
+    <div class="eq" id="m01-eq-ss">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> = <span class="frac"><span class="num"><em>kT</em></span><span class="den"><em>q</em></span></span> · ln 10 · <span class="dl">(</span>1 + <span class="frac"><span class="num"><em>C</em><sub>d</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span><span class="dl">)</span> ≥ 60 mV/decade at 300 K</div>
+        <div class="eq-num">(1.15)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em> subthreshold swing — the gate-voltage change needed to alter drain
+        current by one decade (<b>mV/decade</b>) · <em>C</em><sub>d</sub> depletion
+        capacitance per unit area beneath the channel (F/cm²) · <em>C</em><sub>ox</sub>
+        from (1.10). The bracket is ≥ 1, so <em>S</em> cannot fall below
+        (<em>kT</em>/<em>q</em>)·ln10 = <b>59.5 mV/decade at 300 K</b> in any conventional
+        MOSFET. That floor is set by thermal statistics, not by fabrication, and it is the
+        reason supply voltages stopped falling. Note the explicit <em>T</em>: the floor
+        drops to 19.8 mV/decade at 100 K and rises to 99.2 mV/decade at 500 K, before the
+        body factor is applied.
+        On the formula sheet as <a href="formula-sheet.html#eq-ss">(1.15)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 470 250" role="img" aria-labelledby="m01f8-t">
+        <title id="m01f8-t">MOSFET transfer characteristic on a logarithmic current scale showing the subthreshold region and off-state leakage</title>
+
+        <line x1="75" y1="205" x2="435" y2="205" class="dg-rule" stroke-width="1.2"/>
+        <line x1="75" y1="205" x2="75" y2="30" class="dg-rule" stroke-width="1.2"/>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="75" y="223">0</text>
+          <text x="195" y="223">0.3</text>
+          <text x="315" y="223">0.6</text>
+          <text x="425" y="223">0.9</text>
+        </g>
+        <text x="255" y="244" class="dg-label" text-anchor="middle">gate voltage V<tspan dy="3" font-size="8">GS</tspan> (V)</text>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="69" y="199">10⁻¹²</text>
+          <text x="69" y="140">10⁻⁸</text>
+          <text x="69" y="81">10⁻⁴</text>
+          <text x="69" y="52">10⁻²</text>
+        </g>
+        <text x="26" y="120" class="dg-label" text-anchor="middle" transform="rotate(-90 26 120)">drain current (A)</text>
+
+        <path d="M75,188 L110,180 L230,92 L300,58 L380,42 L430,38" class="dg-acc" stroke-width="2.2" fill="none"/>
+
+        <line x1="110" y1="180" x2="230" y2="92" class="dg-line" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="126" y="112" class="dg-label-sm">slope = 1/S</text>
+        <text x="126" y="126" class="dg-label-sm">subthreshold region</text>
+
+        <circle cx="75" cy="188" r="3.5" class="dg-ink"/>
+        <text x="86" y="200" class="dg-label-sm">I<tspan dy="3" font-size="8">off</tspan> — never zero</text>
+        <line x1="300" y1="58" x2="300" y2="205" class="dg-rule" stroke-width="0.8" stroke-dasharray="3 3"/>
+        <text x="308" y="196" class="dg-label-sm">V<tspan dy="3" font-size="8">th</tspan></text>
+      </svg>
+      <figcaption>
+        The on-state current at the right and the off-state current at the left differ by
+        ten orders of magnitude, and the gap between them is the entire margin a digital
+        circuit works with. Anything that raises the left-hand end — temperature,
+        trapped charge in the oxide, radiation-induced defect levels — eats into it
+        directly.
+      </figcaption>
+    </figure>
+
+    <p>
+      The off-state current <em>I</em><sub>off</sub> is small but finite, and a modern chip
+      contains 10<sup>10</sup> to 10<sup>11</sup> transistors, so the total static power it dissipates
+      is not negligible. Lecture 2 identified this as one of the limits that ended frequency
+      scaling, and the comparison it showed between a planar device and a tri-gate device at
+      equal on-current was a comparison of exactly this quantity.
+    </p>
+
+    <p>
+      Panel (d) of the barrier figure shows a drain that leaves the source end of the
+      barrier alone. In a short channel it does not: the drain's field reaches through the
+      channel and lowers the top of the barrier as well, so the off-state current rises with
+      drain voltage and the threshold voltage falls. This is <b>drain-induced barrier
+      lowering</b>, DIBL, quantified as the threshold shift per volt of drain bias.
+    </p>
+
+    <div class="eq" id="m01-eq-dibl">
+      <div class="eq-body">
+        <div class="eq-math">DIBL = −<span class="frac"><span class="num">Δ<em>V</em><sub>th</sub></span><span class="den">Δ<em>V</em><sub>DS</sub></span></span></div>
+        <div class="eq-num">(1.16)</div>
+      </div>
+      <div class="eq-says">
+        DIBL drain-induced barrier lowering (<b>mV/V</b>) · Δ<em>V</em><sub>th</sub> change
+        in threshold voltage (mV) · Δ<em>V</em><sub>DS</sub> change in drain–source voltage
+        over which it is measured (V), typically from about 0.05 V to the supply voltage.
+        Positive when the threshold falls as <em>V</em><sub>DS</sub> rises. On the logarithmic
+        transfer characteristic it appears as a shift of the subthreshold line toward lower
+        gate voltage at high drain bias, which multiplies <em>I</em><sub>off</sub> by
+        10<sup>DIBL·Δ<em>V</em><sub>DS</sub>/<em>S</em></sup>. Intel's 22 nm tri-gate
+        transistors reported about 50 mV/V, with <em>S</em> near 70 mV/decade.
+        On the formula sheet as <a href="formula-sheet.html#eq-dibl">(1.16)</a>.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <span class="box-title">Where equations (1.14) and (1.15) stop applying</span>
+      <p>
+        Both are long-channel results. In a device with a gate length of tens of
+        nanometres, the drain's field reaches through the channel and lowers the source
+        barrier directly — the DIBL of equation (1.16) — so the gate loses some of its
+        control: threshold voltage falls
+        with gate length and with drain bias, and <em>S</em> rises above its thermal floor.
+        These short-channel effects are the reason the planar transistor was abandoned for
+        the fin and then the nanosheet, which surround the channel on three and four sides
+        respectively and restore the gate's authority over it.
+      </p>
+    </div>
+
+    <h2>9 · What sets speed and power</h2>
+    <p>
+      A logic gate switches by charging or discharging the capacitance of the node it
+      drives, using the current its transistors can supply. The time this takes follows
+      directly.
+    </p>
+
+    <div class="eq" id="m01-eq-delay">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em><sub>d</sub> ≈ <span class="frac"><span class="num"><em>C</em><sub>L</sub><em>V</em><sub>DD</sub></span><span class="den"><em>I</em><sub>D,sat</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <em>P</em><sub>dyn</sub> = <em>α</em> <em>C</em><sub>L</sub> <em>V</em><sub>DD</sub><sup>2</sup> <em>f</em></div>
+        <div class="eq-num">(1.17)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>d</sub> gate delay (s) · <em>C</em><sub>L</sub> load capacitance
+        (F), the sum of gate, junction and interconnect capacitance ·
+        <em>V</em><sub>DD</sub> supply voltage (V) · <em>I</em><sub>D,sat</sub> from
+        (1.14) (A) · <em>P</em><sub>dyn</sub> dynamic power (W) · <em>α</em> activity
+        factor, the fraction of clock cycles on which the node actually switches, typically
+        0.1–0.2 · <em>f</em> clock frequency (Hz). Static power
+        <em>V</em><sub>DD</sub><em>I</em><sub>off</sub> must be added separately and is not
+        reduced by lowering <em>f</em>. On the formula sheet as
+        <a href="formula-sheet.html#eq-delay">(1.17)</a>.
+      </div>
+    </div>
+
+    <p>
+      The <em>V</em><sub>DD</sub><sup>2</sup> in the power expression is why supply voltages
+      were driven down for three decades, and the 60 mV/decade floor of equation (1.15) is
+      why their fall stalled near 1 V in the mid-2000s (<a href="m02-scaling-of-electronics.html">M02 §2</a>)
+      and has been slow since: below a few hundred millivolts of threshold, the threshold
+      voltage cannot be reduced further without <em>I</em><sub>off</sub> rising to meet
+      <em>I</em><sub>on</sub>.
+      With <em>V</em><sub>DD</sub> fixed and <em>f</em> unable to rise without exceeding the
+      power a package can remove, the remaining levers are capacitance — smaller cells,
+      shorter wires — and parallelism. Lecture 2 traced exactly this sequence.
+    </p>
+    <p>
+      For space electronics the same expressions read differently. A part that runs at
+      100 MHz and 5 W rather than 5 GHz and 200 W is not primitive; it is a deliberate
+      position on the curve described by equation (1.17), chosen because a spacecraft can
+      generate a few watts and can remove heat only by radiating it.
+      <a href="m03-space-electronics-gap.html">M03</a> takes that argument up.
+    </p>
+
+    <details class="check">
+      <summary>A junction is reverse biased at 5 V and a passing particle deposits enough energy to create 10<sup>6</sup> electron–hole pairs inside its depletion region. Why does essentially all of that charge reach the terminals, when a similar number of pairs created deep in the neutral substrate largely does not?</summary>
+      <div class="answer">
+        <p>
+          The depletion region holds a field of order 10<sup>5</sup> V/cm across about a
+          micrometre. Carriers created there are separated within picoseconds and swept
+          to opposite terminals, far faster than they can recombine, so collection is
+          essentially complete. In the neutral substrate there is no field: the pairs move
+          only by diffusion, they are free to recombine while they do so, and only the
+          fraction that reaches the depletion edge within a minority-carrier lifetime is
+          collected. Collection from the neutral region is therefore partial, slower, and
+          shows up as the diffusion tail on the current transient rather than the prompt
+          spike.
+        </p>
+      </div>
+    </details>
+
+    <details class="check">
+      <summary>An n-channel transistor sits in its off-state, <em>V</em><sub>GS</sub> = 0 and <em>V</em><sub>DS</sub> = 1 V, when a sheet of positive charge appears in its gate oxide at the silicon interface. Using the band diagram through the gate and the band diagram along the channel, explain why the off-state current rises, and why it rises exponentially rather than in proportion to the charge.</summary>
+      <div class="answer">
+        <p>
+          Through the gate, the positive sheet acts as an extra positive gate voltage: by
+          equation (1.10) it shifts <em>V</em><sub>FB</sub>, and with it
+          <em>V</em><sub>th</sub>, by −<em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub>, so the
+          surface bands under the gate bend further down at the same applied voltage. Along
+          the channel, the same lowering of <em>E</em><sub>c</sub> at the surface lowers the
+          top of the source-end barrier. The off-state current is the thermionic current of
+          equation (1.13), exponential in that barrier height, so it rises by a factor of ten
+          for every subthreshold swing <em>S</em> of threshold shift: a shift of 0.1 V at
+          <em>S</em> = 80 mV/decade multiplies <em>I</em><sub>off</sub> by about 18. The
+          charge enters the barrier height linearly, and the barrier height enters the
+          current exponentially.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Atoms brought into a crystal split their discrete levels into continuous bands separated by a forbidden gap, which opens at the zone boundary of any periodic structure: the perforated beam of Deck 8 passes 17.8 MHz and stops 25.5 MHz by the same splitting. Silicon's gap is 1.12 eV, rounded to 1.1 eV in this course; SiO₂'s is 8.9 eV.</li>
+        <li>Energy exceeding the gap promotes an electron and leaves a hole. Both are mobile and both carry current. Thermal energy, light and ionizing particles all do this by the same mechanism.</li>
+        <li>States are filled according to the Fermi–Dirac function; <em>E</em><sub>F</sub> is the energy of half occupancy, and each band's population is set by the Boltzmann tail, <em>n</em> = <em>n</em><sub>i</sub> exp[(<em>E</em><sub>F</sub> − <em>E</em><sub>i</sub>)/<em>kT</em>]. <em>n</em><sub>i</sub> ≈ 1.0 × 10<sup>10</sup> cm<sup>−3</sup> in silicon at 300 K and depends exponentially on <em>E</em><sub>g</sub>/<em>kT</em>.</li>
+        <li>Doping fixes the carrier population by design, at a cost of 45 meV per carrier rather than 1.12 eV. Phosphorus, arsenic and boron are used because they are shallow, dissolve to beyond 10<sup>20</sup> cm<sup>−3</sup> and stay in place. <em>np</em> = <em>n</em><sub>i</sub><sup>2</sup> holds in equilibrium only, and the minority population is the sensitive one.</li>
+        <li>Doping controls the population only between freeze-out and the intrinsic onset: for 10<sup>15</sup> cm<sup>−3</sup> of phosphorus, 90 % ionization at 92 K and <em>n</em><sub>i</sub> = <em>N</em><sub>d</sub> near 545 K, against near 390 K in germanium.</li>
+        <li>A positive voltage lowers electron energy, <em>E</em> = −<em>qV</em>. The field points from high to low potential, up the slope of the bands; electrons roll down <em>E</em><sub>c</sub>, holes rise along <em>E</em><sub>v</sub>.</li>
+        <li>A reverse-biased p–n junction holds a strong field across a carrier-free volume and collects any charge generated inside it. It is simultaneously the working principle of every photodetector and the vulnerability of every circuit node.</li>
+        <li>A MOS capacitor on p-type silicon passes from accumulation through depletion to inversion as the gate voltage rises; inversion begins at <em>ψ</em><sub>s</sub> = 2<em>φ</em><sub>F</sub>, and oxide charge shifts <em>V</em><sub>FB</sub> and <em>V</em><sub>th</sub> by −<em>Q</em><sub>ox</sub>/<em>C</em><sub>ox</sub>. The oxide's band offsets, 3.1 eV and about 4.4 eV, keep carriers out of it and trapped charge in it.</li>
+        <li>A MOSFET is a barrier-controlled device: the gate sets the height of the barrier at the source, the drain collects what crosses it, and the current over the barrier is thermionic. Hence off-state current is exponential in gate voltage and cannot fall faster than 59.5 mV/decade at 300 K, and anything that lowers the barrier — temperature, oxide charge, DIBL — raises it exponentially. Drive current scales with <em>W</em>/<em>L</em> and <em>C</em><sub>ox</sub>.</li>
+        <li>Delay is <em>C</em><em>V</em>/<em>I</em> and dynamic power is <em>αCV</em><sup>2</sup><em>f</em>. Those two, plus the leakage floor, define the design space that both commercial and space electronics sit in.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Lecture 5 (band formation from discrete levels); Lecture 8 and Deck 8 pp. 4–6 (the band gap as a consequence of periodicity; the perforated-beam simulation at 17.8 and 25.5 MHz); Sze &amp; Ng, <em>Physics of Semiconductor Devices</em>, 3rd ed., ch. 1; Kittel, <em>Introduction to Solid State Physics</em>, 8th ed., ch. 7 (zone-boundary standing waves)</td></tr>
+      <tr><td>§2</td><td>Lecture 5 (excitation across the gap; 1.1 eV); Lecture 8 and Deck 8 p. 17 (Fermi level and intrinsic level); Fermi–Dirac statistics: Sze &amp; Ng §1.4; Pierret, <em>Semiconductor Device Fundamentals</em>, ch. 2</td></tr>
+      <tr><td>§2 constants</td><td><em>N</em><sub>c</sub> = 2.86 × 10<sup>19</sup>, <em>N</em><sub>v</sub> = 3.10 × 10<sup>19</sup> cm<sup>−3</sup> with <em>E</em><sub>g</sub> = 1.124 eV, as one consistent set: Green, <em>J. Appl. Phys.</em> <b>67</b>, 2944 (1990). Measured <em>n</em><sub>i</sub> = 1.00 × 10<sup>10</sup> cm<sup>−3</sup>: Sproul &amp; Green, <em>J. Appl. Phys.</em> <b>70</b>, 846 (1991). Reanalysis to 9.65 × 10<sup>9</sup> cm<sup>−3</sup> with band-gap narrowing: Altermatt <em>et al.</em>, <em>J. Appl. Phys.</em> <b>93</b>, 1598 (2003). Lattice constant, mobilities and <em>v</em><sub>sat</sub>: Sze &amp; Ng, Appendices F and G</td></tr>
+      <tr><td>§3</td><td>Lecture 5 (doping as deliberate defect introduction); Lecture 8 and Deck 8 pp. 7–9 (atomic density, dopant fractions, the impurity-level compilation, the choice of P, As and B); Sze &amp; Ng ch. 1. Spectroscopic levels: Ramdas &amp; Rodriguez, <em>Rep. Prog. Phys.</em> <b>44</b>, 1297 (1981). Solubilities: Trumbore, <em>Bell Syst. Tech. J.</em> <b>39</b>, 205 (1960); Mostafa &amp; Medraj, <em>Materials</em> <b>10</b>, 676 (2017). Lithium drift: Pell, <em>J. Appl. Phys.</em> <b>31</b>, 291 (1960). Clustering: Fahey, Griffin &amp; Plummer, <em>Rev. Mod. Phys.</em> <b>61</b>, 289 (1989). Si:P insulator–metal transition: Rosenbaum <em>et al.</em>, <em>Phys. Rev. B</em> <b>27</b>, 7509 (1983)</td></tr>
+      <tr><td>§4</td><td>Lecture 8 and Deck 8 pp. 7, 10–12 (the Streetman &amp; Banerjee ionization cartoon; the regimes after Pierret Fig. 2.22; germanium, deferred to M17). Curve computed with the §2 constants, a 45 meV donor level and the Varshni gap of Sze &amp; Ng §1.3; germanium <em>n</em><sub>i</sub> from Sze &amp; Ng Appendix F and the Ioffe Institute NSM database, whose tabulations run from 2.0 to 2.4 × 10<sup>13</sup> cm<sup>−3</sup></td></tr>
+      <tr><td>§5</td><td>Lecture 2 (strained silicon raising mobility); Lecture 4 (drift then diffusion in the transient); mobility values from Sze &amp; Ng ch. 1; Lecture 8 and Deck 8 p. 13 (band tilting, after Streetman &amp; Banerjee, <em>Solid State Electronic Devices</em>, Fig. 4.15 and eqs. 4-25, 4-26)</td></tr>
+      <tr><td>§6</td><td>Lecture 4 (p–n junction as the fundamental building block; charge separation under bias); Lecture 5 (irradiated diode conducting like a resistor); Sze &amp; Ng ch. 2</td></tr>
+      <tr><td>§7</td><td>Lecture 8 and Deck 8 pp. 15–18 (the vertical cut; Hu, <em>Modern Semiconductor Devices for Integrated Circuits</em>, Fig. 5-1; the four regimes). Band offsets: Keister <em>et al.</em>, <em>J. Vac. Sci. Technol. B</em> <b>17</b>, 1831 (1999); Alay &amp; Hirose, <em>J. Appl. Phys.</em> <b>81</b>, 1606 (1997). Flat-band and threshold voltage: Sze &amp; Ng chs. 4 and 6; Hu ch. 5</td></tr>
+      <tr><td>§8</td><td>Lecture 2 (MOSFET structure and naming; channel; leakage current; planar against tri-gate); Lecture 8 and Deck 8 pp. 19–30 (the transistor as a barrier-controlled device, after Lundstrom, <em>Fundamentals of Nanotransistors</em> (2017), and E. O. Johnson, <em>RCA Review</em> <b>34</b>, 80 (1973); p. 30 data credited on the slide to S. Ikeda, ATDF, 2007); Sze &amp; Ng ch. 6. Source-to-drain tunnelling: Wang &amp; Lundstrom, <em>IEDM Tech. Dig.</em> 2002, pp. 707–710. DIBL and <em>S</em> of 22 nm tri-gate transistors: Auth <em>et al.</em>, <em>VLSI Symp. Tech. Dig.</em> 2012</td></tr>
+      <tr><td>§9</td><td>Lecture 2 (the power and frequency wall; parasitic capacitance and speed; core count as the response)</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="index.html"><span>Previous</span>Course home</a>
+      <a class="next" href="m02-scaling-of-electronics.html"><span>Next</span>M02 · Scaling of Electronics</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,2408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M11 · Single-Event Effects — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M11 · Single-Event Effects</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 11</p>
+    <h1>Single-Event Effects</h1>
+    <p class="lede">
+      What one particle does to a circuit: how its track becomes a current pulse within
+      picoseconds, why a reverse-biased junction collects that pulse, when it flips a memory cell
+      or corrupts a logic signal, how a part's susceptibility is measured as a cross-section and
+      converted into an orbital error rate, why scaling moves the per-bit and per-chip rates in
+      opposite directions, and how the same charge can instead trigger latchup, gate rupture or
+      burnout.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M04, M05, M06</span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Deck 02 pp. 16–22, 27–28; Deck 03 pp. 24–33; Dodd &amp; Massengill (2003); IEEE NSREC Short Courses 2001 and 2024; Lectures 3 and 4</span>
+    </div>
+
+    <p>
+      <a href="m04-quantifying-energy-deposition.html">M04</a> ended with a conversion factor: in
+      silicon, a particle liberates 10.4 fC of charge per micrometre of track for every unit of
+      linear energy transfer. <a href="m05-three-effects-taxonomy.html">M05</a> then separated
+      single-event effects from total dose and displacement damage by one property — a single
+      particle causes them, and nothing accumulates. This module follows that single particle
+      through a device on its own timescale, from the femtoseconds in which the charge is created
+      to the nanoseconds in which the last of it is collected, and then outward: into a memory
+      cell, a logic path, a beam test, an orbit and a technology roadmap.
+    </p>
+    <p>
+      Sections 1 to 3 are the device physics: what the track contains, how it evolves in time and
+      why a reverse-biased junction is the structure that collects it. Sections 4 and 5 are the
+      circuit response — the upset of a storage cell and the transient in combinational logic.
+      Sections 6 to 8 are measurement and prediction: the cross-section, the role of the angle of
+      incidence, and the integral that combines a cross-section with an environment into an error
+      rate. Section 9 applies all of it to scaling, section 10 turns to the events that destroy
+      the device rather than its data, and section 11 to the cases where a single value of LET
+      stops describing the particle at all.
+    </p>
+    <p>
+      One comparison organises the whole module. On one side sits the collected charge, set by
+      the particle and by the geometry of the struck device; on the other sits the critical
+      charge, set by the circuit. Every section either changes one side of that comparison,
+      measures it, or examines the conditions under which the comparison itself stops being an
+      adequate description.
+    </p>
+
+    <h2>1 · One track, one event</h2>
+    <p>
+      Every single-event effect runs through the same three stages: charge generation along the
+      particle's track, collection of part of that charge at a circuit node, and the response of
+      the circuit to the charge it did not expect. Deck 03 p. 25 compresses the chain into one
+      line — a single energetic particle, charge deposition, circuit upset — and the rest of this
+      module is an expansion of each link. The stages differ in what controls them. Generation is
+      set by the particle and the material, collection by the device structure and its bias, and
+      the response by the circuit design.
+    </p>
+    <p>
+      Generation is the physics of <a href="m04-quantifying-energy-deposition.html">M04</a> §§2–4.
+      A heavy ion slows by Coulomb interaction with the electrons of the lattice, and the energy
+      it loses per unit path length — its linear energy transfer, LET — is converted into
+      electron–hole pairs at one pair per 3.6 eV in silicon. Dividing the energy deposited per
+      micrometre by the pair energy and multiplying by the elementary charge gives the charge per
+      micrometre of track.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em><sub>col</sub> = <span class="frac"><span class="num">1.6×10⁻² · LET · <em>ρ</em></span><span class="den"><em>E</em><sub>p</sub></span></span> &nbsp;&nbsp;(pC per µm of track)</div>
+        <div class="eq-num">(11.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em><sub>col</sub> charge deposited <b>per micrometre of track</b> (pC/µm), in the
+        notation of Deck 03 p. 26 · LET linear energy transfer (<b>MeV·cm²/mg</b>) ·
+        <em>ρ</em> density of the struck material (<b>g/cm³</b>; 2.328 for Si) ·
+        <em>E</em><sub>p</sub> electron–hole pair creation energy (<b>eV</b>; 3.6 for Si).
+        The constant 1.6×10⁻² is the elementary charge, 1.602×10⁻¹⁹ C, carried through the unit
+        changes: LET·<em>ρ</em> in these units is an energy of LET·<em>ρ</em>×10⁵ eV per µm, and
+        10¹² pC make a coulomb. In silicon the expression evaluates to <b>10.4 fC/µm per unit
+        LET</b>, so an LET of 97 MeV·cm²/mg deposits 1 pC/µm. It is a charge per length:
+        multiplying by a collection depth <em>d</em> (µm) gives a charge in pC. Deck 02 p. 16
+        writes the same physics with the path length already included,
+        <em>Q</em> = LET·<em>ρ</em>·<em>L</em>·<em>e</em>/<em>ε</em>. Valid while the LET is
+        constant over the path, which holds for the high-energy ions of space and fails near the
+        Bragg peak of a low-energy accelerator ion (<a href="m04-quantifying-energy-deposition.html">M04</a> §3).
+        On the formula sheet as <a href="formula-sheet.html#eq-qcoll">(11.1)</a>.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p>
+        Deck 03 p. 26 calls (11.1) "the total deposited charge" and states the upset condition on
+        the deposited charge, which must exceed the critical charge. With the units the slide
+        itself specifies, the expression evaluates to a charge per micrometre of track; it becomes
+        a charge only when multiplied by a length. The quantity the circuit compares with the
+        critical charge is the collected charge, the part of the deposit that reaches the struck
+        node within the collection depth of §§2–3, and it is smaller than the charge deposited
+        along the whole track. This page keeps the slide's symbol <em>Q</em><sub>col</sub> for the
+        charge per length (pC/µm) and writes <em>Q</em><sub>coll</sub> for the collected charge
+        (C) of (11.4); the two symbols differ by one letter and by their units.
+      </p>
+    </div>
+
+    <p>
+      The numbers fix the scale of the problem. An ion of LET 10 MeV·cm²/mg liberates about
+      100 fC in each micrometre of silicon it crosses. Deck 03 p. 26 notes that the critical charge
+      of modern unhardened circuits can be below 50 fC, equivalent to 3×10⁵ electrons; against such
+      a circuit, half a micrometre of collected track from such an ion is already enough. Heavy ions upset circuits by this
+      direct ionization, and the first single-event upsets reported from space were of this kind:
+      Binder, Smith and Holman (1975) attributed four upsets in seventeen years of operation of
+      bipolar J–K flip-flops on a communications satellite to galactic cosmic rays. A proton's LET is two to four orders of magnitude lower, so protons act
+      mainly through nuclear reactions whose recoils ionize far more densely, although below
+      roughly the 65 nm node direct proton ionization also suffices
+      (<a href="m01-radiation-and-matter.html">M01</a> §7).
+    </p>
+    <p>
+      Collection is the step that decides how much of the deposited charge the circuit sees. Only
+      carriers that reach the electric field of a junction, or diffuse to it before recombining,
+      contribute; the rest recombine where they were generated. The collected charge,
+      <em>Q</em><sub>coll</sub>, is therefore smaller than the deposited charge, and it depends on
+      the position and direction of the track relative to the junction as much as on the LET.
+      Sections 2 and 3 are about this step. The circuit response is the third link: the collected
+      charge moves the voltage of the node it arrives at, and whether that disturbance becomes an
+      error is decided by comparing <em>Q</em><sub>coll</sub> with the critical charge
+      <em>Q</em><sub>crit</sub> — a property of the technology and the circuit, not of the ion
+      (<a href="m05-three-effects-taxonomy.html">M05</a> §4). Section 4 develops that comparison.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 160" role="img" aria-labelledby="m11f1-t">
+        <title id="m11f1-t">The three stages of a single-event effect and what controls each</title>
+        <text x="75" y="20" class="dg-label-sm" text-anchor="middle">femtoseconds to picoseconds</text>
+        <text x="230" y="20" class="dg-label-sm" text-anchor="middle">picoseconds to nanoseconds</text>
+        <text x="385" y="20" class="dg-label-sm" text-anchor="middle">the circuit's time constants</text>
+        <rect x="8" y="30" width="134" height="78" rx="4" class="dg-fill"/>
+        <rect x="163" y="30" width="134" height="78" rx="4" class="dg-fill"/>
+        <rect x="318" y="30" width="134" height="78" rx="4" class="dg-fill"/>
+        <text x="75" y="52" class="dg-label" text-anchor="middle" font-weight="600">1 · Generation</text>
+        <text x="75" y="72" class="dg-label-sm" text-anchor="middle">LET sets the density:</text>
+        <text x="75" y="87" class="dg-label-sm" text-anchor="middle">10.4 fC/µm per unit LET</text>
+        <text x="230" y="52" class="dg-label" text-anchor="middle" font-weight="600">2 · Collection</text>
+        <text x="230" y="72" class="dg-label-sm" text-anchor="middle">junction field and</text>
+        <text x="230" y="87" class="dg-label-sm" text-anchor="middle">diffusion gather Q_coll</text>
+        <text x="385" y="52" class="dg-label" text-anchor="middle" font-weight="600">3 · Response</text>
+        <text x="385" y="72" class="dg-label-sm" text-anchor="middle">node voltage moves;</text>
+        <text x="385" y="90" class="dg-label" text-anchor="middle"><tspan class="dg-acc-f">Q_coll &gt; Q_crit ?</tspan></text>
+        <line x1="143" y1="69" x2="160" y2="69" class="dg-rule" stroke-width="1.4" marker-end="url(#m11f1-a)"/>
+        <line x1="298" y1="69" x2="315" y2="69" class="dg-rule" stroke-width="1.4" marker-end="url(#m11f1-a)"/>
+        <path d="M10,122 L10,130 L295,130 L295,122" class="dg-line" stroke-width="1"/>
+        <text x="152" y="148" class="dg-label-sm" text-anchor="middle">set by the particle, the material and the device geometry</text>
+        <path d="M320,122 L320,130 L450,130 L450,122" class="dg-line" stroke-width="1"/>
+        <text x="385" y="148" class="dg-label-sm" text-anchor="middle">set by the circuit</text>
+        <defs>
+          <marker id="m11f1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The collected charge belongs to the particle and the structure; the
+        critical charge belongs to the circuit. Changing the ion moves only the left-hand side of
+        the comparison.
+      </figcaption>
+    </figure>
+
+    <p>
+      Single-event effects are named by what the circuit does with the charge, and Deck 03
+      pp. 24–25 sorts them into soft and hard errors on the criterion of
+      <a href="m05-three-effects-taxonomy.html">M05</a> §5: a soft error is removed by rewriting
+      the correct state, a hard error is not. A <b>single-event transient</b> (SET) is a voltage
+      or current pulse on a node — in combinational logic it is harmless unless a storage element
+      captures it. A <b>single-event upset</b> (SEU) is a change of stored state in a memory cell,
+      latch or register; it is a <b>single-bit upset</b> (SBU) when one cell flips and a
+      <b>multiple-cell upset</b> (MCU) when one particle flips several. Dodd and Massengill call
+      the second case a multiple-bit upset (MBU); the JEDEC usage reserves MBU for the subset in
+      which the flipped bits belong to the same logical word, which is the case that defeats a
+      code correcting one bit per word. A <b>single-event functional interrupt</b> (SEFI) is a
+      strike that throws a complex part into a test, reset or idle mode, so that it stops
+      functioning until a reset or power cycle restores it, although no stored data bit need have
+      changed. Deck 03 p. 25 counts it among the soft errors: the recovery returns the circuit to
+      a correct state and nothing is damaged.
+    </p>
+    <p>
+      The hard errors are four. <b>Single-event latchup</b> (SEL) switches on the parasitic
+      four-layer thyristor inherent in bulk CMOS into a self-sustaining low-impedance path between
+      the supply rails. <b>Snapback</b> is a comparable high-current state sustained by a parasitic
+      bipolar transistor together with avalanche multiplication. <b>Single-event gate rupture</b>
+      (SEGR) is the destructive breakdown of a gate dielectric along the track, and
+      <b>single-event burnout</b> (SEB) the thermal destruction of a power device by a regenerative
+      current. Section 10 develops all four.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 256" role="img" aria-labelledby="m11f2-t">
+        <title id="m11f2-t">The family of single-event effects divided into soft and hard errors</title>
+        <rect x="190" y="8" width="80" height="26" rx="4" class="dg-fill"/>
+        <text x="230" y="26" class="dg-label" text-anchor="middle" font-weight="600">SEE</text>
+        <path d="M230,34 L230,44 L115,44 L115,54" class="dg-rule" stroke-width="1.2"/>
+        <path d="M230,44 L345,44 L345,54" class="dg-rule" stroke-width="1.2"/>
+        <rect x="8" y="54" width="214" height="194" rx="4" class="dg-fill"/>
+        <rect x="238" y="54" width="214" height="194" rx="4" class="dg-fill"/>
+        <text x="115" y="74" class="dg-label" text-anchor="middle" font-weight="600">Soft — rewriting repairs it</text>
+        <text x="345" y="74" class="dg-label" text-anchor="middle" font-weight="600">Hard — rewriting does not</text>
+        <text x="20" y="100" class="dg-label"><tspan font-weight="600">SET</tspan> transient pulse on a node</text>
+        <path d="M34,108 L34,124" class="dg-acc" stroke-width="1.8" marker-end="url(#m11f2-a)"/>
+        <text x="44" y="120" class="dg-label-sm">captured by a latch</text>
+        <text x="20" y="144" class="dg-label"><tspan font-weight="600">SEU</tspan> stored state changed</text>
+        <text x="32" y="162" class="dg-label-sm">SBU: one cell · MCU: several cells</text>
+        <text x="32" y="177" class="dg-label-sm">MBU: several bits of one word</text>
+        <text x="20" y="204" class="dg-label"><tspan font-weight="600">SEFI</tspan> function lost until reset</text>
+        <text x="32" y="222" class="dg-label-sm">test, reset or idle mode entered</text>
+        <text x="250" y="100" class="dg-label"><tspan font-weight="600">SEL</tspan> parasitic thyristor latches</text>
+        <text x="262" y="117" class="dg-label-sm">cleared by removing power</text>
+        <text x="250" y="144" class="dg-label"><tspan font-weight="600">Snapback</tspan> bipolar + avalanche</text>
+        <text x="250" y="176" class="dg-label"><tspan font-weight="600">SEGR</tspan> gate dielectric ruptures</text>
+        <text x="250" y="208" class="dg-label"><tspan font-weight="600">SEB</tspan> power device burns out</text>
+        <text x="262" y="232" class="dg-label-sm">SEGR and SEB destroy the part</text>
+        <defs>
+          <marker id="m11f2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> The single-event family after Deck 03 pp. 24–25. A transient becomes an
+        upset only when a storage element captures it, which is why the two are counted
+        separately. A functional interrupt is recovered by a reset or power cycle rather than by
+        rewriting a value, and Deck 03 p. 25 still counts it soft. Deck 03 p. 25 draws its soft
+        and hard braces overlapping at latchup: a latchup that a power cycle clears without damage
+        is soft, one that destroys the part is hard; Deck 03 p. 24 lists latchup among the hard
+        errors, as the figure does. Latchup and snapback are sustained current states that
+        removing power clears; gate rupture and burnout are damage.
+      </figcaption>
+    </figure>
+
+    <h2>2 · A strike in time</h2>
+    <p>
+      The three stages of §1 are not simultaneous. Generation is over in about a picosecond, drift
+      collection runs for a few hundred picoseconds, and diffusion collection continues for
+      nanoseconds. The order matters because the circuit responds while the charge is still
+      arriving, and because the first event — the creation of a column of carriers far denser than
+      the doping of the silicon — changes the electrostatics of the junction that then collects
+      them. The IEEE NSREC 2024 Short Course gives the three timescales: generation from a few
+      femtoseconds to a few picoseconds, drift collection including the funnel from a few
+      picoseconds to a few hundred, diffusion for a few nanoseconds or longer. What follows is the
+      sequence for the structure Deck 02 p. 16 draws, an n⁺ region held at a positive voltage
+      above a p-type substrate at ground — the drain of an n-channel transistor in the off state.
+    </p>
+
+    <h3>Femtoseconds to a picosecond: the column forms</h3>
+    <p>
+      A heavy ion crosses the device almost instantaneously on circuit timescales: at 10 MeV per
+      nucleon it traverses 10 µm in about 0.2 ps (<a href="m04-quantifying-energy-deposition.html">M04</a> §7).
+      Along its path it transfers energy to lattice electrons, and the more energetic of those —
+      the delta rays — carry part of the energy sideways before they thermalize, so the ionization
+      forms a column with a dense core and a radial extent that for energetic ions reaches some
+      hundreds of nanometres (Musseau and Ferlet-Cavrois, IEEE NSREC 2001 Short Course). Within
+      femtoseconds to picoseconds the excited carriers relax to the band edges and the column is
+      simply a population of electrons and holes in equal numbers. Its density dwarfs the
+      doping: an LET of 10 MeV·cm²/mg liberates about 6.5×10⁵ pairs per micrometre, and spread
+      over a core of order 0.1 µm radius that is of order 10¹⁹ pairs/cm³, against substrate
+      dopings of 10¹⁵–10¹⁷ cm⁻³.
+    </p>
+
+    <h3>Picoseconds: the plasma wire</h3>
+    <p>
+      A region in which electrons and holes are both present at densities far above the doping is
+      a quasi-neutral plasma, and it conducts. Deck 02 p. 16 labels the column a <b>plasma
+      wire</b> and marks the consequence: "+V appears here". Before the strike the junction
+      potential was dropped across a thin depletion layer beneath the n⁺ region. The column now
+      connects the n⁺ region to the substrate below that layer through a conductor, so the
+      depletion layer is short-circuited along the track and the node's potential is carried down
+      the column into the substrate. The equipotentials that sat parallel to the junction are
+      pulled down along the track — Dodd and Massengill's Fig. 2, which Deck 02 p. 17 reproduces,
+      shows the 3.0 V and 2.0 V contours distorted into the substrate — and the junction field now
+      extends along the column to a depth several times the original depletion width. This
+      transient extension of the field is the <b>field funnel</b>, first identified in numerical
+      simulations of alpha-particle strikes at IBM (Hsieh, Murley and O'Brien, 1981).
+    </p>
+    <p>
+      The funnel exists only while the column's carrier density exceeds the doping; the column is
+      able to screen the junction field only while it holds more free charge than the dopant ions
+      around it (Buchner and Baze, IEEE NSREC 2001 Short Course). Everything that lowers the
+      carrier density in the column — collection, spreading, recombination — therefore also
+      shortens the funnel.
+    </p>
+
+    <h3>Tens to hundreds of picoseconds: drift collection</h3>
+    <p>
+      Inside the funnel the field drives the carriers apart. Electrons drift up the column to the
+      positively biased n⁺ node, holes drift down and away toward the grounded substrate contact,
+      and the node sees an electron current. Because drift in a field of order 10⁴–10⁵ V/cm moves
+      carriers micrometres in tens of picoseconds, this current rises within tens of picoseconds.
+      As the column is drained its density falls toward the doping, the field is no longer
+      screened, the depletion layer re-forms at its original width and the funnel collapses. The
+      charge drifted out of the depletion layer itself is called prompt charge; the funnel adds to
+      it by collecting, also by drift, from a depth the undisturbed junction never reaches (§3).
+    </p>
+
+    <h3>Nanoseconds: diffusion and recombination</h3>
+    <p>
+      Carriers generated below the funnel, or beside it, feel no field. They spread by diffusion,
+      and those that reach the edge of the re-formed depletion layer before recombining are swept
+      across it and collected. Diffusion is slow and has no preferred direction, so this component
+      is a small current lasting nanoseconds or longer, and it may be collected at more than one
+      junction — the mechanism by which one particle upsets neighbouring cells (§9). Whatever is neither collected nor diffused away recombines, and at
+      that point the event is over for the device, though not necessarily for the circuit.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 312" role="img" aria-labelledby="m11f3-t">
+        <title id="m11f3-t">Four stages of an ion strike through a reverse-biased n-plus on p junction, from generation to diffusion</title>
+
+        <!-- panel a -->
+        <text x="85" y="18" class="dg-label" text-anchor="middle" font-weight="600">(a) Generation</text>
+        <text x="85" y="34" class="dg-label-sm" text-anchor="middle">femtoseconds to ~1 ps</text>
+        <rect x="10" y="60" width="150" height="180" class="dg-fill"/>
+        <rect x="45" y="60" width="80" height="24" class="dg-fill"/>
+        <text x="106" y="77" class="dg-label-sm" text-anchor="middle">n⁺ +V</text>
+        <path d="M37,60 L37,98 L133,98 L133,60" class="dg-line" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <rect x="81" y="84" width="8" height="146" class="dg-soft" fill-opacity="0.55"/>
+        <line x1="85" y1="44" x2="85" y2="236" class="dg-rule" stroke-width="1.2" marker-end="url(#m11f3-a)"/>
+        <text x="96" y="140" class="dg-label-sm">e–h</text>
+        <text x="96" y="153" class="dg-label-sm">column</text>
+        <text x="16" y="232" class="dg-label-sm">p, 0 V</text>
+
+        <!-- panel b -->
+        <text x="265" y="18" class="dg-label" text-anchor="middle" font-weight="600">(b) Plasma wire</text>
+        <text x="265" y="34" class="dg-label-sm" text-anchor="middle">a few picoseconds</text>
+        <rect x="190" y="60" width="150" height="180" class="dg-fill"/>
+        <rect x="225" y="60" width="80" height="24" class="dg-fill"/>
+        <text x="286" y="77" class="dg-label-sm" text-anchor="middle">n⁺ +V</text>
+        <rect x="261" y="84" width="8" height="146" class="dg-soft" fill-opacity="0.8"/>
+        <path d="M217,60 L217,98 L257,98 L259,196 L271,196 L273,98 L313,98 L313,60" class="dg-acc" stroke-width="2"/>
+        <text x="278" y="132" class="dg-label-sm">+V carried</text>
+        <text x="278" y="145" class="dg-label-sm">down the</text>
+        <text x="278" y="158" class="dg-label-sm">column</text>
+        <text x="196" y="232" class="dg-label-sm">p, 0 V</text>
+
+        <!-- panel c -->
+        <text x="445" y="18" class="dg-label" text-anchor="middle" font-weight="600">(c) Drift collection</text>
+        <text x="445" y="34" class="dg-label-sm" text-anchor="middle">to a few hundred ps</text>
+        <rect x="370" y="60" width="150" height="180" class="dg-fill"/>
+        <rect x="405" y="60" width="80" height="24" class="dg-fill"/>
+        <text x="466" y="77" class="dg-label-sm" text-anchor="middle">n⁺ +V</text>
+        <path d="M397,60 L397,98 L430,100 Q440,140 445,160 Q450,140 460,100 L493,98 L493,60" class="dg-acc" stroke-width="2"/>
+        <line x1="438" y1="150" x2="438" y2="94" class="dg-rule" stroke-width="1.3" marker-end="url(#m11f3-b)"/>
+        <line x1="452" y1="120" x2="452" y2="200" class="dg-rule" stroke-width="1.3" marker-end="url(#m11f3-b)"/>
+        <text x="432" y="130" class="dg-label-sm" text-anchor="end">e⁻</text>
+        <text x="458" y="196" class="dg-label-sm">h⁺</text>
+        <text x="376" y="232" class="dg-label-sm">p, 0 V</text>
+
+        <!-- panel d -->
+        <text x="625" y="18" class="dg-label" text-anchor="middle" font-weight="600">(d) Diffusion</text>
+        <text x="625" y="34" class="dg-label-sm" text-anchor="middle">nanoseconds and longer</text>
+        <rect x="550" y="60" width="150" height="180" class="dg-fill"/>
+        <rect x="585" y="60" width="80" height="24" class="dg-fill"/>
+        <text x="646" y="77" class="dg-label-sm" text-anchor="middle">n⁺ +V</text>
+        <path d="M577,60 L577,98 L673,98 L673,60" class="dg-line" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <g class="dg-soft">
+          <circle cx="612" cy="140" r="2.2"/><circle cx="640" cy="152" r="2.2"/>
+          <circle cx="598" cy="176" r="2.2"/><circle cx="655" cy="186" r="2.2"/>
+          <circle cx="626" cy="203" r="2.2"/><circle cx="581" cy="150" r="2.2"/>
+          <circle cx="668" cy="134" r="2.2"/><circle cx="610" cy="212" r="2.2"/>
+        </g>
+        <line x1="612" y1="136" x2="612" y2="106" class="dg-rule" stroke-width="1.1" marker-end="url(#m11f3-b)"/>
+        <line x1="640" y1="148" x2="646" y2="106" class="dg-rule" stroke-width="1.1" marker-end="url(#m11f3-b)"/>
+        <text x="556" y="232" class="dg-label-sm">p, 0 V</text>
+
+        <text x="85" y="262" class="dg-label-sm" text-anchor="middle">pairs far above the doping</text>
+        <text x="85" y="276" class="dg-label-sm" text-anchor="middle">along the whole track</text>
+        <text x="265" y="262" class="dg-label-sm" text-anchor="middle">column conducts; the depletion</text>
+        <text x="265" y="276" class="dg-label-sm" text-anchor="middle">edge is pushed down the track</text>
+        <text x="445" y="262" class="dg-label-sm" text-anchor="middle">funnel field drifts electrons</text>
+        <text x="445" y="276" class="dg-label-sm" text-anchor="middle">to the node; funnel collapses</text>
+        <text x="625" y="262" class="dg-label-sm" text-anchor="middle">remaining carriers diffuse</text>
+        <text x="625" y="276" class="dg-label-sm" text-anchor="middle">to the junction or recombine</text>
+        <text x="360" y="302" class="dg-label-sm" text-anchor="middle">Dashed: undisturbed depletion edge. Stages overlap in time and are drawn separately; not to scale.</text>
+
+        <defs>
+          <marker id="m11f3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+          <marker id="m11f3-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> The strike of Deck 02 p. 16 in time order. The accent line is the edge of
+        the high-field region: in (b) the conducting column carries the node potential down the
+        track, in (c) the funnel it creates collects by drift from well below the original
+        depletion edge, and by (d) the depletion layer has re-formed and only diffusion remains.
+        After Deck 02 pp. 16–17 and the IEEE NSREC 2024 Short Course, Part III, Fig. 10.
+      </figcaption>
+    </figure>
+
+    <h3>The current pulse</h3>
+    <p>
+      Observed at the node, the sequence is a current pulse with a fast leading edge set by drift,
+      a slower trailing edge set by the draining of the funnel, and a low diffusion tail. Circuit
+      simulators represent the drift-dominated part by a double exponential, the standard model
+      of Messenger (1982) that Dodd and Massengill describe with a rise of tens of picoseconds and
+      a fall of 200 to 300 ps.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em>(<em>t</em>) = <em>I</em><sub>0</sub> <span class="dl">(</span><em>e</em><sup>−<em>t</em>/<em>τ</em><sub>α</sub></sup> − <em>e</em><sup>−<em>t</em>/<em>τ</em><sub>β</sub></sup><span class="dl">)</span> &nbsp;&nbsp;⟹&nbsp;&nbsp; <em>Q</em> = <em>I</em><sub>0</sub>(<em>τ</em><sub>α</sub> − <em>τ</em><sub>β</sub>)</div>
+        <div class="eq-num">(11.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em>(<em>t</em>) current collected at the struck node (A) ·
+        <em>t</em> time after the strike (s) · <em>I</em><sub>0</sub> current scale (A) ·
+        <em>τ</em><sub>α</sub> collection (fall) time constant: after the peak the pulse decays
+        as <em>e</em><sup>−<em>t</em>/<em>τ</em><sub>α</sub></sup>, so its 90–10% fall time is
+        <em>τ</em><sub>α</sub> ln 9 ≈ 2.2<em>τ</em><sub>α</sub>, and the fall time of 200 to
+        300 ps that Dodd and Massengill quote corresponds to <em>τ</em><sub>α</sub> ≈ 90–140 ps ·
+        <em>τ</em><sub>β</sub> track-establishment (rise) time constant, short enough that the
+        pulse rises within tens of picoseconds · <em>Q</em> total collected charge (C), the
+        integral of the pulse. The peak falls at
+        <em>t</em><sub>p</sub> = [<em>τ</em><sub>α</sub><em>τ</em><sub>β</sub>/(<em>τ</em><sub>α</sub> − <em>τ</em><sub>β</sub>)] ln(<em>τ</em><sub>α</sub>/<em>τ</em><sub>β</sub>).
+        All four parameters depend on the ion, its energy, the device dimensions and the strike
+        location. The form omits the diffusion tail, and it assumes a node whose voltage does not
+        change the collection — the regime in which a fixed current source is an adequate
+        stimulus for a circuit simulation.
+        On the formula sheet as <a href="formula-sheet.html#eq-dblexp">(11.2)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 222" role="img" aria-labelledby="m11f4-t">
+        <title id="m11f4-t">Double-exponential current pulse with a 15 ps rise constant and a 120 ps fall constant</title>
+        <line x1="60" y1="170" x2="425" y2="170" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="170" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="186">0</text><text x="150" y="186">150</text><text x="240" y="186">300</text>
+          <text x="330" y="186">450</text><text x="420" y="186">600</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="54" y="174">0</text><text x="54" y="109">0.5</text><text x="54" y="44">1</text>
+        </g>
+        <text x="240" y="208" class="dg-label" text-anchor="middle">time after strike (ps)</text>
+        <text x="20" y="104" class="dg-label" text-anchor="middle" transform="rotate(-90 20 104)">I / I_peak</text>
+        <path d="M60.0,170.0 L60.6,158.8 L61.2,148.3 L61.8,138.7 L63.0,121.5 L64.2,106.8 L66.0,88.7 L67.8,74.6 L69.6,63.8 L72.0,53.4 L75.0,45.4 L78.0,41.3 L81.4,40.0 L85.2,41.2 L90.0,45.3 L96.0,52.4 L103.2,61.9 L111.0,72.2 L120.0,83.4 L132.0,96.5 L144.0,107.7 L156.0,117.3 L171.0,127.2 L186.0,135.3 L204.0,142.9 L222.0,148.9 L240.0,153.6 L264.0,158.2 L288.0,161.6 L312.0,164.0 L336.0,165.7 L360.0,166.9 L390.0,168.0 L420.0,168.7" class="dg-acc" stroke-width="2.2"/>
+        <line x1="64.4" y1="105" x2="140.9" y2="105" class="dg-line" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="148" y="100" class="dg-label-sm">full width at half maximum ≈ 130 ps</text>
+        <text x="90" y="38" class="dg-label-sm">peak at 36 ps: drift</text>
+        <text x="186" y="122" class="dg-label-sm">fall: funnel drains, τ_α = 120 ps</text>
+        <text x="300" y="141" class="dg-label-sm">diffusion tail continues</text>
+        <text x="300" y="154" class="dg-label-sm">into nanoseconds (not in 11.2)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> Equation (11.2) evaluated with <em>τ</em><sub>β</sub> = 15 ps and
+        <em>τ</em><sub>α</sub> = 120 ps, illustrative constants that give a 10–90% rise time of
+        19 ps and a 90–10% fall time of 270 ps, inside the rise and fall times Dodd and Massengill
+        quote.
+        The charge is the area under the curve; more than four-fifths of it arrives after the peak, so a
+        circuit that responds within the first few tens of picoseconds sees the rate of arrival,
+        not the total.
+      </figcaption>
+    </figure>
+
+    <h3>What the struck node does</h3>
+    <p>
+      The node is not a fixed-voltage contact. It has a capacitance — the junction itself, the
+      gates it drives, its wiring — and a finite conductance to the supply through whatever
+      transistor is holding it. The collected electron current discharges that capacitance, so a
+      node held at <em>V</em><sub>DD</sub> falls while the pulse lasts, and the transistor holding
+      it supplies a restoring current that recharges it once the pulse subsides. Dodd and
+      Massengill describe the node as a low-pass filter with a time constant set by the total
+      node capacitance and the equivalent resistance seen by the current. When that time constant
+      is long compared with the pulse, the node integrates the pulse and responds only to its
+      total charge, and the single number <em>Q</em><sub>coll</sub> of §1 describes the strike
+      completely. When the node is faster than the pulse, it follows the current as it arrives and
+      the pulse shape matters as well as its area.
+    </p>
+    <p>
+      The node's response also feeds back on the collection. As the struck node's voltage falls,
+      the reverse bias across the junction falls with it, and so do the depletion field and the
+      funnel that depended on it. In a static circuit the struck junction can pass from reverse
+      bias to zero bias during the transient, which suppresses further drift collection. Dodd and
+      Massengill draw the consequence for memory cells: drift, including the funnel, flips the
+      node early, while the slower diffusion component decides whether it stays flipped.
+    </p>
+
+    <div class="box insight">
+      <p>
+        The "plasma wire" is a short circuit across the depletion layer that lasts exactly as long
+        as the track holds more free carriers than the doping around it. For that interval the
+        junction's potential extends down the track, and charge from micrometres below the
+        junction is collected by drift in tens of picoseconds rather than by diffusion over
+        nanoseconds. The rise of the current pulse is the funnel forming; its fall is the funnel
+        draining.
+      </p>
+    </div>
+
+    <h2>3 · Funnelling and the reverse-biased junction</h2>
+    <p>
+      Everything in §2 required an electric field ready to separate the carriers before they
+      recombine. In a finished device the strong fields sit in reverse-biased junctions, and
+      that is why those junctions are where single events happen. Dodd and Massengill state it as
+      the starting point of charge collection — the most sensitive regions are usually
+      reverse-biased p–n junctions — and Buchner and Baze put it more strongly: significant
+      charge collection occurs only in reverse-biased junctions, which in CMOS means the
+      drain–well and drain–substrate junctions and in bipolar circuits the emitter–base,
+      base–collector and collector–substrate junctions whenever they are reverse-biased. This
+      section explains why, what the funnel adds to the collection, and how a device structure can
+      limit the volume from which charge reaches the junction.
+    </p>
+
+    <h3>Why reverse bias, and why a high-impedance node</h3>
+    <p>
+      A reverse-biased junction holds a depletion layer that is nearly free of mobile carriers
+      and carries a large field, so any pair generated in or near it is separated within
+      picoseconds and delivered to the contacts as a current that nothing in the circuit
+      requested. The node on the other side of that junction is usually a high-impedance one:
+      the transistor whose drain it is, being off, presents only its junction, and the voltage of
+      the node is whatever charge sits on its capacitance. A current delivered to such a node
+      moves its voltage in proportion to the node's impedance, which is what makes the charge
+      visible to the circuit. This is also why the off state is the vulnerable one: an off
+      transistor's drain is the reverse-biased, weakly held junction, while an on transistor's
+      drain is tied to a rail through a conducting channel.
+    </p>
+    <p>
+      A forward-biased junction is the opposite case. Its field is small, it already carries a
+      large diffusion current, and it sits in a low-resistance path; the charge a particle adds is
+      conducted away without building a large voltage anywhere. Lecture 3 drew the same contrast
+      and carried it to the destructive limit: a reverse-biased junction in a high-resistance,
+      high-voltage power device has nowhere to dissipate the energy the collected current brings,
+      which is the setting of burnout in §10.
+    </p>
+
+    <h3>What the funnel adds</h3>
+    <p>
+      Without the funnel, the charge collected promptly is the charge generated inside the
+      depletion layer: the charge per micrometre of (11.1) times the depletion width <em>W</em>.
+      The funnel extends drift collection along the track below <em>W</em>, and the extension is
+      set by how long the track can screen the junction field, which in turn depends on how its
+      carrier density compares with the doping. McLean and Oldham's analytical model of 1982 was
+      an important early quantitative treatment of this length (Dodd and Massengill). The
+      dependences follow from the mechanism. Lighter doping widens the depletion layer, lets the
+      track outnumber the dopants to a greater depth and lengthens the diffusion length, and all
+      three increase the collected charge; heavier doping reverses all three. Buchner and Baze
+      report microbeam measurements on diodes in which raising the doping of the lightly doped
+      side from 2×10¹⁵ to 7×10¹⁵ cm⁻³ nearly halved the width of the current transient, and in
+      which the collected charge rose with applied voltage as the depletion layer widened (after
+      Nashiyama <em>et al.</em>, 1993).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 236" role="img" aria-labelledby="m11f5-t">
+        <title id="m11f5-t">Collection depth along a track: depletion layer, funnel extension and diffusion region</title>
+        <rect x="40" y="30" width="250" height="196" class="dg-fill"/>
+        <rect x="90" y="30" width="150" height="26" class="dg-fill"/>
+        <text x="205" y="48" class="dg-label-sm" text-anchor="middle">n⁺ node, +V</text>
+        <path d="M78,30 L78,74 L252,74 L252,30" class="dg-line" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <path d="M130,74 L150,74 Q160,120 165,150 Q170,120 180,74 L200,74" class="dg-acc" stroke-width="2"/>
+        <line x1="165" y1="16" x2="165" y2="222" class="dg-rule" stroke-width="1.2" marker-end="url(#m11f5-a)"/>
+        <text x="50" y="214" class="dg-label-sm">p substrate</text>
+        <line x1="300" y1="56" x2="300" y2="74" class="dg-rule" stroke-width="1"/>
+        <line x1="296" y1="56" x2="304" y2="56" class="dg-rule" stroke-width="1"/>
+        <line x1="296" y1="74" x2="304" y2="74" class="dg-rule" stroke-width="1"/>
+        <text x="310" y="69" class="dg-label-sm">depletion W: prompt drift</text>
+        <line x1="300" y1="74" x2="300" y2="150" class="dg-rule" stroke-width="1"/>
+        <line x1="296" y1="150" x2="304" y2="150" class="dg-rule" stroke-width="1"/>
+        <text x="310" y="108" class="dg-label"><tspan class="dg-acc-f">funnel: drift</tspan></text>
+        <text x="310" y="122" class="dg-label-sm">from below W while the</text>
+        <text x="310" y="135" class="dg-label-sm">track outnumbers dopants</text>
+        <line x1="300" y1="150" x2="300" y2="214" class="dg-rule" stroke-width="1" stroke-dasharray="2 3"/>
+        <text x="310" y="180" class="dg-label-sm">diffusion: from within a</text>
+        <text x="310" y="193" class="dg-label-sm">diffusion length, slowly</text>
+        <defs>
+          <marker id="m11f5-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> Three depths of collection along one track. The depletion layer alone
+        would supply (11.1) × <em>W</em>; the funnel adds drift collection from beneath it, and
+        diffusion adds a slow remainder. Lighter substrate doping deepens all three.
+      </figcaption>
+    </figure>
+
+    <p>
+      Two further mechanisms enlarge the collected charge beyond what one junction receives. When
+      an n-channel transistor sits in a p-well, as in twin- and triple-well processes, the strike's
+      electrons are collected at the drain–well and well–substrate junctions, while its holes
+      remain in the well, raise the well's potential and lower the barrier between the well and
+      the transistor's source; the source then injects electrons that the drain collects in
+      addition to the track charge (Dodd and Massengill). The source, the channel and the drain
+      act as the emitter, base and collector of a parasitic bipolar transistor, and the effect
+      strengthens as the channel, which is its base width, is shortened. In a p-channel
+      transistor in an n-well the roles of electrons and holes are exchanged: the electrons left
+      in the well lower its potential, and the source injects holes. And a track at near-grazing incidence
+      that passes through both source and drain perturbs the channel potential enough to conduct a
+      short source–drain current, the source–drain penetration effect, whose injected charge Dodd
+      and Massengill report rising rapidly below about 0.5 µm effective gate length.
+    </p>
+
+    <h3>Limiting the collection volume</h3>
+    <p>
+      Every structural route to single-event hardness at the device level works by shrinking the
+      volume from which charge can reach the sensitive junction. A lightly doped epitaxial layer on
+      a heavily doped substrate terminates the funnel at the layer boundary, and carriers
+      generated in the heavily doped substrate recombine quickly; the same heavily doped substrate
+      suppresses latchup (<a href="../../EEE6338_Advanced_Microelectronics/site/m02-deep-submicron-roadmap.html">EEE6338 M02</a> §7).
+      A well isolates: the well–substrate junction is a potential barrier that stops charge
+      deposited deep in the substrate from diffusing back to a drain inside the well, which is
+      why a drain outside the well is the more sensitive location. Triple and quadruple wells make
+      every strike an inside-the-well strike, and retrograde wells and buried layers build an
+      internal field that opposes collection from the substrate (Dodd and Massengill).
+    </p>
+    <p>
+      Silicon on insulator goes furthest. The transistor is built in a thin silicon film on a
+      buried oxide, the source and drain reach down to that oxide, and the reverse-biased drain
+      junction shrinks to the depletion region between drain and body; charge deposited in the
+      substrate beneath the buried oxide cannot reach the drain
+      (<a href="m08-tid-effects-devices-ics.html">M08</a> §7). The deposited charge is then fixed by
+      the film thickness <em>t</em><sub>Si</sub>, as (11.1) × <em>t</em><sub>Si</sub>.
+      Cristoloveanu and Ferlet-Cavrois, in the course textbook, give the compiled result: for
+      the technology generation of about 2000, commercial SOI memories showed a saturated
+      cross-section of about 1 µm² per bit, an order of magnitude below bulk memories of the same
+      generation, with a similar threshold LET. The advantage is not unconditional. Holes left
+      in a floating body raise its potential and turn on the lateral parasitic bipolar transistor,
+      amplifying the collected charge to (1 + <em>β</em>) times the deposited charge, where
+      <em>β</em> is the parasitic gain; body ties that drain the holes suppress most of it, fully
+      depleted films are less sensitive than partially depleted ones because they are thinner and
+      have lower bipolar gain, and capacitive coupling across the buried oxide can still deliver
+      some substrate charge (Dodd and Massengill; Cristoloveanu and Ferlet-Cavrois).
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 236" role="img" aria-labelledby="m11f6-t">
+        <title id="m11f6-t">Collection volume in bulk silicon, in an epitaxial layer on a heavily doped substrate, and in silicon on insulator</title>
+        <text x="120" y="18" class="dg-label" text-anchor="middle" font-weight="600">Bulk</text>
+        <text x="360" y="18" class="dg-label" text-anchor="middle" font-weight="600">Epitaxial layer on p⁺</text>
+        <text x="600" y="18" class="dg-label" text-anchor="middle" font-weight="600">Silicon on insulator</text>
+
+        <rect x="30" y="34" width="180" height="170" class="dg-fill"/>
+        <rect x="80" y="34" width="80" height="20" class="dg-fill"/>
+        <text x="120" y="48" class="dg-label-sm" text-anchor="middle">n⁺ drain</text>
+        <path d="M100,54 Q110,140 120,196 Q130,140 140,54 Z" class="dg-acc-f" fill-opacity="0.3"/>
+        <path d="M100,54 Q110,140 120,196 Q130,140 140,54" class="dg-acc" stroke-width="1.8"/>
+        <text x="40" y="196" class="dg-label-sm">p substrate</text>
+
+        <rect x="270" y="34" width="180" height="170" class="dg-fill"/>
+        <rect x="320" y="34" width="80" height="20" class="dg-fill"/>
+        <text x="360" y="48" class="dg-label-sm" text-anchor="middle">n⁺ drain</text>
+        <line x1="270" y1="118" x2="450" y2="118" class="dg-rule" stroke-width="1.4"/>
+        <text x="280" y="112" class="dg-label-sm">p⁻ epi</text>
+        <text x="280" y="196" class="dg-label-sm">p⁺ substrate: short lifetime</text>
+        <path d="M340,54 Q350,100 360,118 Q370,100 380,54 Z" class="dg-acc-f" fill-opacity="0.3"/>
+        <path d="M340,54 Q350,100 360,118 Q370,100 380,54" class="dg-acc" stroke-width="1.8"/>
+
+        <rect x="510" y="34" width="180" height="40" class="dg-fill"/>
+        <rect x="510" y="74" width="180" height="22" class="dg-fill"/>
+        <rect x="510" y="96" width="180" height="108" class="dg-fill"/>
+        <text x="540" y="58" class="dg-label-sm" text-anchor="middle">film</text>
+        <text x="600" y="89" class="dg-label-sm" text-anchor="middle">buried oxide</text>
+        <text x="520" y="196" class="dg-label-sm">substrate: not collected</text>
+        <rect x="585" y="40" width="30" height="34" class="dg-acc-f" fill-opacity="0.3"/>
+        <rect x="585" y="40" width="30" height="34" class="dg-acc" stroke-width="1.8"/>
+        <text x="650" y="58" class="dg-label-sm" text-anchor="middle">t_Si</text>
+
+        <line x1="120" y1="26" x2="120" y2="212" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="360" y1="26" x2="360" y2="212" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+        <line x1="600" y1="26" x2="600" y2="212" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="360" y="230" class="dg-label-sm" text-anchor="middle">Shaded: region from which a normally incident track's charge is collected by drift. Dashed: the track. Not to scale.</text>
+      </svg>
+      <figcaption>
+        <b>Figure 6.</b> The same track, three collection depths. In bulk the funnel reaches into
+        the substrate and diffusion adds more; an epitaxial layer on a heavily doped substrate cuts
+        both at the layer boundary; silicon on insulator limits collection to the film above the
+        buried oxide, at the price of a floating body that can amplify what it collects.
+      </figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>Raising the substrate doping under a junction by a factor of four halves its depletion width. Why does the collected charge from a normally incident ion fall by more than a factor of two?</summary>
+      <div class="answer">
+        <p>
+          Because the depletion width is only one of three collection depths, and doping shortens
+          all three. The prompt charge scales with <em>W</em>, which in a one-sided junction goes as
+          the inverse square root of the doping. The funnel lasts only while the track's carrier
+          density exceeds the doping, so a more heavily doped substrate is screened over a shorter
+          length of track. And the diffusion length falls with doping, so less of the charge
+          generated below the funnel reaches the junction before it recombines. The measured
+          transients narrow for the same three reasons.
+        </p>
+      </div>
+    </details>
+
+    <h2>4 · Critical charge and the memory-cell upset</h2>
+    <p>
+      Section 2 ended at a node whose voltage moves when a strike delivers charge to it. Whether
+      that movement becomes a stored error depends on what is holding the node. A static memory
+      cell holds its state by active feedback and must be driven into the opposite state to fail;
+      a dynamic memory cell holds a packet of charge with no feedback at all and fails as soon as
+      that packet is degraded beyond what its sense amplifier can read. This section develops the
+      critical charge that decides the first case, the race that sets it, the second case, and the
+      probabilistic form the comparison takes when the collected charge is not a single number.
+    </p>
+
+    <h3>Critical charge</h3>
+    <p>
+      The critical charge is the minimum charge that, delivered to a sensitive node, upsets the
+      circuit (Dodd and Massengill). A node must be moved through a voltage excursion
+      <em>V</em><sub>crit</sub> before the circuit responds to it, and the charge that moves a
+      capacitance <em>C</em><sub>n</sub> through that excursion is their product. Capacitance is the
+      node's charge store: a larger capacitance must be filled or emptied by more collected charge
+      before the voltage reaches the point where the circuit switches.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em><sub>crit</sub> = <em>C</em><sub>n</sub> · <em>V</em><sub>crit</sub></div>
+        <div class="eq-num">(11.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em><sub>crit</sub> critical charge (C; quoted in fC) · <em>C</em><sub>n</sub>
+        effective capacitance of the struck node (F; quoted in fF) · <em>V</em><sub>crit</sub>
+        voltage excursion that flips the stored state (V). A convenient check: 1 fF × 1 V = 1 fC.
+        <b>A property of the technology and the circuit, not of the ion.</b> Valid when the node's
+        own time constant is long compared with the current pulse, so that the node integrates the
+        pulse and only its total charge matters (§2); for a fast node, or a strike timed against a
+        clock edge, the critical charge is not a constant.
+        On the formula sheet as <a href="formula-sheet.html#eq-qcrit">(11.3)</a>.
+      </div>
+    </div>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">upset ⟺ <em>Q</em><sub>coll</sub> &gt; <em>Q</em><sub>crit</sub></div>
+        <div class="eq-num">(11.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em><sub>coll</sub> charge collected at the sensitive node (C), from (11.1) times the
+        collection depth of §3 · <em>Q</em><sub>crit</sub> critical charge (C) from (11.3). The
+        particle and the device geometry set the left side; the circuit sets the right. Deck 03
+        p. 26 states the condition on the deposited charge; the note under (11.1) gives the
+        difference. It also notes that <em>Q</em><sub>crit</sub> can be below 50 fC
+        (3×10⁵ electrons) in modern unhardened circuits.
+        On the formula sheet as <a href="formula-sheet.html#eq-upset">(11.4)</a>.
+      </div>
+    </div>
+
+    <p>
+      Dodd and Massengill call the reduction of a strike to its total charge an extremely
+      dangerous simplification, because it discards the time profile of the delivery. They keep
+      the critical charge as a figure of merit for comparing circuit designs and technologies,
+      since it describes vulnerability without reference to ion species, energy or LET — and that
+      is the sense in which it belongs to the circuit.
+    </p>
+
+    <h3>The static-memory upset: a race between feedback and recovery</h3>
+    <p>
+      A six-transistor static memory cell is two inverters, each driving the other's input, with
+      two access transistors that connect the cell to the bit lines for reading and writing. One
+      internal node is high and the other low. The inverter whose output is high has its
+      p-channel transistor on, tying the node to <em>V</em><sub>DD</sub>, and its n-channel
+      transistor off, with the drain of that off transistor reverse-biased at
+      <em>V</em><sub>DD</sub> against the grounded substrate. That drain is the struck location
+      Deck 02 p. 17 marks.
+    </p>
+    <p>
+      When a particle strikes it, the collected electron current flows through the off transistor
+      and pulls the high node down. The on p-channel transistor sources current to replace it, but
+      its drive current and its channel conductance are finite, so the current through it drops a
+      voltage across it and the node falls. The falling node is the input of the opposite inverter.
+      If it falls below that inverter's switching point for long enough, the opposite inverter
+      switches, its output rises, and that output turns the struck inverter's p-channel transistor
+      off and its n-channel transistor on — the cell has latched the wrong state. Dodd and
+      Massengill describe the transient as essentially a write pulse. The outcome is a race between
+      two times: the <b>feedback time</b>, which the disturbed voltage needs to propagate through the
+      opposite inverter and back, and which in its simplest form is the RC delay of the inverter
+      pair; and the <b>recovery time</b>, in which the restoring transistor pulls the node back as
+      the single-event current dies away, set by its drive strength and by the minority-carrier
+      lifetime that governs the diffusion tail.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 236" role="img" aria-labelledby="m11f7-t">
+        <title id="m11f7-t">Cross-coupled inverters of a static memory cell with feedback resistors and the struck node</title>
+        <line x1="90" y1="50" x2="90" y2="170" class="dg-rule" stroke-width="1.4"/>
+        <line x1="370" y1="50" x2="370" y2="170" class="dg-rule" stroke-width="1.4"/>
+        <circle cx="90" cy="110" r="3.5" class="dg-ink"/>
+        <circle cx="370" cy="110" r="3.5" class="dg-ink"/>
+        <text x="82" y="114" class="dg-label" text-anchor="end">A = 0</text>
+        <text x="378" y="114" class="dg-label">B = 1</text>
+
+        <path d="M90,50 L145,50 L150,43 L158,57 L166,43 L174,57 L182,43 L187,50 L200,50" class="dg-line" stroke-width="1.4"/>
+        <path d="M200,32 L200,68 L246,50 Z" class="dg-fill"/>
+        <circle cx="251" cy="50" r="5" class="dg-fill"/>
+        <line x1="256" y1="50" x2="370" y2="50" class="dg-line" stroke-width="1.4"/>
+        <text x="166" y="30" class="dg-label-sm" text-anchor="middle">R_fb</text>
+        <text x="312" y="42" class="dg-label-sm" text-anchor="middle">pMOS on, nMOS off</text>
+
+        <path d="M370,170 L315,170 L310,163 L302,177 L294,163 L286,177 L278,163 L273,170 L260,170" class="dg-line" stroke-width="1.4"/>
+        <path d="M260,152 L260,188 L214,170 Z" class="dg-fill"/>
+        <circle cx="209" cy="170" r="5" class="dg-fill"/>
+        <line x1="204" y1="170" x2="90" y2="170" class="dg-line" stroke-width="1.4"/>
+        <text x="294" y="198" class="dg-label-sm" text-anchor="middle">R_fb</text>
+
+        <path d="M440,74 L382,104" class="dg-acc" stroke-width="2" marker-end="url(#m11f7-a)"/>
+        <text x="404" y="68" class="dg-label"><tspan class="dg-acc-f">strike</tspan></text>
+        <text x="230" y="112" class="dg-label-sm" text-anchor="middle">feedback loop</text>
+        <text x="230" y="222" class="dg-label-sm" text-anchor="middle">The off nMOS drain holding B high collects the charge; the on pMOS fights it.</text>
+        <defs>
+          <marker id="m11f7-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> The cell of Deck 02 p. 17 (after Dodd and Massengill, Fig. 5), access
+        transistors omitted. Node B is held high by the upper inverter. If the strike pulls B below
+        the lower inverter's switching point for longer than the loop takes to respond, A rises and
+        the cell latches the opposite state; the resistors <em>R</em><sub>fb</sub> slow that loop.
+      </figcaption>
+    </figure>
+
+    <p>
+      The struck node's voltage shows the race directly. Dodd and Massengill's simulations of a
+      static memory cell show that even a particle well below the upset threshold drives the
+      struck node through the switching point for a moment; the cell recovers because the
+      restoring transistor wins before the opposite inverter has responded. Just below threshold
+      the node stays low longer and recovers late. Just above, the feedback completes first and
+      the node never returns. Drift, including the funnel, produces the rapid initial fall;
+      diffusion collection prolongs it, and so decides which way the race ends.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 210" role="img" aria-labelledby="m11f8-t">
+        <title id="m11f8-t">Struck-node voltage of a static memory cell for strikes below, just below and just above the upset threshold</title>
+        <line x1="60" y1="170" x2="425" y2="170" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="170" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="105" x2="425" y2="105" class="dg-line" stroke-width="1" stroke-dasharray="4 3"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="54" y="44">V_DD</text><text x="54" y="109">switch</text><text x="54" y="174">0</text>
+        </g>
+        <text x="80" y="24" class="dg-label-sm" text-anchor="middle">strike</text>
+        <line x1="80" y1="28" x2="80" y2="36" class="dg-rule" stroke-width="1"/>
+        <path d="M60,40 L80,40 C83,60 86,138 91,140 C96,142 110,60 140,42 L420,40" class="dg-line" stroke-width="1.8"/>
+        <path d="M60,40 L80,40 C83,70 86,150 94,154 C150,160 250,150 300,138 C330,128 345,50 380,42 L420,40" class="dg-line" stroke-width="1.8" stroke-dasharray="6 3"/>
+        <path d="M60,40 L80,40 C83,70 86,162 94,166 C150,170 250,169 420,169" class="dg-acc" stroke-width="2.2"/>
+        <text x="150" y="62" class="dg-label-sm">1 · far below threshold: recovers</text>
+        <text x="170" y="130" class="dg-label-sm">2 · just below: recovers late</text>
+        <text x="330" y="160" class="dg-label"><tspan class="dg-acc-f">3 · just above</tspan></text>
+        <text x="240" y="196" class="dg-label" text-anchor="middle">time after strike (schematic)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 8.</b> All three strikes carry the struck node through the switching point; only
+        the time it spends there decides the outcome. Schematic, after Dodd and Massengill,
+        Fig. 6.
+      </figcaption>
+    </figure>
+
+    <p>
+      Which of the four drains in the cell is sensitive depends on the stored state, and not
+      equally. In a technology with n-wells in a p-type substrate, the off n-channel drain sits in
+      the substrate and collects charge diffusing back from deep in it, which makes that strike
+      location the most sensitive in most technologies; the off p-channel drain sits inside the
+      n-well, whose junction with the substrate blocks that diffusion. Dodd and Massengill's
+      simulated maps of a 256K cell show the sensitive area growing around the reverse-biased
+      n-channel drain as the LET rises, with the reverse-biased p-channel drain becoming
+      susceptible at 33 MeV·cm²/mg. That growth of sensitive area with LET is the shape of the
+      cross-section curve of §6.
+    </p>
+    <p>
+      The race also shows how to harden the cell: slow the feedback or speed the recovery. The
+      classical method places resistors in the cross-coupling paths, <em>R</em><sub>fb</sub> in
+      Figure 7, which lengthens the RC delay of the loop; Dodd and Massengill cite a microprocessor
+      whose predicted geosynchronous upset rate fell from about once a day to about once a century
+      with resistive hardening. The cost follows from the mechanism — an upset is a write, so the
+      write time lengthens with it — and the polysilicon resistors are hard to control and change
+      with temperature. Adding capacitance to the node raises <em>Q</em><sub>crit</sub> through
+      (11.3) and slows the node at once, with less temperature dependence. Design-hardened cells
+      of 12 to 16 transistors against the standard six, triple modular redundancy and error
+      correction are circuit and system methods for the design modules still to be built
+      (<a href="index.html#roadmap">M13 and M14 on the course roadmap</a>).
+    </p>
+
+    <h3>Dynamic memory: no feedback, no flip needed</h3>
+    <p>
+      A dynamic memory cell stores a packet of charge on a capacitor behind one access transistor.
+      It has no regenerative path and no load that replenishes the charge, so any disturbance a
+      strike causes persists until external circuitry rewrites the cell. A bit flip in the
+      static-memory sense is not required: degrading the stored signal until it falls outside the
+      noise margin of the sense circuitry is enough (Dodd and Massengill). Two parameters describe
+      the vulnerability — the noise margin, which plays the part of a critical charge, and a
+      critical time window, because the circuit's susceptibility changes through its operating
+      cycle. Strikes at or near the storage capacitor or the access transistor's source collect
+      charge from the cell directly; this was the mechanism May and Woods identified at Intel in
+      1979 in 16K and 64K memories, where alpha particles from radioactive contaminants in the
+      packaging caused the errors. Strikes to the bit lines while they float during precharge and
+      sensing unbalance the read, and because those stages occupy a larger fraction of a faster
+      cycle, the bit-line error rate rises as the cycle time falls. Dynamic-memory makers kept the
+      cell capacitance nearly constant through successive generations, which matters for scaling
+      in §9.
+    </p>
+
+    <h3>When the collected charge is a distribution</h3>
+    <p>
+      At a given LET, the collected charge is not a single value. Strikes land at different
+      distances from the junction, at different angles and with different track structures, so
+      the charge delivered to the node is distributed around a mean. If that distribution is
+      approximately Gaussian, the probability that a strike at that LET causes an upset is the
+      fraction lying above the critical charge.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>P</em><sub>upset</sub> = <em>P</em>(<em>Q</em><sub>coll</sub> ≥ <em>Q</em><sub>crit</sub>) = 1 − Φ(<em>z</em>), &nbsp;&nbsp; <em>z</em> = <span class="frac"><span class="num"><em>Q</em><sub>crit</sub> − <em>μ</em><sub>Q</sub></span><span class="den"><em>σ</em><sub>Q</sub></span></span></div>
+        <div class="eq-num">(11.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>P</em><sub>upset</sub> probability that one strike at the stated LET and bias upsets the
+        node (dimensionless) · <em>μ</em><sub>Q</sub> mean collected charge (fC) ·
+        <em>σ</em><sub>Q</sub> standard deviation of the collected charge (fC) — not the
+        cross-section of §6 · <em>Q</em><sub>crit</sub> critical charge from (11.3), in the
+        same unit · Φ the standard normal cumulative distribution function. Since
+        1 − Φ(<em>z</em>) = Φ(−<em>z</em>), a critical charge below the mean gives a negative
+        <em>z</em> and a probability above one half. Assumes a Gaussian distribution of collected
+        charge; the tails of real distributions, set by rare long chords and nuclear secondaries,
+        need not be Gaussian.
+        On the formula sheet as <a href="formula-sheet.html#eq-pupset">(11.5)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 206" role="img" aria-labelledby="m11f9-t">
+        <title id="m11f9-t">Gaussian distribution of collected charge with the fraction above the critical charge shaded</title>
+        <line x1="40" y1="160" x2="425" y2="160" class="dg-rule" stroke-width="1.2"/>
+        <path d="M278.0,160.0 L278.0,72.9 L284.0,80.0 L290.0,87.2 L296.0,94.5 L302.0,101.6 L308.0,108.5 L314.0,115.0 L320.0,121.0 L326.0,126.6 L332.0,131.7 L338.0,136.3 L344.0,140.3 L350.0,143.8 L356.0,146.8 L362.0,149.3 L368.0,151.5 L374.0,153.3 L380.0,154.7 L386.0,155.9 L392.0,156.9 L398.0,157.6 L404.0,158.2 L410.0,158.7 L410.0,160.0 Z" class="dg-acc-f" fill-opacity="0.35"/>
+        <path d="M50.0,158.7 L62.0,157.6 L74.0,155.9 L86.0,153.3 L98.0,149.3 L110.0,143.8 L122.0,136.3 L134.0,126.6 L146.0,115.0 L158.0,101.6 L170.0,87.2 L182.0,72.9 L194.0,59.8 L206.0,49.2 L218.0,42.4 L230.0,40.0 L242.0,42.4 L254.0,49.2 L266.0,59.8 L278.0,72.9 L290.0,87.2 L302.0,101.6 L314.0,115.0 L326.0,126.6 L338.0,136.3 L350.0,143.8 L362.0,149.3 L374.0,153.3 L386.0,155.9 L398.0,157.6 L410.0,158.7" class="dg-line" stroke-width="2"/>
+        <line x1="278" y1="52" x2="278" y2="160" class="dg-rule" stroke-width="1.4"/>
+        <text x="284" y="56" class="dg-label">Q_crit</text>
+        <line x1="230" y1="160" x2="230" y2="166" class="dg-rule" stroke-width="1"/>
+        <line x1="110" y1="160" x2="110" y2="166" class="dg-rule" stroke-width="1"/>
+        <line x1="350" y1="160" x2="350" y2="166" class="dg-rule" stroke-width="1"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="110" y="178">μ − 2σ_Q</text><text x="230" y="178">μ_Q</text><text x="350" y="178">μ + 2σ_Q</text>
+        </g>
+        <text x="322" y="92" class="dg-label"><tspan class="dg-acc-f">P(upset)</tspan></text>
+        <text x="322" y="106" class="dg-label-sm">= shaded fraction</text>
+        <text x="232" y="198" class="dg-label" text-anchor="middle">charge collected from one strike at a fixed LET</text>
+      </svg>
+      <figcaption>
+        <b>Figure 9.</b> With <em>Q</em><sub>crit</sub> drawn 0.8 standard deviations above the
+        mean, 21% of strikes upset the node. Moving <em>Q</em><sub>crit</sub> is a circuit change;
+        moving the distribution is a change of ion, angle or device structure.
+      </figcaption>
+    </figure>
+
+    <h2>5 · Single-event transients</h2>
+    <p>
+      A strike on a node of combinational logic produces the same current pulse and the same
+      voltage excursion as a strike on a memory node, but nothing holds the disturbed state: the
+      node recovers when the pulse ends. The transient does harm only by travelling. It propagates
+      through the gates downstream of the struck node until it reaches a storage element, where it
+      may be captured as a wrong value, or an output, or until it dies away. Single-event
+      transients are therefore a problem of propagation and timing, and they grow in importance as
+      clocks become faster and gates smaller.
+    </p>
+
+    <h3>Propagation and capture</h3>
+    <p>
+      Dodd and Massengill set out three conditions that a transient must meet to become an error.
+      There must be an active logic path from the struck node to a latch at that instant, which
+      depends on the state of the other inputs of every gate on the way. The pulse must survive the
+      gates it passes, each of which reshapes and delays it. And it must arrive at the latch inside
+      the window around the clock edge — the setup-and-hold time — in which the latch samples its
+      input. When all three hold, the latch stores a wrong value, a soft fault; it becomes an
+      observable error only if that value later reaches the circuit's outputs rather than being
+      overwritten or ignored.
+    </p>
+    <p>
+      The timing condition gives transients a dependence that memory upsets lack. Baze and
+      Buchner's simulations and laser experiments, as Dodd and Massengill summarize them, found
+      the error rate of latch circuits independent of clock frequency when the setup-and-hold time
+      is much less than the clock period, and the error rate of combinational circuits rising
+      linearly with clock frequency: every clock edge opens a capture window, and a faster clock
+      opens more of them per unit time. Dodd and Massengill also cite a prediction that propagated
+      transients would become a primary single-event failure mode in technologies below
+      0.35 µm, and add the limiting case: a latch read ten picoseconds after a strike passes the
+      corrupted value on even if the latch itself later recovers.
+    </p>
+    <p>
+      The capture condition has a simple quantitative form for a transient that decays
+      exponentially from its peak. The pulse remains above the latch's input threshold for a time
+      set by its amplitude, its decay constant and the threshold; a sampling instant that falls
+      inside that interval captures it.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>v</em><sub>SET</sub>(<em>t</em>) = <em>V</em><sub>0</sub> <em>e</em><sup>−<em>t</em>/<em>τ</em></sup> &nbsp;⟹&nbsp; <em>t</em><sub>width</sub> = <em>τ</em> ln<span class="dl">(</span><span class="frac"><span class="num"><em>V</em><sub>0</sub></span><span class="den"><em>V</em><sub>L</sub></span></span><span class="dl">)</span>, &nbsp;&nbsp; <em>P</em><sub>latch</sub> ≈ <span class="frac"><span class="num"><em>t</em><sub>width</sub></span><span class="den"><em>T</em><sub>w</sub></span></span></div>
+        <div class="eq-num">(11.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>v</em><sub>SET</sub> transient voltage at the latch input (V) · <em>V</em><sub>0</sub>
+        peak amplitude (V) · <em>τ</em> decay time constant (s; ps in practice) ·
+        <em>V</em><sub>L</sub> the latch's input threshold (V) · <em>t</em><sub>width</sub> time
+        the transient spends above the threshold (s) · <em>T</em><sub>w</sub> latching window, the
+        interval around the clock edge in which an input above threshold is captured (s) ·
+        <em>P</em><sub>latch</sub> capture probability when the sampling instant is equally likely
+        anywhere in that window, capped at 1. Requires <em>V</em><sub>0</sub> &gt;
+        <em>V</em><sub>L</sub>, otherwise the pulse is never captured. The probability is an upper
+        bound: logical and electrical masking upstream of the latch reduce it further.
+        On the formula sheet as <a href="formula-sheet.html#eq-setwidth">(11.6)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 212" role="img" aria-labelledby="m11f10-t">
+        <title id="m11f10-t">Exponential transient crossing a latch threshold, with its time above threshold and the latching window</title>
+        <rect x="90" y="40" width="136" height="120" class="dg-fill" fill-opacity="0.6"/>
+        <text x="158" y="34" class="dg-label-sm" text-anchor="middle">latching window T_w</text>
+        <line x1="60" y1="160" x2="410" y2="160" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="160" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="100" x2="410" y2="100" class="dg-line" stroke-width="1" stroke-dasharray="4 3"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="54" y="44">V_0</text><text x="54" y="104">V_L</text><text x="54" y="164">0</text>
+        </g>
+        <path d="M60.0,160.0 L105.3,160.0 L107.6,40.0 L118.9,51.4 L130.3,61.8 L141.6,71.1 L152.9,79.6 L164.3,87.2 L175.6,94.1 L186.9,100.4 L198.3,106.1 L209.6,111.2 L220.9,115.9 L232.3,120.1 L243.6,123.9 L254.9,127.3 L266.3,130.4 L277.6,133.2 L288.9,135.8 L300.3,138.1 L311.6,140.2 L322.9,142.1 L334.3,143.8 L345.6,145.3 L356.9,146.7 L368.3,148.0 L379.6,149.1 L390.9,150.1" class="dg-acc" stroke-width="2.2"/>
+        <line x1="107.6" y1="116" x2="186.2" y2="116" class="dg-rule" stroke-width="1.2" marker-start="url(#m11f10-a)" marker-end="url(#m11f10-a)"/>
+        <text x="146" y="132" class="dg-label-sm" text-anchor="middle">t_width</text>
+        <text x="236" y="90" class="dg-label-sm">above V_L for τ ln(V_0/V_L)</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="176">0</text><text x="173.3" y="176">τ</text><text x="286.7" y="176">2τ</text><text x="400" y="176">3τ</text>
+        </g>
+        <text x="235" y="200" class="dg-label" text-anchor="middle">time</text>
+        <defs>
+          <marker id="m11f10-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 10.</b> Equation (11.6) with <em>V</em><sub>L</sub> = <em>V</em><sub>0</sub>/2:
+        the pulse stays above threshold for <em>τ</em> ln 2 ≈ 0.69<em>τ</em>. Against a window of
+        1.2<em>τ</em>, drawn shaded, a uniformly placed sampling instant captures it with
+        probability 0.69/1.2 ≈ 0.58.
+      </figcaption>
+    </figure>
+
+    <h3>Pulse width, technology and scaling</h3>
+    <p>
+      How long a transient lasts depends on how much charge the struck node collects and how fast
+      the restoring transistor can remove it, so it rises with LET and depends strongly on the
+      collection volume of §3. Deck 02 p. 19 shows the three-dimensional mixed-level simulations
+      of Dodd, Shaneyfelt, Felix and Schwank (2004) for inverters in four generations from 0.25 to
+      0.1 µm. In bulk CMOS the
+      transient width grows nearly linearly with LET and reaches roughly 700 to 950 ps at
+      70 MeV·cm²/mg, with no consistent ordering by generation, while the peak current falls with
+      scaling, from about 13 mA at 0.25 µm to about 6.5 mA at 0.1 µm at that LET. In silicon on
+      insulator the widths stay below about 250 ps and fall steadily with scaling, to about 120 ps
+      at 0.1 µm. The buried oxide removes the substrate beneath the transistor, and with it the
+      slow diffusion component that stretches the bulk transient. A transient hundreds of
+      picoseconds long outlasts the switching delay of a gate in these technologies by a wide
+      margin, so the gates it crosses pass it rather than filter it.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 228" role="img" aria-labelledby="m11f11-t">
+        <title id="m11f11-t">Single-event transient width against LET in bulk and silicon-on-insulator inverters at 0.25 and 0.1 micrometre</title>
+        <line x1="70" y1="190" x2="405" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="190" x2="70" y2="26" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="70" y="205">0</text><text x="152.5" y="205">20</text><text x="235" y="205">40</text><text x="317.5" y="205">60</text><text x="400" y="205">80</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="64" y="194">0</text><text x="64" y="130">400</text><text x="64" y="66">800</text>
+        </g>
+        <text x="235" y="222" class="dg-label" text-anchor="middle">LET (MeV·cm²/mg)</text>
+        <text x="22" y="108" class="dg-label" text-anchor="middle" transform="rotate(-90 22 108)">width (ps)</text>
+        <path d="M74.1,182.8 L90.6,175.6 L111.2,166.0 L152.5,144.4 L193.8,117.2 L276.2,74.0 L358.8,38.0" class="dg-line" stroke-width="1.8"/>
+        <path d="M74.1,186.0 L111.2,164.4 L152.5,142.0 L193.8,126.0 L276.2,98.8 L358.8,78.8" class="dg-line" stroke-width="1.8" stroke-dasharray="6 3"/>
+        <path d="M74.1,186.8 L90.6,184.1 L111.2,179.6 L131.9,175.4 L152.5,171.6 L193.8,165.5 L276.2,156.7 L358.8,150.3" class="dg-acc" stroke-width="2"/>
+        <path d="M74.1,188.4 L90.6,186.0 L111.2,183.9 L131.9,182.0 L152.5,180.2 L193.8,177.7 L276.2,173.5 L358.8,170.6" class="dg-acc" stroke-width="2" stroke-dasharray="6 3"/>
+        <text x="364" y="42" class="dg-label-sm">bulk 0.25 µm</text>
+        <text x="364" y="83" class="dg-label-sm">bulk 0.1 µm</text>
+        <text x="364" y="150" class="dg-label"><tspan class="dg-acc-f">SOI 0.25</tspan></text>
+        <text x="364" y="174" class="dg-label"><tspan class="dg-acc-f">SOI 0.1</tspan></text>
+      </svg>
+      <figcaption>
+        <b>Figure 11.</b> Simulated values read approximately from Deck 02 p. 19 (Dodd
+        <em>et al.</em>, 2004); the 0.18 and 0.13 µm curves are omitted. Bulk transients are two to six times
+        wider than SOI transients at the same LET, and only the SOI widths shrink consistently with
+        scaling.
+      </figcaption>
+    </figure>
+
+    <p>
+      Transients are measured, and their sensitive nodes located, with focused beams. An ion
+      microbeam places single ions at chosen positions, and a focused picosecond laser pulse
+      generates carriers at a chosen place and time; both are read out with high-speed sampling
+      oscilloscopes (Dodd and Massengill). A laser pulse of a few picoseconds is longer than an
+      ion's charge generation but shorter than the response of most circuits, which is what lets it
+      stand in for an ion (Buchner and Baze). Its advantages are spatial and temporal selectivity —
+      mapping which nodes produce transients and how they propagate — and its limits are optical
+      access, which metallization and packaging block, a restricted range of angles, and a charge
+      distribution different enough from an ion track that a cross-section is hard to derive from
+      it (IEEE NSREC 2024 Short Course, §4.2). In silicon, light below the bandgap is absorbed only
+      by two-photon absorption where the focused intensity is highest, which confines the
+      generated charge to the focal volume and allows it to be placed at depth. Deck 02 p. 19 shows
+      pulsed-laser transients in germanium-channel p-channel FinFETs (Rony <em>et al.</em>, 2021):
+      a 1260 nm laser pulse on the drain produces a drain transient of about 0.18 mA lasting well
+      under a nanosecond, with smaller transients at source, substrate and gate. A 1260 nm photon
+      carries 0.98 eV, below the 1.12 eV bandgap of silicon but above the 0.66 eV bandgap of
+      germanium, so the silicon absorbs that pulse only by two-photon absorption while the
+      germanium channel absorbs it by ordinary single-photon absorption.
+    </p>
+    <p>
+      Imagers show single events in the image itself. A proton or ion crossing a charge-coupled
+      device leaves charge in the pixels along its track that is collected exactly like signal:
+      single-pixel transients or short streaks, and blooming along the column when the deposit
+      exceeds a pixel's full-well capacity, all gone at the next readout
+      (<a href="m08-tid-effects-devices-ics.html">M08</a> §9;
+      <a href="m12-displacement-damage.html">M12</a> §6 separates these transients from the
+      permanent hot pixels of displacement damage).
+    </p>
+
+    <h2>6 · The cross-section</h2>
+    <p>
+      A beam test measures neither the collected charge nor the critical charge. It exposes the
+      part to a known number of particles per unit area and counts what happens. The quantity it
+      returns, the cross-section, is the bridge between the node-level comparison of §4 and the
+      error rate of §8: it summarizes, in one area for each LET, how much of the part responds to
+      that particle. This section defines it, separates it from the other quantities in this
+      subject that carry square centimetres, and shows how its dependence on LET is read and
+      fitted.
+    </p>
+
+    <h3>Definition and units</h3>
+    <p>
+      The part is exposed to a monoenergetic ion beam of known LET at normal incidence until a
+      fluence Φ — particles per square centimetre of beam — has crossed it, and <em>N</em> events
+      are counted. The cross-section is their ratio. Deck 03 p. 29 writes the denominator as the
+      total number of incident ions; it has to be read as ions per unit area, the fluence, for the
+      ratio to be an area.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>σ</em> = <span class="frac"><span class="num"><em>N</em></span><span class="den">Φ</span></span> &nbsp;&nbsp;(cm²/device), &nbsp;&nbsp;&nbsp; <em>σ</em><sub>bit</sub> = <span class="frac"><span class="num"><em>N</em></span><span class="den">Φ · <em>N</em><sub>bits</sub></span></span> &nbsp;&nbsp;(cm²/bit)</div>
+        <div class="eq-num">(11.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>σ</em> single-event cross-section of the part, <b>cm² per device</b> ·
+        <em>N</em> number of events counted (dimensionless) · Φ fluence, particles per cm² of beam
+        (<b>cm⁻²</b>) · <em>σ</em><sub>bit</sub> the same normalized to one storage element,
+        <b>cm² per bit</b> · <em>N</em><sub>bits</sub> number of bits exposed. An effective target
+        area: the area that, struck by every particle, would produce the observed count. It is not
+        an LET (MeV·cm²/mg), not a current density (A/cm²) and not a dose (rad). Valid for one ion,
+        one energy, one angle and one bias condition; each point of a cross-section curve is a
+        separate measurement.
+        On the formula sheet as <a href="formula-sheet.html#eq-xsec">(11.7)</a>.
+      </div>
+    </div>
+
+    <div class="box defn">
+      <p>
+        <b>Per device and per bit.</b> The cross-section of a part is an area per device,
+        cm²/device — the unit <a href="m05-three-effects-taxonomy.html">M05</a> §4 introduced and
+        the one a part-level measurement reports. Deck 02 p. 20 and memory calculations quote it per
+        bit, cm²/bit, because a memory's rate scales with its size and the per-bit value is what
+        transfers between parts of different capacity. The two differ by the bit count and by
+        nothing else, so every cross-section must say which it is. The bit count itself needs a
+        convention: a "1 Mbit" memory holds 2²⁰ = 1,048,576 bits, and a calculation that takes it
+        as 10⁶ differs by 4.9%.
+      </p>
+    </div>
+
+    <p>
+      Five quantities in single-event work carry square centimetres or are built from them, and
+      they come from unrelated places (<a href="m04-quantifying-energy-deposition.html">M04</a> §2):
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Quantity</th><th>Unit</th><th>What it measures</th></tr></thead>
+        <tbody>
+          <tr><td>Cross-section of a part</td><td>cm²/device</td><td>events per unit fluence for the whole part</td></tr>
+          <tr><td>Cross-section per bit</td><td>cm²/bit</td><td>the same divided by the number of bits</td></tr>
+          <tr><td>Linear energy transfer</td><td>MeV·cm²/mg</td><td>energy deposited per unit areal density traversed — a property of the particle</td></tr>
+          <tr><td>Fluence</td><td>cm⁻²</td><td>particles crossing unit area</td></tr>
+          <tr><td>Absorbed dose</td><td>rad = 0.01 J/kg</td><td>energy absorbed per unit mass; from a beam, 1.60×10⁻⁵ · LET · Φ rad (<a href="m03-dose-shielding-terrestrial.html">M03</a> §2)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The last row has a practical consequence. A heavy-ion test deposits total dose while it
+      counts events: 10⁷ ions/cm² at 40 MeV·cm²/mg delivers 6.4 krad to the material the LET refers
+      to, which is enough to shift a sensitive part's parameters during the test.
+    </p>
+
+    <h3>The cross-section against LET</h3>
+    <p>
+      Measured at several LETs, the cross-section traces a characteristic curve. Below some LET no
+      events occur at all, because no strike deposits the critical charge within the collection
+      depth. Above it the cross-section rises, first steeply and then more slowly, toward a
+      saturated value. Shenai, Galloway and Schrimpf, in the course textbook, identify the two
+      parameters that matter: the <b>threshold LET</b>, which measures the critical charge needed
+      to trigger the event, and the <b>saturated cross-section</b>, which is related to the total
+      area of the sensitive regions. From (11.1) and (11.4), a node of critical charge
+      <em>Q</em><sub>crit</sub> collecting over a depth <em>d</em> has a threshold near
+      <em>L</em><sub>th</sub> ≈ <em>Q</em><sub>crit</sub>/(10.4 fC/µm × <em>d</em>), with
+      <em>Q</em><sub>crit</sub> in fC and <em>d</em> in µm; 10 fC collected over 1 µm, for
+      example, corresponds to about 1 MeV·cm²/mg.
+    </p>
+    <p>
+      An ideal part — identical nodes, a single collection depth, every strike collected fully —
+      would show a step: zero below threshold, the full sensitive area above it. Measured curves
+      are gradual for three reasons. Nodes differ in critical charge and in collection depth across
+      a die. The sensitive area around each junction grows with LET, since a more densely ionizing
+      track delivers the critical charge from farther away, the growth Dodd and Massengill's cell
+      maps show in §4. And strikes at a fixed LET deliver a distribution of charge, as in (11.5).
+      Deck 03 p. 29 shows curves for 4 Mbit static memories measured with gold, iron and carbon
+      beams from the front and the back. The cross-section rises from an upper limit of about
+      5×10⁻⁶ cm²/device at 0.5 MeV·cm²/mg, through 10⁻⁴ cm²/device near 0.8, to 4–5×10⁻³ cm²/device
+      over 20–50 MeV·cm²/mg and about 8×10⁻³ cm²/device near 90 MeV·cm²/mg. Divided among the
+      4 Mbit, 4.19×10⁶ bits, the upper part of the curve is of order 10⁻⁹ cm² — 0.1 to
+      0.2 µm² — per bit. Those measurements
+      used the variable-depth Bragg-peak method of <a href="m04-quantifying-energy-deposition.html">M04</a> §3,
+      because charge collection is greatest where the Bragg peak coincides with the sensitive
+      volume. The LET on the abscissa of a cross-section curve is conventionally the surface LET,
+      which assumes the LET is constant through the device; for low-energy accelerator ions, whose
+      LET changes rapidly with depth, the assumption fails, and the collected charge averaged over
+      the collection depth gives a better effective value (IEEE NSREC 2024 Short Course).
+    </p>
+
+    <h3>The Weibull fit</h3>
+    <p>
+      The measured points are fitted with a cumulative Weibull function, the form CREME96 takes as
+      input for rate calculations (Tylka <em>et al.</em>, 1997) and the one the IEEE NSREC 2024
+      Short Course gives. Its four parameters are the saturated cross-section, an onset LET below
+      which the fit is zero, a width, and a dimensionless shape exponent.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>σ</em>(<em>L</em>) = <em>σ</em><sub>sat</sub> <span class="dl">{</span>1 − exp<span class="dl">[</span>−<span class="dl">(</span><span class="frac"><span class="num"><em>L</em> − <em>L</em><sub>0</sub></span><span class="den"><em>W</em></span></span><span class="dl">)</span><sup><em>s</em></sup><span class="dl">]</span><span class="dl">}</span> &nbsp;for <em>L</em> &gt; <em>L</em><sub>0</sub>; &nbsp;&nbsp; <em>σ</em> = 0 &nbsp;for <em>L</em> ≤ <em>L</em><sub>0</sub></div>
+        <div class="eq-num">(11.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>σ</em>(<em>L</em>) cross-section at LET <em>L</em>, in the unit of
+        <em>σ</em><sub>sat</sub> (cm²/device or cm²/bit) · <em>σ</em><sub>sat</sub> saturated
+        cross-section · <em>L</em> LET (MeV·cm²/mg) · <em>L</em><sub>0</sub> onset or threshold
+        LET (MeV·cm²/mg), written LET<sub>th</sub> in the 2024 Short Course · <em>W</em> width
+        parameter (MeV·cm²/mg) · <em>s</em> shape exponent (dimensionless). At
+        <em>L</em> = <em>L</em><sub>0</sub> + <em>W</em> the cross-section is
+        (1 − e⁻¹)<em>σ</em><sub>sat</sub> = 0.632<em>σ</em><sub>sat</sub> whatever the value of
+        <em>s</em>. An empirical fit, not a physical law; parameters are meaningful only over the
+        LET range that was measured.
+        On the formula sheet as <a href="formula-sheet.html#eq-weibull">(11.8)</a>.
+      </div>
+    </div>
+
+    <p>
+      The parameters have direct readings. <em>L</em><sub>0</sub> is the LET at which the first
+      nodes respond; <em>W</em> is the span of LET over which the curve climbs to 63% of
+      saturation; <em>s</em> sets how sharply it leaves the onset, since just above
+      <em>L</em><sub>0</sub> the cross-section grows as the <em>s</em>-th power of
+      (<em>L</em> − <em>L</em><sub>0</sub>). Musseau and Ferlet-Cavrois read the Weibull as the
+      failure distribution of a population of nominally identical elements: the cross-section at
+      <em>L</em> is the fraction of the sensitive area whose effective threshold lies below
+      <em>L</em>. On that reading, simpler technologies, whose elements differ little, give large
+      exponents and near-step curves, while a sensitivity set mostly by a single hardening
+      parameter gives a gradual rise; resistively and capacitively hardened memories show exactly
+      that slow climb.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 228" role="img" aria-labelledby="m11f12-t">
+        <title id="m11f12-t">Weibull cross-section curves normalized to saturation for three shape exponents</title>
+        <line x1="70" y1="190" x2="435" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="190" x2="70" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="40" x2="435" y2="40" class="dg-line" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="110" y1="40" x2="110" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2 3"/>
+        <line x1="190" y1="40" x2="190" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2 3"/>
+        <line x1="70" y1="95.2" x2="190" y2="95.2" class="dg-line" stroke-width="1" stroke-dasharray="2 3"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="64" y="194">0</text><text x="64" y="99">0.63</text><text x="64" y="44">1</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="110" y="205">L_0</text><text x="190" y="205">L_0 + W</text><text x="270" y="205">L_0 + 2W</text><text x="350" y="205">L_0 + 3W</text>
+        </g>
+        <text x="250" y="222" class="dg-label" text-anchor="middle">LET</text>
+        <text x="24" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 24 112)">σ / σ_sat</text>
+        <path d="M110.0,190.0 L114.0,182.7 L118.0,175.7 L122.0,169.1 L126.0,162.8 L130.0,156.8 L134.0,151.1 L138.0,145.7 L142.0,140.5 L146.0,135.6 L150.0,131.0 L154.0,126.5 L158.0,122.3 L162.0,118.3 L166.0,114.5 L170.0,110.9 L174.0,107.4 L178.0,104.1 L182.0,101.0 L186.0,98.0 L190.0,95.2 L198.0,89.9 L206.0,85.2 L214.0,80.9 L222.0,77.0 L230.0,73.5 L238.0,70.3 L246.0,67.4 L254.0,64.8 L262.0,62.4 L270.0,60.3 L278.0,58.4 L286.0,56.6 L294.0,55.0 L302.0,53.6 L310.0,52.3 L318.0,51.1 L326.0,50.1 L334.0,49.1 L342.0,48.3 L350.0,47.5 L358.0,46.8 L366.0,46.1 L374.0,45.5 L382.0,45.0 L390.0,44.5 L398.0,44.1 L406.0,43.7 L414.0,43.4 L422.0,43.0 L430.0,42.7" class="dg-line" stroke-width="1.6" stroke-dasharray="6 3"/>
+        <path d="M110.0,190.0 L114.0,189.6 L118.0,188.5 L122.0,186.7 L126.0,184.1 L130.0,180.9 L134.0,177.1 L138.0,172.7 L142.0,167.8 L146.0,162.5 L150.0,156.8 L154.0,150.8 L158.0,144.7 L162.0,138.3 L166.0,131.9 L170.0,125.5 L174.0,119.1 L178.0,112.8 L182.0,106.7 L186.0,100.8 L190.0,95.2 L198.0,84.7 L206.0,75.5 L214.0,67.7 L222.0,61.1 L230.0,55.8 L238.0,51.6 L246.0,48.3 L254.0,45.9 L262.0,44.1 L270.0,42.7 L278.0,41.8 L286.0,41.2 L294.0,40.8 L302.0,40.5 L310.0,40.3 L318.0,40.2 L326.0,40.1 L334.0,40.1 L342.0,40.0 L350.0,40.0 L358.0,40.0 L366.0,40.0 L374.0,40.0 L382.0,40.0 L390.0,40.0 L398.0,40.0 L406.0,40.0 L414.0,40.0 L422.0,40.0 L430.0,40.0" class="dg-acc" stroke-width="2.2"/>
+        <path d="M110.0,190.0 L114.0,190.0 L118.0,190.0 L122.0,189.9 L126.0,189.8 L130.0,189.4 L134.0,188.8 L138.0,187.8 L142.0,186.2 L146.0,184.0 L150.0,180.9 L154.0,176.9 L158.0,171.8 L162.0,165.5 L166.0,158.0 L170.0,149.3 L174.0,139.6 L178.0,129.0 L182.0,117.8 L186.0,106.4 L190.0,95.2 L198.0,74.7 L206.0,58.9 L214.0,48.6 L222.0,43.2 L230.0,40.9 L238.0,40.2 L246.0,40.0 L254.0,40.0 L262.0,40.0 L270.0,40.0 L278.0,40.0 L286.0,40.0 L294.0,40.0 L302.0,40.0 L310.0,40.0 L318.0,40.0 L326.0,40.0 L334.0,40.0 L342.0,40.0 L350.0,40.0 L358.0,40.0 L366.0,40.0 L374.0,40.0 L382.0,40.0 L390.0,40.0 L398.0,40.0 L406.0,40.0 L414.0,40.0 L422.0,40.0 L430.0,40.0" class="dg-line" stroke-width="1.6" stroke-dasharray="1.5 3"/>
+        <text x="142" y="126" class="dg-label-sm" text-anchor="end">s = 1</text>
+        <text x="196" y="176" class="dg-label-sm">s = 4</text>
+        <text x="240" y="176" class="dg-label"><tspan class="dg-acc-f">s = 2</tspan></text>
+        <line x1="238" y1="170" x2="172" y2="132" class="dg-rule" stroke-width="0.8"/>
+        <text x="300" y="100" class="dg-label-sm">all three pass through 63%</text>
+        <text x="300" y="113" class="dg-label-sm">of saturation at L_0 + W</text>
+      </svg>
+      <figcaption>
+        <b>Figure 12.</b> Equation (11.8) for <em>s</em> = 1 (dashed), 2 (accent) and 4 (dotted),
+        computed on a linear axis. The exponent changes only the shape near onset; the onset
+        <em>L</em><sub>0</sub>, the width <em>W</em> and the saturation are shared.
+      </figcaption>
+    </figure>
+
+    <p>
+      Counting matters at high LET. The cross-section counts <em>events</em>, and an event
+      cross-section cannot exceed the area of the sensitive regions. When a single strike flips
+      several bits — through diffusion to neighbouring junctions, or a grazing track across several
+      cells (§7, §9) — a count of flipped bits divided by fluence is larger than the event
+      cross-section, and at high LET it can exceed any physical area on the part. Multiple-bit
+      events must therefore be identified and counted once each, which requires knowing which
+      logical addresses are physical neighbours.
+    </p>
+
+    <h2>7 · Angle of incidence and effective LET</h2>
+    <p>
+      Particles in space arrive from every direction: the galactic cosmic-ray flux is nearly
+      isotropic (<a href="m02-space-radiation-environment.html">M02</a> §2), so every chord through a
+      sensitive volume occurs, from the shortest at normal incidence to the longest at grazing
+      incidence. A beam test sends particles from one direction. The link between the two is the
+      path length the particle travels inside the sensitive volume, and for the simplest geometry
+      that path length turns an angle into an equivalent LET. This section derives that equivalence
+      and sets out the conditions under which it fails.
+    </p>
+    <p>
+      Consider a sensitive volume that is a thin layer — laterally large, of depth <em>d</em>, with
+      every charge generated inside it collected and none outside. A particle at normal incidence
+      crosses it along a chord <em>d</em> and deposits (11.1) × <em>d</em>. Tilted by an angle
+      <em>θ</em> from the normal, the same particle crosses along a chord <em>d</em>/cos <em>θ</em>
+      and deposits 1/cos <em>θ</em> times as much. To the node, that particle is indistinguishable
+      from a particle of LET/cos <em>θ</em> at normal incidence.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">LET<sub>eff</sub> = <span class="frac"><span class="num">LET</span><span class="den">cos <em>θ</em></span></span></div>
+        <div class="eq-num">(11.9)</div>
+      </div>
+      <div class="eq-says">
+        LET<sub>eff</sub> effective LET (MeV·cm²/mg) · LET the particle's LET at the sensitive
+        depth (MeV·cm²/mg) · <em>θ</em> angle between the track and the normal to the die surface.
+        At 45° the factor is 1.41 and at 60° it is 2. Assumes a sensitive volume that is thin
+        compared with its lateral extent, collection only within that volume, and an LET constant
+        along the tilted path. It applies to direct ionization only.
+        On the formula sheet as <a href="formula-sheet.html#eq-leteff">(11.9)</a>.
+      </div>
+    </div>
+
+    <p>
+      Test practice uses the relation in both directions. Tilting a part lets a single ion species
+      reach a higher effective LET, so fewer beam changes are needed to trace a cross-section curve,
+      and a threshold measured at an angle is quoted as an effective LET. Tilting also changes the
+      fluence the die receives: the beam's fluence is counted per unit area normal to the beam, and
+      a die tilted by <em>θ</em> presents a projected area smaller by cos <em>θ</em>, so the
+      particles per unit die area are Φ cos <em>θ</em>. Cross-sections from tilted exposures are
+      referred to that effective fluence.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 300 204" role="img" aria-labelledby="m11f13-t">
+          <title id="m11f13-t">Chord through a thin sensitive layer at normal and oblique incidence</title>
+          <rect x="20" y="80" width="260" height="40" class="dg-fill"/>
+          <text x="264" y="104" class="dg-label-sm" text-anchor="end">depth d</text>
+          <line x1="70" y1="36" x2="70" y2="164" class="dg-line" stroke-width="1.4"/>
+          <text x="62" y="104" class="dg-label-sm" text-anchor="end">d</text>
+          <line x1="104.5" y1="46" x2="150" y2="80" class="dg-line" stroke-width="1.4"/>
+          <line x1="150" y1="80" x2="203.6" y2="120" class="dg-acc" stroke-width="2.6"/>
+          <line x1="203.6" y1="120" x2="249" y2="154" class="dg-line" stroke-width="1.4"/>
+          <line x1="150" y1="80" x2="150" y2="44" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+          <path d="M150,58 A22,22 0 0,0 132.4,66.8" class="dg-rule" stroke-width="1"/>
+          <text x="139" y="54" class="dg-math" text-anchor="middle">θ</text>
+          <text x="186" y="74" class="dg-label"><tspan class="dg-acc-f">d / cos θ</tspan></text>
+          <text x="150" y="186" class="dg-label-sm" text-anchor="middle">charge deposited ∝ chord: LET_eff = LET / cos θ</text>
+        </svg>
+        <figcaption>
+          <b>Figure 13.</b> In a thin layer the tilted chord is 1/cos <em>θ</em> times the normal
+          one, which is the whole of (11.9). Here <em>θ</em> ≈ 53°.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 460 226" role="img" aria-labelledby="m11f14-t">
+          <title id="m11f14-t">Upset cross-section normalized to normal incidence against angle, for bulk and thick silicon-on-insulator parts, with the inverse-cosine law</title>
+          <line x1="60" y1="190" x2="405" y2="190" class="dg-rule" stroke-width="1.2"/>
+          <line x1="60" y1="190" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+          <g class="dg-label-sm" text-anchor="middle">
+            <text x="60" y="205">0</text><text x="173.3" y="205">30</text><text x="286.7" y="205">60</text><text x="400" y="205">90</text>
+          </g>
+          <g class="dg-label-sm" text-anchor="end">
+            <text x="54" y="194">1</text><text x="54" y="119">10</text><text x="54" y="44">100</text>
+          </g>
+          <text x="232" y="221" class="dg-label" text-anchor="middle">angle of incidence (degrees)</text>
+          <text x="22" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 22 112)">σ(θ) / σ(0)</text>
+          <path d="M60.0,190.0 L78.9,189.9 L97.8,189.5 L116.7,188.9 L135.6,188.0 L154.4,186.8 L173.3,185.3 L192.2,183.5 L211.1,181.3 L230.0,178.7 L248.9,175.6 L267.8,171.9 L286.7,167.4 L305.6,161.9 L324.4,155.1 L343.3,146.0 L362.2,133.0 L381.1,110.5" class="dg-line" stroke-width="1.4" stroke-dasharray="5 3"/>
+          <path d="M60.0,190.0 L116.7,180.2 L173.3,176.8 L230.0,154.2 L286.7,144.8 L343.3,107.7 L400.0,59.5" class="dg-acc" stroke-width="2"/>
+          <g class="dg-acc-f">
+            <circle cx="60" cy="190" r="3.5"/><circle cx="116.7" cy="180.2" r="3.5"/><circle cx="173.3" cy="176.8" r="3.5"/>
+            <circle cx="230" cy="154.2" r="3.5"/><circle cx="286.7" cy="144.8" r="3.5"/><circle cx="343.3" cy="107.7" r="3.5"/>
+            <circle cx="400" cy="59.5" r="3.5"/>
+          </g>
+          <g class="dg-ink">
+            <rect x="132.1" y="186.5" width="7" height="7"/><rect x="207.6" y="186.5" width="7" height="7"/>
+            <rect x="283.2" y="171.2" width="7" height="7"/><rect x="358.7" y="153" width="7" height="7"/>
+          </g>
+          <text x="386" y="112" class="dg-label-sm">1/cos θ</text>
+          <text x="372" y="172" class="dg-label-sm">bulk 256K SRAM</text>
+          <text x="290" y="100" class="dg-label" text-anchor="end"><tspan class="dg-acc-f">thick-SOI register</tspan></text>
+        </svg>
+        <figcaption>
+          <b>Figure 14.</b> 300 MeV protons, points read approximately from Musseau and
+          Ferlet-Cavrois (IEEE NSREC 2001 Short Course, Fig. 77); the dashed curve is
+          1/cos <em>θ</em>. The thick-SOI register exceeds it by a factor of two to three between
+          45° and 75° and reaches about 55 at 90°; the bulk memory rises more slowly, to 1.6 at 60°
+          and 2.8 at 80° against 2.0 and 5.8.
+        </figcaption>
+      </figure>
+    </div>
+
+    <h3>Where the cosine law fails</h3>
+    <p>
+      Every assumption behind (11.9) fails somewhere, and each failure has a physical cause.
+    </p>
+    <p>
+      <b>Thin films.</b> In silicon on insulator the buried oxide ends collection at the bottom of
+      the film, so at normal incidence the collection length is set by the film thickness; toward
+      grazing incidence the track runs along the film, and the collection length is limited instead
+      by the lateral isolation trenches. Musseau and Ferlet-Cavrois summarize a thick-SOI part as
+      behaving like thin SOI at normal incidence and like bulk at grazing angles, and they report a
+      very strong angular dependence in SOI, with heavy ions and with protons. In Figure 14 the
+      thick-SOI register's cross-section exceeds 1/cos <em>θ</em> by a factor of two to three
+      between 45° and 75°, while the bulk memory rises more slowly than 1/cos <em>θ</em>.
+      They add a second effect of thinness: the ion track has a radial extent of up to hundreds of
+      nanometres, set by the range of its delta rays, so in a film thinner than that some of the
+      energy the ion loses escapes the volume, and the product of LET and chord — which is the
+      effective-LET concept — overestimates the energy deposited.
+    </p>
+
+    <div class="box warn">
+      <p>
+        In Musseau and Ferlet-Cavrois's Fig. 77 the reference curve labelled 1/cos(angle) is
+        displaced by one 10° step: its points, 1.06 at 30°, 1.31 at 50°, 2.0 at 70° and 2.9 at
+        80°, are the values of 1/cos(<em>θ</em> − 10°), and the bulk data lie on that displaced
+        curve. The accompanying text, which says the 1/cos law fits the bulk data and that SOI
+        differs drastically from it, rests on the displaced curve. Against 1/cos <em>θ</em> itself,
+        drawn in Figure 14, the bulk memory lies below the law from 40° on — 1.6 against 2.0 at
+        60°, 2.8 against 5.8 at 80° — and the thick-SOI register lies above it by a factor of two
+        to three up to 75°. Both data sets are 300 MeV proton results. Protons upset through
+        reaction products, for which an effective LET is not defined (below), so neither part is
+        expected to follow 1/cos <em>θ</em>.
+      </p>
+    </div>
+    <p>
+      <b>Collection outside a fixed layer.</b> In bulk devices the funnel and diffusion collect
+      charge from outside any fixed layer, from a depth that itself depends on the track direction,
+      so the chord through a slab is an approximation to the collection geometry. Dodd and
+      Massengill note that angled strikes need full three-dimensional device simulation.
+    </p>
+    <p>
+      <b>Nuclear secondaries.</b> Protons and neutrons cause upsets through reaction products, not
+      through their own LET, so an effective LET is not defined for them; the IEEE NSREC 2024 Short
+      Course states that the relevant metric for those particles is the particle energy. The
+      reaction products are forward-scattered along the incident direction (Dodd and Massengill), so
+      the angular dependence of proton upsets follows the reaction kinematics.
+    </p>
+    <p>
+      <b>Overlayers and range.</b> A tilted ion crosses 1/cos <em>θ</em> times more metallization
+      and passivation before it reaches the silicon, so a low-energy accelerator ion arrives at the
+      sensitive depth with a different energy, and a different LET, from the one the surface value
+      assumes (Musseau and Ferlet-Cavrois note the added shielding thickness at grazing incidence).
+      <b>Several cells.</b> Finally, a grazing track can cross several sensitive regions, turning one
+      event into a multiple-cell upset.
+    </p>
+    <p>
+      Radiation in orbit therefore arrives from all directions, and the direction matters. A thin sensitive volume in an isotropic environment is struck most often
+      along short chords, but the rare long chords carry the largest deposits and set the rate for
+      a part whose threshold is high. Rate codes account for this by integrating over the
+      distribution of chord lengths in the sensitive volume, which is the subject of §8.
+    </p>
+
+    <h2>8 · From cross-section to an orbital error rate</h2>
+    <p>
+      An error rate needs two curves: how many particles of each LET arrive, which the environment
+      models of <a href="m02-space-radiation-environment.html">M02</a> §11 supply, and how large a
+      target the part presents at each LET, which §6 measured. The rate is their overlap. This
+      section writes the overlap as an integral, shows where most of it comes from, describes the
+      tool that evaluates it in practice, and follows a per-bit rate up to the failure-in-time
+      figure a reliability budget uses.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em> = ∫ <em>σ</em>(<em>L</em>) Φ(<em>L</em>) d<em>L</em></div>
+        <div class="eq-num">(11.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em> event rate (s⁻¹ per bit when <em>σ</em> is per bit; per device when it is per
+        device) · <em>σ</em>(<em>L</em>) cross-section at LET <em>L</em>, from (11.8) or from
+        measured points (cm²/bit or cm²/device) · Φ(<em>L</em>) <b>differential</b> flux —
+        particles per cm² per second per unit LET, cm⁻²s⁻¹(MeV·cm²/mg)⁻¹ · <em>L</em> LET
+        (MeV·cm²/mg), integrated over the whole spectrum. The units close: cm² × cm⁻²s⁻¹(MeV·cm²/mg)⁻¹
+        × MeV·cm²/mg = s⁻¹. Direct ionization only; proton and neutron rates use cross-sections
+        against particle energy and an energy spectrum instead. This form treats the flux as
+        normally incident; the chord-length (IRPP) integration described under CREME96 below
+        refines it.
+        On the formula sheet as <a href="formula-sheet.html#eq-rateint">(11.10)</a>.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p>
+        Deck 02 p. 20 prints the rate as <em>R</em> = <em>σ</em>(LET)Φ(LET)d(LET), without the
+        integral sign; p. 21 repeats that line, and its diagram writes the integral sign but omits
+        the d(LET). The d(LET) shows the integral is intended.
+        Without it the expression is the contribution of one LET interval, a rate per unit LET
+        rather than a rate. The integral form (11.10) is the one to use.
+      </p>
+    </div>
+
+    <p>
+      Integrating (11.10) by parts gives the form <a href="m02-space-radiation-environment.html">M02</a> §2
+      describes, in terms of the integral spectrum Φ(&gt;<em>L</em>), the flux of particles whose
+      LET exceeds <em>L</em>: <em>R</em> = ∫ (d<em>σ</em>/d<em>L</em>) Φ(&gt;<em>L</em>) d<em>L</em>.
+      For a step cross-section — zero below a threshold <em>L</em><sub>th</sub>, <em>σ</em><sub>sat</sub>
+      above — and normally incident flux, this collapses to
+      <em>R</em> = <em>σ</em><sub>sat</sub> Φ(&gt;<em>L</em><sub>th</sub>): the saturated area
+      times the flux of everything able to upset it. The same step idealization is the "critical
+      charge" option of the old CREME code, which CREME96 retains; Tylka <em>et al.</em> note that
+      it does not give accurate results for space applications, although it may be useful to chip
+      designers. As a teaching form it makes the leverage of the threshold explicit: the integral LET spectrum rises steeply toward low LET,
+      so a small fall in threshold admits many more particles, while the saturated cross-section
+      enters only linearly.
+    </p>
+    <p>
+      The environment's spectrum has one feature that shapes every rate. Galactic cosmic-ray
+      abundances fall steeply above iron, <em>Z</em> = 26 (<a href="m02-space-radiation-environment.html">M02</a> §2),
+      and by Dodd and Massengill's rule of thumb an ion's maximum LET in MeV·cm²/mg is roughly its
+      atomic number; the LET spectrum therefore drops sharply above the region iron can reach, near
+      30 MeV·cm²/mg. A part with its threshold above that region sees only the rare heavier nuclei and
+      has a far lower rate than one whose threshold sits below it.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 720 240" role="img" aria-labelledby="m11f15-t">
+        <title id="m11f15-t">Differential LET flux times cross-section gives the rate integrand</title>
+        <text x="130" y="24" class="dg-label" text-anchor="middle" font-weight="600">Environment Φ(L)</text>
+        <text x="370" y="24" class="dg-label" text-anchor="middle" font-weight="600">Part σ(L), Weibull</text>
+        <text x="610" y="24" class="dg-label" text-anchor="middle" font-weight="600">Integrand L·Φ·σ</text>
+        <line x1="40" y1="190" x2="220" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="40" y1="190" x2="40" y2="44" class="dg-rule" stroke-width="1.2"/>
+        <line x1="280" y1="190" x2="460" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="280" y1="190" x2="280" y2="44" class="dg-rule" stroke-width="1.2"/>
+        <line x1="520" y1="190" x2="700" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="520" y1="190" x2="520" y2="44" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="40" y="204">0.1</text><text x="100" y="204">1</text><text x="160" y="204">10</text><text x="220" y="204">100</text>
+          <text x="280" y="204">0.1</text><text x="340" y="204">1</text><text x="400" y="204">10</text><text x="460" y="204">100</text>
+          <text x="520" y="204">0.1</text><text x="580" y="204">1</text><text x="640" y="204">10</text><text x="700" y="204">100</text>
+        </g>
+        <text x="370" y="222" class="dg-label" text-anchor="middle">LET (MeV·cm²/mg), logarithmic in all three panels</text>
+        <path d="M40.0,50.0 L47.2,54.2 L54.4,58.4 L61.6,62.6 L68.8,66.8 L76.0,71.0 L83.2,75.2 L90.4,79.4 L97.6,83.6 L104.8,87.8 L112.0,92.0 L119.2,96.2 L126.4,100.4 L133.6,104.6 L140.8,108.8 L148.0,113.0 L155.2,117.2 L162.4,121.4 L169.6,125.6 L176.8,129.8 L180.4,132.1 L184.0,136.0 L187.6,152.7 L191.2,184.8 L192.4,189.2" class="dg-line" stroke-width="1.8"/>
+        <text x="178" y="158" class="dg-label-sm" text-anchor="end">iron region</text>
+        <text x="48" y="182" class="dg-label-sm">log scale, schematic</text>
+        <text x="250" y="124" class="dg-label" text-anchor="middle">×</text>
+        <path d="M360.4,176.4 L364.0,146.0 L367.6,129.5 L371.2,117.7 L374.8,108.2 L378.4,100.3 L382.0,93.3 L385.6,87.1 L389.2,81.5 L392.8,76.4 L396.4,71.8 L400.0,67.6 L403.6,63.9 L407.2,60.6 L410.8,57.8 L414.4,55.4 L418.0,53.5 L421.6,52.1 L425.2,51.2 L428.8,50.6 L432.4,50.2 L436.0,50.1 L460.0,50.0" class="dg-line" stroke-width="1.8"/>
+        <line x1="358" y1="190" x2="358" y2="174" class="dg-rule" stroke-width="1"/>
+        <text x="352" y="184" class="dg-label-sm" text-anchor="end">L_0</text>
+        <text x="288" y="62" class="dg-label-sm">log scale</text>
+        <text x="490" y="124" class="dg-label" text-anchor="middle">=</text>
+        <path d="M598.0,190.0 L599.2,189.0 L601.6,184.9 L604.0,179.2 L606.4,172.4 L608.8,164.9 L611.2,156.8 L613.6,148.3 L616.0,139.5 L618.4,130.5 L620.8,121.4 L623.2,112.4 L625.6,103.5 L628.0,94.8 L630.4,86.5 L632.8,78.8 L635.2,71.6 L637.6,65.2 L640.0,59.8 L642.4,55.4 L644.8,52.3 L647.2,50.4 L649.6,50.0 L652.0,51.0 L654.4,53.6 L656.8,57.8 L659.2,64.2 L661.6,75.4 L664.0,101.1 L666.4,155.0 L668.8,187.5 L671.2,189.8 L673.6,190.0 Z" class="dg-acc-f" fill-opacity="0.3"/>
+        <path d="M598.0,190.0 L599.2,189.0 L601.6,184.9 L604.0,179.2 L606.4,172.4 L608.8,164.9 L611.2,156.8 L613.6,148.3 L616.0,139.5 L618.4,130.5 L620.8,121.4 L623.2,112.4 L625.6,103.5 L628.0,94.8 L630.4,86.5 L632.8,78.8 L635.2,71.6 L637.6,65.2 L640.0,59.8 L642.4,55.4 L644.8,52.3 L647.2,50.4 L649.6,50.0 L652.0,51.0 L654.4,53.6 L656.8,57.8 L659.2,64.2 L661.6,75.4 L664.0,101.1 L666.4,155.0 L668.8,187.5 L671.2,189.8 L673.6,190.0" class="dg-acc" stroke-width="2"/>
+        <text x="528" y="62" class="dg-label-sm">linear scale:</text>
+        <text x="528" y="76" class="dg-label-sm">shaded area = R</text>
+      </svg>
+      <figcaption>
+        <b>Figure 15.</b> A schematic falling spectrum with an edge above the iron region, times a
+        Weibull cross-section, gives the integrand of (11.10). Plotting <em>L</em>·Φ·<em>σ</em> on a
+        logarithmic LET axis makes the shaded area equal to the rate. Almost all of it comes from
+        LETs between the onset and the iron edge; the spectrum below onset and the part's response
+        far above saturation contribute nothing.
+      </figcaption>
+    </figure>
+
+    <h3>CREME96</h3>
+    <p>
+      The standard tool for evaluating (11.10) in orbit is CREME96, the revision of the Cosmic Ray
+      Effects on Micro-Electronics code documented by Tylka <em>et al.</em> (1997), a NASA and Naval
+      Research Laboratory tool (Deck 02 p. 20) now hosted at Vanderbilt
+      (<a href="m02-space-radiation-environment.html">M02</a> §11). Deck 02 p. 20 lists its inputs —
+      the orbit, the shielding thickness and the mission duration — and its outputs: the flux
+      against LET behind the chosen shielding, the predicted upset rate for a memory, logic or custom
+      device, and worst-case environments. For heavy ions it computes the rate by the integral
+      rectangular parallelepiped method: the sensitive volume is represented as a rectangular box
+      whose depth the user supplies, the cross-section as Weibull parameters, and the calculation
+      integrates over the distribution of chord lengths an isotropic flux produces in that box. It
+      also computes proton-induced rates from a cross-section against proton energy. Tylka lists the
+      transport code's limitations at release: no neutron production in the shielding, no target
+      fragments, aluminium as the only shield and silicon as the only target.
+    </p>
+    <p>
+      The worst cases are models of one real event. The solar-minimum galactic cosmic-ray
+      environment, when that flux is highest (<a href="m02-space-radiation-environment.html">M02</a> §4),
+      is the design benchmark for the steady background. For solar particles CREME96 offers three
+      models built from the October 1989 event, which Tylka describes as a genuine worst case at
+      about the 99% confidence level: a <b>worst-week</b> model averaged over 180 hours of the
+      19–27 October disturbance, a <b>worst-day</b> model averaged over 18 hours from 13:00 UT on
+      20 October, when an interplanetary shock arrived, and a <b>peak</b> model from the highest
+      five-minute fluxes on that day, which exceed the worst day by roughly a factor of five.
+    </p>
+
+    <div class="box warn">
+      <p>
+        Deck 02 pp. 20–21 list the worst-week and worst-day models with the label "(solar
+        maximum/minimum)". In CREME96 they are solar-particle-event models, both built from the
+        October 1989 event (Tylka <em>et al.</em>). Solar minimum and solar maximum are conditions
+        of the separate galactic cosmic-ray model, which follows the solar cycle and is highest at
+        solar minimum.
+      </p>
+    </div>
+    <p>
+      Deck 02 p. 22 shows why the revision mattered. For a set of representative devices in
+      geosynchronous orbit behind 100 mils of aluminium, the old CREME solar-particle models,
+      labelled M = 9 and M = 10 and meant to represent the peak of the August 1972 event, predicted
+      rates at least an order of magnitude above even the CREME96 peak model. The old models were
+      unconstrained by heavy-ion measurements at high energy — all of the August 1972 heavy-ion data
+      above about 40 MeV per nucleon came from a single four-minute sounding-rocket flight — while
+      the solar-minimum cosmic-ray rates of the two codes agree closely. The choice of environment
+      model moves a predicted rate by more than the uncertainty in most device parameters.
+    </p>
+
+    <h3>Per bit, per memory, and FIT</h3>
+    <p>
+      When a cross-section has already been evaluated for the mission spectrum — a single
+      representative per-bit value — the integral reduces to a product with the integrated flux,
+      and the per-bit rate scales to the memory by the number of bits.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>r</em><sub>bit</sub> = <em>σ</em><sub>bit</sub> · Φ̇ &nbsp;&nbsp;&nbsp;&nbsp; <em>r</em><sub>mem</sub> = <em>N</em><sub>bits</sub> · <em>r</em><sub>bit</sub></div>
+        <div class="eq-num">(11.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>r</em><sub>bit</sub> upset rate per bit (bit⁻¹ day⁻¹, or s⁻¹ — it inherits the flux's time
+        unit) · <em>σ</em><sub>bit</sub> cross-section per bit, evaluated for the same spectrum as
+        the flux (cm²/bit) · Φ̇ integrated particle <b>flux</b>, not fluence (cm⁻² day⁻¹ or
+        cm⁻² s⁻¹) · <em>N</em><sub>bits</sub> number of bits · <em>r</em><sub>mem</sub> rate for the
+        whole memory. A cross-section measured at one LET cannot be multiplied by a broad-spectrum
+        flux; (11.10) must be evaluated first.
+        On the formula sheet as <a href="formula-sheet.html#eq-rate">(11.11)</a>.
+      </div>
+    </div>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">FIT = (failures per hour) × 10⁹</div>
+        <div class="eq-num">(11.12)</div>
+      </div>
+      <div class="eq-says">
+        FIT failures in time: <b>one FIT is one failure per 10⁹ device-hours</b>. Convert the rate
+        to per-hour first — a rate per day is divided by 24. Mission analyses quote rates per day
+        and reliability budgets quote FIT, and the factor of 24 between them is easy to drop.
+        On the formula sheet as <a href="formula-sheet.html#eq-fit">(11.12)</a>.
+      </div>
+    </div>
+
+    <p>
+      Dodd and Massengill give the scale for terrestrial memories: an uncorrected rate of 1000 FIT
+      per megabit produces about one error every three weeks in a system with 256 MB of memory, and
+      a typical commercial requirement is below 1000 FIT per device. Because that requirement is set
+      per device, holding it while the number of bits grows requires the per-bit rate to fall — the
+      point from which §9 begins. <a href="m03-dose-shielding-terrestrial.html">M03</a> §8 applies the
+      same arithmetic to the ground-level neutron environment, from 777 FIT/Mbit at 90 nm to the
+      mean time between errors of memories of every size.
+    </p>
+    <p>
+      A shortcut avoids the full integral when only an estimate is needed. The figure of merit
+      introduced by Petersen, Langworthy and Diehl (1983), whose paper Deck 03 p. 26 cites, is
+      used in the form the IEEE NSREC 2024 Short Course gives, with the characteristic LET taken
+      as <em>L</em><sub>0.25</sub>: FOM = <em>σ</em><sub>sat</sub>/<em>L</em><sub>0.25</sub>²,
+      where <em>L</em><sub>0.25</sub> is the LET at which the cross-section reaches a quarter of
+      saturation; from (11.8), <em>L</em><sub>0.25</sub> = <em>L</em><sub>0</sub> + <em>W</em>(0.288)<sup>1/<em>s</em></sup>,
+      since −ln 0.75 = 0.288. Multiplied by an orbit-specific constant it gives an upset rate in
+      errors per bit per day (IEEE NSREC 2024 Short Course). It carries the same lesson as the
+      step-function form: the rate falls as the square of the characteristic threshold LET and only
+      linearly with the saturated area.
+    </p>
+
+    <h2>9 · Scaling</h2>
+    <p>
+      Each technology generation shrinks the transistor, lowers the supply voltage and packs more
+      bits onto a die, and each of those changes acts on a different term of the preceding
+      sections. Whether single-event errors become more or less frequent therefore depends on which
+      rate is meant — per bit or per chip — and on which of the opposing changes wins. This section
+      assembles the answer from the pieces already in place: the collected charge of §3, the
+      critical charge of §4 and the rate integral of §8.
+    </p>
+
+    <h3>Four things shrink or grow at once</h3>
+    <p>
+      Scaling moves both sides of the comparison of §1 and both factors of the rate. The sensitive
+      area per bit shrinks with the cell, so the saturated per-bit cross-section falls. Junctions
+      become shallower and collection volumes smaller, most of all in silicon on insulator and in
+      fins, so each strike delivers less charge. The node capacitance and the supply voltage fall
+      together, so the critical charge <em>Q</em><sub>crit</sub> = <em>C</em><sub>n</sub><em>V</em><sub>crit</sub>
+      falls, and with it the threshold LET. And the number of bits per chip rises. The IEEE NSREC
+      2024 Short Course summarizes the result for memories: the per-bit upset rate is expected to
+      fall as the cell shrinks, the reduction in per-bit cross-section is offset by the lower
+      voltage and critical charge, which make the cell susceptible to the far more abundant
+      particles of low LET, and the growing density raises the rate per chip. Cristoloveanu and
+      Ferlet-Cavrois's compilation shows the first two trends directly — both the saturated
+      cross-section and the threshold LET of bulk and SOI memories fell with each generation.
+    </p>
+    <p>
+      Which effect wins per bit follows from §8. With the step approximation the rate is
+      <em>σ</em><sub>sat</sub>Φ(&gt;<em>L</em><sub>th</sub>), and the figure of merit makes the same
+      point more sharply: the rate goes as <em>σ</em><sub>sat</sub>/<em>L</em><sub>0.25</sub>². The
+      shrinking cross-section enters linearly; the falling threshold enters through a spectrum that
+      rises steeply toward low LET, or through the inverse square. A generation that shrinks the
+      sensitive area faster than it lowers the threshold sees its per-bit rate fall; one that lowers
+      the threshold faster sees it rise. Dodd and Massengill, writing in 2003, describe the overall
+      trend of their time as a general increase in susceptibility with each generation — Sandia
+      static memories without feedback resistors lost threshold LET generation by generation — and
+      add that the reduction in total node capacitance matters at least as much as any change in the
+      physics, because it shortens the RC feedback time that sets the race of §4. They also cite
+      simple scaling rules predicting an increase in soft-error susceptibility of about 40% per
+      technology generation (Ronen <em>et al.</em>, 2001). The observation that per-bit error rates
+      decline with gate length and the prediction that susceptibility rises are therefore
+      statements about different quantities: the second concerns the threshold, the first weights
+      that threshold by a sensitive area that can shrink faster.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 250" role="img" aria-labelledby="m11f16-t">
+        <title id="m11f16-t">How scaling acts on the per-bit and per-chip single-event rates</title>
+        <text x="80" y="18" class="dg-label-sm" text-anchor="middle">what scaling changes</text>
+        <text x="230" y="18" class="dg-label-sm" text-anchor="middle">which term moves</text>
+        <text x="380" y="18" class="dg-label-sm" text-anchor="middle">effect on the rate</text>
+        <rect x="8" y="28" width="144" height="40" rx="4" class="dg-fill"/>
+        <rect x="158" y="28" width="144" height="40" rx="4" class="dg-fill"/>
+        <rect x="308" y="28" width="144" height="40" rx="4" class="dg-fill"/>
+        <text x="80" y="44" class="dg-label-sm" text-anchor="middle">sensitive area</text>
+        <text x="80" y="58" class="dg-label-sm" text-anchor="middle">and volume per bit fall</text>
+        <text x="230" y="52" class="dg-label-sm" text-anchor="middle">σ_sat per bit falls</text>
+        <text x="380" y="52" class="dg-label-sm" text-anchor="middle">per-bit rate falls</text>
+        <rect x="8" y="80" width="144" height="40" rx="4" class="dg-fill"/>
+        <rect x="158" y="80" width="144" height="40" rx="4" class="dg-fill"/>
+        <rect x="308" y="80" width="144" height="40" rx="4" class="dg-fill"/>
+        <text x="80" y="96" class="dg-label-sm" text-anchor="middle">node C and supply</text>
+        <text x="80" y="110" class="dg-label-sm" text-anchor="middle">voltage fall</text>
+        <text x="230" y="96" class="dg-label-sm" text-anchor="middle">Q_crit and threshold</text>
+        <text x="230" y="110" class="dg-label-sm" text-anchor="middle">LET fall</text>
+        <text x="380" y="96" class="dg-label-sm" text-anchor="middle">more particles qualify:</text>
+        <text x="380" y="110" class="dg-label-sm" text-anchor="middle">per-bit rate rises</text>
+        <rect x="8" y="132" width="144" height="40" rx="4" class="dg-fill"/>
+        <rect x="158" y="132" width="144" height="40" rx="4" class="dg-fill"/>
+        <rect x="308" y="132" width="144" height="40" rx="4" class="dg-fill"/>
+        <text x="80" y="156" class="dg-label-sm" text-anchor="middle">bits per chip rise</text>
+        <text x="230" y="156" class="dg-label-sm" text-anchor="middle">N_bits rises</text>
+        <text x="380" y="156" class="dg-label" text-anchor="middle"><tspan class="dg-acc-f">chip rate rises</tspan></text>
+        <rect x="8" y="184" width="144" height="40" rx="4" class="dg-fill"/>
+        <rect x="158" y="184" width="144" height="40" rx="4" class="dg-fill"/>
+        <rect x="308" y="184" width="144" height="40" rx="4" class="dg-fill"/>
+        <text x="80" y="200" class="dg-label-sm" text-anchor="middle">cell pitch approaches</text>
+        <text x="80" y="214" class="dg-label-sm" text-anchor="middle">the track and diffusion size</text>
+        <text x="230" y="208" class="dg-label-sm" text-anchor="middle">one strike, several cells</text>
+        <text x="380" y="208" class="dg-label-sm" text-anchor="middle">multiple-cell upsets rise</text>
+        <g class="dg-rule" stroke-width="1.2">
+          <line x1="152" y1="48" x2="158" y2="48"/><line x1="302" y1="48" x2="308" y2="48"/>
+          <line x1="152" y1="100" x2="158" y2="100"/><line x1="302" y1="100" x2="308" y2="100"/>
+          <line x1="152" y1="152" x2="158" y2="152"/><line x1="302" y1="152" x2="308" y2="152"/>
+          <line x1="152" y1="204" x2="158" y2="204"/><line x1="302" y1="204" x2="308" y2="204"/>
+        </g>
+        <text x="230" y="244" class="dg-label-sm" text-anchor="middle">Per bit: rows 1 and 2 compete. Per chip: row 3 multiplies the result.</text>
+      </svg>
+      <figcaption>
+        <b>Figure 16.</b> The answer to whether errors rise or fall with scaling depends on the rate
+        being asked about. The per-bit rate is a contest between a shrinking target and a falling
+        threshold; the per-chip rate multiplies the outcome by a bit count that rises every
+        generation.
+      </figcaption>
+    </figure>
+
+    <h3>Capacitance: memories that held it and memories that did not</h3>
+    <p>
+      The two memory families took different paths because of (11.3). Dynamic-memory
+      manufacturers deliberately held the storage-cell capacitance nearly constant across
+      generations through modified cell structures, and their single-event performance stayed
+      roughly constant as a result; the nodal capacitance of static memories, which store the bit
+      on transistor gates and drains, fell steadily (Dodd and Massengill). Dodd and Massengill note
+      that manufacturers may have to add capacitance to dense static memories explicitly, the same
+      remedy §4 derived for hardening. The per-device reliability requirement then closes the loop:
+      a terrestrial specification of, typically, under 1000 FIT per device has to be met while the
+      number of bits per device rises, so the per-bit rate must keep falling just to stand still.
+    </p>
+    <p>
+      The chip-level history of one product shows how many terms move at once. Dodd and Massengill
+      trace the alpha-particle soft-error rate of the DEC Alpha microprocessor from a 0.5 µm, 3.3 V
+      generation to a 0.18 µm, 1.6 V one. The rate rose with the first shrinks, as larger caches,
+      smaller features and lower voltage predict, but less than simple scaling expected because a
+      lid coating reduced the alpha flux from the package; error correction then cut it sharply
+      although scaling continued; the next shrink raised it again, moderated by the lower
+      charge-collection efficiency of the 0.25 µm technology; and the last rose steeply when
+      flip-chip packaging placed lead-bearing solder bumps, an alpha source, directly on the die.
+      (Deck 02 p. 16's label "flip-chip" beside SEU denotes a bit flip; the packaging technology is
+      the one meant here.)
+    </p>
+
+    <h3>New mechanisms at small dimensions</h3>
+    <p>
+      Lower critical charge brings particles that were once harmless into play. Below roughly the
+      65 nm node, direct ionization by low-energy protons can upset a cell without a nuclear
+      reaction (<a href="m01-radiation-and-matter.html">M01</a> §7), and the low-LET end of every
+      spectrum, which an older threshold ignored, starts to contribute. Multi-gate FinFETs have
+      altered the trend: the 2024 Short Course notes that they made it possible to limit the
+      reduction in critical charge, while their small footprint raises the density of transistors
+      on a chip.
+    </p>
+    <p>
+      Geometry adds the second change. Deck 02 p. 28 lists ion tracks larger than device sizes and
+      single events that affect multiple cells among the new challenges, and shows a
+      proton-induced nuclear reaction whose products — an alpha particle, a gamma ray, a proton and
+      an oxygen recoil — deposit charge in several cells at once: about 40 fC in each cell along
+      the oxygen recoil's track, and about 30 fC in the cell at the reaction site and in one the
+      alpha crosses. Once the cell pitch approaches the radial extent of the track and the reach of
+      diffusion, one particle deposits charge in several cells: multiple-cell upsets grow as a
+      fraction of all events, grazing tracks cross whole rows, and a code that corrects one bit per
+      word fails unless physically adjacent bits are assigned to different words (Dodd and
+      Massengill). Transients follow the same logic: in silicon on insulator their widths shrink
+      with scaling (§5), but the faster clocks that come with scaling open more capture windows per
+      second.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 190" role="img" aria-labelledby="m11f17-t">
+        <title id="m11f17-t">The same grazing track through sensitive volumes at a coarse and a fine cell pitch</title>
+        <text x="115" y="18" class="dg-label-sm" text-anchor="middle">coarse pitch</text>
+        <text x="345" y="18" class="dg-label-sm" text-anchor="middle">fine pitch</text>
+        <rect x="10" y="70" width="210" height="90" class="dg-fill"/>
+        <rect x="240" y="70" width="210" height="90" class="dg-fill"/>
+        <g class="dg-soft" fill-opacity="0.6">
+          <rect x="16" y="84" width="26" height="40"/><rect x="90" y="84" width="26" height="40"/><rect x="164" y="84" width="26" height="40"/>
+          <rect x="264" y="84" width="14" height="40"/><rect x="289" y="84" width="14" height="40"/><rect x="314" y="84" width="14" height="40"/><rect x="339" y="84" width="14" height="40"/>
+          <rect x="364" y="84" width="14" height="40"/><rect x="389" y="84" width="14" height="40"/><rect x="414" y="84" width="14" height="40"/>
+        </g>
+        <line x1="40" y1="78.6" x2="218" y2="126.7" class="dg-line" stroke-width="2"/>
+        <line x1="14" y1="71.6" x2="40" y2="78.6" class="dg-line" stroke-width="1.4" stroke-dasharray="3 3"/>
+        <line x1="270" y1="78.6" x2="448" y2="126.7" class="dg-acc" stroke-width="2.4"/>
+        <line x1="244" y1="71.6" x2="270" y2="78.6" class="dg-line" stroke-width="1.4" stroke-dasharray="3 3"/>
+        <text x="115" y="54" class="dg-label" text-anchor="middle">the same track, two cells</text>
+        <text x="115" y="180" class="dg-label-sm" text-anchor="middle">larger cells, fewer crossed</text>
+        <text x="345" y="54" class="dg-label" text-anchor="middle"><tspan class="dg-acc-f">one grazing ion, six cells</tspan></text>
+        <text x="345" y="180" class="dg-label-sm" text-anchor="middle">a multiple-cell upset</text>
+      </svg>
+      <figcaption>
+        <b>Figure 17.</b> The same grazing track, at the same angle, crosses two sensitive volumes
+        at a coarse pitch and six at a fine pitch, the situation Deck 02 p. 28 illustrates. Schematic; the track's own width, which reaches
+        hundreds of nanometres, spreads the charge further.
+      </figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>A memory moves to a new generation in which the per-bit saturated cross-section halves and every characteristic LET of its Weibull curve halves too. By the figure of merit of §8, what happens to its per-bit upset rate in the same orbit?</summary>
+      <div class="answer">
+        <p>
+          It doubles. The figure of merit is <em>σ</em><sub>sat</sub>/<em>L</em><sub>0.25</sub>²,
+          and halving every characteristic LET halves <em>L</em><sub>0.25</sub>. The numerator falls
+          by 2 and the denominator by 4, so the ratio rises by 2. The smaller target is outweighed
+          by the larger number of particles able to upset it, because the threshold enters squared.
+          Only if the cross-section fell by more than a factor of four would the per-bit rate fall.
+        </p>
+      </div>
+    </details>
+
+    <h2>10 · Destructive single events</h2>
+    <p>
+      The same collected charge that flips a bit can, in the right structure and at the right
+      voltage, switch on a current path that sustains itself or destroy the structure it crosses.
+      <a href="m05-three-effects-taxonomy.html">M05</a> §5 classified these hard errors by the fact
+      that rewriting does not recover them. This section gives their mechanisms, and with them the
+      answer to what separates a destructive event from an upset: a structure that contains a
+      regenerative path or a dielectric under high field, a voltage across it large enough to feed
+      the event, and an LET large enough to trigger it. The threat rises with both the LET and the
+      applied voltage, which is why Deck 03 p. 31 calls hard errors mostly a concern for
+      high-power devices.
+    </p>
+
+    <h3>Single-event latchup</h3>
+    <p>
+      Bulk CMOS contains a four-layer structure it was never designed to have. The p⁺ source of a
+      p-channel transistor, the n-well it sits in, the p-type substrate and the n⁺ source of a
+      neighbouring n-channel transistor form a p–n–p–n sequence between the supply and ground. It
+      acts as two parasitic bipolar transistors: a vertical pnp, whose emitter is the p⁺ source,
+      base the n-well and collector the substrate, and a lateral npn, whose emitter is the n⁺
+      source, base the substrate and collector the n-well. Each collector feeds the other's base,
+      and the well and substrate resistances convert any current flowing in them into the voltage
+      that forward-biases an emitter–base junction. A particle strike that injects enough current
+      into the well or substrate turns one transistor on; its collector current turns the other on;
+      and once the loop sustains itself the structure latches into a low-impedance path from the
+      supply to ground (IEEE NSREC 2024 Short Course). The loop sustains itself when the product of
+      the two transistors' current gains exceeds unity, the standard condition for a thyristor.
+    </p>
+    <p>
+      The latched state persists until power is removed. Switching off the supply collapses it
+      and the part returns to service, which is why spacecraft carry latchup-detection circuits that
+      cycle power on an over-current; left powered, the current rises until the structure is
+      thermally destroyed (<a href="m05-three-effects-taxonomy.html">M05</a> §5). Even a latchup
+      that is cleared can leave latent damage if the current is not limited and cut quickly
+      enough: it can melt metal lines and leave voids that shorten the part's life (IEEE NSREC
+      2024 Short Course). The first report of single-event latchup was in 1979
+      (Kolasinski <em>et al.</em>, via Dodd and Massengill), and neutron-induced latchup has since
+      been observed in dense static memories at ground level. Everything that lowers the loop gain
+      or the parasitic resistances hardens against it: an epitaxial layer on a heavily doped
+      substrate (<a href="../../EEE6338_Advanced_Microelectronics/site/m02-deep-submicron-roadmap.html">EEE6338 M02</a> §7),
+      guard rings and channel stops (<a href="m08-tid-effects-devices-ics.html">M08</a> §6), and,
+      completely, silicon on insulator, whose dielectric isolation removes the four-layer
+      structure. There is no established total-fluence requirement for a latchup test; as a
+      possible guide, a part is treated as latchup-immune if it does not latch after a fluence of
+      10⁷ ions/cm² (Buchner and Baze, IEEE NSREC 2001 Short Course).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 236" role="img" aria-labelledby="m11f18-t">
+        <title id="m11f18-t">Parasitic thyristor in bulk CMOS formed by a vertical pnp and a lateral npn transistor</title>
+        <rect x="10" y="60" width="440" height="160" class="dg-fill"/>
+        <rect x="240" y="60" width="190" height="96" class="dg-fill"/>
+        <rect x="28" y="60" width="34" height="18" class="dg-fill"/>
+        <rect x="80" y="60" width="50" height="18" class="dg-fill"/>
+        <rect x="290" y="60" width="50" height="18" class="dg-fill"/>
+        <rect x="370" y="60" width="34" height="18" class="dg-fill"/>
+        <text x="45" y="73" class="dg-label-sm" text-anchor="middle">p⁺</text>
+        <text x="105" y="73" class="dg-label-sm" text-anchor="middle">n⁺</text>
+        <text x="315" y="73" class="dg-label-sm" text-anchor="middle">p⁺</text>
+        <text x="387" y="73" class="dg-label-sm" text-anchor="middle">n⁺</text>
+        <text x="75" y="44" class="dg-label-sm" text-anchor="middle">ground</text>
+        <text x="352" y="44" class="dg-label-sm" text-anchor="middle">V_DD</text>
+        <line x1="45" y1="48" x2="45" y2="60" class="dg-rule" stroke-width="1"/>
+        <line x1="105" y1="48" x2="105" y2="60" class="dg-rule" stroke-width="1"/>
+        <line x1="315" y1="48" x2="315" y2="60" class="dg-rule" stroke-width="1"/>
+        <line x1="387" y1="48" x2="387" y2="60" class="dg-rule" stroke-width="1"/>
+        <text x="424" y="100" class="dg-label-sm" text-anchor="end">n-well</text>
+        <text x="20" y="210" class="dg-label-sm">p substrate</text>
+        <line x1="315" y1="80" x2="315" y2="190" class="dg-line" stroke-width="1.4" marker-end="url(#m11f18-b)"/>
+        <text x="322" y="118" class="dg-label-sm">vertical pnp</text>
+        <line x1="130" y1="95" x2="236" y2="118" class="dg-line" stroke-width="1.4" marker-end="url(#m11f18-b)"/>
+        <text x="136" y="126" class="dg-label-sm">lateral npn</text>
+        <text x="186" y="182" class="dg-label-sm" text-anchor="middle">R_sub</text>
+        <text x="362" y="140" class="dg-label-sm">R_well</text>
+        <path d="M236,176 C206,196 176,160 206,146 C230,136 262,150 262,172" class="dg-acc" stroke-width="2" marker-end="url(#m11f18-a)"/>
+        <text x="236" y="212" class="dg-label" text-anchor="middle"><tspan class="dg-acc-f">each collector feeds the other's base</tspan></text>
+        <defs>
+          <marker id="m11f18-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+          <marker id="m11f18-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 18.</b> The p⁺–n-well–p-substrate–n⁺ path of bulk CMOS. Current from a strike,
+        flowing through the well or substrate resistance, forward-biases one emitter; once the two
+        parasitic transistors supply each other's base current, the path holds itself on until
+        power is removed. Schematic.
+      </figcaption>
+    </figure>
+
+    <h3>Snapback</h3>
+    <p>
+      Snapback needs only one parasitic transistor. In an n-channel transistor the source, body and
+      drain form a lateral npn; a strike leaves holes in the body that forward-bias the
+      body–source junction and turn it on, and at a high drain voltage impact ionization in the
+      drain junction generates further holes that keep the body forward-biased, so the transistor
+      cannot return to its off state. The result is a sustained high-current condition similar to
+      latchup (Dodd and Massengill; Cristoloveanu and Ferlet-Cavrois). It is the concern in
+      silicon on insulator, where the floating body makes the bipolar action easy and latchup
+      itself is absent, and in junction-isolated circuits generally (IEEE NSREC 2024 Short Course).
+    </p>
+
+    <h3>Single-event gate rupture</h3>
+    <p>
+      Gate rupture is dielectric breakdown along an ion track. In a vertical power MOSFET held off
+      with a large drain voltage, a heavy ion that crosses the gate–drain overlap region, the neck,
+      generates charge in the silicon that accumulates at the silicon–oxide interface beneath the
+      gate and raises the field across the gate oxide; the charge the ion generates in the oxide
+      itself briefly lowers the oxide's breakdown field. The oxide breaks down locally, current
+      flows from gate to drain, and thermal runaway melts a permanent short (Shenai, Galloway and
+      Schrimpf). The off state is the vulnerable one, and the gate insulator and the epitaxial
+      layer beneath it are the sensitive region (IEEE NSREC 2024 Short Course). Because the
+      part does not survive the event, gate-rupture data are presented as boundaries — the
+      combinations of gate and drain voltage at which rupture occurs for ions of given LET — and a
+      rupture cross-section is one event divided by the fluence that produced it.
+    </p>
+    <p>
+      Thin gate oxides rupture by the same physics at lower voltage, and Deck 03 p. 30 shows that
+      the damage accumulates before it becomes catastrophic (Sexton <em>et al.</em>, 1998). A 7 nm
+      silicon-dioxide capacitor of 0.0025 cm² was exposed to successive fluences of 10⁶ ions/cm² of
+      360 MeV gold — about 2,500 ions through the capacitor per step — with the gate bias raised in
+      steps from 3.0 to 3.7 V. The leakage current grew after each exposure, which is precursor
+      damage from ions that did not rupture the oxide, until the oxide broke down at 3.7 V. The
+      critical breakdown voltage falls with LET and with oxide thickness: across the slide's
+      data it runs from about 15 V to about 9 V for 18 nm oxides between LETs of 27 and
+      80 MeV·cm²/mg, and from about 6 V to about 4 V for 7 nm oxides. Precursor damage connects
+      rupture to the high-field defect generation of <a href="m10-gate-oxide-processing.html">M10</a> §7,
+      and to <a href="m05-three-effects-taxonomy.html">M05</a> §6's point that an oxide weakened by
+      accumulated damage ruptures under a strike an undamaged one survives. Lauenstein
+      <em>et al.</em> (2011) express the power-device risk against the environment: Deck 03 p. 31
+      overlays a part's rupture results on the geosynchronous heavy-ion flux as a function of LET
+      and atomic number, with regions marked safe, unknown threat and known threat, and states the
+      conclusion that the threat of gate rupture increases with LET and with applied gate voltage.
+    </p>
+
+    <h3>Single-event burnout</h3>
+    <p>
+      A vertical double-diffused power MOSFET (Deck 03 p. 31) carries current vertically: from the
+      n⁺ source through a channel in the p body, down through a lightly doped n⁻ epitaxial drift
+      region that holds the blocking voltage, to the n⁺ substrate and the drain contact. Its source,
+      body and drift region form a parasitic npn transistor, normally held off because the source
+      metallization shorts the body to the source. Burnout begins when a heavy ion crosses a device
+      that is off and blocking a high drain voltage, along a path through the source, body and drift
+      region. Its current flows laterally through the body beneath the source, and the voltage it
+      develops across the body resistance forward-biases the source–body junction, turning the
+      parasitic transistor on. Electrons injected from the source cross the body into the
+      high-field drift region, where impact ionization multiplies them; the avalanche-generated holes
+      flow back into the body, add to the lateral current and raise the base–emitter voltage
+      further. The feedback is regenerative: the device passes into second breakdown, loses the
+      ability to block, and the current rises until thermal failure shorts source and drain (Shenai,
+      Galloway and Schrimpf; IEEE NSREC 2024 Short Course). Shenai, Galloway and Schrimpf note that
+      burnout of p-channel power MOSFETs had not been reported, and attribute its rarity to the lower
+      impact-ionization rate of holes, which makes the avalanche current smaller.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 262" role="img" aria-labelledby="m11f19-t">
+        <title id="m11f19-t">Vertical power MOSFET with the gate-rupture track through the neck and the burnout track through source, body and drift region</title>
+        <rect x="20" y="70" width="420" height="130" class="dg-fill"/>
+        <rect x="20" y="200" width="420" height="34" class="dg-fill"/>
+        <path d="M20,70 L190,70 L190,120 Q190,138 172,138 L20,138 Z" class="dg-fill"/>
+        <path d="M440,70 L270,70 L270,120 Q270,138 288,138 L440,138 Z" class="dg-fill"/>
+        <rect x="150" y="70" width="36" height="16" class="dg-fill"/>
+        <rect x="274" y="70" width="36" height="16" class="dg-fill"/>
+        <rect x="160" y="62" width="140" height="8" class="dg-fill"/>
+        <rect x="164" y="48" width="132" height="14" class="dg-fill"/>
+        <text x="260" y="59" class="dg-label-sm" text-anchor="middle">gate</text>
+        <text x="168" y="82" class="dg-label-sm" text-anchor="middle">n⁺</text>
+        <text x="292" y="82" class="dg-label-sm" text-anchor="middle">n⁺</text>
+        <text x="60" y="112" class="dg-label-sm">p body</text>
+        <text x="370" y="112" class="dg-label-sm">p body</text>
+        <text x="40" y="176" class="dg-label-sm">n⁻ epitaxial drift region</text>
+        <text x="40" y="222" class="dg-label-sm">n⁺ substrate · drain at +V_DS</text>
+        <text x="236" y="102" class="dg-label-sm">neck</text>
+        <line x1="222" y1="20" x2="222" y2="196" class="dg-line" stroke-width="1.6" stroke-dasharray="5 3"/>
+        <text x="216" y="30" class="dg-label-sm" text-anchor="end">SEGR track</text>
+        <line x1="300" y1="20" x2="300" y2="196" class="dg-acc" stroke-width="2.2"/>
+        <text x="306" y="30" class="dg-label"><tspan class="dg-acc-f">SEB track</tspan></text>
+        <text x="318" y="160" class="dg-label-sm">parasitic npn: source,</text>
+        <text x="318" y="173" class="dg-label-sm">body, drift region;</text>
+        <text x="318" y="186" class="dg-label-sm">avalanche feeds back</text>
+        <text x="230" y="252" class="dg-label-sm" text-anchor="middle">Both events need the device off and blocking a high drain voltage. Schematic.</text>
+      </svg>
+      <figcaption>
+        <b>Figure 19.</b> One cell of the structure on Deck 03 p. 31. A track through the neck
+        charges the interface under the gate oxide and can rupture it; a track through source, body
+        and drift region can turn on the parasitic npn, which avalanche multiplication in the drift
+        region keeps on until the device burns out.
+      </figcaption>
+    </figure>
+
+    <p>
+      The failure voltage falls with LET. Liu <em>et al.</em> (2011), on Deck 03 p. 32, simulated
+      the quasi-stationary avalanche characteristic of production and burnout-sensitive samples of
+      one power MOSFET, which shows the snapback of the parasitic transistor, and measured the
+      burnout failure voltage of the sensitive samples against surface LET with several ion species.
+      The failure voltage fell from about 200 V at an LET of 5 to about 75 V near 90 MeV·cm²/mg,
+      fitted by <em>V</em> = 399.13·LET<sup>−0.386</sup> with <em>R</em>² = 0.856. Burnout
+      also occurs without any parasitic gain. In Schottky power diodes, avalanche multiplication in
+      the high-field region multiplies the ion's charge until the current heats the lattice enough
+      to sustain itself, and silicon carbide devices, whose peak fields are much higher than
+      silicon's, need not have a higher burnout threshold than silicon diodes of the same rating
+      (IEEE NSREC 2024 Short Course). Deck 03 p. 24 shows the physical result in a silicon carbide
+      Schottky diode and a gallium oxide Schottky diode.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 460 228" role="img" aria-labelledby="m11f20-t">
+          <title id="m11f20-t">Critical gate-rupture voltage against LET for 18, 12 and 7 nanometre oxides</title>
+          <line x1="60" y1="190" x2="405" y2="190" class="dg-rule" stroke-width="1.2"/>
+          <line x1="60" y1="190" x2="60" y2="36" class="dg-rule" stroke-width="1.2"/>
+          <g class="dg-label-sm" text-anchor="middle">
+            <text x="60" y="205">20</text><text x="157.1" y="205">40</text><text x="254.3" y="205">60</text><text x="351.4" y="205">80</text>
+          </g>
+          <g class="dg-label-sm" text-anchor="end">
+            <text x="54" y="194">0</text><text x="54" y="156">4</text><text x="54" y="119">8</text><text x="54" y="81">12</text><text x="54" y="44">16</text>
+          </g>
+          <text x="232" y="222" class="dg-label" text-anchor="middle">LET (MeV·cm²/mg)</text>
+          <text x="22" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 22 112)">V_cr (V)</text>
+          <path d="M94.0,46.6 L147.4,70.9 L254.3,96.2 L346.6,107.5" class="dg-line" stroke-width="1.8"/>
+          <path d="M94.0,86.9 L147.4,103.8 L254.3,123.4 L346.6,127.2" class="dg-line" stroke-width="1.8" stroke-dasharray="6 3"/>
+          <path d="M147.4,135.6 L254.3,146.9 L346.6,154.4" class="dg-acc" stroke-width="2.2"/>
+          <text x="354" y="111" class="dg-label-sm">18 nm</text>
+          <text x="354" y="131" class="dg-label-sm">12 nm</text>
+          <text x="354" y="158" class="dg-label"><tspan class="dg-acc-f">7 nm</tspan></text>
+        </svg>
+        <figcaption>
+          <b>Figure 20.</b> Rupture voltage falls with LET and with oxide thickness. Values read
+          approximately from Deck 03 p. 30 (Sexton <em>et al.</em>, 1998).
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 460 228" role="img" aria-labelledby="m11f21-t">
+          <title id="m11f21-t">Single-event burnout failure voltage of a power MOSFET against surface LET, from the published fit</title>
+          <line x1="60" y1="190" x2="405" y2="190" class="dg-rule" stroke-width="1.2"/>
+          <line x1="60" y1="190" x2="60" y2="36" class="dg-rule" stroke-width="1.2"/>
+          <g class="dg-label-sm" text-anchor="middle">
+            <text x="60" y="205">0</text><text x="128" y="205">20</text><text x="196" y="205">40</text><text x="264" y="205">60</text><text x="332" y="205">80</text><text x="400" y="205">100</text>
+          </g>
+          <g class="dg-label-sm" text-anchor="end">
+            <text x="54" y="194">40</text><text x="54" y="161">80</text><text x="54" y="127">120</text><text x="54" y="94">160</text><text x="54" y="61">200</text>
+          </g>
+          <text x="232" y="222" class="dg-label" text-anchor="middle">surface LET (MeV·cm²/mg)</text>
+          <text x="22" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 22 112)">failure voltage (V)</text>
+          <path d="M77.0,44.6 L83.8,66.4 L94.0,86.6 L104.2,99.8 L114.4,109.3 L128.0,118.7 L145.0,127.3 L162.0,133.8 L196.0,143.3 L230.0,149.9 L264.0,154.9 L298.0,158.8 L332.0,162.1 L366.0,164.8 L383.0,166.0" class="dg-acc" stroke-width="2.2"/>
+          <text x="200" y="92" class="dg-label"><tspan class="dg-acc-f">V = 399.13 · LET^−0.386</tspan></text>
+          <text x="200" y="108" class="dg-label-sm">fit to all failure points, R² = 0.856</text>
+          <text x="92" y="44" class="dg-label-sm">≈ 210 V at LET 5</text>
+          <text x="380" y="182" class="dg-label-sm" text-anchor="end">≈ 70 V at LET 90</text>
+        </svg>
+        <figcaption>
+          <b>Figure 21.</b> The fit on Deck 03 p. 32 (Liu <em>et al.</em>, 2011) evaluated from
+          LET 5 to 95; the measured points scatter about it. A heavier ion lowers the drain voltage
+          the part can block safely.
+        </figcaption>
+      </figure>
+    </div>
+
+    <h3>Wide-bandgap power devices</h3>
+    <p>
+      Deck 03 p. 33 reports the voltage thresholds of high-voltage power MOSFETs and diodes for two
+      heavy-ion effects (Sengupta <em>et al.</em>, 2024). <b>Single-event leakage current</b> (SELC)
+      is a permanent increase in leakage left by strikes that do not destroy the device;
+      <b>single-event burnout</b> is destruction. The burnout threshold voltage falls steeply as the
+      LET rises to about 10 MeV·cm²/mg and then saturates, at about 800 V for the 3300 V parts,
+      roughly 20% of their avalanche breakdown voltage, and about 500 V for the 1200 V parts,
+      roughly 30% of theirs; the saturated burnout thresholds of the two ratings therefore differ
+      by about 300 V. The leakage threshold also falls steeply up to an LET of about 10 but then
+      continues to fall more slowly: read from the slide, from about 620 V to about 400 V between
+      LETs of 10 and 65 for the 3300 V parts, and from about 280 V to about 150 V for the 1200 V
+      diodes, the two ratings again offset by about 300 V. Voltage rating, epitaxial thickness and
+      doping all move the thresholds, which is why the slide ends with a call for structural and
+      process optimization. The saturating burnout threshold has a direct consequence for
+      derating: within the tested range, ions above an LET of about 10 do not find a lower burnout
+      voltage, so the burnout-safe voltage of a given part is a fixed value, a rating-dependent
+      fraction of its avalanche breakdown. Leakage degradation has no such floor in the tested
+      range and continues to worsen as the LET rises.
+    </p>
+
+    <div class="box warn">
+      <p>
+        Deck 03 p. 33 is titled "Single-Event Effects in Discrete Silicon Power Devices", but both
+        of its references, Sengupta <em>et al.</em> at NSREC 2023 and in <em>IEEE Transactions on
+        Nuclear Science</em> (2024), concern high-voltage <b>silicon carbide</b> devices, and the
+        plotted MOSFETs and diodes are silicon carbide parts. The saturation of the burnout
+        threshold at 20–30% of avalanche breakdown and the 300 V offsets are silicon carbide
+        results. The burnout mechanism
+        and the LET and voltage dependences of the preceding paragraphs apply to both materials.
+      </p>
+    </div>
+
+    <div class="box insight">
+      <p>
+        An upset changes a stored value; a destructive event changes the current path. Three
+        conditions separate them. The struck structure must offer a path that can sustain or
+        amplify current — a parasitic thyristor, a parasitic bipolar transistor with avalanche
+        multiplication, or a thin dielectric under high field. The voltage across it must be large
+        enough to drive that path and supply the energy that damages it, which is why the threat
+        rises with the applied gate or drain voltage. And the ion's LET must deliver enough charge
+        to trigger it, which is why the threat rises with LET. Power devices combine all three,
+        which is why hard errors concentrate there.
+      </p>
+    </div>
+
+    <h2>11 · Beyond a single LET</h2>
+    <p>
+      Every section so far has described a particle by one number, its LET, and a device by one
+      sensitive volume with a critical charge. Both descriptions are approximations, and Deck 02
+      pp. 27–28 show where they break down: nuclear reactions of the incident ion itself, charge
+      collection volumes that are not boxes, tracks wider than the devices they cross, and material
+      layers above the silicon that change what arrives. The replacement for a single LET is a
+      calculation that follows individual particle histories through the actual device.
+    </p>
+
+    <h3>Nuclear reactions of heavy ions</h3>
+    <p>
+      Protons and neutrons act through nuclear reactions (<a href="m01-radiation-and-matter.html">M01</a> §7),
+      and so, occasionally, do heavy ions. Deck 02 p. 27 shows a simulated event from Weller
+      <em>et al.</em> (2010): an iron ion at 2 GeV per nucleon undergoes a nuclear reaction in
+      silicon next to a tungsten layer, and the reaction sends delta rays, protons, neutrons and
+      heavier fragments outward in a fan. Recoiling target fragments are slow and carry several
+      units of charge, so some of them ionize far more densely than the fast primary. The IEEE NSREC 2024 Short Course
+      states the consequence: for high-energy heavy ions whose LET is below a part's threshold,
+      events are caused not by direct ionization but by secondary particles from nuclear
+      interactions, which have higher LETs than the incident ion. A cross-section curve measured
+      with such ions therefore shows events below the direct-ionization threshold that no Weibull
+      in LET can represent. Metal layers above the device, which Deck 02 p. 28 lists among the new
+      challenges, add target nuclei for these reactions, heavy ones in the case of tungsten and the
+      other high-<em>Z</em> metals whose dose enhancement <a href="m04-quantifying-energy-deposition.html">M04</a> §5
+      treats.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 214" role="img" aria-labelledby="m11f22-t">
+        <title id="m11f22-t">Heavy-ion nuclear reaction in the silicon beneath a tungsten layer sending a high-LET fragment through a sensitive volume</title>
+        <rect x="20" y="60" width="420" height="22" class="dg-fill"/>
+        <rect x="20" y="82" width="420" height="112" class="dg-fill"/>
+        <text x="34" y="75" class="dg-label-sm">tungsten</text>
+        <text x="34" y="184" class="dg-label-sm">silicon</text>
+        <rect x="250" y="132" width="56" height="28" class="dg-soft" fill-opacity="0.5"/>
+        <text x="278" y="176" class="dg-label-sm" text-anchor="middle">sensitive volume</text>
+        <line x1="80" y1="14" x2="150" y2="100" class="dg-line" stroke-width="1.6"/>
+        <line x1="150" y1="100" x2="185" y2="143" class="dg-line" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="88" y="12" class="dg-label-sm">primary ion, LET below threshold</text>
+        <line x1="150" y1="100" x2="290" y2="156" class="dg-acc" stroke-width="2.6"/>
+        <line x1="150" y1="100" x2="110" y2="186" class="dg-line" stroke-width="1"/>
+        <line x1="150" y1="100" x2="400" y2="120" class="dg-line" stroke-width="1"/>
+        <line x1="150" y1="100" x2="240" y2="192" class="dg-line" stroke-width="1"/>
+        <line x1="150" y1="100" x2="420" y2="96" class="dg-line" stroke-width="1"/>
+        <circle cx="150" cy="100" r="4" class="dg-ink"/>
+        <text x="138" y="101" class="dg-label-sm" text-anchor="end">nuclear reaction</text>
+        <text x="314" y="138" class="dg-label"><tspan class="dg-acc-f">heavy fragment,</tspan></text>
+        <text x="314" y="152" class="dg-label"><tspan class="dg-acc-f">high LET</tspan></text>
+        <text x="406" y="128" class="dg-label-sm">p, n, δ</text>
+      </svg>
+      <figcaption>
+        <b>Figure 22.</b> The event type of Deck 02 p. 27 (after Weller <em>et al.</em>, 2010),
+        schematic: the ion crosses the tungsten layer and undergoes a nuclear reaction in the
+        silicon beyond it. The primary alone would not upset the node; a fragment of the reaction
+        does. The event depends on the materials and geometry around the sensitive volume, which a
+        single LET cannot describe.
+      </figcaption>
+    </figure>
+
+    <h3>Collection volumes, track structure and straggling</h3>
+    <p>
+      The rectangular sensitive volume of §§7–8 is itself an idealization. Deck 02 p. 28 shows a
+      simulated charge-collection volume that follows the potential distribution of a device and
+      its neighbours rather than any box, and an ion track larger than the devices around it. Musseau
+      and Ferlet-Cavrois set out the consequence for small volumes: once the body of a transistor
+      is smaller than the range of the energetic electrons the ion releases, the energy the ion
+      loses and the energy deposited in the volume are no longer the same, both because delta rays
+      carry energy out and because energy loss is statistical, with the LET giving only its
+      average. The LET-times-chord estimate of §7 then overestimates the deposit, and a
+      distribution of deposits replaces a single value.
+    </p>
+
+    <h3>Monte Carlo transport</h3>
+    <p>
+      The replacement is to follow the particles themselves. A Monte Carlo transport calculation
+      samples individual particle histories — the primary, its delta rays, any nuclear reaction and
+      each fragment — through a three-dimensional model of the device including its metal and
+      dielectric overlayers, and records the energy deposited in each of several sensitive volumes
+      event by event (<a href="m02-space-radiation-environment.html">M02</a> §11). Geant4 is the
+      general toolkit, whose main advantage is exactly this detailed particle transport, and MRED,
+      developed at Vanderbilt on Geant4, specializes it for microelectronic geometries (Deck 02
+      pp. 26–27). Counting the events whose deposited or collected charge exceeds the critical
+      charge, across the environment's species, energies and directions, gives a rate without
+      reducing either the particle to an LET or the device to one volume, and it treats angle,
+      overlayers, nuclear secondaries and multiple-cell events in the same calculation.
+    </p>
+    <p>
+      The cost is computation. Dodd and Massengill describe the device-simulation hierarchy that
+      such calculations feed — drift–diffusion, hydrodynamic and Monte Carlo carrier transport, and
+      mixed-level simulation in which the struck device is solved in three dimensions while the
+      rest of the circuit is a compact model — and give a measure of the expense: one directly
+      simulated cross-section curve for a static-memory cell took nearly 7,000 three-dimensional
+      strike simulations and about three months on thirty nodes of a parallel computer.
+      Deck 02 p. 30 frames the goal as an automated chain from environment through transport,
+      device, circuit and system to a predicted error rate, with experiments feeding each link. LET
+      remains the variable in which tests are run, environments are tabulated and CREME96 computes;
+      Monte Carlo transport is where it is replaced, for sensitive volumes comparable with the
+      track, for devices beneath high-<em>Z</em> layers, and for the multiple-cell events that
+      scaling makes common.
+    </p>
+
+    <h2>Where this leaves us</h2>
+    <p>
+      A single particle has now been followed from its track to an error rate. Its charge appears
+      in a column far denser than the doping, which for a few picoseconds conducts the junction
+      potential down the track and collects charge by drift from well below the depletion layer;
+      the rest arrives by diffusion over nanoseconds. Only reverse-biased junctions on weakly held
+      nodes collect it efficiently, which is why the off transistor's drain is the sensitive spot
+      and why epitaxial layers, wells and silicon on insulator harden by shrinking the collection
+      volume. A static memory cell upsets when the collected charge outruns its critical charge,
+      <em>C</em><sub>n</sub><em>V</em><sub>crit</sub>, in a race between feedback and recovery; a
+      dynamic cell needs only to lose its signal margin; a logic transient needs a path, a width and
+      a latch window.
+    </p>
+    <p>
+      A beam test compresses all of that into a cross-section against LET, an area per device or
+      per bit whose onset measures the critical charge and whose saturation measures the sensitive
+      area; a Weibull function fits it; tilting the part converts an angle into an effective LET
+      for direct ionization of a laterally wide layer that collects only within itself, and the
+      conversion fails for silicon-on-insulator films, for funnel and diffusion collection in bulk,
+      and for protons and neutrons. Integrated against the
+      differential LET spectrum, the cross-section becomes an orbital rate, dominated by LETs between
+      the onset and the iron edge and sensitive by an order of magnitude to the environment model.
+      Scaling shrinks the target and the threshold together, so the per-bit rate can fall while the
+      chip rate rises and multiple-cell events multiply. The same charge, in a structure with a
+      regenerative path or a thin dielectric under high field and at a high enough voltage, latches,
+      ruptures or burns out the part instead.
+    </p>
+    <p>
+      <a href="m12-displacement-damage.html">M12</a> turns to the third mechanism of
+      <a href="m05-three-effects-taxonomy.html">M05</a>, the displacement of lattice atoms, whose
+      damage is cumulative like total dose but whose physics is nuclear collision rather than
+      ionization. The circuit and system hardening techniques that act on the single-event
+      mechanisms of this module — dual-interlocked cells, redundancy, error correction and
+      interleaving — belong to the design modules on the course
+      <a href="index.html#roadmap">roadmap</a>.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Quick reference</p>
+      <ul>
+        <li><b>Charge per length (11.1):</b> <em>Q</em><sub>col</sub> = 1.6×10⁻²·LET·<em>ρ</em>/<em>E</em><sub>p</sub> in <b>pC/µm</b> (LET in MeV·cm²/mg, <em>ρ</em> g/cm³, <em>E</em><sub>p</sub> eV). Si: <b>10.4 fC/µm per unit LET</b>; LET 97 → 1 pC/µm. Multiply by a collection depth to get a charge. Deck 03 p. 26 calls it the "total deposited charge"; <em>Q</em><sub>col</sub> (pC/µm) is not <em>Q</em><sub>coll</sub> (collected, C). <em>Q</em><sub>crit</sub> of unhardened modern circuits can be &lt; <b>50 fC</b> (3×10⁵ e⁻).</li>
+        <li><b>Three stages:</b> generation (set by particle and material) → collection (device structure and bias) → circuit response (circuit). Heavy ions direct; protons mostly via nuclear recoils, directly below ~65 nm.</li>
+        <li><b>Timescales:</b> generation fs to a few ps (10 MeV/u ion crosses 10 µm in ~0.2 ps); drift and funnel from a few ps to a few hundred ps; diffusion ns and longer; then recombination. Pulse (11.2) <em>I</em> = <em>I</em><sub>0</sub>(e<sup>−t/τα</sup> − e<sup>−t/τβ</sup>), rise tens of ps, fall <b>200–300 ps</b> (90–10% fall time ≈ 2.2τ<sub>α</sub>, so τ<sub>α</sub> ≈ 90–140 ps), <em>Q</em> = <em>I</em><sub>0</sub>(τ<sub>α</sub> − τ<sub>β</sub>); omits the diffusion tail.</li>
+        <li><b>Plasma wire / funnel:</b> the track's carrier density far exceeds the doping, so the column conducts, carries the node potential ("+V") down the track and distorts the depletion edge into a funnel; drift collects from below <em>W</em>. Lasts only while track density &gt; doping. Heavier doping shortens depletion, funnel and diffusion length all together.</li>
+        <li><b>Sensitive structure:</b> the <b>reverse-biased p–n junction</b> on a high-impedance node — the drain of an <b>off</b> transistor. Forward-biased or low-impedance nodes conduct the charge away. Struck node losing bias suppresses further drift; drift flips, diffusion keeps it flipped.</li>
+        <li><b>Hardening the volume:</b> epi on p⁺ (cuts funnel and diffusion), wells (well–substrate junction blocks substrate charge), triple wells, retrograde wells, <b>SOI</b> (collection limited to film; ~1 µm²/bit around 2000, ~10× below bulk; floating body gives (1+<em>β</em>) amplification, body ties fix it).</li>
+        <li><b>Critical charge (11.3):</b> <em>Q</em><sub>crit</sub> = <em>C</em><sub>n</sub><em>V</em><sub>crit</sub>; 1 fF × 1 V = 1 fC. Property of the <b>circuit</b>, not the ion. <b>Upset (11.4):</b> <em>Q</em><sub>coll</sub> &gt; <em>Q</em><sub>crit</sub>. Valid when the node integrates the pulse.</li>
+        <li><b>SRAM upset:</b> strike on off nMOS drain of the high node; on pMOS restores with finite drive; voltage transient acts like a <b>write pulse</b>. Race: feedback time (RC of the inverter pair) vs recovery. Harden: <em>R</em><sub>fb</sub> (once/day → once/century GEO, costs write time, temperature-sensitive) or added capacitance. <b>DRAM:</b> no feedback; losing the noise margin is enough; cell, bit-line (rises as cycle time falls) and combined errors.</li>
+        <li><b>Distribution (11.5):</b> <em>P</em><sub>upset</sub> = 1 − Φ((<em>Q</em><sub>crit</sub> − <em>μ</em><sub>Q</sub>)/<em>σ</em><sub>Q</sub>); negative <em>z</em> → <em>P</em> &gt; ½.</li>
+        <li><b>SET (11.6):</b> <em>t</em><sub>width</sub> = <em>τ</em> ln(<em>V</em><sub>0</sub>/<em>V</em><sub>L</sub>); <em>P</em><sub>latch</sub> ≈ <em>t</em><sub>width</sub>/<em>T</em><sub>w</sub> (≤ 1, upper bound). Needs an active path, survival through gates, arrival in the setup-and-hold window. Combinational errors ∝ clock frequency; latch errors not. Simulated bulk widths ~700–950 ps at LET 70; SOI &lt; 250 ps, shrinking with scaling.</li>
+        <li><b>Cross-section (11.7):</b> <em>σ</em> = <em>N</em>/Φ in <b>cm²/device</b>; per bit <em>N</em>/(Φ<em>N</em><sub>bits</sub>) in cm²/bit. Not LET (MeV·cm²/mg), not dose (rad), not A/cm². 1 Mbit = 1,048,576 bits (10⁶ differs by 4.9%). Beam dose: 1.60×10⁻⁵·LET·Φ rad.</li>
+        <li><b>Weibull (11.8):</b> <em>σ</em> = <em>σ</em><sub>sat</sub>{1 − exp[−((<em>L</em> − <em>L</em><sub>0</sub>)/<em>W</em>)<sup><em>s</em></sup>]}, zero for <em>L</em> ≤ <em>L</em><sub>0</sub>; 63% of saturation at <em>L</em><sub>0</sub> + <em>W</em>. Threshold ↔ <em>Q</em><sub>crit</sub>: <em>L</em><sub>th</sub> ≈ <em>Q</em><sub>crit</sub>[fC]/(10.4 <em>d</em>[µm]). Saturation ↔ sensitive area. Count multiple-bit events once.</li>
+        <li><b>Effective LET (11.9):</b> LET/cos <em>θ</em> (×1.41 at 45°, ×2 at 60°); effective fluence Φ cos <em>θ</em>. Fails for SOI films (buried oxide shortens normal-incidence collection; grazing tracks run along the film to the trenches), collection outside a layer, protons and neutrons (use energy), long paths through overlayers, grazing multi-cell tracks. Environment is isotropic.</li>
+        <li><b>Rate (11.10):</b> <em>R</em> = ∫<em>σ</em>(<em>L</em>)Φ(<em>L</em>)d<em>L</em>, Φ differential (cm⁻²s⁻¹ per MeV·cm²/mg). Step form (normal incidence): <em>σ</em><sub>sat</sub>Φ(&gt;<em>L</em><sub>th</sub>); old CREME's "critical charge" option, not accurate for space (Tylka). FOM (Petersen <em>et al.</em> 1983, in the 2024 Short Course form) = <em>σ</em><sub>sat</sub>/<em>L</em><sub>0.25</sub>², <em>L</em><sub>0.25</sub> = <em>L</em><sub>0</sub> + <em>W</em>·0.288<sup>1/<em>s</em></sup>. Spectrum drops above the iron region.</li>
+        <li><b>CREME96:</b> inputs orbit, shielding, duration; outputs LET spectrum behind shielding, upset rates, worst cases. IRPP with Weibull + RPP depth. Solar-min GCR is the benchmark. Worst week (180 h, 19–27 Oct 1989), worst day (18 h from 13:00 UT 20 Oct 1989), peak (5 min, ≈5× worst day): solar-particle models, despite Deck 02's "(solar maximum/minimum)" label. Old CREME M = 9/10 (Aug 1972) ≥ 10× above CREME96 peak.</li>
+        <li><b>Per bit → FIT (11.11–11.12):</b> <em>r</em><sub>bit</sub> = <em>σ</em><sub>bit</sub>Φ̇ (flux, same spectrum); <em>r</em><sub>mem</sub> = <em>N</em><sub>bits</sub><em>r</em><sub>bit</sub>; per day ÷ 24 → per hour × 10⁹ = FIT. 1000 FIT/Mb ≈ one error per three weeks in 256 MB.</li>
+        <li><b>Scaling:</b> per-bit area ↓ (rate ↓) vs <em>Q</em><sub>crit</sub> and threshold ↓ (rate ↑); chip rate × bits ↑. Rate ∝ <em>σ</em><sub>sat</sub>/<em>L</em><sup>2</sup>: halving both doubles the rate. DRAM held cell <em>C</em>; SRAM did not. ~40% per generation susceptibility rise (Ronen). FinFETs limit the <em>Q</em><sub>crit</sub> fall. Tracks span cells → MCU; interleave words.</li>
+        <li><b>Destructive vs upset:</b> needs a regenerative path or thin dielectric under field, enough <b>applied voltage</b>, enough <b>LET</b>; threat rises with both — high-power devices. <b>SEL:</b> pnpn thyristor (vertical pnp + lateral npn), loop gain &gt; 1, cleared by <b>removing power</b>; guide, not a requirement: immune if none after 10⁷ ions/cm²; SOI eliminates. <b>Snapback:</b> one parasitic npn + impact ionization. <b>SEGR:</b> off power MOSFET, neck charge raises oxide field; thin oxides show precursor damage; <em>V</em><sub>cr</sub> ↓ with LET and thinner oxide (18 nm ~15→9 V, 7 nm ~6→4 V). <b>SEB:</b> off, high <em>V</em><sub>DS</sub>; parasitic npn + avalanche → second breakdown; <em>V</em><sub>fail</sub> = 399.13·LET<sup>−0.386</sup>; p-channel SEB not reported (2004 text), less likely because holes impact-ionize less. <b>SiC:</b> SEB threshold saturates above LET ~10, at ~800 V (~20% of avalanche breakdown, 3300 V parts) and ~500 V (~30%, 1200 V parts); SELC threshold keeps falling, more slowly, above LET 10; ratings offset ~300 V in both.</li>
+        <li><b>Beyond LET:</b> heavy-ion nuclear reactions give sub-threshold events; overlayers (W) add targets; small volumes break LET × chord (delta rays, straggling). Monte Carlo transport (Geant4, MRED) counts events directly.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Orientation, §1</td><td>Deck 03 pp. 24–26 (soft and hard errors, the SEE family tree, <em>Q</em><sub>col</sub> and the 50 fC figure, after E. L. Petersen, J. B. Langworthy and S. E. Diehl, <em>IEEE Trans. Nucl. Sci.</em> <b>30</b>, 4533 (1983)); Deck 02 p. 16 for the path-length form of the deposited charge; Deck 02 p. 16's label "SEU (flip-chip)" is read as a bit flip. P. E. Dodd and L. W. Massengill, <em>IEEE Trans. Nucl. Sci.</em> <b>50</b>, 583 (2003), §§II–III.A and IV.C–D for the 97 MeV·cm²/mg ↔ 1 pC/µm anchor, MBU and SEFI, and for the first space upsets (D. Binder, E. C. Smith and A. B. Holman, <em>IEEE Trans. Nucl. Sci.</em> <b>22</b>, 2675 (1975), also on Deck 02 p. 17). The JEDEC restriction of "multiple-bit upset" to one logical word is from the JEDEC JESD89A definitions, not from a course source. Charge-per-length arithmetic from <a href="m04-quantifying-energy-deposition.html">M04</a> §4; the reading of the slide's <em>Q</em><sub>col</sub> as a charge per micrometre, and of the upset condition as one on collected rather than deposited charge, is this page's unit analysis, flagged in the note under (11.1)</td></tr>
+      <tr><td>§2</td><td>Deck 02 pp. 16–17 (the plasma wire and D&amp;M Fig. 2); Deck 03 pp. 25–26 figures; IEEE NSREC 2024 Short Course, Part III (A. Khachatrian), §§2.1–2.3 and Fig. 10 for the three timescales and the four-stage picture; Dodd and Massengill §III.B.1 (field funnel, loss of bias at the struck node) and §VII.C (double-exponential pulse, node as low-pass filter, after G. C. Messenger, <em>IEEE Trans. Nucl. Sci.</em> <b>29</b>, 2024 (1982), and L. W. Massengill, NSREC Short Course 1993); C. M. Hsieh, P. C. Murley and R. R. O'Brien, <em>IEEE Electron Device Lett.</em> <b>2</b>, 103 (1981). Track radius from O. Musseau and V. Ferlet-Cavrois, IEEE NSREC 2001 Short Course §III.4.1.1; the funnel condition (track density above doping) from S. P. Buchner and M. P. Baze, same short course, §V.3.2. The 10¹⁹ cm⁻³ density estimate and the drift-field magnitude are this page's illustrations within the sources' ranges; Figure 4's time constants are this page's choice, set so that the computed rise and fall times lie inside Dodd and Massengill's; Lectures 3 and 4 for the professor's step-by-step emphasis</td></tr>
+      <tr><td>§3</td><td>Dodd and Massengill §§III.B.1–3 and VI.A (reverse-biased junctions, bipolar and source–drain penetration effects, epitaxial substrates, wells, SOI); F. B. McLean and T. R. Oldham, <em>IEEE Trans. Nucl. Sci.</em> <b>29</b>, 2018 (1982), via Dodd and Massengill; Buchner and Baze, 2001 Short Course §V.3.2, for collection only in reverse-biased junctions, prompt charge and the doping results (after Nashiyama <em>et al.</em>, 1993); S. Cristoloveanu and V. Ferlet-Cavrois, "Introduction to SOI MOSFETs", in the course textbook (R. D. Schrimpf and D. M. Fleetwood, eds., World Scientific, 2004), pp. 473–476, for the floating-body amplification, FD against PD and the ~1 µm²/bit comparison. Lecture 3 for forward against reverse bias and the burnout limit; Lecture 6 for the off state as the vulnerable one</td></tr>
+      <tr><td>§4</td><td>Deck 02 p. 17 (D&amp;M Fig. 5); Deck 03 p. 26; Dodd and Massengill §§IV.A–B (DRAM and SRAM mechanisms, Fig. 6 node transients, Fig. 11 sensitive-area maps), §VI.B (resistive hardening, after F. W. Sexton <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>38</b>, 1521 (1991)), §VII.C (<em>Q</em><sub>crit</sub> definition and its limits); T. C. May and M. H. Woods, <em>IEEE Trans. Electron Devices</em> <b>26</b>, 2 (1979). The Gaussian upset probability (11.5) is the method of the course's RHBD-for-SEE application key, Problem 1. Lectures 6 and 7 for capacitance as the node's charge store and the RC time as the design lever</td></tr>
+      <tr><td>§5</td><td>Dodd and Massengill §V and §VIII.A (propagation conditions, the Baze–Buchner frequency results, the 0.35 µm prediction); Deck 02 p. 19 (P. E. Dodd, M. R. Shaneyfelt, J. A. Felix and J. R. Schwank, <em>IEEE Trans. Nucl. Sci.</em> <b>51</b>, 3278 (2004); schematics after J. R. Schwank <em>et al.</em>, <em>ibid.</em> <b>50</b>, 522 (2003); M. W. Rony <em>et al.</em>, <em>ibid.</em> <b>68</b>, 807 (2021)), whose plotted values Figure 11 reads approximately; the 2004 paper's abstract describes its scaling trends as three-dimensional mixed-level simulations (the slide labels them only "Data"); the capture-probability method of (11.6) from the RHBD application key, Problem 2; IEEE NSREC 2024 Short Course §4.2 and Buchner and Baze §V.4.3 for laser testing. Two-photon absorption confinement is added from the laser-testing literature (D. McMorrow <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>49</b>, 3002 (2002)), not from a course source; the photon energy at 1260 nm and the Si and Ge bandgaps (1.12 and 0.66 eV at 300 K) are from S. M. Sze and K. K. Ng, <em>Physics of Semiconductor Devices</em>, 3rd ed. (Wiley, 2007). The CCD sentence links <a href="m08-tid-effects-devices-ics.html">M08</a> §9 (Deck 04 p. 47, Deck 03 p. 43)</td></tr>
+      <tr><td>§6</td><td>Deck 03 p. 29 (after S. Buchner, N. Kanyogoro, D. McMorrow, C. C. Foster, P. M. O'Neill and K. V. Nguyen, <em>IEEE Trans. Nucl. Sci.</em> <b>58</b>, 2976 (2011)); Deck 02 pp. 20–21 for per-bit units; <a href="m05-three-effects-taxonomy.html">M05</a> §4 for cm²/device; IEEE NSREC 2024 Short Course §4.1, eqs. (7)–(8), for the cross-section, the Weibull form and the surface-LET caveat; the course's Intro TID/SEE/DDD key, Q4, for the per-bit normalization and the piecewise Weibull; K. Shenai, K. F. Galloway and R. D. Schrimpf, "The Effects of Space Radiation Exposure on Power MOSFETs: A Review", in the course textbook, p. 455, for the meaning of threshold LET and saturated cross-section; Musseau and Ferlet-Cavrois, 2001 Short Course §III.4.3.2, for the Weibull population interpretation. The threshold estimate, the per-bit arithmetic for the 4 Mbit parts, the 4.9% bit-count difference and the beam-dose example are this page's arithmetic from (11.1) and (3.2)</td></tr>
+      <tr><td>§7</td><td>IEEE NSREC 2024 Short Course §4.1, eq. (4) and Fig. 24; Musseau and Ferlet-Cavrois, 2001 Short Course §§III.4.1.1–4.1.2, §III.4.3.1 (thick SOI like thin SOI at normal incidence and like bulk at grazing angles; Fig. 77, whose points Figure 14 reads approximately — its 1/cos(angle) reference is 1/cos(<em>θ</em> − 10°), and Figure 14 draws 1/cos <em>θ</em> instead) and §III.6.1.1; Dodd and Massengill §III.A (forward-scattered reaction products) and §VII.B (angled strikes need 3-D simulation); <a href="m02-space-radiation-environment.html">M02</a> §2 for isotropy. The effective-fluence convention (Φ cos <em>θ</em>) is standard heavy-ion test practice stated here from geometry</td></tr>
+      <tr><td>§8</td><td>Deck 02 pp. 20–22; A. J. Tylka <em>et al.</em>, "CREME96: A Revision of the Cosmic Ray Effects on Micro-Electronics Code", <em>IEEE Trans. Nucl. Sci.</em> <b>44</b>, 2150 (1997), for the solar-particle models, the old-CREME comparison, the IRPP method and the code's limitations; Tylka <em>et al.</em> p. 2157 for the critical-charge option and its accuracy caveat, pp. 2153–2154 for the solar-particle models against the solar-cycle GCR model (the Deck 02 pp. 20–21 label discrepancy); Dodd and Massengill §VIII.C for FIT scale and per-device specifications; IEEE NSREC 2024 Short Course §4.1, eqs. (9)–(10), for the <em>L</em><sub>0.25</sub> form of the figure of merit, whose original is E. L. Petersen, J. B. Langworthy and S. E. Diehl, <em>IEEE Trans. Nucl. Sci.</em> <b>30</b>, 4533 (1983), cited on Deck 03 p. 26; the RHBD application key, Problem 3, for the per-bit → memory → FIT method. The by-parts form and the iron-edge argument combine <a href="m02-space-radiation-environment.html">M02</a> §2 (abundances fall above iron) with Dodd and Massengill's maximum-LET rule; the integral-sign discrepancy is between Deck 02 p. 20 and the diagram on p. 21</td></tr>
+      <tr><td>§9</td><td>IEEE NSREC 2024 Short Course §3.4; Cristoloveanu and Ferlet-Cavrois (textbook, p. 475); Dodd and Massengill §§II, VIII.A, VIII.C–D (Sandia threshold trend, capacitance, R. Ronen <em>et al.</em>, <em>Proc. IEEE</em> <b>89</b>, 325 (2001), DRAM against SRAM capacitance, the DEC Alpha history); Deck 02 pp. 16, 19 and 28; <a href="m01-radiation-and-matter.html">M01</a> §7 for direct proton upset. Lecture 4 for the emphasis on many cells per ion at advanced nodes</td></tr>
+      <tr><td>§10</td><td>Deck 03 pp. 24, 30–33: F. W. Sexton <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>45</b>, 2509 (1998), whose plotted values Figure 20 reads approximately; J. M. Lauenstein <em>et al.</em>, <em>ibid.</em> <b>58</b>, 2628 (2011); S. Liu <em>et al.</em>, <em>ibid.</em> <b>58</b>, 2991 (2011), whose fit Figure 21 evaluates; A. Sengupta <em>et al.</em>, <em>ibid.</em> (2024), doi 10.1109/TNS.2024.3357129, and NSREC 2023. Shenai, Galloway and Schrimpf (textbook, pp. 456–458) for the SEB and SEGR mechanisms and data presentation; IEEE NSREC 2024 Short Course §§1, 3.5 for SEL, SEB in power devices and Schottky diodes, and wide-bandgap devices, and its image-sensor section for latent latchup damage; Dodd and Massengill §§II, III.B.3 and VIII.C for the first SEL report (W. A. Kolasinski <em>et al.</em>, 1979), snapback and ground-level latchup; Buchner and Baze §V.4.1.2, pp. V-43–44, for the 10⁷ ions/cm² guide and the absence of an established fluence requirement. The thyristor loop-gain condition is standard latchup theory added here. Lectures 3–5 for burnout of reverse-biased high-voltage devices</td></tr>
+      <tr><td>§11</td><td>Deck 02 pp. 26–28 and 30 (R. A. Weller <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>57</b>, 1726 (2010); S. Agostinelli <em>et al.</em>, <em>Nucl. Instrum. Methods A</em> <b>506</b>, 250 (2003)); IEEE NSREC 2024 Short Course §4.1 for sub-threshold events from nuclear interactions; Musseau and Ferlet-Cavrois §III.6.1.1 for delta-ray escape and straggling in small volumes; Dodd and Massengill §VII for the simulation hierarchy and the cost of a simulated cross-section curve</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m10-gate-oxide-processing.html"><span>Previous</span>M10 · Gate Oxide Growth, Processing and Hardening by Process</a>
+      <a class="next" href="m12-displacement-damage.html"><span>Next</span>M12 · Displacement Damage and NIEL</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

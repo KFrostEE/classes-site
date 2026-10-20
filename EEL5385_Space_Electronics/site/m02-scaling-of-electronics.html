@@ -1,0 +1,965 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M02 · Scaling of Electronics — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M02 · Scaling of Electronics</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 02</p>
+    <h1>Scaling of Electronics</h1>
+    <p class="lede">
+      How transistors became small, why they stopped becoming smaller, and what
+      the industry now does instead.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M01</span>
+      <span><b>Read time</b> ~45 min</span>
+      <span><b>Sources</b> Deck 2 (37 slides); Lecture 2</span>
+    </div>
+
+    <p>
+      A space mission does not get to choose its parts from the whole catalogue of
+      semiconductor technology. It chooses from a narrow, expensive, and conspicuously
+      old subset of it, and understanding why that subset is old requires understanding
+      what the mainstream industry is doing and what it costs. That is the subject here.
+    </p>
+    <p>
+      This module follows the commercial technology from the first transistor to the
+      current generation: what Moore's law actually described, which of its consequences
+      survived and which did not, how transistor geometry changed once the planar device
+      stopped working, why the number in a process name no longer measures anything, and
+      how the optics that print these structures reached a wavelength of 13.5 nm. It ends
+      at the point where <a href="m03-space-electronics-gap.html">M03</a> begins — the
+      economics that determine which of this technology a spacecraft can actually use.
+      Everything rests on the device behaviour established in
+      <a href="m01-semiconductor-background.html">M01</a>, and equations (1.14), (1.15) and (1.17)
+      in particular are used here without restating them.
+    </p>
+
+    <h2>1 · The transistor and the integrated circuit</h2>
+    <p>
+      The first working transistor was demonstrated at Bell Laboratories in December 1947
+      by John Bardeen and Walter Brattain. It was a <b>point-contact transistor</b>: a
+      slab of germanium, a plastic wedge, and two closely spaced gold contacts pressed
+      onto the surface by a spring. Injecting current at one contact modulated the current
+      at the other, so the device had gain. Its operating principle is closer to that of a
+      bipolar junction transistor than to a MOSFET, and William Shockley conceived the
+      junction transistor within weeks, in January 1948, though a working device was not
+      built until 1951, by Gordon Teal and Morgan Sparks. The three shared the 1956 Nobel
+      Prize in Physics. The
+      MOSFET of <a href="m01-semiconductor-background.html">M01</a> §8, which is what the
+      rest of this module concerns, was fabricated by Mohamed Atalla and Dawon Kahng at the
+      same laboratory in November 1959 and first presented in June 1960 — sources differ
+      over which date to call the demonstration — and became commercially significant only
+      during the 1960s.
+    </p>
+    <p>
+      The second step was integration. On 12 September 1958 Jack Kilby at Texas Instruments
+      demonstrated a simple oscillator built from five components — a transistor, resistors
+      and a capacitor — all formed in a single piece of germanium and connected by fine
+      wires, rather than assembled from separate parts. It looks nothing like a modern chip and it worked. Kilby received the
+      2000 Nobel Prize for it. Robert Noyce at Fairchild independently produced the
+      planar integrated circuit — with interconnect deposited photolithographically rather
+      than wired by hand — which is the form that scaled.
+    </p>
+
+    <div class="box">
+      <span class="box-title">Why the first devices were germanium</span>
+      <p>
+        Germanium was the purer and better-understood material in 1947. Silicon displaced
+        it over the following decade for a reason that matters throughout this course:
+        silicon grows a stable, adherent, electrically excellent native oxide, SiO₂,
+        simply by being heated in oxygen. Germanium's oxide is water-soluble and useless.
+        The entire MOS technology, and with it the gate insulator whose trapped charge is
+        the subject of <a href="m14-total-ionizing-dose.html">M14</a>, exists because of
+        that one chemical accident. Silicon's larger bandgap — 1.12 eV against germanium's
+        0.66 eV — also gives it far lower leakage at a given temperature, by equation
+        (1.2).
+      </p>
+    </div>
+
+    <h2>2 · Moore's law, and what actually scaled</h2>
+    <p>
+      In 1965 Gordon Moore observed that the number of components on an integrated circuit
+      was doubling roughly annually, and predicted the trend would continue. He revised the
+      period to two years in 1975, and that revision is the form usually quoted.
+    </p>
+
+    <div class="eq" id="m02-eq-moore">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em>(<em>t</em>) = <em>N</em><sub>0</sub> · 2<sup><em>t</em>/<em>T</em></sup>, &nbsp;&nbsp; <em>T</em> ≈ 2 years</div>
+        <div class="eq-num">(2.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em> transistors per chip · <em>t</em> time (years) · <em>T</em> doubling
+        period. <b>Moore's law is an empirical economic observation, not a physical law</b>,
+        and it describes only transistor <em>count</em> — strictly, the count at which
+        manufacturing <em>cost per component</em> is lowest, which is the axis of the famous
+        figure in the 1965 paper and the reason the statement is an economic one. It says
+        nothing about speed or power; those followed from a separate argument — Dennard
+        scaling, immediately below — which has since failed while equation (2.1) has partly
+        survived. Plotted against time on a
+        logarithmic vertical axis it is a straight line, which is how it is always shown.
+        On the formula sheet as <a href="formula-sheet.html#eq-moore">(2.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      The course takes two reference points on that curve: an Intel Core i7 of 2010, with
+      about 1.2 billion transistors on a 32 nm process, and an Apple M1 of 2020, with about
+      16 billion on a 5 nm process. That is a factor of 13 in ten years against the factor of
+      32 that equation (2.1) predicts, which is the slowdown in visible form.
+    </p>
+    <p>
+      Count is not the quantity a user cares about. What made scaling transformative was a
+      second result, published by Robert Dennard and colleagues in 1974, which stated how
+      every electrical property of a MOSFET changes if all its dimensions and its supply
+      voltage are divided by the same factor.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Quantity</th><th>Scaled by</th><th>Consequence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Gate length, width, oxide thickness</td><td>1/<em>κ</em></td><td>the deliberate change</td></tr>
+        <tr><td>Supply voltage <em>V</em><sub>DD</sub></td><td>1/<em>κ</em></td><td>field in the device stays constant</td></tr>
+        <tr><td>Doping concentration</td><td><em>κ</em></td><td>depletion widths scale with everything else</td></tr>
+        <tr><td>Capacitance <em>C</em> = <em>ε</em><em>A</em>/<em>t</em></td><td>1/<em>κ</em></td><td>area falls as <em>κ</em>², thickness as <em>κ</em></td></tr>
+        <tr><td>Drive current, equation (1.14)</td><td>1/<em>κ</em></td><td>—</td></tr>
+        <tr><td>Delay <em>CV</em>/<em>I</em></td><td>1/<em>κ</em></td><td><b>faster</b></td></tr>
+        <tr><td>Power per device <em>IV</em></td><td>1/<em>κ</em>²</td><td><b>each device uses less</b></td></tr>
+        <tr><td>Devices per unit area</td><td><em>κ</em>²</td><td><b>more of them</b></td></tr>
+        <tr><td>Power per unit area</td><td>1</td><td><b>constant — the whole point</b></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      The last row is what mattered. Under Dennard scaling a chip could hold
+      <em>κ</em>² times as many transistors, each switching <em>κ</em> times faster, while
+      dissipating the same power per square centimetre — so the same package and the same
+      cooling kept working generation after generation. Frequency rose, power density did
+      not, and no one had to solve a thermal problem. This held for roughly thirty years.
+    </p>
+    <p>
+      It broke in the early 2000s, and equation (1.15) says why. Dennard scaling requires
+      <em>V</em><sub>DD</sub> to fall with dimension, which requires the threshold voltage
+      to fall with it, which requires the subthreshold swing to fall too. It cannot: the
+      swing has a floor of 60 mV/decade at room temperature set by thermal statistics.
+      Below a threshold voltage of a few hundred millivolts, off-state current rises
+      exponentially and the static power <em>V</em><sub>DD</sub><em>I</em><sub>off</sub>
+      begins to rival the dynamic power. Supply voltages therefore stalled near 1 V, and
+      with <em>V</em><sub>DD</sub> fixed the <em>P</em> = <em>αCV</em><sup>2</sup><em>f</em>
+      of equation (1.17) means power density now grows with every increase in transistor
+      count or frequency.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 680 320" role="img" aria-labelledby="m02f1-t">
+        <title id="m02f1-t">Transistor count continuing to rise while clock frequency and single-thread performance plateau after about 2005</title>
+
+        <line x1="80" y1="270" x2="620" y2="270" class="dg-rule" stroke-width="1.2"/>
+        <line x1="80" y1="270" x2="80" y2="35" class="dg-rule" stroke-width="1.2"/>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="80" y="288">1975</text>
+          <text x="215" y="288">1990</text>
+          <text x="350" y="288">2005</text>
+          <text x="485" y="288">2015</text>
+          <text x="605" y="288">2025</text>
+        </g>
+        <text x="350" y="310" class="dg-label" text-anchor="middle">year</text>
+        <text x="30" y="150" class="dg-label" text-anchor="middle" transform="rotate(-90 30 150)">log scale, arbitrary units</text>
+
+        <!-- transistor count: straight line on log axis -->
+        <path d="M80,255 L215,196 L350,137 L485,98 L605,62" class="dg-acc" stroke-width="2.4" fill="none"/>
+        <text x="500" y="88" class="dg-label" text-anchor="end">transistor count</text>
+
+        <!-- clock frequency: rises then flattens -->
+        <path d="M80,258 L215,205 L350,152 L420,146 L485,144 L605,142" class="dg-line" stroke-width="1.8"
+              stroke-dasharray="8 4" fill="none"/>
+        <text x="612" y="138" class="dg-label-sm" text-anchor="end">clock frequency</text>
+
+        <!-- cores: flat then rises -->
+        <path d="M80,262 L215,262 L350,258 L485,222 L605,190" class="dg-line" stroke-width="1.8"
+              stroke-dasharray="2 3" fill="none"/>
+        <text x="612" y="186" class="dg-label-sm" text-anchor="end">cores per chip</text>
+
+        <line x1="350" y1="270" x2="350" y2="120" class="dg-rule" stroke-width="0.9" stroke-dasharray="3 3"/>
+        <text x="342" y="48" class="dg-label-sm" text-anchor="end">Dennard scaling ends:</text>
+        <text x="342" y="62" class="dg-label-sm" text-anchor="end">V<tspan dy="3" font-size="8">DD</tspan> can no longer fall</text>
+      </svg>
+      <figcaption>
+        The three curves separate at the point where supply voltage stopped scaling. Count
+        keeps rising because lithography keeps improving; frequency stops because power
+        density would otherwise rise without limit; core count starts rising because
+        parallelism is the only remaining way to convert extra transistors into
+        performance. Schematic — the shapes and the divergence point are the content, not
+        the values.
+      </figcaption>
+    </figure>
+
+    <div class="box insight">
+      <span class="box-title">The failure that space electronics is on the right side of</span>
+      <p>
+        Everything above is a description of a thermal problem. A commercial processor can
+        dissipate 200 W because a heatsink and a fan move that heat into room air by
+        conduction and convection. A spacecraft has neither: in vacuum the only path out
+        is thermal radiation from an external surface. A space processor that runs at
+        100 MHz and 5 W is therefore not a device that failed to keep up — it is a device
+        placed deliberately at the low-frequency end of equation (1.17), where power is
+        small and the part still works.
+        <a href="m03-space-electronics-gap.html">M03</a> develops this.
+      </p>
+    </div>
+
+    <h2>3 · Transistor geometry: planar, fin, and nanosheet</h2>
+    <p>
+      The planar MOSFET of <a href="m01-semiconductor-background.html">M01</a> §8 controls
+      its channel from one side. As the gate length shrinks toward the depletion widths
+      around the source and drain, the drain's electric field reaches through the channel
+      and begins to lower the source barrier on its own. The gate loses authority:
+      threshold voltage falls with gate length and with drain bias, subthreshold swing
+      rises above its thermal floor, and off-state leakage climbs. These are the
+      <b>short-channel effects</b>, and they are what ended the planar transistor rather
+      than any limit of lithography.
+    </p>
+    <p>
+      The fix is geometric. Surround the channel on more sides, and the gate regains
+      control of it because the drain field has less of the channel to reach into. Three
+      generations of that idea are now in production, and Lecture 2 traced all three.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 260" role="img" aria-labelledby="m02f2-t">
+        <title id="m02f2-t">Planar, fin and stacked nanosheet channels compared, showing how many sides the gate controls</title>
+
+        <!-- planar -->
+        <rect x="40" y="120" width="150" height="60" class="dg-fill"/>
+        <rect x="40" y="106" width="150" height="14" class="dg-fill"/>
+        <line x1="42" y1="120" x2="188" y2="120" class="dg-acc" stroke-width="4"/>
+        <text x="115" y="156" class="dg-label-sm" text-anchor="middle">substrate</text>
+        <text x="115" y="100" class="dg-label-sm" text-anchor="middle">gate</text>
+        <text x="115" y="204" class="dg-label" text-anchor="middle">planar</text>
+        <text x="115" y="220" class="dg-label-sm" text-anchor="middle">gate controls 1 face</text>
+        <text x="115" y="236" class="dg-label-sm" text-anchor="middle">W<tspan dy="3" font-size="8">eff</tspan> = W</text>
+
+        <!-- fin -->
+        <rect x="255" y="150" width="150" height="30" class="dg-fill"/>
+        <rect x="310" y="70" width="26" height="80" class="dg-fill"/>
+        <path d="M296,150 L296,58 L350,58 L350,150" class="dg-acc" stroke-width="4" fill="none"/>
+        <text x="330" y="204" class="dg-label" text-anchor="middle">fin (FinFET)</text>
+        <text x="330" y="220" class="dg-label-sm" text-anchor="middle">gate controls 3 faces</text>
+        <text x="330" y="236" class="dg-label-sm" text-anchor="middle">W<tspan dy="3" font-size="8">eff</tspan> = 2H<tspan dy="3" font-size="8">fin</tspan> + W<tspan dy="3" font-size="8">fin</tspan></text>
+        <text x="360" y="112" class="dg-label-sm">H<tspan dy="3" font-size="8">fin</tspan></text>
+
+        <!-- nanosheet -->
+        <rect x="500" y="150" width="160" height="30" class="dg-fill"/>
+        <g class="dg-fill">
+          <rect x="545" y="126" width="70" height="13"/>
+          <rect x="545" y="100" width="70" height="13"/>
+          <rect x="545" y="74" width="70" height="13"/>
+        </g>
+        <g class="dg-acc" stroke-width="2.6" fill="none">
+          <rect x="540" y="121" width="80" height="23" rx="3"/>
+          <rect x="540" y="95" width="80" height="23" rx="3"/>
+          <rect x="540" y="69" width="80" height="23" rx="3"/>
+        </g>
+        <text x="580" y="204" class="dg-label" text-anchor="middle">stacked nanosheet</text>
+        <text x="580" y="220" class="dg-label-sm" text-anchor="middle">gate wraps all 4 faces, n sheets</text>
+        <text x="580" y="236" class="dg-label-sm" text-anchor="middle">W<tspan dy="3" font-size="8">eff</tspan> = 2n(W<tspan dy="3" font-size="8">sh</tspan> + T<tspan dy="3" font-size="8">sh</tspan>)</text>
+      </svg>
+      <figcaption>
+        The accented outline is the gate–channel interface, and its length in cross-section
+        is the effective channel width of equation (1.14). Each step buys more of it inside
+        the same footprint, and each step also wraps more of the channel so that the drain
+        field can reach less of it. Both benefits come from the same change.
+      </figcaption>
+    </figure>
+
+    <p>
+      The <b>FinFET</b>, which Intel announced at its 22 nm node in May 2011 under the name
+      tri-gate and shipped in products from April 2012, stands the channel up as a thin vertical fin and drapes the
+      gate over it. The gate now meets the channel on two sidewalls and the top.
+    </p>
+
+    <div class="eq" id="m02-eq-weff">
+      <div class="eq-body">
+        <div class="eq-math"><em>W</em><sub>eff,fin</sub> = 2<em>H</em><sub>fin</sub> + <em>W</em><sub>fin</sub> &nbsp;&nbsp;&nbsp;&nbsp; <em>W</em><sub>eff,sheet</sub> = 2<em>n</em><span class="dl">(</span><em>W</em><sub>sh</sub> + <em>T</em><sub>sh</sub><span class="dl">)</span></div>
+        <div class="eq-num">(2.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>W</em><sub>eff</sub> effective channel width entering equation (1.14) (nm) ·
+        <em>H</em><sub>fin</sub>, <em>W</em><sub>fin</sub> fin height and thickness (nm) ·
+        <em>n</em> number of stacked sheets · <em>W</em><sub>sh</sub>,
+        <em>T</em><sub>sh</sub> sheet width and thickness (nm). A fin roughly 50 nm tall
+        and 7 nm thick delivers about 107 nm of channel width. Because fins must sit on a
+        <b>fin pitch</b> of roughly 30 nm rather than touching — the gate has to wrap them
+        and the source/drain epitaxy has to grow between them — the honest comparison is
+        against that pitch, not against the 7 nm fin thickness. Intel's 10 nm figures
+        (7 nm wide, 46 nm tall, 34 nm pitch) give 99 nm of channel per 34 nm of layout
+        width, about <b>three times</b> a planar device of the same width; across the
+        FinFET era the ratio runs roughly two to four. Dividing by the fin thickness
+        instead would suggest a factor of fifteen, and that is not what a layout buys. <b>Fin devices quantise width</b>: <em>W</em><sub>eff</sub> can only be
+        changed by adding whole fins, so a designer chooses between discrete drive
+        strengths. The nanosheet removes that restriction, because
+        <em>W</em><sub>sh</sub> is set by lithography and is continuously adjustable.
+        On the formula sheet as <a href="formula-sheet.html#eq-weff">(2.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      The <b>gate-all-around</b> or <b>stacked nanosheet</b> transistor is the current
+      generation. The channel is cut into thin horizontal sheets stacked above one another,
+      and the gate material is grown completely around each one, so all four faces are
+      controlled. Samsung's implementation is called MBCFET, for multi-bridge channel
+      field-effect transistor, and Intel's is called RibbonFET. The sheets are electrically
+      in parallel: three stacked sheets form one transistor with three times the width, not
+      three transistors.
+    </p>
+    <p>
+      Lecture 2 made a specific comparison between two vendors' nanosheet devices that is
+      worth following, because it shows how equation (2.2) is used as a design argument.
+      One vendor stacks four narrow sheets; the other stacks three wider ones. Since
+      <em>W</em><sub>eff</sub> depends on 2<em>n</em>(<em>W</em><sub>sh</sub> +
+      <em>T</em><sub>sh</sub>) and sheet thickness is nearly fixed by the need to keep the
+      gate in control, widening the sheet adds width far more cheaply in vertical space
+      than adding another sheet does. The wider, shallower stack therefore delivers more
+      current per unit of chip area, which is the figure of merit that matters.
+    </p>
+    <p>
+      The measurable payoff of each step appears in the transfer characteristic. Compared
+      at equal on-current, a fin or nanosheet device shows the same current when on, an
+      off-state current roughly an order of magnitude lower — up to two when the planar
+      comparison is scaled to the same gate length — and a steeper subthreshold
+      slope — all consequences of the gate having regained control. The lower leakage can
+      be spent two ways: kept, for lower standby power, or traded by lowering the threshold
+      voltage for the same leakage as before, which raises the overdrive
+      <em>V</em><sub>GS</sub> − <em>V</em><sub>th</sub> and therefore the speed.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 470 250" role="img" aria-labelledby="m02f3-t">
+        <title id="m02f3-t">Transfer characteristics of a planar and a fin device compared at equal on-current</title>
+
+        <line x1="75" y1="205" x2="435" y2="205" class="dg-rule" stroke-width="1.2"/>
+        <line x1="75" y1="205" x2="75" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <text x="255" y="240" class="dg-label" text-anchor="middle">gate voltage V<tspan dy="3" font-size="8">GS</tspan></text>
+        <text x="26" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 26 118)">log drain current</text>
+
+        <path d="M75,178 L120,168 L250,86 L340,50 L430,40" class="dg-line" stroke-width="1.9"
+              stroke-dasharray="7 4" fill="none"/>
+        <path d="M75,196 L130,190 L240,86 L340,50 L430,40" class="dg-acc" stroke-width="2.2" fill="none"/>
+
+        <text x="300" y="72" class="dg-label-sm" text-anchor="end">same I<tspan dy="3" font-size="8">on</tspan></text>
+        <text x="140" y="150" class="dg-label-sm">planar</text>
+        <text x="140" y="212" class="dg-label-sm">fin / nanosheet</text>
+        <line x1="78" y1="178" x2="78" y2="196" class="dg-acc" stroke-width="2.4"
+              marker-start="url(#m02f3-a)" marker-end="url(#m02f3-a)"/>
+        <text x="96" y="184" class="dg-label-sm">10–100× lower I<tspan dy="3" font-size="8">off</tspan></text>
+
+        <defs>
+          <marker id="m02f3-a" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The curves meet at the top and separate at the bottom. That separation is the whole
+        benefit of three-dimensional gating, and it is also why the same devices are
+        interesting for space: a lower leakage floor leaves more margin before radiation-
+        induced leakage reaches the on-current.
+      </figcaption>
+    </figure>
+
+    <div class="box">
+      <span class="box-title">Strained silicon, the step before the fin</span>
+      <p>
+        Between the planar device and the fin came a materials change rather than a
+        geometric one, and it took two separate process modules because the two device types
+        need opposite strain. For PMOS, silicon–germanium grown in the source and drain
+        regions compresses the channel, because the SiGe lattice constant is larger than
+        silicon's; compressive strain splits the heavy- and light-hole degeneracy and lowers
+        the hole transport mass. For NMOS, a tensile silicon-nitride capping layer over the
+        device puts the channel in tension; that splits the six-fold conduction-band valley
+        degeneracy, lowering the electron conductivity mass and suppressing intervalley
+        scattering. Both raise mobility and therefore the drive current of equation (1.14)
+        with no change in dimensions. Intel introduced both at 90 nm in 2003. It is the clearest example of
+        the pattern that dominates modern scaling: when the dimension cannot shrink,
+        change something else in the equation.
+      </p>
+    </div>
+
+    <h2>4 · The technology node is a name, not a length</h2>
+    <p>
+      The node name equalled the printed gate length only up to about the 0.35 µm
+      generation of 1995. From the 250 nm node onward the printed gate length ran below the
+      name — about 200 nm at the 250 nm node and about 70 nm at the 130 nm node — while the
+      <em>drawn</em> gate length in the layout database kept tracking the name until roughly
+      the 32 nm generation. The two words are not interchangeable: drawn is what the layout
+      asks for, printed is what survives resist trim and etch bias. The ITRS dropped
+      “technology node” as a defined term altogether in 2009.
+    </p>
+    <p>
+      Since then the printed gate length has fallen only from roughly 20 nm to roughly
+      14 nm across processes named 7 nm, 5 nm, 3 nm and 2 nm — a factor of 1.4 against a
+      factor of 3.5 in the name. It is the divergence that matters, not a plateau. A shorter
+      gate would make the short-channel effects of §3 unmanageable regardless of what
+      lithography can print, and in any case gate length is no longer the binding
+      constraint: <b>contacted poly pitch</b> is, because the contacts and spacers beside
+      the gate need room even when the gate itself does not.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 480 250" role="img" aria-labelledby="m02f4-t">
+        <title id="m02f4-t">Process node name diverging from physical gate length over time</title>
+
+        <line x1="75" y1="205" x2="440" y2="205" class="dg-rule" stroke-width="1.2"/>
+        <line x1="75" y1="205" x2="75" y2="30" class="dg-rule" stroke-width="1.2"/>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="75" y="223">1995</text>
+          <text x="180" y="223">2005</text>
+          <text x="290" y="223">2015</text>
+          <text x="425" y="223">2025</text>
+        </g>
+        <text x="255" y="243" class="dg-label" text-anchor="middle">year</text>
+        <text x="26" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 26 118)">nanometres (log)</text>
+
+        <!-- physical gate length: falls then flattens -->
+        <path d="M75,52 L140,86 L180,108 L230,134 L280,150 L340,154 L425,156" class="dg-acc" stroke-width="2.3" fill="none"/>
+        <!-- node name: keeps falling -->
+        <path d="M75,52 L140,86 L180,110 L240,142 L300,168 L360,186 L425,198" class="dg-line" stroke-width="1.9"
+              stroke-dasharray="7 4" fill="none"/>
+
+        <text x="438" y="146" class="dg-label-sm" text-anchor="end">printed gate length — 20 nm to 14 nm</text>
+        <text x="425" y="192" class="dg-label-sm" text-anchor="end">node name — keeps shrinking</text>
+        <text x="88" y="46" class="dg-label-sm">the two agree while the name means something</text>
+      </svg>
+      <figcaption>
+        The curves coincide on the left and separate on the right. After the split the node
+        name is a generation label, not a measurement, and names from different companies
+        are not comparable at all. At the “10 nm” label Intel reached about
+        101 MTr/mm² against TSMC's 52–60 — a factor of nearly two, and Intel's “10 nm”
+        landed between TSMC's and Samsung's “7 nm” processes.
+      </figcaption>
+    </figure>
+
+    <p>
+      Two consequences follow, and Lecture 2 spent considerable time on both. The first is
+      that a node name cannot be used to compare vendors: the figure that means something
+      is <b>transistor density</b> in millions of transistors per square millimetre,
+      which vendors report and which differs substantially between processes of the same
+      nominal name. The second is that comparing a space-qualified part's node to a
+      commercial one tells you less than it appears to, which matters in
+      <a href="m03-space-electronics-gap.html">M03</a>.
+    </p>
+    <p>
+      Intel abandoned the nanometre convention in 2021, renaming its remaining nodes
+      Intel 7, Intel 4, Intel 3, Intel 20A and Intel 18A, the last two in ångströms. The
+      renaming was explicitly intended to align Intel's labels with competitors' densities
+      rather than with any dimension.
+    </p>
+
+    <h2>5 · Where the scaling now comes from</h2>
+    <p>
+      If the transistor is no longer shrinking, something else must be, because density
+      demonstrably continues to rise. The answer is that the unit of layout is not the
+      transistor but the <b>standard cell</b> — a small fixed-height block implementing one
+      logic function, such as an inverter or a NAND gate, from which the whole chip is
+      assembled by placement and routing tools.
+    </p>
+    <p>
+      A cell's area is its height times its width. The width is set by the number of
+      transistor columns and the <b>contacted poly pitch</b>, the centre-to-centre spacing
+      of adjacent gates. The height is quoted in <b>metal tracks</b> — the number of
+      minimum-pitch wiring lanes that fit across it. Between recent nodes, gate length and
+      gate pitch move very little. What changes is everything else: fewer fins per device,
+      fewer tracks per cell, contacts placed over the active area instead of beside it,
+      and power rails moved out of the cell entirely.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 660 230" role="img" aria-labelledby="m02f5-t">
+        <title id="m02f5-t">Two standard cells with identical gate pitch and gate length but different cell area</title>
+
+        <!-- older cell -->
+        <rect x="50" y="40" width="230" height="140" class="dg-fill"/>
+        <g class="dg-acc-f">
+          <rect x="90" y="60" width="14" height="100"/>
+          <rect x="150" y="60" width="14" height="100"/>
+          <rect x="210" y="60" width="14" height="100"/>
+        </g>
+        <line x1="97" y1="30" x2="157" y2="30" class="dg-rule" stroke-width="1"
+              marker-start="url(#m02f5-a)" marker-end="url(#m02f5-a)"/>
+        <text x="127" y="24" class="dg-label-sm" text-anchor="middle">gate pitch</text>
+        <text x="165" y="200" class="dg-label" text-anchor="middle">earlier node</text>
+        <text x="165" y="216" class="dg-label-sm" text-anchor="middle">wide cell, large unused margins</text>
+        <text x="250" y="115" class="dg-label-sm" text-anchor="middle">empty</text>
+
+        <!-- newer cell -->
+        <rect x="390" y="55" width="200" height="110" class="dg-fill"/>
+        <g class="dg-acc-f">
+          <rect x="415" y="70" width="14" height="80"/>
+          <rect x="475" y="70" width="14" height="80"/>
+          <rect x="535" y="70" width="14" height="80"/>
+        </g>
+        <line x1="422" y1="45" x2="482" y2="45" class="dg-rule" stroke-width="1"
+              marker-start="url(#m02f5-a)" marker-end="url(#m02f5-a)"/>
+        <text x="452" y="39" class="dg-label-sm" text-anchor="middle">gate pitch — unchanged</text>
+        <text x="490" y="200" class="dg-label" text-anchor="middle">later node</text>
+        <text x="490" y="216" class="dg-label-sm" text-anchor="middle">same transistors, less cell area</text>
+
+        <defs>
+          <marker id="m02f5-a" viewBox="0 0 10 10" refX="5" refY="5"
+                  markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        The gates are the same size and the same distance apart in both cells. The density
+        gain comes from removing area that was never doing anything — fewer routing tracks
+        above the devices, tighter boundaries, and power delivered from elsewhere. This is
+        what a modern node change mostly buys.
+      </figcaption>
+    </figure>
+
+    <p>
+      The published generation-to-generation figures reflect this.       TSMC states that N3E — the N3 variant that carried volume production — delivers about
+      1.6 times the <b>logic</b> density of N5, with either a 15 to 20 per cent speed
+      improvement at equal power or a 30 to 35 per cent power reduction at equal speed.
+      Those are cell-level results, achieved with a transistor whose critical dimensions
+      barely changed. The word <em>logic</em> is load-bearing: the same disclosure gives only
+      about 1.1 times for analog and 1.1 to 1.2 for the SRAM bitcell. SRAM and analog have
+      very nearly stopped scaling, which is the strongest illustration of this section's
+      point that density now comes from packing logic cells rather than from smaller
+      devices.
+    </p>
+    <p>
+      Two further levers now carry much of the improvement. <b>Backside power delivery</b>
+      moves the power distribution network to the underside of the wafer, freeing the
+      congested lower metal layers above the transistors for signal routing alone and
+      shortening the path that supply current takes. <b>Advanced packaging</b> — stacking
+      dies vertically and connecting them through silicon vias, or placing several dies on
+      a common interposer — increases the transistor count and the bandwidth available to a
+      product without requiring any of those transistors to be smaller. Lecture 2 made the
+      point that packaging, not the transistor, is now the principal driver of system
+      performance, which is also why it receives its own module later in this course
+      (<a href="index.html#roadmap">M18</a>).
+    </p>
+
+    <h2>6 · Lithography: printing the pattern</h2>
+    <p>
+      Every feature on a chip is defined photographically. A pattern on a mask is projected
+      through a reduction lens onto a light-sensitive polymer on the wafer, exposed regions
+      are dissolved away, and the remaining polymer protects the surface beneath it during
+      etching or implantation. The smallest feature the system can resolve therefore sets
+      the smallest feature the chip can contain, and resolution is governed by diffraction.
+    </p>
+
+    <div class="eq" id="m02-eq-rayleigh">
+      <div class="eq-body">
+        <div class="eq-math">CD = <em>k</em><sub>1</sub> <span class="frac"><span class="num"><em>λ</em></span><span class="den">NA</span></span> &nbsp;&nbsp;&nbsp;&nbsp; DOF = <em>k</em><sub>2</sub> <span class="frac"><span class="num"><em>λ</em></span><span class="den">NA<sup>2</sup></span></span> &nbsp;&nbsp;&nbsp;&nbsp; NA = <em>n</em> sin <em>θ</em></div>
+        <div class="eq-num">(2.3)</div>
+      </div>
+      <div class="eq-says">
+        CD critical dimension, the smallest resolvable half-pitch (nm) · <em>λ</em>
+        exposure wavelength (nm) · NA numerical aperture of the projection optics,
+        dimensionless · <em>n</em> refractive index of the medium between lens and wafer,
+        1.0 in air and 1.44 for water at 193 nm · <em>θ</em> half-angle of the light cone
+        collected · <em>k</em><sub>1</sub> process factor, ~0.6 for a simple process and
+        physically floored at <b>0.25</b> for a single exposure · <em>k</em><sub>2</sub>
+        ~0.5 · DOF depth of focus (nm), the vertical range over which the image stays
+        sharp. The two expressions oppose each other: raising NA improves resolution
+        linearly and degrades depth of focus quadratically, and a wafer is never perfectly
+        flat. <b>Only <em>λ</em> improves both at once</b>, which is why the industry
+        repeatedly changed wavelength rather than only pushing optics.
+        On the formula sheet as <a href="formula-sheet.html#eq-rayleigh">(2.3)</a>.
+      </div>
+    </div>
+
+    <p>
+      The course states the limit in a different but equivalent form, as the diameter of the
+      focused spot a lens of diameter <em>D</em> and focal length <em>F</em> can produce.
+    </p>
+
+    <div class="eq" id="m02-eq-spot">
+      <div class="eq-body">
+        <div class="eq-math">2<em>w</em><sub>0</sub> = <span class="dl">(</span><span class="frac"><span class="num">4<em>λ</em></span><span class="den">π</span></span><span class="dl">)</span> <span class="dl">(</span><span class="frac"><span class="num"><em>F</em></span><span class="den"><em>D</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(2.4)</div>
+      </div>
+      <div class="eq-says">
+        2<em>w</em><sub>0</sub> focused spot diameter, measured to the 1/<em>e</em><sup>2</sup>
+        intensity points (<b>nm</b>) · <em>λ</em> wavelength (<b>nm</b>) ·
+        <em>F</em> focal length · <em>D</em> beam or lens diameter — <em>F</em> and
+        <em>D</em> enter only as their ratio, the <b>f-number</b>, so any consistent length
+        unit works. <b>The course's worked case:</b> <em>D</em> = 10 mm, <em>F</em> = 1 mm,
+        <em>λ</em> = 200 nm gives 2<em>w</em><sub>0</sub> = (4 × 200/π) × 0.1
+        = <b>25 nm</b>; the lecture slide prints 24 nm, a rounding difference.
+        Equation (2.4) scales exactly as (2.3) does: at low numerical aperture a lens of
+        diameter <em>D</em> at distance <em>F</em> subtends NA ≈ <em>D</em>/2<em>F</em>, so
+        substituting <em>F</em>/<em>D</em> = 1/(2·NA) gives 2<em>w</em><sub>0</sub> =
+        (2/π)(<em>λ</em>/NA) — the same <em>λ</em>/NA form as
+        CD = <em>k</em><sub>1</sub><em>λ</em>/NA, with a prefactor 2/π = 0.64 that
+        happens to land near a typical lithographic <em>k</em><sub>1</sub>. <b>They are not
+        the same quantity.</b> 2<em>w</em><sub>0</sub> is the width of one focused Gaussian
+        beam, a direct-write quantity with a fixed prefactor; the Rayleigh CD is the
+        resolved half-pitch of a projected periodic pattern, and its
+        <em>k</em><sub>1</sub> is a process factor with a hard floor at 0.25.
+        On the formula sheet as <a href="formula-sheet.html#eq-spot">(2.4)</a>.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <span class="box-title">The worked case needs a lens that cannot exist</span>
+      <p>
+        <em>D</em> = 10 mm with <em>F</em> = 1 mm is an f/0.1 lens, and
+        NA ≈ <em>D</em>/2<em>F</em> would be <b>5</b>. Numerical aperture is
+        <em>n</em> sin <em>θ</em>, so it cannot exceed the refractive index of the medium
+        — 1.0 in air, and 1.44 in water, which is the entire reason immersion was needed
+        to pass NA = 1 at all. The approximation NA ≈ <em>D</em>/2<em>F</em> is paraxial: it
+        is 5 % high at NA = 0.3, 15 % high at NA = 0.5, and diverges as the f-number falls
+        below 1. Using the exact relation tan <em>θ</em> = <em>D</em>/2<em>F</em> gives
+        <em>θ</em> = 78.7°, a true NA of 0.98, and a spot of about <b>130 nm</b> — not
+        25 nm. The hard diffraction limit in air is around <em>λ</em>/2 = 100 nm at this
+        wavelength, so 25 nm is a factor of four below anything achievable.
+      </p>
+      <p>
+        The formula and the arithmetic are both right; the illustrative numbers are four to
+        five times outside the formula's domain. <b>Reproduce the course's calculation as
+        given, and know why the answer is not a physical spot size.</b> A lens of
+        <em>D</em> = 10 mm and <em>F</em> = 10 mm — f/1.0, NA ≈ 0.45 — gives 255 nm, which
+        is a real number for a real lens.
+      </p>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 520 210" role="img" aria-labelledby="m02f6-t">
+        <title id="m02f6-t">Exposure wavelengths used in production lithography over time</title>
+
+        <line x1="70" y1="160" x2="490" y2="160" class="dg-rule" stroke-width="1.2"/>
+
+        <g class="dg-acc-f">
+          <circle cx="100" cy="160" r="5"/><circle cx="175" cy="160" r="5"/>
+          <circle cx="250" cy="160" r="5"/><circle cx="325" cy="160" r="5"/>
+          <circle cx="400" cy="160" r="5"/><circle cx="465" cy="160" r="5"/>
+        </g>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="100" y="180">436 nm</text>
+          <text x="175" y="180">365 nm</text>
+          <text x="250" y="180">248 nm</text>
+          <text x="325" y="180">193 nm</text>
+          <text x="400" y="180">193 nm</text>
+          <text x="465" y="180">13.5 nm</text>
+          <text x="100" y="194">g-line</text>
+          <text x="175" y="194">i-line</text>
+          <text x="250" y="194">KrF</text>
+          <text x="325" y="194">ArF dry</text>
+          <text x="400" y="194">ArF + water</text>
+          <text x="465" y="194">EUV</text>
+        </g>
+
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="100" y="142">mercury lamp</text>
+          <text x="175" y="142">mercury lamp</text>
+          <text x="250" y="142">excimer laser</text>
+          <text x="325" y="142">excimer laser</text>
+          <text x="400" y="128">immersion</text>
+          <text x="400" y="142">NA → 1.35</text>
+          <text x="465" y="128">tin plasma</text>
+          <text x="465" y="142">all-reflective</text>
+        </g>
+
+        <line x1="420" y1="160" x2="450" y2="160" class="dg-acc" stroke-width="3"/>
+        <text x="435" y="38" class="dg-label-sm" text-anchor="middle">14× jump</text>
+        <line x1="435" y1="44" x2="435" y2="118" class="dg-acc" stroke-width="1.6" marker-end="url(#m02f6-a)"/>
+        <text x="255" y="24" class="dg-label" text-anchor="middle">each step improves both resolution and depth of focus</text>
+
+        <defs>
+          <marker id="m02f6-a" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Three wavelength changes, then a twenty-year gap at 193 nm
+        during which immersion and multiple patterning carried the whole burden, then a
+        jump of more than a factor of fourteen to EUV. The long pause at 193 nm is where
+        the cost of lithography grew fastest.
+      </figcaption>
+    </figure>
+
+    <p>
+      The ladder ran from mercury-lamp lines at 436 nm and 365 nm, through krypton
+      fluoride and argon fluoride excimer lasers at 248 nm and 193 nm. At 193 nm it
+      stopped — but not for want of a laser. The F₂ excimer line at 157 nm existed, was
+      commercially developed, and was the designated successor for the sub-70 nm nodes; the
+      industry pursued it seriously from 2000 to 2003. It failed on optical materials
+      instead. Fused silica is opaque at 157 nm, so the optics had to be almost entirely
+      calcium fluoride, which could not be produced at the required size, birefringence and
+      defect quality on schedule, and no durable pellicle material existed. Immersion at
+      193 nm then offered the same resolution gain using optics that already worked, and
+      157 nm was abandoned in 2003–2004. It is the one occasion on which the industry
+      declined a shorter wavelength that was available to it. Two techniques extended 193 nm far past its nominal limit.
+      <b>Immersion</b> fills the gap between the final lens and the wafer with purified
+      water, raising <em>n</em> in equation (2.3) from 1.0 to 1.44 and the achievable NA
+      from about 0.93 to 1.35. <b>Multiple patterning</b> prints a feature using two,
+      three or four separate exposures and etch steps, each of which is individually
+      resolvable, interleaving them to produce a pitch finer than any one exposure could
+      achieve.
+    </p>
+    <p>
+      Two resolution limits are quoted in the course, and both need their provenance stated
+      to be useful. <b>Electron-beam exposure has produced isolated features about 2 nm
+      across, and a half-pitch of about 5 nm</b>, in a laboratory experiment that used an
+      aberration-corrected electron microscope as the writing beam on hydrogen
+      silsesquioxane resist — a ceiling for the technique, not the resolution of any
+      production writer. <b>EUV has reached roughly 8 nm half-pitch</b>, by interference
+      lithography rather than through a scanner; a 0.33 NA production scanner resolves
+      nearer 13 nm half-pitch in a single exposure, and 8 nm is the target for the 0.55 NA
+      High-NA generation. Comparing the two figures needs care: 2 nm is an isolated feature
+      and 8 nm is a half-pitch. Electron-beam is the finer of the two and is not used in
+      volume production, because it writes one feature at a time rather than projecting a
+      whole mask at once, which makes it orders of magnitude too slow for wafers.
+    </p>
+    <p>
+      Multiple patterning works, and it is how processes down to the 7 nm generation were
+      manufactured without EUV. Its cost is that each additional exposure adds a mask, a
+      full process sequence, and another opportunity for misalignment between patterns —
+      so the number of steps needed to print one layer grows steeply as the pitch falls,
+      and yield falls with it. Beyond a certain pitch the number of steps becomes more
+      expensive than the EUV tool it was avoiding.
+    </p>
+
+    <h2>7 · Extreme ultraviolet</h2>
+    <p>
+      Extreme ultraviolet lithography works at 13.5 nm. At that wavelength every material
+      absorbs strongly, which changes the entire architecture of the machine: there can be
+      no transmissive lenses and no transmissive mask, the whole optical path must operate
+      in vacuum, and the mirrors cannot work by ordinary reflection. They are instead
+      <b>Mo/Si multilayer</b> stacks of forty or more <em>bilayer pairs</em> — eighty or
+      more individual layers, at a period near 7 nm — which reflect by constructive interference from every interface at once and
+      achieve about 70 per cent reflectance over a narrow band around 13.5 nm. With ten
+      such surfaces in the path, only a few per cent of the generated light reaches the
+      wafer, so the source must be extraordinarily bright.
+    </p>
+    <p>
+      The source is the part Lecture 2 described in detail, and it is worth following
+      because it is an unusual piece of physics. Molten tin is ejected as droplets of a few
+      tens of micrometres at tens of thousands per second. A carbon dioxide laser fires a
+      low-energy <b>pre-pulse</b> that flattens each droplet into a thin disc, then a
+      high-energy <b>main pulse</b> that ionizes the disc into a plasma at a temperature
+      near 40 eV. Highly charged tin ions in that plasma emit strongly in a narrow band at
+      13.5 nm, which is why tin was chosen. The timing of the two pulses against a moving
+      droplet must be held to nanoseconds and micrometres, continuously, for the life of
+      the tool.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 640 250" role="img" aria-labelledby="m02f7-t">
+        <title id="m02f7-t">Laser-produced plasma extreme ultraviolet source using tin droplets and a two-pulse carbon dioxide laser</title>
+
+        <!-- droplet generator -->
+        <rect x="40" y="30" width="80" height="36" class="dg-fill"/>
+        <text x="80" y="52" class="dg-label-sm" text-anchor="middle">molten tin</text>
+        <line x1="80" y1="66" x2="80" y2="210" class="dg-rule" stroke-width="0.8" stroke-dasharray="3 3"/>
+
+        <g class="dg-ink">
+          <circle cx="80" cy="92" r="5"/>
+          <circle cx="80" cy="124" r="5"/>
+        </g>
+        <ellipse cx="80" cy="158" rx="12" ry="4" class="dg-ink"/>
+        <text x="102" y="96" class="dg-label-sm">droplet falls</text>
+        <text x="102" y="150" class="dg-label-sm">pre-pulse flattens it to a disc</text>
+
+        <!-- laser -->
+        <rect x="470" y="140" width="110" height="36" class="dg-fill"/>
+        <text x="525" y="162" class="dg-label-sm" text-anchor="middle">CO₂ laser</text>
+        <line x1="466" y1="158" x2="104" y2="158" class="dg-acc" stroke-width="1.8" marker-end="url(#m02f7-a)"/>
+        <text x="300" y="150" class="dg-label-sm" text-anchor="middle">main pulse</text>
+
+        <!-- plasma + collector -->
+        <circle cx="80" cy="186" r="13" class="dg-acc-f"/>
+        <text x="102" y="190" class="dg-label-sm">tin plasma, ~40 eV</text>
+        <path d="M30,150 A60,60 0 0 0 30,222" class="dg-acc" stroke-width="2.4" fill="none"/>
+        <text x="24" y="240" class="dg-label-sm" text-anchor="start">collector mirror gathers 13.5 nm light</text>
+
+        <text x="330" y="46" class="dg-label" text-anchor="middle">everything downstream is reflective and in vacuum</text>
+        <g class="dg-fill">
+          <rect x="300" y="60" width="70" height="10"/>
+          <rect x="420" y="82" width="70" height="10"/>
+        </g>
+        <text x="335" y="82" class="dg-label-sm" text-anchor="middle">Mo/Si mirror</text>
+        <text x="455" y="104" class="dg-label-sm" text-anchor="middle">Mo/Si mirror</text>
+
+        <defs>
+          <marker id="m02f7-a" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        Two laser pulses per droplet, tens of thousands of droplets per second. Notice the
+        collector mirror sits inside the debris field of an exploding metal plasma, which
+        is the dominant maintenance problem of the whole machine.
+      </figcaption>
+    </figure>
+
+    <p>
+      Only one company, ASML of the Netherlands, manufactures EUV scanners. The course quotes
+      an equipment cost of <b>$880 million</b>, from Intel. Published per-tool prices are
+      lower and split by generation: roughly <b>$180 million</b> for a 0.33 NA scanner and
+      <b>$380–400 million</b> for the 0.55 NA High-NA tool. The course's figure corresponds
+      to neither, and most plausibly covers a multi-tool purchase or a fully installed
+      capability rather than one machine. A 0.33 NA machine weighs close to two hundred
+      tonnes; the High-NA tool is about 150 tonnes, ships in 250 crates, and takes roughly
+      six months and 250 engineers to assemble on site. Output is limited to a few dozen
+      systems a year, so supply rather than price constrains who can buy them, and export
+      controls constrain it further — which is why some manufacturers continue to produce
+      advanced nodes using 193 nm immersion with aggressive multiple patterning, accepting
+      the step count and the yield penalty because the alternative is unavailable.
+    </p>
+
+    <div class="box">
+      <span class="box-title">The synchrotron alternative</span>
+      <p>
+        There is a second way to make 13.5 nm light, and Lecture 2 mentioned it as an
+        active proposal. A charged particle forced onto a curved path radiates. That is the
+        same underlying physics as <b>bremsstrahlung</b> — an accelerated charge radiates —
+        in a different geometry: in bremsstrahlung, treated quantitatively in
+        <a href="m09-bremsstrahlung-xrays.html">M09</a>, the acceleration is a deceleration in the
+        Coulomb field of a nucleus, while here it is the transverse acceleration of a
+        magnetic bend, which is why synchrotron radiation is also called
+        <em>magnetobremsstrahlung</em>.
+      </p>
+      <p>
+        The serious proposals are <b>free-electron lasers</b> driven by an energy-recovery
+        linac, using an undulator rather than a bending magnet, and targeting more than
+        10 kW at 13.5 nm from one facility feeding several scanners. The undulator matters:
+        bending-magnet radiation is broadband, so almost none of its power would fall inside
+        the 2 % band around 13.5 nm that a Mo/Si stack reflects, whereas an FEL delivers a
+        narrow line at high average power. The obstacle is the engineering and capital cost
+        of an accelerator, against a queue for an existing machine.
+      </p>
+    </div>
+
+    <h2>8 · The foundry landscape and its economics</h2>
+    <p>
+      Advancing a node now requires a new generation of exposure tools, new process
+      development, and a fabrication plant costing tens of billions of dollars. That
+      capital requirement has reduced the number of companies manufacturing at the leading
+      edge to three at the EUV-based leading edge: TSMC, Samsung and Intel. (SMIC produces
+      7 nm-class logic without EUV, by the multiple patterning described above, and Rapidus
+      is building 2 nm capability in Japan.) Below the leading edge, many foundries
+      operate profitably on mature processes, and that is where most space electronics is
+      manufactured.
+    </p>
+    <p>
+      Comparing the three leading manufacturers on transistor density rather than node name
+      shows the actual ordering, and it explains the market structure. Processes bearing
+      the same nominal name have differed by nearly a factor of two in density between
+      vendors — the “10 nm” generation is the cleanest example — and the vendor with the highest density at a given time attracts the
+      customers who design the most demanding products — which is why the largest
+      fabless designers concentrate their leading-edge work with a single foundry, and why
+      that foundry holds the majority of leading-edge capacity.
+    </p>
+    <p>
+      The cost of processing one wafer rises steeply with each node, driven by exposure
+      tool cost, step count and mask count. The result is that the most advanced node is
+      not automatically the right choice: it is chosen when the product's value justifies
+      the wafer cost, and avoided otherwise. Lecture 2 made the point through a visit to a
+      power-electronics foundry that still uses 193 nm lithography and has no reason to
+      change, because its products need voltage handling and thermal performance rather
+      than density. The same logic governs space electronics, and
+      <a href="m03-space-electronics-gap.html">M03</a> takes it up directly.
+    </p>
+
+    <details class="check">
+      <summary>A vendor announces a new node with the same gate length, the same gate pitch and the same transistor architecture as the previous one, yet claims 1.7 times the logic density. Is the claim necessarily marketing?</summary>
+      <div class="answer">
+        <p>
+          No. Density is transistors per unit area of finished layout, and the layout unit
+          is the standard cell, not the transistor. With gate pitch fixed, cell area can
+          still fall by reducing cell height — fewer metal tracks across the cell — by
+          placing contacts over the active region rather than beside it, by reducing the
+          number of fins or sheets per device, and by moving the power rails to the
+          backside of the wafer so they no longer consume routing resource inside the cell.
+          Each of these removes area that was not occupied by a transistor. A claim of this
+          kind should be checked against the reported cell height in tracks and the
+          contacted poly pitch, which together set the area; it should not be checked
+          against the node name, which sets nothing.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Moore's law describes transistor count and is an economic observation. Dennard scaling described how speed and power followed from shrinking dimensions, and it is what actually failed.</li>
+        <li>Dennard scaling ended because supply voltage stopped falling, and supply voltage stopped falling because the 60 mV/decade subthreshold floor of equation (1.15) prevents the threshold voltage from following it down. Frequency plateaued; core count rose instead.</li>
+        <li>The planar transistor was abandoned because of short-channel effects, not because of lithography. Fins and stacked nanosheets restore gate control by surrounding the channel, and simultaneously raise <em>W</em><sub>eff</sub> per unit footprint.</li>
+        <li>Compared at equal on-current, three-dimensional gating buys one to two orders of magnitude in off-state leakage, which can be kept as lower standby power or spent as speed.</li>
+        <li>A node name last equalled the printed gate length around 0.35 µm. Printed gate length has since fallen only 20 → 14 nm across names running 7 → 2 nm. Compare vendors by transistor density, never by node name.</li>
+        <li>density improves mainly through standard-cell area — track height, contact placement, fin count, backside power — rather than through transistor dimensions. TSMC's N3E gives about 1.6× the <em>logic</em> density of N5 with either 15–20% more speed or 30–35% less power; SRAM and analog barely scale at all.</li>
+        <li>Resolution follows 2<em>w</em><sub>0</sub> = (4<em>λ</em>/π)(<em>F</em>/<em>D</em>), equivalently CD = <em>k</em><sub>1</sub><em>λ</em>/NA with <em>k</em><sub>1</sub> = 2/π. Wavelength went 436 → 365 → 248 → 193 nm, stalled for twenty years — 157 nm existed and was abandoned over optics, not lasers — while immersion and multiple patterning carried the load, then jumped to 13.5 nm EUV, which is all-reflective, in vacuum, from a tin-plasma source, and available from one supplier.</li>
+        <li>Leading-edge manufacturing is now three companies, and advancing is a capital decision rather than a technical inevitability. Most space electronics is made on mature nodes for exactly this reason.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 2 pp. 5–6 (point-contact transistor 1947, Bardeen/Brattain/Shockley; first MOSFET, Atalla and Kahng, 1959; Kilby's five-component oscillator, 12 September 1958, Nobel 2000)</td></tr>
+      <tr><td>§2</td><td>Deck 2 pp. 7–8 (Moore's law; Core i7 2010 at ~1.2 B transistors/32 nm and Apple M1 2020 at ~16 B/5 nm); Lecture 2 transcript (power and frequency limits; core count as the response). Dennard <em>et al.</em>, <em>IEEE J. Solid-State Circuits</em> <b>9</b>, 256 (1974); Moore, <em>Electronics</em> <b>38</b>(8), 114 (1965)</td></tr>
+      <tr><td>§3</td><td>Lecture 2 (planar → strained → fin → gate-all-around; the channel-perimeter argument; vendor sheet geometry; planar against tri-gate I–V)</td></tr>
+      <tr><td>§4</td><td>Lecture 2 (node name against physical gate length; density as the comparable figure; Intel's renaming)</td></tr>
+      <tr><td>§5</td><td>Lecture 2 (standard-cell area as the real lever; empty space inside the cell; backside power; packaging as the current driver). Node-to-node figures from TSMC's published N3 platform data</td></tr>
+      <tr><td>§6</td><td>Deck 2 pp. 21–23 (focused-spot formula and its worked case; the wavelength ladder; electron-beam and EUV resolution limits, the first after Manfrinato <em>et al.</em>, <em>Nano Lett.</em> <b>13</b>, 1555 (2013), which is an electron-beam paper and does not cover EUV); Deck 2 pp. 26–27 (multiple-patterning complexity). Rayleigh criterion and the immersion index from standard lithography references</td></tr>
+      <tr><td>§7</td><td>Deck 2 pp. 24–25 (EUV at 13.5 nm, equipment cost, light source); Lecture 2 transcript (tin droplet, pre-pulse and main pulse, installation difficulty, synchrotron alternative). Source physics and Mo/Si multilayer reflectance from the EUV source literature</td></tr>
+      <tr><td>§8</td><td>Lecture 2 (three remaining leading-edge manufacturers; density comparison by vendor and year; wafer cost escalation; the power-electronics foundry that has no reason to advance)</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m01-semiconductor-background.html"><span>Previous</span>M01 · Semiconductors and Devices</a>
+      <a class="next" href="m03-space-electronics-gap.html"><span>Next</span>M03 · Space Electronics and the Technology Gap</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>
