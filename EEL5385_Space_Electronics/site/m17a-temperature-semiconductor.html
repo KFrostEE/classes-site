@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M17a · Temperature and the Semiconductor — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M17a · Temperature and the Semiconductor</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 17a</p>
+    <h1>Temperature and the Semiconductor</h1>
+    <p class="lede">
+      What temperature does to a semiconductor and to the simplest device built from one: the
+      range a part meets in space, the intrinsic carriers of different materials, dopants that
+      freeze out, mobility, the leakage and forward voltage of a p–n junction, and the three ways
+      the course keeps a device working at either extreme.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M01, M03 §2</span>
+      <span><b>Read time</b> ~45 min</span>
+      <span><b>Sources</b> Decks 8, 12–14; Lecture 14; Deck 15 pp. 3–7; Deck 16a pp. 49–50, 59–60; Sze &amp; Ng (2007); Plante &amp; Lee (2005)</span>
+    </div>
+
+    <p>
+      A semiconductor device works because its carrier densities are set by design. Doping fixes
+      how many electrons or holes a region holds, and junctions and gates control where they go.
+      <a href="m01-semiconductor-background.html#m01-eq-ni">M01</a> showed that this control holds
+      only over a window of temperature: below it the dopants keep their carriers bound, above it
+      carriers generated across the gap outnumber the dopants. Temperature enters every other
+      quantity too, through the gap itself, the mobility and the leakage of every junction, so a
+      part that meets a temperature outside its window loses its function long before anything
+      melts.
+    </p>
+    <p>
+      This module follows that dependence from the material to the device. It sets out the
+      temperatures a part meets in space (§1), how the intrinsic carrier density depends on
+      temperature and on the gap of the material (§2), how dopants freeze out at low temperature
+      (§3), how mobility changes (§4), and what all of this does to a p–n junction's leakage and
+      forward voltage, including the diode used as a thermometer (§5). §6 gathers the three
+      mitigations the course draws from it, with the simulator runs of Lecture 14 that demonstrate
+      them, and §7 states what the course's summary, that hot silicon becomes a metal and cold
+      silicon an insulator, means physically. The transistors built on these effects are the
+      subject of <a href="m17b-transistors-high-temperature.html">M17b</a>, and the silicon carbide integrated circuits that run on Venus of M17c.
+    </p>
+
+    <h2>1 · The temperatures a part meets</h2>
+    <p>
+      A spacecraft does not hold its electronics at the temperature of its surroundings. An
+      exposed surface swings between sunlight and shadow; a box behind thermal control sees a far
+      narrower range. The survey of flight environments made for the NASA Electronic Parts and
+      Packaging Program (Plante and Lee 2005), whose table Deck 12 p. 9 reproduces, lists the
+      unmanaged extremes and the number of cycles a year by mission type: low Earth orbit −65 to
+      +125 °C; geostationary orbit −196 to +128 °C, 90 cycles a year; the lunar surface −171 to
+      +111 °C, 13 cycles; the Martian surface −143 to +27 °C, 356 cycles; a trans-atmospheric
+      vehicle −200 to +260 °C over a short mission; and the pressurized module of a crewed
+      station +18.3 to +26.7 °C, with no significant cycling. The surface of Venus, at 465 °C
+      (<a href="m03-space-electronics-gap.html">M03 §2</a>), lies beyond them all.
+    </p>
+    <p>
+      The number of cycles follows from what drives the swing, which in orbit is Earth's shadow. A
+      spacecraft in low orbit passes through it on almost every revolution: at 200 km a revolution
+      takes about 88 minutes, which gives about 6,000 cycles a year. Higher up the shadow subtends a
+      smaller angle, and an orbit enters it only while the Sun lies within arcsin(<em>R</em><sub>E</sub>/<em>r</em>)
+      of the orbit plane, with <em>R</em><sub>E</sub> Earth's radius and <em>r</em> the orbit's radius: about
+      14° at 20,000 km and 8.7° at geostationary altitude, so high orbits
+      are eclipsed only in seasons. A geostationary satellite is shadowed in two seasons of about
+      45 days around the equinoxes, at most about 70 minutes a day, which gives the 90 cycles. At
+      20,000 km a revolution takes about 12 hours, 740 revolutions a year, but an equatorial orbit is
+      eclipsed on only about 300 of them and an inclined orbit such as GPS's on fewer; the survey's
+      780 assumes one cycle per revolution. The Martian day of 24.6 hours gives the 356; the survey's
+      13 lunar cycles assume a 28-day lunar day, and the 29.5-day synodic month gives about 12.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 262" role="img" aria-labelledby="f17a-1-t">
+        <title id="f17a-1-t">Unmanaged temperature extremes for five mission environments compared with the range a thermally managed electronics box typically holds and the military specification range for parts</title>
+        <text x="124" y="43" class="dg-label-sm" text-anchor="end">LEO</text>
+        <rect x="194.7" y="33" width="91" height="14" class="dg-fill"/>
+        <text x="289.7" y="44" class="dg-label-sm">−65 to +125</text>
+        <text x="124" y="71" class="dg-label-sm" text-anchor="end">GEO</text>
+        <rect x="131.9" y="61" width="155.2" height="14" class="dg-fill"/>
+        <text x="291.2" y="72" class="dg-label-sm">−196 to +128</text>
+        <text x="124" y="99" class="dg-label-sm" text-anchor="end">Lunar surface</text>
+        <rect x="143.9" y="89" width="135.1" height="14" class="dg-fill"/>
+        <text x="283" y="100" class="dg-label-sm">−171 to +111</text>
+        <text x="124" y="127" class="dg-label-sm" text-anchor="end">Martian surface</text>
+        <rect x="157.3" y="117" width="81.5" height="14" class="dg-fill"/>
+        <text x="242.8" y="128" class="dg-label-sm">−143 to +27</text>
+        <text x="124" y="155" class="dg-label-sm" text-anchor="end">Trans-atmospheric</text>
+        <rect x="130" y="145" width="220.4" height="14" class="dg-fill"/>
+        <text x="354.4" y="156" class="dg-label-sm">−200 to +260</text>
+        <text x="124" y="193" class="dg-label-sm" text-anchor="end">Managed electronics</text>
+        <rect x="201.9" y="183" width="47.9" height="14" class="dg-acc-f" opacity="0.75"/>
+        <text x="253.8" y="194" class="dg-label-sm">−50 to +50</text>
+        <text x="124" y="221" class="dg-label-sm" text-anchor="end">Military-grade parts</text>
+        <rect x="199.5" y="211" width="86.2" height="14" class="dg-acc-f" opacity="0.75"/>
+        <text x="289.7" y="222" class="dg-label-sm">−55 to +125</text>
+        <line x1="130" y1="244" x2="360" y2="244" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-rule" stroke-width="1"><line x1="130" y1="244" x2="130" y2="249"/><line x1="177.9" y1="244" x2="177.9" y2="249"/><line x1="225.8" y1="244" x2="225.8" y2="249"/><line x1="273.8" y1="244" x2="273.8" y2="249"/><line x1="321.7" y1="244" x2="321.7" y2="249"/></g>
+        <g class="dg-label-sm" text-anchor="middle"><text x="130" y="261">-200</text><text x="177.9" y="261">-100</text><text x="225.8" y="261">0</text><text x="273.8" y="261">100</text><text x="321.7" y="261">200</text></g>
+        <line x1="225.8" y1="24" x2="225.8" y2="244" class="dg-guide" stroke-width="0.9" stroke-dasharray="2 3"/>
+        <text x="245" y="276" class="dg-label" text-anchor="middle">temperature (°C)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The unmanaged extremes of five environments against the range specified for
+        standard missions by the projects the NASA survey examined, about −50 to +50 °C, and the
+        military specification range for parts, −55 to +125 °C. Thermal design keeps the
+        electronics inside the narrow bars; this module concerns what happens when it cannot.
+        <span class="src">Plante &amp; Lee (2005), Table 7 and text, as reproduced on Deck 12 p. 9.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      These are environmental temperatures. The survey notes that a temperature-managed box sees a
+      range smaller by perhaps as much as half, that the projects it surveyed specified about −50
+      to +50 °C for standard missions, and that parts are commonly qualified to the military
+      specification, −55 to +125 °C. Thermal design, the radiative balance of M03 §2 with
+      heaters, radiators and insulation, holds the electronics inside that window. The rest of this
+      module concerns what the semiconductor does when it leaves it: on an exposed mechanism, in a
+      lunar night, on the surface of Venus, or beside an engine.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The low-orbit cycle count in Deck 12 p. 9</p>
+      <p>
+        The survey's table, and the slides that reproduce it (Deck 12 p. 9, Deck 13 p. 9), give the
+        low-orbit count as "6,000 for a height of 2 km". No orbit exists at 2 km; 6,000 cycles a year is the count for an orbit near 200 km,
+        whose period is about 88 minutes, and the professor corrected the figure in Lecture 13. The
+        same row's "780 for 20,000 km" belongs to medium orbit, not low orbit.
+      </p>
+    </div>
+
+    <h2>2 · Intrinsic carriers across the gap ladder</h2>
+    <p>
+      Equation (1.2) of <a href="m01-semiconductor-background.html#m01-eq-ni">M01</a> gives the
+      intrinsic concentration as <em>n</em><sub>i</sub> = √(<em>N</em><sub>c</sub><em>N</em><sub>v</sub>)
+      exp(−<em>E</em><sub>g</sub>/(2<em>kT</em>)): the number of carriers thermally excited across the
+      gap of a pure crystal. Its temperature dependence has three parts. The effective densities of
+      states <em>N</em><sub>c</sub> and <em>N</em><sub>v</sub> grow as <em>T</em><sup>3/2</sup>; the
+      exponential, with <em>kT</em> in its denominator, grows much faster; and the gap itself
+      shrinks as the crystal warms. Lattice expansion and the interaction of electrons with lattice
+      vibrations lower the conduction-band minimum relative to the valence-band maximum, and a
+      three-parameter fit describes the result over a wide range.
+    </p>
+
+    <div class="eq" id="m17a-eq-varshni">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>g</sub>(<em>T</em>) = <em>E</em><sub>g</sub>(0) − <span class="frac"><span class="num"><em>αT</em>²</span><span class="den"><em>T</em> + <em>β</em></span></span></div>
+        <div class="eq-num">(17a.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>g</sub>(<em>T</em>) bandgap at temperature <em>T</em> (<b>eV</b>) ·
+        <em>E</em><sub>g</sub>(0) gap at absolute zero (eV) · <em>α</em> (eV/K) and <em>β</em> (K)
+        fitted constants · <em>T</em> temperature (K). Silicon: 1.169 eV, 4.9×10⁻⁴ eV/K, 655 K, so
+        1.123 eV at 300 K and 1.063 eV at 500 K. GaAs: 1.519 eV, 5.4×10⁻⁴ eV/K, 204 K. Germanium:
+        0.742 eV, 4.8×10⁻⁴ eV/K, 235 K. 4H-SiC: 3.23 eV at 300 K, with <em>α</em> = 6.5×10⁻⁴ eV/K
+        and <em>β</em> = 1,300 K; other compilations give 3.26 eV, which lowers <em>n</em><sub>i</sub> by
+        about a fifth at 773 K. Use the gap at the temperature in question in equation (1.2).
+        On the formula sheet as <a href="formula-sheet.html#eq-17a-varshni">(17a.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      With the course's 1.0×10¹⁰ cm⁻³ at 300 K, densities of states scaled as
+      <em>T</em><sup>3/2</sup> and the gap of (17a.1), silicon's intrinsic concentration
+      becomes 5.3×10¹² cm⁻³ at 400 K, 2.6×10¹⁴ at 500 K, 3.7×10¹⁵ at 600 K and 8×10¹⁶ at 773 K
+      (500 °C). Near room temperature it doubles about every 9 K, so
+      <em>n</em><sub>i</sub>², which governs the diffusion leakage of §5, doubles about every 4 K.
+      The material stays extrinsic while <em>n</em><sub>i</sub> remains below the doping, so a more
+      heavily doped region stays extrinsic to a higher temperature. Setting
+      <em>n</em><sub>i</sub>(<em>T</em>) equal to the doping gives the temperature at which control
+      by doping ends.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Doping (cm⁻³)</th><th>Silicon reaches <em>n</em><sub>i</sub> = <em>N</em> at</th><th>Note</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>10¹⁴</td><td>472 K (199 °C)</td><td>lightly doped substrates and drift regions</td></tr>
+          <tr><td>10¹⁵</td><td>547 K (274 °C)</td><td>the case of M01 §4 (545 K)</td></tr>
+          <tr><td>2×10¹⁵</td><td>574 K (301 °C)</td><td>the default doping of the simulator runs in §6</td></tr>
+          <tr><td>10¹⁶</td><td>648 K (375 °C)</td><td></td></tr>
+          <tr><td>10¹⁷</td><td>789 K (515 °C)</td><td></td></tr>
+          <tr><td>10¹⁸</td><td>996 K (723 °C)</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">Computed here from equation (1.2) with the gap of (17a.1), <em>N</em><sub>c</sub><em>N</em><sub>v</sub> ∝ <em>T</em>³ and the course's 1.0×10¹⁰ cm⁻³ at 300 K.</p>
+
+    <p>
+      A wider gap moves the whole dependence to higher temperature, and the effect is exponential
+      in the gap. Deck 14 and three other decks show the same chart (Figure 2), on which every
+      material is a nearly straight line: plotted against 1000/<em>T</em>, the logarithm of
+      <em>n</em><sub>i</sub> falls by about 2.5 decades per unit of 1000/<em>T</em> for every
+      electronvolt of gap, the gap here being the value extrapolated linearly to 0 K (1.20 eV for
+      silicon), not the room-temperature gap, because the gap itself shrinks as the crystal warms. Germanium (0.66 eV at 300 K) reaches 10¹⁵ cm⁻³ near 390 K. Gallium
+      arsenide (1.42 eV) holds 2×10⁶ cm⁻³ at 300 K and about 10¹² at 500 K (0.8–2×10¹², depending on
+      how the higher conduction-band valleys are counted), 100 to 300 times below silicon. 4H silicon carbide (3.23 eV), the material of NASA's high-temperature
+      circuits, holds about 8×10⁹ cm⁻³ at 773 K, seven orders of magnitude below silicon at the
+      same temperature, and would reach 10¹⁵ cm⁻³ only near 1,340 K.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 278" role="img" aria-labelledby="f17a-2-t">
+        <title id="f17a-2-t">Intrinsic carrier concentration on a logarithmic scale against 1000 over temperature for germanium, silicon, gallium arsenide, 6H silicon carbide and gallium nitride</title>
+        <rect x="70" y="30" width="340" height="200" class="dg-fill" opacity="0.35"/>
+        <line x1="70" y1="230" x2="410" y2="230" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="180" x2="410" y2="180" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="130" x2="410" y2="130" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="80" x2="410" y2="80" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="30" x2="410" y2="30" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <text x="64" y="34" class="dg-label-sm" text-anchor="end">10¹⁵</text>
+        <text x="64" y="84" class="dg-label-sm" text-anchor="end">10¹¹</text>
+        <text x="64" y="134" class="dg-label-sm" text-anchor="end">10⁷</text>
+        <text x="64" y="184" class="dg-label-sm" text-anchor="end">10³</text>
+        <text x="64" y="234" class="dg-label-sm" text-anchor="end">10⁻¹</text>
+        <text x="70" y="246" class="dg-label-sm" text-anchor="middle">0.5</text>
+        <text x="118.6" y="246" class="dg-label-sm" text-anchor="middle">1</text>
+        <text x="167.1" y="246" class="dg-label-sm" text-anchor="middle">1.5</text>
+        <text x="215.7" y="246" class="dg-label-sm" text-anchor="middle">2</text>
+        <text x="264.3" y="246" class="dg-label-sm" text-anchor="middle">2.5</text>
+        <text x="312.9" y="246" class="dg-label-sm" text-anchor="middle">3</text>
+        <text x="361.4" y="246" class="dg-label-sm" text-anchor="middle">3.5</text>
+        <text x="410" y="246" class="dg-label-sm" text-anchor="middle">4</text>
+        <line x1="118.6" y1="30" x2="118.6" y2="25" class="dg-rule" stroke-width="1"/>
+        <text x="118.6" y="20" class="dg-label-sm" text-anchor="middle">727 °C</text>
+        <line x1="215.7" y1="30" x2="215.7" y2="25" class="dg-rule" stroke-width="1"/>
+        <text x="215.7" y="20" class="dg-label-sm" text-anchor="middle">227 °C</text>
+        <line x1="313" y1="30" x2="313" y2="25" class="dg-rule" stroke-width="1"/>
+        <text x="313" y="20" class="dg-label-sm" text-anchor="middle">60 °C</text>
+        <line x1="409.8" y1="30" x2="409.8" y2="25" class="dg-rule" stroke-width="1"/>
+        <text x="409.8" y="20" class="dg-label-sm" text-anchor="middle">-23 °C</text>
+        <line x1="70" y1="30" x2="70" y2="230" class="dg-rule" stroke-width="1.2"/><line x1="70" y1="230" x2="410" y2="230" class="dg-rule" stroke-width="1.2"/>
+        <line x1="278.3" y1="30" x2="410" y2="68.1" class="dg-line" stroke-width="1.6"/>
+        <text x="371.3" y="49.5" class="dg-label-sm">Ge</text>
+        <line x1="192.2" y1="30" x2="410" y2="116.9" class="dg-acc" stroke-width="2.2"/>
+        <text x="347" y="83.8" class="dg-label-sm">Si</text>
+        <line x1="146" y1="30" x2="410" y2="162.5" class="dg-line" stroke-width="1.6"/>
+        <text x="303.3" y="100.4" class="dg-label-sm">GaAs</text>
+        <line x1="87.9" y1="30" x2="288.4" y2="230" class="dg-line" stroke-width="1.6"/>
+        <text x="225.6" y="156.3" class="dg-label-sm">6H-SiC</text>
+        <line x1="73.2" y1="30" x2="257.1" y2="230" class="dg-line" stroke-width="1.6"/>
+        <text x="164.4" y="117.7" class="dg-label-sm">GaN</text>
+        <text x="240" y="266" class="dg-label" text-anchor="middle">1000 / T (K⁻¹)</text>
+        <text x="16" y="130" class="dg-label" text-anchor="middle" transform="rotate(-90 16 130)">n<tspan baseline-shift="sub" style="font-size:75%">i</tspan> (cm⁻³)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> Intrinsic carrier concentration against 1000/<em>T</em>, with the
+        corresponding Celsius temperatures along the top. A region is extrinsic only while its
+        material's line lies below its doping: silicon's crosses 10¹⁵ cm⁻³ near 570 K on this chart,
+        6H-SiC's not until about 1,460 K. Each slope measures the gap extrapolated to 0 K. Lines
+        redrawn from the chart; its InN line (see the box below) and its AlN line, the steepest, are
+        omitted.
+        <span class="src">After Deck 14 p. 4 (also Deck 12 p. 30, Deck 13 p. 26, Deck 15 p. 5), from R. T.
+        Kemerley, H. B. Wallace and M. N. Yoder, <em>Proc. IEEE</em> <b>90</b>, 1059 (2002). Deck 16a p. 50
+        shows a related chart for Si, 6H-SiC and GaN from Neudeck, Okojie and Chen (2002).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The chart's lines are straight-line fits, good to a factor of a few: its silicon line crosses
+      10¹⁵ cm⁻³ near 570 K where the calculation above gives 547 K, its GaAs line reads five times
+      the 2×10⁶ cm⁻³ quoted above at 300 K, and its silicon line three times low at 773 K. Its 6H-SiC
+      line, for the polytype of the chart rather than the 4H of the circuits, lies above the 4H values
+      quoted here at 500 °C but below them at the highest temperatures, because the straight-line fit
+      is shallower than the gap-based calculation; 6H's narrower gap, about 3.0 eV, would by itself
+      put it above 4H throughout. The order of the lines, and the many decades between them, are what
+      the chart is for.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The InN line on the chart</p>
+      <p>
+        The chart of Deck 14 p. 4 draws indium nitride between GaAs and 6H-SiC. Its line falls 5.35
+        decades per unit of 1000/<em>T</em>, the slope of a gap near 2 eV, the value accepted before
+        2002, measured on degenerate, oxygen-rich polycrystalline films. Measurements on better
+        crystals from 2002 on give about 0.7 eV (Wu <em>et al.</em> 2002: 0.7–0.8 eV; Davydov
+        <em>et al.</em> 2002), which puts its line close to germanium's. The redrawing leaves it out; the other lines are unaffected.
+      </p>
+    </div>
+
+    <h2>3 · Freeze-out and incomplete ionization</h2>
+    <p>
+      At the cold end the carrier population falls below the doping, because the thermal energy
+      no longer ionizes every dopant. M01 §4 worked the case of silicon doped with 10¹⁵ cm⁻³ of
+      phosphorus, whose donor level lies 45 meV below the conduction band: 15 % of the donors are
+      ionized at 50 K, half at 65 K and 90 % at 92 K. The occupancy of a donor level follows the
+      same Fermi statistics as the bands, with a degeneracy factor of 2 because the bound electron
+      may have either spin, and charge neutrality, <em>n</em> = <em>N</em><sub>d</sub>⁺ in an
+      uncompensated n-type region, then fixes the electron density.
+    </p>
+
+    <div class="eq" id="m17a-eq-ion">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>N</em><sub>d</sub>⁺</span><span class="den"><em>N</em><sub>d</sub></span></span> = <span class="frac"><span class="num">1</span><span class="den">1 + 2 (<em>n</em>/<em>N</em><sub>c</sub>) exp(Δ<em>E</em><sub>d</sub>/<em>kT</em>)</span></span></div>
+        <div class="eq-num">(17a.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>d</sub>⁺ ionized donor concentration (cm⁻³) · <em>N</em><sub>d</sub> donor
+        concentration (cm⁻³) · <em>n</em> electron concentration (cm⁻³), equal to
+        <em>N</em><sub>d</sub>⁺ in an uncompensated n-type region, so the equation is solved for
+        <em>n</em> · <em>N</em><sub>c</sub> effective density of states at <em>T</em>, scaled as
+        <em>T</em><sup>3/2</sup> (cm⁻³) · Δ<em>E</em><sub>d</sub> ionization energy, the depth of
+        the donor level below <em>E</em><sub>c</sub> (<b>eV</b>) · <em>k</em> = 8.617×10⁻⁵ eV/K. For
+        acceptors use the hole density, <em>N</em><sub>v</sub>, the acceptor depth above
+        <em>E</em><sub>v</sub> and a degeneracy factor of 4. Holds for isolated dopants; above about
+        10¹⁸ cm⁻³ in silicon the levels broaden into a band and the effective ionization energy
+        falls.
+        On the formula sheet as <a href="formula-sheet.html#eq-17a-ion">(17a.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      Equation (17a.2) shows why heavier doping freezes out at a higher temperature: a larger
+      <em>n</em> raises the chance that a donor is reoccupied. Silicon doped with 10¹⁷ cm⁻³ of
+      phosphorus, treated with the same 45 meV, is 14 % ionized at 77 K, 32 % at 100 K, 69 % at
+      150 K and 96 % at 300 K, against 74 % at 77 K for 10¹⁵. At this concentration neighbouring
+      donors already lower the effective depth of the level, so these fractions are lower bounds.
+      The ionized fraction falls, but the number of free electrons still rises with doping: at least
+      1.4×10¹⁶ cm⁻³ at 77 K for 10¹⁷, against 7.4×10¹⁴ for 10¹⁵. Near and above
+      the metal–insulator transition, 3.7×10¹⁸ cm⁻³ for phosphorus
+      (<a href="m01-semiconductor-background.html">M01 §3</a>), the donor electrons form a band of
+      their own and the region conducts at any temperature, which is why degenerately doped
+      contacts work when cold.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 236" role="img" aria-labelledby="f17a-3-t">
+        <title id="f17a-3-t">Fraction of dopants ionized against temperature from 0 to 800 kelvin for phosphorus in silicon at two concentrations, nitrogen in 4H silicon carbide and aluminium in 4H silicon carbide</title>
+        <line x1="60" y1="190" x2="410" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="190" x2="60" y2="24" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="110" x2="410" y2="110" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="60" y1="30" x2="410" y2="30" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <g class="dg-label-sm" text-anchor="end"><text x="54" y="194">0</text><text x="54" y="114">0.5</text><text x="54" y="34">1</text></g>
+        <g class="dg-label-sm" text-anchor="middle"><text x="60" y="205">0</text><text x="147.5" y="205">200</text><text x="235" y="205">400</text><text x="322.5" y="205">600</text><text x="410" y="205">800</text></g>
+        <line x1="191.2" y1="24" x2="191.2" y2="190" class="dg-guide" stroke-width="0.9" stroke-dasharray="4 4"/>
+        <path d="M64.4,190 L66.6,190 L68.8,190 L70.9,189.9 L73.1,189.4 L75.3,187.8 L77.5,183.9 L79.7,176.7 L81.9,165.2 L84.1,149.8 L86.2,131.3 L88.4,111.8 L90.6,93.2 L93.7,71.6 L97.2,54.7 L100.2,45.6 L103.8,39.5 L108.1,35.4 L112.5,33.3 L119.1,31.7 L125.6,31 L136.6,30.5 L147.5,30.3 L158.4,30.2 L169.4,30.1 L180.3,30.1 L191.2,30.1 L213.1,30 L235,30 L256.9,30 L278.8,30 L300.6,30 L322.5,30 L344.4,30 L366.2,30 L388.1,30 L410,30" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <path d="M64.4,190 L66.6,190 L68.8,190 L70.9,190 L73.1,189.9 L75.3,189.8 L77.5,189.4 L79.7,188.6 L81.9,187.3 L84.1,185.4 L86.2,182.8 L88.4,179.4 L90.6,175.3 L93.7,168.4 L97.2,159.1 L100.2,150 L103.8,139.1 L108.1,125.2 L112.5,111.9 L119.1,93.9 L125.6,79.3 L136.6,61.8 L147.5,51.1 L158.4,44.5 L169.4,40.4 L180.3,37.7 L191.2,35.9 L213.1,33.8 L235,32.6 L256.9,31.9 L278.8,31.5 L300.6,31.1 L322.5,30.9 L344.4,30.8 L366.2,30.7 L388.1,30.6 L410,30.5" class="dg-line" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
+        <path d="M64.4,190 L66.6,190 L68.8,190 L70.9,190 L73.1,190 L75.3,190 L77.5,189.9 L79.7,189.7 L81.9,189.4 L84.1,188.8 L86.2,188 L88.4,186.9 L90.6,185.4 L93.7,182.9 L97.2,179.1 L100.2,175.3 L103.8,170.4 L108.1,163.7 L112.5,156.6 L119.1,146 L125.6,135.6 L136.6,118.8 L147.5,102.5 L158.4,87.4 L169.4,74.4 L180.3,64 L191.2,56 L213.1,45.7 L235,40 L256.9,36.8 L278.8,34.8 L300.6,33.6 L322.5,32.8 L344.4,32.2 L366.2,31.8 L388.1,31.5 L410,31.3" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M64.4,190 L66.6,190 L68.8,190 L70.9,190 L73.1,190 L75.3,190 L77.5,190 L79.7,190 L81.9,190 L84.1,190 L86.2,190 L88.4,190 L90.6,190 L93.7,190 L97.2,190 L100.2,190 L103.8,190 L108.1,190 L112.5,190 L119.1,189.9 L125.6,189.9 L136.6,189.5 L147.5,188.8 L158.4,187.7 L169.4,185.9 L180.3,183.5 L191.2,180.4 L213.1,172.2 L235,161.8 L256.9,150 L278.8,137.6 L300.6,125.2 L322.5,113.4 L344.4,102.6 L366.2,92.8 L388.1,84.3 L410,76.9" class="dg-line" stroke-width="1.6" stroke-dasharray="2 3" fill="none"/>
+        <text x="105.9" y="30.8" class="dg-label-sm">Si:P, 10¹⁵</text>
+        <text x="131.6" y="91.6" class="dg-label-sm">Si:P, 10¹⁷</text>
+        <text x="149.7" y="118" class="dg-label-sm">4H-SiC:N, 10¹⁷</text>
+        <text x="287.5" y="146.4" class="dg-label-sm">4H-SiC:Al, 10¹⁸</text>
+        <text x="195.2" y="34" class="dg-label-sm">300 K</text>
+        <text x="235" y="224" class="dg-label" text-anchor="middle">temperature (K)</text>
+        <text x="18" y="108" class="dg-label" text-anchor="middle" transform="rotate(-90 18 108)">fraction ionized</text>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> Fraction of dopants ionized, from equation (17a.2). Phosphorus in silicon
+        freezes out below about 100 K, later at higher doping. Nitrogen in 4H-SiC is 84 % ionized at
+        300 K and falls off below room temperature; aluminium, a deep acceptor, is only 6 % ionized at
+        300 K at 10¹⁸ cm⁻³ and ionizes as the device heats. Computed here; silicon carbide with the
+        two nitrogen sites at 52 and 92 meV in equal numbers and aluminium at 191 meV; the 10¹⁷ silicon
+        curve uses the isolated-donor depth and is a lower bound.
+      </figcaption>
+    </figure>
+
+    <p>
+      Silicon carbide's dopants lie deeper, and its freeze-out moves up to room temperature.
+      Nitrogen, the usual donor, occupies two inequivalent lattice sites in 4H-SiC, with ionization
+      energies of about 30–80 meV on the hexagonal site and 80–130 meV on the cubic site; values
+      near 52 and 92 meV, from infrared absorption, are the common choice (Götz <em>et al.</em>
+      1993). Aluminium, the usual acceptor, lies about 0.22 eV above the valence band in lightly
+      doped material and about 0.19 eV at 10¹⁸ cm⁻³, the value most often used in device models. With
+      these levels, 10¹⁷ cm⁻³ of nitrogen is 84 % ionized at 300 K, 78 % at 0 °C and 34 % at 150 K,
+      while 10¹⁸ cm⁻³ of aluminium is 6 % ionized at 300 K and 33 % at 500 K. A p-type silicon carbide
+      layer therefore holds a small fraction of its holes at room temperature and gains them as it
+      heats.
+    </p>
+    <p>
+      NASA's silicon carbide integrated circuits show the consequence directly. The conductance of
+      their 4H-SiC n-layer, and with it the frequency of a ring oscillator built from the layer, is
+      highest near 0 °C. Below 0 °C incomplete ionization reduces the electron density; above it the
+      electron density still rises, but slowly, and the fall of mobility through phonon scattering,
+      the subject of §4, dominates, so that frequency and power fall by a factor of roughly 4–5
+      between 0 and 500 °C (Deck 16a p. 60). The same circuits start and run in the cold without the cold-start problems of other
+      technologies (Deck 16a p. 59).
+    </p>
+    <p>
+      Deck 8 p. 12 shows a second low-temperature effect, compensation, in germanium (Figure 4).
+      When a region contains both donors and acceptors, the acceptors capture electrons from the
+      donors, and only the excess, <em>N</em><sub>d</sub> − <em>N</em><sub>a</sub>, remains free on the
+      extrinsic plateau. In the simulated crystal both levels lie 10 meV from their bands, and
+      freeze-out sets in below about 150 K and halves the electron density near 55 K, about where
+      10¹⁵ cm⁻³ of phosphorus in silicon freezes out: the shallower level is offset by the hundredfold
+      higher doping. Germanium's real dopants are similarly shallow, about 10–14 meV for the common
+      donors and 11 meV for the common acceptors. At the high end the curves converge from about
+      600 K and follow the intrinsic line above about 700 K, and a fully compensated crystal follows
+      it at every temperature.
+    </p>
+
+    <figure>
+      <img src="img/ge-compensation-deck8.png"
+           alt="Simulated electron density in germanium against temperature from 0 to 1000 kelvin, for a donor density of 10 to the 17 per cubic centimetre and acceptor densities from 10 to the 14 to 10 to the 17, with donor and acceptor levels at 10 meV; each curve has a plateau at the donor minus acceptor density and joins the intrinsic curve above about 700 kelvin">
+      <figcaption>
+        <b>Figure 4.</b> Compensation and freeze-out in germanium with 10¹⁷ cm⁻³ donors. The plateau
+        sits at <em>N</em><sub>d</sub> − <em>N</em><sub>a</sub>; the shallow 10 meV levels keep it within
+        about 20 % of the plateau down to about 100 K; the curves converge from about 600 K and follow
+        the intrinsic density above about 700 K, and the fully compensated crystal (<em>N</em><sub>a</sub> = <em>N</em><sub>d</sub>) behaves as
+        intrinsic throughout.
+        <span class="src">Deck 8 p. 12 (simulation; source not identified on the slide).</span>
+      </figcaption>
+    </figure>
+
+    <h2>4 · Mobility against temperature</h2>
+    <p>
+      The mobility of <a href="m01-semiconductor-background.html#m01-eq-drift">M01 (1.6)</a> is
+      limited by collisions, and the two kinds of collision respond to temperature in opposite
+      directions. Lattice vibrations, quantized as phonons, grow more numerous as the crystal
+      warms, so a carrier is scattered more often and its mobility falls: scattering by acoustic
+      phonons alone would give a fall as <em>T</em><sup>−3/2</sup>, and the measured fall in pure
+      silicon near room temperature is steeper. Ionized dopants deflect a carrier by their Coulomb
+      field, and a faster carrier is deflected less, so impurity scattering weakens as temperature
+      rises (Sze &amp; Ng §1.5.1).
+    </p>
+
+    <div class="eq" id="m17a-eq-mob">
+      <div class="eq-body">
+        <div class="eq-math"><em>µ</em>(<em>T</em>) = <em>µ</em>(300 K) · <span class="dl">(</span><span class="frac"><span class="num"><em>T</em></span><span class="den">300 K</span></span><span class="dl">)</span><sup>−<em>a</em></sup></div>
+        <div class="eq-num">(17a.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>µ</em> lattice-limited mobility (<b>cm²/V·s</b>) · <em>T</em> temperature (K) ·
+        <em>a</em> = 2.42 for electrons and 2.20 for holes in lightly doped silicon, with
+        <em>µ</em>(300 K) = 1,450 and 500 cm²/V·s. Holds near and above room temperature where
+        phonons dominate; at low temperature in doped material impurity scattering takes over and the
+        mobility peaks, at a few tens of kelvin for 10¹⁷ cm⁻³. The diffusion coefficient
+        <em>D</em> = <em>µkT</em>/<em>q</em> falls more slowly, as <em>T</em><sup>1−<em>a</em></sup>.
+        On the formula sheet as <a href="formula-sheet.html#eq-17a-mob">(17a.3)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 236" role="img" aria-labelledby="f17a-4-t">
+        <title id="f17a-4-t">Lattice-limited electron and hole mobility in lightly doped silicon against temperature from 150 to 800 kelvin on logarithmic axes, falling as T to the minus 2.42 and minus 2.20</title>
+        <line x1="70" y1="200" x2="410" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="200" x2="70" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="180.3" x2="410" y2="180.3" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="115" x2="410" y2="115" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="49.7" x2="410" y2="49.7" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <g class="dg-label-sm" text-anchor="end"><text x="64" y="184.3">10²</text><text x="64" y="119">10³</text><text x="64" y="53.7">10⁴</text></g>
+        <g class="dg-label-sm" text-anchor="middle"><text x="70" y="215">100</text><text x="136.3" y="215">150</text><text x="183.3" y="215">200</text><text x="249.6" y="215">300</text><text x="333.2" y="215">500</text><text x="410" y="215">800</text></g>
+        <path d="M136.3,56.9 L161.5,67.4 L183.3,76.6 L219.8,91.9 L249.6,104.5 L296.7,124.2 L333.2,139.5 L363,152.1 L388.2,162.6 L410,171.8" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <path d="M136.3,91.4 L161.5,101 L183.3,109.4 L219.8,123.3 L249.6,134.7 L296.7,152.6 L333.2,166.6 L363,177.9 L388.2,187.6 L410,195.9" class="dg-line" stroke-width="1.8" stroke-dasharray="6 4" fill="none"/>
+        <line x1="249.6" y1="30" x2="249.6" y2="200" class="dg-guide" stroke-width="0.9" stroke-dasharray="4 4"/>
+        <circle cx="249.6" cy="104.5" r="3.5" class="dg-acc-f"/>
+        <circle cx="249.6" cy="134.7" r="3.5" class="dg-ink"/>
+        <line x1="80" y1="162" x2="104" y2="162" class="dg-acc" stroke-width="2.2"/>
+        <text x="110" y="166" class="dg-label-sm">electrons: 1,450 at 300 K, ∝ T⁻²·⁴²</text>
+        <line x1="80" y1="180" x2="104" y2="180" class="dg-line" stroke-width="1.8" stroke-dasharray="6 4"/>
+        <text x="110" y="184" class="dg-label-sm">holes: 500 at 300 K, ∝ T⁻²·²⁰</text>
+        <text x="240" y="230" class="dg-label" text-anchor="middle">temperature (K)</text>
+        <text x="16" y="115" class="dg-label" text-anchor="middle" transform="rotate(-90 16 115)">µ (cm²/V·s)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> Lattice-limited mobility in lightly doped silicon from (17a.3), drawn from
+        150 K, below which the power law overestimates the measured mobility. At 500 K the electron
+        mobility is 420 cm²/V·s, 29 % of its room-temperature value; a doped region falls below these
+        lines when cold, because impurity scattering limits it there.
+        <span class="src">Exponents from Sze &amp; Ng (2007), §1.5.1 and Fig. 16 (after Jacoboni
+        <em>et al.</em> 1977), shown on Deck 14 p. 8.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      For a device the fall of mobility when hot means a larger series resistance in every neutral
+      region and channel: the resistance of a lightly doped silicon layer at a fixed carrier density
+      rises about 3.4-fold between 300 and 500 K for n-type material (3.1-fold for p-type), and drive
+      current falls with it. This is
+      the high-temperature half of the silicon carbide result of §3, and the mobility term that
+      competes with threshold-voltage shift in the transistors of <a href="m17b-transistors-high-temperature.html#m17b-eq-vtht">M17b</a>. In the cold the mobility of
+      pure silicon rises about 14-fold by 77 K, to about 2×10⁴ cm²/V·s for electrons (Sze &amp; Ng
+      Fig. 16); (17a.3) overestimates it below about 150 K, where the power law no longer holds. In
+      doped material impurity scattering and freeze-out take over first.
+    </p>
+
+    <h2>5 · The p–n junction against temperature</h2>
+    <p>
+      The diode equation of <a href="m01-semiconductor-background.html">M01 §6</a>,
+      <em>I</em> = <em>I</em><sub>0</sub>(e<sup><em>qV</em>/<em>kT</em></sup> − 1), carries its
+      temperature dependence almost entirely in the saturation current <em>I</em><sub>0</sub>. Under
+      reverse bias the current is a leakage that should be negligible; under forward bias the
+      voltage at a given current falls as the junction warms. Both follow from the origin of
+      <em>I</em><sub>0</sub>. Minority carriers generated thermally in the neutral regions, within a
+      diffusion length of the junction, diffuse to its edge and are swept across by its field. Their
+      density is <em>n</em><sub>i</sub>²/<em>N</em> on each side, which makes the current proportional to
+      <em>n</em><sub>i</sub>².
+    </p>
+
+    <div class="eq" id="m17a-eq-i0">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>0</sub> = <em>qA n</em><sub>i</sub>² <span class="dl">(</span><span class="frac"><span class="num"><em>D</em><sub>p</sub></span><span class="den"><em>L</em><sub>p</sub><em>N</em><sub>d</sub></span></span> + <span class="frac"><span class="num"><em>D</em><sub>n</sub></span><span class="den"><em>L</em><sub>n</sub><em>N</em><sub>a</sub></span></span><span class="dl">)</span>,&nbsp;&nbsp; <em>L</em> = <span class="sqrt"><span class="rad">√</span><span class="arg"><em>Dτ</em></span></span></div>
+        <div class="eq-num">(17a.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>0</sub> saturation current (A) · <em>q</em> = 1.602×10⁻¹⁹ C · <em>A</em> junction
+        area (<b>cm²</b>) · <em>n</em><sub>i</sub> intrinsic concentration at <em>T</em> (cm⁻³) ·
+        <em>D</em><sub>p</sub>, <em>D</em><sub>n</sub> minority-carrier diffusion coefficients,
+        <em>µkT</em>/<em>q</em> (cm²/s) · <em>L</em><sub>p</sub>, <em>L</em><sub>n</sub> diffusion lengths
+        (cm) · <em>N</em><sub>d</sub>, <em>N</em><sub>a</sub> doping of the n and p sides (cm⁻³) ·
+        <em>τ</em> minority-carrier lifetime (s), not the collection time of M08. Long-base junction;
+        the side with the lighter doping dominates. The form is that of Deck 14 p. 6.
+        <em>I</em><sub>0</sub> ∝ <em>n</em><sub>i</sub>², and the remaining factors vary weakly with
+        temperature: with (17a.3), <em>D</em>/<em>L</em> = √(<em>D</em>/<em>τ</em>) falls slowly as the
+        crystal warms.
+        On the formula sheet as <a href="formula-sheet.html#eq-17a-i0">(17a.4)</a>.
+      </div>
+    </div>
+
+    <p>
+      A second leakage term comes from the depletion region itself. There the carrier densities are
+      far below <em>n</em><sub>i</sub>, so defect levels near midgap, such as those of
+      <a href="m11-displacement-damage.html">M11</a>, emit electrons and holes in pairs, and the
+      field separates them before they recombine. Generation in the depletion region is proportional
+      to <em>n</em><sub>i</sub> rather than <em>n</em><sub>i</sub>², and to the region's width. NASA's
+      tutorial writes the two terms together for a p⁺n junction (Deck 16a p. 50, after Neudeck,
+      Okojie and Chen 2002).
+    </p>
+
+    <div class="eq" id="m17a-eq-ir">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>R</sub> ≅ <em>qA n</em><sub>i</sub> <span class="dl">[</span><span class="frac"><span class="num"><em>n</em><sub>i</sub></span><span class="den"><em>N</em><sub>d</sub></span></span> <span class="sqrt"><span class="rad">√</span><span class="arg"><span class="frac"><span class="num"><em>D</em><sub>p</sub></span><span class="den"><em>τ</em></span></span></span></span> + <span class="frac"><span class="num"><em>W</em></span><span class="den">2<em>τ</em></span></span><span class="dl">]</span></div>
+        <div class="eq-num">(17a.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>R</sub> magnitude of the reverse current (A) · <em>W</em> depletion width at the
+        applied bias, from M01 (1.8) (cm) · other symbols as in (17a.4). The first term is the
+        diffusion current of (17a.4) for a p⁺n junction, written with
+        <em>D</em><sub>p</sub>/<em>L</em><sub>p</sub> = √(<em>D</em><sub>p</sub>/<em>τ</em>); the second is the
+        generation current. Sze &amp; Ng write the second as <em>qn</em><sub>i</sub><em>W</em>/<em>τ</em><sub>g</sub>
+        with a generation lifetime <em>τ</em><sub>g</sub>, which equals 2<em>τ</em> for midgap centres
+        with equal capture rates for electrons and holes. Excludes surface leakage and breakdown.
+        On the formula sheet as <a href="formula-sheet.html#eq-17a-ir">(17a.5)</a>.
+      </div>
+    </div>
+
+    <p>
+      The two terms scale differently, so one dominates at each end. For an illustrative silicon
+      p⁺n junction with <em>N</em><sub>d</sub> = 10¹⁶ cm⁻³, <em>τ</em> = 1 µs and <em>W</em> = 1 µm,
+      equation (17a.5) gives 8×10⁻⁸ A/cm² at 300 K, almost all of it generation current, as is
+      usual for silicon at room temperature. The leakage rises 35-fold by 350 K, 545-fold by 400 K,
+      6×10⁴-fold by 500 K and 7×10⁶-fold by 600 K. The diffusion term, growing as
+      <em>n</em><sub>i</sub>², overtakes the generation term near 490 K, which is why the diffusion
+      current dominates in silicon at high temperature and in germanium already at room temperature
+      (Sze &amp; Ng §2.3.2). At 500 K, when the leakage has grown 6×10⁴ times, <em>n</em><sub>i</sub> is
+      still only 2.6 % of the doping: the junction fails as an insulator long before the material
+      becomes intrinsic.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 246" role="img" aria-labelledby="f17a-5-t">
+        <title id="f17a-5-t">Reverse leakage current density of a silicon p-plus n junction against temperature from 250 to 650 kelvin on a reciprocal-temperature axis, showing the generation component, the diffusion component and their sum, which cross near 490 kelvin</title>
+        <line x1="70" y1="205" x2="410" y2="205" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="205" x2="70" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="163.8" x2="410" y2="163.8" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="122.6" x2="410" y2="122.6" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="81.5" x2="410" y2="81.5" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="40.3" x2="410" y2="40.3" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <g class="dg-label-sm" text-anchor="end"><text x="64" y="209">10⁻¹⁶</text><text x="64" y="167.8">10⁻¹²</text><text x="64" y="126.6">10⁻⁸</text><text x="64" y="85.5">10⁻⁴</text><text x="64" y="44.3">1</text><text x="64" y="34">10</text></g>
+        <g class="dg-label-sm" text-anchor="middle"><text x="70" y="220">250</text><text x="162.1" y="220">300</text><text x="227.9" y="220">350</text><text x="277.2" y="220">400</text><text x="346.2" y="220">500</text><text x="410" y="220">650</text></g>
+        <path d="M70,135.3 L91.2,130.2 L110.9,125.6 L129.2,121.2 L146.2,117.1 L162.1,113.3 L176.9,109.8 L190.9,106.4 L203.9,103.3 L216.2,100.3 L227.9,97.4 L238.8,94.8 L249.2,92.2 L259,89.8 L268.3,87.5 L277.2,85.3 L285.6,83.2 L293.6,81.2 L301.3,79.3 L308.6,77.5 L315.6,75.7 L322.2,74.1 L328.6,72.5 L334.7,70.9 L340.6,69.4 L346.2,68 L351.7,66.6 L356.9,65.3 L361.9,64 L366.7,62.7 L371.4,61.5 L375.8,60.4 L380.2,59.2 L384.4,58.1 L388.4,57.1 L392.3,56.1 L396.1,55.1 L399.7,54.1 L403.3,53.2 L406.7,52.3 L410,51.4" class="dg-line" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
+        <path d="M70,199.3 L91.2,189.4 L110.9,180.2 L129.2,171.5 L146.2,163.5 L162.1,156 L176.9,148.9 L190.9,142.3 L203.9,136.1 L216.2,130.2 L227.9,124.6 L238.8,119.3 L249.2,114.3 L259,109.6 L268.3,105 L277.2,100.7 L285.6,96.6 L293.6,92.7 L301.3,88.9 L308.6,85.3 L315.6,81.9 L322.2,78.6 L328.6,75.4 L334.7,72.4 L340.6,69.4 L346.2,66.6 L351.7,63.9 L356.9,61.3 L361.9,58.8 L366.7,56.3 L371.4,54 L375.8,51.7 L380.2,49.5 L384.4,47.4 L388.4,45.3 L392.3,43.3 L396.1,41.4 L399.7,39.5 L403.3,37.7 L406.7,35.9 L410,34.2" class="dg-line" stroke-width="1.6" stroke-dasharray="2 3" fill="none"/>
+        <path d="M70,135.3 L91.2,130.2 L110.9,125.6 L129.2,121.2 L146.2,117.1 L162.1,113.3 L176.9,109.8 L190.9,106.4 L203.9,103.2 L216.2,100.3 L227.9,97.4 L238.8,94.7 L249.2,92.2 L259,89.8 L268.3,87.4 L277.2,85.2 L285.6,83 L293.6,80.9 L301.3,78.8 L308.6,76.8 L315.6,74.7 L322.2,72.7 L328.6,70.6 L334.7,68.5 L340.6,66.3 L346.2,64.2 L351.7,62 L356.9,59.8 L361.9,57.6 L366.7,55.4 L371.4,53.2 L375.8,51.1 L380.2,49 L384.4,47 L388.4,45 L392.3,43.1 L396.1,41.2 L399.7,39.3 L403.3,37.5 L406.7,35.8 L410,34.1" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <line x1="340.6" y1="30" x2="340.6" y2="205" class="dg-guide" stroke-width="0.9" stroke-dasharray="4 4"/>
+        <text x="336.6" y="42" class="dg-label-sm" text-anchor="end">equal near 490 K</text>
+        <text x="166.1" y="105.3" class="dg-label-sm">generation, ∝ n<tspan baseline-shift="sub" style="font-size:75%">i</tspan></text>
+        <text x="203.9" y="152.1" class="dg-label-sm">diffusion, ∝ n<tspan baseline-shift="sub" style="font-size:75%">i</tspan>²</text>
+        <text x="369.8" y="45.1" class="dg-label-sm" text-anchor="end">total</text>
+        <text x="240" y="238" class="dg-label" text-anchor="middle">temperature (K), on a 1/T scale</text>
+        <text x="16" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 16 118)">J (A/cm²)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 6.</b> Reverse leakage of a silicon p⁺n junction from (17a.5), on an axis uniform in
+        1/<em>T</em>. The generation current, ∝ <em>n</em><sub>i</sub>, sets room-temperature leakage; the
+        diffusion current, ∝ <em>n</em><sub>i</sub>², rises twice as steeply and takes over near 490 K.
+        Computed here for <em>N</em><sub>d</sub> = 10¹⁶ cm⁻³, <em>τ</em> = 1 µs, <em>W</em> = 1 µm.
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">The power laws on Deck 14 pp. 6–7</p>
+      <p>
+        The slides summarize the temperature dependence as "<em>n</em><sub>i</sub>² ∝ <em>T</em>³" and
+        "<em>I</em> ∝ <em>T</em>⁴". <em>T</em>³ is only the prefactor of <em>n</em><sub>i</sub>²,
+        the product <em>N</em><sub>c</sub><em>N</em><sub>v</sub>; the factor
+        exp(−<em>E</em><sub>g</sub>/<em>kT</em>) dominates. From 25 to 75 °C <em>n</em><sub>i</sub>² rises
+        about 1,300-fold, where <em>T</em>⁴ would give 1.86-fold. The slide's own measured curves rise
+        roughly 20- to 35-fold at a fixed 0.4 V; at fixed voltage the factor
+        e<sup><em>qV</em>/<em>kT</em></sup> falls about tenfold over this range, so the measured rise
+        corresponds to <em>I</em><sub>0</sub> growing a few hundredfold, still far beyond
+        <em>T</em>⁴. The remaining factor of <em>T</em> in the slide's <em>T</em>⁴ assumes a constant
+        mobility; with (17a.3), <em>D</em> = <em>µkT</em>/<em>q</em> falls as the crystal warms, and the
+        power-law prefactor of <em>I</em><sub>0</sub> is about <em>T</em><sup>2.3</sup>, the
+        <em>γ</em> of (17a.6). The course's point, that the current "depends on temperature" strongly,
+        is the exponential; M01 §6's rule that <em>I</em><sub>0</sub> doubles about every 5 K is the
+        same statement.
+      </p>
+    </div>
+
+    <h3>Forward voltage, and the diode as a thermometer</h3>
+    <p>
+      Under forward bias the same <em>I</em><sub>0</sub> sets the voltage needed for a given current,
+      <em>V</em><sub>F</sub> = (<em>kT</em>/<em>q</em>) ln(<em>I</em>/<em>I</em><sub>0</sub>). Because
+      <em>I</em><sub>0</sub> rises so fast, the voltage at a fixed current falls as the junction warms,
+      almost linearly, by about 2 mV/K in silicon: on the measured curves of Deck 14 p. 7, a current
+      of 100 µA needs about 0.60, 0.48 and 0.385 V at −25, 25 and 75 °C. Writing
+      <em>I</em><sub>0</sub> ∝ <em>T</em><sup><em>γ</em></sup> exp(−<em>E</em><sub>g0</sub>/<em>kT</em>) and
+      differentiating gives the slope.
+    </p>
+
+    <div class="eq" id="m17a-eq-tc">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num">d<em>V</em><sub>F</sub></span><span class="den">d<em>T</em></span></span> ≈ −<span class="frac"><span class="num"><em>E</em><sub>g0</sub>/<em>q</em> − <em>V</em><sub>F</sub></span><span class="den"><em>T</em></span></span> − <span class="frac"><span class="num"><em>γk</em></span><span class="den"><em>q</em></span></span></div>
+        <div class="eq-num">(17a.6)</div>
+      </div>
+      <div class="eq-says">
+        d<em>V</em><sub>F</sub>/d<em>T</em> temperature coefficient of the forward voltage at constant
+        current (<b>V/K</b>) · <em>E</em><sub>g0</sub> the gap extrapolated linearly to 0 K from near the
+        operating temperature, 1.20 eV for silicon near 300 K (not the 1.169 eV of (17a.1)) ·
+        <em>V</em><sub>F</sub> forward voltage (V) · <em>T</em> (K) · <em>γ</em> exponent of the
+        temperature prefactor of <em>I</em><sub>0</sub>, about 2.3 with the mobility of (17a.3) ·
+        <em>k</em>/<em>q</em> = 8.617×10⁻⁵ V/K. At 0.56 V and 300 K it gives −2.3 mV/K. Valid near room
+        temperature for an ideal diode. Between about 30 K and room temperature the measured slope is
+        somewhat smaller (−1.73 mV/K at 77 K for the DT-670); below about 25 K it rises steeply, to
+        −20 to −30 mV/K.
+        On the formula sheet as <a href="formula-sheet.html#eq-17a-tc">(17a.6)</a>.
+      </div>
+    </div>
+
+    <p>
+      A silicon diode driven at a constant small current is therefore a thermometer, and one of the
+      most common in cryogenic and space instruments. Lake Shore's DT-670 sensor, which Lecture 14
+      shows, is driven at 10 µA and reads about 0.56 V with a slope of −2.30 mV/K near 300 K, and
+      1.03 V with −1.73 mV/K at 77 K. It is usable from 1.4 K to 500 K in some packages (to 420 K in
+      the others), either on the standard DT-670 curve or with an individual calibration. Equation
+      (17a.6) reproduces the room-temperature slope (Figure 7); at 77 K the ideal-diode model gives a
+      slope near −1.9 mV/K against the measured −1.73, because the simple model's assumptions weaken in
+      the cold. Below about 25 K the measured slope rises steeply, to −26.8 mV/K at 10 K and
+      −31.6 mV/K at 4.2 K, so the sensor is most sensitive in the liquid-helium range. The measured curves of Deck 14 p. 7 belong to a
+      generic diode at 100–1,000 µA, not to this sensor, so the two sets of voltages differ.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 246" role="img" aria-labelledby="f17a-6-t">
+        <title id="f17a-6-t">Forward voltage of a silicon diode at a constant 10 microampere against temperature from 50 to 400 kelvin, computed, with the published DT-670 sensor values at 77 and 300 kelvin</title>
+        <line x1="70" y1="205" x2="410" y2="205" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="205" x2="70" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="170" x2="410" y2="170" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="135" x2="410" y2="135" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="100" x2="410" y2="100" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="65" x2="410" y2="65" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <line x1="70" y1="30" x2="410" y2="30" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+        <g class="dg-label-sm" text-anchor="end"><text x="64" y="209">0.2</text><text x="64" y="174">0.4</text><text x="64" y="139">0.6</text><text x="64" y="104">0.8</text><text x="64" y="69">1.0</text><text x="64" y="34">1.2</text></g>
+        <g class="dg-label-sm" text-anchor="middle"><text x="70" y="220">50</text><text x="118.6" y="220">100</text><text x="167.1" y="220">150</text><text x="215.7" y="220">200</text><text x="264.3" y="220">250</text><text x="312.9" y="220">300</text><text x="361.4" y="220">350</text><text x="410" y="220">400</text></g>
+        <path d="M70,49.1 L79.7,52.2 L89.4,55.5 L99.1,58.8 L108.9,62.2 L118.6,65.6 L128.3,69.1 L138,72.6 L147.7,76.2 L157.4,79.8 L167.1,83.5 L176.9,87.2 L186.6,90.9 L196.3,94.7 L206,98.5 L215.7,102.3 L225.4,106.2 L235.1,110 L244.9,114 L254.6,117.9 L264.3,121.9 L274,125.8 L283.7,129.8 L293.4,133.9 L303.1,137.9 L312.9,142 L322.6,146.1 L332.3,150.2 L342,154.3 L351.7,158.5 L361.4,162.6 L371.1,166.8 L380.9,171 L390.6,175.2 L400.3,179.5 L410,183.7" class="dg-acc" stroke-width="2.2" fill="none"/>
+        <circle cx="96.2" cy="59.8" r="4" class="dg-ink"/>
+        <circle cx="312.9" cy="142" r="4" class="dg-ink"/>
+        <text x="104.2" y="75.8" class="dg-label-sm">DT-670, 77 K: 1.03 V</text>
+        <text x="308.9" y="132" class="dg-label-sm" text-anchor="end">DT-670, ≈300 K: 0.56 V</text>
+        <text x="342" y="168" class="dg-label-sm" text-anchor="middle">−2.3 mV/K</text>
+        <text x="240" y="238" class="dg-label" text-anchor="middle">temperature (K)</text>
+        <text x="16" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 16 118)">V<tspan baseline-shift="sub" style="font-size:75%">F</tspan> at 10 µA (V)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> Forward voltage at a constant 10 µA, computed for an ideal silicon diode matched
+        to 0.56 V at 300 K, with the DT-670 sensor's published voltages. The line is nearly straight,
+        which is what makes a diode a convenient thermometer.
+        <span class="src">Model computed here from (17a.4) and (17a.1); sensor values from the Lake
+        Shore DT-670 data sheet.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Reverse breakdown, the last feature of the diode's characteristic, also shifts with
+      temperature, in a direction that identifies its mechanism
+      (<a href="m01-semiconductor-background.html">M01 §6</a>): the avalanche breakdown voltage rises
+      as the crystal warms, because phonon scattering takes energy from the accelerated carriers,
+      while the tunnelling breakdown voltage falls, because the gap narrows.
+    </p>
+    <p>
+      A third mechanism of breakdown belongs to temperature itself. The reverse current dissipates
+      power in the junction, the power raises its temperature, and the higher temperature raises the
+      reverse current, which grows with <em>n</em><sub>i</sub> or <em>n</em><sub>i</sub>² by (17a.5). When this
+      positive feedback outruns the removal of heat, the current runs away: breakdown by thermal
+      instability. It is a major effect in narrow-gap semiconductors such as germanium (Sze &amp; Ng
+      §2.4.1), and in any junction whose leakage is already large because it is hot.
+    </p>
+
+    <h2>6 · Three mitigations, and the simulator runs</h2>
+    <p>
+      Lecture 14 ends on its take-home message, and the physics of §2–§5 explains each part of it.
+    </p>
+
+    <div class="box insight">
+      <p>
+        <b>Heavier doping helps at both ends of the temperature range; a wider gap helps when hot; a
+        narrower gap helps when cold.</b>
+      </p>
+    </div>
+
+    <p>
+      <b>Heavier doping.</b> When hot, a heavily doped region stays extrinsic to a higher
+      temperature (the table of §2: 547 K at 10¹⁵ cm⁻³ against 996 K at 10¹⁸), its diffusion
+      leakage, ∝ <em>n</em><sub>i</sub>²/<em>N</em>, is smaller, and its junctions keep their built-in
+      barrier: for a symmetric junction the barrier falls from 0.63 V at 300 K to 0.18 V at 500 K at
+      2×10¹⁵ cm⁻³, but stays at 0.71 V at 500 K at 10¹⁸ cm⁻³. When cold, a heavier doping holds more
+      free carriers, and above the metal–insulator transition it does not freeze out at all (§3). The
+      price is a lower mobility, from impurity scattering, and thinner depletion regions, whose
+      breakdown voltage is lower and whose tunnelling current is larger (M01 §6).
+    </p>
+    <p>
+      <b>A wider gap when hot.</b> Every leakage term carries <em>n</em><sub>i</sub> or
+      <em>n</em><sub>i</sub>², and the gap enters <em>n</em><sub>i</sub> exponentially. At 773 K, 4H-SiC's
+      <em>n</em><sub>i</sub> of about 8×10⁹ cm⁻³ against silicon's 8×10¹⁶ makes its generation leakage
+      roughly seven orders of magnitude smaller at equal lifetime and width. This is the basis of the
+      silicon carbide electronics of M17c.
+    </p>
+    <p>
+      <b>A narrower gap when cold.</b> At 77 K silicon's <em>n</em><sub>i</sub> is about
+      3×10⁻²⁰ cm⁻³, so its ideal junction needs about 0.9 V to pass 1 µA/cm²; germanium's, about
+      10⁻⁶ cm⁻³, needs about 0.5 V (computed for a symmetric junction at 2×10¹⁵ cm⁻³, the result
+      changing by a few hundredths of a volt for lifetimes between 10 ps and 1 µs). Germanium's
+      shallow dopants help as well: at 10–14 meV they remain about 98 % ionized at 77 K at
+      2×10¹⁵ cm⁻³, where silicon's 45 meV phosphorus is 63 % ionized.
+    </p>
+
+    <div class="box">
+      <p class="box-title">The nanoHUB p–n junction tool</p>
+      <p>
+        Lecture 14 demonstrates these effects with a simulator on nanoHUB.org, the free online
+        simulation service of the Network for Computational Nanotechnology, which requires a free
+        account (Deck 14 pp. 13–20). The p–n junction tool solves the drift–diffusion equations for a
+        one-dimensional junction. Its inputs are the donor and acceptor concentrations, the lengths of
+        the p, intrinsic and n regions, the material (Si, Ge, GaAs or InP), the minority-carrier
+        lifetimes, the ambient temperature from 77 K, its lowest setting, to 500 K, and the applied
+        voltage. Its outputs are
+        the current–voltage curve on linear and logarithmic axes, the band diagram, the carrier
+        densities and the field, and the Compare control overlays runs. In the screenshots the voltage
+        axis is labelled "Gate Voltage", but it is the diode bias; the current is a density in A/cm²,
+        a unit the tool's own plot shows (Deck 14 p. 16) and the cropped run plots omit.
+      </p>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Run (Deck 14)</th><th>What the plot shows</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Si, 2×10¹⁵ cm⁻³, 300 K (pp. 21–22)</td><td>A rectifying curve with a knee near 0.45–0.5 V on the linear plot, about 1 A/cm² at 0.36 V on the log plot</td><td>The baseline: built-in barrier 0.63 V; the short lifetimes of the runs make the junction leaky, so the knee sits below the textbook 0.6–0.7 V</td></tr>
+          <tr><td>The same at 400 and 500 K (pp. 21–22)</td><td>At 500 K a nearly straight line from the first bias point to about 40 A/cm² at 0.9 V, which the deck calls a diode that "becomes a metal"; at high bias the cooler curves cross above it</td><td>The barrier has fallen to 0.18 V, so the junction barely blocks, and the current is set by the series resistance of the neutral regions, larger when hot because the mobility is lower (§4). The material is not intrinsic: <em>n</em><sub>i</sub> = 2.6×10¹⁴ cm⁻³ is 13 % of the doping, and <em>n</em> exceeds <em>N</em><sub>d</sub> by under 2 %</td></tr>
+          <tr><td>The same at 100 K (p. 21)</td><td>On the log plot, current from about 0.5 V, rising about a decade per 40 mV to about 0.1 A/cm² at 0.9 V; invisible on the linear plot</td><td>A slope of 40 mV per decade at 100 K is an ideality factor of 2: the current comes from recombination in the depletion region, which grows as <em>n</em><sub>i</sub> e<sup><em>qV</em>/2<em>kT</em></sup>, not from the ideal diffusion current of (17a.4), which would need about 0.85 V</td></tr>
+          <tr><td>The same at 77 K (p. 25)</td><td>No visible current within the 0.9 V sweep (full scale 0.05 A/cm²)</td><td><em>n</em><sub>i</sub>² is about 10⁻³⁹ cm⁻⁶: the ideal junction needs about 0.9 V, and even the recombination current only about 0.8 V; the donors are still about 63 % ionized at this doping (see the box below)</td></tr>
+          <tr><td>Si, 10¹⁸ cm⁻³, 500 K (p. 24)</td><td>Rectification restored, with a turn-on near 0.3–0.4 V</td><td>The barrier stays at 0.71 V; the region is far from intrinsic</td></tr>
+          <tr><td>GaAs, 2×10¹⁵ cm⁻³, 500 K (p. 23)</td><td>A lower current than silicon at every voltage, with a visible knee</td><td><em>n</em><sub>i</sub> about 9×10¹¹ cm⁻³, nearly 300 times below silicon's</td></tr>
+          <tr><td>Si, 10¹⁸ cm⁻³, 77 K (p. 25)</td><td>Current from about 0.85 V</td><td>The ideal diffusion current falls with doping, as 1/<em>N</em>, so the turn-on comes from parts of the tool's model beyond (17a.4)</td></tr>
+          <tr><td>Ge, 77 K (Lecture 14)</td><td>A diode characteristic within the sweep</td><td>Ideal turn-on near 0.5 V, and shallow dopants that stay ionized</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 210 170" role="img" aria-labelledby="f17a-7a-t">
+          <title id="f17a-7a-t">Band edges across a symmetric silicon junction doped 2 times 10 to the 15 at 300 kelvin, with a barrier of 0.63 electronvolts</title>
+          <path d="M20,40 L21,40 L22,40 L23,40.1 L24,40.1 L25,40.1 L26,40.1 L27,40.1 L28,40.1 L29,40.1 L30,40.1 L31,40.1 L32,40.1 L33,40.1 L34,40.1 L35,40.2 L36,40.2 L37,40.2 L38,40.2 L39,40.2 L40,40.3 L41,40.3 L42,40.3 L43,40.3 L44,40.4 L45,40.4 L46,40.4 L47,40.5 L48,40.5 L49,40.6 L50,40.6 L51,40.7 L52,40.7 L53,40.8 L54,40.9 L55,41 L56,41.1 L57,41.2 L58,41.3 L59,41.4 L60,41.5 L61,41.6 L62,41.8 L63,42 L64,42.1 L65,42.3 L66,42.5 L67,42.8 L68,43 L69,43.3 L70,43.5 L71,43.8 L72,44.2 L73,44.5 L74,44.9 L75,45.3 L76,45.7 L77,46.2 L78,46.7 L79,47.2 L80,47.7 L81,48.3 L82,48.9 L83,49.5 L84,50.2 L85,50.9 L86,51.6 L87,52.3 L88,53.1 L89,53.9 L90,54.7 L91,55.5 L92,56.4 L93,57.2 L94,58.1 L95,58.9 L96,59.8 L97,60.6 L98,61.5 L99,62.3 L100,63.2 L101,64 L102,64.8 L103,65.5 L104,66.3 L105,67 L106,67.7 L107,68.3 L108,69 L109,69.6 L110,70.1 L111,70.7 L112,71.2 L113,71.7 L114,72.1 L115,72.6 L116,73 L117,73.3 L118,73.7 L119,74 L120,74.3 L121,74.6 L122,74.9 L123,75.1 L124,75.3 L125,75.5 L126,75.7 L127,75.9 L128,76.1 L129,76.2 L130,76.4 L131,76.5 L132,76.6 L133,76.7 L134,76.8 L135,76.9 L136,77 L137,77 L138,77.1 L139,77.2 L140,77.2 L141,77.3 L142,77.3 L143,77.4 L144,77.4 L145,77.5 L146,77.5 L147,77.5 L148,77.6 L149,77.6 L150,77.6 L151,77.6 L152,77.6 L153,77.7 L154,77.7 L155,77.7 L156,77.7 L157,77.7 L158,77.7 L159,77.7 L160,77.8 L161,77.8 L162,77.8 L163,77.8 L164,77.8 L165,77.8 L166,77.8 L167,77.8 L168,77.8 L169,77.8 L170,77.8 L171,77.8 L172,77.8 L173,77.8 L174,77.8 L175,77.8 L176,77.8 L177,77.8 L178,77.8 L179,77.8 L180,77.8 L181,77.8 L182,77.8 L183,77.8 L184,77.8 L185,77.8 L186,77.9 L187,77.9 L188,77.9 L189,77.9 L190,77.9" class="dg-line" stroke-width="1.8" fill="none"/>
+          <path d="M20,107.4 L21,107.4 L22,107.4 L23,107.4 L24,107.4 L25,107.4 L26,107.4 L27,107.4 L28,107.5 L29,107.5 L30,107.5 L31,107.5 L32,107.5 L33,107.5 L34,107.5 L35,107.5 L36,107.5 L37,107.6 L38,107.6 L39,107.6 L40,107.6 L41,107.6 L42,107.7 L43,107.7 L44,107.7 L45,107.8 L46,107.8 L47,107.8 L48,107.9 L49,107.9 L50,108 L51,108.1 L52,108.1 L53,108.2 L54,108.3 L55,108.3 L56,108.4 L57,108.5 L58,108.6 L59,108.8 L60,108.9 L61,109 L62,109.2 L63,109.3 L64,109.5 L65,109.7 L66,109.9 L67,110.1 L68,110.4 L69,110.6 L70,110.9 L71,111.2 L72,111.5 L73,111.9 L74,112.3 L75,112.7 L76,113.1 L77,113.5 L78,114 L79,114.5 L80,115.1 L81,115.7 L82,116.3 L83,116.9 L84,117.6 L85,118.2 L86,119 L87,119.7 L88,120.5 L89,121.3 L90,122.1 L91,122.9 L92,123.7 L93,124.6 L94,125.4 L95,126.3 L96,127.2 L97,128 L98,128.9 L99,129.7 L100,130.5 L101,131.3 L102,132.1 L103,132.9 L104,133.6 L105,134.4 L106,135 L107,135.7 L108,136.3 L109,136.9 L110,137.5 L111,138.1 L112,138.6 L113,139.1 L114,139.5 L115,139.9 L116,140.3 L117,140.7 L118,141.1 L119,141.4 L120,141.7 L121,142 L122,142.2 L123,142.5 L124,142.7 L125,142.9 L126,143.1 L127,143.3 L128,143.4 L129,143.6 L130,143.7 L131,143.8 L132,144 L133,144.1 L134,144.2 L135,144.3 L136,144.3 L137,144.4 L138,144.5 L139,144.5 L140,144.6 L141,144.7 L142,144.7 L143,144.8 L144,144.8 L145,144.8 L146,144.9 L147,144.9 L148,144.9 L149,145 L150,145 L151,145 L152,145 L153,145 L154,145.1 L155,145.1 L156,145.1 L157,145.1 L158,145.1 L159,145.1 L160,145.1 L161,145.1 L162,145.1 L163,145.2 L164,145.2 L165,145.2 L166,145.2 L167,145.2 L168,145.2 L169,145.2 L170,145.2 L171,145.2 L172,145.2 L173,145.2 L174,145.2 L175,145.2 L176,145.2 L177,145.2 L178,145.2 L179,145.2 L180,145.2 L181,145.2 L182,145.2 L183,145.2 L184,145.2 L185,145.2 L186,145.2 L187,145.2 L188,145.2 L189,145.2 L190,145.2" class="dg-line" stroke-width="1.8" fill="none"/>
+          <line x1="150" y1="40" x2="190" y2="40" class="dg-guide" stroke-width="0.9" stroke-dasharray="3 3"/>
+          <line x1="172" y1="40" x2="172" y2="77.9" class="dg-acc" stroke-width="1.6"/>
+          <text x="168" y="62.9" class="dg-label-sm" text-anchor="end">0.63 eV</text>
+          <text x="24" y="32" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+          <text x="24" y="123.4" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+          <text x="40" y="160" class="dg-label-sm" text-anchor="middle">p</text><text x="170" y="160" class="dg-label-sm" text-anchor="middle">n</text>
+        </svg>
+        <figcaption>At 300 K the band edges of a symmetric junction at 2×10¹⁵ cm⁻³ step by 0.63 eV.</figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 210 170" role="img" aria-labelledby="f17a-7b-t">
+          <title id="f17a-7b-t">Band edges across the same junction at 500 kelvin, with a barrier of 0.18 electronvolts</title>
+          <path d="M20,40 L21,40 L22,40 L23,40 L24,40 L25,40 L26,40 L27,40 L28,40 L29,40 L30,40 L31,40 L32,40 L33,40 L34,40 L35,40 L36,40.1 L37,40.1 L38,40.1 L39,40.1 L40,40.1 L41,40.1 L42,40.1 L43,40.1 L44,40.1 L45,40.1 L46,40.1 L47,40.1 L48,40.1 L49,40.2 L50,40.2 L51,40.2 L52,40.2 L53,40.2 L54,40.3 L55,40.3 L56,40.3 L57,40.3 L58,40.4 L59,40.4 L60,40.4 L61,40.5 L62,40.5 L63,40.6 L64,40.6 L65,40.7 L66,40.7 L67,40.8 L68,40.8 L69,40.9 L70,41 L71,41.1 L72,41.2 L73,41.3 L74,41.4 L75,41.5 L76,41.6 L77,41.8 L78,41.9 L79,42 L80,42.2 L81,42.3 L82,42.5 L83,42.7 L84,42.9 L85,43.1 L86,43.3 L87,43.5 L88,43.7 L89,43.9 L90,44.2 L91,44.4 L92,44.6 L93,44.9 L94,45.1 L95,45.4 L96,45.6 L97,45.9 L98,46.1 L99,46.3 L100,46.6 L101,46.8 L102,47 L103,47.2 L104,47.5 L105,47.7 L106,47.9 L107,48 L108,48.2 L109,48.4 L110,48.6 L111,48.7 L112,48.9 L113,49 L114,49.1 L115,49.2 L116,49.4 L117,49.5 L118,49.6 L119,49.7 L120,49.7 L121,49.8 L122,49.9 L123,50 L124,50 L125,50.1 L126,50.1 L127,50.2 L128,50.2 L129,50.3 L130,50.3 L131,50.3 L132,50.4 L133,50.4 L134,50.4 L135,50.5 L136,50.5 L137,50.5 L138,50.5 L139,50.5 L140,50.6 L141,50.6 L142,50.6 L143,50.6 L144,50.6 L145,50.6 L146,50.6 L147,50.6 L148,50.7 L149,50.7 L150,50.7 L151,50.7 L152,50.7 L153,50.7 L154,50.7 L155,50.7 L156,50.7 L157,50.7 L158,50.7 L159,50.7 L160,50.7 L161,50.7 L162,50.7 L163,50.7 L164,50.7 L165,50.7 L166,50.7 L167,50.7 L168,50.7 L169,50.7 L170,50.7 L171,50.7 L172,50.7 L173,50.7 L174,50.7 L175,50.7 L176,50.7 L177,50.7 L178,50.7 L179,50.7 L180,50.7 L181,50.7 L182,50.7 L183,50.7 L184,50.7 L185,50.7 L186,50.7 L187,50.7 L188,50.7 L189,50.7 L190,50.7" class="dg-line" stroke-width="1.8" fill="none"/>
+          <path d="M20,103.8 L21,103.8 L22,103.8 L23,103.8 L24,103.8 L25,103.8 L26,103.8 L27,103.8 L28,103.8 L29,103.8 L30,103.8 L31,103.8 L32,103.8 L33,103.8 L34,103.8 L35,103.8 L36,103.8 L37,103.8 L38,103.8 L39,103.8 L40,103.8 L41,103.9 L42,103.9 L43,103.9 L44,103.9 L45,103.9 L46,103.9 L47,103.9 L48,103.9 L49,103.9 L50,104 L51,104 L52,104 L53,104 L54,104 L55,104.1 L56,104.1 L57,104.1 L58,104.1 L59,104.2 L60,104.2 L61,104.2 L62,104.3 L63,104.3 L64,104.4 L65,104.4 L66,104.5 L67,104.6 L68,104.6 L69,104.7 L70,104.8 L71,104.9 L72,105 L73,105.1 L74,105.2 L75,105.3 L76,105.4 L77,105.5 L78,105.7 L79,105.8 L80,106 L81,106.1 L82,106.3 L83,106.5 L84,106.7 L85,106.9 L86,107.1 L87,107.3 L88,107.5 L89,107.7 L90,107.9 L91,108.2 L92,108.4 L93,108.7 L94,108.9 L95,109.1 L96,109.4 L97,109.6 L98,109.9 L99,110.1 L100,110.3 L101,110.6 L102,110.8 L103,111 L104,111.2 L105,111.4 L106,111.6 L107,111.8 L108,112 L109,112.2 L110,112.3 L111,112.5 L112,112.6 L113,112.8 L114,112.9 L115,113 L116,113.1 L117,113.2 L118,113.3 L119,113.4 L120,113.5 L121,113.6 L122,113.7 L123,113.7 L124,113.8 L125,113.9 L126,113.9 L127,114 L128,114 L129,114 L130,114.1 L131,114.1 L132,114.2 L133,114.2 L134,114.2 L135,114.2 L136,114.3 L137,114.3 L138,114.3 L139,114.3 L140,114.3 L141,114.4 L142,114.4 L143,114.4 L144,114.4 L145,114.4 L146,114.4 L147,114.4 L148,114.4 L149,114.4 L150,114.4 L151,114.5 L152,114.5 L153,114.5 L154,114.5 L155,114.5 L156,114.5 L157,114.5 L158,114.5 L159,114.5 L160,114.5 L161,114.5 L162,114.5 L163,114.5 L164,114.5 L165,114.5 L166,114.5 L167,114.5 L168,114.5 L169,114.5 L170,114.5 L171,114.5 L172,114.5 L173,114.5 L174,114.5 L175,114.5 L176,114.5 L177,114.5 L178,114.5 L179,114.5 L180,114.5 L181,114.5 L182,114.5 L183,114.5 L184,114.5 L185,114.5 L186,114.5 L187,114.5 L188,114.5 L189,114.5 L190,114.5" class="dg-line" stroke-width="1.8" fill="none"/>
+          <line x1="150" y1="40" x2="190" y2="40" class="dg-guide" stroke-width="0.9" stroke-dasharray="3 3"/>
+          <line x1="172" y1="40" x2="172" y2="50.7" class="dg-acc" stroke-width="1.6"/>
+          <text x="168" y="34" class="dg-label-sm" text-anchor="end">0.18 eV</text>
+          <text x="24" y="32" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+          <text x="24" y="119.8" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">v</tspan></text>
+          <text x="40" y="160" class="dg-label-sm" text-anchor="middle">p</text><text x="170" y="160" class="dg-label-sm" text-anchor="middle">n</text>
+        </svg>
+        <figcaption>At 500 K the step is 0.18 eV: the barrier that makes the junction rectify has nearly gone. Energies to scale; computed here.</figcaption>
+      </figure>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">What stops the current at 77 K</p>
+      <p>
+        Deck 14 p. 25, by its inset of the freeze-out curve, and Lecture 14 attribute the very low
+        current at 77–100 K to frozen dopants. At 2×10¹⁵ cm⁻³ the phosphorus is still about 63 % ionized
+        at 77 K, by (17a.2). The decisive factor is the intrinsic density: <em>I</em><sub>0</sub> ∝
+        <em>n</em><sub>i</sub>² falls by about 60 orders of magnitude between 300 and 77 K, and the
+        recombination current, ∝ <em>n</em><sub>i</sub>, by about 30, so even a fully ionized junction
+        does not conduct appreciably until 0.8–0.9 V. Freeze-out matters in the cold through the series
+        resistance of lightly doped regions and the carrier density of doped resistors and JFET
+        channels, the effect seen in silicon carbide near 0 °C (§3); a MOSFET's inversion layer, drawn
+        in by the gate field, is unaffected (§7).
+      </p>
+    </div>
+
+    <p>
+      Deck 14 p. 24 states that "higher doping only works below 600 K". The 600 K is roughly where
+      the 10¹⁵ cm⁻³ curve plotted beside it runs off its plot; that curve reaches
+      <em>n</em><sub>i</sub> = <em>N</em> near 545 K. At 10¹⁸ cm⁻³ silicon stays extrinsic to about
+      1,000 K, and the junction's barrier at 600 K is still 0.58 V. The limit belongs to the doping,
+      not to silicon.
+    </p>
+
+    <h2>7 · What "silicon becomes a metal" means</h2>
+    <p>
+      Decks 12 to 15 summarize the module in two sentences: at high temperature silicon becomes a
+      metal; at low temperature it becomes an insulator, and p-type and n-type regions, diodes and
+      transistors can no longer be made. In the course these sentences describe the loss of control
+      by doping at the two ends of the range. As statements about conduction they need correcting.
+    </p>
+    <p>
+      <b>Hot silicon does not conduct like a metal.</b> Intrinsic silicon has a resistivity of about
+      14 Ω·cm at 545 K, 1 Ω·cm at 700 K and 0.05 Ω·cm at 1,000 K, from
+      <em>ρ</em> = 1/(<em>qn</em><sub>i</sub>(<em>µ</em><sub>n</sub> + <em>µ</em><sub>p</sub>)) with (17a.1)
+      and (17a.3), against 1.7×10⁻⁶ Ω·cm for copper at room temperature; and it falls as the
+      temperature rises, where a metal's rises. What hot silicon loses is the difference between its
+      regions. As <em>n</em><sub>i</sub> approaches the doping, n-type and p-type regions converge, a
+      junction's barrier collapses and it stops rectifying, and well before that its leakage
+      destroys isolation (§5). NASA's tutorial makes the same point: leakage current, rather than
+      intrinsic conduction, is often what limits a device or circuit at high temperature
+      (Deck 16a p. 50). In a MOSFET the off-state current becomes the leakage of the drain junction,
+      the subject of <a href="m17b-transistors-high-temperature.html#m17b-eq-ioff">M17b §1</a>.
+    </p>
+    <p>
+      <b>Cold silicon still makes devices.</b> Regions doped beyond the metal–insulator transition do
+      not freeze out, and the inversion layer of a MOSFET is drawn in by the gate field, not supplied
+      by dopants, so contacts and channels keep working. What the cold takes away is the carriers of
+      lightly doped regions, which raises their resistance, and the low turn-on voltage of junctions,
+      which rises to about 0.9 V at 77 K.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The course's summary and the physics</p>
+      <p>
+        In the course's usage "silicon becomes a metal when hot and an insulator when cold" is the
+        summary of this module: doping no longer sets the carrier densities at either end of the
+        range. Physically, hot intrinsic silicon remains a semiconductor whose resistivity, 0.05 Ω·cm
+        even at 1,000 K, is four orders of magnitude above a metal's and falls with temperature; the
+        hot device fails first by junction leakage. Cold silicon keeps degenerately doped contacts and
+        field-induced channels; what it loses is the carrier density of lightly doped regions.
+      </p>
+    </div>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Unmanaged extremes run from −65 to +125 °C in low orbit and −196 to +128 °C in geostationary orbit, with about 6,000 and 90 cycles a year (high orbits are eclipsed only in seasons); managed electronics boxes are held near −50 to +50 °C, and military-grade parts are specified from −55 to +125 °C. The survey's "2 km" is 200 km.</li>
+        <li>The gap shrinks as <em>E</em><sub>g</sub>(<em>T</em>) = <em>E</em><sub>g</sub>(0) − <em>αT</em>²/(<em>T</em> + <em>β</em>) (17a.1): silicon 1.123 eV at 300 K, 1.063 eV at 500 K.</li>
+        <li>Silicon's <em>n</em><sub>i</sub> doubles about every 9 K near room temperature (<em>n</em><sub>i</sub>² every 4 K); it reaches the doping at 547 K for 10¹⁵ cm⁻³ and 996 K for 10¹⁸. 4H-SiC holds about 8×10⁹ cm⁻³ at 773 K, seven orders below silicon.</li>
+        <li>Freeze-out follows (17a.2): phosphorus in silicon is 74 % ionized at 77 K at 10¹⁵ and at least 14 % at 10¹⁷; nitrogen in 4H-SiC (52 and 92 meV) is 84 % ionized at 300 K, aluminium (0.19 eV at 10¹⁸, 0.22 eV when lightly doped) only 6 % at 10¹⁸. NASA's SiC circuits run fastest near 0 °C.</li>
+        <li>Compensation leaves <em>N</em><sub>d</sub> − <em>N</em><sub>a</sub> free on the plateau (Deck 8 p. 12, germanium).</li>
+        <li>Lattice-limited mobility falls as <em>T</em><sup>−2.42</sup> (electrons) and <em>T</em><sup>−2.20</sup> (holes) (17a.3): at 500 K the electron mobility is 29 % of its room-temperature value (holes 33 %).</li>
+        <li><em>I</em><sub>0</sub> = <em>qAn</em><sub>i</sub>²(<em>D</em><sub>p</sub>/<em>L</em><sub>p</sub><em>N</em><sub>d</sub> + <em>D</em><sub>n</sub>/<em>L</em><sub>n</sub><em>N</em><sub>a</sub>) (17a.4); generation adds <em>qAn</em><sub>i</sub><em>W</em>/2<em>τ</em> (17a.5). Generation dominates silicon at room temperature and diffusion when hot, above about 490 K for a 10¹⁶ cm⁻³, 1 µs, 1 µm junction (the crossover moves with doping, lifetime and width); that junction's leakage rises about 6×10⁴-fold by 500 K while <em>n</em><sub>i</sub>/<em>N</em> is only 0.026.</li>
+        <li>"<em>I</em> ∝ <em>T</em>⁴" understates the dependence: <em>n</em><sub>i</sub>² rises 1,300-fold from 25 to 75 °C.</li>
+        <li>The forward voltage at constant current falls by about 2 mV/K (17a.6): −2.3 mV/K at 0.56 V and 300 K, the basis of the DT-670 diode thermometer.</li>
+        <li>Mitigations: heavier doping at both ends, a wider gap when hot, a narrower gap when cold. At 500 K the barrier of a 2×10¹⁵ junction falls to 0.18 V; at 10¹⁸ it stays at 0.71 V. At 77 K silicon needs 0.8–0.9 V to conduct, germanium about 0.5 V.</li>
+        <li>Hot intrinsic silicon is not a metal (0.05 Ω·cm at 1,000 K, falling with temperature); devices fail first by leakage. Cold silicon keeps degenerate contacts and field-induced channels.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Opening</td><td>Decks 12–14 and Lecture 14 for the scope; M01 §2 and §4 for the carrier statistics this module extends</td></tr>
+      <tr><td>§1</td><td>Deck 12 p. 9, reproducing Table 7 of J. Plante and B. Lee, <em>Environmental Conditions for Space Flight Hardware: A Survey</em>, NASA Goddard Space Flight Center for the NASA Electronic Parts and Packaging Program (2005), NTRS 20060013394, with its text on managed temperatures, surveyed ranges and the military specification. Orbital periods from M07 (7.1); eclipse seasons from the same survey, and the eclipse condition and the medium-orbit count computed here for a cylindrical shadow; the correction of the 2 km figure from Lecture 13; synodic month 29.53 days. Venus from M03 §2</td></tr>
+      <tr><td>§2</td><td>Deck 12 pp. 28–30, Deck 13 pp. 24–26, Deck 14 pp. 3–4, Deck 15 p. 5 (the chart, after R. T. Kemerley, H. B. Wallace and M. N. Yoder, "Impact of wide bandgap microwave devices on DoD systems", <em>Proc. IEEE</em> <b>90</b>, 1059 (2002); lines redrawn from straight-line fits to the slide); Deck 16a p. 50 (a related chart, after Neudeck, Okojie and Chen 2002). Gap against temperature: Y. P. Varshni, <em>Physica</em> <b>34</b>, 149 (1967); silicon and GaAs constants from S. M. Sze and K. K. Ng, <em>Physics of Semiconductor Devices</em>, 3rd ed. (Wiley, 2007), Fig. 6; germanium, GaAs and 4H-SiC parameters from the Ioffe Institute's NSM database (4H-SiC after Goldberg <em>et al.</em> 2001). Intrinsic temperatures and concentrations computed here. InN gap: V. Yu. Davydov <em>et al.</em>, <em>Phys. Status Solidi B</em> <b>229</b>, R1 (2002) and <b>230</b>, R4 (2002); J. Wu <em>et al.</em>, <em>Appl. Phys. Lett.</em> <b>80</b>, 3967 (2002). GaAs <em>n</em><sub>i</sub> at 500 K from the Ioffe NSM conduction-band models</td></tr>
+      <tr><td>§3</td><td>M01 §3–§4 (45 meV, the metal–insulator transition, the 10¹⁵ cm⁻³ case); Deck 8 p. 12 (germanium compensation, Figure 4); Deck 16a pp. 59–60 (P. G. Neudeck, ICSCRM 2023 tutorial, after Neudeck <em>et al.</em>, NTRS 20190027358). Nitrogen in 4H-SiC: W. Götz, A. Schöner, G. Pensl, W. Suttrop <em>et al.</em>, <em>J. Appl. Phys.</em> <b>73</b>, 3332 (1993); ranges of measured values, aluminium at about 220 meV when lightly doped and the 191 meV common in device models, from J. Burin <em>et al.</em>, "TCAD parameters for 4H-SiC: a review", arXiv:2410.06798 (2024). Germanium dopant levels from the Ioffe NSM database. Ionized fractions computed here from (17a.2)</td></tr>
+      <tr><td>§4</td><td>Deck 14 p. 8 (the mobility figure); Sze &amp; Ng (2007) §1.5.1 and Fig. 16, after C. Jacoboni, C. Canali, G. Ottaviani and A. Alberigi Quaranta, <em>Solid-State Electron.</em> <b>20</b>, 77 (1977), also for the measured mobility of pure silicon at 77 K; mobilities at 300 K as in M01 (1.6)</td></tr>
+      <tr><td>§5</td><td>Deck 14 pp. 6–7, 12 and Lecture 14 (the diode equation, <em>I</em><sub>0</sub>, the thermometer); Deck 16a p. 50 (the two-term leakage, after P. G. Neudeck, R. S. Okojie and L.-Y. Chen, <em>Proc. IEEE</em> <b>90</b>, 1065 (2002)); Sze &amp; Ng (2007) §2.3.2 (generation and recombination currents, which term dominates) and §1.5.4, Eqs. (98)–(99), p. 44 (generation lifetime). Leakage figures computed here. Forward-voltage coefficient derived here from (17a.4); DT-670 values from the Lake Shore Cryotronics DT-670 data sheet. Breakdown against temperature: M01 §6; thermal instability: Sze &amp; Ng (2007) §2.4.1. DT-670 low-temperature slopes and range of use from the same data sheet</td></tr>
+      <tr><td>§6</td><td>Deck 14 pp. 13–26 and Lecture 14 (the take-home message, the nanoHUB p–n junction tool, its 77 K lowest setting and its runs); Deck 15 pp. 3–7 (the same runs recapped). Barriers, turn-on voltages and ionized fractions computed here; recombination current and ideality after Sze &amp; Ng (2007) §2.3.2</td></tr>
+      <tr><td>§7</td><td>Deck 12 pp. 31–32, Deck 13 pp. 27–28, Deck 14 pp. 22, 26, Deck 15 p. 4 (the summary); Deck 16a pp. 49–50 (leakage as the limit). Resistivities computed here; copper's from standard tables</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="index.html"><span>Previous</span>M16 · Hardening and Shielding — not yet built</a>
+      <a class="next" href="m17b-transistors-high-temperature.html"><span>Next</span>M17b · Transistors at High Temperature</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

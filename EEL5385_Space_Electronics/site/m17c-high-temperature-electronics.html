@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M17c · High-Temperature Electronics — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M17c · High-Temperature Electronics</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 17c</p>
+    <h1>High-Temperature Electronics</h1>
+    <p class="lede">
+      Silicon carbide integrated circuits that run at 500 °C, and the places that need them: why
+      electronics must sometimes sit in the heat, the surface of Venus, NASA's JFET-and-resistor circuit
+      technology and the contacts, interconnect and packages it required, what still fails, and where
+      the technology stands.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M17b, M03 §2, M17a §3–§4</span>
+      <span><b>Read time</b> ~50 min</span>
+      <span><b>Sources</b> Deck 16a (Neudeck, ICSCRM 2023 tutorial); Deck 16b (Hunter &amp; Kremic); Deck 15 pp. 8–9, 33–43; Lectures 15–16; Deck 12 pp. 17–19; Sze &amp; Ng (2007)</span>
+    </div>
+
+    <p>
+      <a href="m17b-transistors-high-temperature.html">M17b</a> ended with a choice of device: for circuits
+      that must run for thousands of hours at 500 °C, NASA's Glenn Research Center chose the epitaxial
+      n-channel JFET in silicon carbide, because it has no gate oxide, carries current by majority carriers
+      and is built from p–n junctions in one of the most chemically stable semiconductor crystals. A
+      transistor is not yet a circuit, and a circuit is not yet a working system. This module follows the
+      rest of the chain: the circuit design that makes the transistor's temperature dependence cancel, the
+      metal contacts, interconnect, dielectrics, bond pads and package that had to be made to survive the
+      same temperature, what fails when they do not, and what the resulting technology can and cannot yet
+      do. It also sets out why anyone needs it.
+    </p>
+    <p>
+      §1 explains where electronics must operate hot instead of being cooled or wired out of the heat, and
+      §2 the sensors that sit in such places. §3 describes the surface of Venus, the hardest of them, and
+      the test chamber that reproduces it. §4 sets out the JFET-and-resistor circuit approach and its
+      operation from −190 to 812 °C, and §5 the contacts, interconnect, pads and package. §6 treats the
+      failures that limit the technology today, chiefly cracks in its dielectric layers, §7 its present
+      state and gaps, and §8 the one combination the course leaves open: radiation and high temperature
+      together.
+    </p>
+
+    <h2>1 · Why electronics must run hot</h2>
+    <p>
+      Electronics are normally protected from temperature. A spacecraft's thermal design holds its boxes
+      near room temperature (<a href="m03-space-electronics-gap.html">M03 §2</a>,
+      <a href="m17a-temperature-semiconductor.html">M17a §1</a>), and on aircraft and in industry the
+      electronics sit away from the heat, connected by wires to sensors that tolerate it. That approach
+      fails in three ways: when the quantity to be measured exists only in the hot zone and changes too
+      fast to be carried out of it, when the wiring out of the hot zone costs more weight and reliability
+      than the electronics would, and when the cooling itself costs more than the electronics it protects.
+      Silicon-on-insulator parts serve below about 250 °C, and the tutorial puts silicon's limit near
+      300 °C (Deck 16a pp. 4, 11; M17b §1). Beyond that range only wide-gap semiconductors have shown
+      prolonged, stable operation: transistors of several materials, silicon-on-insulator among them, have
+      worked above 450 °C for decades, but mostly in tests of about an hour on a heated probe station
+      (Deck 16a p. 52). NASA's
+      goal is long-duration operation at 500 °C or more, more than 200 °C above the practical SOI limit
+      (Deck 16a p. 53).
+    </p>
+    <p>
+      An aircraft gas-turbine engine is the main terrestrial case (Deck 16a pp. 11–13). The gas leaves the
+      compressor at several hundred degrees Celsius and the combustor at about 1,600 °C, and this is the gas
+      that enters the turbine; it cools there as the turbine extracts work, passing 800 °C within it and
+      leaving for the exhaust at roughly 450–500 °C. The compressor's later stages and the exhaust therefore
+      lie beyond the reach of silicon. The engine adds a flame above 2,000 °C, metal parts above 1,100 °C,
+      gas pressures above 40 bar, rotors 0.75 m across turning at 10,000 rpm with centrifugal accelerations
+      of about 50,000 <em>g</em> at their rims, casing vibration above 100 <em>g</em> extending beyond 20 kHz,
+      and more than 20,000 hours between services, about 2.3 years of running (Deck 16a p. 12, after
+      Garg <em>et al.</em>). Ground testing of an engine uses typically about 1,300 wires to carry sensor data
+      out of it; amplification, multiplexing and transmission at the point of sensing would improve the
+      instrumentation while reducing the wires and connectors (Deck 16a p. 13).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 284" role="img" aria-labelledby="f17c-1-t">
+  <title id="f17c-1-t">Temperature scale from 0 to 1000 degrees Celsius comparing the peak ambient of several applications with the range over which silicon, silicon-on-insulator and NASA silicon carbide JFET circuits have operated</title>
+  <text x="144" y="36" class="dg-label-sm" text-anchor="end">Military-grade Si</text>
+  <rect x="150" y="26" width="33.8" height="12" class="dg-soft" opacity="0.45"/>
+  <text x="144" y="62" class="dg-label-sm" text-anchor="end">Silicon-on-insulator</text>
+  <rect x="150" y="52" width="67.5" height="12" class="dg-soft" opacity="0.45"/>
+  <rect x="217.5" y="52" width="13.5" height="12" class="dg-soft" opacity="0.2"/>
+  <text x="144" y="88" class="dg-label-sm" text-anchor="end">SiC JFET ICs, thousands of h</text>
+  <rect x="150" y="78" width="135" height="12" class="dg-acc-f" opacity="0.8"/>
+  <text x="144" y="114" class="dg-label-sm" text-anchor="end">SiC JFET ICs, brief tests</text>
+  <rect x="285" y="104" width="124.5" height="12" class="dg-acc-f" opacity="0.35"/>
+  <text x="144" y="140" class="dg-label-sm" text-anchor="end">Venus surface</text>
+  <rect x="274.2" y="130" width="3" height="12" class="dg-fill"/>
+  <text x="144" y="166" class="dg-label-sm" text-anchor="end">Turbine-engine sensors</text>
+  <rect x="231" y="156" width="81" height="12" class="dg-fill"/>
+  <text x="144" y="192" class="dg-label-sm" text-anchor="end">Deep-well drilling</text>
+  <rect x="231" y="182" width="81" height="12" class="dg-fill"/>
+  <text x="144" y="218" class="dg-label-sm" text-anchor="end">On-cylinder, exhaust</text>
+  <circle cx="312" cy="214" r="4.5" class="dg-ink"/>
+  <line x1="150" y1="238" x2="420" y2="238" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="150" y1="238" x2="150" y2="243"/><line x1="217.5" y1="238" x2="217.5" y2="243"/><line x1="285" y1="238" x2="285" y2="243"/><line x1="352.5" y1="238" x2="352.5" y2="243"/><line x1="420" y1="238" x2="420" y2="243"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="150" y="255">0</text><text x="217.5" y="255">250</text><text x="285" y="255">500</text><text x="352.5" y="255">750</text><text x="420" y="255">1,000</text></g>
+  <line x1="285" y1="20" x2="285" y2="238" class="dg-guide" stroke-width="0.9" stroke-dasharray="2 3"/>
+  <text x="285" y="271" class="dg-label" text-anchor="middle">temperature (°C)</text>
+</svg>
+      <figcaption>
+        <b>Figure 1.</b> Where the applications sit against what each technology has shown. Silicon parts are
+        specified to 125 °C and SOI serves to about 250–300 °C; NASA's silicon carbide JFET circuits have run
+        for thousands of hours at 500 °C and briefly up to 961 °C. The applications are the peak ambients of
+        the tutorial's table, and the surface of Venus.
+        <span class="src">Deck 16a pp. 4, 11, 48, 59, 65 (applications after Neudeck, Okojie &amp; Chen 2002);
+        Venus from M03 §2; military range from M17a §1.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Other applications follow the same pattern. Deep-well drilling telemetry for oil and gas needs about
+      300 °C, and geothermal wells about 600 °C; automotive sensors on the cylinder or in the exhaust about
+      600 °C; spacecraft power management 150–300 °C at chip powers above 1–10 kW (Deck 16a p. 48). At such
+      powers cooling becomes a large share of the mass: in a 250 kW power converter for an aircraft, the thermal management that
+      keeps the parts below 140 °C is a third of the mass, 8.4 of 25.4 kg, before the cooling loop is
+      counted (Deck 16a p. 26). The industry guest of Lecture 15 added the point that matters for every
+      one of these: a part's limit applies to its junction, which its own dissipation raises above the
+      surrounding temperature.
+    </p>
+    <p>
+      Not every hot mission needs hot electronics. Parker Solar Probe, which passes closer to the Sun than
+      any earlier spacecraft, relies on its heat shield and cooling, not on high-temperature electronics
+      (Deck 16a pp. 42–43); its shield reaches about 980 °C in flight while the electronics behind it stay
+      near room temperature (M03 §2). Deck 12 p. 19 and Lecture 16 give 1,300 °C, close to the shield's
+      qualification limit of about 1,370 °C rather than to its flight temperature. The tutorial frames the goal as a capability rather than a technology: high-
+      temperature electronics are worth flying where they perform the functions with the highest system
+      impact in the harsh environment, provided they are affordable, customizable and reliable, including
+      their packaging and electrical connections, and they are not intended to replace conventional
+      electronics elsewhere (Deck 16a p. 44). Modest complexity suffices for that: Apollo flew integrated
+      circuits of six transistors per chip, and Voyager crossed the solar system with chips of a few
+      thousand (Deck 16a p. 45).
+    </p>
+
+    <h2>2 · Sensors that sit in the heat</h2>
+    <p>
+      The engine case shows why the sensor and its electronics must sit in the hot zone, and Lecture 16
+      discusses it in detail through pressure sensing for engine control. A compressor that
+      surges or stalls loses its flow abruptly; detecting the pressure fluctuations that precede it, in time
+      to open small bleed valves, would let designers remove the excess stages now built in as a margin. The
+      sensors must resolve 0.02 psi on pressures up to 200 psi at temperatures up to 500 °C
+      (Deck 16a p. 17).
+    </p>
+    <p>
+      Three mountings are possible (Deck 16a p. 18). A low-temperature sensor mounted remotely, at the end
+      of a tube that carries the pressure out of the engine, loses the high-frequency content of the signal
+      in the tube, and with it the early warning of instability. A low-temperature sensor mounted flush with
+      the engine wall but liquid-cooled carries the weight and reliability cost of the cooling system, and
+      the coolant flow interferes with the measurement. Only an uncooled sensor that itself tolerates the
+      temperature can sit flush with the wall without either the tube's loss of signal or the cooling
+      system's cost and interference, provided it is durable and stable over the engine's service life.
+    </p>
+    <p>
+      NASA Glenn's sensor (Deck 16a p. 19, R. Okojie) is a single chip of 4H-SiC with piezoresistors etched
+      over a thinned diaphragm. A piezoresistor is a resistor whose resistance changes with strain: in a
+      semiconductor, strain alters the band structure and with it the resistivity, an effect far larger than
+      the geometric change of length and cross-section that a metal strain gauge relies on. The ratio of
+      fractional resistance change to strain, the gauge factor, is below 2 for metals and 50–250 for
+      silicon (Sze &amp; Ng 2007, §14.3.1); silicon carbide's is smaller, about 10–30 in heavily doped
+      material, still an order of magnitude above a metal's (Okojie <em>et al.</em> 1998; Akiyama
+      <em>et al.</em> 2012). Pressure bends the diaphragm, the resistors on it strain,
+      and a Wheatstone bridge of such resistors converts the change into a voltage proportional to the
+      pressure and to the excitation voltage. At 10 V excitation the chip's output is linear in pressure from 25 to
+      800 °C. At 200 psi it gives about 11 mV at 25 °C, falls to about 6.5 mV near 300 °C and rises to about
+      17 mV at 700–800 °C. The slide gives no mechanism for that dependence on temperature, which the
+      sensor's electronics must calibrate out.
+    </p>
+    <p>
+      The output is millivolts, and the slide adds that electronics to amplify it for transmission out of
+      the hot zone are as vital as the sensor. A later version integrates a temperature sensor beside the
+      pressure sensor on the chip, for real-time compensation at 800 °C, and attaches the chip directly with
+      no wire bond (Deck 16a p. 20). Its package shows the materials rule of
+      <a href="m17b-transistors-high-temperature.html#m17b-eq-strain">M17b §3</a> applied by design: every
+      part in contact with the chip is chosen to expand nearly as it does (Deck 16a p. 21).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f17c-2-t">
+  <title id="f17c-2-t">Thermal expansion coefficients of the parts of NASA Glenn high-temperature pressure sensor package: silicon carbide 3.7, aluminium nitride 4.1, sealing glass about 4.1, Kovar 5.13 to 6.15 and the stainless-steel housing 10 to 15 parts per million per degree</title>
+  <text x="144" y="34" class="dg-label" text-anchor="end">SiC chip</text>
+  <rect x="150" y="23" width="57.8" height="14" class="dg-acc-f"/>
+  <text x="212.8" y="34" class="dg-label-sm">3.7</text>
+  <text x="144" y="62" class="dg-label" text-anchor="end">AlN</text>
+  <rect x="150" y="51" width="64.1" height="14" class="dg-fill"/>
+  <text x="219.1" y="62" class="dg-label-sm">4.1</text>
+  <text x="144" y="90" class="dg-label" text-anchor="end">Sealing glass</text>
+  <rect x="150" y="79" width="64.1" height="14" class="dg-fill"/>
+  <text x="219.1" y="90" class="dg-label-sm">4.1</text>
+  <text x="144" y="118" class="dg-label" text-anchor="end">Kovar tube</text>
+  <rect x="150" y="107" width="80.2" height="14" class="dg-fill"/>
+  <rect x="230.2" y="107" width="15.9" height="14" class="dg-soft" opacity="0.35"/>
+  <text x="251.1" y="118" class="dg-label-sm">5.13–6.15</text>
+  <text x="144" y="146" class="dg-label" text-anchor="end">Stainless housing</text>
+  <rect x="150" y="135" width="156.2" height="14" class="dg-fill"/>
+  <rect x="306.2" y="135" width="78.1" height="14" class="dg-soft" opacity="0.35"/>
+  <text x="389.4" y="146" class="dg-label-sm">10–15</text>
+  <line x1="150" y1="166" x2="400" y2="166" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="150" y1="166" x2="150" y2="171"/><line x1="212.5" y1="166" x2="212.5" y2="171"/><line x1="275" y1="166" x2="275" y2="171"/><line x1="337.5" y1="166" x2="337.5" y2="171"/><line x1="400" y1="166" x2="400" y2="171"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="150" y="183">0</text><text x="212.5" y="183">4</text><text x="275" y="183">8</text><text x="337.5" y="183">12</text><text x="400" y="183">16</text></g>
+  <text x="275" y="198" class="dg-label" text-anchor="middle">expansion coefficient (ppm/°C)</text>
+</svg>
+      <figcaption>
+        <b>Figure 2.</b> Matching by design in the sensor package. The SiC chip sits on aluminium nitride and is
+        sealed with a glass, both within 0.4 ppm/°C of the chip; Kovar, an iron–nickel–cobalt alloy made for
+        matched seals, holds them; only the stainless-steel housing, far from the chip, expands much faster.
+        <span class="src">Deck 16a p. 21 (R. Okojie, NASA Glenn).</span>
+      </figcaption>
+    </figure>
+
+    <h2>3 · The surface of Venus</h2>
+    <p>
+      Venus is the planet most like Earth in size, with 82 % of Earth's mass, and the one whose surface
+      electronics have survived least: its landers returned hours of data where Mars landers return years
+      (Deck 16a p. 32). The surface combines three extremes: temperature, pressure and reactive gases
+      (Deck 16a p. 33).
+    </p>
+    <p>
+      The temperature is about 460–465 °C, day and night (M03 §2 uses 465 °C). The pressure is about
+      92 bar, some 91 atmospheres; the course slides round it to between 90 and 93 atm. The atmosphere is 96.5 % carbon dioxide and 3.5 % nitrogen, with sulfur dioxide at
+      about 180 parts per million, carbonyl sulfide at 51, water vapour at 30, carbon monoxide at 12,
+      hydrogen sulfide at 2, hydrogen chloride at 0.5 parts per million and hydrogen fluoride at 2.5 parts
+      per billion (Deck 16a p. 33). The slide gives no source for these trace values. Apart from the water
+      vapour, they are the recipe with which NASA Glenn fills its test chamber (below; Okojie <em>et al.</em>
+      2018), not a measurement at the surface: NASA's reference values for the lowest atmosphere are 150 ppm
+      of sulfur dioxide, 20 of water vapour and 17 of carbon monoxide (NSSDCA Venus fact sheet). Above the
+      surface the temperature falls and the
+      pressure falls faster, through clouds of sulfuric acid between roughly 45 and 70 km.
+    </p>
+
+    <figure>
+      <img src="img/venus-atmosphere-deck16a.png" width="703" height="541" loading="lazy"
+           alt="Pressure and temperature of the Venus atmosphere against altitude from 0 to 80 kilometres: pressure falls from 92 atmospheres at the surface and temperature from about 735 kelvin, through the lower, middle and upper sulfuric-acid cloud layers between about 45 and 70 kilometres">
+      <figcaption>
+        <b>Figure 3.</b> The Venus atmosphere against altitude: pressure (blue, top axis) falls from the
+        surface value, which the figure labels 92 atm, to near zero above about 60 km, and temperature (green, bottom axis) from about 735 K,
+        through the sulfuric-acid cloud layers.
+        <span class="src">Deck 16a p. 33, modified from E. Kolawa <em>et al.</em>, <em>Extreme Environment
+        Technologies for Future Space Science Missions</em>, JPL D-32832 (2007).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The Soviet Venera landers of 1970–1982 set the record (Deck 16a p. 34). Venera 7 in 1970 sent a weak
+      signal for 23 minutes after landing, the first data from the surface of another planet; Venera 8
+      lasted 50 minutes, Venera 9 and 10 53 and 65, Venera 11 and 12 95 and 110, Venera 13 127 and
+      Venera 14 57 minutes. Several of the earlier probes were crushed by the pressure during descent. Some
+      of those times are lower bounds (M03 §2). Venera 7 and 8 sent their signals straight to Earth, and
+      Venera 8 succumbed to the surface conditions after 50 minutes. From Venera 9 on, an orbiter or a
+      passing flyby spacecraft relayed the landers' data, and Venera 11 and 12 fell silent when the flyby
+      spacecraft moved out of range, as the slide's own entries record; Venera 13 ran for 127 minutes
+      against a design life of 32 (Siddiqi 2018). Their electronics were sheltered inside pressure vessels,
+      the approach the tutorial calls environmental sheltering, and the heat leaking in set an upper limit
+      on their surface life that the relay reached first for Venera 11 and 12.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The Venera durations in Lectures 15–16</p>
+      <p>
+        The table on Deck 16a p. 34 gives Venera 13's surface time as 117 minutes; the mission records give
+        127 minutes, the figure M03 §2 uses. The lectures describe the landers as surviving about two hours
+        because of the heat. Heat did end Venera 8's transmissions, after 50 minutes, but the table's own
+        entries say that Venera 11 and 12 transmitted until their relay moved out of range, which ends the
+        record without ending the lander; for Venera 13 and 14 the records give no cause.
+      </p>
+    </div>
+
+    <p>
+      The chemistry is the extreme that is hardest to reproduce. NASA Glenn's Extreme Environments Rig, GEER,
+      is an 800-litre chamber that holds the main constituents of the Venus atmosphere, nine gases (the
+      tutorial counts ten), at 460 °C and 1,350 psi absolute, about 93 bar, for runs of months
+      (Deck 16a p. 37; Deck 16b p. 4). Its first lesson was that the
+      full gas composition matters, down to the trace constituents: many common materials react, and they
+      react by sulfidation instead of oxidation. A metal-alloy waveguide grew large sulfide crystals over 60
+      days in the chamber, and protecting parts by encapsulation proved difficult (Deck 16a p. 38). The test
+      programme has since produced a handbook of how materials behave in Venus conditions.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Use</th><th>Material</th><th>After exposure in GEER</th></tr></thead>
+        <tbody>
+          <tr><td>Electronics packaging</td><td>Lead; alumina (Al₂O₃)</td><td>Lead forms PbS; alumina does not react</td></tr>
+          <tr><td>Insulation</td><td>CaO</td><td>Forms CaSO₃ and CaSO₄</td></tr>
+          <tr><td>SiC electronics</td><td>Pt; Au; Ir; SiC; SiO₂</td><td>Platinum forms PtS (fibres as a thin film, spheres when gold is present); gold and iridium do not react but are mobile; SiC and SiO₂ do not react</td></tr>
+          <tr><td>Feedthroughs</td><td>Cu; Ni; CuBe</td><td>Cu and CuBe form Cu₂S crystals, Ni forms NiS; chlorine also on the CuBe surface</td></tr>
+          <tr><td>SiC pressure sensor</td><td>Kovar; AlN; Ag–Cu braze</td><td>Kovar forms NiS and iron oxides; AlN does not react; the braze segregates into Cu₂S and mobile Ag</td></tr>
+          <tr><td>Chamber parts</td><td>Inconel 625; 304 stainless steel; Mg-doped Al foil</td><td>Inconel forms NiS and chromium oxides; the stainless steel keeps a mirror finish with a low corrosion rate; the foil grows an MgO surface over a magnesium fluoride inner layer, its aluminium bulk unreacted</td></tr>
+          <tr><td>New materials</td><td>Sputtered Al; Ti</td><td>Sputtered aluminium reacts with HF to AlF₃; titanium grows an oxide at its surface, decreasing into the bulk</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Most materials of NASA's chips survive: SiC and SiO₂ do not react, and gold does not react though it
+      is mobile. Platinum, used in the chips' bond pads and in the boards' traces, forms a sulfide
+      (Deck 16b p. 37, after Lukco <em>et al.</em> 2018).
+    </p>
+    <p>
+      Two ways of landing follow. The conventional one shelters the electronics: a 2009 NASA flagship
+      concept carried them in a titanium pressure vessel 0.9 m across, insulated with silica, buffered by a
+      lithium nitrate phase-change material and back-filled with carbon dioxide, for a 686 kg lander with
+      106 kg of payload, an hour of descent science and five hours of science on the surface
+      (Deck 16a p. 36). Electronics that work at
+      the ambient need no shelter, and a concept lander built on them would weigh under 20 kg and operate
+      for more than 1,400 hours, against more than 500 kg and under 10 hours for the sheltered design
+      (Deck 16a p. 40, after Kremic and Hunter). NASA's LLISSE probe (M03 §2) is the first step: a small
+      lander built from silicon carbide electronics, aiming to operate for at least one Venus daylight
+      period and the day–night transition, about 60 Earth days (Deck 16b p. 6). The 2020 flagship update would carry such a probe
+      beside a conventional lander, as the technology demonstration needed before the approach replaces it
+      (Deck 16a p. 41).
+    </p>
+    <p>
+      The silicon carbide circuits have already passed the chamber's test. Two NASA Glenn clock circuits of
+      the tenth generation, each a selectable divide-by-two or divide-by-four oscillator of 175 transistors,
+      ran for 60 days directly exposed to the simulated surface atmosphere, with no package lid, at 460 °C
+      and 9.3 MPa; their output frequencies stayed steady near 85 and 40 kHz for the two settings of the
+      select input (Deck 16a p. 39; Neudeck <em>et al.</em> 2019).
+    </p>
+
+    <h2>4 · Circuits from JFETs and same-layer resistors</h2>
+    <p>
+      M17b §5 showed that a single JFET can be biased so that its drain current does not drift, but only
+      near cut-off, at a small fraction of its full current. NASA's circuits obtain their stability
+      differently, from ratios: the transistor channels and the resistors are made in one layer, so a change
+      of temperature scales them together. The approach is called JFET-R, for JFETs and resistors made together
+      (Deck 16a p. 57; Deck 15 p. 35).
+    </p>
+    <p>
+      The resistors are strips of the same n-type epitaxial layer that forms the JFET channels, about
+      0.4 µm thick and doped about 10¹⁷ cm⁻³, with a shallow n-type implant at their surface, contacted at
+      each end through the same N⁺ implants. A uniform
+      layer has a sheet resistance <em>R</em><sub>sheet</sub>, the resistance of any square of it, in ohms per
+      square, so a strip of length <em>L</em> and width <em>W</em> has <em>R</em> =
+      <em>R</em><sub>sheet</sub>(<em>L</em>/<em>W</em>): the schematic's "30 sq." means a resistor thirty squares
+      long. Because the resistors and the transistor channels are the same material, their conductances
+      change with temperature in nearly the same proportion, through the same freeze-out and the same
+      mobility (M17a §3–§4). The match is close but not exact, because a channel's conductance also depends
+      on the depletion under its gate and from the back of the chip. A circuit whose output depends only on
+      ratios of conductances in that layer then keeps its output while every individual resistance changes
+      severalfold.
+    </p>
+    <p>
+      Lecture 16 makes the argument with a voltage divider. Two resistors in series across a supply
+      <em>V</em> divide it in the ratio of their resistances.
+    </p>
+
+    <div class="eq" id="m17c-eq-ratio">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em> = <em>R</em><sub>sheet</sub> <span class="frac"><span class="num"><em>L</em></span><span class="den"><em>W</em></span></span>,&nbsp;&nbsp;&nbsp; <em>V</em><sub>out</sub> = <em>V</em> <span class="frac"><span class="num"><em>R</em><sub>2</sub></span><span class="den"><em>R</em><sub>1</sub> + <em>R</em><sub>2</sub></span></span> = <em>V</em> <span class="frac"><span class="num"><em>n</em><sub>2</sub></span><span class="den"><em>n</em><sub>1</sub> + <em>n</em><sub>2</sub></span></span></div>
+        <div class="eq-num">(17c.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em> resistance of a strip of the layer (Ω) · <em>R</em><sub>sheet</sub> sheet resistance
+        (<b>Ω per square</b>), the resistance of any square of the layer, which depends on temperature ·
+        <em>L</em>, <em>W</em> length and width of the strip (any unit, the same for both) ·
+        <em>V</em><sub>out</sub> divider output (V) · <em>V</em> voltage across the divider (V) ·
+        <em>R</em><sub>1</sub>, <em>R</em><sub>2</sub> the two resistances, with <em>n</em><sub>1</sub>,
+        <em>n</em><sub>2</sub> = <em>L</em>/<em>W</em> their numbers of squares. With both strips in the same
+        layer, <em>R</em><sub>sheet</sub> cancels, and the output depends on geometry alone. On the formula
+        sheet as <a href="formula-sheet.html#eq-17c-ratio">(17c.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      As the temperature changes, both resistances are multiplied by the same factor, which cancels, and
+      <em>V</em><sub>out</sub> does not move. Lecture 16 pictures a gate's transistor as a switch that
+      connects or disconnects such a divider, with the output set by the resistor ratio and not by the
+      transistor's current. That is a simplification. A conducting JFET is not a short circuit but a channel
+      resistance in series with its load, one arm of the divider, and in the level shift below, the
+      follower's gate–source voltage enters the output directly. The levels hold because the channels lie
+      in the same layer as the resistors: a change of temperature multiplies every conductance in the gate,
+      transistors included, by nearly the same factor, so every current changes by that factor and every
+      voltage drop stays the same. The logic levels are therefore set by the layout's ratios of squares and
+      channel widths, not by the absolute conductances.
+    </p>
+    <p>
+      The NOT gate shows the design (Figure 4). The input JFET, 24 µm wide and 6 µm long, has its source at
+      ground and a 30-square load resistor to the positive supply; it inverts. Because the JFET is
+      normally on and has a negative threshold, the logic levels are negative, roughly −1 V for a high and
+      −10 V for a low, while the inverting stage's output lies at positive voltages. A second JFET of the
+      same size, its drain at the positive supply, follows that node and drives a divider of 30 and 35
+      squares down to the negative supply, which shifts the output back down to the negative logic levels
+      that the next gate's input needs. The supplies are typically +25 and −25 V, and the back of the
+      chip is held at the negative supply (Deck 16a p. 57; Krasowski 2010).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 250" role="img" aria-labelledby="f17c-4-t">
+  <title id="f17c-4-t">Schematic of the SiC JFET-R NOT gate: an input JFET with a 30-square load resistor to the positive supply, whose drain drives a second JFET acting as a source follower into a 30-square and a 35-square resistor in series to the negative supply, with the output taken between them</title>
+  <defs><marker id="f17c-4-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-soft"/></marker></defs>
+  <line x1="60" y1="30" x2="330" y2="30" class="dg-line" stroke-width="1.5"/>
+  <text x="336" y="34" class="dg-label">+V<tspan baseline-shift="sub" style="font-size:75%">DD</tspan> = +25 V</text>
+  <line x1="270" y1="226" x2="330" y2="226" class="dg-line" stroke-width="1.5"/>
+  <text x="336" y="230" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">SS</tspan> = −25 V</text>
+  <path d="M130,30 L130,35 L136,39.2 L124,47.5 L136,55.8 L124,64.2 L136,72.5 L124,80.8 L130,85 L130,90" class="dg-line" stroke-width="1.5"/>
+  <text x="142" y="64" class="dg-label-sm">30 sq.</text>
+  <line x1="114" y1="104" x2="114" y2="132" class="dg-line" stroke-width="2"/>
+  <line x1="100" y1="118" x2="114" y2="118" class="dg-line" stroke-width="1.5" marker-end="url(#f17c-4-ar)"/>
+  <line x1="114" y1="108" x2="130" y2="108" class="dg-line" stroke-width="1.5"/>
+  <line x1="114" y1="128" x2="130" y2="128" class="dg-line" stroke-width="1.5"/>
+  <text x="134" y="122" class="dg-label-sm">24/6 µm</text>
+  <line x1="130" y1="90" x2="130" y2="108" class="dg-line" stroke-width="1.5"/>
+  <line x1="114" y1="108" x2="130" y2="108" class="dg-line" stroke-width="1.5"/>
+  <line x1="114" y1="128" x2="130" y2="128" class="dg-line" stroke-width="1.5"/>
+  <line x1="130" y1="128" x2="130" y2="160" class="dg-line" stroke-width="1.5"/>
+  <line x1="120" y1="160" x2="140" y2="160" class="dg-line" stroke-width="1.5"/>
+  <line x1="124" y1="165" x2="136" y2="165" class="dg-line" stroke-width="1.5"/>
+  <line x1="128" y1="170" x2="132" y2="170" class="dg-line" stroke-width="1.5"/>
+  <line x1="60" y1="118" x2="100" y2="118" class="dg-line" stroke-width="1.5"/>
+  <text x="56" y="122" class="dg-label" text-anchor="end">V<tspan baseline-shift="sub" style="font-size:75%">IN</tspan></text>
+  <line x1="130" y1="98" x2="230" y2="98" class="dg-acc" stroke-width="1.6"/>
+  <circle cx="130" cy="98" r="2.8" class="dg-ink"/>
+  <text x="176" y="92" class="dg-label-sm" text-anchor="middle">node A</text>
+  <line x1="244" y1="84" x2="244" y2="112" class="dg-line" stroke-width="2"/>
+  <line x1="230" y1="98" x2="244" y2="98" class="dg-line" stroke-width="1.5" marker-end="url(#f17c-4-ar)"/>
+  <line x1="244" y1="88" x2="260" y2="88" class="dg-line" stroke-width="1.5"/>
+  <line x1="244" y1="108" x2="260" y2="108" class="dg-line" stroke-width="1.5"/>
+  <text x="264" y="102" class="dg-label-sm">24/6 µm</text>
+  <line x1="260" y1="88" x2="260" y2="30" class="dg-line" stroke-width="1.5"/>
+  <line x1="244" y1="88" x2="260" y2="88" class="dg-line" stroke-width="1.5"/>
+  <line x1="244" y1="108" x2="260" y2="108" class="dg-line" stroke-width="1.5"/>
+  <line x1="260" y1="108" x2="260" y2="120" class="dg-line" stroke-width="1.5"/>
+  <path d="M260,120 L260,125 L266,128.2 L254,134.5 L266,140.8 L254,147.2 L266,153.5 L254,159.8 L260,163 L260,168" class="dg-line" stroke-width="1.5"/>
+  <text x="272" y="148" class="dg-label-sm">30 sq.</text>
+  <line x1="260" y1="168" x2="260" y2="176" class="dg-line" stroke-width="1.5"/>
+  <circle cx="260" cy="176" r="2.8" class="dg-ink"/>
+  <line x1="260" y1="176" x2="330" y2="176" class="dg-acc" stroke-width="1.6"/>
+  <text x="336" y="180" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">OUT</tspan></text>
+  <path d="M260,176 L260,181 L266,184.3 L254,191 L266,197.7 L254,204.3 L266,211 L254,217.7 L260,221 L260,226" class="dg-line" stroke-width="1.5"/>
+  <text x="272" y="207" class="dg-label-sm">35 sq.</text>
+  <text x="130" y="200" class="dg-label-sm" text-anchor="middle">inverting stage</text>
+  <text x="200" y="244" class="dg-label-sm" text-anchor="middle">level shift: source follower into a resistor divider</text>
+</svg>
+      <figcaption>
+        <b>Figure 4.</b> The JFET-R NOT gate. The input stage inverts; the second JFET and the divider of 30 and
+        35 squares shift its output down to the negative logic levels. Every resistor and channel is the same
+        n-type layer, so the output levels depend on ratios that temperature does not change. Device sizes as
+        width/length.
+        <span class="src">Redrawn from Deck 16a p. 57 and Deck 15 p. 35 (after M. J. Krasowski, US Patent
+        7,688,117, 2010, and Neudeck, Spry and Chen 2016).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      An amplifier shows the effect most clearly (Deck 16a p. 58). A 100 µm × 10 µm 6H-SiC JFET carries
+      about 2.3–2.5 mA at its top gate voltage at 25 °C and about 0.7 mA at 500 °C, a change of more than
+      three times. An inverting amplifier built from such JFETs and resistors turns a 1 V peak-to-peak input into
+      an output of about ±5.6 V, a gain of about 11, and the outputs at 25 and 500 °C lie on top of each
+      other.
+    </p>
+    <p>
+      The tenth-generation NOT-gate design kept its logic levels from −190 °C on one chip to +812 °C on
+      another, with the same supply and input voltages, a span of 1,000 °C: the high level stayed between
+      about 0 and −2 V and the low level between about −9 and −11 V, the coldest run giving the most negative
+      levels (Deck 16a p. 59; Deck 15 p. 37). The circuits start
+      in the cold without difficulty, they can be screened for yield on the wafer at 25 °C, and 800 °C can
+      serve as an accelerated test of a mission at 500 °C. On first heating to about 500 °C both levels
+      drifted negative, by up to about 2.5 V, and recovered after a 144-hour burn-in at that temperature
+      (Deck 15 p. 37; Neudeck <em>et al.</em> 2019).
+    </p>
+
+    <figure>
+      <img src="img/not-gate-1000C-deck16a.png" width="561" height="504" loading="lazy"
+           alt="Output voltage waveforms of the NOT gate over 12 milliseconds at minus 190, 25, 500 and 812 degrees Celsius with supplies of plus and minus 25 volts: high levels near 0 to minus 2 volts and low levels near minus 9 to minus 11 volts, the minus 190 degree trace slightly more negative, with the input waveform below">
+      <figcaption>
+        <b>Figure 5.</b> One gate design on two chips, four temperatures, unchanged supplies: the logic levels
+        barely move between −190 and +812 °C.
+        <span class="src">Deck 16a p. 59, after Neudeck <em>et al.</em>, NTRS 20190027358.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The levels hold, but the speed does not. A gate's switching time is set by how fast its resistors and
+      channels charge the next gate's capacitance, so the circuit frequency follows the conductance of the
+      n-type layer (Deck 16a p. 60). Both peak near 0 °C. Below that, the nitrogen donors of 4H-SiC freeze
+      out (<a href="m17a-temperature-semiconductor.html#m17a-eq-ion">M17a §3</a>), and at −190 °C a 21-stage
+      ring oscillator runs at about 5 % of its speed at 100 °C. Above it, phonon scattering lowers the
+      mobility (M17a §4), and by 500 °C frequency and power have fallen four- to fivefold from their peak. At
+      100 °C an 11-stage oscillator runs at 1.01 MHz, and the layer's sheet conductance, 231 µS per square,
+      makes each square about 4.3 kΩ, so a 30-square resistor is about 130 kΩ.
+    </p>
+
+    <figure>
+      <img src="img/sheet-conductance-deck16a.png" width="701" height="499" loading="lazy"
+           alt="Ring-oscillator frequency and n-layer sheet conductance normalized to their values at 100 degrees Celsius against ambient temperature from minus 200 to 900 degrees: both rise from near zero at minus 190 to a peak of about 1.25 near 0 degrees and then fall to about 0.27 at 500 and about 0.1 at 900 degrees">
+      <figcaption>
+        <b>Figure 6.</b> Speed tracks the conductance of the n-type layer: freeze-out below 0 °C, phonon
+        scattering above it.
+        <span class="src">Deck 16a p. 60, after Neudeck <em>et al.</em>, NTRS 20190027358.</span>
+      </figcaption>
+    </figure>
+
+    <h2>5 · Contacts, interconnect and the package</h2>
+    <p>
+      The transistor and the circuit approach were the easier parts. An integrated circuit also needs
+      metal contacts to the semiconductor, wiring between thousands of devices, insulating layers between
+      the wiring levels, bond pads and a package, and in a conventional chip none of these is designed for
+      500 °C. Lecture 16's summary of NASA's experience is that silicon carbide itself is excellent and that
+      the metals and insulating layers generate most of the problems.
+    </p>
+
+    <div class="box defn">
+      <p class="box-title">Ohmic and rectifying contacts</p>
+      <p>
+        A metal placed on a semiconductor forms a potential barrier at the interface. If the barrier controls
+        the current, the contact rectifies, as the Schottky gate of a MESFET does (M17b §6). An ohmic contact
+        is one whose resistance is negligible against the device it connects and which passes current in
+        either direction. It is made by doping the semiconductor so heavily beneath the metal that the
+        barrier becomes thin enough for carriers to tunnel through; the figure of merit is the specific
+        contact resistance, in Ω·cm². On a wide-gap semiconductor ohmic contacts are hard to make, because
+        no metal gives a low enough barrier, so heavy doping does most of the work (Sze &amp; Ng 2007, §3.6).
+        NASA's chips contact the n-type layer through heavily implanted N⁺ regions.
+      </p>
+    </div>
+
+    <p>
+      The tenth-generation interconnect (Deck 16a p. 61) uses the following materials. The first dielectric
+      is a 30 nm thermally grown oxide under 1 µm of deposited SiO₂. In its openings the ohmic contacts,
+      50 nm of titanium under 0.2 µm of tantalum disilicide, TaSi₂, sit on implanted SiC, and the first
+      wiring level, Metal 1, runs down onto them. The two wiring levels, each 0.8 µm of TaSi₂, are separated
+      by 1 µm of SiO₂, and two more 1 µm oxide layers cover Metal 2, with a 67 nm layer of silicon nitride,
+      Si₃N₄, between them (Neudeck <em>et al.</em> 2018). The deposited oxide, made from tetraethyl
+      orthosilicate, and the nitride are laid down by low-pressure chemical vapour deposition at 720 °C.
+      Every piece of interconnect is buried beneath dielectric, because TaSi₂ exposed to air at 500 °C
+      oxidizes. The transistor beneath is
+      the structure of M17b §6 in 4H-SiC: an n-type channel about 0.4 µm thick at 10¹⁷ cm⁻³ under a p⁺ gate
+      doped above 10²⁰ cm⁻³, on a 6–8 µm p-type layer below 5×10¹⁵ cm⁻³.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 262" role="img" aria-labelledby="f17c-7-t">
+  <title id="f17c-7-t">Simplified cross-section of the NASA silicon carbide integrated circuit stack. At the bottom, the p-type 4H-SiC substrate, a 6 to 8 micrometre p-type layer and the n-type layer, with N-plus contact implants, a p-plus gate on the channel, and an N-plus implanted region under the bond pad. Above, about 1 micrometre oxide layers: Metal 1 of tantalum silicide reaches down through the first oxide onto the contacts; Metal 2 lies above it; the 67 nanometre silicon nitride sits between the two oxide layers above Metal 2. On the right, the bond pad of platinum, iridium and platinum over tantalum silicide under a 1 micrometre gold cap, anchored to the silicon carbide; the signal path runs from Metal 1 through the N-plus silicon carbide to the pad.</title>
+  <defs><marker id="f17c-7-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+  <rect x="20" y="218" width="400" height="28" class="dg-fill"/>
+  <text x="220" y="236" class="dg-label-sm" text-anchor="middle">p-type 4H-SiC substrate</text>
+  <rect x="20" y="190" width="400" height="28" class="dg-fill" opacity="0.75"/>
+  <text x="220" y="208" class="dg-label-sm" text-anchor="middle">p-type layer, 6–8 µm, &lt; 5×10¹⁵ cm⁻³</text>
+  <rect x="20" y="168" width="400" height="22" class="dg-soft" opacity="0.35"/>
+  <text x="112" y="186" class="dg-label-sm" text-anchor="middle">n layer, ≈ 0.4 µm, 10¹⁷ cm⁻³</text>
+  <rect x="44" y="168" width="24" height="7" class="dg-ink" opacity="0.5"/>
+  <rect x="168" y="168" width="24" height="7" class="dg-ink" opacity="0.5"/>
+  <rect x="252" y="168" width="160" height="9" class="dg-ink" opacity="0.5"/>
+  <text x="332" y="187" class="dg-label-sm" text-anchor="middle">N⁺ SiC, ≈ 100 Ω</text>
+  <rect x="20" y="30" width="280" height="138" class="dg-fill" opacity="0.45"/>
+  <rect x="20" y="56" width="280" height="4" class="dg-ink" opacity="0.8"/>
+  <text x="292" y="52" class="dg-label-sm" text-anchor="end">Si₃N₄, 67 nm</text>
+  <text x="26" y="47" class="dg-label-sm">SiO₂</text>
+  <text x="26" y="77" class="dg-label-sm">SiO₂</text>
+  <rect x="64" y="86" width="176" height="8" class="dg-ink" opacity="0.55"/>
+  <text x="152" y="82" class="dg-label-sm" text-anchor="middle">Metal 2: TaSi₂, 0.8 µm</text>
+  <text x="26" y="114" class="dg-label-sm">SiO₂</text>
+  <path d="M40,126 H276 V168 H260 V134 H190 V168 H170 V134 H66 V168 H46 V134 H40 Z" class="dg-ink" opacity="0.55"/>
+  <text x="160" y="122" class="dg-label-sm" text-anchor="middle">Metal 1: TaSi₂, 0.8 µm</text>
+  <text x="200" y="154" class="dg-label-sm">SiO₂</text>
+  <rect x="96" y="161" width="44" height="7" class="dg-soft" opacity="0.9"/>
+  <text x="118" y="156" class="dg-label-sm" text-anchor="middle">p⁺ gate</text>
+  <text x="160" y="22" class="dg-label" text-anchor="middle">all wiring buried in dielectric</text>
+  <rect x="318" y="86" width="94" height="20" class="dg-soft" opacity="0.5"/>
+  <text x="365" y="100" class="dg-label-sm" text-anchor="middle">Au cap, 1 µm</text>
+  <rect x="318" y="106" width="94" height="14" class="dg-soft" opacity="0.25"/>
+  <text x="365" y="117" class="dg-label-sm" text-anchor="middle">Pt 0.2 µm</text>
+  <rect x="318" y="120" width="94" height="16" class="dg-soft" opacity="0.4"/>
+  <text x="365" y="132" class="dg-label-sm" text-anchor="middle">Ir 0.3 µm</text>
+  <rect x="318" y="136" width="94" height="14" class="dg-soft" opacity="0.25"/>
+  <text x="365" y="147" class="dg-label-sm" text-anchor="middle">Pt 0.2 µm</text>
+  <rect x="318" y="150" width="94" height="18" class="dg-soft" opacity="0.4"/>
+  <text x="365" y="163" class="dg-label-sm" text-anchor="middle">TaSi₂ 0.4 µm</text>
+  <text x="365" y="78" class="dg-label" text-anchor="middle">IrIS pad</text>
+  <path d="M268,146 V173 H326 V162" class="dg-acc" stroke-width="2" fill="none" marker-end="url(#f17c-7-ar)"/>
+</svg>
+      <figcaption>
+        <b>Figure 7.</b> The tenth-generation stack, simplified and not to scale: SiC devices at the bottom; two
+        TaSi₂ wiring levels buried in SiO₂, each oxide layer about 1 µm, with the 67 nm Si₃N₄ between the two
+        layers above Metal 2; and the gold-capped bond pad, anchored to the SiC and reached from Metal 1
+        through N⁺-implanted SiC.
+        <span class="src">After Deck 16a pp. 57, 61–63, and Neudeck <em>et al.</em> 2018.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The bond pads are the "iridium interfacial stack", IrIS: 0.2 µm of platinum, 0.3 µm of iridium and
+      0.2 µm of platinum over 0.4 µm of TaSi₂, anchored directly to the SiC and capped with 1 µm of gold. The
+      buried interconnect never touches it; N⁺-implanted SiC connects each pad to Metal 1, adding about
+      100 Ω in series (Deck 16a p. 63). Each chip is mounted with a gold thick-film die attach, fired at
+      600 °C, in a package of co-fired alumina with platinum conductors and 32 input and output
+      connections; 25 µm gold wires are ball-bonded to the chip's pads and wedge-bonded to the package's
+      gold-over-platinum pads, and the package is mounted on an alumina circuit board (Deck 16a p. 62; Spry
+      and Lukco 2012; Chen <em>et al.</em> 2016). Annealing tests found the first clear structural limit of
+      the pad stack just above 700 °C (Deck 16a p. 64). Unpackaged, non-working chips of an earlier version
+      were each given a single 30-minute anneal in nitrogen or in forming gas, 4 % hydrogen in nitrogen
+      (Spry and Neudeck 2021). After 500 °C the stack had separated into planar layers of TaSi₂ against the
+      SiC, then PtSi<sub>x</sub>, iridium and platinum. At 700 °C the silicide zone thickened and, under a
+      gold cap, oxygen collected at the gold–platinum interface, which could become a bonding failure point
+      if the gold of the ball bond were too thin to block it. By 900 °C platinum had reached the SiC, with
+      voids.
+    </p>
+    <p>
+      Short tests at higher temperature show where the next limit lies (Deck 16a p. 65; Neudeck <em>et al.</em>
+      2017). A 48 µm × 6 µm JFET's ratio of on-current to off-current fell from more than 10⁶ at 27 °C to
+      1.1×10⁵ at 501 °C, 2,200 at 708 °C, 320 at 803 °C, 13 at 913 °C and 8.7 at 961 °C, and an 11-stage ring
+      oscillator still ran at 961 °C. Above about 500 °C the leakage through the package, the leakage of the
+      Metal-1 wiring and the JFET's measured off-current coincide, rising from a noise floor of 10⁻¹⁰ to
+      10⁻⁹ A to about 10⁻⁵ A near 850 °C: what is measured as the off-current there is the package's
+      leakage. The package, designed for 500 °C, was the limiting factor, and the intrinsic limit of the
+      JFET circuits has not yet been measured.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 262" role="img" aria-labelledby="f17c-8-t">
+  <title id="f17c-8-t">Ratio of on-current to off-current of a 48 by 6 micrometre SiC JFET on a logarithmic scale against temperature: above a million at 27 degrees, 110,000 at 501, 2,200 at 708, 320 at 803, 13 at 913 and 8.7 at 961 degrees Celsius</title>
+  <defs><marker id="f17c-8-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-soft"/></marker></defs>
+  <rect x="64" y="30" width="340" height="184" class="dg-fill" opacity="0.3"/>
+  <line x1="64" y1="187.7" x2="404" y2="187.7" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="64" y1="161.4" x2="404" y2="161.4" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="64" y1="135.1" x2="404" y2="135.1" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="64" y1="108.9" x2="404" y2="108.9" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="64" y1="82.6" x2="404" y2="82.6" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="64" y1="56.3" x2="404" y2="56.3" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="234" y1="30" x2="234" y2="214" class="dg-guide" stroke-width="0.9" stroke-dasharray="4 3"/>
+  <text x="238" y="44" class="dg-label-sm">package designed for 500 °C</text>
+  <path d="M73.2,56.3 L234.3,81.5 L304.7,126.1 L337,148.2 L374.4,184.7 L390.7,189.3" class="dg-acc" stroke-width="2"/>
+  <circle cx="73.2" cy="56.3" r="3.6" class="dg-acc-f"/>
+  <text x="79.2" y="49.3" class="dg-label-sm">&gt;10⁶</text>
+  <circle cx="234.3" cy="81.5" r="3.6" class="dg-acc-f"/>
+  <text x="240.3" y="74.5" class="dg-label-sm">110,000</text>
+  <circle cx="304.7" cy="126.1" r="3.6" class="dg-acc-f"/>
+  <text x="310.7" y="119.1" class="dg-label-sm">2,200</text>
+  <circle cx="337" cy="148.2" r="3.6" class="dg-acc-f"/>
+  <text x="343" y="141.2" class="dg-label-sm">320</text>
+  <circle cx="374.4" cy="184.7" r="3.6" class="dg-acc-f"/>
+  <text x="380.4" y="177.7" class="dg-label-sm">13</text>
+  <circle cx="390.7" cy="189.3" r="3.6" class="dg-acc-f"/>
+  <text x="396.7" y="182.3" class="dg-label-sm">8.7</text>
+  <line x1="73.2" y1="53.3" x2="73.2" y2="37.9" class="dg-line" stroke-width="1.1" marker-end="url(#f17c-8-ar)"/>
+  <line x1="64" y1="214" x2="404" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <line x1="64" y1="30" x2="64" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="64" y1="214" x2="64" y2="219"/><line x1="132" y1="214" x2="132" y2="219"/><line x1="200" y1="214" x2="200" y2="219"/><line x1="268" y1="214" x2="268" y2="219"/><line x1="336" y1="214" x2="336" y2="219"/><line x1="404" y1="214" x2="404" y2="219"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="64" y="231">0</text><text x="132" y="231">200</text><text x="200" y="231">400</text><text x="268" y="231">600</text><text x="336" y="231">800</text><text x="404" y="231">1,000</text></g>
+  <g class="dg-label-sm" text-anchor="end"><text x="58" y="218">10<tspan baseline-shift="super" style="font-size:75%">0</tspan></text><text x="58" y="191.7">10<tspan baseline-shift="super" style="font-size:75%">1</tspan></text><text x="58" y="165.4">10<tspan baseline-shift="super" style="font-size:75%">2</tspan></text><text x="58" y="139.1">10<tspan baseline-shift="super" style="font-size:75%">3</tspan></text><text x="58" y="112.9">10<tspan baseline-shift="super" style="font-size:75%">4</tspan></text><text x="58" y="86.6">10<tspan baseline-shift="super" style="font-size:75%">5</tspan></text><text x="58" y="60.3">10<tspan baseline-shift="super" style="font-size:75%">6</tspan></text><text x="58" y="34">10<tspan baseline-shift="super" style="font-size:75%">7</tspan></text></g>
+  <text x="234" y="250" class="dg-label" text-anchor="middle">temperature (°C)</text>
+  <text x="18" y="122" class="dg-label" text-anchor="middle" transform="rotate(-90 18 122)">I<tspan baseline-shift="sub" style="font-size:75%">ON</tspan>/I<tspan baseline-shift="sub" style="font-size:75%">OFF</tspan></text>
+</svg>
+      <figcaption>
+        <b>Figure 8.</b> The on/off ratio of one SiC JFET against temperature. It stays above 10⁵ to about
+        500 °C and falls steadily above it, where leakage through the package, not the transistor, sets the
+        measured off-current.
+        <span class="src">Data from Deck 16a p. 65 (Neudeck <em>et al.</em> 2017); plotted here.</span>
+      </figcaption>
+    </figure>
+
+    <h2>6 · What fails, and how it is found</h2>
+    <p>
+      A technology meant for a mission must show not only that it works but how and when it fails, and with
+      enough samples to estimate the risk. NASA's tenth-generation circuits were tested packaged, in ovens at
+      500 °C, and the record is short enough to give in full.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Packaged IC</th><th><em>r</em> (mm)</th><th>Time at 500 °C</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>RAM #1</td><td>13.4</td><td>63 days</td><td>Suspended</td></tr>
+          <tr><td>RAM #2</td><td>6.7</td><td>420 days</td><td>Running</td></tr>
+          <tr><td>Clock #1</td><td>24.2</td><td>19 days</td><td>Failed</td></tr>
+          <tr><td>Clock #2</td><td>15.3</td><td>437 days</td><td>Running</td></tr>
+          <tr><td>Clock #3A</td><td>12.4</td><td>403 days</td><td>Running</td></tr>
+          <tr><td>Clock #3B</td><td>12.4</td><td>403 days</td><td>Running</td></tr>
+          <tr><td>Clock #3C</td><td>13.4</td><td>87 days</td><td>Failed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Deck 16a p. 68 (Table I, after Neudeck <em>et al.</em> 2018). <em>r</em> is the die's distance from the
+      centre of the 76 mm wafer. The epitaxial layers were not uniform, so the JFET threshold varied with
+      <em>r</em>, from −7.9 V at the centre to −13.8 V at the edge at a substrate bias of −15 V, and only dies
+      within 25 mm of the centre met the circuit-design limits. Two of seven failed, both suddenly and
+      unpredictably, as open circuits, and the tutorial calls the resulting random failure risk unacceptable
+      for missions. RAM #1 did not fail: its test was stopped to free its oven for RAM #2. The table is the whole
+      oven-test data set for these complex circuits, and the tutorial notes that much larger numbers are
+      needed to meet the statistics of aerospace qualification.
+    </p>
+    <p>
+      The failure analysis began with the simplest method, an optical microscope. The failed clock showed
+      cracks in its dielectric layers and discoloured, oxidized metal traces; where a crack exposed the TaSi₂
+      wiring to air at 500 °C, the wiring oxidized through and opened the circuit (Deck 16a p. 68;
+      Deck 15 p. 40). The cracks are attributed to stress in the films of stacks that contain silicon
+      nitride. Chips without nitride showed no dielectric cracks even after 30-minute anneals at up to
+      1,370 °C; cracks appeared in the generations that added Si₃N₄ as a barrier to oxygen and mobile ions
+      (Spry and Neudeck 2021). The dielectrics are deposited at 720 °C, above the operating temperature, so
+      that their stress is greatest near room temperature rather than in service, and dicing, handling and
+      bonding can start a crack (Spry <em>et al.</em> 2020).
+    </p>
+    <p>
+      NASA then varied the stack. Unpackaged chips were cycled ten times, for 10 h each, to 720 °C in air.
+      Version 10.2, with one 67 nm nitride layer above Metal 2, and version 11.1, whose Metal 2 was deposited
+      by high-power impulse magnetron sputtering, both cracked, and their TaSi₂ oxidized beneath the cracks;
+      version 11.2, with a second nitride layer between Metal 1 and Metal 2, showed no dielectric cracks and
+      no oxidation (Deck 15 p. 41; Spry <em>et al.</em> 2020). The cycling result is not the whole record.
+      Version 10.2 is the process whose circuits ran for more than a year at 500 °C; generation 11 did not
+      reach generation 10's prolonged operation and yield; and the 11.2 chips failed their probe test at
+      25 °C, because Metal 2 cracked open wherever it crossed the steps of underlying mesas and Metal 1 lines
+      (Neudeck <em>et al.</em> 2023). A later series built six back-end interconnect stacks, one on each of six
+      practice SiC wafers, and counted cracks optically on each 5 mm × 5 mm die of one quadrant of each
+      wafer. Nearly all the cracks formed when the topmost nitride was deposited. The sixth stack had the
+      fewest, all at the wafer edge, and the highest yield at electrical probe test, with dicing, packaging
+      and oven tests still to follow (Deck 16a pp. 69–70; Neudeck <em>et al.</em> 2023). Etching through the
+      dielectric to bare SiC between dies, and a Metal-1 "fence" that deflects cracks from neighbouring
+      devices, also limit the damage (Spry <em>et al.</em> 2020). Deck 15 p. 42 adds a wafer map of low
+      yield from metal delamination.
+    </p>
+    <p>
+      Qualification for long life at 500 °C has to extend decades of aerospace and automotive practice to a
+      new temperature range: parallel tests in numbers enough for statistics, on chips, packages and
+      multi-chip boards; acceleration by temperature and by voltage or current; repeated thermal cycling and
+      shock; vibration at temperature; and failure mechanisms documented across the intended environment
+      (Deck 16a p. 66). Towards the first of these, NASA Glenn is building small ovens, each taking a chip,
+      with or without its package, on a ceramic board inserted through a slit, with the goal of 50 or more
+      circuits tested in parallel with rapid thermal cycling (Izadnegahdar <em>et al.</em> 2021).
+      Accelerated testing and failure analysis are the subject of M19.
+    </p>
+
+    <h2>7 · Where the technology stands</h2>
+    <p>
+      The circuits have grown from single gates to small systems. A clock chip, whose 21-stage ring
+      oscillator ran at about 165–170 kHz with outputs divided by two and by four, operated at 500 °C for
+      437.5 days, and after its first 100–200 hours its outputs changed by less than 5 %. A 16-bit memory
+      operated for a year at 500 °C; its output levels, about +0.5 and −9.2 V, lay beyond the −1 V and −9 V
+      levels applied to its inputs, so one chip could drive the next (Deck 15 pp. 38–39; Neudeck
+      <em>et al.</em> 2018). The memory grew from 16 bits in 2017 to 120 bits, about 1,000 transistors on a
+      4.65 mm square chip (Deck 15 p. 43; Deck 16b p. 14). The twelfth generation, in fabrication in 2023,
+      comprises 50 circuit designs, among them a microprocessor on two chips, 8-bit analog-to-digital and
+      digital-to-analog converters, a 2-kbit mask-programmed read-only memory and a 248-bit memory, control
+      and conversion circuits for a Venus lander, a dozen sensor amplifiers, power JFETs, and chips designed
+      by outside partners (Deck 16a p. 71).
+    </p>
+    <p>
+      The microprocessor uses a transport-triggered architecture with sixteen instructions, from logic
+      operations to jumps and subroutine calls, acting on one result register, programmed through its own
+      assembler, logic simulator and memory programmer; it dissipates 1.3 W at 460 °C in circuit
+      simulation (Deck 16a p. 75). A public design guide provides SPICE models and layout rules, and the
+      thirteenth generation shrinks the NOT gate from 11,021 to 3,016 µm², 3.65 times smaller
+      (Deck 16a p. 72).
+    </p>
+    <p>
+      The tutorial lists the gaps plainly (Deck 16a p. 77). The JFET-R circuits run at a few megahertz at
+      most, and radio transmitters at 100 MHz and above will need other devices, such as SiC bipolar
+      transistors. The JFETs are normally on, which suits them poorly to power switching, and no package for
+      kilovolts and tens of amperes at 500 °C has been shown. The logic needs more than ten times the power
+      of CMOS. Memory demonstrated at 500 °C is below 1 kbit per chip, with storage power of milliwatts per
+      bit, read-only memory fixed by the mask and no electrically programmable non-volatile memory; the
+      twelfth generation's 2-kbit read-only memory is still a design in fabrication. There is no quartz-like
+      timing reference: the ring oscillators hold their frequency to within 10 % over time at one
+      temperature, but nothing references it, and it falls four- to fivefold between 25 and 500 °C (§4).
+      Other devices, among them implanted JFETs, SiC CMOS, bipolar transistors,
+      III-nitride FETs and gallium oxide, would bring benefits if and when they show prolonged stable
+      operation at 500 °C and can be integrated with durable interconnect and packaging (Deck 16a p. 78).
+    </p>
+    <p>
+      NASA's HOTTech programme, Hot Operating Temperature Technology, funds technology for hot planetary
+      surfaces, chiefly that of Venus. The table lists the twelve tasks of one round, among them NASA Glenn's
+      own high-temperature memory (Deck 16b p. 7). Deck 16b p. 3, like several NASA Glenn papers, expands
+      the acronym as High Operating Temperature Technology.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Area</th><th>Task</th><th>Organization</th></tr></thead>
+        <tbody>
+          <tr><td>Packaging</td><td>500 °C, weather-resistant electronics packaging</td><td>University of Arkansas</td></tr>
+          <tr><td>Clocks and oscillators</td><td>Passively compensated low-power chip-scale clocks for wireless communication</td><td>Stanford University</td></tr>
+          <tr><td>GaN electronics</td><td>High-temperature GaN microprocessor</td><td>Arizona State University</td></tr>
+          <tr><td>Computer memory</td><td>High-temperature memory for long-lived Venus missions</td><td>NASA Glenn</td></tr>
+          <tr><td>Diamond electronics</td><td>High-temperature diamond electronics for actuators and sensors</td><td>Arizona State University</td></tr>
+          <tr><td>Vacuum electronics</td><td>Field-emission vacuum devices above 500 °C</td><td>Boeing</td></tr>
+          <tr><td>ASICs and sensors</td><td>SiC electronics for long-lived chemical sensing at the surface</td><td>Makel Engineering</td></tr>
+          <tr><td>Primary batteries</td><td>High-temperature, long-life primary batteries for Venus and Mercury</td><td>NASA JPL</td></tr>
+          <tr><td>Rechargeable batteries</td><td>Lithium–sulfur battery for extreme temperature</td><td>University of Dayton</td></tr>
+          <tr><td>Solar power</td><td>Low-intensity, high-temperature solar cells</td><td>NASA JPL</td></tr>
+          <tr><td>Power generation</td><td>Lithium-combustion in-situ power system</td><td>Johns Hopkins APL</td></tr>
+          <tr><td>Electric motors</td><td>TRL-6 electric motor and position sensor</td><td>Honeybee Robotics</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>8 · Radiation and high temperature together</h2>
+    <p>
+      The course treats radiation and temperature as separate stresses, and so does most of the testing
+      behind it. They meet in two places. The first is silicon carbide power devices, the other main use of
+      the material. A heavy ion crossing a SiC power MOSFET or diode under high voltage can trigger
+      single-event burnout, a destructive current along its track. In a simulation of a 1,200 V MOSFET
+      blocking 500 V, struck by a silver ion of LET 46 MeV·cm²/mg, the ion's carriers move the peak of the
+      field, about 3.5×10⁶ V/cm, to the interface between the epitaxial layer and the substrate within 50 ps.
+      Impact ionization there (<a href="m01-semiconductor-background.html">M01 §6</a>) heats the lattice
+      locally, to roughly 1,600 K by 120 ps while the rest of the track stays below about 1,200 K. The
+      simulation counts the device as burnt out once any point reaches 3,000 K, and the simulated device
+      fails when blocking between 475 and 500 V (Deck 16a p. 30, after McPherson <em>et al.</em> 2019).
+      Measured burnout thresholds fall from about 1,100 V at low LET to a plateau near 500 V for LETs from
+      about 10 to 65 MeV·cm²/mg, and degradation begins lower still, near 230–400 V (Ball <em>et al.</em>
+      2020). A 1,200 V device is considered safe to fly only below 200 V, a de-rating that
+      removes much of the material's advantage for spacecraft power. The energy deposition behind such
+      events is that of M13 §10, and single-event effects are the subject of M15.
+    </p>
+    <p>
+      The second is the circuit of this module in a radiation environment, where it has been tested at room
+      temperature (Lauenstein <em>et al.</em> 2019). A total ionizing dose of 7 Mrad(Si) of gamma rays
+      changed the JFETs' <em>I</em><sub>DSS</sub> by less than 1.5 % and their pinch-off voltage by less than
+      2 %, but raised a "hump" of extra current in the subthreshold part of the transfer curve, which faded
+      after two weeks unbiased and returned under bias; the paper assigns it no cause. The gain of the
+      operational amplifiers fell with dose, by up to 21 %. Heavy ions up to an LET in silicon of
+      86 MeV·cm²/mg caused no destructive event. The clock chip showed upsets and transients, none with neon
+      at 3.5 MeV·cm²/mg but some with argon at 9.7 MeV·cm²/mg and heavier ions, which the authors trace to
+      its control logic. Lecture 16 names the combination of radiation and high temperature as an open
+      question, and it remains unmeasured. The pieces are in hand. Heat speeds the annealing of trapped oxide
+      charge, though not of interface traps, which keep forming after an exposure
+      (<a href="m14-total-ionizing-dose.html">M14 §6</a>). In silicon much displacement damage anneals
+      (<a href="m11-displacement-damage.html">M11 §8</a>), but silicon carbide's main vacancy-type defects
+      survive anneals to about 1,500 °C (Danno and Kimoto 2006), so operation at 500 °C does not remove
+      them. Heat raises every junction's leakage (M17a §5), and the JFET-R circuits have no gate oxide but do have field and interlevel
+      dielectrics in which charge can be trapped (M17b §6). How these combine in a hot, irradiated circuit is
+      the question the lecture leaves open.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Electronics must run hot where the signal exists only in the hot zone, where wiring out costs too much, or where cooling does: engine compressors and exhausts (combustor exit ≈ 1,600 °C; about 1,300 test wires), drilling at 300–600 °C, power conversion (cooling a third of a 250 kW converter's mass), Venus. SOI reaches about 250–300 °C; beyond it only wide-gap devices have shown long, stable operation.</li>
+        <li>A flush-mounted SiC piezoresistive pressure sensor works from 25 to 800 °C (at 200 psi, ≈ 11 mV at 25 °C, ≈ 6.5 mV near 300 °C, ≈ 17 mV at 700–800 °C with 10 V excitation); its package matches expansion: SiC 3.7, AlN and glass 4.1, Kovar 5.1–6.2 ppm/°C.</li>
+        <li>Venus: 460–465 °C, 92 bar (≈ 91 atm), 96.5 % CO₂ with sulfur gases; materials sulfidize. Venera landers returned 23–127 minutes of surface data; Venera 8 failed in the heat, Venera 11 and 12 lost their relay. GEER reproduces the surface in 800 L at 460 °C and 1,350 psi absolute; two SiC clock ICs ran 60 days in it in unlidded packages.</li>
+        <li>JFET-R: resistors made in the same n-type layer as the JFET channels change with temperature in nearly the same proportion as the channels, so ratio-based circuits hold their outputs. One NOT-gate design kept its levels from −190 °C (one chip) to +812 °C (another) at ±25 V supplies; an amplifier's gain of about 11 is the same at 25 and 500 °C though its JFET's current falls more than threefold.</li>
+        <li>Speed follows the n-layer's conductance: highest near 0 °C, about 5 % at −190 °C (freeze-out), down four- to fivefold by 500 °C (phonon scattering). Sheet conductance 231 µS/□ at 100 °C, ≈ 4.3 kΩ per square.</li>
+        <li>Ti/TaSi₂ ohmic contacts and two TaSi₂ wiring levels buried in SiO₂, with Si₃N₄ above Metal 2; gold-capped IrIS pads reached through N⁺ SiC; gold die attach and gold wire bonds in a co-fired alumina package with platinum conductors. The pad stack's first structural limit is just above 700 °C; above 500 °C the package's leakage, not the JFET, set the measured off-current, and <em>I</em><sub>ON</sub>/<em>I</em><sub>OFF</sub> fell from &gt; 10⁶ at 27 °C to 8.7 at 961 °C.</li>
+        <li>Dielectric cracks cause sudden open circuits: two of seven packaged ICs failed, at 19 and 87 days at 500 °C; four were still running after 403–437 days, and one test was stopped at 63 days to free its oven. The cracks came with the Si₃N₄ added against oxygen and mobile ions, from film stress; a second nitride layer, etching to bare SiC between dies and a Metal-1 fence reduced them, and the best of six stacks cracked only at the wafer edge.</li>
+        <li>Gen 12, in fabrication: 50 circuit designs including a two-chip microprocessor (1.3 W at 460 °C, simulated), converters and memories; Gen 13 shrinks the NOT gate 3.65-fold. Gaps: a few MHz, normally-on devices, more than ten times CMOS power, under 1 kbit of demonstrated memory per chip, no frequency-referenced clock.</li>
+        <li>SiC power devices must be de-rated for single-event burnout (a 1,200 V part flown below 200 V). At room temperature the JFET-R circuits took 7 Mrad(Si) and heavy ions to LET 86 MeV·cm²/mg without a destructive event; radiation and high temperature together remain unmeasured for them.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Opening</td><td>M17b §6; Deck 16a pp. 53–56; Lecture 16</td></tr>
+      <tr><td>§1</td><td>Deck 16a pp. 4, 10–13, 26, 42–45, 48, 52–53; Deck 12 p. 19 and Lecture 16 for Parker's 1,300 °C (P. G. Neudeck, NASA Glenn, ICSCRM 2023 tutorial, a work of the US Government; the engine environment after S. Garg <em>et al.</em>, NTRS 20100029602; the application table after P. G. Neudeck, R. S. Okojie and L.-Y. Chen, <em>Proc. IEEE</em> <b>90</b>, 1065 (2002)); Lecture 15 (the industry guest); Parker Solar Probe from M03 §2</td></tr>
+      <tr><td>§2</td><td>Deck 16a p. 17 (after S. Garg <em>et al.</em>, NTRS 20100029602 and 20130013439), p. 18, and pp. 19–21 (R. Okojie, NASA Glenn), with Lecture 16; the mounting comparison as cited on p. 18, <em>Case Stud. Therm. Eng.</em>, doi:10.1016/j.csite.2022.102184; piezoresistance and the gauge factor from S. M. Sze and K. K. Ng, <em>Physics of Semiconductor Devices</em>, 3rd ed. (Wiley, 2007), §14.3.1; SiC gauge factors from R. S. Okojie, A. A. Ned, A. D. Kurtz and W. N. Carr, <em>IEEE Trans. Electron Devices</em> <b>45</b>, 785 (1998), and T. Akiyama, D. Briand and N. F. de Rooij, <em>J. Micromech. Microeng.</em> <b>22</b>, 085034 (2012)</td></tr>
+      <tr><td>§3</td><td>Deck 16a pp. 31–41; Deck 16b pp. 3–6, 37 (G. W. Hunter and T. Kremic, NASA Glenn), the materials table after D. Lukco <em>et al.</em>, <em>Earth Space Sci.</em> <b>5</b>, 270 (2018); Deck 12 pp. 17–19; Figure 3 modified from E. Kolawa <em>et al.</em>, JPL D-32832 (2007); the gas table's values as GEER's fill recipe, R. S. Okojie <em>et al.</em>, "Silicon carbide pressure sensors for Venus environment", International Planetary Probe Workshop (2018), NTRS 20180005551; pressure and near-surface composition from the NSSDCA Venus fact sheet; Deck 16b p. 4 for GEER's nine gases; the Venera landers' links and lifetimes from A. A. Siddiqi, <em>Beyond Earth: A Chronicle of Deep Space Exploration, 1958–2016</em>, NASA SP-2018-4041 (2018); the 60-day test, P. G. Neudeck <em>et al.</em>, <em>IEEE J. Electron Devices Soc.</em> <b>7</b>, 100 (2019); Venera 13's 127 minutes and the relay limit from M03 §2; the lander comparison after T. Kremic and G. W. Hunter, doi:10.3847/25c2cfeb.cb6775e1</td></tr>
+      <tr><td>§4</td><td>Deck 16a pp. 57–60 and Deck 15 pp. 35–37, with Lecture 16 (the voltage-divider argument); M. J. Krasowski, US Patent 7,688,117 (2010); P. G. Neudeck <em>et al.</em>, "Demonstration of 4H-SiC JFET digital ICs across 1000 °C temperature range without change to input voltages", <em>Mater. Sci. Forum</em> <b>963</b>, 813 (2019), and NTRS 20190027358; the amplifier after NTRS 20130000502. Sheet resistance per square computed here from the conductance on p. 60</td></tr>
+      <tr><td>§5</td><td>Deck 16a pp. 57, 61–65 and Lecture 16. The stack after P. G. Neudeck <em>et al.</em>, IMAPS HiTEC 2018, pp. 71–78 (NTRS 20180003391). Ohmic contacts: Sze &amp; Ng (2007) §3.6. Pads and packaging: D. Spry and D. Lukco, <em>J. Electron. Mater.</em> <b>41</b>, 915 (2012); L.-Y. Chen <em>et al.</em>, "Electrical performance of a high temperature 32-I/O HTCC alumina package", IMAPS HiTEC 2016, pp. 66–72; the anneal study after D. Spry and P. Neudeck, CS MANTECH 2021. Above 900 °C: P. G. Neudeck <em>et al.</em>, "Demonstration of 4H-SiC digital integrated circuits above 800 °C", <em>IEEE Electron Device Lett.</em> <b>38</b>, 1082 (2017); the slide cites it with the year 2016 and the DOI of D. J. Spry <em>et al.</em>, <em>IEEE Electron Device Lett.</em> <b>37</b>, 625 (2016)</td></tr>
+      <tr><td>§6</td><td>Deck 16a pp. 66–70 and Deck 15 pp. 40–42, with Lecture 16. Table I and the wafer-radius data: P. G. Neudeck <em>et al.</em>, IMAPS HiTEC 2018, pp. 71–78. The crack failures: D. J. Spry <em>et al.</em>, IMAPS HiTEC 2016, pp. 249–256; no cracks without nitride, and the deposition temperature, from D. Spry and P. Neudeck, CS MANTECH 2021. The cycling study and the mitigations: D. J. Spry, P. G. Neudeck and C. W. Chang, <em>Mater. Sci. Forum</em> <b>1004</b>, 1148 (2020). The back-end study and the fate of generation 11: P. G. Neudeck <em>et al.</em>, "Recent progress in extreme environment durable SiC JFET-R integrated circuit technology", IMAPS HiTEC 2023 (NTRS 20230002648). The oven set-up: A. Izadnegahdar <em>et al.</em>, IMAPS HiTEC 2021 (NTRS 20210011676)</td></tr>
+      <tr><td>§7</td><td>Deck 16a pp. 71–78; Deck 15 pp. 38–39 (after Neudeck <em>et al.</em> 2018), 43; Deck 16b pp. 3, 7, 14; the twelfth generation's status and memory sizes from Neudeck <em>et al.</em> 2023; the oscillators' temperature dependence from §4</td></tr>
+      <tr><td>§8</td><td>Deck 16a p. 30: the simulation after J. A. McPherson, C. Hitchcock, T. P. Chow, W. Ji and A. A. Woodworth, poster, NTRS 20190033217 (2019), and the thresholds after D. R. Ball <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>67</b>, 22 (2020). The room-temperature tests: J.-M. Lauenstein <em>et al.</em>, "Room temperature radiation testing of a 500 °C durable 4H-SiC JFET integrated circuit technology", IEEE Radiation Effects Data Workshop (2019), NTRS 20190031951. Defect stability in SiC: K. Danno and T. Kimoto, <em>J. Appl. Phys.</em> <b>100</b>, 113728 (2006). Lecture 16 (the open question); M01 §6, M11 §8, M13 §10, M14 §6, M17a §5, M17b §6</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m17b-transistors-high-temperature.html"><span>Previous</span>M17b · Transistors at High Temperature</a>
+      <a class="next" href="index.html"><span>Next</span>M18 · Chip Bonding and Packaging — not yet built</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

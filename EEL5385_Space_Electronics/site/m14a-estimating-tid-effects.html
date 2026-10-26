@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M14a · Estimating TID Effects — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M14a · Estimating TID Effects</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 14a</p>
+    <h1>Estimating TID Effects</h1>
+    <p class="lede">
+      The calculation that turns a radiation environment into a threshold shift. A mission
+      dose read from a dose–depth curve, or a particle fluence delivered by a beam, is carried
+      through the energy deposited in one transistor's gate oxide, the electron–hole pairs that
+      energy creates, the holes that survive recombination and are trapped, and the voltage
+      those holes add to the threshold.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M07, M09, M10, M12, M13, M14</span>
+      <span><b>Read time</b> ~35 min</span>
+      <span><b>Sources</b> Deck 9 pp. 26–32; Deck 10; Lectures 9–10; Deck 17 pp. 24–37; Schwank et al. (2008); NIST</span>
+    </div>
+
+    <p>
+      <a href="m14-total-ionizing-dose.html">M14</a> followed ionizing radiation into the gate
+      oxide of an MOS transistor: pairs created at 17 eV each, a fraction lost to initial
+      recombination, the survivors drifting to the silicon interface, some of them trapped there,
+      and the threshold shift that the trapped charge produces. It expressed each quantity per
+      unit area of oxide. This module assembles those steps into one estimate for a specified
+      device in a specified environment, the second half of the total-dose material in Decks 9
+      and 10, which the decks title <em>Estimation of TID Effects</em>. The input is either the
+      dose a mission accumulates behind a stated shield, read from a dose–depth curve, or the
+      fluence of particles a test beam delivers. The output is the threshold shift of one
+      transistor, in volts.
+    </p>
+    <p>
+      Each step is a single multiplication or division, and each carries an assumption: that the
+      dose is uniform through the oxide, that every electronvolt deposited goes into pair creation
+      at the mean pair energy, that a stated fraction of the surviving holes is trapped, and that
+      the trapped charge sits at the silicon interface. The arithmetic is simple; the assumptions
+      decide how far the answer can be trusted, and each is stated where it enters. The units
+      change along the way — dose in rad, energy in electronvolts, capacitance in farads — and each
+      equation carries its conversion.
+    </p>
+    <p>
+      The decks work the chain four times on one device: a geostationary mission, a low Earth
+      orbit mission, and two ground tests (§7). Their numbers are kept here as the slides give
+      them, with a correction stated beside any step that needs one.
+    </p>
+
+    <h2>1 · The chain from environment to threshold shift</h2>
+    <p>
+      The estimate has two entry points and one route after them. A mission is specified by its
+      orbit, its duration and the shield around the electronics, and its environment arrives as a
+      dose. A ground test is specified by a beam, and its environment arrives as a fluence, the
+      number of particles that cross each unit area. Both routes end at the same intermediate
+      quantity, the energy deposited in the gate oxide of the device, and from there a single
+      sequence of steps leads to the threshold shift.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 420" role="img" aria-labelledby="f14a-1-t">
+        <title id="f14a-1-t">The estimation chain: dose or fluence, energy in the oxide, pairs, surviving holes, trapped holes, threshold shift</title>
+        <defs>
+          <marker id="f14a-1-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+        <rect x="16" y="10" width="104" height="40" rx="4" class="dg-fill"/>
+        <rect x="132" y="10" width="104" height="40" rx="4" class="dg-fill"/>
+        <text x="68" y="35" class="dg-label" text-anchor="middle">Dose <tspan class="dg-math">D</tspan></text>
+        <text x="184" y="35" class="dg-label" text-anchor="middle">Fluence <tspan class="dg-math">Φ</tspan></text>
+        <line x1="68" y1="50" x2="100" y2="88" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-1-arr)"/>
+        <line x1="184" y1="50" x2="152" y2="88" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-1-arr)"/>
+        <text x="250" y="64" class="dg-label"><tspan class="dg-math">D</tspan> × oxide mass</text>
+        <text x="250" y="81" class="dg-label">or <tspan class="dg-math">N</tspan> × <tspan class="dg-math">L</tspan> × <tspan class="dg-math">t</tspan><tspan baseline-shift="sub" style="font-size:75%">ox</tspan></text>
+
+        <rect x="16" y="90" width="220" height="40" rx="4" class="dg-fill"/>
+        <text x="126" y="115" class="dg-label" text-anchor="middle">Energy in the oxide <tspan class="dg-math">E</tspan><tspan baseline-shift="sub" style="font-size:75%">dep</tspan></text>
+        <line x1="126" y1="130" x2="126" y2="158" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-1-arr)"/>
+        <text x="250" y="149" class="dg-label">÷ 17 eV per pair</text>
+
+        <rect x="16" y="160" width="220" height="40" rx="4" class="dg-fill"/>
+        <text x="126" y="185" class="dg-label" text-anchor="middle">Pairs created <tspan class="dg-math">N</tspan><tspan baseline-shift="sub" style="font-size:75%">eh</tspan></text>
+        <line x1="126" y1="200" x2="126" y2="228" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-1-arr)"/>
+        <text x="250" y="219" class="dg-label">× yield <tspan class="dg-math">f</tspan><tspan baseline-shift="sub" style="font-size:75%">y</tspan></text>
+
+        <rect x="16" y="230" width="220" height="40" rx="4" class="dg-fill"/>
+        <text x="126" y="255" class="dg-label" text-anchor="middle">Surviving holes <tspan class="dg-math">N</tspan><tspan baseline-shift="sub" style="font-size:75%">h</tspan></text>
+        <line x1="126" y1="270" x2="126" y2="298" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-1-arr)"/>
+        <text x="250" y="289" class="dg-label">× trapped fraction <tspan class="dg-math">f</tspan><tspan baseline-shift="sub" style="font-size:75%">ot</tspan></text>
+
+        <rect x="16" y="300" width="220" height="40" rx="4" class="dg-fill"/>
+        <text x="126" y="325" class="dg-label" text-anchor="middle">Trapped holes <tspan class="dg-math">N</tspan><tspan baseline-shift="sub" style="font-size:75%">ot</tspan></text>
+        <line x1="126" y1="340" x2="126" y2="368" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-1-arr)"/>
+        <text x="250" y="359" class="dg-label">× <tspan class="dg-math">q</tspan> / <tspan class="dg-math">C</tspan><tspan baseline-shift="sub" style="font-size:75%">ox</tspan>, negative</text>
+
+        <rect x="16" y="370" width="220" height="40" rx="4" class="dg-fill"/>
+        <rect x="16" y="370" width="220" height="40" rx="4" class="dg-acc" stroke-width="1.8"/>
+        <text x="126" y="395" class="dg-label" text-anchor="middle">Threshold shift Δ<tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">ot</tspan></text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> Two entry points, one route. The oxide's mass converts a dose into an
+        energy, and the number of particles times the energy each leaves in the oxide does the
+        same for a fluence. Every step after that removes charge or converts it, and the last
+        divides by the device's capacitance.
+        <span class="src">After Deck 9 p. 28 and Deck 10 pp. 14, 23.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      On the dose route the energy deposited is the dose multiplied by the mass of the oxide, since
+      dose is energy per unit mass. On the fluence route it is the number of particles that pass
+      through the oxide multiplied by the energy each deposits there: for a proton, its linear
+      energy transfer times the oxide thickness, taken from a TRIM calculation; for a photon, its
+      energy times the probability that it interacts in so thin a layer.
+    </p>
+    <p>
+      From the deposited energy onward the steps are those of
+      <a href="m14-total-ionizing-dose.html">M14 §3–§4</a>. Dividing by the mean pair-creation
+      energy of SiO₂ gives the number of electron–hole pairs created. Multiplying by the fractional
+      yield, which depends on the oxide field and on the type of radiation, gives the holes that
+      escape initial recombination. Multiplying by the trapped fraction gives the holes held near
+      the interface; the course takes every surviving hole as trapped. With that charge placed at
+      the interface, dividing by the oxide capacitance gives the threshold shift.
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">The device enters twice</p>
+      <p>
+        The oxide's area <em>A</em> and thickness <em>t</em><sub>ox</sub> appear at two places in
+        the chain. Its mass, proportional to <em>A</em><em>t</em><sub>ox</sub>, decides how much
+        energy it absorbs at a given dose. Its capacitance, proportional to
+        <em>A</em>/<em>t</em><sub>ox</sub>, decides how much voltage a given trapped charge
+        produces. The ratio contains <em>t</em><sub>ox</sub>² and no area at all (§5): at a given
+        dose, a large transistor shifts no more than a small one, and a thick oxide shifts far more
+        than a thin one — the thickness dependence of
+        <a href="m14-total-ionizing-dose.html">M14 §5</a> recovered from the arithmetic.
+      </p>
+    </div>
+
+    <h2>2 · Dose behind a shield: reading the dose–depth curve</h2>
+    <p>
+      A mission's radiation requirement is stated as a total dose behind a stated thickness of
+      shielding (<a href="m07-orbits-and-environment.html">M07 §9</a>). The dose–depth curve
+      gives that requirement for every thickness at once, for one orbit and one mission duration.
+      This section explains what such a curve represents, why its components have the shapes they
+      do, and how a value is read from it.
+    </p>
+    <p>
+      A dose–depth curve plots the total ionizing dose, in rad(Si), accumulated over the mission at
+      the centre of a solid aluminium sphere, against the radius of that sphere. The sphere is a
+      reference geometry: a detector at its centre sees the same thickness of aluminium in every
+      direction, so the curve describes the environment and the amount of shielding without the
+      layout of any particular spacecraft. Radiation arrives in orbit from all directions, which is
+      why an isotropic shield is the natural reference.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 190" role="img" aria-labelledby="f14a-2-t">
+        <title id="f14a-2-t">A detector at the centre of a solid aluminium sphere of radius t, with radiation arriving from every direction</title>
+        <defs>
+          <marker id="f14a-2-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+        <circle cx="110" cy="95" r="72" class="dg-fill"/>
+        <line x1="110" y1="95" x2="182" y2="95" class="dg-rule" stroke-width="1.2"/>
+        <text x="146" y="88" class="dg-math" text-anchor="middle">t</text>
+        <circle cx="110" cy="95" r="5" class="dg-acc-f"/>
+        <text x="110" y="120" class="dg-label-sm" text-anchor="middle">detector</text>
+        <line x1="110" y1="2" x2="110" y2="20" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-2-arr)"/>
+        <line x1="110" y1="188" x2="110" y2="170" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-2-arr)"/>
+        <line x1="18" y1="95" x2="36" y2="95" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-2-arr)"/>
+        <line x1="36" y1="21" x2="53" y2="38" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-2-arr)"/>
+        <line x1="184" y1="21" x2="167" y2="38" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-2-arr)"/>
+        <line x1="36" y1="169" x2="53" y2="152" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-2-arr)"/>
+        <line x1="184" y1="169" x2="167" y2="152" class="dg-line" stroke-width="1.4" marker-end="url(#f14a-2-arr)"/>
+        <text x="214" y="70" class="dg-label">aluminium of thickness <tspan class="dg-math">t</tspan></text>
+        <text x="214" y="88" class="dg-label">in every direction</text>
+        <text x="214" y="118" class="dg-label">curve value: mission dose</text>
+        <text x="214" y="136" class="dg-label">at the centre, rad(Si)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> The geometry behind a dose–depth curve. The horizontal axis of the curve
+        is the sphere's radius, so "10 mm of aluminium" means 10 mm between the detector and space
+        along every line of sight, not a 10 mm plate on one side.
+      </figcaption>
+    </figure>
+
+    <p>
+      The total is the sum of contributions from separate radiation populations, and each falls
+      with thickness at its own rate, set by its range in aluminium
+      (<a href="m12-stopping-power-range.html">M12 §5</a>). Trapped electrons dominate behind thin
+      shielding and fall steeply, because the belts hold few electrons above a few MeV and the
+      practical range of a 7 MeV electron in aluminium is 1.3 cm. Each electron that stops in the
+      shield radiates bremsstrahlung (<a href="m09-bremsstrahlung-xrays.html">M09 §9</a>), and those
+      photons penetrate aluminium far more easily than the electrons that produced them
+      (<a href="m10-photon-interaction.html">M10 §10</a>), so they leave a slowly falling floor once
+      the electrons themselves are stopped. Trapped protons of the inner belt, with energies up to
+      hundreds of MeV, have ranges of many g/cm², so their contribution falls slowly and dominates
+      behind thick shields wherever the orbit crosses the inner belt. Solar protons are fewer at the
+      highest energies and fall faster; behind thick shields they supply a minority of the dose.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <img src="img/dose-depth-leo-7yr.png"
+             alt="Log-log plot of total dose in rad(Si) against aluminium shield thickness from 0.1 to 100 mm for a 7-year polar low Earth orbit at 800 km and 98 degrees inclination, with curves for trapped electrons, trapped protons, solar protons, photons and the total">
+        <figcaption>
+          <b>Figure 3a.</b> Polar low Earth orbit, 800 km, 98°, 7 years. Trapped electrons
+          dominate below about 4 mm and are gone by 12 mm; behind 10 mm the total, ≈3.5×10³
+          rad(Si), is about three-quarters trapped protons and one-quarter solar protons.
+          <span class="src">Deck 9 p. 27 and Deck 10 p. 27; source of the calculation not identified on the slide.</span>
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <img src="img/dose-depth-geo-18yr.png"
+             alt="Log-log plot of total dose in rad(Si) against aluminium shield thickness from 0.1 to 100 mm for an 18-year geostationary mission, with curves for trapped electrons, photons, solar protons and the total">
+        <figcaption>
+          <b>Figure 3b.</b> Geostationary orbit, 18 years. The electron dose is enormous behind
+          thin shielding, ≈6×10⁸ rad(Si) at 0.1 mm, and cuts off near 10 mm; there the total is
+          ≈1×10⁴ rad(Si), about four-fifths of it photons. The total falls to 10³ rad(Si) only
+          near 76 mm.
+          <span class="src">Deck 9 p. 27 and Deck 10 p. 15; source of the calculation not identified on the slide.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      The two orbits illustrate the two regimes. Geostationary orbit lies in the outer electron
+      belt and outside the energetic trapped protons; the protons trapped there are soft, and
+      even the thinnest shield on the chart, 0.1 mm of aluminium, stops protons below about
+      3.4 MeV (<a href="m07-orbits-and-environment.html">M07 §3</a>). Its dose behind thin
+      shielding is therefore set by electrons: behind 0.1 mm it is about eighty times
+      the polar orbit's, per year of mission. Behind 10 mm the electrons are stopped and the dose
+      comes from their bremsstrahlung and from solar protons. The polar orbit at 800 km lies below
+      the belts except over the South Atlantic Anomaly, where it passes through the inner proton
+      belt (<a href="m06-magnetosphere-belts.html">M06 §9</a>), and its high-latitude passes reach
+      the outer electrons and admit solar protons over the poles
+      (<a href="m07-orbits-and-environment.html">M07 §7</a>). Its electrons, too, are gone by about
+      10 mm, and the trapped protons, which no practical shield stops, set the dose beyond.
+    </p>
+    <p>
+      To read a dose, find the stated thickness on the horizontal axis and read the total-dose
+      curve. Both axes are logarithmic, so a point between gridlines is interpolated in the
+      logarithm: a point 40 % of the way from 10³ to 10⁴ is 10<sup>3.4</sup> ≈ 2.5×10³, not
+      4.6×10³. A copy of such a chart that draws gridlines only at alternate decades is read the
+      same way: 10⁴ lies midway between the 10³ and 10⁵ gridlines. The component curves at the same thickness identify which radiation delivers most of
+      the dose, and that decides which yield curve applies in §4: photons at geostationary orbit
+      behind 10 mm, trapped protons at the polar orbit.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Shield thickness and dose in the decks' worked examples</p>
+      <p>
+        The decks work the geostationary example at 90 mm of aluminium (Deck 9 p. 28) and at 80 mm
+        (Deck 10 p. 14), where the total-dose curve reads ≈7×10² and ≈9×10² rad(Si); the slides round
+        both to 10³. Deck 17 p. 27
+        restates the example at 10 mm and keeps 10³ rad; at 10 mm the same curve reads
+        ≈1×10⁴ rad(Si). Lecture 17 corrected the slide in class to 10⁴ rad, and gave the reason
+        for choosing 10 mm: at that thickness photons deliver most of the dose. For the polar orbit Deck 10 p. 28 quotes 5×10³ rad at 10 mm, where the
+        curve reads ≈3.5×10³ rad(Si). Readings from the figure are approximate, to within about
+        10 % of the value.
+      </p>
+    </div>
+
+    <h2>3 · From dose to energy in the oxide</h2>
+    <p>
+      Dose is energy absorbed per unit mass. The gate oxide of one transistor is a definite slab of
+      material with a definite mass, so the dose multiplied by that mass is the energy the oxide has
+      absorbed over the mission. This section computes the mass, converts the dose to the units the
+      rest of the chain needs, and states when the silicon dose read from the chart can stand for the
+      oxide dose.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 200" role="img" aria-labelledby="f14a-4-t">
+        <title id="f14a-4-t">Gate stack of one transistor: gate, oxide of thickness t-ox and area A, silicon, with trapped holes near the interface</title>
+        <rect x="20" y="40" width="210" height="30" class="dg-fill"/>
+        <rect x="20" y="70" width="210" height="44" class="dg-fill"/>
+        <rect x="8" y="114" width="234" height="62" class="dg-fill"/>
+        <text x="125" y="60" class="dg-label" text-anchor="middle">gate</text>
+        <text x="125" y="94" class="dg-label" text-anchor="middle">SiO₂</text>
+        <text x="125" y="152" class="dg-label" text-anchor="middle">silicon</text>
+        <g class="dg-acc-f">
+          <circle cx="40" cy="108" r="3.5"/><circle cx="66" cy="109" r="3.5"/><circle cx="92" cy="107" r="3.5"/>
+          <circle cx="118" cy="109" r="3.5"/><circle cx="144" cy="108" r="3.5"/><circle cx="170" cy="109" r="3.5"/>
+          <circle cx="196" cy="107" r="3.5"/><circle cx="216" cy="109" r="3.5"/>
+        </g>
+        <line x1="244" y1="70" x2="244" y2="114" class="dg-rule" stroke-width="1.2"/>
+        <line x1="239" y1="70" x2="249" y2="70" class="dg-rule" stroke-width="1.2"/>
+        <line x1="239" y1="114" x2="249" y2="114" class="dg-rule" stroke-width="1.2"/>
+        <text x="254" y="96" class="dg-math">t<tspan baseline-shift="sub" style="font-size:75%">ox</tspan></text>
+        <text x="125" y="30" class="dg-label" text-anchor="middle">gate area <tspan class="dg-math">A</tspan> = <tspan class="dg-math">W</tspan> × <tspan class="dg-math">L</tspan></text>
+        <text x="284" y="132" class="dg-label">mass ∝ <tspan class="dg-math">A t</tspan><tspan baseline-shift="sub" style="font-size:75%">ox</tspan></text>
+        <text x="284" y="152" class="dg-label">capacitance ∝ <tspan class="dg-math">A</tspan> / <tspan class="dg-math">t</tspan><tspan baseline-shift="sub" style="font-size:75%">ox</tspan></text>
+        <text x="125" y="194" class="dg-label-sm" text-anchor="middle">trapped holes sit within a few nm of the silicon</text>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> The device as the chain sees it: a slab of oxide of area <em>A</em> and
+        thickness <em>t</em><sub>ox</sub> between the gate and the silicon. The same two dimensions
+        set the energy the oxide absorbs and the voltage its trapped charge produces. Not to
+        scale: a 100 nm oxide under a 100 µm² gate is a hundred times wider than it is thick.
+      </figcaption>
+    </figure>
+
+    <p>
+      The mass of the oxide is its density times its volume, the gate area times the oxide
+      thickness. The decks work in SI units, so the area goes in m² (1 µm² = 10⁻¹² m²), the thickness
+      in m (1 nm = 10⁻⁹ m) and the density in kg/m³. For the device of the worked examples,
+      100 µm² under 100 nm of oxide, Deck 9 p. 29 obtains
+      100×10⁻¹² m² × 100×10⁻⁹ m × 2650 kg/m³ = 2.65×10⁻¹⁴ kg.
+    </p>
+
+    <div class="eq" id="m14a-eq-mass">
+      <div class="eq-body">
+        <div class="eq-math"><em>m</em><sub>ox</sub> = <em>ρ</em><sub>ox</sub> · <em>A</em> · <em>t</em><sub>ox</sub></div>
+        <div class="eq-num">(14a.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>m</em><sub>ox</sub> mass of the gate oxide (<b>kg</b>) · <em>ρ</em><sub>ox</sub> oxide
+        density (<b>kg/m³</b>): 2650 in the decks, ≈2200 for thermally grown SiO₂ ·
+        <em>A</em> gate area (<b>m²</b>) · <em>t</em><sub>ox</sub> oxide thickness (<b>m</b>).
+        All three in SI units, or all three in cgs (g/cm³, cm², cm, giving grams).
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-mass">(14a.1)</a>.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">The oxide density in the decks</p>
+      <p>
+        Decks 9, 10 and 17 use 2650 kg/m³, the density of crystalline α-quartz. A thermally grown
+        gate oxide is amorphous, with a density of about 2.2 g/cm³ (2200 kg/m³), the value
+        <a href="m14-total-ionizing-dose.html">M14</a> uses in its generation constant (14.3); NIST's
+        stopping-power tables take 2.32 g/cm³ for SiO₂, and the density TRIM proposes for a compound
+        layer is not a compound density at all and must be replaced
+        (<a href="m13-srim-trim.html">M13 §4</a>). The course's arithmetic uses 2650 kg/m³. Every quantity downstream is proportional to the density, so
+        the choice moves the threshold shift by 20 %.
+      </p>
+    </div>
+
+    <p>
+      The chart's dose is in rad, the cgs unit of absorbed dose. One rad is 0.01 J/kg, and one gray,
+      the SI unit, is 1 J/kg = 100 rad. The rest of the chain counts pairs in electronvolts, so the
+      dose is converted to eV/kg by dividing by 1.602×10⁻¹⁹ J/eV: 1 rad = 6.24×10¹⁶ eV/kg, and the
+      10³ rad of the geostationary example is 10 J/kg = 6.24×10¹⁹ eV/kg (Deck 9 p. 29).
+    </p>
+
+    <div class="eq" id="m14a-eq-edep">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>dep</sub> = <em>D</em> · <em>m</em><sub>ox</sub></div>
+        <div class="eq-num">(14a.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>dep</sub> energy deposited in the oxide (<b>eV</b>) · <em>D</em> absorbed
+        dose (<b>eV/kg</b>; from rad multiply by 6.24×10¹⁶, from gray by 6.24×10¹⁸) ·
+        <em>m</em><sub>ox</sub> from (14a.1) (<b>kg</b>). With <em>m</em><sub>ox</sub> in grams,
+        use <em>D</em> in eV/g instead: 1 rad = 6.24×10¹³ eV/g. Assumes the dose is uniform
+        through the oxide.
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-edep">(14a.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      For the geostationary example the deposited energy is
+      6.24×10¹⁹ eV/kg × 2.65×10⁻¹⁴ kg = 1.65×10⁶ eV: over eighteen years, a 10⁻¹⁷ m³ slab of
+      oxide absorbs about as much energy as a single 1.65 MeV particle would deposit if it stopped
+      inside it.
+    </p>
+    <p>
+      The chart gives dose in silicon, and the chain needs dose in the oxide. A dose always names
+      the material that absorbed it, because different materials absorb different amounts of energy
+      from the same radiation (<a href="m14-total-ionizing-dose.html">M14 §2</a>). For a 100 nm
+      oxide inside a silicon device the difference is small. When the radiation is photons, the
+      energy reaching so thin a layer is carried mostly by electrons set moving in the surrounding
+      silicon and metal, whose ranges are far longer than the oxide is thick; when it is protons,
+      the protons carry it themselves. Either way the stopping powers per unit mass of silicon and
+      SiO₂ differ by only a few percent, so the two doses differ by a few percent, and the course takes
+      them as equal (Lecture 10). The ratio of
+      <a href="m14-total-ionizing-dose.html">M14</a> (14.1) applies instead to a thick oxide in
+      which the electrons are created and absorbed within the oxide itself, the case of low-energy
+      X-rays, where 1 rad(SiO₂) can be 1.8 rad(Si).
+    </p>
+
+    <h2>4 · Pairs, and the holes that survive</h2>
+    <p>
+      The deposited energy now becomes charge. The first step divides by the mean energy needed to
+      create one electron–hole pair; the second keeps only the holes that escape recombination with
+      their own electrons. Both steps are the mechanism of
+      <a href="m14-total-ionizing-dose.html">M14 §3</a> ① and ②, applied to a counted number of
+      carriers rather than a density. What this section adds is the figure the course uses for the
+      second step, and how to choose the curve to read.
+    </p>
+    <p>
+      In SiO₂ the mean energy spent per pair created is 17 eV, much more than the 8.9 eV bandgap
+      because part of each deposit ends in lattice vibration and in electrons left too slow to ionize
+      further (<a href="m14-total-ionizing-dose.html">M14 §3</a>). The decks divide the whole
+      deposited energy by it, which is the assumption the 17 eV value already contains: it is an
+      average over every way the energy is spent.
+    </p>
+
+    <div class="eq" id="m14a-eq-pairs">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>eh</sub> = <span class="frac"><span class="num"><em>E</em><sub>dep</sub></span><span class="den"><em>E</em><sub>p</sub></span></span></div>
+        <div class="eq-num">(14a.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>eh</sub> number of electron–hole pairs created in the oxide ·
+        <em>E</em><sub>dep</sub> from (14a.2) (<b>eV</b>) · <em>E</em><sub>p</sub> mean
+        pair-creation energy, 17 eV in SiO₂ (3.6 eV in silicon).
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-pairs">(14a.3)</a>.
+      </div>
+    </div>
+
+    <p>
+      For the geostationary example, 1.65×10⁶ eV / 17 eV = 9.7×10⁴ pairs, which Deck 9 p. 29 rounds
+      to 10⁵. Of these, a fraction survives initial recombination: the fractional yield
+      <em>f</em><sub>y</sub>. It rises with the oxide field, which separates each electron from its
+      hole before they can recombine, and it falls with the density of ionization along the track,
+      because a carrier in a dense column has neighbours other than its own partner to recombine
+      with. The course reads it from the measured curves of Deck 9 p. 26, plotted against field for
+      four kinds of radiation.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 440 272" role="img" aria-labelledby="f14a-5-t">
+        <title id="f14a-5-t">Fraction of holes escaping initial recombination against oxide field, for cobalt-60 gamma rays, 10 keV X-rays, 700 keV protons and 2 MeV alpha particles</title>
+        <line x1="52" y1="226" x2="416" y2="226" class="dg-rule" stroke-width="1.2"/>
+        <line x1="52" y1="226" x2="52" y2="22" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="52" y="241">0</text><text x="124" y="241">1</text><text x="196" y="241">2</text>
+          <text x="268" y="241">3</text><text x="340" y="241">4</text><text x="412" y="241">5</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="46" y="230">0</text><text x="46" y="190">0.2</text><text x="46" y="150">0.4</text>
+          <text x="46" y="110">0.6</text><text x="46" y="70">0.8</text><text x="46" y="30">1.0</text>
+        </g>
+        <text x="234" y="262" class="dg-label" text-anchor="middle">oxide field, MV/cm</text>
+        <text x="14" y="126" class="dg-label" text-anchor="middle" transform="rotate(-90 14 126)">fractional yield <tspan class="dg-math">f</tspan><tspan baseline-shift="sub" style="font-size:75%">y</tspan></text>
+        <line x1="196" y1="226" x2="196" y2="26" class="dg-guide" stroke-dasharray="3 3"/>
+        <path d="M52.0,226.0 C58.0,210.0 76.0,152.7 88.0,130.0 C100.0,107.3 112.0,100.3 124.0,90.0 C136.0,79.7 148.0,73.7 160.0,68.0 C172.0,62.3 184.0,59.3 196.0,56.0 C208.0,52.7 220.0,50.3 232.0,48.0 C244.0,45.7 250.0,43.7 268.0,42.0 C286.0,40.3 323.2,39.0 340.0,38.0 L368.8,36.0" class="dg-line" stroke-width="1.8" fill="none"/>
+        <path d="M52.0,226.0 C58.0,216.0 76.0,181.7 88.0,166.0 C100.0,150.3 112.0,141.2 124.0,132.0 C136.0,122.8 148.0,116.7 160.0,111.0 C172.0,105.3 184.0,101.8 196.0,98.0 C208.0,94.2 220.0,91.0 232.0,88.0 C244.0,85.0 250.0,83.0 268.0,80.0 C286.0,77.0 316.0,72.7 340.0,70.0 C364.0,67.3 400.0,65.0 412.0,64.0" class="dg-line" stroke-width="1.8" stroke-dasharray="7 3" fill="none"/>
+        <path d="M59.2,220.0 C64.0,218.0 77.2,212.0 88.0,208.0 C98.8,204.0 112.0,199.7 124.0,196.0 C136.0,192.3 148.0,189.0 160.0,186.0 C172.0,183.0 184.0,180.3 196.0,178.0 C208.0,175.7 220.0,174.2 232.0,172.0 C244.0,169.8 250.0,167.7 268.0,165.0 C286.0,162.3 325.6,157.7 340.0,156.0 L354.4,155.0" class="dg-line" stroke-width="1.8" stroke-dasharray="2 3" fill="none"/>
+        <path d="M62.8,224.0 C67.0,223.0 77.8,220.1 88.0,218.0 C98.2,215.9 112.0,213.2 124.0,211.2 C136.0,209.2 148.0,207.7 160.0,206.0 C172.0,204.3 184.0,202.3 196.0,201.0 C208.0,199.7 222.4,198.7 232.0,198.0 L253.6,197.0" class="dg-line" stroke-width="1.8" stroke-dasharray="8 3 2 3" fill="none"/>
+        <text x="300" y="56" class="dg-label">cobalt-60 γ</text>
+        <text x="300" y="96" class="dg-label">10 keV X-rays</text>
+        <text x="282" y="150" class="dg-label">700 keV protons</text>
+        <text x="260" y="203" class="dg-label">2 MeV α</text>
+        <g class="dg-acc-f">
+          <circle cx="196" cy="56" r="3.6"/><circle cx="196" cy="98" r="3.6"/>
+          <circle cx="196" cy="178" r="3.6"/><circle cx="196" cy="201" r="3.6"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="190" y="51">0.85</text><text x="190" y="93">0.64</text>
+          <text x="190" y="173">0.24</text><text x="190" y="196">0.12</text>
+        </g>
+        <text x="200" y="20" class="dg-label-sm">2 MV/cm</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> The yield curves the course uses. Sparse ionization — the fast electrons a
+        cobalt-60 gamma ray sets moving — lets most holes escape; the dense track of an alpha
+        particle returns most of them to recombination, at every field. Marked: the readings at
+        2 MV/cm. Curves redrawn from readings of the slide figure, accurate to about ±0.02.
+        <span class="src">Deck 9 p. 26 and Deck 10 p. 12, after J. R. Schwank et al., IEEE TNS 55, 1833 (2008), Fig. 2.</span>
+      </figcaption>
+    </figure>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Oxide field (MV/cm)</th><th>0.5</th><th>1</th><th>1.5</th><th>2</th><th>2.5</th><th>3</th><th>4</th></tr></thead>
+      <tbody>
+        <tr><td>Cobalt-60 γ (1.17, 1.33 MeV)</td><td>0.48</td><td>0.68</td><td>0.79</td><td>0.85</td><td>0.89</td><td>0.92</td><td>0.94</td></tr>
+        <tr><td>10 keV X-rays</td><td>0.30</td><td>0.47</td><td>0.58</td><td>0.64</td><td>0.69</td><td>0.73</td><td>0.78</td></tr>
+        <tr><td>700 keV protons</td><td>0.09</td><td>0.15</td><td>0.20</td><td>0.24</td><td>0.27</td><td>0.31</td><td>0.35</td></tr>
+        <tr><td>2 MeV α particles</td><td>0.04</td><td>0.07</td><td>0.10</td><td>0.12</td><td>0.14</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Two choices set the reading. The curve is chosen by the radiation that delivers the dose,
+      which the component curves of the dose–depth chart identify (§2): photons of around an MeV
+      take the cobalt-60 curve, low-energy photons the 10 keV X-ray curve, protons the 700 keV
+      curve. The field is the voltage across the oxide divided by its thickness: 1 MV/cm across a
+      100 nm oxide corresponds to 10 V. Every example in the decks uses 1 MV/cm, where the
+      cobalt-60 curve reads 0.68, which Deck 9 p. 29 takes as 0.7.
+    </p>
+
+    <div class="eq" id="m14a-eq-surv">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>h</sub> = <em>f</em><sub>y</sub>(<em>E</em><sub>ox</sub>) · <em>N</em><sub>eh</sub></div>
+        <div class="eq-num">(14a.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>h</sub> number of holes that escape initial recombination ·
+        <em>f</em><sub>y</sub> fractional yield, 0 to 1, read from Figure 5 for the radiation type
+        at the oxide field <em>E</em><sub>ox</sub> (<b>MV/cm</b>) · <em>N</em><sub>eh</sub> from
+        (14a.3). The count form of <a href="m14-total-ionizing-dose.html">M14</a> (14.4).
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-surv">(14a.4)</a>.
+      </div>
+    </div>
+
+    <p>
+      For the geostationary example, 0.7 × 10⁵ = 7×10⁴ holes survive (Deck 9 p. 29). Deck 10
+      reads the cobalt-60 curve for that case, treating the dose behind the shield as gamma-ray
+      dose. The photons there are bremsstrahlung, a continuous spectrum extending up to the
+      energies of the electrons that produced them, so a single-energy curve is itself an
+      approximation; Lecture 10 notes that the real spectrum would be needed to do better.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Which yield data, and what a reading can claim</p>
+      <p>
+        <a href="m14-total-ionizing-dose.html">M14</a> Figure 5 reads the yields from a different
+        published figure, Oldham and McLean (2003), Fig. 7, in which cobalt-60 gives about 0.9 at
+        1 MV/cm. Schwank et al. (2008), whose figure the decks
+        reproduce, take their cobalt-60 and X-ray curves from Shaneyfelt et al. (1991) and give
+        about 0.68. Both are measurements; the course's arithmetic uses the Schwank curves. A value
+        read by eye from either figure is uncertain by a few hundredths. Deck 10 uses 0.18 for
+        700 keV protons at 1 MV/cm, where the curve reads about 0.15.
+      </p>
+    </div>
+
+    <p>
+      The right half of Deck 9 p. 26 plots the field at which gate oxides operate against the
+      technology generation: 1.2 MV/cm at 2.1 µm feature size, rising to 5.4 MV/cm at 0.13 µm,
+      because the supply voltage fell more slowly than the oxide thickness. Across that range the
+      cobalt-60 yield rises from about 0.73 at 1.2 MV/cm to about 0.95 at the end of the plotted
+      curve, a factor of about 1.3.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">What the rising field does and does not imply</p>
+      <p>
+        Deck 9 p. 26 draws from the field plot the conclusion that newer technology suffers more
+        total-dose effect. The yield factor alone does rise with field, by about 1.3 across the plot, while
+        the trapped fraction falls as the field rises (<a href="m14-total-ionizing-dose.html">M14</a>
+        (14.5)), which offsets part of that rise. The
+        threshold shift, however, scales as <em>t</em><sub>ox</sub>² (§5): the same scaling thinned
+        gate oxides by more than a factor of ten across the plot, which by itself cuts the shift more
+        than a hundredfold, and below about 10 nm tunnelling removes trapped holes almost as fast as
+        they form
+        (<a href="m14-total-ionizing-dose.html">M14 §5</a>). Scaled gate oxides are therefore far
+        harder than older ones; the total-dose failures of modern parts come through the thick
+        isolation oxides instead (<a href="m14-total-ionizing-dose.html">M14 §7</a>). Lecture 10
+        states the thickness result itself: thinner oxides show less shift (Deck 10 p. 37).
+      </p>
+    </div>
+
+    <h2>5 · Trapped holes and the threshold shift</h2>
+    <p>
+      The surviving holes drift to the silicon interface under a positive gate, and some are
+      captured by defects within a few nanometres of it (<a href="m14-total-ionizing-dose.html">M14
+      §3</a> ③ and ④). This section states what fraction the course takes as trapped, why the
+      trapped charge acts at full strength on the channel, and how the device's capacitance turns
+      it into a voltage.
+    </p>
+    <p>
+      The trapped fraction <em>f</em><sub>ot</sub> is a property of the oxide and of the field across
+      it, not of the radiation: a few percent in radiation-hardened oxides, 50 to 100 % in unhardened
+      ones, and falling as the field rises (<a href="m14-total-ionizing-dose.html">M14</a> (14.5)).
+      The decks count every surviving hole as trapped — their slides compute the trapped holes as the
+      pairs times the fractional yield, 10⁵ × 0.7 = 7×10⁴ — which is the <em>f</em><sub>ot</sub> = 1
+      limit: an upper bound on this step, close to the behaviour of an unhardened oxide.
+    </p>
+
+    <div class="eq" id="m14a-eq-trap">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>ot</sub> = <em>f</em><sub>ot</sub> · <em>N</em><sub>h</sub></div>
+        <div class="eq-num">(14a.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>ot</sub> number of holes trapped in the oxide · <em>f</em><sub>ot</sub>
+        trapped fraction, 0 to 1, set by the oxide and falling as the field rises; the decks take 1 ·
+        <em>N</em><sub>h</sub> from (14a.4).
+        Holds immediately after exposure, before annealing (<a href="m14-total-ionizing-dose.html">M14
+        §6</a>).
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-trap">(14a.5)</a>.
+      </div>
+    </div>
+
+    <p>
+      A charge in the oxide shifts the threshold according to how close it lies to the silicon:
+      a charge at the gate is screened by the gate electrode and has no effect, and a charge at the
+      interface acts in full. The general expression weights the charge distribution by its
+      distance from the gate (<a href="m14-total-ionizing-dose.html">M14</a> (14.6)). Trapped holes
+      lie within a few nanometres of the interface, so the decks place the whole charge there, and
+      the shift is the trapped charge divided by the oxide capacitance. The decks write the
+      capacitance for the whole device, in farads, rather than per unit area.
+    </p>
+
+    <div class="eq" id="m14a-eq-cox">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em><sub>ox</sub> = <span class="frac"><span class="num"><em>ε</em><sub>r</sub> <em>ε</em><sub>0</sub> <em>A</em></span><span class="den"><em>t</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(14a.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>ox</sub> oxide capacitance of the whole device (<b>F</b>) ·
+        <em>ε</em><sub>r</sub> relative permittivity of SiO₂, 3.9 · <em>ε</em><sub>0</sub>
+        permittivity of free space, 8.854×10⁻¹² F/m · <em>A</em> gate area (<b>m²</b>) ·
+        <em>t</em><sub>ox</sub> oxide thickness (<b>m</b>). For 100 µm² and 100 nm,
+        3.45×10⁻¹⁴ F, which the decks truncate to 3.4×10⁻¹⁴ F.
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-cox">(14a.6)</a>.
+      </div>
+    </div>
+
+    <div class="eq" id="m14a-eq-dv">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>ot</sub> = − <span class="frac"><span class="num"><em>q</em> <em>N</em><sub>ot</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(14a.7)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>ot</sub> threshold shift from oxide-trapped charge (<b>V</b>) · <em>q</em>
+        elementary charge, 1.602×10⁻¹⁹ C · <em>N</em><sub>ot</sub> number of trapped holes, from
+        (14a.5) · <em>C</em><sub>ox</sub> from (14a.6) (<b>F</b>). Charge centroid at the
+        interface. The same as <a href="m14-total-ionizing-dose.html">M14</a> (14.6) with both
+        numerator and denominator divided by <em>A</em>.
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-dv">(14a.7)</a>.
+      </div>
+    </div>
+
+    <p>
+      For the geostationary example, −1.6×10⁻¹⁹ C × 7×10⁴ / 3.45×10⁻¹⁴ F = −0.32 V (Deck 9 p. 30,
+      which prints the capacitance truncated to 3.4×10⁻¹⁴ F).
+      The shift is negative for both n-channel and p-channel transistors: trapped holes are positive
+      charge in the oxide, and positive charge there has the effect of an added positive gate
+      voltage, so less applied voltage is needed to reach threshold in an n-channel device and more
+      negative voltage in a p-channel one (Deck 10 p. 8; <a href="m14-total-ionizing-dose.html">M14
+      §4</a>). The decks print the magnitude, 0.32 V.
+    </p>
+    <p>
+      Substituting (14a.1)–(14a.6) into (14a.7) collects the whole chain into one expression. The
+      gate area cancels, and the oxide thickness appears squared, once from the oxide's mass and
+      once from its capacitance.
+    </p>
+
+    <div class="eq" id="m14a-eq-oneline">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>ot</sub> = − <span class="frac"><span class="num"><em>q</em> <em>f</em><sub>ot</sub> <em>f</em><sub>y</sub> <em>ρ</em><sub>ox</sub> <em>D</em> <em>t</em><sub>ox</sub>²</span><span class="den"><em>E</em><sub>p</sub> <em>ε</em><sub>r</sub> <em>ε</em><sub>0</sub></span></span></div>
+        <div class="eq-num">(14a.8)</div>
+      </div>
+      <div class="eq-says">
+        Symbols and units as in (14a.1)–(14a.7): <em>D</em> in <b>eV/kg</b>, <em>E</em><sub>p</sub>
+        in <b>eV</b>, <em>ρ</em><sub>ox</sub> in kg/m³, <em>t</em><sub>ox</sub> in m,
+        <em>ε</em><sub>0</sub> in F/m; the result is in volts. With the decks' values
+        (<em>f</em><sub>ot</sub> = 1, <em>f</em><sub>y</sub> = 0.7, 2650 kg/m³, 10³ rad, 100 nm) it
+        gives −0.32 V. The count-form equivalent of <a href="m14-total-ionizing-dose.html">M14</a>
+        (14.12).
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-oneline">(14a.8)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 236" role="img" aria-labelledby="f14a-6-t">
+        <title id="f14a-6-t">Threshold shift against oxide thickness on logarithmic axes, a straight line of slope two through minus 0.32 volt at 100 nanometres</title>
+        <line x1="70" y1="196" x2="410" y2="196" class="dg-rule" stroke-width="1.2"/>
+        <line x1="70" y1="196" x2="70" y2="20" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="70" y="211">10 nm</text><text x="183" y="211">100 nm</text>
+          <text x="297" y="211">1 µm</text><text x="410" y="211">10 µm</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="64" y="200">1 mV</text><text x="64" y="156">10 mV</text><text x="64" y="112">0.1 V</text>
+          <text x="64" y="68">1 V</text><text x="64" y="24">10 V</text>
+        </g>
+        <line x1="70" y1="173.8" x2="268" y2="20" class="dg-acc" stroke-width="2"/>
+        <circle cx="183" cy="85.8" r="4" class="dg-acc-f"/>
+        <text x="176" y="80" class="dg-label" text-anchor="end">0.32 V at 100 nm</text>
+        <line x1="240" y1="196" x2="240" y2="40" class="dg-guide" stroke-dasharray="3 3"/>
+        <text x="246" y="150" class="dg-label-sm">isolation oxides,</text>
+        <text x="246" y="163" class="dg-label-sm">hundreds of nm</text>
+        <text x="104" y="179" class="dg-label-sm">tunnelling removes</text>
+        <text x="104" y="191" class="dg-label-sm">holes below ~10 nm</text>
+        <text x="240" y="232" class="dg-label" text-anchor="middle">oxide thickness</text>
+        <text x="14" y="108" class="dg-label" text-anchor="middle" transform="rotate(-90 14 108)">|Δ<tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">ot</tspan>|</text>
+      </svg>
+      <figcaption>
+        <b>Figure 6.</b> Equation (14a.8) at fixed dose and yield: ten times the oxide thickness
+        gives a hundred times the shift. Measured shifts follow a slightly weaker power,
+        <em>t</em><sub>ox</sub><sup>1.5</sup> to <em>t</em><sub>ox</sub><sup>1.8</sup>, above about
+        20 nm (<a href="m14-total-ionizing-dose.html">M14 §5</a>). The line uses the geostationary example (10³ rad, yield
+        0.7) and ignores the change of yield with field and the tunnel annealing of thin oxides;
+        it shows why the thick isolation oxides, not the gate oxide, govern the total-dose
+        response of a modern part.
+      </figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>Doubling the gate area leaves the threshold shift unchanged, while doubling the oxide thickness quadruples it. Why?</summary>
+      <div class="answer">
+        <p>
+          At a fixed dose the energy absorbed, and so the number of pairs, surviving holes and
+          trapped holes, is proportional to the oxide's mass, <em>A</em><em>t</em><sub>ox</sub>. The
+          capacitance that converts the trapped charge into a voltage is proportional to
+          <em>A</em>/<em>t</em><sub>ox</sub>. Their ratio is proportional to
+          <em>t</em><sub>ox</sub>², with no area left: twice the area doubles both the trapped
+          charge and the capacitance, and twice the thickness doubles the charge and halves the
+          capacitance.
+        </p>
+      </div>
+    </details>
+
+    <h2>6 · The fluence route: a beam at a test facility</h2>
+    <p>
+      A ground test specifies its radiation as a fluence, the number of particles per unit area that
+      cross the device, rather than as a dose. The chain then needs the number of particles that
+      pass through the oxide and the energy each one leaves there. This section takes the two cases
+      the decks work: a proton beam, whose energy per particle comes from a TRIM calculation, and a
+      photon beam, whose energy per particle comes from the attenuation coefficient.
+    </p>
+    <p>
+      The number of particles that cross the oxide is the fluence times the gate area. The decks
+      quote fluence per m²; elsewhere the course uses cm⁻², and 10¹³ m⁻² = 10⁹ cm⁻². For
+      10¹³ protons per m² on a 100 µm² gate, Deck 10 p. 32 obtains
+      10¹³ m⁻² × 100×10⁻¹² m² = 10³ protons.
+    </p>
+
+    <div class="eq" id="m14a-eq-count">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em> = <em>Φ</em> · <em>A</em></div>
+        <div class="eq-num">(14a.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em> number of particles that cross the oxide · <em>Φ</em> fluence (<b>m⁻²</b>, with
+        <em>A</em> in m²; or cm⁻² with cm²) · <em>A</em> gate area. Normal incidence, uniform beam.
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-count">(14a.9)</a>.
+      </div>
+    </div>
+
+    <p>
+      The energy one proton leaves in the oxide comes from the ionization plot of a TRIM
+      calculation (<a href="m13-srim-trim.html">M13 §5</a>). Near the surface, where every ion is
+      still moving at nearly its full energy, the height of that plot is the proton's electronic
+      linear energy transfer <em>L</em> (<a href="m12-stopping-power-range.html">M12 §4</a>), in
+      eV/Å. A 100 nm oxide is so thin that the proton's energy barely changes across it, so the
+      energy deposited per proton is <em>L</em> times the thickness. For 1 MeV protons in SiO₂ the
+      decks read 4.6 eV/Å (Deck 10 p. 34), so each proton leaves 4.6 eV/Å × 1000 Å = 4.6 keV in a
+      100 nm oxide.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 214" role="img" aria-labelledby="f14a-7-t">
+        <title id="f14a-7-t">Schematic TRIM ionization profile of a 1 MeV proton against depth, with the thin oxide slice at the surface shaded</title>
+        <line x1="56" y1="176" x2="416" y2="176" class="dg-rule" stroke-width="1.2"/>
+        <line x1="56" y1="176" x2="56" y2="18" class="dg-rule" stroke-width="1.2"/>
+        <path d="M56,121 C120,120 200,116 250,108 C300,99 330,82 346,58 C354,46 360,44 364,60 C368,82 372,150 378,176" class="dg-line" stroke-width="1.8" fill="none"/>
+        <rect x="56" y="121" width="7" height="55" class="dg-acc-f"/>
+        <text x="50" y="125" class="dg-label-sm" text-anchor="end">4.6</text>
+        <text x="72" y="60" class="dg-label">oxide slice (widened):</text>
+        <text x="72" y="76" class="dg-label">area = <tspan class="dg-math">L</tspan> × <tspan class="dg-math">t</tspan><tspan baseline-shift="sub" style="font-size:75%">ox</tspan> = 4.6 keV</text>
+        <line x1="70" y1="82" x2="62" y2="118" class="dg-guide"/>
+        <text x="300" y="38" class="dg-label-sm" text-anchor="end">Bragg peak near</text>
+        <text x="300" y="51" class="dg-label-sm" text-anchor="end">the end of range</text>
+        <text x="236" y="194" class="dg-label" text-anchor="middle">depth (µm), range ≈ 16 µm</text>
+        <text x="16" y="98" class="dg-label" text-anchor="middle" transform="rotate(-90 16 98)">eV/Å per ion</text>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> Only the first sliver of the track matters for a gate oxide. The energy
+        deposited is the area under the ionization plot across the oxide, and for a layer this thin
+        that area is the surface value times the thickness. Schematic shape; the oxide slice is
+        drawn many times wider than 100 nm.
+        <span class="src">Surface value from Deck 10 p. 34.</span>
+      </figcaption>
+    </figure>
+
+    <div class="eq" id="m14a-eq-proton">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>dep</sub> = <em>N</em> · <em>L</em> · <em>t</em><sub>ox</sub></div>
+        <div class="eq-num">(14a.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>dep</sub> energy deposited in the oxide (<b>eV</b>) · <em>N</em> from (14a.9) ·
+        <em>L</em> electronic LET of the particle in the oxide, read from the TRIM ionization plot
+        near the surface (<b>eV/Å</b>) · <em>t</em><sub>ox</sub> oxide thickness (<b>Å</b>;
+        1 nm = 10 Å). Valid while the particle's energy changes little across the oxide, true for
+        any MeV proton in a gate oxide.
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-proton">(14a.10)</a>.
+      </div>
+    </div>
+
+    <p>
+      From there the chain continues as before: 10³ × 4.6 keV = 4.6×10⁶ eV; 4.6×10⁶ / 17 =
+      2.7×10⁵ pairs; with a yield of 0.18, 4.9×10⁴ trapped holes; and −0.23 V (Deck 10 pp. 34–36).
+      The yield is the decisive difference from the photon cases: a proton's dense track returns
+      most of its pairs to recombination.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The LET must belong to the energy of the beam</p>
+      <p>
+        The 4.6 eV/Å of Deck 10 p. 34 is the stopping of a 1 MeV proton; Lecture 10 describes the
+        same case as 700 keV. A proton's electronic stopping rises as it slows, up to its maximum
+        near 55 keV in silicon (<a href="m12-stopping-power-range.html">M12 §2</a>), so a 700 keV
+        proton deposits more per ångström than a 1 MeV one, roughly a quarter more in SiO₂ by the NIST
+        PSTAR tables (237 against 190 MeV·cm²/g). The LET has to come from a TRIM run at the beam's own energy. The value is also
+        read from the first depth bin, where the histogram of a short run is noisiest; reading the
+        level of the plateau over the first few bins, or running more ions, gives a steadier value.
+      </p>
+    </div>
+
+    <p>
+      The table gives SRIM's electronic stopping of protons in SiO₂ at the course's oxide density,
+      2.20 g/cm³ (<a href="m13-srim-trim.html">M13 §4</a>): the height of the ionization plot near
+      the surface of a thick oxide target. The stopping per ångström scales with the density
+      entered, so a layer left at TRIM's proposed density, or set to quartz's 2.65 g/cm³, gives a
+      proportionally different value. The 1 MeV entry matches the plateau of the decks' own 1 MeV
+      plot (Deck 17 p. 35), about 4.2 eV/Å; the 4.6 eV/Å the decks quote is that plot's first bin.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Proton energy</th><th>LET in SiO₂ (eV/Å)</th><th>Projected range in SiO₂</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0.5 MeV</td><td>6.22</td><td>5.8 µm</td></tr>
+          <tr><td>0.7 MeV</td><td>5.13</td><td>9.3 µm</td></tr>
+          <tr><td>1.0 MeV</td><td>4.18</td><td>15.8 µm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">SRIM-2013 Stopping/Range tables, protons in SiO₂ at 2.20 g/cm³ (electronic stopping; nuclear stopping is below 0.01 eV/Å at these energies).</p>
+
+    <p>
+      For a photon beam the decks follow a different route (Deck 9 p. 31, Deck 10 pp. 22–25). Each
+      photon interacts in the oxide with probability
+      <em>P</em> = 1 − <em>e</em><sup>−(<em>µ</em>/<em>ρ</em>)<em>ρ</em><em>t</em><sub>ox</sub></sup>,
+      the attenuation law of <a href="m10-photon-interaction.html">M10 §7</a>, which for so thin a
+      layer is very nearly (<em>µ</em>/<em>ρ</em>)<em>ρ</em><em>t</em><sub>ox</sub>. Each
+      interacting photon is then credited with its full energy. For 10¹⁶ photons per m² of 1 MeV,
+      10⁶ photons cross the gate, <em>P</em> = 1.7×10⁻⁶, and the deposited energy is
+      1.7 photons × 1 MeV = 1.7×10⁶ eV, which leads to −0.32 V. (The decks weight the silicon and
+      oxygen coefficients by the atom fractions 0.33 and 0.66 and obtain 1.67×10⁻⁶; Bragg additivity
+      takes the mass fractions 0.467 and 0.533, <a href="m10-photon-interaction.html">M10 §7</a>, a
+      1 % difference.)
+    </p>
+
+    <div class="eq" id="m14a-eq-photon">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>dep</sub> = <em>N</em><sub>γ</sub> · <span class="dl">[</span>1 − <em>e</em><sup>−(<em>µ</em>/<em>ρ</em>) <em>ρ</em> <em>t</em><sub>ox</sub></sup><span class="dl">]</span> · <em>E</em><sub>γ</sub></div>
+        <div class="eq-num">(14a.11)</div>
+      </div>
+      <div class="eq-says">
+        The decks' photon route. <em>E</em><sub>dep</sub> (<b>eV</b>) · <em>N</em><sub>γ</sub>
+        photons crossing the gate, from (14a.9) · <em>µ</em>/<em>ρ</em> mass attenuation
+        coefficient of SiO₂ (<b>cm²/g</b>) · <em>ρ</em> density (<b>g/cm³</b>) ·
+        <em>t</em><sub>ox</sub> thickness (<b>cm</b>) · <em>E</em><sub>γ</sub> photon energy
+        (<b>eV</b>). Credits every interacting photon with its full energy, which overstates the
+        energy deposited (see (14a.12)).
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-photon">(14a.11)</a>.
+      </div>
+    </div>
+
+    <p>
+      This route overstates the deposited energy by a factor of 2.3. The attenuation coefficient
+      counts interactions, and an interaction does not leave the photon's whole energy behind: at
+      1 MeV nearly every interaction in SiO₂ is a Compton scatter, in which the electron receives on
+      average about 44 % of the photon's energy and the scattered photon carries the rest away
+      (<a href="m10-photon-interaction.html">M10 §4</a>). The energy that stays behind is described
+      by the mass energy-absorption coefficient <em>µ</em><sub>en</sub>/<em>ρ</em>, 2.787×10⁻² cm²/g
+      for SiO₂ at 1 MeV against <em>µ</em>/<em>ρ</em> = 6.367×10⁻² cm²/g, both obtained from the
+      silicon and oxygen entries of the NIST tables by mass-fraction weighting; their ratio is the
+      factor of 2.3. Where that energy ends up is a separate matter. The electrons a photon sets
+      moving travel distances of the order of a millimetre, far beyond a 100 nm film, so the energy
+      deposited in the film is set not by the interactions inside it but by the electrons arriving
+      from the surrounding silicon. The oxide's dose is then the dose of its surroundings, which the
+      energy-absorption coefficient gives directly.
+    </p>
+
+    <div class="eq" id="m14a-eq-muen">
+      <div class="eq-body">
+        <div class="eq-math"><em>D</em> = <em>Φ</em> · <em>E</em><sub>γ</sub> · <span class="frac"><span class="num"><em>µ</em><sub>en</sub></span><span class="den"><em>ρ</em></span></span></div>
+        <div class="eq-num">(14a.12)</div>
+      </div>
+      <div class="eq-says">
+        <em>D</em> absorbed dose (<b>J/g</b>; multiply by 10⁵ for rad) · <em>Φ</em> photon fluence
+        (<b>cm⁻²</b>) · <em>E</em><sub>γ</sub> photon energy (<b>J</b>; 1 MeV = 1.602×10⁻¹³ J) ·
+        <em>µ</em><sub>en</sub>/<em>ρ</em> mass energy-absorption coefficient of the surrounding
+        material (<b>cm²/g</b>). Requires charged-particle equilibrium in the surrounding material — a
+        millimetre or two of low-<em>Z</em> material on every side, as a package or test fixture
+        provides; a good approximation for cobalt-60 photons, not exact next to high-<em>Z</em>
+        layers. Then (14a.2) gives
+        <em>E</em><sub>dep</sub>.
+        On the formula sheet as <a href="formula-sheet.html#eq-14a-muen">(14a.12)</a>.
+      </div>
+    </div>
+
+    <p>
+      For the same beam, 10¹² cm⁻² × 1.602×10⁻¹³ J × 2.787×10⁻² cm²/g = 4.46×10⁻³ J/g, or
+      446 rad — against about 1.0 krad implied by the decks' route, a factor of 2.3. Carried through the
+      chain with the decks' other values, it gives 7.4×10⁵ eV in the oxide and −0.14 V instead of
+      −0.32 V.
+    </p>
+
+    <h2>7 · Four cases, and what moves the answer</h2>
+    <p>
+      The decks apply the chain to one device in four situations, which together exercise both
+      routes and both kinds of radiation. Setting them side by side shows which inputs the answer is
+      most sensitive to, and separates two comparisons that are easily run together: one particle
+      against another, and one unit of dose against another.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Case</th><th>Input</th><th>Energy in the oxide</th><th>Pairs</th><th><em>f</em><sub>y</sub></th><th>Trapped holes</th><th>Δ<em>V</em><sub>ot</sub></th><th>What changes it</th></tr></thead>
+      <tbody>
+        <tr><td>Geostationary, 18 yr, 80 mm Al</td><td>~10³ rad(Si), from the chart</td><td>1.65×10⁶ eV</td><td>≈10⁵</td><td>0.7</td><td>7×10⁴</td><td>−0.32 V</td><td>Behind 10 mm the chart gives ≈1×10⁴ rad(Si) and a shift ten times larger</td></tr>
+        <tr><td>Ground test, 1 MeV photons</td><td>10¹⁶ m⁻² → 10⁶ photons; <em>P</em> = 1.7×10⁻⁶</td><td>1.7×10⁶ eV</td><td>10⁵</td><td>0.7</td><td>7×10⁴</td><td>−0.32 V</td><td>With <em>µ</em><sub>en</sub>/<em>ρ</em>, 7.4×10⁵ eV and −0.14 V</td></tr>
+        <tr><td>Polar LEO, 7 yr, 10 mm Al</td><td>5×10³ rad(Si) as quoted</td><td>8.27×10⁶ eV</td><td>4.9×10⁵ (slide: 4.8×10⁵)</td><td>0.18</td><td>8.8×10⁴</td><td>−0.41 V</td><td>The chart reads ≈3.5×10³ rad(Si): −0.28 V</td></tr>
+        <tr><td>Ground test, 1 MeV protons</td><td>10¹³ m⁻² → 10³ protons; 4.6 eV/Å</td><td>4.6×10⁶ eV</td><td>2.7×10⁵</td><td>0.18</td><td>4.9×10⁴</td><td>−0.23 V</td><td>The curve reads 0.15: −0.19 V</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="card-d">
+      One device throughout: 100 µm² gate, 100 nm oxide, 1 MV/cm, <em>C</em><sub>ox</sub> =
+      3.45×10⁻¹⁴ F (printed as 3.4×10⁻¹⁴), oxide density 2650 kg/m³, every surviving hole trapped. Deck 10 pp. 14–36; the
+      slides print the shifts as magnitudes. The problem statements print the oxide thickness as
+      "80mm" (Deck 9 p. 28), "100mm" (Deck 10 pp. 14, 27) or 80 nm (Deck 17 p. 27); every
+      calculation uses 100 nm, and at 80 nm the shifts would be 0.64 times as large.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 238" role="img" aria-labelledby="f14a-8-t">
+        <title id="f14a-8-t">Bar chart of the four worked threshold shifts as printed, beside the values with each correction applied</title>
+        <line x1="50" y1="190" x2="430" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="50" y1="190" x2="50" y2="34" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="44" y="194">0</text><text x="44" y="161">0.1</text><text x="44" y="127">0.2</text>
+          <text x="44" y="94">0.3</text><text x="44" y="61">0.4</text>
+        </g>
+        <text x="14" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 14 112)">|Δ<tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">ot</tspan>| (V)</text>
+        <rect x="72" y="83" width="30" height="107" class="dg-fill"/>
+        <rect x="160" y="83" width="30" height="107" class="dg-fill"/>
+        <rect x="248" y="53" width="30" height="137" class="dg-fill"/>
+        <rect x="336" y="113" width="30" height="77" class="dg-fill"/>
+        <g class="dg-acc-f">
+          <rect x="194" y="143" width="30" height="47"/>
+          <rect x="282" y="97" width="30" height="93"/>
+          <rect x="370" y="127" width="30" height="63"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="87" y="77">0.32</text><text x="175" y="77">0.32</text><text x="209" y="137">0.14</text>
+          <text x="263" y="47">0.41</text><text x="297" y="91">0.28</text>
+          <text x="351" y="107">0.23</text><text x="385" y="121">0.19</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="87" y="206">GEO dose</text><text x="192" y="206">1 MeV γ beam</text>
+          <text x="280" y="206">LEO dose</text><text x="368" y="206">proton beam</text>
+          <text x="209" y="220">µ<tspan baseline-shift="sub" style="font-size:75%">en</tspan>/ρ</text>
+          <text x="297" y="220">chart</text><text x="385" y="220">yield</text>
+        </g>
+        <text x="200" y="30" class="dg-label-sm">plain: as printed · accent: corrected</text>
+      </svg>
+      <figcaption>
+        <b>Figure 8.</b> The photon route's full-energy assumption moves its case the most, by a
+        factor of 2.3; a chart reading and a curve reading move theirs by about 30 % and 17 %. The
+        geostationary case at 80 mm needs no correction of its reading. All four count every
+        surviving hole as trapped, an upper bound on that step only.
+      </figcaption>
+    </figure>
+
+    <p>
+      The photon and proton tests give shifts within 30 % of each other from 10⁶ photons and 10³
+      protons. The thousandfold ratio of Deck 10 p. 37 is therefore a ratio of fluences at
+      comparable effect. Per particle, a 1 MeV proton leaves about 4.6 keV in the oxide where the
+      average 1 MeV photon crossing it leaves about 1.7 eV by the decks' route (0.74 eV with
+      <em>µ</em><sub>en</sub>/<em>ρ</em>), and its lower yield removes part of that advantage: each
+      proton produces about 700 times the shift of each photon by the decks' numbers, about 1600 times
+      with the corrected photon route. Per unit dose the comparison reverses. The proton test
+      delivers 4.6×10⁶ eV / 2.65×10⁻¹⁴ kg = 2.8 krad to the oxide for −0.23 V, the photon test
+      about 1.0 krad for −0.32 V: per rad the photons trap about four times as much charge, the
+      ratio of their yields, 0.7 to 0.18. Total-dose tests use cobalt-60, whose dose is uniform
+      through the part, or 10 keV X-rays on bare dies with a correction for dose enhancement; in both,
+      the high yield makes the test conservative against the proton share of a space environment.
+    </p>
+    <p>
+      The same distinction applies to heavier ions. Deck 10 p. 38 notes that helium has about half
+      the proton's yield and seven times its energy loss. The energy-loss ratio holds at equal
+      energy, about 7.3 at 1 MeV in SiO₂; the yield ratio compares the curves for 2 MeV alpha
+      particles and 700 keV protons, so the resulting estimate, that each helium ion traps about 3.5
+      times as much charge as a proton, is indicative. Each rad of helium dose traps less charge
+      than a rad of protons.
+      A single heavy ion that destroys a device does so by its local charge, a single-event effect,
+      which is the subject of M15, not by its contribution to the total dose.
+    </p>
+
+    <div class="box">
+      <p class="box-title">What the estimate leaves out</p>
+      <p>
+        The result is the oxide-trapped shift immediately after exposure, in an oxide that traps
+        every surviving hole. It omits the interface traps of
+        <a href="m14-total-ionizing-dose.html">M14 §4</a>, which add a positive shift in n-channel
+        devices and a negative one in p-channel devices; the annealing of trapped charge
+        (<a href="m14-total-ionizing-dose.html">M14 §6</a>), which a long mission at low dose rate
+        partly accomplishes as the dose accumulates; trapped fractions well below one in hardened
+        oxides; dose enhancement in an oxide next to a high-<em>Z</em> layer under low-energy
+        photons; and the spectrum of the radiation, represented by a single curve. A proton must
+        start with about 50 MeV to cross 10 mm of aluminium, 2.7 g/cm²
+        (<a href="m12-stopping-power-range.html">M12 §5</a>), so the protons behind such a shield
+        are dominated by energies of tens of MeV, whose sparser tracks yield more than the 700 keV
+        curve. Annealing and trapped fractions below one make the true oxide-trapped shift smaller;
+        dose enhancement and a yield above the chosen curve make it larger; interface traps add to
+        the total threshold shift in p-channel devices and subtract from it in n-channel ones.
+      </p>
+    </div>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>
+          The estimate runs dose or fluence → energy in the oxide → pairs (÷ 17 eV) → surviving
+          holes (× <em>f</em><sub>y</sub>) → trapped holes (× <em>f</em><sub>ot</sub>, taken as 1)
+          → Δ<em>V</em><sub>ot</sub> = −<em>qN</em><sub>ot</sub>/<em>C</em><sub>ox</sub>, with
+          <em>C</em><sub>ox</sub> = <em>ε</em><sub>r</sub><em>ε</em><sub>0</sub><em>A</em>/<em>t</em><sub>ox</sub>
+          for the whole device.
+        </li>
+        <li>
+          A dose–depth curve gives the mission dose at the centre of a solid aluminium sphere
+          against its radius. Electrons dominate behind thin shields and cut off near 10 mm;
+          bremsstrahlung and protons dominate beyond. Behind 10 mm: geostationary 18 yr
+          ≈1×10⁴ rad(Si), mostly photons; polar LEO 7 yr ≈3.5×10³ rad(Si), mostly trapped protons.
+          Read the logarithmic axes logarithmically.
+        </li>
+        <li>
+          Energy = dose × oxide mass, with 1 rad = 0.01 J/kg = 6.24×10¹⁶ eV/kg and
+          <em>m</em><sub>ox</sub> = <em>ρAt</em><sub>ox</sub>; the decks use 2650 kg/m³, a thermal
+          oxide is ≈2200. For a thin oxide inside silicon, rad(SiO₂) ≈ rad(Si).
+        </li>
+        <li>
+          The yield comes from the decks' curves (Schwank et al. 2008), chosen by radiation type: at
+          1 MV/cm cobalt-60 0.68, 10 keV X-rays 0.47, 700 keV protons 0.15; at 2 MV/cm 0.85, 0.64,
+          0.24.
+        </li>
+        <li>
+          The gate area cancels and Δ<em>V</em><sub>ot</sub> ∝ <em>t</em><sub>ox</sub>² in the model
+          (measured exponents 1.5–1.8 above about 20 nm); the shift is negative for both channel
+          types.
+        </li>
+        <li>
+          Fluence route: <em>N</em> = <em>ΦA</em>; for protons, energy = <em>N</em> × LET ×
+          <em>t</em><sub>ox</sub>, with the LET from TRIM at the beam's own energy; for photons, the
+          dose follows <em>µ</em><sub>en</sub>/<em>ρ</em>, not <em>µ</em>/<em>ρ</em>.
+        </li>
+        <li>
+          Per particle a proton traps far more charge than a photon; per rad a photon traps about
+          four times more, because of its higher yield.
+        </li>
+        <li>
+          The result is the oxide-trapped shift right after exposure with every surviving hole
+          trapped: an upper bound on the trapping step, not on the yield or on dose enhancement.
+          Interface traps, which add to the total shift in p-channel devices and subtract in n-channel
+          ones, are left out.
+        </li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 9 pp. 2, 28; Deck 10 pp. 14, 23 (the chain as drawn on the slides); Lectures 9–10</td></tr>
+      <tr><td>§2</td><td>Deck 9 pp. 27–28; Deck 10 pp. 14–15, 27–28; Deck 17 p. 27; the dose–depth figures reproduced from Deck 9 p. 27, whose underlying calculation the slide does not identify; electron range and bremsstrahlung from M09 §9; Lecture 17 (the in-class correction to 10⁴ rad and the reason for 10 mm); proton range in aluminium from NIST PSTAR (100 µm at about 3.4 MeV)</td></tr>
+      <tr><td>§3</td><td>Deck 9 pp. 20, 29; Deck 10 pp. 18–19, 28; density of thermal oxide as in M14 (14.3); dose in a thin layer after Bragg–Gray cavity theory, F. H. Attix, <em>Introduction to Radiological Physics and Radiation Dosimetry</em> (Wiley, 1986)</td></tr>
+      <tr><td>§4</td><td>Deck 9 pp. 26, 29; Deck 10 pp. 12, 20; J. R. Schwank et al., "Radiation effects in MOS oxides," IEEE TNS 55, 1833 (2008), Fig. 2 (cobalt-60 and 10 keV X-ray curves from M. R. Shaneyfelt et al., IEEE TNS 38, 1187 (1991); proton and alpha curves from F. B. McLean &amp; T. R. Oldham, HDL-TR-2129 (1987)); Oldham &amp; McLean, IEEE TNS 50, 483 (2003); oxide-field plot as cited on the slide (Thompson, IEDM 1999; IEEE Trans. Semicond. Manuf. 18, 26 (2005)); Deck 10 p. 37</td></tr>
+      <tr><td>§5</td><td>Deck 9 pp. 17–19, 29–30; Deck 10 pp. 8, 10, 20–21, 37; M14 (14.5), (14.6), (14.12)</td></tr>
+      <tr><td>§6</td><td>Deck 9 p. 31; Deck 10 pp. 22–25, 31–36; SiO₂ attenuation and energy-absorption coefficients by mass-fraction weighting of the Si and O entries of NIST Standard Reference Database 126 (Hubbell &amp; Seltzer), µ/ρ checked against NIST XCOM; proton and alpha stopping from NIST PSTAR and ASTAR; the SiO₂ LET table from SRIM-2013 Stopping/Range tables at 2.20 g/cm³; the plateau and first bin of the decks' 1 MeV plot read from Deck 17 p. 35</td></tr>
+      <tr><td>§7</td><td>Deck 10 pp. 14–38; Deck 17 pp. 27–37; corrections computed from the coefficients and chart readings of §2 and §6</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m14-total-ionizing-dose.html"><span>Previous</span>M14 · Total Ionizing Dose</a>
+      <a class="next" href="m14b-radiation-effects-mems.html"><span>Next</span>M14b · Radiation Effects on MEMS</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

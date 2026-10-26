@@ -1,0 +1,2281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M15 · Total-Dose Hardness Assurance — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M15 · Total-Dose Hardness Assurance</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 15</p>
+    <h1>Total-Dose Hardness Assurance</h1>
+    <p class="lede">
+      How a purchased part is shown to survive a mission's total dose: why the lot rather than the
+      part number is the unit of test, how a small destroyed sample stands in for a lot, why no
+      single irradiation predicts a MOS part's space response while two steps can bound it, why that
+      method fails for linear bipolar circuits, and how hydrogen and a part's thermal history move
+      the answer after the test is over.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M07, M08, M09</span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Deck 11 (hardness-assurance lecture); Pease (2004); IEEE NSREC 2001 Short Course §IV</span>
+    </div>
+
+    <p>
+      <a href="m07-oxide-interface-trap-charge.html">M07</a> to
+      <a href="m09-oxide-charge-kinetics.html">M09</a> established what a dose does to an oxide.
+      It leaves two charges — holes trapped near the silicon interface, and interface traps formed
+      when protons released in the oxide reach that interface — and the two evolve in opposite
+      directions for years after the exposure ends. <b>Hardness assurance</b> is the engineering
+      that turns that physics into a decision about a part that is about to be flown. The US
+      hardness-assurance working groups defined it, for a piece-part, as the procedures, controls
+      and tests that ensure a purchased part responds to radiation within known and acceptable
+      limits; Pease drops the controls for commercial parts, whose processes the buyer cannot
+      control. This module treats total ionizing dose only; single-event test
+      practice follows from <a href="m11-single-event-effects.html">M11</a>.
+    </p>
+    <p>
+      Two facts make the problem hard, and the whole module is organized around them. The first is
+      that a part's total-dose response is set by oxide material properties that vary from lot to
+      lot in ways no design document records, so a result characterizes the parts that were
+      tested and not the part number. The second is that the laboratory cannot reproduce space.
+      Space dose rates are below 0.01 rad(SiO₂)/s (<a href="m08-tid-effects-devices-ics.html">M08</a>
+      §9), a standard laboratory irradiation runs at 50 to 300 rad(Si)/s (§5), and in a MOS part
+      the two charges respond to that difference in opposite senses. A test therefore cannot
+      <em>predict</em> the space response. What a well-designed test does instead is
+      <em>bound</em> it: it arranges conditions under which each charge is at least as damaging as
+      it could be in orbit, so that a part that passes cannot fail in service by either mechanism.
+    </p>
+    <p>
+      Sections 1 and 2 set out variability and the statistics that let a small destroyed sample
+      stand for a lot. Sections 3 to 6 build the MOS test method from the two charges, ending in
+      the procedure of MIL-STD-883 Test Method 1019. Sections 7 to 9 show why that procedure fails
+      for linear bipolar circuits, what replaced it, and the hydrogen chemistry that explains the
+      failure. Section 10 shows that the answer depends on everything that happened to a part
+      before it was irradiated.
+    </p>
+
+    <h2>1 · Why every lot is tested</h2>
+    <p>
+      A test result has to be the result for something: a design, a process, a wafer, a lot. For
+      total dose that unit is small, and the reason lies in which properties of a part set its
+      response.
+    </p>
+    <p>
+      The total-dose response of a MOS or bipolar part is set by its oxides, and within them by two
+      material properties: the density of precursor defects that capture holes — the oxygen
+      vacancies that become E′ centres (<a href="m07-oxide-interface-trap-charge.html">M07</a>
+      §6) — and the quantity of hydrogen available to be released during irradiation and to form
+      interface traps (M07 §8). Deck 11 puts the second point in a single line under its charge
+      diagram: hydrogen species are also critical to the damage process. Neither property is a
+      design parameter. Both depend on oxidation temperature and ambient, on post-oxidation anneals,
+      on passivation layers deposited long after the gate oxide is grown, and on the thermal steps
+      of packaging. Small, unrecorded variations in any of these change the trap and hydrogen
+      content, and the radiation response changes with them. A mask set and a nominal process flow
+      therefore do not determine a part's total-dose hardness.
+    </p>
+    <p>
+      The lecture contrasts this with single-event response, which is governed mainly by device
+      geometry, doping profiles and the circuit's critical charge
+      (<a href="m11-single-event-effects.html">M11</a> §4) — quantities that a design and a
+      controlled process fix. A single-event characterization of a design remains valid for parts
+      built the same way. A total-dose characterization is valid for the parts that shared the
+      tested parts' oxides.
+    </p>
+    <p>
+      Deck 11 lists four levels at which the total-dose response varies: from manufacturer to
+      manufacturer, from lot to lot within one manufacturer, from wafer to wafer within one lot,
+      and from one position to another on the same wafer. The first level is sharper for commercial
+      parts than it sounds. A commercial part number carries no guarantee of which foundry made the
+      die inside the package, so two parts with the same number may contain different oxides
+      altogether. Pease accordingly treats each vendor's version of a part as a separate part type,
+      and requires characterization samples to be drawn from several lots over time, because a
+      commercial supplier can change design, layout or process without notice.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+      <svg viewBox="0 0 480 250" role="img" aria-labelledby="m15f1-t">
+        <title id="m15f1-t">Total-dose functional failure levels of fifteen 16 Mb DRAM types from eight manufacturers</title>
+      <line x1="46" y1="206" x2="418" y2="206" class="dg-rule" stroke-width="1.2"/><line x1="46" y1="206" x2="46" y2="30" class="dg-rule" stroke-width="1.2"/>
+      <line x1="42" y1="206" x2="46" y2="206" class="dg-rule" stroke-width="1.0"/>
+      <text x="39" y="210" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="42" y1="147.3" x2="46" y2="147.3" class="dg-rule" stroke-width="1.0"/>
+      <text x="39" y="151.3" class="dg-label-sm" text-anchor="end">20</text>
+      <line x1="42" y1="88.7" x2="46" y2="88.7" class="dg-rule" stroke-width="1.0"/>
+      <text x="39" y="92.7" class="dg-label-sm" text-anchor="end">40</text>
+      <line x1="42" y1="30" x2="46" y2="30" class="dg-rule" stroke-width="1.0"/>
+      <text x="39" y="34" class="dg-label-sm" text-anchor="end">60</text>
+      <text x="14" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 14 118)">failure dose, krad(Si)</text>
+      <rect x="51.4" y="175.5" width="14" height="30.5" class="dg-fill"/>
+      <text x="58.4" y="220" class="dg-label-sm" text-anchor="middle">FUJ</text>
+      <rect x="76.2" y="126.2" width="14" height="79.8" class="dg-fill"/>
+      <text x="83.2" y="220" class="dg-label-sm" text-anchor="middle">HIT</text>
+      <rect x="101" y="101" width="14" height="105" class="dg-fill"/>
+      <line x1="101" y1="121.8" x2="115" y2="121.8" class="dg-line" stroke-width="1.6"/>
+      <text x="108" y="220" class="dg-label-sm" text-anchor="middle">HIT</text>
+      <rect x="125.8" y="161.4" width="14" height="44.6" class="dg-fill"/>
+      <text x="132.8" y="220" class="dg-label-sm" text-anchor="middle">HIT</text>
+      <rect x="150.6" y="39.1" width="14" height="166.9" class="dg-fill"/>
+      <line x1="150.6" y1="68.7" x2="164.6" y2="68.7" class="dg-line" stroke-width="1.6"/>
+      <text x="157.6" y="220" class="dg-label-sm" text-anchor="middle">IBM</text>
+      <rect x="175.4" y="61.4" width="14" height="144.6" class="dg-fill"/>
+      <line x1="175.4" y1="81.3" x2="189.4" y2="81.3" class="dg-line" stroke-width="1.6"/>
+      <text x="182.4" y="220" class="dg-label-sm" text-anchor="middle">IBM</text>
+      <rect x="200.2" y="66.4" width="14" height="139.6" class="dg-fill"/>
+      <text x="207.2" y="220" class="dg-label-sm" text-anchor="middle">MIC</text>
+      <rect x="225" y="71.4" width="14" height="134.6" class="dg-fill"/>
+      <line x1="225" y1="83.4" x2="239" y2="83.4" class="dg-line" stroke-width="1.6"/>
+      <text x="232" y="220" class="dg-label-sm" text-anchor="middle">MIC</text>
+      <rect x="249.8" y="51.4" width="14" height="154.6" class="dg-fill"/>
+      <text x="256.8" y="220" class="dg-label-sm" text-anchor="middle">NEC</text>
+      <rect x="274.6" y="144.7" width="14" height="61.3" class="dg-fill"/>
+      <line x1="274.6" y1="152.3" x2="288.6" y2="152.3" class="dg-line" stroke-width="1.6"/>
+      <text x="281.6" y="220" class="dg-label-sm" text-anchor="middle">SAM</text>
+      <rect x="299.4" y="189" width="14" height="17" class="dg-fill"/>
+      <text x="306.4" y="220" class="dg-label-sm" text-anchor="middle">SAM</text>
+      <rect x="324.2" y="147.6" width="14" height="58.4" class="dg-fill"/>
+      <line x1="324.2" y1="153.2" x2="338.2" y2="153.2" class="dg-line" stroke-width="1.6"/>
+      <text x="331.2" y="220" class="dg-label-sm" text-anchor="middle">SAM</text>
+      <rect x="349" y="70.5" width="14" height="135.5" class="dg-fill"/>
+      <text x="356" y="220" class="dg-label-sm" text-anchor="middle">TEX</text>
+      <rect x="373.8" y="140" width="14" height="66" class="dg-fill"/>
+      <line x1="373.8" y1="147" x2="387.8" y2="147" class="dg-line" stroke-width="1.6"/>
+      <text x="380.8" y="220" class="dg-label-sm" text-anchor="middle">TOS</text>
+      <rect x="398.6" y="114.2" width="14" height="91.8" class="dg-fill"/>
+      <line x1="398.6" y1="118" x2="412.6" y2="118" class="dg-line" stroke-width="1.6"/>
+      <text x="405.6" y="220" class="dg-label-sm" text-anchor="middle">TOS</text>
+      <line x1="164.6" y1="39.1" x2="440" y2="39.1" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 3"/>
+      <line x1="313.4" y1="189" x2="440" y2="189" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 3"/>
+      <line x1="440" y1="39.1" x2="440" y2="189" class="dg-acc" stroke-width="2.0" marker-start="url(#m15f1-a)" marker-end="url(#m15f1-a)"/>
+      <text x="446" y="118" class="dg-label"><tspan class="dg-acc-f">×10</tspan></text>
+      <text x="48" y="236" class="dg-label-sm">bar = highest sample; tick = lowest sample; 2–4 parts per type</text>
+      <defs><marker id="m15f1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+      </svg>
+        <figcaption>
+          Functional failure doses of fifteen 16 Mb DRAM types from eight manufacturers. The softest
+          type fails near 6 krad(Si) and the hardest near 57 krad(Si), a factor of ten for the same
+          function; the three types from one manufacturer span more than a factor of three. Codes
+          as in the source: FUJ Fujitsu, HIT Hitachi, MIC Micron, SAM Samsung, TEX Texas
+          Instruments, TOS Toshiba. Values read from the plot to about ±1 krad.
+          <span class="src">Deck 11 p. 3, after R. L. Pease, <em>IEEE Trans. Nucl. Sci.</em> <b>43</b>, 442 (1996).</span>
+        </figcaption>
+      </figure>
+      <figure class="compact">
+      <svg viewBox="0 0 480 250" role="img" aria-labelledby="m15f2-t">
+        <title id="m15f2-t">Average supply current at 15 krad(Si) for four lots of one part type</title>
+      <line x1="60" y1="206" x2="460" y2="206" class="dg-rule" stroke-width="1.2"/><line x1="60" y1="206" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+      <line x1="56" y1="206" x2="60" y2="206" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="210" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="56" y1="162" x2="60" y2="162" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="166" class="dg-label-sm" text-anchor="end">5</text>
+      <line x1="56" y1="118" x2="60" y2="118" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="122" class="dg-label-sm" text-anchor="end">10</text>
+      <line x1="56" y1="74" x2="60" y2="74" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="78" class="dg-label-sm" text-anchor="end">15</text>
+      <line x1="56" y1="30" x2="60" y2="30" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="34" class="dg-label-sm" text-anchor="end">20</text>
+      <text x="18" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 18 118)">supply current, µA</text>
+      <rect x="88" y="53.8" width="44" height="152.2" class="dg-acc-f"/>
+      <text x="110" y="47.8" class="dg-label-sm" text-anchor="middle">≈17</text>
+      <text x="110" y="220" class="dg-label-sm" text-anchor="middle">lot 1</text>
+      <rect x="188" y="93.4" width="44" height="112.6" class="dg-fill"/>
+      <text x="210" y="87.4" class="dg-label-sm" text-anchor="middle">≈13</text>
+      <text x="210" y="220" class="dg-label-sm" text-anchor="middle">lot 2</text>
+      <rect x="288" y="130.3" width="44" height="75.7" class="dg-fill"/>
+      <text x="310" y="124.3" class="dg-label-sm" text-anchor="middle">≈9</text>
+      <text x="310" y="220" class="dg-label-sm" text-anchor="middle">lot 3</text>
+      <rect x="388" y="196.3" width="44" height="9.7" class="dg-fill"/>
+      <text x="410" y="190.3" class="dg-label-sm" text-anchor="middle">≈1</text>
+      <text x="410" y="220" class="dg-label-sm" text-anchor="middle">lot 4</text>
+      <text x="62" y="236" class="dg-label-sm">one part type, 15 krad(Si)</text>
+      </svg>
+        <figcaption>
+          Four lots of one part type at the same dose. The highest-current lot draws more than ten
+          times the supply current of the lowest, although all four carry the same part number and
+          design. Values read from the plot.
+          <span class="src">Deck 11 p. 4, after Pease (1996).</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      The definition of a lot follows from the same argument. Pease sets the minimum as a
+      <b>date-code lot</b> — all parts assembled in the same week — which may mix die from more than
+      one process lot, and recommends a <b>wafer lot</b> or process lot wherever it can be obtained:
+      wafers that passed through oxidation and the subsequent thermal steps together, and therefore
+      share the properties that set the response. Parts bought as unpackaged die can usually be
+      bought from a single wafer lot. The consequence is the rule that gives the section its title:
+      a total-dose result describes the lot that was sampled, and it transfers to another lot only
+      by testing that lot too. This is the <b>radiation lot acceptance test</b>.
+    </p>
+
+    <div class="box defn">
+      <p>
+        <b>Hardness assurance, and where it sits.</b> Qualification of a flight part covers
+        temperature, vibration, vacuum and radiation; the radiation rows of that requirement set
+        are listed in
+        <a href="../../EEL5385_Space_Electronics/site/m03-space-electronics-gap.html">EEL5385 M03</a>
+        §4. Total-dose hardness assurance is the part of that effort that establishes, for each part
+        type in each application, a failure definition, a failure dose measured on representative
+        samples, and a decision about how much further testing each purchased lot needs. The
+        specification it tests against is written in rad(Si), while device data are usually
+        reported in rad(SiO₂) (<a href="m04-quantifying-energy-deposition.html">M04</a> §8); for
+        Co-60 the two differ by less than one per cent.
+      </p>
+    </div>
+
+    <h2>2 · Sampling, characterization and qualification</h2>
+    <p>
+      If every lot must be tested, the next question is how many parts from a lot must be tested,
+      and what a passing result then says about the parts that were not. The answer is statistical,
+      and it is constrained by one physical fact: a total-dose test destroys what it measures.
+    </p>
+    <p>
+      An irradiated part has spent some of its radiation tolerance, and the anneals that follow
+      irradiation alter it further, so tested parts are not flown. Testing is therefore by
+      <b>lot sample</b>: a small number of parts drawn at random from the lot stands for the rest,
+      and the method relies on the manufacturer's process control for the assumption that the
+      untested parts resemble the tested ones. Pease records an attempt to replace sampling with a
+      100% total-dose screen, and why it was only partially successful. Irradiating every part to a
+      low dose and extrapolating to its failure level failed for many parts because total-dose
+      degradation is strongly nonlinear; irradiating to the specification and then annealing the
+      damage out failed because reliability limits the anneal temperature a flight part may see.
+    </p>
+    <p>
+      Before any statistics, the failure itself must be defined. Pease distinguishes parametric
+      failure (a critical parameter moves outside the range the application tolerates), functional
+      failure (the circuit stops operating correctly) and catastrophic failure (permanent damage).
+      For total dose the parameters usually degrade monotonically with dose, so failure is an
+      unacceptable change in a parameter the system depends on, and it is defined per part, per
+      application. The same part can pass in one circuit and fail in another. With a failure
+      definition fixed, the <b>mean failure level</b> <em>R</em><sub>mf</sub> of the part type is
+      measured on samples, normally by <b>step-stress</b> testing: parts are irradiated to a
+      sequence of dose levels and measured at each, and the failure dose of each part is
+      interpolated between the last level it passed and the first it failed. Its ratio to the
+      specification dose is the single number on which the whole hardness-assurance program turns.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">RDM = <span class="frac"><span class="num"><em>R</em><sub>mf</sub></span><span class="den"><em>R</em><sub>spec</sub></span></span></div>
+        <div class="eq-num">(15.1)</div>
+      </div>
+      <div class="eq-says">
+        RDM radiation design margin, dimensionless ·
+        <em>R</em><sub>mf</sub> mean radiation failure level of the part type for the application's
+        failure definition, in krad(Si); for the lognormal distribution normally assumed, the
+        geometric mean exp⟨ln <em>R</em><sub>fail</sub>⟩ of the individual failure doses ·
+        <em>R</em><sub>spec</sub> specified mission dose at the part's location, in krad(Si).
+        Numerator and denominator must be in the same dose unit and the same material. RDM = 1
+        means half the population fails at the specification. In Pease's design-margin-breakpoint
+        method, RDM below 1–2 makes a part unacceptable, 1–2 to 10 places it in hardness-critical
+        category 1, 10 to 100 in category 2, and above 100 in the hardness non-critical category.
+        On the formula sheet as <a href="formula-sheet.html#eq-rdm">(15.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      The four categories set how much testing each purchased lot receives. An
+      <b>unacceptable</b> part needs corrective action: shielding, a recalculated environment at
+      the part's actual location, a relaxed failure definition, or a different part.
+      <b>Hardness-critical category 1</b> (HCC-1) requires a radiation lot acceptance test on every
+      lot. <b>Hardness-critical category 2</b> (HCC-2) requires sample testing on a periodic basis.
+      <b>Hardness non-critical</b> (HNC) parts need no further radiation testing. The breakpoints are
+      demanding. For a 20 krad specification, which Pease calls typical of many NASA missions, a
+      part must show a mean failure dose of 2 Mrad to escape further testing, and 200 krad even to
+      reach periodic testing.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 470 150" role="img" aria-labelledby="m15f3-t">
+        <title id="m15f3-t">Hardness-assurance categories set by the radiation design margin in the design-margin-breakpoint method</title>
+      <line x1="30" y1="80" x2="450" y2="80" class="dg-rule" stroke-width="1.2"/>
+      <rect x="30" y="54" width="69" height="26" class="dg-fill"/>
+      <rect x="99" y="54" width="119.2" height="26" class="dg-fill"/>
+      <rect x="100.2" y="55.2" width="116.8" height="26" class="dg-acc" fill="none" stroke-width="2.4"/>
+      <rect x="218.2" y="54" width="144.7" height="26" class="dg-fill"/>
+      <rect x="362.9" y="54" width="87.1" height="26" class="dg-fill"/>
+      <line x1="73.6" y1="80" x2="73.6" y2="85" class="dg-rule" stroke-width="1.0"/>
+      <text x="73.6" y="97" class="dg-label-sm" text-anchor="middle">1</text>
+      <line x1="117.1" y1="80" x2="117.1" y2="85" class="dg-rule" stroke-width="1.0"/>
+      <text x="117.1" y="97" class="dg-label-sm" text-anchor="middle">2</text>
+      <line x1="218.2" y1="80" x2="218.2" y2="85" class="dg-rule" stroke-width="1.0"/>
+      <text x="218.2" y="97" class="dg-label-sm" text-anchor="middle">10</text>
+      <line x1="362.9" y1="80" x2="362.9" y2="85" class="dg-rule" stroke-width="1.0"/>
+      <text x="362.9" y="97" class="dg-label-sm" text-anchor="middle">100</text>
+      <text x="30" y="46" class="dg-label-sm">unacceptable</text>
+      <text x="158.6" y="46" class="dg-label-sm" text-anchor="middle">HCC-1</text>
+      <text x="290.6" y="46" class="dg-label-sm" text-anchor="middle">HCC-2</text>
+      <text x="406.4" y="46" class="dg-label-sm" text-anchor="middle">HNC</text>
+      <text x="158.6" y="71" class="dg-label-sm" text-anchor="middle">test every lot</text>
+      <text x="290.6" y="71" class="dg-label-sm" text-anchor="middle">periodic samples</text>
+      <text x="406.4" y="71" class="dg-label-sm" text-anchor="middle">no further tests</text>
+      <text x="450" y="114" class="dg-label-sm" text-anchor="end">RDM = mean failure level / specification (log scale)</text>
+      <text x="30" y="140" class="dg-label-sm">for a 20 krad specification:</text>
+      <line x1="218.2" y1="124" x2="218.2" y2="146" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 2"/>
+      <text x="222.2" y="140" class="dg-label-sm">200 krad</text>
+      <line x1="362.9" y1="124" x2="362.9" y2="146" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 2"/>
+      <text x="366.9" y="140" class="dg-label-sm">2 Mrad</text>
+      </svg>
+      <figcaption>
+        The design-margin-breakpoint categories on a logarithmic axis of RDM. Most parts with
+        realistic margins fall in HCC-1, which is the category that obliges a test of every lot.
+        <span class="src">After R. L. Pease, <em>Int. J. High Speed Electron. Syst.</em> <b>14</b>, 543 (2004), Fig. 3, in the course textbook.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Pease regards these fixed breakpoints, which are very conservative and were built from
+      historical data on older parts with many part types lumped together, as probably unrealistic
+      for commercial parts, and recommends a statistical
+      criterion instead: the <b>part categorization criterion</b> (PCC), which uses the measured
+      spread of failure doses rather than a fixed factor. A part with a narrow distribution needs a
+      smaller margin than one with a broad distribution, for the same assurance that it will not
+      fail. For commercial parts he also drops HCC-2, since commercial parts rarely remain unchanged
+      long enough for periodic sampling to be meaningful, and places the HCC-1/HNC breakpoint at
+      about twice the PCC. Where parts are bought once for the whole program — test samples, flight
+      parts and spares from one lot — the characterization test becomes the lot acceptance test, and
+      only two categories remain: acceptable and not.
+    </p>
+
+    <h3>Two ways to test a lot</h3>
+    <p>
+      A lot acceptance test takes one of two forms. The first is a <b>test by attributes</b>, a
+      go/no-go test: a random sample is irradiated to the specification dose and each part passes
+      or fails. If none fails, the confidence that the lot's survival probability exceeds a given
+      value follows from binomial sampling.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>P</em><sub>s</sub><sup><em>n</em></sup> = 1 − <em>C</em> &nbsp;&nbsp;⟹&nbsp;&nbsp; <em>P</em><sub>s</sub> = (1 − <em>C</em>)<sup>1/<em>n</em></sup></div>
+        <div class="eq-num">(15.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>P</em><sub>s</sub> probability of survival demonstrated for the lot, dimensionless ·
+        <em>n</em> number of parts tested at the specification dose, <b>all of which pass</b> ·
+        <em>C</em> confidence level, dimensionless; 0.90 is the value usually specified.
+        Zero-failure binomial sampling; the survival probability is that of the lot at the tested
+        dose only, and says nothing about higher doses. <em>n</em> = 11 gives
+        <em>P</em><sub>s</sub> = 0.81 at <em>C</em> = 0.90, which Pease states as a lot tolerance
+        percent defective (LTPD) of 20, <em>P</em><sub>s</sub> = 0.80. Demonstrating
+        <em>P</em><sub>s</sub> = 0.999 at the same confidence needs about 2300 parts (Pease quotes 2303).
+        On the formula sheet as <a href="formula-sheet.html#eq-lot-attrib">(15.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      A sample of 2300 destroyed parts is not a test anyone performs, and the remedy is to test fewer
+      parts at a higher dose. The <b>overtest factor</b> is the ratio of the test dose to the
+      specification dose. If the failure doses are lognormal with a known maximum spread, parts that
+      survive a dose well above the specification demonstrate a high survival probability at the
+      specification itself. Pease tabulates the factors for <em>P</em><sub>s</sub> = 0.999 at
+      <em>C</em> = 0.90 with no failures, assuming the standard deviation of the natural logarithm of
+      the failure dose is at most 0.5.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Parts tested, <em>n</em></th><th>5</th><th>10</th><th>11</th><th>15</th><th>20</th></tr></thead>
+        <tbody><tr><td>Overtest factor, <em>R</em><sub>test</sub>/<em>R</em><sub>spec</sub></td><td>3.97</td><td>3.11</td><td>3.02</td><td>2.75</td><td>2.53</td></tr></tbody>
+      </table>
+    </div>
+
+    <p>
+      Eleven parts at roughly three times the specification dose therefore give the same assurance
+      as 2303 parts at the specification, provided the assumed spread holds. The lot test the
+      lecture describes, about eleven parts with no failures, is run at the specification dose
+      (§5), where by (15.2) it demonstrates only LTPD 20, <em>P</em><sub>s</sub> ≈ 0.81 at
+      <em>C</em> = 0.90. The lecture accepts that level for two reasons: the sample checks that the
+      lot was built under the manufacturer's process controls, on which lot sampling already relies,
+      and testing many more parts at the specification adds little confidence. Only an overtest of
+      about three times, with σ<sub>ln</sub> ≤ 0.5, raises the same eleven parts to
+      <em>P</em><sub>s</sub> = 0.999. The second form is a <b>test by variables</b>. The failure dose of
+      every sample is measured, a lognormal distribution is fitted, and the lot is accepted if a
+      lower tolerance bound on the failure dose clears the specification.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">exp(⟨ln <em>R</em><sub>fail</sub>⟩ − <em>K</em><sub>TL</sub><em>s</em>) ≥ <em>R</em><sub>spec</sub> &nbsp;&nbsp;⟺&nbsp;&nbsp; RDM ≥ PCC = exp(<em>K</em><sub>TL</sub><em>s</em>)</div>
+        <div class="eq-num">(15.3)</div>
+      </div>
+      <div class="eq-says">
+        ⟨ln <em>R</em><sub>fail</sub>⟩ mean of the natural logarithms of the sample failure doses
+        (dose in krad(Si), logarithm dimensionless) · <em>s</em> standard deviation of those
+        logarithms, dimensionless · <em>K</em><sub>TL</sub> one-sided tolerance-limit factor, a
+        function of sample size, survival probability and confidence, read from tables ·
+        <em>R</em><sub>spec</sub> specification dose (krad(Si)) · PCC part categorization criterion.
+        Lognormal failure doses assumed. Pease gives <em>K</em><sub>TL</sub> ≈ 4.2 for 15 samples at
+        <em>P</em><sub>s</sub> = 0.999, <em>C</em> = 0.90, and 3.1 for his 18-sample example at
+        <em>P</em><sub>s</sub> = 0.99, <em>C</em> = 0.90. The two forms are the same inequality: the
+        lot passes when its design margin exceeds the margin its own scatter demands.
+        On the formula sheet as <a href="formula-sheet.html#eq-pcc">(15.3)</a>.
+      </div>
+    </div>
+
+    <p>
+      Pease's worked example makes the point that a mean above the specification is not enough. Eighteen
+      LM117 voltage regulators from one wafer lot, six from each of three wafers, were step-stressed
+      against a 7 krad specification. The geometric-mean failure dose was 10.9 krad and
+      <em>s</em> = 0.18, so with <em>K</em><sub>TL</sub> = 3.1 the lower bound falls near 6.2 krad
+      (Pease quotes 6.15 krad), below the specification. The lot fails, although its average part
+      survives 1.6 times the specified dose.
+    </p>
+    <p>
+      The lecture separates two kinds of test that use these tools with different aims.
+      <b>Characterization</b> establishes how a part type responds: several dose levels in
+      step-stress, several bias conditions, dose rates and anneals, and above all the
+      identification of the <b>worst-case bias</b> — the bias condition during irradiation that
+      produces the most damage in the parameter that fails (§6). Its demanding requirement is
+      understanding. <b>Qualification</b> and lot acceptance run a fixed procedure at the conditions
+      characterization identified, and their demanding requirement is precision and documentation.
+      A qualification test invalidated by a power failure during irradiation, a source shutdown, or
+      electrostatic discharge from handling the fixture has to be recorded and discarded, because
+      the result will be used to accept or reject flight hardware.
+    </p>
+
+    <details class="check">
+      <summary>A regulator has a geometric-mean failure dose of 150 krad(Si) for its failure definition, against a specification of 20 krad(Si) at the part. Where does it fall, and what would eleven parts tested with no failures demonstrate?</summary>
+      <div class="answer">
+        <p>
+          By (15.1), RDM = 150/20 = 7.5, between 2 and 10: hardness-critical category 1, so every
+          lot needs a radiation lot acceptance test. Eleven parts all passing at the specification
+          dose demonstrate, by (15.2), only <em>P</em><sub>s</sub> = 0.1<sup>1/11</sup> = 0.81 at
+          90% confidence. The same eleven parts irradiated to about three times the specification,
+          60 krad(Si), with none failing, demonstrate <em>P</em><sub>s</sub> = 0.999 at 90%
+          confidence — provided the spread of ln <em>R</em><sub>fail</sub> does not exceed 0.5,
+          the assumption behind Pease's overtest factor of 3.02.
+        </p>
+      </div>
+    </details>
+
+    <h2>3 · Two charges with opposite time behaviour</h2>
+    <p>
+      The MOS test method is derived almost entirely from one comparison: the properties of the two
+      charges that ionizing radiation leaves in an oxide. This section restates that comparison as
+      the lecture presents it, then shows what it does to a circuit's failure dose when the dose
+      rate changes, which is the observation that makes a single laboratory test untrustworthy.
+    </p>
+    <p>
+      Both charges come from one chain of events (Deck 11 p. 5, after McLean and Oldham). Ionization
+      creates electron–hole pairs throughout the oxide. Under positive gate bias the electrons are
+      swept out within picoseconds, and the holes that escape initial recombination hop slowly
+      toward the silicon interface, where a fraction is captured by deep traps near the interface and
+      becomes positive <b>oxide-trap charge</b>. Transporting holes also release hydrogen ions; those
+      protons drift to the Si/SiO₂ interface and react with hydrogen-passivated silicon bonds, leaving
+      molecular hydrogen and a dangling bond — the P<sub>b</sub> centre, an <b>interface trap</b>
+      (<a href="m07-oxide-interface-trap-charge.html">M07</a> §§1, 8). The two charges are two
+      stages of one process, with different time constants and different fates.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Property</th><th>Oxide-trap charge</th><th>Interface-trap charge</th></tr></thead>
+        <tbody>
+          <tr><td>Defect</td><td>Oxygen vacancy in SiO₂ (E′ centre when charged)</td><td>Dangling silicon bond at the interface, the P<sub>b</sub> centre</td></tr>
+          <tr><td>Charge</td><td>Net positive</td><td>At threshold, positive in a p-channel and negative in an n-channel transistor</td></tr>
+          <tr><td>Threshold shift</td><td>Negative, for both channel types</td><td>Positive for an n-channel transistor</td></tr>
+          <tr><td>Integrated-circuit parameter affected</td><td>Primarily leakage current</td><td>Primarily timing, speed and output drive</td></tr>
+          <tr><td>Immediately after irradiation</td><td>Maximum</td><td>Minimum</td></tr>
+          <tr><td>Afterwards</td><td>May be neutralized slowly with time</td><td>Builds up slowly with time</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">
+      After Deck 11 p. 6 (the same comparison as Deck 08 p. 3). The device consequences of each row
+      are developed in <a href="m08-tid-effects-devices-ics.html">M08</a> §§3–5.
+    </p>
+
+    <p>
+      Two rows carry the testing problem. In an n-channel transistor the two contributions to the
+      threshold shift have opposite signs, <a href="formula-sheet.html#eq-vth-net">(8.4)</a>, and they move in opposite directions with time.
+      Which failure a circuit shows therefore depends on which charge dominates when it is measured.
+      During a slow exposure, the exposure itself supplies the time: trapped holes anneal and
+      interface traps build while the dose is still accumulating. A circuit sensitive to both
+      charges — and every CMOS circuit is, since both sit at or near the same interface — therefore
+      has a failure dose that depends on the rate at which the dose arrives.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 320" role="img" aria-labelledby="m15f4-t">
+        <title id="m15f4-t">Circuit failure dose against irradiation dose rate for a CMOS circuit sensitive to both trapped-hole and interface-trap charge</title>
+      <line x1="84" y1="272" x2="664" y2="272" class="dg-rule" stroke-width="1.2"/><line x1="84" y1="272" x2="84" y2="34" class="dg-rule" stroke-width="1.2"/>
+      <line x1="84" y1="272" x2="84" y2="276" class="dg-rule" stroke-width="1.0"/>
+      <text x="84" y="289" class="dg-label-sm" text-anchor="middle">10⁻³</text>
+      <line x1="166.9" y1="272" x2="166.9" y2="276" class="dg-rule" stroke-width="1.0"/>
+      <text x="166.9" y="289" class="dg-label-sm" text-anchor="middle">10⁻²</text>
+      <line x1="249.7" y1="272" x2="249.7" y2="276" class="dg-rule" stroke-width="1.0"/>
+      <text x="249.7" y="289" class="dg-label-sm" text-anchor="middle">10⁻¹</text>
+      <line x1="332.6" y1="272" x2="332.6" y2="276" class="dg-rule" stroke-width="1.0"/>
+      <text x="332.6" y="289" class="dg-label-sm" text-anchor="middle">10⁰</text>
+      <line x1="415.4" y1="272" x2="415.4" y2="276" class="dg-rule" stroke-width="1.0"/>
+      <text x="415.4" y="289" class="dg-label-sm" text-anchor="middle">10¹</text>
+      <line x1="498.3" y1="272" x2="498.3" y2="276" class="dg-rule" stroke-width="1.0"/>
+      <text x="498.3" y="289" class="dg-label-sm" text-anchor="middle">10²</text>
+      <line x1="581.1" y1="272" x2="581.1" y2="276" class="dg-rule" stroke-width="1.0"/>
+      <text x="581.1" y="289" class="dg-label-sm" text-anchor="middle">10³</text>
+      <line x1="664" y1="272" x2="664" y2="276" class="dg-rule" stroke-width="1.0"/>
+      <text x="664" y="289" class="dg-label-sm" text-anchor="middle">10⁴</text>
+      <line x1="80" y1="272" x2="84" y2="272" class="dg-rule" stroke-width="1.0"/>
+      <text x="77" y="276" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="80" y1="192.7" x2="84" y2="192.7" class="dg-rule" stroke-width="1.0"/>
+      <text x="77" y="196.7" class="dg-label-sm" text-anchor="end">40</text>
+      <line x1="80" y1="113.3" x2="84" y2="113.3" class="dg-rule" stroke-width="1.0"/>
+      <text x="77" y="117.3" class="dg-label-sm" text-anchor="end">80</text>
+      <line x1="80" y1="34" x2="84" y2="34" class="dg-rule" stroke-width="1.0"/>
+      <text x="77" y="38" class="dg-label-sm" text-anchor="end">120</text>
+      <text x="374" y="310" class="dg-label" text-anchor="middle">dose rate during irradiation, rad(Si)/s</text>
+      <text x="24" y="153" class="dg-label" text-anchor="middle" transform="rotate(-90 24 153)">failure dose, krad(Si)</text>
+      <path d="M87.4,223.6 L93.1,223 L98.8,222.4 L104.4,221.8 L110.1,221.2 L115.8,220.6 L121.5,220 L127.1,219.4 L132.8,218.8 L138.5,218.2 L144.2,217.6 L149.8,216.9 L155.5,216.2 L161.2,215.5 L166.9,214.7 L171.2,214.1 L175.6,213.5 L180,212.9 L184.4,212.3 L188.8,211.7 L193.1,211.1 L197.5,210.4 L201.9,209.7 L206.3,208.8 L210.7,208 L215.1,207 L219.4,205.9 L223.8,204.7 L228.2,203.4 L233.6,201.1 L239,197.6 L244.4,193.1 L249.8,187.6 L255.2,181.1 L260.6,173.8 L266,165.8 L271.4,157 L276.8,147.5 L282.2,137.5 L287.6,127 L293,116 L298.4,104.7 L303.8,93.1 L305,90.5 L306.1,87.6 L307.2,84.4 L308.4,81 L309.5,77.5 L310.7,73.7 L311.8,69.9 L312.9,66 L314.1,62 L315.2,58 L316.3,54.1 L317.5,50.2 L318.6,46.4 L319.7,42.7" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <line x1="319.7" y1="42.7" x2="332.6" y2="211.3" class="dg-acc" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <path d="M332.6,211.3 L334.6,213.3 L336.6,215.5 L338.7,217.8 L340.7,220.1 L342.7,222.5 L344.7,224.9 L346.8,227.2 L348.8,229.4 L350.8,231.5 L352.8,233.3 L354.9,234.9 L356.9,236.3 L358.9,237.3 L360.9,237.9 L368.3,239.3 L375.6,240.6 L382.9,241.7 L390.2,242.7 L397.6,243.6 L404.9,244.4 L412.2,245.1 L419.5,245.7 L426.9,246.2 L434.2,246.6 L441.5,247 L448.8,247.2 L456.1,247.4 L463.5,247.6 L471.9,247.8 L480.3,247.9 L488.7,248 L497.1,248.1 L505.5,248.2 L513.9,248.3 L522.3,248.3 L530.7,248.4 L539.1,248.5 L547.5,248.5 L555.9,248.6 L564.3,248.6 L572.7,248.7 L581.1,248.8" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <circle cx="87.4" cy="223.6" r="2.6" class="dg-acc-f"/>
+      <circle cx="166.9" cy="214.7" r="2.6" class="dg-acc-f"/>
+      <circle cx="228.2" cy="203.4" r="2.6" class="dg-acc-f"/>
+      <circle cx="303.8" cy="93.1" r="2.6" class="dg-acc-f"/>
+      <circle cx="319.7" cy="42.7" r="2.6" class="dg-acc-f"/>
+      <circle cx="332.6" cy="211.3" r="2.6" class="dg-acc-f"/>
+      <circle cx="360.9" cy="237.9" r="2.6" class="dg-acc-f"/>
+      <circle cx="463.5" cy="247.6" r="2.6" class="dg-acc-f"/>
+      <circle cx="581.1" cy="248.8" r="2.6" class="dg-acc-f"/>
+      <rect x="244.7" y="180.4" width="7" height="7" class="dg-ink"/>
+      <rect x="265.3" y="154.5" width="7" height="7" class="dg-ink"/>
+      <rect x="355.8" y="244.5" width="7" height="7" class="dg-ink"/>
+      <rect x="460.9" y="255.6" width="7" height="7" class="dg-ink"/>
+      <text x="327.7" y="46.7" class="dg-label-sm">≈115 krad(Si) near 0.7 rad(Si)/s: the two shifts balance</text>
+      <text x="91.4" y="73.7" class="dg-label-sm">low rate: interface traps build</text>
+      <text x="91.4" y="87.7" class="dg-label-sm">during the exposure →</text>
+      <text x="91.4" y="101.7" class="dg-label-sm">positive-shift failure</text>
+      <text x="463.5" y="203.6" class="dg-label-sm">high rate: trapped holes have no</text>
+      <text x="463.5" y="217.6" class="dg-label-sm">time to anneal → negative-shift failure</text>
+      <circle cx="498.3" cy="133.2" r="2.6" class="dg-acc-f"/>
+      <text x="506.3" y="137.2" class="dg-label-sm">model calculation</text>
+      <rect x="494.8" y="149.5" width="7" height="7" class="dg-ink"/>
+      <text x="506.3" y="157" class="dg-label-sm">measured failure dose</text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> Failure dose of a CMOS circuit against the dose rate of the irradiation,
+        from a model calculation (dots) with measured failure doses (squares). At the lowest rates
+        interface traps build during the long exposure and the circuit fails by a positive
+        threshold shift near 25 krad(Si); above about 10 rad(Si)/s trapped holes have no time to
+        anneal and it fails by a negative shift near 12 krad(Si). Between the two, the shifts cancel
+        over a wide range of dose, and the failure dose peaks near 115 krad(Si) at about
+        0.7 rad(Si)/s. A test at any one rate misplaces the failure dose by up to an order of
+        magnitude. Coordinates read from the published figure.
+        <span class="src">Deck 11 p. 7, after A. H. Johnston, <em>IEEE Trans. Nucl. Sci.</em> <b>31</b>, 1427 (1984), Fig. 7.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The lecture gives a reading of the peak. A process developed for hardness is tuned in the
+      gamma cell its developers use, and the tuning ends when the part passes there, which tends to
+      leave the two shifts balanced at that cell's dose rate. Any other rate unbalances them, and in
+      either direction the failure dose falls. The old requirement to test space parts at a fixed high
+      dose rate therefore produced not only the wrong failure dose but, at the low rates of space,
+      the wrong failure mechanism.
+    </p>
+    <p>
+      Transistor data show the sign reversal directly. Winokur and co-workers irradiated n-channel
+      transistors at a gate bias of 10 V at dose rates from 0.10 to 200 rad(Si)/s (Deck 11 p. 8).
+      At 0.10 rad(Si)/s the threshold shift turned positive and reached about +2.1 V at
+      1 Mrad(Si), passing the +1 V level the slide marks as a probable timing or drive failure. At
+      200 rad(Si)/s it reached about −1.05 V at the same dose, past the −1 V level marked as a
+      probable leakage failure. The intermediate rates, 2 and 20 rad(Si)/s, fell between the two.
+      Circuit data from the same study settle the question. A Sandia SA3001 2K SRAM irradiated
+      under 10 V bias crosses its leakage criterion first at high dose rate and its timing criterion
+      first at low dose rate: the dose rate decides which parameter fails first.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+      <svg viewBox="0 0 330 240" role="img" aria-labelledby="m15f5a-t">
+        <title id="m15f5a-t">SRAM static supply current against dose at 200 and 0.09 rad(Si)/s</title>
+      <line x1="58" y1="190" x2="310" y2="190" class="dg-rule" stroke-width="1.2"/><line x1="58" y1="190" x2="58" y2="34" class="dg-rule" stroke-width="1.2"/>
+      <line x1="58" y1="190" x2="58" y2="194" class="dg-rule" stroke-width="1.0"/>
+      <text x="58" y="206" class="dg-label-sm" text-anchor="middle">10⁴</text>
+      <line x1="184" y1="190" x2="184" y2="194" class="dg-rule" stroke-width="1.0"/>
+      <text x="184" y="206" class="dg-label-sm" text-anchor="middle">10⁵</text>
+      <line x1="310" y1="190" x2="310" y2="194" class="dg-rule" stroke-width="1.0"/>
+      <text x="310" y="206" class="dg-label-sm" text-anchor="middle">10⁶</text>
+      <text x="184" y="224" class="dg-label" text-anchor="middle">total dose, rad(Si)</text>
+      <line x1="54" y1="190" x2="58" y2="190" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="194" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="54" y1="141.2" x2="58" y2="141.2" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="145.2" class="dg-label-sm" text-anchor="end">5</text>
+      <line x1="54" y1="92.5" x2="58" y2="92.5" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="96.5" class="dg-label-sm" text-anchor="end">10</text>
+      <line x1="54" y1="43.8" x2="58" y2="43.8" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="47.8" class="dg-label-sm" text-anchor="end">15</text>
+      <text x="18" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 18 112)">static supply current, µA</text>
+      <path d="M126.6,183.8 L130.7,183.4 L134.8,183.1 L138.9,182.9 L143,182.6 L147.1,182.3 L151.2,182.1 L155.3,181.8 L159.4,181.5 L163.5,181.2 L167.6,180.8 L171.7,180.4 L175.8,180 L179.9,179.4 L184,178.8 L187.8,177.8 L191.6,176.2 L195.4,174 L199.2,171.2 L203,167.9 L206.9,164.1 L210.7,159.9 L214.5,155.2 L218.3,150.2 L222.1,144.9 L225.9,139.3 L229.7,133.4 L233.5,127.4 L237.3,121.2 L239.1,117.9 L240.9,114.1 L242.7,109.9 L244.5,105.2 L246.3,100.2 L248.1,95 L249.9,89.5 L251.7,83.9 L253.5,78.2 L255.3,72.4 L257.1,66.8 L258.9,61.2 L260.7,55.8 L262.5,50.6" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <circle cx="126.6" cy="183.8" r="3.2" class="dg-acc-f"/>
+      <circle cx="184" cy="178.8" r="3.2" class="dg-acc-f"/>
+      <circle cx="237.3" cy="121.2" r="3.2" class="dg-acc-f"/>
+      <circle cx="262.5" cy="50.6" r="3.2" class="dg-acc-f"/>
+      <path d="M177,183.8 L229.6,178.8 L251,175.5" class="dg-line" fill="none" stroke-width="1.8" stroke-dasharray="5 3"/>
+      <path d="M177,179.6 L173.5,186.6 L180.5,186.6 z" class="dg-ink"/>
+      <path d="M229.6,174.6 L226.1,181.6 L233.1,181.6 z" class="dg-ink"/>
+      <path d="M251,171.3 L247.5,178.3 L254.5,178.3 z" class="dg-ink"/>
+      <text x="254.5" y="54.6" class="dg-label-sm" text-anchor="end"><tspan class="dg-acc-f">200 rad(Si)/s</tspan></text>
+      <text x="257" y="167.5" class="dg-label-sm">0.09 rad(Si)/s</text>
+      </svg>
+        <figcaption>
+          Static supply current. At 200 rad(Si)/s, where trapped holes dominate, it climbs past
+          14 µA by 4.2×10⁵ rad(Si); at 0.09 rad(Si)/s it rises by only about 1 µA over the same dose
+          range. The source's 0.5 and 1 µA criterion lines are crossed first at high rate, near
+          10⁵ rad(Si).
+          <span class="src">Deck 11 p. 9, after P. S. Winokur <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>33</b>, 1343 (1986), Fig. 7.</span>
+        </figcaption>
+      </figure>
+      <figure class="compact">
+      <svg viewBox="0 0 330 240" role="img" aria-labelledby="m15f5b-t">
+        <title id="m15f5b-t">SRAM read-timing change against dose at 200 and 0.09 rad(Si)/s</title>
+      <line x1="58" y1="190" x2="310" y2="190" class="dg-rule" stroke-width="1.2"/><line x1="58" y1="190" x2="58" y2="34" class="dg-rule" stroke-width="1.2"/>
+      <line x1="58" y1="190" x2="58" y2="194" class="dg-rule" stroke-width="1.0"/>
+      <text x="58" y="206" class="dg-label-sm" text-anchor="middle">10⁴</text>
+      <line x1="184" y1="190" x2="184" y2="194" class="dg-rule" stroke-width="1.0"/>
+      <text x="184" y="206" class="dg-label-sm" text-anchor="middle">10⁵</text>
+      <line x1="310" y1="190" x2="310" y2="194" class="dg-rule" stroke-width="1.0"/>
+      <text x="310" y="206" class="dg-label-sm" text-anchor="middle">10⁶</text>
+      <text x="184" y="224" class="dg-label" text-anchor="middle">total dose, rad(Si)</text>
+      <line x1="54" y1="190" x2="58" y2="190" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="194" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="54" y1="145.4" x2="58" y2="145.4" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="149.4" class="dg-label-sm" text-anchor="end">8</text>
+      <line x1="54" y1="100.9" x2="58" y2="100.9" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="104.9" class="dg-label-sm" text-anchor="end">16</text>
+      <line x1="54" y1="56.3" x2="58" y2="56.3" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="60.3" class="dg-label-sm" text-anchor="end">24</text>
+      <text x="18" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 18 112)">read-time increase, ns</text>
+      <path d="M112.4,177.2 L116.8,176.3 L121.3,175.5 L125.8,174.7 L130.3,174 L134.8,173.3 L139.2,172.6 L143.7,171.8 L148.2,171 L152.7,170.2 L157.2,169.2 L161.7,168.2 L166.1,167.1 L170.6,165.8 L175.1,164.4 L179,162.9 L182.9,161.2 L186.8,159.2 L190.7,157 L194.6,154.4 L198.5,151.5 L202.3,148.4 L206.2,144.9 L210.1,141.1 L214,136.9 L217.9,132.5 L221.8,127.7 L225.7,122.5 L229.6,117 L231.3,114.1 L233.1,110.4 L234.8,106.1 L236.6,101.2 L238.3,95.9 L240.1,90.1 L241.8,84.1 L243.6,77.9 L245.3,71.6 L247.1,65.2 L248.8,58.9 L250.6,52.8 L252.3,46.8 L254.1,41.2" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <path d="M112.4,173 L108.9,180 L115.9,180 z" class="dg-acc-f"/>
+      <path d="M175.1,160.2 L171.6,167.2 L178.6,167.2 z" class="dg-acc-f"/>
+      <path d="M229.6,112.8 L226.1,119.8 L233.1,119.8 z" class="dg-acc-f"/>
+      <path d="M254.1,37 L250.6,44 L257.6,44 z" class="dg-acc-f"/>
+      <path d="M121.6,185.5 L184,178.3 L240.3,159.4 L267.5,146" class="dg-line" fill="none" stroke-width="1.8" stroke-dasharray="5 3"/>
+      <circle cx="121.6" cy="185.5" r="3.2" class="dg-ink"/>
+      <circle cx="184" cy="178.3" r="3.2" class="dg-ink"/>
+      <circle cx="240.3" cy="159.4" r="3.2" class="dg-ink"/>
+      <circle cx="267.5" cy="146" r="3.2" class="dg-ink"/>
+      <text x="246.1" y="45.2" class="dg-label-sm" text-anchor="end"><tspan class="dg-acc-f">0.09 rad(Si)/s</tspan></text>
+      <text x="263.5" y="166" class="dg-label-sm" text-anchor="middle">200 rad(Si)/s</text>
+      </svg>
+        <figcaption>
+          Read-time increase of the same SRAM. At 0.09 rad(Si)/s, where interface traps have time to
+          build, it reaches about 27 ns by 3.6×10⁵ rad(Si); at 200 rad(Si)/s it rises more slowly and
+          reaches only about 8 ns by 4.6×10⁵ rad(Si). The source's 4, 6 and 8 ns criterion lines are
+          crossed first at low rate, the 4 ns line below 10⁵ rad(Si).
+          <span class="src">Deck 11 p. 9, after Winokur <em>et al.</em> (1986), Fig. 8.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="box insight">
+      <p>
+        <b>A single test cannot predict; bound each charge separately.</b> One irradiation at one
+        rate reproduces the space balance between the two charges only by accident. A single test
+        could be trusted only if characterization showed one of the two mechanisms to be negligible,
+        and oxide-trap charge never is, so interface traps would have to be ruled out — which a
+        standard test, required to work on any MOS part without knowledge of its process, cannot do.
+        The test method is therefore built from two steps, one arranged so that trapped-hole charge
+        is at least as large as it could be in orbit, and one arranged so that interface-trap charge
+        is at least as large and as uncompensated as it could be. A part that passes both cannot
+        fail in orbit by either mechanism. Sections 4 and 5 construct the two steps.
+      </p>
+    </div>
+
+    <h2>4 · One curve across eleven decades of dose rate</h2>
+    <p>
+      The dose-rate dependence of §3 raises a question the test method has to answer before it can
+      bound anything: does the rate at which the dose arrives change the damage, or only the time
+      available for the damage to evolve? The two possibilities have names. A <b>time-dependent
+      effect</b> is a process that continues after or during irradiation on its own clock —
+      annealing or compensation of trapped holes, buildup of interface traps — so that a slow
+      exposure differs from a fast one only because it lasts longer. A <b>true dose-rate effect</b>
+      is a dependence on the rate itself, which no amount of waiting after a fast exposure
+      reproduces. The discriminating test was set out in
+      <a href="m08-tid-effects-devices-ics.html">M08</a> §9: irradiate fast, then anneal for as long
+      as the slow exposure took, and compare.
+    </p>
+    <p>
+      The time a slow exposure takes is the first number any test plan needs.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em> = <span class="frac"><span class="num"><em>D</em></span><span class="den"><em>Ḋ</em></span></span></div>
+        <div class="eq-num">(15.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em> duration of the exposure (s) · <em>D</em> total dose (rad) · <em>Ḋ</em> dose rate
+        (rad/s), <b>in the same material as <em>D</em></b>. Test standards write both in rad(Si);
+        device data are often in rad(SiO₂). For Co-60 gammas the two labels differ by less than one
+        per cent, but for 10 keV X-rays 1 rad(SiO₂) corresponds to about 1.8 rad(Si)
+        (<a href="m04-quantifying-energy-deposition.html">M04</a> §8), so a dose in one material and
+        a rate in the other gives a duration wrong by that factor. Divide by 86 400 s/day for days.
+        100 krad(Si) at 50 rad(Si)/s takes 2000 s; at 10⁻³ rad(Si)/s it takes 10⁸ s, about three
+        years. Valid for a constant dose rate.
+        On the formula sheet as <a href="formula-sheet.html#eq-test-time">(15.4)</a>.
+      </div>
+    </div>
+
+    <p>
+      Fleetwood, Winokur and Schwank answered the question for trapped holes with five sources that
+      span more than eleven decades of dose rate: two pulses from an electron linear accelerator
+      (LINAC) at 6×10⁹ rad(SiO₂)/s, X-rays at 5550 and 52 rad(SiO₂)/s, and Cs-137 gammas at
+      0.165 and 0.05 rad/s. Plotted against the time since the start of irradiation, the oxide-trap
+      threshold shifts of all five fall on a single curve, from about −1.46 V at 0.4 s to about
+      −0.36 V at 4×10⁶ s. The trapped-hole charge at any moment depends on the dose and on the time
+      elapsed since it began to accumulate, not on how quickly it arrived.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 236" role="img" aria-labelledby="m15f6-t">
+        <title id="m15f6-t">Oxide-trap threshold shift against time for five sources spanning eleven decades of dose rate</title>
+      <line x1="64" y1="40" x2="440" y2="40" class="dg-rule" stroke-width="1.2"/>
+      <line x1="64" y1="196" x2="64" y2="40" class="dg-rule" stroke-width="1.2"/>
+      <line x1="64" y1="40" x2="64" y2="36" class="dg-rule" stroke-width="1.0"/>
+      <text x="64" y="32" class="dg-label-sm" text-anchor="middle">10⁻¹</text>
+      <line x1="111" y1="40" x2="111" y2="36" class="dg-rule" stroke-width="1.0"/>
+      <line x1="158" y1="40" x2="158" y2="36" class="dg-rule" stroke-width="1.0"/>
+      <text x="158" y="32" class="dg-label-sm" text-anchor="middle">10¹</text>
+      <line x1="205" y1="40" x2="205" y2="36" class="dg-rule" stroke-width="1.0"/>
+      <line x1="252" y1="40" x2="252" y2="36" class="dg-rule" stroke-width="1.0"/>
+      <text x="252" y="32" class="dg-label-sm" text-anchor="middle">10³</text>
+      <line x1="299" y1="40" x2="299" y2="36" class="dg-rule" stroke-width="1.0"/>
+      <line x1="346" y1="40" x2="346" y2="36" class="dg-rule" stroke-width="1.0"/>
+      <text x="346" y="32" class="dg-label-sm" text-anchor="middle">10⁵</text>
+      <line x1="393" y1="40" x2="393" y2="36" class="dg-rule" stroke-width="1.0"/>
+      <line x1="440" y1="40" x2="440" y2="36" class="dg-rule" stroke-width="1.0"/>
+      <text x="440" y="32" class="dg-label-sm" text-anchor="middle">10⁷</text>
+      <text x="252" y="18" class="dg-label" text-anchor="middle">time after the start of irradiation, s</text>
+      <line x1="60" y1="40" x2="64" y2="40" class="dg-rule" stroke-width="1.0"/>
+      <text x="57" y="44" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="60" y1="79" x2="64" y2="79" class="dg-rule" stroke-width="1.0"/>
+      <text x="57" y="83" class="dg-label-sm" text-anchor="end">−0.4</text>
+      <line x1="60" y1="118" x2="64" y2="118" class="dg-rule" stroke-width="1.0"/>
+      <text x="57" y="122" class="dg-label-sm" text-anchor="end">−0.8</text>
+      <line x1="60" y1="157" x2="64" y2="157" class="dg-rule" stroke-width="1.0"/>
+      <text x="57" y="161" class="dg-label-sm" text-anchor="end">−1.2</text>
+      <line x1="60" y1="196" x2="64" y2="196" class="dg-rule" stroke-width="1.0"/>
+      <text x="57" y="200" class="dg-label-sm" text-anchor="end">−1.6</text>
+      <text x="16" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 16 118)">ΔV_ot, V</text>
+      <path d="M92.3,182.3 L93.6,181.4 L95,180.3 L96.3,179.2 L97.6,178.1 L99,177.1 L100.3,176 L101.6,174.9 L103,173.8 L104.3,172.8 L105.7,171.8 L107,170.9 L108.3,170.1 L109.7,169.4 L111,168.7 L112.5,168.1 L114,167.5 L115.5,166.9 L117,166.5 L118.5,166 L120,165.6 L121.5,165.2 L123,164.8 L124.5,164.3 L126,163.9 L127.5,163.5 L129,163 L130.5,162.5 L132,161.9 L133.9,161.1 L135.7,160.1 L137.6,159.1 L139.4,158 L141.3,156.8 L143.2,155.6 L145,154.4 L146.9,153.2 L148.7,152 L150.6,150.9 L152.4,149.8 L154.3,148.9 L156.1,148 L158,147.2 L161,146.2 L164.1,145.2 L167.1,144.4 L170.2,143.6 L173.2,142.8 L176.3,142.1 L179.3,141.4 L182.4,140.7 L185.4,140.1 L188.5,139.4 L191.5,138.8 L194.6,138.1 L197.6,137.3 L200.7,136.5 L203.8,135.7 L207,134.8 L210.1,133.9 L213.3,133 L216.4,132.1 L219.6,131.2 L222.7,130.2 L225.9,129.3 L229,128.4 L232.1,127.5 L235.3,126.5 L238.4,125.6 L241.6,124.7 L244.7,123.8 L248.6,122.8 L252.5,121.7 L256.4,120.7 L260.2,119.7 L264.1,118.7 L268,117.7 L271.9,116.6 L275.7,115.6 L279.6,114.6 L283.5,113.6 L287.4,112.5 L291.2,111.4 L295.1,110.4 L299,109.2 L302,108.3 L305.1,107.3 L308.1,106.3 L311.1,105.2 L314.2,104.1 L317.2,103 L320.2,101.9 L323.3,100.8 L326.3,99.8 L329.3,98.8 L332.3,97.9 L335.4,97 L338.4,96.2 L341.4,95.6 L344.8,94.9 L348.2,94.4 L351.5,93.9 L354.9,93.4 L358.2,93 L361.6,92.6 L364.9,92.3 L368.3,91.9 L371.7,91.5 L375,91 L378.4,90.6 L381.7,90 L385.1,89.4 L388.4,88.8 L390.9,88.2 L393.4,87.4 L395.9,86.6 L398.4,85.7 L400.9,84.8 L403.4,83.8 L405.8,82.7 L408.3,81.6 L410.8,80.5 L413.3,79.4 L415.8,78.2 L418.3,77.2 L420.8,76.1 L423.2,75.1" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <circle cx="92.3" cy="182.3" r="2.8" class="dg-acc-f"/>
+      <circle cx="111" cy="168.7" r="2.8" class="dg-acc-f"/>
+      <circle cx="132" cy="161.9" r="2.8" class="dg-acc-f"/>
+      <circle cx="158" cy="147.2" r="2.8" class="dg-acc-f"/>
+      <circle cx="200.7" cy="136.5" r="2.8" class="dg-acc-f"/>
+      <circle cx="244.7" cy="123.8" r="2.8" class="dg-acc-f"/>
+      <circle cx="299" cy="109.2" r="2.8" class="dg-acc-f"/>
+      <circle cx="341.4" cy="95.6" r="2.8" class="dg-acc-f"/>
+      <circle cx="388.4" cy="88.8" r="2.8" class="dg-acc-f"/>
+      <circle cx="423.2" cy="75.1" r="2.8" class="dg-acc-f"/>
+      <text x="96.3" y="202.3" class="dg-label-sm">LINAC, 6×10⁹ rad(SiO₂)/s</text>
+      <text x="164" y="173.2" class="dg-label-sm">X-ray, 5550 and 52 rad(SiO₂)/s</text>
+      <text x="423.2" y="109.1" class="dg-label-sm" text-anchor="end">Cs-137, 0.165 and</text>
+      <text x="423.2" y="123.1" class="dg-label-sm" text-anchor="end">0.05 rad(SiO₂)/s</text>
+      <text x="68" y="222" class="dg-label-sm">all five exposures fall on this one curve</text>
+      </svg>
+      <figcaption>
+        Oxide-trap threshold shift against time for exposures spanning more than eleven decades of
+        dose rate. Points from the slow sources lie at long times because the exposure itself
+        occupies that time; they continue the curve the fast sources began. These gate oxides show a
+        time-dependent effect and no true dose-rate effect. Coordinates read from the published
+        figure.
+        <span class="src">Deck 11 p. 13, after D. M. Fleetwood, P. S. Winokur and J. R. Schwank, <em>IEEE Trans. Nucl. Sci.</em> <b>35</b>, 1497 (1988).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The same holds for interface traps, and the result is the foundation of the MOS test method:
+      <b>MOS gate oxides usually show no true dose-rate effect, only time-dependent effects</b>
+      (<a href="m09-oxide-charge-kinetics.html">M09</a> §9 develops the single response curve that
+      expresses this). The qualifier is needed because true dose-rate effects belong to thick oxides
+      at low electric field (Pease 2004), the kind §7 takes up. Two consequences follow. A high-rate laboratory exposure followed by a
+      room-temperature anneal of the right length reproduces a low-rate exposure. And a high-rate
+      exposure measured promptly has given its trapped holes less time to anneal than any exposure in
+      orbit, which lasts years; its negative shift is therefore at least as large as the orbital one.
+      The first half of the bound — trapped-hole charge — is supplied by irradiating fast.
+    </p>
+    <p>
+      The second half needs interface traps at their largest, and waiting at room temperature for
+      them is impractical. Deck 11 p. 10 shows the alternative. N-channel transistors with 32 nm gate
+      oxides received 300 krad(SiO₂) of Co-60 gammas at 400 rad/s under 6 V bias and were then
+      annealed under the same bias, some at 25 °C and some at 100 °C. At room temperature the
+      interface-trap shift climbed slowly from about 0.35 V, reaching about 0.53 V after a week and
+      0.59 V at 10⁷ s, still rising. A Cs-137 exposure to the same dose at 0.165 rad/s, which by
+      (15.4) takes 1.8×10⁶ s, landed on the room-temperature curve at about 0.54 V: interface-trap
+      buildup is time-dependent too. At 100 °C the shift reached about 0.65 V by the first
+      measurement, near 4×10³ s, and then stayed flat through one week and beyond, at a value the
+      room-temperature curve approaches only when extrapolated to about ten years.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+      <svg viewBox="0 0 460 240" role="img" aria-labelledby="m15f7-t">
+        <title id="m15f7-t">Interface-trap threshold shift against time from the start of irradiation, for anneals at 100 °C and at 25 °C after a high-rate exposure</title>
+      <line x1="58" y1="196" x2="440" y2="196" class="dg-rule" stroke-width="1.2"/><line x1="58" y1="196" x2="58" y2="30" class="dg-rule" stroke-width="1.2"/>
+      <line x1="58" y1="196" x2="58" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="58" y="212" class="dg-label-sm" text-anchor="middle">10²</text>
+      <line x1="112.6" y1="196" x2="112.6" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <line x1="167.1" y1="196" x2="167.1" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="167.1" y="212" class="dg-label-sm" text-anchor="middle">10⁴</text>
+      <line x1="221.7" y1="196" x2="221.7" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <line x1="276.3" y1="196" x2="276.3" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="276.3" y="212" class="dg-label-sm" text-anchor="middle">10⁶</text>
+      <line x1="330.9" y1="196" x2="330.9" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <line x1="385.4" y1="196" x2="385.4" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="385.4" y="212" class="dg-label-sm" text-anchor="middle">10⁸</text>
+      <line x1="440" y1="196" x2="440" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="249" y="230" class="dg-label" text-anchor="middle">time after the start of irradiation, s</text>
+      <line x1="54" y1="196" x2="58" y2="196" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="200" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="54" y1="154.5" x2="58" y2="154.5" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="158.5" class="dg-label-sm" text-anchor="end">0.2</text>
+      <line x1="54" y1="113" x2="58" y2="113" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="117" class="dg-label-sm" text-anchor="end">0.4</text>
+      <line x1="54" y1="71.5" x2="58" y2="71.5" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="75.5" class="dg-label-sm" text-anchor="end">0.6</text>
+      <line x1="54" y1="30" x2="58" y2="30" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="34" class="dg-label-sm" text-anchor="end">0.8</text>
+      <text x="16" y="113" class="dg-label" text-anchor="middle" transform="rotate(-90 16 113)">ΔV_it, V</text>
+      <line x1="105.8" y1="124.4" x2="146.6" y2="60.5" class="dg-acc" stroke-width="1.6" stroke-dasharray="4 3"/>
+      <path d="M146.6,60.5 L168.3,60.5 L241.5,62.2 L257.9,57 L280.6,59.1 L291.5,58.2" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <line x1="291.5" y1="58.2" x2="412.6" y2="59.1" class="dg-acc" stroke-width="1.6" stroke-dasharray="4 3"/>
+      <path d="M146.6,56.3 L143.1,63.3 L150.1,63.3 z" class="dg-acc-f"/>
+      <path d="M168.3,56.3 L164.8,63.3 L171.8,63.3 z" class="dg-acc-f"/>
+      <path d="M241.5,58 L238,65 L245,65 z" class="dg-acc-f"/>
+      <path d="M257.9,52.8 L254.4,59.8 L261.4,59.8 z" class="dg-acc-f"/>
+      <path d="M280.6,54.9 L277.1,61.9 L284.1,61.9 z" class="dg-acc-f"/>
+      <path d="M291.5,54 L288,61 L295,61 z" class="dg-acc-f"/>
+      <path d="M105.8,124.4 L108.6,122.9 L111.4,121.4 L114.3,119.8 L117.1,118.2 L119.9,116.6 L122.8,115 L125.6,113.4 L128.4,111.8 L131.3,110.3 L134.1,108.8 L136.9,107.4 L139.8,106.1 L142.6,104.8 L145.4,103.7 L147.2,103 L149,102.3 L150.8,101.6 L152.6,100.9 L154.4,100.3 L156.2,99.6 L157.9,99 L159.7,98.5 L161.5,97.9 L163.3,97.4 L165.1,96.9 L166.9,96.4 L168.7,96 L170.5,95.6 L173.7,94.9 L177,94.3 L180.2,93.7 L183.5,93.1 L186.8,92.5 L190,92 L193.3,91.5 L196.6,91.1 L199.8,90.7 L203.1,90.3 L206.3,89.9 L209.6,89.5 L212.9,89.2 L216.1,88.9 L218,88.8 L219.9,88.6 L221.8,88.5 L223.7,88.3 L225.5,88.2 L227.4,88.1 L229.3,88 L231.2,87.9 L233.1,87.8 L234.9,87.7 L236.8,87.6 L238.7,87.5 L240.6,87.4 L242.5,87.3 L243.6,87.2 L244.7,87.2 L245.8,87.1 L246.9,87.1 L248,87.1 L249.1,87 L250.2,87 L251.3,87 L252.4,86.9 L253.5,86.9 L254.6,86.8 L255.7,86.8 L256.8,86.7 L257.9,86.6 L259.2,86.5 L260.5,86.3 L261.8,86.1 L263.1,85.7 L264.5,85.4 L265.8,85 L267.1,84.6 L268.4,84.2 L269.7,83.8 L271,83.4 L272.3,83 L273.7,82.6 L275,82.3 L276.3,82.1 L278,81.8 L279.8,81.5 L281.5,81.3 L283.3,81 L285,80.8 L286.7,80.6 L288.5,80.4 L290.2,80.2 L292,80 L293.7,79.8 L295.5,79.6 L297.2,79.4 L298.9,79.2 L300.7,79 L302.8,78.7 L305,78.4 L307.2,78.1 L309.3,77.8 L311.5,77.5 L313.6,77.1 L315.8,76.8 L317.9,76.5 L320.1,76.2 L322.2,75.9 L324.4,75.6 L326.5,75.2 L328.7,74.9 L330.9,74.6" class="dg-line" fill="none" stroke-width="1.8"/>
+      <line x1="330.9" y1="74.6" x2="409.8" y2="65.3" class="dg-line" stroke-width="1.4" stroke-dasharray="4 3"/>
+      <circle cx="105.8" cy="124.4" r="2.8" class="dg-ink"/>
+      <circle cx="145.4" cy="103.7" r="2.8" class="dg-ink"/>
+      <circle cx="170.5" cy="95.6" r="2.8" class="dg-ink"/>
+      <circle cx="216.1" cy="88.9" r="2.8" class="dg-ink"/>
+      <circle cx="242.5" cy="87.3" r="2.8" class="dg-ink"/>
+      <circle cx="257.9" cy="86.6" r="2.8" class="dg-ink"/>
+      <circle cx="276.3" cy="82.1" r="2.8" class="dg-ink"/>
+      <circle cx="300.7" cy="79" r="2.8" class="dg-ink"/>
+      <circle cx="330.9" cy="74.6" r="2.8" class="dg-ink"/>
+      <rect x="285.4" y="81.3" width="7" height="7" class="dg-soft"/>
+      <text x="146.6" y="48.5" class="dg-label-sm"><tspan class="dg-acc-f">100 °C anneal</tspan></text>
+      <text x="151.4" y="113" class="dg-label-sm">25 °C anneal</text>
+      <text x="296.9" y="104.7" class="dg-label-sm">Cs-137 at 0.165 rad/s</text>
+      <text x="296.9" y="118.7" class="dg-label-sm">to the same dose</text>
+      <line x1="288.9" y1="89.8" x2="296.9" y2="93.7" class="dg-rule" stroke-width="0.8"/>
+      <line x1="264.4" y1="46.6" x2="264.4" y2="54.9" class="dg-rule" stroke-width="1.0"/>
+      <text x="264.4" y="42.5" class="dg-label-sm" text-anchor="middle">1 wk</text>
+      <line x1="412.6" y1="46.6" x2="412.6" y2="54.9" class="dg-rule" stroke-width="1.0"/>
+      <text x="412.6" y="42.5" class="dg-label-sm" text-anchor="middle">10 yr</text>
+      </svg>
+        <figcaption>
+          A 100 °C anneal drives interface-trap buildup to its plateau within hours, and the plateau
+          lies above the room-temperature and low-dose-rate values. Any time on the plateau gives the
+          same answer. Time runs from the start of irradiation, as on Deck 11 p. 13: the first point,
+          near 750 s, is the duration of the 300 krad(SiO₂) exposure at 400 rad/s, and the Cs-137
+          point sits at its own exposure time. The slide's figure caption calls the axis
+          postirradiation anneal time. Coordinates read from the published figure; dashed segments
+          are the source's interpolations and extrapolations.
+          <span class="src">Deck 11 p. 10, after Fleetwood <em>et al.</em> (1988), Fig. 6.</span>
+        </figcaption>
+      </figure>
+      <figure class="compact">
+      <svg viewBox="0 0 460 240" role="img" aria-labelledby="m15f8-t">
+        <title id="m15f8-t">Transistor leakage current against time after low-dose room-temperature annealing and high-dose 100 °C annealing</title>
+      <line x1="62" y1="196" x2="440" y2="196" class="dg-rule" stroke-width="1.2"/><line x1="62" y1="196" x2="62" y2="30" class="dg-rule" stroke-width="1.2"/>
+      <line x1="62" y1="196" x2="62" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="62" y="212" class="dg-label-sm" text-anchor="middle">10¹</text>
+      <line x1="125" y1="196" x2="125" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <line x1="188" y1="196" x2="188" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="188" y="212" class="dg-label-sm" text-anchor="middle">10³</text>
+      <line x1="251" y1="196" x2="251" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <line x1="314" y1="196" x2="314" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="314" y="212" class="dg-label-sm" text-anchor="middle">10⁵</text>
+      <line x1="377" y1="196" x2="377" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <line x1="440" y1="196" x2="440" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="440" y="212" class="dg-label-sm" text-anchor="middle">10⁷</text>
+      <text x="251" y="230" class="dg-label" text-anchor="middle">time, s</text>
+      <line x1="58" y1="196" x2="62" y2="196" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="200" class="dg-label-sm" text-anchor="end">10⁻¹²</text>
+      <line x1="58" y1="140.7" x2="62" y2="140.7" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="144.7" class="dg-label-sm" text-anchor="end">10⁻⁹</text>
+      <line x1="58" y1="85.3" x2="62" y2="85.3" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="89.3" class="dg-label-sm" text-anchor="end">10⁻⁶</text>
+      <line x1="58" y1="30" x2="62" y2="30" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="34" class="dg-label-sm" text-anchor="end">10⁻³</text>
+      <text x="14" y="113" class="dg-label" text-anchor="middle" transform="rotate(-90 14 113)">leakage at V_G = 0, A</text>
+      <path d="M89.2,90.1 L204.1,94.5 L265.5,99.5 L310.2,106.6 L360.1,117.5 L394.6,127.5" class="dg-line" fill="none" stroke-width="1.8"/>
+      <rect x="85.9" y="86.9" width="6.5" height="6.5" class="dg-fill"/>
+      <rect x="200.8" y="91.2" width="6.5" height="6.5" class="dg-fill"/>
+      <rect x="262.3" y="96.3" width="6.5" height="6.5" class="dg-fill"/>
+      <rect x="306.9" y="103.4" width="6.5" height="6.5" class="dg-fill"/>
+      <rect x="356.9" y="114.3" width="6.5" height="6.5" class="dg-fill"/>
+      <rect x="391.3" y="124.2" width="6.5" height="6.5" class="dg-fill"/>
+      <path d="M131.5,51.3 L194.3,71.5 L223,80.2 L300,119 L358,150.9 L384.2,165.3 L416.9,177.6" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <circle cx="131.5" cy="51.3" r="3" class="dg-acc-f"/>
+      <circle cx="194.3" cy="71.5" r="3" class="dg-acc-f"/>
+      <circle cx="223" cy="80.2" r="3" class="dg-acc-f"/>
+      <circle cx="300" cy="119" r="3" class="dg-acc-f"/>
+      <circle cx="358" cy="150.9" r="3" class="dg-acc-f"/>
+      <circle cx="384.2" cy="165.3" r="3" class="dg-acc-f"/>
+      <circle cx="416.9" cy="177.6" r="3" class="dg-acc-f"/>
+      <path d="M213.1,94.7 L209.1,102.7 L217.1,102.7 z" class="dg-ink"/>
+      <circle cx="336.8" cy="131.6" r="3.6" class="dg-ink"/>
+      <text x="81" y="112.1" class="dg-label-sm">6 krad, 200 rad/s,</text>
+      <text x="81" y="126.1" class="dg-label-sm">then 25 °C</text>
+      <text x="139.5" y="45.3" class="dg-label-sm"><tspan class="dg-acc-f">30 krad, 240 rad/s, then 100 °C</tspan></text>
+      <text x="213.1" y="119.5" class="dg-label-sm" text-anchor="middle">6 krad at 2 rad/s</text>
+      <text x="332.8" y="148.6" class="dg-label-sm" text-anchor="end">6 krad at 0.02 rad/s</text>
+      </svg>
+        <figcaption>
+          The same bake empties the trapped holes. Leakage of a transistor given 30 krad and a 100 °C
+          anneal falls below that of one given 6 krad and a room-temperature anneal, and keeps
+          falling. Low-rate exposures to 6 krad lie on or below the room-temperature curve.
+          OKI transistors, 50 nm oxides, 5 V bias; coordinates read from the published figure.
+          <span class="src">Deck 11 p. 11, after D. M. Fleetwood, P. S. Winokur, L. C. Riewe and R. L. Pease, <em>IEEE Trans. Nucl. Sci.</em> <b>36</b>, 1963 (1989), Fig. 8.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      The 100 °C bake works because of where 100 °C sits between two thresholds. It is hot enough to
+      accelerate the transport of holes and protons that interface-trap formation waits on, so the
+      buildup that takes years at room temperature completes in hours. It is below the temperature at
+      which interface traps themselves anneal: Deck 06 p. 42 records that temperatures above 125 °C
+      are normally required for significant interface-trap annealing (M09 §9). The bake therefore
+      carries interface traps to their long-time value and holds them there.
+    </p>
+    <p>
+      It does something else as well. Trapped holes anneal by tunnelling and thermal emission of
+      electrons (<a href="m07-oxide-interface-trap-charge.html">M07</a> §7, M09 §5), and thermal
+      emission accelerates strongly with temperature. Deck 11 p. 11 shows the result on transistor
+      leakage, which trapped holes control. A transistor irradiated to 6 krad at 200 rad/s and
+      annealed at room temperature leaks about 5×10⁻⁷ A at first and about 5×10⁻⁹ A after
+      2×10⁶ s; 6 krad exposures at 2 rad/s and at 0.02 rad/s land on or below that curve. A
+      transistor given five times the dose, 30 krad at 240 rad/s, and then annealed at 100 °C starts
+      near 10⁻⁴ A, falls through the 6 krad curve near 2×10⁴ s, and reaches 10⁻¹¹ A by
+      4×10⁶ s. The bake removes trapped-hole charge faster and more completely than any exposure in
+      orbit would. It therefore cannot <em>predict</em> low-dose-rate leakage, and a leakage
+      measurement made after it would pass parts that fail in orbit. That is why the trapped-hole
+      bound is taken <em>before</em> the bake, at the end of the fast irradiation.
+    </p>
+
+    <div class="box">
+      <p>
+        <b>Latent interface-trap buildup.</b> Some oxides show a second rise in interface-trap
+        density long after the first has saturated (Deck 11 p. 12, after Schwank <em>et al.</em>,
+        <em>IEEE Trans. Nucl. Sci.</em> <b>39</b>, 1953 (1992)): a flat interval after the normal
+        buildup, then an increase beginning near 10⁶ s that can raise the interface-trap count by as
+        much as four times. It is typically seen only in oxides with high vacancy densities. Deck 11
+        attributes it, tentatively, to retarded proton drift; Deck 05, followed in
+        <a href="m07-oxide-interface-trap-charge.html">M07</a> §8, to molecular hydrogen transport and
+        reaction; the lecture to hydrogen arriving late from remote regions such as the passivation
+        or the package cavity. All three accounts are hydrogen accounts, and M09 §8 treats the
+        kinetics. The process is strongly thermally activated, with an activation energy of about
+        0.41 eV, so the 100 °C bake accelerates it as well. As an estimate derived here rather than
+        stated on the slides, and assuming the one activation energy holds from 25 to 100 °C, the
+        acceleration factor is exp[(0.41 eV/<em>k</em>)(1/298 K − 1/373 K)] ≈ 25, so 10⁷ s at room
+        temperature corresponds to about 4×10⁵ s, or 110 hours, at 100 °C — within a one-week bake.
+      </p>
+    </div>
+
+    <h2>5 · MIL-STD-883 Test Method 1019 for MOS</h2>
+    <p>
+      The two bounds of §4 are assembled into a procedure in <b>MIL-STD-883 Test Method 1019</b>,
+      "Ionizing radiation (total dose) test procedure", the US military standard total-dose test
+      method. Deck 11 p. 13 reproduces its flowchart from
+      revision H. The procedure bounds each charge in turn on the same samples: Pease describes it
+      as an initial irradiation that looks for failures caused by oxide-trapped charge, followed by
+      an additional irradiation and an elevated-temperature anneal that look for failures caused by
+      interface traps. Each step after the first irradiation is a decision, not a fixed stage.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 480" role="img" aria-labelledby="m15f9-t">
+        <title id="m15f9-t">MIL-STD-883 Test Method 1019 flowchart for MOS parts, with the extended room-temperature anneal and the conditional accelerated-annealing test</title>
+      <defs><marker id="m15f9-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+      <rect x="200" y="10" width="250" height="32" rx="4" class="dg-fill"/>
+      <text x="325" y="30" class="dg-label-sm" text-anchor="middle">Select dose rate · 3.6</text>
+      <text x="190" y="22" class="dg-label-sm" text-anchor="end">default Co-60 window</text>
+      <text x="190" y="35" class="dg-label-sm" text-anchor="end">50–300 rad(Si)/s</text>
+      <path d="M325,42 L325,60" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <rect x="200" y="62" width="250" height="32" rx="4" class="dg-fill"/>
+      <text x="325" y="82" class="dg-label-sm" text-anchor="middle">Irradiate to specified dose · 3.9</text>
+      <path d="M325,94 L325,112" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <rect x="200" y="114" width="250" height="32" rx="4" class="dg-fill"/>
+      <text x="325" y="134" class="dg-label-sm" text-anchor="middle">Electrical tests · 3.8</text>
+      <path d="M450,130 L488,130" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="470" y="124" class="dg-label-sm" text-anchor="middle">fail</text>
+      <rect x="490" y="108" width="180" height="44" rx="4" class="dg-fill"/>
+      <text x="580" y="127.5" class="dg-label-sm" text-anchor="middle">Extended room-temperature</text>
+      <text x="580" y="140.5" class="dg-label-sm" text-anchor="middle">anneal test required? · 3.11.1</text>
+      <path d="M580,152 L580,176" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <rect x="490" y="178" width="180" height="32" rx="4" class="dg-fill"/>
+      <text x="580" y="198" class="dg-label-sm" text-anchor="middle">Electrical tests · 3.8</text>
+      <path d="M670,194 L684,194" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="673" y="212" class="dg-label-sm">fail</text>
+      <path d="M580,210 L580,262 L452,262" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="586" y="236" class="dg-label-sm">pass</text>
+      <path d="M325,146 L325,238" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="331" y="196" class="dg-label-sm">pass</text>
+      <rect x="200" y="240" width="250" height="44" rx="4" class="dg-fill"/>
+      <text x="325" y="259.5" class="dg-label-sm" text-anchor="middle">Accelerated annealing test</text>
+      <text x="325" y="272.5" class="dg-label-sm" text-anchor="middle">required? · 3.12.1</text>
+      <path d="M200,262 L132,262" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="166" y="256" class="dg-label-sm" text-anchor="middle">no</text>
+      <rect x="60" y="248" width="70" height="28" rx="4" class="dg-fill"/>
+      <text x="95" y="266" class="dg-label" text-anchor="middle">PASS</text>
+      <path d="M325,284 L325,306" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="331" y="300" class="dg-label-sm">yes</text>
+      <rect x="200" y="308" width="250" height="32" rx="4" class="dg-fill"/>
+      <text x="325" y="328" class="dg-label-sm" text-anchor="middle">0.5× overtest required? · 3.12.2.a.2</text>
+      <path d="M450,324 L488,324" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="470" y="318" class="dg-label-sm" text-anchor="middle">yes</text>
+      <rect x="490" y="302" width="180" height="44" rx="4" class="dg-fill"/>
+      <text x="580" y="321.5" class="dg-label-sm" text-anchor="middle">Irradiate an additional</text>
+      <text x="580" y="334.5" class="dg-label-sm" text-anchor="middle">0.5× specified dose · 3.12.2.a</text>
+      <path d="M580,346 L580,392 L452,392" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <path d="M325,340 L325,368" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="331" y="358" class="dg-label-sm">no</text>
+      <rect x="200" y="370" width="250" height="44" rx="4" class="dg-fill"/>
+      <rect x="201" y="371" width="248" height="42" rx="4" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <text x="325" y="389.5" class="dg-label-sm" text-anchor="middle">One of three accelerated annealing</text>
+      <text x="325" y="402.5" class="dg-label-sm" text-anchor="middle">procedures · 3.12.2.b</text>
+      <text x="190" y="386" class="dg-label-sm" text-anchor="end">in routine use:</text>
+      <text x="190" y="400" class="dg-label-sm" text-anchor="end"><tspan class="dg-acc-f">168 h at 100 °C, biased</tspan></text>
+      <path d="M325,414 L325,436" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <rect x="200" y="438" width="250" height="32" rx="4" class="dg-fill"/>
+      <text x="325" y="458" class="dg-label-sm" text-anchor="middle">Electrical tests · 3.8</text>
+      <path d="M200,454 L160,454" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="156" y="458" class="dg-label-sm" text-anchor="end">pass</text>
+      <path d="M450,454 L490,454" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f9-a)"/>
+      <text x="494" y="458" class="dg-label-sm">fail</text>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> The Test Method 1019 flow for MOS parts, with the paragraph numbers of the
+        standard. The main path irradiates at high rate and tests; a part that fails may be given an
+        extended room-temperature anneal; the accelerated-annealing test, and the 0.5× overtest
+        within it, are each applied only when required. The dose-rate window and the 168 h, 100 °C
+        anneal are not printed on the flowchart and are added from the sources cited.
+        <span class="src">Redrawn from Deck 11 p. 13 (MIL-STD-883H); dose-rate window from R. L. Pease (2004); anneal from Deck 08 p. 45.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Select the dose rate and irradiate.</b> The default for the standard test is Co-60
+      irradiation at 50 to 300 rad(Si)/s; Pease's comparison of standards gives this window for
+      Test Method 1019, against two windows in the European standard ESCC 22900, 2–10 and
+      0.01–0.1 rad/s. The part is irradiated to the specified dose at its worst-case bias (§6), and
+      its electrical parameters are measured. A pass at this point means the part will not fail in
+      orbit through trapped-hole charge. At the space dose rate the exposure lasts years, more of
+      the trapped holes anneal during it, and by the single curve of §4 the negative shift and the
+      leakage it causes are smaller than those just measured.
+    </p>
+    <p>
+      <b>If the part fails, the extended room-temperature anneal.</b> A failure at the end of a
+      fast irradiation may be an artefact of the rate: the part may be failing only because its
+      trapped holes have had seconds to anneal instead of years. The flowchart therefore first
+      determines whether an extended room-temperature anneal test is required (paragraph 3.11.1). If
+      it is, the part is annealed under bias at room temperature and measured again; the anneal
+      lets trapped holes do what they would have done during a slower exposure, and it remains short
+      compared with a mission of several years, so the result stays conservative. A part that passes
+      after it rejoins the main path; one that fails is rejected.
+    </p>
+    <p>
+      <b>The accelerated-annealing test.</b> A part that has passed must still be shown not to fail
+      by interface traps, which have not yet built up. The flowchart determines whether the
+      accelerated-annealing test is required (3.12.1); if not, the part passes. The lecture notes
+      that manufacturers of thin, well-controlled oxides, in which interface-trap buildup is small,
+      often omit this test where the acquiring authority permits, and that parts with thick gate
+      oxides, such as power transistors, and parts known to be sensitive should receive it. If the
+      test is required, the flowchart next determines whether a <b>0.5× overtest</b> is required
+      (3.12.2.a.2) and, if so, irradiates the part with an additional half of the specified dose
+      (3.12.2.a). Neither Deck 11 nor the lecture states the basis of the factor; the standard makes
+      it a separate decision. The part then receives one of three accelerated annealing procedures
+      (3.12.2.b) and a final electrical test. The procedure in routine use, and the one this course
+      uses, is a <b>168-hour anneal at 100 °C under bias</b>. Deck 08 p. 45 defines the rebound
+      test as the additional 50% of dose followed by that anneal, and the course textbook cites
+      100 °C for 168 hours as the routine MOS rebound test of both MIL-STD-883 Method 1019.4 and
+      ESCC 22900.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 480 240" role="img" aria-labelledby="m15f10-t">
+        <title id="m15f10-t">Schematic of the two charge components in orbit, after a high-rate irradiation, and after the overtest and bake</title>
+      <line x1="40" y1="120" x2="440" y2="120" class="dg-rule" stroke-width="1.2"/>
+      <text x="36" y="70" class="dg-label-sm" text-anchor="end">ΔV_it</text>
+      <text x="36" y="82" class="dg-label-sm" text-anchor="end">(+)</text>
+      <text x="36" y="164" class="dg-label-sm" text-anchor="end">ΔV_ot</text>
+      <text x="36" y="176" class="dg-label-sm" text-anchor="end">(−)</text>
+      <rect x="118" y="48" width="34" height="72" class="dg-fill"/>
+      <rect x="80" y="120" width="34" height="44" class="dg-fill"/>
+      <text x="116" y="16" class="dg-label-sm" text-anchor="middle">in orbit</text>
+      <text x="116" y="29" class="dg-label-sm" text-anchor="middle">years at low rate</text>
+      <rect x="248" y="96" width="34" height="24" class="dg-fill"/>
+      <rect x="210" y="120" width="34" height="80" class="dg-soft"/>
+      <text x="246" y="16" class="dg-label-sm" text-anchor="middle">after high-rate</text>
+      <text x="246" y="29" class="dg-label-sm" text-anchor="middle">irradiation</text>
+      <rect x="378" y="36" width="34" height="84" class="dg-acc-f"/>
+      <rect x="340" y="120" width="34" height="8" class="dg-fill"/>
+      <text x="376" y="16" class="dg-label-sm" text-anchor="middle">after overtest</text>
+      <text x="376" y="29" class="dg-label-sm" text-anchor="middle">and 100 °C bake</text>
+      <line x1="114" y1="164" x2="210" y2="164" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 3"/>
+      <text x="250" y="220" class="dg-label-sm" text-anchor="middle">more trapped-hole charge than in orbit:</text>
+      <text x="250" y="233" class="dg-label-sm" text-anchor="middle">bounds leakage failures</text>
+      <line x1="152" y1="48" x2="468" y2="48" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 3"/>
+      <text x="452" y="150" class="dg-label-sm" text-anchor="end">interface traps at their plateau,</text>
+      <text x="452" y="163" class="dg-label-sm" text-anchor="end">little hole charge left to offset them:</text>
+      <text x="452" y="176" class="dg-label-sm" text-anchor="end">bounds timing and drive failures</text>
+      </svg>
+      <figcaption>
+        What each step bounds, for an n-channel transistor. Schematic: bar heights are not data.
+        After the fast irradiation the trapped-hole shift exceeds its orbital value; after the
+        overtest and bake the interface-trap shift is at its plateau and almost nothing offsets it,
+        so the positive shift exceeds anything the part can reach in orbit.
+      </figcaption>
+    </figure>
+
+    <p>
+      Both parameters of the anneal follow from §4. <b>100 °C</b> is hot enough to carry
+      interface-trap buildup to its plateau in hours and to remove most trapped holes, and below the
+      temperature, above 125 °C, at which interface traps themselves anneal. The part leaves the bake
+      with its full interface-trap charge and little of the trapped-hole charge that would have
+      compensated it in an n-channel transistor — the rebound worst case of
+      <a href="m08-tid-effects-devices-ics.html">M08</a> §3, with at least the interface-trap charge
+      orbit can produce (more when the 0.5× overtest is applied) and less compensation than orbit can
+      supply. A part that passes cannot fail in orbit by a positive
+      threshold shift, loss of drive or loss of timing margin. <b>168 hours</b>, one week, is not a
+      physical constant. On Deck 11 p. 10 the 100 °C plateau is flat from about 4×10³ s to beyond
+      10⁶ s, and 168 h is 6.05×10⁵ s, so any duration on the plateau gives the same answer; the
+      lecture's reason for a week is that it fits a laboratory schedule.
+    </p>
+
+    <div class="box insight">
+      <p>
+        <b>The method never predicts the orbital response.</b> The irradiation step overstates
+        trapped-hole damage and understates interface-trap damage; the anneal step does the reverse.
+        Neither result is what the part will show in orbit. Each is an upper bound on one failure
+        mechanism, and a part that passes both is bounded on both. This is the logic that fails for
+        linear bipolar parts in §7, where no laboratory step reliably overstates the damage.
+      </p>
+    </div>
+
+    <h2>6 · Worst-case bias and combined stresses</h2>
+    <p>
+      Every step of Test Method 1019 is performed under bias, and the bias applied during
+      irradiation changes the result more than almost any other variable a test controls. Finding
+      the worst case is the central task of characterization (§2), because a lot acceptance test run
+      at a benign bias bounds nothing.
+    </p>
+    <p>
+      The bias sets the oxide field, and the field controls four of the steps between dose and
+      threshold shift. It sets the <b>charge yield</b>: the fraction of holes that escape initial
+      recombination rises with field (<a href="m07-oxide-interface-trap-charge.html">M07</a> §2). It
+      sets the <b>direction of hole transport</b>: a positive gate drives holes to the Si/SiO₂
+      interface, where charge trapped near the interface shifts the threshold by almost its full
+      <em>Q</em>/<em>C</em><sub>ox</sub>, while a negative gate drives them to the gate side, where
+      the charge centroid lies far from the channel and the shift is small
+      (<a href="m06-device-physics.html">M06</a> §3). It sets the <b>trapped fraction</b>, which
+      falls with field, so that the net shift is largest at intermediate field rather than at the
+      highest (M07 §4). And it sets <b>interface-trap buildup</b>, since the protons released in the
+      oxide must drift to the silicon interface to form interface traps, which positive gate bias
+      favours (M07 §8; <a href="m09-oxide-charge-kinetics.html">M09</a> §3 treats bias during and
+      after irradiation quantitatively).
+    </p>
+    <p>
+      For SiO₂ gate oxides these effects combine into a simple rule: the worst case is almost always
+      positive gate bias at the operating field — for an n-channel transistor, biased on. A part
+      irradiated with its pins grounded sees only the built-in potential across its oxides, a far
+      lower field, and its yield, transport and interface-trap buildup are all reduced. The rule is
+      not universal, and the worst case can differ by parameter and by the part's role in its
+      circuit; Pease cautions that the bias and load of published test data may not be worst case
+      for the application in hand. The worst-case bias is therefore established in
+      characterization, for each part type, and then imposed in qualification and lot acceptance.
+    </p>
+
+    <div class="box defn">
+      <p>
+        <b>Bias-temperature stress (BTS).</b> Holding a gate at an elevated temperature under a
+        gate field, with no radiation. It exchanges charge between the channel and traps in and near
+        the gate dielectric, and its drift of the threshold voltage in service is bias-temperature
+        instability. High-field and radiation stresses create and fill overlapping populations of
+        defects (<a href="m10-gate-oxide-processing.html">M10</a> §7), so their effects need not add
+        independently.
+      </p>
+    </div>
+
+    <p>
+      Advanced dielectrics can make the worst case a sequence rather than a single bias. Zhou,
+      Fleetwood and co-workers irradiated pMOS capacitors with high-κ gate dielectrics to
+      1 Mrad(SiO₂) at a field of zero or ±2 MV/cm, then applied bias-temperature stress for 10 minutes
+      at 75 °C and ±2 MV/cm (Deck 11 p. 14). Irradiation alone shifted the threshold by at most about
+      −0.07 V, and negative-bias stress alone by about −0.04 V. Positive-bias irradiation followed by
+      negative-bias stress shifted it by about −0.33 V, roughly three times the sum of the two
+      separate shifts. The lecture's account is that the thick high-κ layers of that study trapped
+      both holes and electrons, whose charges largely cancelled after irradiation; the negative-bias
+      stress then removed the electrons, which are held less strongly, and exposed the holes. For a
+      pMOS transistor positive gate bias is the off state and negative gate bias the on state, so the
+      worst case is a part <b>irradiated off and annealed on</b>.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 470 250" role="img" aria-labelledby="m15f11-t">
+        <title id="m15f11-t">Oxide-trap threshold shift of high-k pMOS capacitors after irradiation, bias-temperature stress, and both in sequence</title>
+      <line x1="60" y1="40" x2="450" y2="40" class="dg-rule" stroke-width="1.2"/>
+      <line x1="60" y1="40" x2="60" y2="196" class="dg-rule" stroke-width="1.2"/>
+      <line x1="56" y1="40" x2="60" y2="40" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="44" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="56" y1="84.6" x2="60" y2="84.6" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="88.6" class="dg-label-sm" text-anchor="end">−0.1</text>
+      <line x1="56" y1="129.1" x2="60" y2="129.1" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="133.1" class="dg-label-sm" text-anchor="end">−0.2</text>
+      <line x1="56" y1="173.7" x2="60" y2="173.7" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="177.7" class="dg-label-sm" text-anchor="end">−0.3</text>
+      <text x="16" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 16 118)">ΔV_ot, V</text>
+      <rect x="71.4" y="40" width="26" height="4.9" class="dg-fill"/>
+      <text x="84.4" y="32" class="dg-label-sm" text-anchor="middle">−/no</text>
+      <rect x="120.1" y="40" width="26" height="25.4" class="dg-fill"/>
+      <text x="133.1" y="32" class="dg-label-sm" text-anchor="middle">0/no</text>
+      <rect x="168.9" y="40" width="26" height="31.6" class="dg-fill"/>
+      <text x="181.9" y="32" class="dg-label-sm" text-anchor="middle">+/no</text>
+      <rect x="217.6" y="40" width="26" height="17.8" class="dg-fill"/>
+      <text x="230.6" y="32" class="dg-label-sm" text-anchor="middle">no/−</text>
+      <rect x="266.4" y="40" width="26" height="43.2" class="dg-fill"/>
+      <text x="279.4" y="32" class="dg-label-sm" text-anchor="middle">+/+</text>
+      <rect x="315.1" y="40" width="26" height="44.1" class="dg-fill"/>
+      <text x="328.1" y="32" class="dg-label-sm" text-anchor="middle">−/−</text>
+      <rect x="363.9" y="40" width="26" height="133.3" class="dg-fill"/>
+      <text x="376.9" y="32" class="dg-label-sm" text-anchor="middle">0/−</text>
+      <rect x="412.6" y="40" width="26" height="144.9" class="dg-acc-f"/>
+      <text x="425.6" y="32" class="dg-label-sm" text-anchor="middle">+/−</text>
+      <text x="71.4" y="220" class="dg-label-sm">irradiation bias / bias-temperature stress</text>
+      <line x1="403.6" y1="89.5" x2="441.6" y2="89.5" class="dg-line" stroke-width="1.6" stroke-dasharray="3 2"/>
+      <text x="71.4" y="234" class="dg-label-sm">dashed: sum of the two separate shifts, (+/no) + (no/−)</text>
+      </svg>
+      <figcaption>
+        Oxide-trap threshold shifts of high-κ pMOS capacitors, labelled by the sign of the
+        irradiation bias and then the stress bias. The combination exceeds either stress alone and
+        their sum. Bar heights read from the published figure.
+        <span class="src">Deck 11 p. 14, after X. J. Zhou, D. M. Fleetwood, J. A. Felix, E. P. Gusev and C. D'Emic, <em>IEEE Trans. Nucl. Sci.</em> <b>52</b>, 2231 (2005).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Shifts of that size are large enough to fail sensitive part types, but the slide's conclusion
+      is that Test Method 1019 may still screen out vulnerable parts: once characterization has
+      found the worst-case combination of irradiation bias and subsequent stress, the same bounding
+      procedure is run with it. The lecture adds that the high-κ films of that study were early,
+      thick layers, and that current high-κ stacks behave more like SiO₂. The general lesson
+      stands — the worst case is whatever characterization shows it to be, and the bias history
+      after irradiation belongs to it as much as the bias during.
+    </p>
+
+    <h2>7 · Why linear bipolar parts break the MOS method</h2>
+    <p>
+      Linear bipolar integrated circuits — operational amplifiers, comparators, voltage regulators
+      and references — are flown in large numbers because analogue functions have few substitutes.
+      For them the MOS method fails, and it fails for a physical reason: their oxides show a true
+      dose-rate effect, the <b>enhanced low-dose-rate sensitivity</b> (ELDRS) introduced in
+      <a href="m08-tid-effects-devices-ics.html">M08</a> §9. This section shows the failure, the
+      structural reason for it, why a larger dose does not repair it, and the space-charge model
+      the lecture uses to explain it.
+    </p>
+    <p>
+      The demonstration is on Deck 11 p. 15, from Enlow and co-workers. Npn transistors with
+      polysilicon emitters, 2 × 2 µm², were irradiated at 300 rad/s to 200 and 300 krad and then
+      annealed at 100 °C — the MOS recipe for bounding interface traps. The gain degradation,
+      measured as Δ(1/<em>β</em>) at <em>V</em><sub>BE</sub> = 0.6 V, rose slightly during the first
+      few thousand seconds of the anneal and then fell, and at no time did it reach the range measured
+      after irradiation at 1.1 rad/s. By the discriminator of §4, waiting does not reproduce the slow
+      exposure. The damage in these oxides depends on the rate itself.
+    </p>
+    <p>
+      The reason lies in which oxide does the damage. A bipolar transistor has no gate dielectric
+      over a channel. Its radiation-sensitive oxide covers the surface where the emitter–base
+      junction meets it (<a href="m06-device-physics.html">M06</a> §7), and that oxide is a
+      passivation or field oxide, formed for masking and protection rather than as a controlled
+      dielectric. It resembles the isolation oxides of M08 §5 more than any gate oxide: it is thick,
+      its defect and hydrogen content are poorly controlled, and no electrode covers it, so only
+      weak fringing fields from nearby junctions and metal reach it. In a MOS part the worst case is a
+      high positive field (§6); a bipolar oxide never sees one. At low field holes and protons move
+      slowly, and the charge in transit changes the field it moves in — which is the origin of the
+      rate dependence. The poor control of these oxides also makes linear bipolar parts vary more
+      from lot to lot and between manufacturers than MOS parts do.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 470 212" role="img" aria-labelledby="m15f12-t">
+        <title id="m15f12-t">A MOS gate oxide under a biased electrode compared with the thick passivation oxide over a bipolar emitter-base junction</title>
+      <defs><marker id="m15f12-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-soft"/></marker></defs>
+      <text x="110" y="16" class="dg-label" text-anchor="middle">MOS gate oxide</text>
+      <rect x="30" y="34" width="160" height="16" rx="2" class="dg-fill"/>
+      <text x="110" y="46" class="dg-label-sm" text-anchor="middle">gate, biased</text>
+      <rect x="30" y="50" width="160" height="14" class="dg-fill"/>
+      <rect x="20" y="64" width="180" height="90" class="dg-fill"/>
+      <text x="110" y="140" class="dg-label-sm" text-anchor="middle">silicon</text>
+      <line x1="48" y1="52" x2="48" y2="62" class="dg-line" stroke-width="1.2" marker-end="url(#m15f12-a)"/>
+      <line x1="72" y1="52" x2="72" y2="62" class="dg-line" stroke-width="1.2" marker-end="url(#m15f12-a)"/>
+      <line x1="96" y1="52" x2="96" y2="62" class="dg-line" stroke-width="1.2" marker-end="url(#m15f12-a)"/>
+      <line x1="120" y1="52" x2="120" y2="62" class="dg-line" stroke-width="1.2" marker-end="url(#m15f12-a)"/>
+      <line x1="144" y1="52" x2="144" y2="62" class="dg-line" stroke-width="1.2" marker-end="url(#m15f12-a)"/>
+      <line x1="168" y1="52" x2="168" y2="62" class="dg-line" stroke-width="1.2" marker-end="url(#m15f12-a)"/>
+      <text x="110" y="176" class="dg-label-sm" text-anchor="middle">thin, well controlled;</text>
+      <text x="110" y="189" class="dg-label-sm" text-anchor="middle">high, uniform field</text>
+      <text x="110" y="202" class="dg-label-sm" text-anchor="middle">set by the gate voltage</text>
+      <text x="350" y="16" class="dg-label" text-anchor="middle">bipolar passivation oxide</text>
+      <rect x="240" y="34" width="210" height="36" class="dg-fill"/>
+      <text x="345" y="56" class="dg-label-sm" text-anchor="middle">thick oxide, no electrode</text>
+      <rect x="240" y="70" width="210" height="84" class="dg-fill"/>
+      <path d="M280,70 L280,120 L410,120 L410,70" class="dg-line" fill="none" stroke-width="1.4"/>
+      <path d="M320,70 L320,98 L370,98 L370,70" class="dg-line" fill="none" stroke-width="1.4"/>
+      <text x="345" y="90" class="dg-label-sm" text-anchor="middle">n⁺ emitter</text>
+      <text x="298" y="112" class="dg-label-sm" text-anchor="middle">p base</text>
+      <text x="345" y="146" class="dg-label-sm" text-anchor="middle">n collector</text>
+      <circle cx="320" cy="70" r="5" class="dg-acc-f"/>
+      <circle cx="370" cy="70" r="5" class="dg-acc-f"/>
+      <text x="345" y="176" class="dg-label-sm" text-anchor="middle">E–B junction meets the oxide (dots):</text>
+      <text x="345" y="189" class="dg-label-sm" text-anchor="middle">only weak fringing fields reach it</text>
+      </svg>
+      <figcaption>
+        A gate oxide is thin and sits under an electrode that imposes a high, uniform field. The
+        oxide over a bipolar emitter–base junction is thick, has no electrode, and sees only fringing
+        fields — so the high-field worst case that the MOS method relies on never occurs in it.
+        Schematic, not to scale.
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Which parts are worst.</b> Johnston and co-workers normalized the total-dose damage of four
+      linear circuits and of discrete transistors to the damage each showed at 50 rad(Si)/s (Deck 11
+      p. 16). Circuits with lateral or substrate pnp input transistors degraded most at low rates: the
+      LM324 about 5.8 times and the LM111 about 4.7 times as much at a few mrad(Si)/s. The LM101, with
+      an npn input, reached about 2.2 times. The LM108, also npn, and the discrete transistors showed no
+      dose-rate dependence at all. In a lateral pnp the emitter, base and collector lie side by side
+      along the surface, so the carriers cross the base directly under the oxide and every
+      recombination centre that radiation creates there is in their path (M08 §9). Because these
+      transistors form the input stages, the input bias current is the parameter that fails first.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 240" role="img" aria-labelledby="m15f15-t">
+        <title id="m15f15-t">Total-dose damage relative to 50 rad(Si)/s against dose rate for four linear circuits</title>
+      <line x1="50" y1="196" x2="440" y2="196" class="dg-rule" stroke-width="1.2"/><line x1="50" y1="196" x2="50" y2="30" class="dg-rule" stroke-width="1.2"/>
+      <line x1="50" y1="196" x2="50" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="50" y="212" class="dg-label-sm" text-anchor="middle">10⁻³</text>
+      <line x1="128" y1="196" x2="128" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="128" y="212" class="dg-label-sm" text-anchor="middle">10⁻²</text>
+      <line x1="206" y1="196" x2="206" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="206" y="212" class="dg-label-sm" text-anchor="middle">10⁻¹</text>
+      <line x1="284" y1="196" x2="284" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="284" y="212" class="dg-label-sm" text-anchor="middle">10⁰</text>
+      <line x1="362" y1="196" x2="362" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="362" y="212" class="dg-label-sm" text-anchor="middle">10¹</text>
+      <line x1="440" y1="196" x2="440" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="440" y="212" class="dg-label-sm" text-anchor="middle">10²</text>
+      <text x="245" y="230" class="dg-label" text-anchor="middle">dose rate, rad(Si)/s</text>
+      <line x1="46" y1="196" x2="50" y2="196" class="dg-rule" stroke-width="1.0"/>
+      <text x="43" y="200" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="46" y1="140.7" x2="50" y2="140.7" class="dg-rule" stroke-width="1.0"/>
+      <text x="43" y="144.7" class="dg-label-sm" text-anchor="end">2</text>
+      <line x1="46" y1="85.3" x2="50" y2="85.3" class="dg-rule" stroke-width="1.0"/>
+      <text x="43" y="89.3" class="dg-label-sm" text-anchor="end">4</text>
+      <line x1="46" y1="30" x2="50" y2="30" class="dg-rule" stroke-width="1.0"/>
+      <text x="43" y="34" class="dg-label-sm" text-anchor="end">6</text>
+      <text x="14" y="113" class="dg-label" text-anchor="middle" transform="rotate(-90 14 113)">damage ÷ damage at 50 rad(Si)/s</text>
+      <path d="M76.7,39.7 L107.1,34.4 L151.5,72.6 L206,87.5 L303.9,128.5 L362,151.5 L416.5,168.3" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <circle cx="76.7" cy="39.7" r="2.8" class="dg-acc-f"/>
+      <circle cx="107.1" cy="34.4" r="2.8" class="dg-acc-f"/>
+      <circle cx="151.5" cy="72.6" r="2.8" class="dg-acc-f"/>
+      <circle cx="206" cy="87.5" r="2.8" class="dg-acc-f"/>
+      <circle cx="303.9" cy="128.5" r="2.8" class="dg-acc-f"/>
+      <circle cx="362" cy="151.5" r="2.8" class="dg-acc-f"/>
+      <circle cx="416.5" cy="168.3" r="2.8" class="dg-acc-f"/>
+      <path d="M76.7,64.6 L107.1,67.1 L151.5,90.9 L250.3,126 L303.9,139.3 L362,151.7 L416.5,168.3" class="dg-line" fill="none" stroke-width="1.8"/>
+      <path d="M76.7,60.4 L73.2,67.4 L80.2,67.4 z" class="dg-ink"/>
+      <path d="M107.1,62.9 L103.6,69.9 L110.6,69.9 z" class="dg-ink"/>
+      <path d="M151.5,86.7 L148,93.7 L155,93.7 z" class="dg-ink"/>
+      <path d="M250.3,121.8 L246.8,128.8 L253.8,128.8 z" class="dg-ink"/>
+      <path d="M303.9,142 L300.4,149 L307.4,149 z" class="dg-ink"/>
+      <path d="M362,147.5 L358.5,154.5 L365.5,154.5 z" class="dg-ink"/>
+      <path d="M416.5,164.1 L413,171.1 L420,171.1 z" class="dg-ink"/>
+      <path d="M151.5,133.8 L206,136 L250.3,133.8 L303.9,137.9 L362,151.7 L416.5,168.3" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="5 3"/>
+      <path d="M69.9,168.3 L303.9,168.3 L416.5,168.3" class="dg-line" fill="none" stroke-width="1.4" stroke-dasharray="2 3"/>
+      <text x="214" y="79.5" class="dg-label-sm"><tspan class="dg-acc-f">LM324 (pnp input)</tspan></text>
+      <text x="56.2" y="104.7" class="dg-label-sm">LM111 (pnp input)</text>
+      <line x1="92.4" y1="93.7" x2="98.6" y2="72.1" class="dg-rule" stroke-width="0.8"/>
+      <text x="165.2" y="157.8" class="dg-label-sm">LM101 (npn input)</text>
+      <text x="73.5" y="184.3" class="dg-label-sm">LM108 (npn) and discrete transistors ≈ 1</text>
+      </svg>
+      <figcaption>
+        Damage at each dose rate divided by damage at 50 rad(Si)/s. The enhancement is largest for
+        circuits with pnp inputs and absent for the npn LM108 and for discrete transistors, so ELDRS
+        is a property of particular technologies and not of bipolar devices as a class. Near
+        2 rad(Si)/s the LM111 data point (≈1.8) lies below the published fit, which the line follows
+        there. Values read from the published figure.
+        <span class="src">Deck 11 p. 16, after A. H. Johnston <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>41</b>, 2427 (1994), Fig. 6.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>A higher dose at high rate does not substitute.</b> If low-rate damage were simply a larger
+      multiple of high-rate damage, a high-rate test to a proportionally higher dose would bound it.
+      Deck 11 p. 17 shows why it does not. The input-current change of LM111 comparators irradiated at
+      50 rad(Si)/s rises slowly, to about 125 nA by 70 krad(Si), the last dose tested at that rate;
+      earlier (1987) tests at 100 rad(Si)/s follow the same curve and saturate near 160–170 nA out to
+      120 krad(Si). At 0.005 rad(Si)/s the input-current change passes 1000 nA by 40 krad(Si) and
+      reaches about 1100 nA at 60 krad(Si), about nine times the 50 rad(Si)/s value at that dose as
+      read from the plot. The
+      slide's summary is that saturation damage at low dose rate is about ten times greater than at
+      high dose rates. Against the 100 nA specification marked on the plot, the low-rate parts fail near
+      4 krad(Si) and the 50 rad(Si)/s parts near 38 krad(Si) — values interpolated here from the
+      plotted points. No dose delivered at high rate reaches the low-rate saturation level, because the
+      high-rate curve has already flattened. The 2001 IEEE NSREC short course adds that a factor-of-three
+      overtest does bound the low-rate response of some npn transistors, but that no single overtest
+      factor works for all bipolar technologies without being overly conservative for some.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 240" role="img" aria-labelledby="m15f13-t">
+        <title id="m15f13-t">LM111 input-current change against dose at low and high dose rate</title>
+      <line x1="62" y1="200" x2="440" y2="200" class="dg-rule" stroke-width="1.2"/><line x1="62" y1="200" x2="62" y2="30" class="dg-rule" stroke-width="1.2"/>
+      <line x1="62" y1="200" x2="62" y2="204" class="dg-rule" stroke-width="1.0"/>
+      <text x="62" y="216" class="dg-label-sm" text-anchor="middle">0</text>
+      <line x1="125" y1="200" x2="125" y2="204" class="dg-rule" stroke-width="1.0"/>
+      <text x="125" y="216" class="dg-label-sm" text-anchor="middle">20</text>
+      <line x1="188" y1="200" x2="188" y2="204" class="dg-rule" stroke-width="1.0"/>
+      <text x="188" y="216" class="dg-label-sm" text-anchor="middle">40</text>
+      <line x1="251" y1="200" x2="251" y2="204" class="dg-rule" stroke-width="1.0"/>
+      <text x="251" y="216" class="dg-label-sm" text-anchor="middle">60</text>
+      <line x1="314" y1="200" x2="314" y2="204" class="dg-rule" stroke-width="1.0"/>
+      <text x="314" y="216" class="dg-label-sm" text-anchor="middle">80</text>
+      <line x1="377" y1="200" x2="377" y2="204" class="dg-rule" stroke-width="1.0"/>
+      <text x="377" y="216" class="dg-label-sm" text-anchor="middle">100</text>
+      <line x1="440" y1="200" x2="440" y2="204" class="dg-rule" stroke-width="1.0"/>
+      <text x="440" y="216" class="dg-label-sm" text-anchor="middle">120</text>
+      <text x="251" y="234" class="dg-label" text-anchor="middle">total dose, krad(Si)</text>
+      <line x1="58" y1="200" x2="62" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="204" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="58" y1="143.3" x2="62" y2="143.3" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="147.3" class="dg-label-sm" text-anchor="end">400</text>
+      <line x1="58" y1="86.7" x2="62" y2="86.7" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="90.7" class="dg-label-sm" text-anchor="end">800</text>
+      <line x1="58" y1="30" x2="62" y2="30" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="34" class="dg-label-sm" text-anchor="end">1200</text>
+      <text x="14" y="115" class="dg-label" text-anchor="middle" transform="rotate(-90 14 115)">input-current change, nA</text>
+      <path d="M62,200 L85.6,174.2 L97.9,158.8 L108.9,143.5 L141.1,99.4 L188.3,58.2 L251.6,44.9" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <circle cx="85.6" cy="174.2" r="3" class="dg-acc-f"/>
+      <circle cx="97.9" cy="158.8" r="3" class="dg-acc-f"/>
+      <circle cx="108.9" cy="143.5" r="3" class="dg-acc-f"/>
+      <circle cx="141.1" cy="99.4" r="3" class="dg-acc-f"/>
+      <circle cx="188.3" cy="58.2" r="3" class="dg-acc-f"/>
+      <circle cx="251.6" cy="44.9" r="3" class="dg-acc-f"/>
+      <path d="M62,200 L76.5,198.6 L92.2,195.5 L108,192.9 L125,190.8 L140.1,189.4 L155.9,187.8 L187.7,185.4 L219.5,183.7 L251,182.7 L281.6,181.6" class="dg-line" fill="none" stroke-width="1.8"/>
+      <path d="M188,184.4 L219.5,181.7 L251,179.7 L281.6,178.3 L314,177.6 L377,176.9 L440,176.2" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="6 3"/>
+      <rect x="185" y="181.4" width="6" height="6" class="dg-fill"/>
+      <rect x="216.5" y="178.7" width="6" height="6" class="dg-fill"/>
+      <rect x="248" y="176.7" width="6" height="6" class="dg-fill"/>
+      <rect x="278.6" y="175.3" width="6" height="6" class="dg-fill"/>
+      <rect x="311" y="174.6" width="6" height="6" class="dg-fill"/>
+      <rect x="374" y="173.9" width="6" height="6" class="dg-fill"/>
+      <rect x="437" y="173.2" width="6" height="6" class="dg-fill"/>
+      <line x1="62" y1="185.8" x2="440" y2="185.8" class="dg-line" stroke-width="1.2" stroke-dasharray="2 3"/>
+      <text x="194.3" y="197.8" class="dg-label-sm">100 nA specification limit</text>
+      <text x="196.3" y="72.2" class="dg-label-sm"><tspan class="dg-acc-f">0.005 rad(Si)/s</tspan></text>
+      <text x="440" y="152.2" class="dg-label-sm" text-anchor="end">100 rad(Si)/s, 1987 tests (dashed): ≈165 nA</text>
+      <text x="440" y="165.2" class="dg-label-sm" text-anchor="end">50 rad(Si)/s (solid): ≈125 nA at 70 krad(Si)</text>
+      </svg>
+      <figcaption>
+        LM111 input-current change at low and high dose rate. The high-rate response flattens at a
+        small fraction of the low-rate one — the slide annotates the low-rate saturation damage as
+        about ten times greater — so an overtest in dose at high rate cannot reach it. National
+        Semiconductor parts of 1994 date code; the 1987 tests at 100 rad(Si)/s necessarily used
+        earlier parts. Coordinates read from the published figure.
+        <span class="src">Deck 11 p. 17, after A. H. Johnston <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>42</b>, 1650 (1995), Fig. 2.</span>
+      </figcaption>
+    </figure>
+
+    <h3>The space-charge model</h3>
+    <p>
+      The explanation Deck 11 gives for the saturation is space charge in the oxide bulk, after
+      Witczak and co-workers. In a thick, low-field oxide, holes transport slowly. At a low dose rate
+      few holes are in transit at any instant, the weak built-in field is undisturbed, and holes and
+      hydrogen ions drift to the Si/SiO₂ interface over the base, where the holes are trapped and the
+      protons form interface traps. At a high dose rate holes are generated faster than they leave,
+      and positive charge accumulates in the oxide bulk as a sheet of space charge. Its field adds to
+      the built-in field below the sheet and opposes it above, and above the sheet the net field
+      reverses. Holes and protons generated above the sheet are then driven away from the interface,
+      toward the top of the oxide, while electrons generated there drift into the sheet and partly
+      neutralize it, only for new holes to replace them. Fewer holes and fewer protons reach the
+      interface per unit dose, so fewer interface traps and less near-interface trapped charge form.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 270" role="img" aria-labelledby="m15f14-t">
+        <title id="m15f14-t">Space-charge model of enhanced low-dose-rate sensitivity: transport at low and at high dose rate in a low-field bipolar oxide</title>
+      <defs><marker id="m15f14-u" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+      <text x="170" y="18" class="dg-label" text-anchor="middle">Low dose rate</text>
+      <rect x="20" y="30" width="300" height="24" class="dg-fill"/>
+      <text x="170" y="46" class="dg-label-sm" text-anchor="middle">+  +  +  +  +</text>
+      <rect x="20" y="54" width="300" height="184" class="dg-fill"/>
+      <text x="28" y="230" class="dg-label-sm">SiO₂</text>
+      <rect x="20" y="238" width="300" height="24" class="dg-fill"/>
+      <text x="170" y="254" class="dg-label-sm" text-anchor="middle">p-base   −  −  −</text>
+      <line x1="110" y1="146" x2="110" y2="116" class="dg-rule" stroke-width="1.3" marker-end="url(#m15f14-u)"/>
+      <text x="115" y="140" class="dg-label-sm">e⁻</text>
+      <line x1="166" y1="116" x2="166" y2="146" class="dg-rule" stroke-width="1.3" marker-end="url(#m15f14-u)"/>
+      <text x="171" y="140" class="dg-label-sm">h⁺, H⁺</text>
+      <text x="170" y="196" class="dg-label-sm" text-anchor="middle">small built-in field throughout:</text>
+      <text x="170" y="209" class="dg-label-sm" text-anchor="middle">holes and H⁺ reach the interface</text>
+      <text x="530" y="18" class="dg-label" text-anchor="middle">High dose rate</text>
+      <rect x="380" y="30" width="300" height="24" class="dg-fill"/>
+      <text x="530" y="46" class="dg-label-sm" text-anchor="middle">+  +  +  +  +</text>
+      <rect x="380" y="54" width="300" height="184" class="dg-fill"/>
+      <text x="388" y="230" class="dg-label-sm">SiO₂</text>
+      <rect x="380" y="238" width="300" height="24" class="dg-fill"/>
+      <text x="530" y="254" class="dg-label-sm" text-anchor="middle">p-base   −  −  −</text>
+      <line x1="470" y1="100" x2="470" y2="70" class="dg-rule" stroke-width="1.3" marker-end="url(#m15f14-u)"/>
+      <text x="475" y="94" class="dg-label-sm">h⁺, H⁺</text>
+      <line x1="526" y1="70" x2="526" y2="100" class="dg-rule" stroke-width="1.3" marker-end="url(#m15f14-u)"/>
+      <text x="531" y="94" class="dg-label-sm">e⁻</text>
+      <rect x="395" y="126" width="270" height="10" rx="3" class="dg-acc-f"/>
+      <text x="530" y="122" class="dg-label-sm" text-anchor="middle"><tspan class="dg-acc-f">positive space charge from slow holes</tspan></text>
+      <line x1="470" y1="186" x2="470" y2="156" class="dg-rule" stroke-width="1.3" marker-end="url(#m15f14-u)"/>
+      <text x="475" y="180" class="dg-label-sm">e⁻</text>
+      <line x1="526" y1="156" x2="526" y2="186" class="dg-rule" stroke-width="1.3" marker-end="url(#m15f14-u)"/>
+      <text x="531" y="180" class="dg-label-sm">h⁺, H⁺</text>
+      <text x="530" y="208" class="dg-label-sm" text-anchor="middle">field reversed above the sheet:</text>
+      <text x="530" y="221" class="dg-label-sm" text-anchor="middle">carriers from the upper oxide are lost</text>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> The space-charge model in a low-field bipolar base oxide. At low dose rate
+        all carriers move in the weak built-in field: electrons away from the p-type base, holes and
+        protons toward it. At high dose rate slowly moving holes accumulate as positive space charge in
+        the bulk; above the sheet the field reverses, and holes and protons generated there never reach
+        the interface. The damage per unit dose falls, and delivering more dose adds more space charge
+        rather than more damage.
+        <span class="src">Redrawn from Deck 11 p. 18, after S. C. Witczak <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>45</b>, 2339 (1998), Fig. 9.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Because both holes and protons are affected, the model accounts for dose-rate effects in both
+      the oxide charge and the interface traps. The 2001 short course describes a critical dose rate
+      at which the space charge begins to perturb the field significantly, with the charge buildup
+      nearly independent of dose rate far above and far below it, which produces the S-shaped
+      dependence of degradation on dose rate observed experimentally. The lecture presents space
+      charge as half of the account; §9 supplies the other half.
+    </p>
+
+    <p>
+      <b>No floor to the test rate.</b> If the damage keeps increasing as the rate falls, a test at a
+      lower rate is always less conservative than one lower still. Deck 11 p. 19 shows a circuit for
+      which this matters. LM324 operational amplifiers from one manufacturer, with substrate pnp input
+      transistors, changed input offset voltage by about −2 mV by 70 krad(Si) at both 50 and
+      0.005 rad(Si)/s, and by −13.5 mV by only 28 krad(Si) at 0.002 rad(Si)/s. The 2001 short course
+      reports the same pattern generally: some bipolar transistors stop depending on dose rate below
+      about 10 rad(SiO₂)/s, while circuits with lateral or substrate pnp transistors keep degrading
+      more down to 0.002 rad(SiO₂)/s, so no single convenient test rate predicts the low-rate response
+      of every technology. By (15.4), 100 krad(Si) at 0.002 rad(Si)/s takes 5×10⁷ s, about 1.6 years.
+      Parts like these are kept out of a system at characterization rather than screened afterwards.
+    </p>
+
+    <h2>8 · Accelerated tests for ELDRS, and TM 1019 for linear bipolar</h2>
+    <p>
+      If linear bipolar parts cannot be bounded by a fast irradiation and a bake, the options are to
+      irradiate slowly, which takes months, or to find some other laboratory condition that makes a
+      fast irradiation behave like a slow one. This section describes the two accelerated approaches
+      the lecture presents, why the first often fails to bound, and the procedure the standard now
+      specifies.
+    </p>
+    <p>
+      <b>Elevated-temperature irradiation</b> (ETI) irradiates at a high dose rate with the part held
+      hot. The rationale follows from §7: heating speeds hole transport, so space charge dissipates
+      faster and a high-rate exposure behaves more like a low-rate one. It does accelerate the
+      degradation. Pease and co-workers compared it with room-temperature exposures on LM124 operational
+      amplifiers and LM139 comparators (Deck 11 p. 20). In both circuits the least degradation came
+      from room-temperature irradiation at 100 rad(Si)/s and the most from room-temperature
+      irradiation at 1 or 10 mrad(Si)/s, and irradiation at 100 °C and 10–14 rad(Si)/s fell between
+      them. For the LM139 at 30 krad(Si), the input-current change was roughly 40 nA at high rate and
+      room temperature, 90 nA at 100 °C, and 300 to 600 nA at low rate. ETI accelerates;
+      it often does not bound.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 240" role="img" aria-labelledby="m15f16-t">
+        <title id="m15f16-t">LM139 input-current change against dose for low-rate, high-rate and elevated-temperature irradiation</title>
+      <line x1="62" y1="196" x2="440" y2="196" class="dg-rule" stroke-width="1.2"/><line x1="62" y1="196" x2="62" y2="30" class="dg-rule" stroke-width="1.2"/>
+      <line x1="62" y1="196" x2="62" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="62" y="212" class="dg-label-sm" text-anchor="middle">1</text>
+      <line x1="188" y1="196" x2="188" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="188" y="212" class="dg-label-sm" text-anchor="middle">10</text>
+      <line x1="314" y1="196" x2="314" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="314" y="212" class="dg-label-sm" text-anchor="middle">100</text>
+      <line x1="440" y1="196" x2="440" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="440" y="212" class="dg-label-sm" text-anchor="middle">1000</text>
+      <text x="251" y="230" class="dg-label" text-anchor="middle">total dose, krad(Si)</text>
+      <line x1="58" y1="196" x2="62" y2="196" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="200" class="dg-label-sm" text-anchor="end">10</text>
+      <line x1="58" y1="113" x2="62" y2="113" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="117" class="dg-label-sm" text-anchor="end">100</text>
+      <line x1="58" y1="30" x2="62" y2="30" class="dg-rule" stroke-width="1.0"/>
+      <text x="55" y="34" class="dg-label-sm" text-anchor="end">1000</text>
+      <text x="14" y="113" class="dg-label" text-anchor="middle" transform="rotate(-90 14 113)">input-current change, nA</text>
+      <path d="M186.9,175.8 L223.1,158.1 L273.7,136.2 L311.5,122.4 L349.4,104.4 L397.1,82 L435,67.3" class="dg-line" fill="none" stroke-width="1.8"/>
+      <rect x="183.9" y="172.8" width="6" height="6" class="dg-fill"/>
+      <rect x="220.1" y="155.1" width="6" height="6" class="dg-fill"/>
+      <rect x="270.7" y="133.2" width="6" height="6" class="dg-fill"/>
+      <rect x="308.5" y="119.4" width="6" height="6" class="dg-fill"/>
+      <rect x="346.4" y="101.4" width="6" height="6" class="dg-fill"/>
+      <rect x="394.1" y="79" width="6" height="6" class="dg-fill"/>
+      <rect x="432" y="64.3" width="6" height="6" class="dg-fill"/>
+      <path d="M145.1,127.7 L191.7,96.7 L213,82.7 L229.6,74.2 L244.7,50.3" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="5 3"/>
+      <circle cx="145.1" cy="127.7" r="3" class="dg-ink"/>
+      <circle cx="191.7" cy="96.7" r="3" class="dg-ink"/>
+      <circle cx="213" cy="82.7" r="3" class="dg-ink"/>
+      <circle cx="229.6" cy="74.2" r="3" class="dg-ink"/>
+      <circle cx="244.7" cy="50.3" r="3" class="dg-ink"/>
+      <path d="M162.7,127.7 L203.2,97.4 L234.5,79.7 L254.8,65.7 L282.3,49.4 L301.1,39.1 L314,36.2" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="2 3"/>
+      <path d="M162.7,123.5 L159.2,130.5 L166.2,130.5 z" class="dg-ink"/>
+      <path d="M203.2,93.2 L199.7,100.2 L206.7,100.2 z" class="dg-ink"/>
+      <path d="M234.5,75.5 L231,82.5 L238,82.5 z" class="dg-ink"/>
+      <path d="M254.8,61.5 L251.3,68.5 L258.3,68.5 z" class="dg-ink"/>
+      <path d="M282.3,45.2 L278.8,52.2 L285.8,52.2 z" class="dg-ink"/>
+      <path d="M301.1,34.9 L297.6,41.9 L304.6,41.9 z" class="dg-ink"/>
+      <path d="M314,32 L310.5,39 L317.5,39 z" class="dg-ink"/>
+      <path d="M169.3,161.1 L205.6,141.8 L243.4,119.3 L293.7,98.4 L329.2,82.8" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <circle cx="169.3" cy="161.1" r="3" class="dg-acc-f"/>
+      <circle cx="205.6" cy="141.8" r="3" class="dg-acc-f"/>
+      <circle cx="243.4" cy="119.3" r="3" class="dg-acc-f"/>
+      <circle cx="293.7" cy="98.4" r="3" class="dg-acc-f"/>
+      <circle cx="329.2" cy="82.8" r="3" class="dg-acc-f"/>
+      <text x="141.1" y="97.7" class="dg-label-sm">1 and 10 mrad(Si)/s, 25 °C</text>
+      <text x="335.2" y="74.8" class="dg-label-sm"><tspan class="dg-acc-f">14 rad(Si)/s, 100 °C</tspan></text>
+      <text x="315.5" y="142.4" class="dg-label-sm">100 rad(Si)/s, 25 °C</text>
+      </svg>
+      <figcaption>
+        LM139 input-current change on logarithmic axes. The 100 °C irradiation degrades the part more
+        than room-temperature irradiation at high rate, but stays well below the low-rate curves, so a
+        pass under elevated-temperature irradiation does not guarantee a pass in orbit. Coordinates read
+        from the published figure.
+        <span class="src">Deck 11 p. 20, after R. L. Pease <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>45</b>, 2665 (1998), Fig. 12.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The reason is a competition the heat itself creates. Heat speeds the transport that builds the
+      damage, but it also anneals radiation-induced charge during the irradiation — oxide-trap charge
+      first, since it anneals at lower temperatures than interface traps do. The effect of that
+      annealing depends on the transistor. In a pnp transistor the positive oxide charge moderates the
+      degradation that interface traps cause, so annealing it adds to the damage; in an npn transistor
+      the oxide charge itself degrades the gain, so annealing it offsets part of the enhancement. The
+      2001 short course shows that for each total dose there is a temperature of maximum degradation,
+      and that this optimum temperature falls as the dose rises, because in-situ annealing of
+      radiation-induced damage gains on the thermal enhancement; it also varies with device type and
+      dose rate. For the transistors it discusses, irradiation between 100 and 125 °C had to
+      be combined with overtest factors of two to three to produce conservative predictions, and for
+      other devices and parameters even that was insufficient. The ASTM F1892 guide was accordingly
+      being revised to use elevated-temperature irradiation as a screen only, not for lot acceptance.
+    </p>
+    <p>
+      <b>Temperature-switching irradiation</b> (TSI), from Li, Fleetwood and co-workers, turns the
+      competition to advantage (Deck 11 p. 22). At a fixed high temperature the response rises quickly,
+      then levels off and eventually rolls over as annealing catches up; at a lower temperature it
+      rises more slowly but continues further. Irradiating at 5.8 rad(Si)/s, TSI starts hot and steps
+      down each time the response begins to saturate, where the slope of the fixed-temperature curve
+      falls off: 120 °C to 20 krad(Si), 100 °C to 80 krad(Si), and 80 °C to 100 krad(Si). For LM833 operational amplifiers irradiated with all pins grounded, the excess
+      input bias current at 100 krad(Si) was about 2.7 µA at a fixed 120 °C, 3.0 µA at 100 °C,
+      2.9 µA at 80 °C, and 4.1 µA with switching — against about 1.8 µA from the low-rate exposure at
+      10 mrad/s and 0.56 µA from the high-rate exposure at 100 rad/s. The switched test bounded the
+      low-rate response by more than a factor of two, in hours rather than months. The method is built
+      from the same physics as the MOS test, but the switching points differ from one part type to
+      another and must be found by characterization; the lecture notes that it is not standardized in
+      the United States.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 510 240" role="img" aria-labelledby="m15f17-t">
+        <title id="m15f17-t">LM833 excess input bias current against dose for fixed-temperature, temperature-switched, low-rate and high-rate irradiation</title>
+      <line x1="56" y1="196" x2="440" y2="196" class="dg-rule" stroke-width="1.2"/><line x1="56" y1="196" x2="56" y2="30" class="dg-rule" stroke-width="1.2"/>
+      <line x1="56" y1="196" x2="56" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="56" y="212" class="dg-label-sm" text-anchor="middle">0</text>
+      <line x1="132.8" y1="196" x2="132.8" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="132.8" y="212" class="dg-label-sm" text-anchor="middle">20</text>
+      <line x1="209.6" y1="196" x2="209.6" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="209.6" y="212" class="dg-label-sm" text-anchor="middle">40</text>
+      <line x1="286.4" y1="196" x2="286.4" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="286.4" y="212" class="dg-label-sm" text-anchor="middle">60</text>
+      <line x1="363.2" y1="196" x2="363.2" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="363.2" y="212" class="dg-label-sm" text-anchor="middle">80</text>
+      <line x1="440" y1="196" x2="440" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="440" y="212" class="dg-label-sm" text-anchor="middle">100</text>
+      <text x="248" y="230" class="dg-label" text-anchor="middle">total dose, krad(Si)</text>
+      <line x1="52" y1="196" x2="56" y2="196" class="dg-rule" stroke-width="1.0"/>
+      <text x="49" y="200" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="52" y1="162.8" x2="56" y2="162.8" class="dg-rule" stroke-width="1.0"/>
+      <text x="49" y="166.8" class="dg-label-sm" text-anchor="end">1</text>
+      <line x1="52" y1="129.6" x2="56" y2="129.6" class="dg-rule" stroke-width="1.0"/>
+      <text x="49" y="133.6" class="dg-label-sm" text-anchor="end">2</text>
+      <line x1="52" y1="96.4" x2="56" y2="96.4" class="dg-rule" stroke-width="1.0"/>
+      <text x="49" y="100.4" class="dg-label-sm" text-anchor="end">3</text>
+      <line x1="52" y1="63.2" x2="56" y2="63.2" class="dg-rule" stroke-width="1.0"/>
+      <text x="49" y="67.2" class="dg-label-sm" text-anchor="end">4</text>
+      <line x1="52" y1="30" x2="56" y2="30" class="dg-rule" stroke-width="1.0"/>
+      <text x="49" y="34" class="dg-label-sm" text-anchor="end">5</text>
+      <text x="14" y="113" class="dg-label" text-anchor="middle" transform="rotate(-90 14 113)">excess input bias current, µA</text>
+      <path d="M56,196 L132.8,118 L171.2,111 L248,102.7 L363.2,100.7 L440,105.4" class="dg-line" fill="none" stroke-width="1.4"/>
+      <path d="M56,196 L132.8,144.5 L171.2,126.9 L286.4,103 L363.2,96.7 L440,94.7" class="dg-line" fill="none" stroke-width="1.4" stroke-dasharray="6 3"/>
+      <path d="M56,196 L132.8,173.1 L171.2,159.8 L324.8,118 L382.4,107.4 L440,100.1" class="dg-line" fill="none" stroke-width="1.4" stroke-dasharray="2 3"/>
+      <path d="M56,196 L113.6,169.1 L228.8,142.2 L305.6,133.6 L382.4,135.2 L440,136.9" class="dg-line" fill="none" stroke-width="2.0"/>
+      <path d="M56,196 L132.8,191.4 L209.6,186 L286.4,182.7 L363.2,179.7 L440,177.4" class="dg-line" fill="none" stroke-width="1.4" stroke-dasharray="1 3"/>
+      <path d="M113.6,164.9 L110.1,171.9 L117.1,171.9 z" class="dg-ink"/>
+      <path d="M228.8,138 L225.3,145 L232.3,145 z" class="dg-ink"/>
+      <path d="M305.6,129.4 L302.1,136.4 L309.1,136.4 z" class="dg-ink"/>
+      <path d="M382.4,131 L378.9,138 L385.9,138 z" class="dg-ink"/>
+      <path d="M440,132.7 L436.5,139.7 L443.5,139.7 z" class="dg-ink"/>
+      <path d="M56,196 L132.8,119.3 L248,80.1 L363.2,69.8 L440,59.5" class="dg-acc" fill="none" stroke-width="2.4"/>
+      <circle cx="132.8" cy="119.3" r="3.2" class="dg-acc-f"/>
+      <circle cx="248" cy="80.1" r="3.2" class="dg-acc-f"/>
+      <circle cx="363.2" cy="69.8" r="3.2" class="dg-acc-f"/>
+      <circle cx="440" cy="59.5" r="3.2" class="dg-acc-f"/>
+      <text x="240.3" y="75.8" class="dg-label-sm" text-anchor="end"><tspan class="dg-acc-f">switched 120 → 100 → 80 °C</tspan></text>
+      <line x1="441" y1="94.7" x2="451" y2="84.5" class="dg-rule" stroke-width="0.8"/>
+      <line x1="441" y1="100.1" x2="451" y2="100.5" class="dg-rule" stroke-width="0.8"/>
+      <line x1="441" y1="105.4" x2="451" y2="116.5" class="dg-rule" stroke-width="0.8"/>
+      <text x="454" y="88.2" class="dg-label-sm">100 °C</text>
+      <text x="454" y="104.2" class="dg-label-sm">80 °C</text>
+      <text x="454" y="120.2" class="dg-label-sm">120 °C</text>
+      <text x="444" y="140.9" class="dg-label-sm">10 mrad/s</text>
+      <text x="444" y="181.4" class="dg-label-sm">100 rad/s</text>
+      <line x1="132.8" y1="36" x2="132.8" y2="50" class="dg-rule" stroke-width="1.0"/>
+      <line x1="363.2" y1="36" x2="363.2" y2="50" class="dg-rule" stroke-width="1.0"/>
+      <text x="136.8" y="46" class="dg-label-sm">switch</text>
+      <text x="367.2" y="46" class="dg-label-sm">switch</text>
+      </svg>
+      <figcaption>
+        LM833 excess input bias current. Each fixed-temperature curve levels off as annealing catches
+        up with buildup, and the 120 °C curve rolls over near 80 krad(Si); switching down where each
+        curve's growth slows keeps the fast part of every curve and ends above the low-rate response.
+        Leader lines join the three fixed-temperature labels to their curve ends. Coordinates read
+        from the published figure.
+        <span class="src">Deck 11 p. 22, after X. Li, W. Lu, Q. Guo, D. M. Fleetwood <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>66</b>, 199 (2019).</span>
+      </figcaption>
+    </figure>
+
+    <h3>Test Method 1019 for linear bipolar devices</h3>
+    <p>
+      MIL-STD-883 added low-dose-rate and elevated-temperature options for bipolar linear and
+      mixed-signal parts in 2003 (Pease). The revision-H flowchart on Deck 11 p. 21 begins by
+      determining whether ELDRS testing is needed (paragraph 3.13). If it is not — the part type is
+      known not to show ELDRS — the standard high-rate test, Condition A, applies (3.6.1, with
+      paragraphs 3.1–3.10). If it is, one of three routes is taken: a test at the intended application
+      dose rate (Condition C, 3.6.3); a low-dose-rate test at no more than 10 mrad(Si)/s to 1.5 times
+      the specification dose (Condition D, 3.6.4); or an accelerated ELDRS test whose conditions,
+      including overtest factors and parameter-delta design margins, are set by characterization
+      testing (Condition E, 3.6.5, with 3.13.2). Each route ends in pass or fail.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 222" role="img" aria-labelledby="m15f18-t">
+        <title id="m15f18-t">MIL-STD-883 Test Method 1019 flowchart for linear bipolar devices, with the three routes taken when ELDRS testing is needed</title>
+      <defs><marker id="m15f18-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+      <rect x="200" y="10" width="260" height="32" rx="4" class="dg-fill"/>
+      <text x="330" y="30" class="dg-label-sm" text-anchor="middle">Determine the need for ELDRS testing · 3.13</text>
+      <path d="M460,26 L498,26" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f18-a)"/>
+      <text x="479" y="20" class="dg-label-sm" text-anchor="middle">no</text>
+      <rect x="500" y="6" width="190" height="44" rx="4" class="dg-fill"/>
+      <text x="595" y="25.5" class="dg-label-sm" text-anchor="middle">Standard test, Condition A · 3.6.1</text>
+      <text x="595" y="38.5" class="dg-label-sm" text-anchor="middle">(paragraphs 3.1–3.10)</text>
+      <text x="595" y="66" class="dg-label-sm" text-anchor="middle">pass / fail</text>
+      <path d="M330,42 L330,72" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f18-a)"/>
+      <text x="336" y="62" class="dg-label-sm">yes: one of</text>
+      <line x1="110" y1="74" x2="590" y2="74" class="dg-rule" stroke-width="1.3"/>
+      <path d="M110,74 L110,94" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f18-a)"/>
+      <path d="M350,74 L350,94" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f18-a)"/>
+      <path d="M590,74 L590,94" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f18-a)"/>
+      <rect x="20" y="96" width="180" height="70" rx="4" class="dg-fill"/>
+      <text x="110" y="122" class="dg-label-sm" text-anchor="middle">Test at the intended</text>
+      <text x="110" y="135" class="dg-label-sm" text-anchor="middle">application dose rate</text>
+      <text x="110" y="148" class="dg-label-sm" text-anchor="middle">Condition C · 3.6.3</text>
+      <rect x="245" y="96" width="210" height="70" rx="4" class="dg-fill"/>
+      <rect x="246" y="97" width="208" height="68" rx="4" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <text x="350" y="115.5" class="dg-label-sm" text-anchor="middle">Low-dose-rate test</text>
+      <text x="350" y="128.5" class="dg-label-sm" text-anchor="middle">Condition D · 3.6.4</text>
+      <text x="350" y="141.5" class="dg-label-sm" text-anchor="middle">dose rate ≤ 10 mrad(Si)/s</text>
+      <text x="350" y="154.5" class="dg-label-sm" text-anchor="middle">dose = 1.5 × specification</text>
+      <rect x="490" y="96" width="200" height="70" rx="4" class="dg-fill"/>
+      <text x="590" y="122" class="dg-label-sm" text-anchor="middle">Accelerated ELDRS test</text>
+      <text x="590" y="135" class="dg-label-sm" text-anchor="middle">Condition E · 3.6.5, conditions</text>
+      <text x="590" y="148" class="dg-label-sm" text-anchor="middle">from characterization (3.13.2)</text>
+      <text x="110" y="184" class="dg-label-sm" text-anchor="middle">pass / fail</text>
+      <text x="350" y="184" class="dg-label-sm" text-anchor="middle">pass / fail</text>
+      <text x="590" y="184" class="dg-label-sm" text-anchor="middle">pass / fail</text>
+      <text x="590" y="200" class="dg-label-sm" text-anchor="middle">incl. overtest factors and</text>
+      <text x="590" y="213" class="dg-label-sm" text-anchor="middle">parameter-delta design margins</text>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> The Test Method 1019 flow for linear bipolar devices. Condition D is the
+        default low-dose-rate route; Condition E admits an accelerated test only on the terms that
+        characterization of that part type establishes.
+        <span class="src">Redrawn from Deck 11 p. 21 (MIL-STD-883H).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Condition D is expensive in time, and (15.4) says how expensive. A 100 krad(Si) specification
+      tested at 10 mrad(Si)/s to the specified dose alone would take 10⁷ s, about 116 days; Condition D
+      requires 1.5 times the specification, 150 krad(Si), which takes 1.5×10⁷ s, about 174 days. The
+      same dose at the standard rate of 50 rad(Si)/s takes under an hour. Two further points about rates
+      are easy to conflate. The laboratory rates of the standard test are 50–300 rad(Si)/s, and space
+      rates are typically below 0.01 rad(SiO₂)/s (<a href="m08-tid-effects-devices-ics.html">M08</a>
+      §9). The 10 mrad(Si)/s of Condition D is a <em>laboratory</em> test rate, still at least ten
+      times faster than the average space dose rates Pease gives, about 10⁻³ to below 10⁻⁴ rad/s;
+      only instantaneous rates in space, which range from about 1 rad/s to near zero, reach it. For
+      Co-60 the rad(Si) and rad(SiO₂) labels differ by less than one per cent, so the two figures
+      compare directly.
+    </p>
+    <p>
+      The lecture's first strategy, repeated in its conclusions, precedes all of this: <b>use parts that do not show ELDRS</b>. Comparisons at high and low rate, or an
+      elevated-temperature irradiation, serve as screens for choosing them. Where an ELDRS-sensitive
+      part cannot be avoided, the low-dose-rate test accepts some risk that the MOS method does not,
+      because the slow processes behind the enhancement — such as hydrogen arriving late, as in latent
+      buildup — progress with the logarithm of time: a test can only be pushed as far out in log time as
+      its duration allows. Having characterized a lot, the practical course is to buy every part the
+      program needs, with spares, from that lot.
+    </p>
+
+    <details class="check">
+      <summary>A regulator with known ELDRS has a mission specification of 30 krad(Si). How long does a Condition D test take at the maximum rate the condition allows, and how long would a room-temperature irradiation at 50 rad(Si)/s to the same total dose take?</summary>
+      <div class="answer">
+        <p>
+          Condition D requires 1.5 × 30 = 45 krad(Si) at no more than 10 mrad(Si)/s. By (15.4),
+          <em>t</em> = 45 000 rad(Si) ÷ 0.010 rad(Si)/s = 4.5×10⁶ s, about 52 days. The same 45 krad(Si)
+          at 50 rad(Si)/s takes 900 s, fifteen minutes. The high-rate result could not be used: by §7 it
+          may understate the damage several-fold, and no extra dose delivered at that rate makes up the
+          difference.
+        </p>
+      </div>
+    </details>
+
+    <h2>9 · Hydrogen and the key to ELDRS</h2>
+    <p>
+      Space charge explains why the damage per unit dose falls at high rate, but not what decides
+      whether a given part shows the enhancement at all. The lecture's answer is hydrogen, and it
+      arrives in two steps: an experiment that reproduces low-rate damage at high rate by adding
+      hydrogen, and a mechanism that says at which point in the chain of
+      <a href="m07-oxide-interface-trap-charge.html">M07</a> §8 the dose rate acts.
+    </p>
+    <p>
+      Hydrogen is present in every device oxide. It is introduced on purpose, in the final anneal of a
+      process, to passivate dangling bonds at the silicon interface
+      (<a href="../../EEE6338_Advanced_Microelectronics/site/m05b-interface-defects-and-charge.html">EEE6338 M05b</a>
+      §4.1), it remains as a residue of oxidation and deposition, and packages add more: M08 §9 records
+      the same part differing by up to two orders of magnitude at the same low dose rate between a
+      flat-pack and a metal can. Radiation mobilizes it. Transporting holes release protons near an
+      interface, and protons that reach the Si/SiO₂ interface depassivate Si–H bonds and leave
+      interface traps.
+    </p>
+    <p>
+      <b>Hydrogen reproduces ELDRS at high dose rate.</b> On Deck 11 p. 28, linear bipolar test
+      devices were soaked in hydrogen for up to 43 hours and then irradiated to 10 krad(SiO₂) at
+      40 rad(SiO₂)/s. The excess base current rose from about 6 nA without a soak to about 18 nA after
+      one hour of soak, 28 nA after three hours, and 37–41 nA after six to 43 hours, where it saturated.
+      Without any soak, the same devices irradiated at 20 mrad(SiO₂)/s showed about 24 nA. After
+      roughly two hours of soak the high-rate response exceeded the low-rate one. Adding hydrogen turns
+      high-rate damage into low-rate damage, which is strong evidence that hydrogen is the species that
+      the dose rate acts on.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 460 240" role="img" aria-labelledby="m15f19-t">
+        <title id="m15f19-t">Excess base current after 10 krad(SiO2) at high dose rate against hydrogen soak time</title>
+      <line x1="58" y1="196" x2="440" y2="196" class="dg-rule" stroke-width="1.2"/><line x1="58" y1="196" x2="58" y2="30" class="dg-rule" stroke-width="1.2"/>
+      <line x1="58" y1="196" x2="58" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="58" y="212" class="dg-label-sm" text-anchor="middle">0</text>
+      <line x1="134.4" y1="196" x2="134.4" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="134.4" y="212" class="dg-label-sm" text-anchor="middle">10</text>
+      <line x1="210.8" y1="196" x2="210.8" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="210.8" y="212" class="dg-label-sm" text-anchor="middle">20</text>
+      <line x1="287.2" y1="196" x2="287.2" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="287.2" y="212" class="dg-label-sm" text-anchor="middle">30</text>
+      <line x1="363.6" y1="196" x2="363.6" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="363.6" y="212" class="dg-label-sm" text-anchor="middle">40</text>
+      <line x1="440" y1="196" x2="440" y2="200" class="dg-rule" stroke-width="1.0"/>
+      <text x="440" y="212" class="dg-label-sm" text-anchor="middle">50</text>
+      <text x="249" y="230" class="dg-label" text-anchor="middle">hydrogen soak time before irradiation, h</text>
+      <line x1="54" y1="196" x2="58" y2="196" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="200" class="dg-label-sm" text-anchor="end">1</text>
+      <line x1="54" y1="113" x2="58" y2="113" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="117" class="dg-label-sm" text-anchor="end">10</text>
+      <line x1="54" y1="30" x2="58" y2="30" class="dg-rule" stroke-width="1.0"/>
+      <text x="51" y="34" class="dg-label-sm" text-anchor="end">100</text>
+      <text x="14" y="113" class="dg-label" text-anchor="middle" transform="rotate(-90 14 113)">excess base current, nA</text>
+      <path d="M58,130.2 L58.1,128.7 L58.3,127.1 L58.4,125.5 L58.5,123.8 L58.6,122.1 L58.8,120.4 L58.9,118.7 L59,117.1 L59.1,115.6 L59.3,114.1 L59.4,112.8 L59.5,111.7 L59.6,110.7 L59.8,109.9 L60.2,107.7 L60.6,105.8 L61,104 L61.4,102.3 L61.9,100.9 L62.3,99.5 L62.7,98.3 L63.1,97.2 L63.5,96.2 L64,95.2 L64.4,94.4 L64.8,93.5 L65.2,92.8 L65.6,92 L66.7,90.2 L67.7,88.6 L68.8,87 L69.8,85.5 L70.8,84.2 L71.9,82.9 L72.9,81.7 L73.9,80.6 L75,79.6 L76,78.6 L77,77.8 L78.1,76.9 L79.1,76.2 L80.2,75.5 L81.8,74.4 L83.5,73.4 L85.2,72.3 L86.9,71.3 L88.6,70.4 L90.3,69.5 L92,68.7 L93.7,67.9 L95.4,67.3 L97.1,66.7 L98.8,66.2 L100.5,65.8 L102.1,65.6 L103.8,65.5 L113.7,65.1 L123.5,64.9 L133.3,64.6 L143.1,64.4 L153,64.3 L162.8,64.2 L172.6,64.1 L182.4,64 L192.2,63.9 L202.1,63.8 L211.9,63.8 L221.7,63.7 L231.5,63.6 L241.4,63.5 L251.7,63.4 L262.1,63.2 L272.5,63.1 L282.8,63 L293.2,62.9 L303.6,62.8 L313.9,62.7 L324.3,62.6 L334.7,62.5 L345,62.4 L355.4,62.3 L365.8,62.2 L376.2,62.1 L386.5,62" class="dg-acc" fill="none" stroke-width="2.2"/>
+      <rect x="55" y="127.2" width="6" height="6" class="dg-acc-f"/>
+      <rect x="56.8" y="106.9" width="6" height="6" class="dg-acc-f"/>
+      <rect x="62.6" y="89" width="6" height="6" class="dg-acc-f"/>
+      <rect x="77.2" y="72.5" width="6" height="6" class="dg-acc-f"/>
+      <rect x="100.8" y="62.5" width="6" height="6" class="dg-acc-f"/>
+      <rect x="238.4" y="60.5" width="6" height="6" class="dg-acc-f"/>
+      <rect x="383.5" y="59" width="6" height="6" class="dg-acc-f"/>
+      <line x1="58" y1="81" x2="440" y2="81" class="dg-line" stroke-width="1.4" stroke-dasharray="6 4"/>
+      <text x="149.7" y="97" class="dg-label-sm">20 mrad(SiO₂)/s, no soak</text>
+      <text x="149.7" y="52" class="dg-label-sm"><tspan class="dg-acc-f">40 rad(SiO₂)/s after soaking</tspan></text>
+      <text x="226.1" y="146" class="dg-label-sm">all points: 10 krad(SiO₂)</text>
+      </svg>
+      <figcaption>
+        Excess base current after a high-rate exposure, against the duration of a hydrogen soak before
+        irradiation. A few hours of soak lift the high-rate response past the unsoaked low-rate
+        response (dashed). Coordinates read from the published figure.
+        <span class="src">Deck 11 p. 28; the slide cites R. L. Pease <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>51</b>, 3773 (2004) and <b>54</b>, 1049 (2007), and D. M. Fleetwood <em>et al.</em>, <em>ibid.</em> <b>55</b>, 2986 (2008).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The soak is not a hardness-assurance test. It changes the part it is applied to: a part with no
+      ELDRS problem acquires one once hydrogen has been driven into it, so a soak used to screen flight
+      parts would degrade good parts, and a soak applied only to samples measures a condition the flight
+      parts do not share. It is a tool for establishing mechanism.
+    </p>
+    <p>
+      <b>The key.</b> Fleetwood, Schrimpf, Pantelides, Pease and Dunham identified where the rate enters
+      (Deck 11 p. 29). The starting observation is from ultraviolet electron-injection experiments on
+      SiO₂ at 295 K, after Vanheusden and co-workers: trapped holes were neutralized within tens of
+      seconds — their density fell to about 20% of its initial value in 20 s — while trapped protons
+      took thousands of seconds, falling to about 55% after 1200 s and about 22% after 7000 s. Both carry
+      one positive charge, but <b>trapped holes are neutralized 100 to 1000 times more readily than
+      protons</b>.
+    </p>
+    <p>
+      That asymmetry makes the fate of each hole a race. A hole transporting through the oxide can
+      capture an electron first, in which case it is neutralized and nothing further happens. Or it can
+      transfer its charge to a hydrogen-bearing site first and release a proton. Once the charge has
+      passed to H⁺, electron–hole recombination no longer removes it, because the proton is so much
+      harder to neutralize; interface-trap formation then needs only the proton's drift to the interface.
+      Whether a part shows ELDRS is therefore decided by whether its transporting holes release H⁺
+      before they capture electrons. The dose rate sets the odds. At a high rate the density of free
+      electrons generated in the oxide is high, holes capture electrons sooner, fewer protons are
+      released per unit dose, and fewer interface traps form. At a low rate the electron density is low,
+      release wins more often, and the damage per unit dose is larger.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 470 250" role="img" aria-labelledby="m15f20-t">
+        <title id="m15f20-t">The competition between electron capture and proton release by a hole transporting in the oxide</title>
+      <defs><marker id="m15f20-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker><marker id="m15f20-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+      <rect x="20" y="30" width="430" height="150" class="dg-fill"/>
+      <text x="28" y="46" class="dg-label-sm">SiO₂</text>
+      <rect x="20" y="180" width="430" height="26" class="dg-fill"/>
+      <text x="28" y="198" class="dg-label-sm">Si</text>
+      <line x1="150" y1="134" x2="450" y2="134" class="dg-rule" stroke-width="0.8" stroke-dasharray="2 3"/>
+      <text x="446" y="129" class="dg-label-sm" text-anchor="end">near-interface region</text>
+      <circle cx="110" cy="66" r="11" class="dg-fill"/>
+      <text x="110" y="70" class="dg-label" text-anchor="middle">h⁺</text>
+      <text x="110" y="48" class="dg-label-sm" text-anchor="middle">transporting hole</text>
+      <path d="M100,76 L60,122" class="dg-rule" fill="none" stroke-width="1.3" marker-end="url(#m15f20-a)"/>
+      <circle cx="52" cy="130" r="9" class="dg-fill"/>
+      <text x="52" y="134" class="dg-label-sm" text-anchor="middle">0</text>
+      <text x="30" y="156" class="dg-label-sm">captures e⁻ first: neutral,</text>
+      <text x="30" y="167.5" class="dg-label-sm">no proton, no interface trap</text>
+      <path d="M121,73 L199,137" class="dg-acc" fill="none" stroke-width="2" marker-end="url(#m15f20-b)"/>
+      <text x="172" y="84" class="dg-label-sm">hops through the bulk</text>
+      <circle cx="212" cy="150" r="10" class="dg-acc" fill="none" stroke-width="2"/>
+      <text x="212" y="154" class="dg-label" text-anchor="middle">H⁺</text>
+      <path d="M212,161 L212,178" class="dg-acc" fill="none" stroke-width="2" marker-end="url(#m15f20-b)"/>
+      <text x="230" y="148" class="dg-label-sm">releases H⁺ near the interface:</text>
+      <text x="230" y="160" class="dg-label-sm">charge now on the proton,</text>
+      <text x="230" y="172" class="dg-label-sm">recombination stops</text>
+      <text x="236" y="198" class="dg-label-sm">at the interface: H⁺ + Si–H → H₂ + P_b⁺</text>
+      <text x="235" y="226" class="dg-label-sm" text-anchor="middle">high dose rate: more free electrons, capture wins</text>
+      <text x="235" y="240" class="dg-label-sm" text-anchor="middle"><tspan class="dg-acc-f">low dose rate: release wins, more interface traps</tspan></text>
+      </svg>
+      <figcaption>
+        The competition that decides ELDRS. A hole that captures an electron first is lost; a hole that
+        releases a proton first has put its charge beyond the reach of recombination, and the proton
+        goes on to make an interface trap. The hole transports through the bulk of the oxide, and the
+        proton is released near an interface — here the Si/SiO₂ interface — from which it drifts the
+        short remaining distance and depassivates an Si–H bond, leaving a positively charged
+        P<sub>b</sub> centre (Deck 05 p. 59; M09 §8). More electrons, at high dose rate, favour the
+        first outcome. Schematic.
+      </figcaption>
+    </figure>
+
+    <p>
+      Together with space charge, which reduces how many holes and protons reach the interface at high
+      rate, the electron-capture competition, which reduces how many protons are released at all, is
+      the account of ELDRS the lecture gives. It came seventeen years after the enhancement was first
+      reported, from Enlow <em>et al.</em> in 1991 to Fleetwood <em>et al.</em> in 2008. It also explains why hydrogen content, and therefore processing,
+      passivation and packaging, controls whether a part shows the effect.
+    </p>
+
+    <div class="box">
+      <p>
+        <b>Other contributions.</b> The account above is the one presented in the hardness-assurance
+        lecture. The wider literature has proposed further contributions to the dose-rate dependence of
+        bipolar oxides, among them initial recombination at the instant of generation, binary-reaction
+        models of two species reaching the interface on different time scales, shallow electron traps,
+        and radiation-induced deactivation of boron in the base by hydrogen; the 2001 short course
+        describes several of these, and <a href="m08-tid-effects-devices-ics.html">M08</a> §9 sets out
+        the model families. All of them predict qualitatively similar curves, which is why choosing
+        among them has proved difficult.
+      </p>
+    </div>
+
+    <h2>10 · A part's history matters</h2>
+    <p>
+      Every argument so far assumed that the part tested and the part flown respond alike. They do so
+      only if they share a history. The temperatures a part sees between fabrication and irradiation,
+      the years it spends in storage and the atmosphere sealed into its package all change its
+      radiation response, because all of them move hydrogen. This section collects the evidence and
+      the rule that follows from it.
+    </p>
+    <p>
+      The general term is <b>PETS</b>, <b>pre-irradiation elevated-temperature stress</b>: any
+      exposure of a part to elevated temperature before it is irradiated. The most deliberate form is
+      <b>burn-in</b>, a reliability screen that operates parts at elevated temperature under bias close
+      to their operating conditions so that parts with process defects fail before delivery rather than
+      in service; military-grade parts receive it as standard
+      (<a href="../../EEL5385_Space_Electronics/site/m03-space-electronics-gap.html">EEL5385 M03</a>
+      §4). Package sealing, solder reflow, board rework and high-temperature storage are PETS too.
+    </p>
+    <p>
+      <b>Burn-in changes MOS response.</b> Shaneyfelt and co-workers compared transistors with and
+      without a 150 °C burn-in (Deck 11 p. 23). At 1 Mrad(SiO₂) the interface-trap shift was about
+      +1.48 V without burn-in and +0.97 V with it, a third less, while the oxide-trap shift barely
+      changed, −1.62 against −1.55 V. Fewer interface traps is not an improvement wherever they were
+      doing useful work. In an n-channel transistor they offset the trapped-hole shift, (8.4), so less
+      of them leaves a more negative net threshold and more leakage; and in the parasitic field-oxide
+      transistors of <a href="m08-tid-effects-devices-ics.html">M08</a> §5 their positive shift helps
+      hold the edge channels off. A part characterized without burn-in can therefore fail after it.
+    </p>
+    <p>
+      <b>Some PETS effects do not depend on bias.</b> A later study (Deck 11 p. 24) stressed field-oxide
+      transistors from a 5 V technology at gate biases from −5 to +20 V before exposing them to
+      50 krad(SiO₂) of X-rays. Before irradiation they turned on near 18 V; after irradiation without the
+      stress, near 12–13 V; after the stress at any of the five biases, near 8–9 V, all on one curve.
+      A charged species would drift in the stress field and give a result that depended on its sign and
+      size. Bias independence points to a neutral one, and the slide's reading is molecular hydrogen
+      diffusing and reacting during the stress.
+    </p>
+    <p>
+      The rule that follows, as the lecture states it for Test Method 1019, is that radiation test
+      samples receive burn-in if and only if the flight parts do. More generally, test samples must see
+      the same burn-in, preconditioning and packaging as flight parts. The 2001 short course notes the
+      corollary for bipolar parts: tests on unpackaged die can give a different result from the
+      packaged parts actually flown.
+    </p>
+    <p>
+      <b>Aging changes response.</b> Rodgers and co-workers re-irradiated MOS transistors of a
+      technology with 32 nm gate oxides in 2005, having measured the same technology in 1988 (Deck 11
+      p. 25). After a room-temperature anneal to about 5×10⁶ s the threshold shift was about 1.04 V,
+      roughly twice the 0.53 V recorded in 1988. A pre-irradiation bake brought it down to about
+      0.72 V, removing roughly 60% of the increase; after a 100 °C anneal the shifts were about 1.39 V
+      without the bake and 1.06 V with it. The slide's interpretation is that water absorbed during
+      storage reacts in the SiO₂ and provides an extra source of protons during irradiation, and so
+      extra interface traps; <a href="m09-oxide-charge-kinetics.html">M09</a> §8 places the aging
+      result among the interface-trap kinetics. Radiation hardness is therefore not a fixed property of
+      a part for its whole life, and systems meant to last decades need stored parts to be retested.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 236" role="img" aria-labelledby="m15f21-t">
+        <title id="m15f21-t">Burn-in reduces interface-trap buildup, and storage from 1988 to 2005 doubled the threshold shift of a 32 nm oxide technology</title>
+      <line x1="60" y1="118" x2="320" y2="118" class="dg-rule" stroke-width="1.2"/>
+      <line x1="60" y1="38.8" x2="60" y2="197.2" class="dg-rule" stroke-width="1.2"/>
+      <line x1="56" y1="184" x2="60" y2="184" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="188" class="dg-label-sm" text-anchor="end">−1.5</text>
+      <line x1="56" y1="118" x2="60" y2="118" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="122" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="56" y1="52" x2="60" y2="52" class="dg-rule" stroke-width="1.0"/>
+      <text x="53" y="56" class="dg-label-sm" text-anchor="end">1.5</text>
+      <text x="16" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 16 118)">shift at 1 Mrad(SiO₂), V</text>
+      <rect x="100" y="52.9" width="30" height="65.1" class="dg-fill"/>
+      <text x="115" y="46.9" class="dg-label-sm" text-anchor="middle">1.48</text>
+      <rect x="136" y="75.3" width="30" height="42.7" class="dg-acc-f"/>
+      <text x="151" y="69.3" class="dg-label-sm" text-anchor="middle">0.97</text>
+      <text x="133" y="133" class="dg-label" text-anchor="middle">ΔV_it</text>
+      <rect x="220" y="118" width="30" height="71.3" class="dg-fill"/>
+      <text x="235" y="203.3" class="dg-label-sm" text-anchor="middle">−1.62</text>
+      <rect x="256" y="118" width="30" height="68.2" class="dg-fill"/>
+      <text x="271" y="200.2" class="dg-label-sm" text-anchor="middle">−1.55</text>
+      <text x="253" y="112" class="dg-label" text-anchor="middle">ΔV_ot</text>
+      <text x="64" y="16" class="dg-label-sm">burn-in: left bar none, right bar 150 °C</text>
+      <line x1="430" y1="196" x2="680" y2="196" class="dg-rule" stroke-width="1.2"/><line x1="430" y1="196" x2="430" y2="40" class="dg-rule" stroke-width="1.2"/>
+      <line x1="426" y1="196" x2="430" y2="196" class="dg-rule" stroke-width="1.0"/>
+      <text x="423" y="200" class="dg-label-sm" text-anchor="end">0</text>
+      <line x1="426" y1="144" x2="430" y2="144" class="dg-rule" stroke-width="1.0"/>
+      <text x="423" y="148" class="dg-label-sm" text-anchor="end">0.4</text>
+      <line x1="426" y1="92" x2="430" y2="92" class="dg-rule" stroke-width="1.0"/>
+      <text x="423" y="96" class="dg-label-sm" text-anchor="end">0.8</text>
+      <line x1="426" y1="40" x2="430" y2="40" class="dg-rule" stroke-width="1.0"/>
+      <text x="423" y="44" class="dg-label-sm" text-anchor="end">1.2</text>
+      <text x="384" y="118" class="dg-label" text-anchor="middle" transform="rotate(-90 384 118)">ΔV_th after 5×10⁶ s, V</text>
+      <rect x="453.7" y="127.1" width="36" height="68.9" class="dg-fill"/>
+      <text x="471.7" y="121.1" class="dg-label-sm" text-anchor="middle">0.53</text>
+      <text x="471.7" y="212" class="dg-label-sm" text-anchor="middle">1988</text>
+      <rect x="537" y="60.8" width="36" height="135.2" class="dg-acc-f"/>
+      <text x="555" y="54.8" class="dg-label-sm" text-anchor="middle">1.04</text>
+      <text x="555" y="212" class="dg-label-sm" text-anchor="middle">2005</text>
+      <rect x="620.3" y="102.4" width="36" height="93.6" class="dg-fill"/>
+      <text x="638.3" y="96.4" class="dg-label-sm" text-anchor="middle">0.72</text>
+      <text x="638.3" y="212" class="dg-label-sm" text-anchor="middle">2005, baked</text>
+      <text x="434" y="16" class="dg-label-sm">aging: 32 nm oxides, 25 °C anneal</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> Left: a 150 °C burn-in cuts the interface-trap shift at 1 Mrad(SiO₂) by a
+        third and leaves the oxide-trap shift almost unchanged. Right: seventeen years of storage
+        doubled the threshold shift of a 32 nm oxide technology, and a pre-irradiation bake removed most
+        of the increase. Bar heights read from the published figures.
+        <span class="src">Deck 11 p. 23, after M. R. Shaneyfelt <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>41</b>, 2550 (1994); Deck 11 p. 25, after M. P. Rodgers <em>et al.</em>, <em>ibid.</em> <b>52</b>, 2642 (2005).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>In linear bipolar parts PETS can move the total-dose response either way.</b> In the same
+      series of studies, Shaneyfelt and co-workers baked LM111 voltage comparators before irradiation
+      (Deck 11 pp. 26–27). The slides do not state the dose rates; the 2001 short course, which
+      reproduces both data sets, supplies them. Parts given a 175 °C PETS for 15 minutes to 1000 hours
+      and irradiated at 0.1 rad(SiO₂)/s showed a <em>reduced</em> (+) input bias current after
+      10⁵ rad(SiO₂), falling, with some scatter, as the PETS lengthened: from about 880 nA without
+      PETS to about 345 nA after 1000 hours. Parts given a 450 °C PETS for 200 s and irradiated at
+      50 rad(SiO₂)/s instead showed a <em>raised</em> current, about 1380 nA at 10⁵ rad(SiO₂) against
+      about 180 nA without PETS; the short course gives the increase as a factor of 5 to 10. The two
+      unbaked values differ because the dose rates differ: the factor of about five between 880 and
+      180 nA is the enhanced low-dose-rate sensitivity of the unbaked part. Deck 11 and the lecture
+      present the pair as PETS changing ELDRS in either direction. In these data the 175 °C bake
+      lowers the low-rate response, and the 450 °C bake raises the high-rate response itself. The short
+      course also reports that with long 175 °C PETS the remaining difference between 0.1 and
+      50 rad(SiO₂)/s became a time-dependent effect rather than a true dose-rate effect, which suggests
+      that PETS and ELDRS share an origin, and it names the nitride passivation layer as the likely
+      culprit in the LM111.
+    </p>
+    <p>
+      The lecture's explanation for the two directions is the hydrogen concentration gradient during
+      the bake. Hydrogen diffuses down its gradient. A part rich in hydrogen, baked in an ambient poor
+      in it, loses hydrogen and becomes harder. A part poor in hydrogen, baked where hydrogen is
+      available, gains it and becomes softer — and a sealed ceramic package can supply it, because the
+      atmosphere present when the lid was brazed or soldered on is trapped in the cavity. The history of
+      a part from fabrication through packaging, storage, board assembly and rework is therefore part of
+      its hardness.
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>A unit label on Deck 11 p. 26.</b> The horizontal axis of the 175 °C PETS plot is printed
+        "Total Dose [rad(SiO₂)/s]". The plotted quantity is a total dose, as the axis title says, running
+        from 10² to 10⁵, and the companion plot from the same study on p. 27 labels the same axis
+        "Total Dose (rad(SiO₂))". The unit should read rad(SiO₂); the "/s" is a typographical error.
+        Neither slide states the dose rate of its irradiations. The 2001 short course, which
+        reproduces both data sets (its Figs. 25 and 26), gives 0.1 rad(SiO₂)/s for the p. 26 series
+        and 50 rad(SiO₂)/s for the p. 27 comparison, so the two unbaked baselines, about 880 and
+        180 nA, belong to different dose rates.
+      </p>
+    </div>
+
+    <h2>Where this leaves us</h2>
+    <p>
+      Total-dose hardness assurance rests on three findings. The response of a part is set by oxide
+      material properties, above all defect and hydrogen content, that vary between manufacturers, lots,
+      wafers and positions on a wafer, so every lot of a part without a large design margin — HCC-1, the
+      common case — is tested, by destroying a sample chosen and sized by the statistics of §2. In MOS
+      parts the two radiation-induced charges have opposite time behaviour, and in an n-channel
+      transistor they shift the threshold in opposite directions; in gate oxides both depend on elapsed
+      time rather than on dose rate, so a test cannot reproduce the orbital balance but can bound each
+      charge: a fast irradiation overstates the trapped holes, and an
+      overtest with a week at 100 °C carries the interface traps to their plateau with little left to
+      compensate them. In linear bipolar parts the oxides show a true dose-rate effect, driven by space
+      charge and by the race between electron capture and proton release, so neither a fast irradiation
+      nor a bake bounds the damage, and the standard falls back on slow irradiation, the application
+      dose rate, or an accelerated test that characterization has validated for that part type.
+    </p>
+    <p>
+      Deck 11 closes on three conclusions. Effective tests exist for qualifying MOS and bipolar parts for
+      space, but ELDRS remains challenging; the lecture adds that it is best avoided by choosing parts
+      without it. Similar test methods can be applied to older and newer generations of devices. And both the radiation response and
+      the long-term reliability of MOS and bipolar parts change with time, temperature and, above all,
+      exposure to hydrogenous species. The lecture adds that radiation hardening by design aims to make
+      hardness assurance simple — oxides thin enough that interface traps barely build, passivation made
+      irrelevant — so that assurance reduces to verifying that the part was built as designed. Hardening
+      by design for total dose is the subject of M13, not yet built (<a href="index.html#roadmap">course
+      roadmap</a>).
+    </p>
+
+    <div class="keycard">
+      <p class="label">Quick reference</p>
+      <ul>
+        <li><b>Why every lot:</b> total-dose response is set by oxide defect and hydrogen content, which vary manufacturer → lot → wafer → within wafer. 16 Mb DRAMs from eight makers failed between ~6 and ~57 krad(Si) (×10); four lots of one part differed >10× in supply current. A commercial part number does not fix the die supplier. Lot = date-code lot at minimum, wafer lot preferred.</li>
+        <li><b>RDM = <em>R</em><sub>mf</sub>/<em>R</em><sub>spec</sub></b> (15.1). Design-margin breakpoints (Pease): &lt;1–2 unacceptable · 1–2 to 10 <b>HCC-1, test every lot</b> · 10–100 HCC-2, periodic · &gt;100 HNC, no further tests. 20 krad spec → 200 krad for HCC-2, 2 Mrad for HNC. RDM = 1 → half fail.</li>
+        <li><b>Attributes, zero failures:</b> <em>P</em><sub>s</sub> = (1 − <em>C</em>)<sup>1/<em>n</em></sup> (15.2). 11 parts, 0 failures → <em>P</em><sub>s</sub> ≈ 0.80 at <em>C</em> = 0.90 (LTPD 20). <em>P</em><sub>s</sub> = 0.999 needs ~2303 at spec — or 11 parts at <b>×3.02</b> overtest (σ<sub>ln</sub> ≤ 0.5). Overtest ×3.97 / 3.11 / 3.02 / 2.75 / 2.53 for <em>n</em> = 5 / 10 / 11 / 15 / 20.</li>
+        <li><b>Variables:</b> accept if exp(⟨ln <em>R</em><sub>fail</sub>⟩ − <em>K</em><sub>TL</sub><em>s</em>) ≥ <em>R</em><sub>spec</sub>, i.e. RDM ≥ PCC = exp(<em>K</em><sub>TL</sub><em>s</em>) (15.3). <em>K</em><sub>TL</sub> ≈ 4.2 (n = 15, 0.999/0.90); 3.1 (n = 18, 0.99/0.90). LM117: mean 10.9 krad, s = 0.18 → bound ≈ 6.2 krad &lt; 7 krad spec → lot rejected.</li>
+        <li><b>Characterization</b> = many doses, biases, rates; finds the worst case (understanding). <b>Qualification</b> = fixed procedure at that worst case (precision, documentation).</li>
+        <li><b>Two charges:</b> oxide-trap — O vacancy, +, negative Δ<em>V</em><sub>th</sub>, <b>leakage</b>, max right after, anneals. Interface-trap — P<sub>b</sub>, + for p-ch / − for n-ch at threshold, positive n-ch Δ<em>V</em><sub>th</sub>, <b>timing, speed, drive</b>, min right after, builds up.</li>
+        <li><b>Dose rate moves the failure:</b> CMOS failure dose ≈ 25 krad(Si) at 10⁻³ rad(Si)/s (positive shift), ≈ 12 krad(Si) above ~10 rad(Si)/s (negative shift), peak ≈ 115 krad(Si) near 0.7 rad(Si)/s. SRAM: leakage fails first at 200 rad(Si)/s, read timing first at 0.09 rad(Si)/s. <b>One test cannot predict — bound each charge.</b></li>
+        <li><b>MOS gate oxides: usually no true dose-rate effect.</b> Δ<em>V</em><sub>ot</sub> from LINAC (6×10⁹), X-ray (5550, 52 rad(SiO₂)/s) and Cs-137 (0.165, 0.05 rad/s) on one curve vs time. <em>t</em> = <em>D</em>/<em>Ḋ</em> (15.4), same material for both; 100 krad at 50 rad/s = 2000 s.</li>
+        <li><b>100 °C bake:</b> Δ<em>V</em><sub>it</sub> to plateau (~0.65 V, 32 nm oxide, 300 krad(SiO₂)) by ~4×10³ s, flat past one week (6.05×10⁵ s) — above RT and Cs-137 values; &lt; 125 °C so interface traps do not anneal. Same bake removes trapped holes → <b>cannot predict leakage</b>. Latent buildup ~10⁶ s, up to ×4, <em>E</em><sub>A</sub> ≈ 0.41 eV.</li>
+        <li><b>TM 1019 (MOS):</b> Co-60 at <b>50–300 rad(Si)/s</b>, worst-case bias, test. Pass → accelerated-anneal test required (3.12.1)? Fail → extended RT anneal required (3.11.1)? → test → if pass, the same 3.12.1 decision. 3.12.1 no → pass; yes → 0.5× overtest required (3.12.2.a.2)? → one of three anneals, routinely <b>168 h at 100 °C biased</b> → test. ESCC 22900: 2–10 and 0.01–0.1 rad/s.</li>
+        <li><b>Worst-case bias:</b> field sets yield, transport direction, trapping and interface-trap buildup; SiO₂ worst case ≈ positive gate at operating field. High-κ pMOS: irradiate at + then −BTS (75 °C, 10 min, 2 MV/cm) → −0.33 V vs −0.11 V sum: <b>irradiated off, annealed on</b>.</li>
+        <li><b>Bipolar breaks it:</b> 300 rad/s + 100 °C never reaches 1.1 rad/s damage (Enlow 1991). Thick, poorly controlled, electrode-less, low-field oxide over the E–B junction. Worst: lateral/substrate pnp inputs (LM324 ×5.8, LM111 ×4.7 vs 50 rad(Si)/s; npn LM108, discretes ×1). LM111: 50 rad(Si)/s ≈125 nA at 70 krad, 1987 tests at 100 rad(Si)/s saturate ≈165 nA; 0.005 rad(Si)/s passes 1000 nA by 40 krad — slide: <b>~10×, overtest in dose cannot close it</b>. LM324 fails only at 0.002 rad(Si)/s: no floor.</li>
+        <li><b>Space charge:</b> slow holes build a positive sheet at high rate; field reverses above it; holes and H⁺ from the upper oxide never reach the interface.</li>
+        <li><b>ETI</b> accelerates but <b>often does not bound</b> (in-situ anneal competes; LM139 at 30 krad: ~40 nA HDR, ~90 nA at 100 °C, 300–600 nA LDR). <b>TSI</b> 5.8 rad(Si)/s, 120 → 100 → 80 °C at 20 and 80 krad: LM833 4.1 µA vs LDR 1.8 µA vs HDR 0.56 µA — bounds, but tuned per part.</li>
+        <li><b>TM 1019 (linear bipolar):</b> ELDRS test needed (3.13)? No → Condition A. Yes → C (application rate) · <b>D (≤ 10 mrad(Si)/s to 1.5 × spec)</b> · E (accelerated, from characterization). 100 krad at 10 mrad/s = 10⁷ s ≈ 116 d; ×1.5 → ≈ 174 d. Lab standard 50–300 rad(Si)/s; space &lt; 0.01 rad(SiO₂)/s (average 10⁻³ to &lt; 10⁻⁴ rad/s). First choice: <b>parts without ELDRS</b>.</li>
+        <li><b>Key to ELDRS</b> (Fleetwood 2008): holes neutralized <b>100–1000×</b> more easily than protons; ELDRS ⇔ hole releases H⁺ before capturing an e⁻; high rate → more electrons → fewer H⁺ → fewer interface traps. H soak (10 krad(SiO₂), 40 rad(SiO₂)/s): 6 → ~40 nA, beats 20 mrad(SiO₂)/s (~24 nA) after ~2 h — mechanism evidence, <b>not a screen</b>.</li>
+        <li><b>PETS</b> = pre-irradiation elevated-temperature stress (burn-in, sealing, reflow, rework, storage). 150 °C burn-in: Δ<em>V</em><sub>it</sub> 1.48 → 0.97 V at 1 Mrad(SiO₂) — harmful where it compensated. Bias-independent PETS → H₂ diffusion. 1988 → 2005 aging: 0.53 → 1.04 V; bake → 0.72 V (water supplies protons). Bipolar (LM111): 175 °C lowers the 0.1 rad(SiO₂)/s response (≈880 → 345 nA at 10⁵ rad(SiO₂)); 450 °C/200 s raises the 50 rad(SiO₂)/s response (≈180 → 1380 nA, ×5–10). Different rates, so different baselines. <b>Test samples get the same burn-in and preconditioning as flight parts.</b></li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 11 pp. 3–5 (after R. L. Pease, <em>IEEE Trans. Nucl. Sci.</em> <b>43</b>, 442 (1996); F. B. McLean and T. R. Oldham, HDL-TR-2129 (1987)); lot definition, vendor-as-part-type and multi-lot sampling from R. L. Pease, "Hardness assurance for commercial microelectronics", <em>Int. J. High Speed Electron. Syst.</em> <b>14</b>, 543 (2004), in the course textbook (Schrimpf and Fleetwood, eds., World Scientific 2004); the contrast with single-event reproducibility from the hardness-assurance lecture. Figure values read from the slide plots</td></tr>
+      <tr><td>§2</td><td>Pease (2004) §§2–6 for the hardness-assurance definition, failure definitions, RDM, DMBP and PCC categorization, attributes and variables tests, the overtest table and the LM117 example; the zero-failure binomial relation (15.2) is standard sampling statistics, supplied here and checked against Pease's 11-part and 2303-part figures. Characterization against qualification, and the lecture's reasons for accepting an eleven-part zero-failure lot sample, from the lecture's question session</td></tr>
+      <tr><td>§3</td><td>Deck 11 pp. 5–9 (after A. H. Johnston, <em>IEEE Trans. Nucl. Sci.</em> <b>31</b>, 1427 (1984); P. S. Winokur <em>et al.</em>, <em>ibid.</em> <b>33</b>, 1343 (1986)); the balance-point reading and the bounding principle from the lecture. The Johnston failure criterion printed on p. 7 is illegible in the source and is not quoted</td></tr>
+      <tr><td>§4</td><td>Deck 11 pp. 10–13 (after D. M. Fleetwood, P. S. Winokur and J. R. Schwank, <em>IEEE Trans. Nucl. Sci.</em> <b>35</b>, 1497 (1988) — the single paper cited on both p. 10 and p. 13; D. M. Fleetwood, P. S. Winokur, L. C. Riewe and R. L. Pease, <em>ibid.</em> <b>36</b>, 1963 (1989); J. R. Schwank <em>et al.</em>, <em>ibid.</em> <b>39</b>, 1953 (1992)); Deck 06 p. 42 for the &gt;125 °C interface-trap anneal; Pease (2004) p. 548 for the time-dependent and true dose-rate definitions and for true dose-rate effects in thick, low-field oxides; the p. 10 time axis read as time from the start of irradiation, as p. 13 labels the same data and as the first and Cs-137 points require; M04 §8 for the rad(Si)/rad(SiO₂) ratio. The Arrhenius estimate for latent buildup is derived here from the slide's 0.41 eV and is labelled as such</td></tr>
+      <tr><td>§5</td><td>Deck 11 p. 13 (MIL-STD-883H, Test Method 1019 flowchart); Deck 08 p. 45 for the 50% overtest and 168 h, 100 °C biased anneal; Pease (2004) p. 548 and Fig. 2 for the 50–300 rad(Si)/s window and the ESCC 22900 windows, and §7 for the two-step description; the course textbook's CCD chapter for 168 h at 100 °C as the routine rebound test of MIL-STD-883 Method 1019.4 and ESCC 22900. When the accelerated-anneal test is omitted, and why a week, from the lecture. The other two accelerated-anneal procedures of paragraph 3.12.2.b are not described in the course sources and are not named</td></tr>
+      <tr><td>§6</td><td>Deck 11 p. 14 (after X. J. Zhou, D. M. Fleetwood, J. A. Felix, E. P. Gusev and C. D'Emic, <em>IEEE Trans. Nucl. Sci.</em> <b>52</b>, 2231 (2005)); the field dependences from M07 §§2, 4, 8 and M06 §3; the operating-field worst case from Lecture 7 and the hardness-assurance lecture; worst-case test conditions from Pease (2004) §§2–3. The charge-cancellation account of the high-κ result and the remark on current high-κ stacks are the lecture's</td></tr>
+      <tr><td>§7</td><td>Deck 11 pp. 15–19 (after E. W. Enlow <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>38</b>, 1342 (1991); A. H. Johnston <em>et al.</em>, <em>ibid.</em> <b>41</b>, 2427 (1994) and <b>42</b>, 1650 (1995); S. C. Witczak <em>et al.</em>, <em>ibid.</em> <b>45</b>, 2339 (1998); D. M. Fleetwood <em>et al.</em>, <em>ibid.</em> <b>43</b>, 2537 (1996)); R. D. Schrimpf, IEEE NSREC 2001 Short Course §IV, sections VI.D and VII.A, for the critical dose rate, dose-rate saturation below 10 rad(SiO₂)/s, continued dependence to 0.002 rad(SiO₂)/s and overtest factors. The 100 nA crossing doses on the LM111 plot are interpolated here from the plotted points. The oxide-geometry figure is a schematic after the lecture's description and M08 §9</td></tr>
+      <tr><td>§8</td><td>Deck 11 pp. 20–22 (after R. L. Pease <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>45</b>, 2665 (1998); X. Li <em>et al.</em>, <em>ibid.</em> <b>66</b>, 199 (2019); MIL-STD-883H Test Method 1019 flowchart for linear bipolar devices); NSREC 2001 Short Course §IV.VII.B (pp. IV-48–IV-50) for the temperature optimum, oxide-charge annealing below interface-trap annealing and its pnp/npn consequences, and the 100–125 °C, ×2–3 overtest finding; §IV.VII.E (p. IV-52) for the ASTM F1892 revision; Pease (2004) for the 2003 revision of the standard and p. 548 for the average and instantaneous space dose rates. Test durations derived from the slide's rates with (15.4); none is taken from the lecture's spoken figures. Parts-selection strategy from the lecture and Deck 11 p. 30</td></tr>
+      <tr><td>§9</td><td>Deck 11 pp. 28–29 (after R. L. Pease <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>51</b>, 3773 (2004) and <b>54</b>, 1049 (2007); D. M. Fleetwood, R. D. Schrimpf, S. T. Pantelides, R. L. Pease and G. W. Dunham, "Electron capture, hydrogen release, and enhanced gain degradation in linear bipolar devices", <em>ibid.</em> <b>55</b>, 2986 (2008); K. Vanheusden <em>et al.</em>, <em>Appl. Phys. Lett.</em> <b>72</b>, 28 (1998)); why the soak is not a screen from the lecture's question to the class; Deck 05 p. 59 for hole transport in the bulk and proton release near an interface, and M09 §8 for the charged product of depassivation, as drawn in the competition figure; other model families from NSREC 2001 Short Course §IV.VI.D–E and M08 §9. The page presents the 2008 mechanism as the lecture's account and does not claim the literature has settled on it</td></tr>
+      <tr><td>§10</td><td>Deck 11 pp. 23–27 (after M. R. Shaneyfelt, D. M. Fleetwood, J. R. Schwank, T. L. Meisenheimer and P. S. Winokur, <em>IEEE Trans. Nucl. Sci.</em> <b>41</b>, 2550 (1994); M. R. Shaneyfelt, P. S. Winokur, D. M. Fleetwood, J. R. Schwank and R. A. Reber, <em>ibid.</em> <b>43</b>, 865 (1996); M. P. Rodgers, D. M. Fleetwood, R. D. Schrimpf, I. G. Batyrev, S. Wang and S. T. Pantelides, <em>ibid.</em> <b>52</b>, 2642 (2005); M. R. Shaneyfelt, J. R. Schwank, S. C. Witczak, D. M. Fleetwood, R. L. Pease, P. S. Winokur, L. C. Riewe and G. L. Hash, <em>ibid.</em> <b>47</b>, 2539 (2000)); NSREC 2001 Short Course §IV.VI.G (pp. IV-45–IV-47, Figs. 25–26) for the LM111 identification, the dose rates of the two PETS data sets (0.1 rad(SiO₂)/s on p. 26, 50 rad(SiO₂)/s on p. 27), the ×5–10 factor, the PETS–ELDRS link, the nitride-passivation finding and unpackaged-die testing; burn-in parity, the hydrogen-gradient explanation and the retesting of stored parts from the lecture; conclusions from Deck 11 p. 30. The p. 26 axis-unit error is flagged on the page</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m12-displacement-damage.html"><span>Previous</span>M12 · Displacement Damage and NIEL</a>
+      <a class="next" href="a1-key-literature.html"><span>Next</span>A1 · Key Literature: A Field Map</a>
+    </nav>
+
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>
