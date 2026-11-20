@@ -1,0 +1,1199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M17b · Transistors at High Temperature — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M17b · Transistors at High Temperature</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 17b</p>
+    <h1>Transistors at High Temperature</h1>
+    <p class="lede">
+      Why a MOSFET fails when hot and a junction field-effect transistor keeps working: the MOSFET's
+      off state, the lifetime of its gate oxide and the thermal strain in its stack of materials; then
+      the JFET from its structure, the two temperature effects that oppose in it, and the bias at which
+      they cancel.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M17a, M01 §6–§8, M14 §7</span>
+      <span><b>Read time</b> ~45 min</span>
+      <span><b>Sources</b> Deck 15 pp. 10–32, 44; Lecture 15; Deck 16a pp. 49–51, 55–56; Taur &amp; Ning (2022); Sze &amp; Ng (2007); InterFET AN-107 (2018)</span>
+    </div>
+
+    <p>
+      <a href="m17a-temperature-semiconductor.html">M17a</a> followed temperature through the
+      semiconductor and the p–n junction: the intrinsic density rises steeply, mobility falls, and a
+      junction's leakage grows long before the material becomes intrinsic. A transistor adds a means of
+      control, the gate, and the way the gate acts on the channel decides how the device fails when hot.
+      The MOSFET of <a href="m01-semiconductor-background.html">M01 §8</a> controls its channel through
+      an oxide. The course names three problems of the MOSFET at high temperature (Deck 15 p. 10): a
+      large leakage current, fast electrical breakdown of the oxide, and cracking of the oxide under
+      thermal strain. The last two belong to the oxide itself, and the course then asks whether a
+      transistor can be made without it. The junction
+      field-effect transistor, the JFET, is that transistor: it controls its channel through a
+      reverse-biased p–n junction.
+    </p>
+    <p>
+      §1 explains how a hot MOSFET loses its off state, through its threshold voltage, its subthreshold
+      slope and the leakage of its drain junction, and how silicon-on-insulator construction delays the
+      loss. §2 treats the lifetime of the gate oxide under field, which shortens steeply with temperature,
+      and §3 the strain that thermal expansion builds at every interface, with the choice of metal it
+      forces. §4 builds the JFET from its structure: the depletion regions, pinch-off and the square law.
+      §5 sets out the two temperature effects that act on the JFET in opposite directions and the bias at
+      which they cancel. §6 compares the transistor types for high-temperature use, the comparison behind
+      the silicon carbide integrated circuits of M17c.
+    </p>
+
+    <h2>1 · The hot MOSFET loses its off state</h2>
+    <p>
+      A MOSFET switches by raising and lowering a potential barrier between source and drain
+      (<a href="m01-semiconductor-background.html#m01-eq-thermionic">M01 §8</a>). With the gate below
+      threshold, electrons in the source face the barrier of the p-type body, and the few with enough
+      thermal energy to cross it carry the subthreshold current. With the gate above threshold the
+      barrier is pulled down and an inversion layer connects source and drain. Heat changes both states,
+      but unequally: the on-current changes by tens of percent while the off-current changes by orders of
+      magnitude. The transistor keeps turning on and stops turning off.
+    </p>
+    <p>
+      Three quantities move together as the temperature rises. The subthreshold swing <em>S</em>, the
+      gate voltage needed to change the subthreshold current tenfold, is proportional to the absolute
+      temperature, (<a href="m01-semiconductor-background.html#m01-eq-ss">1.15</a>): 59.5 mV per decade at
+      300 K becomes 99.2 at 500 K before the body factor is applied, so the same gate voltage below
+      threshold suppresses the current less. The threshold voltage falls. And the drain junction, a
+      reverse-biased n⁺p diode, leaks more, as every junction of
+      <a href="m17a-temperature-semiconductor.html#m17a-eq-ir">M17a §5</a> does.
+    </p>
+    <p>
+      The threshold falls because the band bending needed for inversion shrinks. Equation
+      (<a href="m01-semiconductor-background.html#m01-eq-vt">1.11</a>) sets the threshold where the
+      surface potential reaches 2<em>φ</em><sub>F</sub>, twice the bulk Fermi potential
+      <em>φ</em><sub>F</sub> = (<em>kT</em>/<em>q</em>) ln(<em>N</em><sub>a</sub>/<em>n</em><sub>i</sub>). As
+      <em>n</em><sub>i</sub> rises, the bulk Fermi level moves toward midgap, <em>φ</em><sub>F</sub>
+      falls, and the depletion charge the gate must support at threshold falls with it. The flat-band
+      voltage changes too, because the Fermi level of an n⁺ polysilicon gate is tied to its conduction
+      band and the gap narrows. Taur and Ning combine these terms for a uniformly doped n-channel device
+      with an n⁺ polysilicon gate.
+    </p>
+
+    <div class="eq" id="m17b-eq-vtht">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num">d<em>V</em><sub>th</sub></span><span class="den">d<em>T</em></span></span> = −(2<em>m</em> − 1) <span class="frac"><span class="num"><em>k</em></span><span class="den"><em>q</em></span></span> <span class="dl">[</span>ln <span class="frac"><span class="num"><span class="sqrt"><span class="rad">√</span><span class="arg"><em>N</em><sub>c</sub><em>N</em><sub>v</sub></span></span></span><span class="den"><em>N</em><sub>a</sub></span></span> + <span class="frac"><span class="num">3</span><span class="den">2</span></span><span class="dl">]</span> + <span class="frac"><span class="num"><em>m</em> − 1</span><span class="den"><em>q</em></span></span> <span class="frac"><span class="num">d<em>E</em><sub>g</sub></span><span class="den">d<em>T</em></span></span>,&nbsp;&nbsp; <em>m</em> = 1 + <span class="frac"><span class="num"><em>C</em><sub>d</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(17b.1)</div>
+      </div>
+      <div class="eq-says">
+        d<em>V</em><sub>th</sub>/d<em>T</em> temperature coefficient of the threshold voltage (<b>V/K</b>) ·
+        <em>k</em>/<em>q</em> = 8.617×10⁻⁵ V/K · <em>N</em><sub>c</sub>, <em>N</em><sub>v</sub> effective
+        densities of states (cm⁻³), √(<em>N</em><sub>c</sub><em>N</em><sub>v</sub>) ≈ 3×10¹⁹ cm⁻³ for silicon
+        at 300 K in Taur and Ning · <em>N</em><sub>a</sub> body doping (cm⁻³) · <em>m</em> body factor, with
+        <em>C</em><sub>d</sub> the depletion capacitance at threshold and <em>C</em><sub>ox</sub> the oxide
+        capacitance (both F/cm²), the same bracket as (1.15) · d<em>E</em><sub>g</sub>/d<em>T</em> ≈
+        −2.7×10⁻⁴ eV/K for silicon near 300 K; with <em>E</em><sub>g</sub> in eV,
+        (1/<em>q</em>)d<em>E</em><sub>g</sub>/d<em>T</em> is the same number in V/K. Long-channel n-MOSFET,
+        uniform doping, n⁺ polysilicon gate, no oxide charge (Taur &amp; Ning 2022, Eq. 5.64). Taur and Ning
+        give about −1 mV/K for 10¹⁶ cm⁻³ (<em>m</em> ≈ 1.1) and about −0.7 mV/K for 10¹⁸ cm⁻³
+        (<em>m</em> ≈ 1.3). On the formula sheet as <a href="formula-sheet.html#eq-17b-vtht">(17b.1)</a>.
+      </div>
+    </div>
+
+    <p>
+      For the example device of M01, with 10¹⁷ cm⁻³ in the body and 10 nm of oxide, the body factor is
+      1.29 and (17b.1) gives −1.1 mV/K near 300 K. The coefficient steepens as the device heats, because
+      the thinner depletion layer at threshold raises <em>C</em><sub>d</sub> and with it <em>m</em>, to 1.32
+      at 400 K and 1.37 at 500 K. Evaluating (1.11) at each temperature with the <em>n</em><sub>i</sub> of
+      M17a, the threshold of 0.34 V at 300 K falls to 0.23 V at 400 K and 0.10 V at 500 K, about
+      −1.3 mV/K by then. Meanwhile the swing, 77 mV per decade at 300 K, grows to 105 at 400 K and 136 at
+      500 K. At zero gate voltage the device sits 4.4 decades of current below its threshold current at
+      300 K, 2.2 decades at 400 K and only 0.8 decade at 500 K. Holding the current at threshold fixed,
+      which it nearly is, the off-current at zero gate voltage rises about 60-fold from 25 to 100 °C, about
+      170-fold by 400 K and about 4,000-fold by 500 K. Taur and Ning put the typical rise of a MOSFET's
+      off-state leakage between 25 and 100 °C at 20 to 50 times.
+    </p>
+    <p>
+      The drain junction sets a floor beneath this. In the off state the drain is held positive, at up to
+      the supply voltage, so its junction with the body is reverse-biased, and its reverse current, the sum of
+      diffusion and generation currents of (17a.5), flows into the body through the drain terminal
+      whatever the gate does. NASA's tutorial names it <em>I</em><sub>DL</sub> and states the consequence:
+      the reverse leakage of the drain junction dictates the off-state current floor <em>I</em><sub>OFF</sub>
+      (Deck 16a p. 49, after Neudeck, Okojie and Chen 2002). For the illustrative junction of M17a, a p⁺n
+      junction with 10¹⁶ cm⁻³, a lifetime of 1 µs and a 1 µm depletion width, each square micrometre of
+      junction leaks 8×10⁻¹⁶ A at 300 K, 4×10⁻¹³ A at 400 K, 5×10⁻¹¹ A at 500 K and 5×10⁻⁹ A at 600 K.
+      No gate voltage removes this current, so once it exceeds the subthreshold current it is the
+      off-current.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 262" role="img" aria-labelledby="f17b-1-t">
+  <title id="f17b-1-t">Schematic transfer characteristic of a MOSFET on a logarithmic current scale at a lower and a higher temperature: when hot the off-state floor is higher, the threshold voltage is lower, the subthreshold slope is shallower and the on-current is lower, and the two curves cross at one gate voltage</title>
+  <defs><marker id="f17b-1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-soft"/></marker></defs>
+  <rect x="66" y="30" width="338" height="184" class="dg-fill" opacity="0.3"/>
+  <line x1="114.3" y1="30" x2="114.3" y2="214" class="dg-guide" stroke-width="0.9" stroke-dasharray="3 3"/>
+  <text x="114.3" y="24" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan> = 0</text>
+  <path d="M66,196.6 L68.4,196 L70.8,195.2 L73.2,194.4 L75.7,193.3 L78.1,192.2 L80.5,190.9 L82.9,189.4 L85.3,187.9 L87.7,186.3 L90.1,184.6 L92.6,182.8 L95,181 L97.4,179.1 L99.8,177.2 L102.2,175.3 L104.6,173.4 L107,171.4 L109.5,169.5 L111.9,167.5 L114.3,165.6 L116.7,163.6 L119.1,161.6 L121.5,159.7 L123.9,157.7 L126.4,155.7 L128.8,153.7 L131.2,151.8 L133.6,149.8 L136,147.8 L138.4,145.9 L140.8,143.9 L143.3,141.9 L145.7,140 L148.1,138 L150.5,136 L152.9,134.1 L155.3,132.1 L157.7,130.2 L160.2,128.2 L162.6,126.3 L165,124.4 L167.4,122.4 L169.8,120.5 L172.2,118.6 L174.6,116.7 L177.1,114.9 L179.5,113 L181.9,111.2 L184.3,109.3 L186.7,107.5 L189.1,105.7 L191.5,104 L194,102.3 L196.4,100.6 L198.8,98.9 L201.2,97.3 L203.6,95.7 L206,94.2 L208.4,92.7 L210.9,91.2 L213.3,89.8 L215.7,88.5 L218.1,87.1 L220.5,85.9 L222.9,84.7 L225.3,83.5 L227.8,82.4 L230.2,81.3 L232.6,80.3 L235,79.3 L237.4,78.4 L239.8,77.5 L242.2,76.7 L244.7,75.8 L247.1,75.1 L249.5,74.3 L251.9,73.6 L254.3,72.9 L256.7,72.2 L259.1,71.6 L261.6,71 L264,70.4 L266.4,69.8 L268.8,69.3 L271.2,68.8 L273.6,68.2 L276,67.8 L278.5,67.3 L280.9,66.8 L283.3,66.4 L285.7,65.9 L288.1,65.5 L290.5,65.1 L292.9,64.7 L295.4,64.3 L297.8,64 L300.2,63.6 L302.6,63.3 L305,62.9 L307.4,62.6 L309.8,62.2 L312.3,61.9 L314.7,61.6 L317.1,61.3 L319.5,61 L321.9,60.7 L324.3,60.4 L326.7,60.2 L329.2,59.9 L331.6,59.6 L334,59.3 L336.4,59.1 L338.8,58.8 L341.2,58.6 L343.6,58.3 L346.1,58.1 L348.5,57.9 L350.9,57.6 L353.3,57.4 L355.7,57.2 L358.1,57 L360.5,56.7 L363,56.5 L365.4,56.3 L367.8,56.1 L370.2,55.9 L372.6,55.7 L375,55.5 L377.4,55.3 L379.9,55.1 L382.3,54.9 L384.7,54.8 L387.1,54.6 L389.5,54.4 L391.9,54.2 L394.3,54 L396.8,53.9 L399.2,53.7 L401.6,53.5 L404,53.4" class="dg-line" stroke-width="2"/>
+  <path d="M66,106.6 L68.4,106.6 L70.8,106.6 L73.2,106.6 L75.7,106.6 L78.1,106.6 L80.5,106.6 L82.9,106.6 L85.3,106.5 L87.7,106.5 L90.1,106.5 L92.6,106.4 L95,106.4 L97.4,106.3 L99.8,106.3 L102.2,106.2 L104.6,106.1 L107,105.9 L109.5,105.8 L111.9,105.6 L114.3,105.4 L116.7,105.2 L119.1,104.9 L121.5,104.6 L123.9,104.3 L126.4,103.9 L128.8,103.4 L131.2,102.9 L133.6,102.4 L136,101.8 L138.4,101.2 L140.8,100.5 L143.3,99.7 L145.7,99 L148.1,98.2 L150.5,97.3 L152.9,96.5 L155.3,95.6 L157.7,94.7 L160.2,93.8 L162.6,92.9 L165,92 L167.4,91.1 L169.8,90.2 L172.2,89.4 L174.6,88.5 L177.1,87.6 L179.5,86.8 L181.9,85.9 L184.3,85.1 L186.7,84.3 L189.1,83.5 L191.5,82.7 L194,82 L196.4,81.3 L198.8,80.6 L201.2,79.9 L203.6,79.2 L206,78.5 L208.4,77.9 L210.9,77.3 L213.3,76.7 L215.7,76.1 L218.1,75.5 L220.5,75 L222.9,74.4 L225.3,73.9 L227.8,73.4 L230.2,72.9 L232.6,72.4 L235,72 L237.4,71.5 L239.8,71.1 L242.2,70.6 L244.7,70.2 L247.1,69.8 L249.5,69.4 L251.9,69 L254.3,68.6 L256.7,68.3 L259.1,67.9 L261.6,67.6 L264,67.2 L266.4,66.9 L268.8,66.6 L271.2,66.2 L273.6,65.9 L276,65.6 L278.5,65.3 L280.9,65 L283.3,64.7 L285.7,64.4 L288.1,64.2 L290.5,63.9 L292.9,63.6 L295.4,63.4 L297.8,63.1 L300.2,62.9 L302.6,62.6 L305,62.4 L307.4,62.1 L309.8,61.9 L312.3,61.7 L314.7,61.4 L317.1,61.2 L319.5,61 L321.9,60.8 L324.3,60.6 L326.7,60.4 L329.2,60.2 L331.6,60 L334,59.8 L336.4,59.6 L338.8,59.4 L341.2,59.2 L343.6,59 L346.1,58.8 L348.5,58.6 L350.9,58.4 L353.3,58.3 L355.7,58.1 L358.1,57.9 L360.5,57.7 L363,57.6 L365.4,57.4 L367.8,57.2 L370.2,57.1 L372.6,56.9 L375,56.7 L377.4,56.6 L379.9,56.4 L382.3,56.3 L384.7,56.1 L387.1,56 L389.5,55.8 L391.9,55.7 L394.3,55.5 L396.8,55.4 L399.2,55.3 L401.6,55.1 L404,55" class="dg-acc" stroke-width="2.2"/>
+  <circle cx="319.8" cy="61" r="4.5" class="dg-rule" fill="none" stroke-width="1.2"/>
+  <text x="355.7" y="95" class="dg-label" text-anchor="middle">equal currents</text>
+  <line x1="322.8" y1="66" x2="348.5" y2="83" class="dg-guide" stroke-width="0.9"/>
+  <line x1="78" y1="195.7" x2="78" y2="110.7" class="dg-line" stroke-width="1.2" marker-end="url(#f17b-1-ar)"/>
+  <text x="84" y="156.7" class="dg-label">I<tspan baseline-shift="sub" style="font-size:75%">DL</tspan></text>
+  <text x="259.1" y="101.1" class="dg-label">T<tspan baseline-shift="sub" style="font-size:75%">1</tspan></text>
+  <text x="70" y="96.7" class="dg-label">T<tspan baseline-shift="sub" style="font-size:75%">2</tspan> &gt; T<tspan baseline-shift="sub" style="font-size:75%">1</tspan></text>
+  <line x1="210.9" y1="214" x2="210.9" y2="220" class="dg-rule" stroke-width="1"/>
+  <line x1="172.2" y1="214" x2="172.2" y2="220" class="dg-rule" stroke-width="1"/>
+  <line x1="208.9" y1="227" x2="175.2" y2="227" class="dg-line" stroke-width="1.1" marker-end="url(#f17b-1-ar)"/>
+  <text x="216.9" y="231" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">th</tspan> falls</text>
+  <text x="402" y="43.4" class="dg-label" text-anchor="end">I<tspan baseline-shift="sub" style="font-size:75%">ON</tspan> falls slightly</text>
+  <line x1="66" y1="214" x2="404" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <line x1="66" y1="30" x2="66" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <text x="235" y="254" class="dg-label" text-anchor="middle">gate voltage V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan></text>
+  <text x="22" y="122" class="dg-label" text-anchor="middle" transform="rotate(-90 22 122)">drain current (log scale)</text>
+</svg>
+      <figcaption>
+        <b>Figure 1.</b> The transfer characteristic of a MOSFET at two temperatures, drawn
+        schematically on a logarithmic current axis. When hot the threshold is lower, the subthreshold
+        slope is shallower and the junction-leakage floor is higher, so at zero gate voltage the current
+        is orders of magnitude larger; at high gate voltage the lower mobility leaves the on-current
+        slightly smaller. The two curves cross at one gate voltage, where the falling threshold and the
+        falling mobility cancel.
+        <span class="src">After Deck 16a p. 49 (Neudeck, Okojie &amp; Chen 2002); curves from a
+        long-channel interpolation model, computed here, with no scale implied.</span>
+      </figcaption>
+    </figure>
+
+    <div class="eq" id="m17b-eq-ioff">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>OFF</sub> ≈ <em>I</em><sub>th</sub> · 10<sup>−<em>V</em><sub>th</sub>/<em>S</em></sup> + <em>A</em><sub>D</sub> <em>J</em><sub>R</sub>(<em>T</em>)</div>
+        <div class="eq-num">(17b.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>OFF</sub> drain current at zero gate voltage (A) · <em>I</em><sub>th</sub> drain current
+        at <em>V</em><sub>GS</sub> = <em>V</em><sub>th</sub> (A), nearly independent of temperature ·
+        <em>V</em><sub>th</sub> threshold voltage at <em>T</em>, from (1.11) and (17b.1) (V) · <em>S</em>
+        subthreshold swing at <em>T</em>, from (1.15) (<b>V per decade</b>, so both are in volts) ·
+        <em>A</em><sub>D</sub> area of the drain junction (<b>cm²</b>) · <em>J</em><sub>R</sub> reverse
+        current density of that junction at <em>T</em>, from (17a.5) taken per unit area and written for
+        the lightly doped side, the p-type body (<em>N</em><sub>a</sub>, <em>D</em><sub>n</sub>), of an n⁺p
+        drain (A/cm²). The first term is the current over the barrier, the second the drain-junction leakage
+        <em>I</em><sub>DL</sub>. Enhancement-mode device with <em>V</em><sub>th</sub> &gt; 0, the gate more
+        than a few <em>kT</em>/<em>q</em> below threshold (weak inversion) and <em>V</em><sub>DS</sub> above a
+        few <em>kT</em>/<em>q</em>; within a decade of threshold, as for the M01 device at 500 K, it is an
+        estimate only. Excludes gate leakage and short-channel effects. On the formula sheet as
+        <a href="formula-sheet.html#eq-17b-ioff">(17b.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      The on-current responds to two of the same changes in opposite directions. Above threshold the
+      current is proportional to the channel mobility, which falls with temperature as lattice scattering
+      grows (<a href="m17a-temperature-semiconductor.html#m17a-eq-mob">M17a §4</a>), and it grows with the
+      gate overdrive <em>V</em><sub>GS</sub> − <em>V</em><sub>th</sub>, which rises as the threshold falls.
+      At large overdrive the mobility dominates and the on-current falls, which is the loss of gain and
+      on-current named on Deck 16a p. 49. At one gate voltage the two changes cancel, a
+      zero-temperature-coefficient point that MOSFET circuits use for temperature-stable references
+      (Filanovsky and Allam 2001); §5 derives the same balance for the JFET.
+    </p>
+    <p>
+      The simulator runs of Lecture 15 show the pattern. The nanoHUB MOSFET tool, an online device
+      simulator from the same service as the p–n junction tool of M17a, was run at 300 and 400 K, with two
+      traces in each transfer plot and three gate voltages in each output plot (Deck 15 pp. 15–16; the
+      slides state neither the device nor the biases). At the start of the gate sweep, −0.1 V, the two
+      drain currents rose about 30-fold and 35-fold for the 100 K step, from about 4×10⁻⁹ to 1.1×10⁻⁷ A
+      and from about 1×10⁻⁹ to 4×10⁻⁸ A, and at zero gate voltage about 12- and 15-fold. By (17b.2) the
+      rise is largest where the gate lies furthest below threshold,
+      and this device's threshold is low. At a gate voltage of 1 V the currents barely moved,
+      6.3×10⁻⁴ to 6.7×10⁻⁴ A and 1.5×10⁻⁴ to 1.4×10⁻⁴ A, and the saturated output currents at 400 K were
+      5–15 % higher than at 300 K, the largest change at the lowest gate voltage, where the falling
+      threshold outweighs the falling mobility. A leaky off state wastes power in every gate of a logic
+      circuit, since each off transistor conducts between the supply and ground, and it degrades the
+      logic levels, which depend on the off transistor holding its node.
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">The failure of the hot MOSFET</p>
+      <p>
+        A hot MOSFET still turns on. What it loses is the off state: the threshold falls, the swing
+        widens and the drain junction leaks, so the current at zero gate voltage climbs toward the
+        on-current. NASA's tutorial summarizes the conventional MOSFET at temperature as losing gain and
+        on-current and losing its ability to turn off, with <em>I</em><sub>OFF</sub> ≈ <em>I</em><sub>DL</sub>
+        (Deck 16a p. 49), and adds that leakage, rather than intrinsic conduction, is often the factor that
+        limits a device or circuit at high temperature (Deck 16a p. 50).
+      </p>
+    </div>
+
+    <p>
+      The leakage floor scales with the area of the drain junction, and silicon-on-insulator construction
+      removes most of that area. An SOI MOSFET is built in a thin silicon film on a buried layer of SiO₂.
+      The source and drain extend through the film to the buried oxide, so the drain meets the p-type
+      body only along the edge facing the channel, while the bottom of the drain, the larger part of a
+      bulk junction, rests on oxide (Deck 16a p. 51). Less junction area means less leakage, and SOI
+      parts serve to about 250–300 °C (Deck 16a pp. 4, 11). The tutorial's table of applications lists
+      bulk silicon and SOI as the current technology for applications up to 300 °C, none for those at
+      550–600 °C, and wide-gap semiconductors as the future technology for those and for most high-power
+      applications (Deck 16a p. 48). How much leakage a circuit tolerates, and so its highest working
+      temperature, depends on the circuit and the application, and the criteria of signal integrity differ
+      between digital and analog circuits (Deck 16a p. 51): a digital gate needs its logic levels to stay
+      separated, an analog stage needs its bias currents to stay accurate.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+<svg viewBox="0 0 300 200" role="img" aria-labelledby="f17b-2a-t">
+  <title id="f17b-2a-t">Bulk MOSFET cross-section: the n-plus drain sits in the p-type wafer, so its junction runs along the bottom and both sides of the drain region and leaks into the wafer</title>
+  <defs><marker id="f17b-2a-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+  <rect x="10" y="78" width="280" height="106" class="dg-fill"/>
+  <path d="M22,78 L22,108 Q22,122 36,122 L94,122 Q108,122 108,108 L108,78 Z" class="dg-soft" opacity="0.28"/>
+  <path d="M22,78 L22,108 Q22,122 36,122 L94,122 Q108,122 108,108 L108,78" class="dg-line" stroke-width="1.2"/>
+  <path d="M192,78 L192,108 Q192,122 206,122 L264,122 Q278,122 278,108 L278,78 Z" class="dg-soft" opacity="0.28"/>
+  <path d="M192,78 L192,108 Q192,122 206,122 L264,122 Q278,122 278,108 L278,78" class="dg-acc" stroke-width="2.4"/>
+  <text x="65" y="104" class="dg-label-sm" text-anchor="middle">n⁺ source</text>
+  <text x="235" y="104" class="dg-label-sm" text-anchor="middle">n⁺ drain</text>
+  <line x1="210" y1="124" x2="210" y2="142" class="dg-acc" stroke-width="1.3" marker-end="url(#f17b-2a-ar)"/>
+  <line x1="235" y1="124" x2="235" y2="142" class="dg-acc" stroke-width="1.3" marker-end="url(#f17b-2a-ar)"/>
+  <line x1="260" y1="124" x2="260" y2="142" class="dg-acc" stroke-width="1.3" marker-end="url(#f17b-2a-ar)"/>
+  <line x1="280" y1="100" x2="288" y2="100" class="dg-acc" stroke-width="1.3" marker-end="url(#f17b-2a-ar)"/>
+  <line x1="190" y1="100" x2="182" y2="100" class="dg-acc" stroke-width="1.3" marker-end="url(#f17b-2a-ar)"/>
+  <rect x="100" y="70" width="100" height="8" class="dg-fill"/>
+  <rect x="104" y="46" width="92" height="24" class="dg-fill"/>
+  <text x="150" y="62" class="dg-label-sm" text-anchor="middle">gate</text>
+  <line x1="200" y1="74" x2="214" y2="64" class="dg-guide" stroke-width="0.9"/>
+  <text x="216" y="66" class="dg-label-sm">gate oxide</text>
+  <text x="235" y="156" class="dg-label-sm" text-anchor="middle">leakage I<tspan baseline-shift="sub" style="font-size:75%">DL</tspan></text>
+  <text x="150" y="176" class="dg-label-sm" text-anchor="middle">p-type silicon wafer</text>
+</svg>
+        <figcaption>
+          <b>Figure 2a.</b> In a bulk MOSFET the drain junction runs along the bottom and both sides of
+          the n⁺ drain, and all of it leaks into the wafer.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+<svg viewBox="0 0 300 200" role="img" aria-labelledby="f17b-2b-t">
+  <title id="f17b-2b-t">Silicon-on-insulator MOSFET cross-section: a thin silicon film on a buried oxide, with the drain reaching the oxide so that its junction is only the short edge facing the channel</title>
+  <rect x="10" y="148" width="280" height="36" class="dg-fill"/>
+  <rect x="10" y="118" width="280" height="30" class="dg-fill" opacity="0.6"/>
+  <rect x="10" y="78" width="98" height="40" class="dg-soft" opacity="0.28"/>
+  <rect x="192" y="78" width="98" height="40" class="dg-soft" opacity="0.28"/>
+  <rect x="10" y="78" width="280" height="40" class="dg-rule" fill="none" stroke-width="1"/>
+  <line x1="108" y1="78" x2="108" y2="118" class="dg-line" stroke-width="1.2"/>
+  <line x1="192" y1="78" x2="192" y2="118" class="dg-acc" stroke-width="2.6"/>
+  <text x="59" y="102" class="dg-label-sm" text-anchor="middle">n⁺ source</text>
+  <text x="150" y="102" class="dg-label-sm" text-anchor="middle">p body</text>
+  <text x="241" y="102" class="dg-label-sm" text-anchor="middle">n⁺ drain</text>
+  <text x="150" y="137" class="dg-label-sm" text-anchor="middle">buried oxide (SiO₂)</text>
+  <text x="150" y="171" class="dg-label-sm" text-anchor="middle">silicon wafer</text>
+  <rect x="100" y="70" width="100" height="8" class="dg-fill"/>
+  <rect x="104" y="46" width="92" height="24" class="dg-fill"/>
+  <text x="150" y="62" class="dg-label-sm" text-anchor="middle">gate</text>
+  <line x1="200" y1="74" x2="214" y2="64" class="dg-guide" stroke-width="0.9"/>
+  <text x="216" y="66" class="dg-label-sm">gate oxide</text>
+</svg>
+        <figcaption>
+          <b>Figure 2b.</b> In an SOI MOSFET the drain reaches the buried oxide; its junction is the short
+          edge facing the channel. Not to scale.
+          <span class="src">After Deck 16a p. 51 (Neudeck, Okojie &amp; Chen 2002).</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <h2>2 · The gate oxide: breakdown that comes sooner when hot</h2>
+    <p>
+      The gate oxide of a MOSFET carries the gate field for the whole life of the device. Under that
+      field it degrades: electrons and holes injected into the oxide break bonds and create traps, and the
+      traps accumulate until they link into a conducting path from gate to channel. Current then
+      concentrates in the path, Joule heating turns it into a conducting filament within microseconds, and
+      the oxide is permanently shorted. Because the failure arrives only after the film has been held
+      under stress for some time, it is called time-dependent dielectric breakdown, TDDB. The mechanism and
+      its field- and current-driven models are in
+      <a href="../../EEE6338_Advanced_Microelectronics/site/m06-thin-gate-oxides-conduction-breakdown.html#s5">EEE 6338 M06 §5</a>;
+      this section concerns its temperature dependence.
+    </p>
+    <p>
+      Deck 15 p. 17 shows a measurement made for high-temperature silicon-on-insulator electronics
+      (Grella <em>et al.</em> 2013). Capacitors with 40 nm of SiO₂ under a polysilicon gate were held at a
+      gate voltage of 37 V, a field of 9.3 MV/cm, several at each of four temperatures, while the current
+      through the oxide was recorded. The current first falls slowly from about 10⁻⁵ A, as electrons
+      trapped in the oxide lower the field at the injecting electrode
+      (<a href="../../EEE6338_Advanced_Microelectronics/site/m06-thin-gate-oxides-conduction-breakdown.html#s3">EEE 6338 M06 §3</a>),
+      and each capacitor then breaks down with a jump to about 10⁻³ A. Read from the plot, the median
+      times to breakdown are about 1.9×10⁴ s (5.3 hours) at 150 °C, 4.8×10³ s at 200 °C, 1.0×10³ s at
+      250 °C and 3.4×10² s (6 minutes) at 300 °C, each set spread over a factor of two to three. The 37 V
+      across this oxide is far above any voltage it would carry in operation: this is an accelerated test,
+      which compresses years into hours so that the dependence on temperature can be measured.
+    </p>
+    <p>
+      A process whose rate is set by thermal activation over an energy barrier proceeds at a rate
+      proportional to exp(−<em>E</em><sub>A</sub>/<em>kT</em>), where the activation energy
+      <em>E</em><sub>A</sub> is the height of the barrier. The time to complete it, here the time to
+      breakdown, varies inversely, which is the Arrhenius law of Deck 15 pp. 17–18.
+    </p>
+
+    <div class="eq" id="m17b-eq-tbd">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em><sub>BD</sub> = <em>t</em><sub>0</sub> exp <span class="dl">(</span><span class="frac"><span class="num"><em>E</em><sub>A</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span>,&nbsp;&nbsp;&nbsp; <span class="frac"><span class="num"><em>t</em><sub>BD</sub>(<em>T</em><sub>1</sub>)</span><span class="den"><em>t</em><sub>BD</sub>(<em>T</em><sub>2</sub>)</span></span> = exp <span class="dl">[</span><span class="frac"><span class="num"><em>E</em><sub>A</sub></span><span class="den"><em>k</em></span></span> <span class="dl">(</span><span class="frac"><span class="num">1</span><span class="den"><em>T</em><sub>1</sub></span></span> − <span class="frac"><span class="num">1</span><span class="den"><em>T</em><sub>2</sub></span></span><span class="dl">)</span><span class="dl">]</span></div>
+        <div class="eq-num">(17b.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>BD</sub> time to breakdown (s) · <em>t</em><sub>0</sub> time constant (s), which
+        depends on the oxide, its thickness and the field · <em>E</em><sub>A</sub> activation energy
+        (<b>eV</b>) · <em>k</em> = 8.617×10⁻⁵ <b>eV/K</b>, so <em>kT</em> is in eV: 0.0259 eV at 300 K, which
+        the course rounds to 0.026 · <em>T</em> absolute temperature (K). The ratio form needs no
+        <em>t</em><sub>0</sub>. Fixed field: the activation energy itself falls as the field rises
+        (McPherson and Mogul 1998), so an <em>E</em><sub>A</sub> belongs to the field at which it was
+        measured; the field dependence is treated in EEE 6338 M06.
+        On the formula sheet as <a href="formula-sheet.html#eq-17b-tbd">(17b.3)</a>.
+      </div>
+    </div>
+
+    <p>
+      Deck 15 p. 18 works the law with <em>t</em><sub>0</sub> = 1 s and <em>E</em><sub>A</sub> = 0.4 eV.
+      At 300 K, <em>E</em><sub>A</sub>/<em>kT</em> = 0.4/0.026 = 15.38 and <em>t</em><sub>BD</sub> =
+      e<sup>15.38</sup> s = 4.8×10⁶ s, about 56 days. At 600 K, <em>kT</em> doubles to 0.052 eV,
+      <em>E</em><sub>A</sub>/<em>kT</em> halves to 7.7, and <em>t</em><sub>BD</sub> = 2.2×10³ s, about
+      37 minutes. Heating from 300 to 600 K shortens the time to breakdown about 2,200-fold, exp(7.7).
+      The ratio form of (17b.3) contains no <em>t</em><sub>0</sub>: the factor is fixed by
+      <em>E</em><sub>A</sub> and the two temperatures, so the arbitrary 1 s does not affect it, while a
+      doubling from 400 to 800 K costs only about 330-fold. The capacitors of p. 17 give the activation
+      energy of their own test: their medians lie close to one straight line on an Arrhenius plot, whose
+      slope corresponds to <em>E</em><sub>A</sub> ≈ 0.57 eV at 9.3 MV/cm, between about 0.47 and 0.67 eV for
+      neighbouring pairs of temperatures. The 55-fold shortening between 150 and 300 °C follows from it.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 272" role="img" aria-labelledby="f17b-3-t">
+  <title id="f17b-3-t">Arrhenius plot of time to breakdown against 1000 over temperature: the measured median breakdown times of 40 nanometre oxide capacitors at 9.3 megavolts per centimetre from 150 to 300 degrees Celsius with their spread and a fitted line of activation energy about 0.55 electronvolt, and the worked example line with a time constant of 1 second and activation energy 0.4 electronvolt through its points at 300 and 600 kelvin</title>
+  <rect x="70" y="32" width="340" height="200" class="dg-fill" opacity="0.3"/>
+  <line x1="70" y1="192" x2="410" y2="192" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="70" y1="152" x2="410" y2="152" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="70" y1="112" x2="410" y2="112" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="70" y1="72" x2="410" y2="72" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <path d="M70,183.7 L410,39.4" class="dg-line" stroke-width="1.6" stroke-dasharray="5 3"/>
+  <circle cx="397.4" cy="44.8" r="3.6" class="dg-fill" stroke-width="1.4"/>
+  <circle cx="82.6" cy="178.4" r="3.6" class="dg-fill" stroke-width="1.4"/>
+  <text x="405" y="112" class="dg-label" text-anchor="end">worked example:</text>
+  <text x="405" y="127" class="dg-label" text-anchor="end">0.4 eV, t<tspan baseline-shift="sub" style="font-size:75%">0</tspan> = 1 s</text>
+  <path d="M88.9,215.3 L224.9,132.7" class="dg-acc" stroke-width="2"/>
+  <line x1="214.2" y1="143.3" x2="214.2" y2="132.9" class="dg-rule" stroke-width="1.4"/>
+  <circle cx="214.2" cy="140.8" r="3.4" class="dg-acc-f"/>
+  <line x1="167" y1="174.1" x2="167" y2="160.6" class="dg-rule" stroke-width="1.4"/>
+  <circle cx="167" cy="164.8" r="3.4" class="dg-acc-f"/>
+  <line x1="128.8" y1="200.3" x2="128.8" y2="180.9" class="dg-rule" stroke-width="1.4"/>
+  <circle cx="128.8" cy="192" r="3.4" class="dg-acc-f"/>
+  <line x1="97.3" y1="219.1" x2="97.3" y2="206.1" class="dg-rule" stroke-width="1.4"/>
+  <circle cx="97.3" cy="210.7" r="3.4" class="dg-acc-f"/>
+  <text x="222.2" y="153.8" class="dg-label-sm">150 °C</text>
+  <text x="105.3" y="222.6" class="dg-label-sm">300 °C</text>
+  <text x="232" y="180" class="dg-label">measured, 9.3 MV/cm:</text>
+  <text x="232" y="195" class="dg-label">fit E<tspan baseline-shift="sub" style="font-size:75%">A</tspan> ≈ 0.57 eV</text>
+  <line x1="70" y1="232" x2="410" y2="232" class="dg-rule" stroke-width="1.2"/>
+  <line x1="70" y1="32" x2="70" y2="232" class="dg-rule" stroke-width="1.2"/>
+  <line x1="70" y1="32" x2="410" y2="32" class="dg-rule" stroke-width="0.8"/>
+  <g class="dg-rule" stroke-width="1"><line x1="145.6" y1="232" x2="145.6" y2="237"/><line x1="240" y1="232" x2="240" y2="237"/><line x1="334.4" y1="232" x2="334.4" y2="237"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="145.6" y="249">2.0</text><text x="240" y="249">2.5</text><text x="334.4" y="249">3.0</text></g>
+  <g class="dg-rule" stroke-width="1"><line x1="397.4" y1="32" x2="397.4" y2="27"/><line x1="240" y1="32" x2="240" y2="27"/><line x1="145.6" y1="32" x2="145.6" y2="27"/><line x1="82.6" y1="32" x2="82.6" y2="27"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="397.4" y="22">300 K</text><text x="240" y="22">400 K</text><text x="145.6" y="22">500 K</text><text x="82.6" y="22">600 K</text></g>
+  <g class="dg-label-sm" text-anchor="end"><text x="64" y="236">10<tspan baseline-shift="super" style="font-size:75%">2</tspan></text><text x="64" y="196">10<tspan baseline-shift="super" style="font-size:75%">3</tspan></text><text x="64" y="156">10<tspan baseline-shift="super" style="font-size:75%">4</tspan></text><text x="64" y="116">10<tspan baseline-shift="super" style="font-size:75%">5</tspan></text><text x="64" y="76">10<tspan baseline-shift="super" style="font-size:75%">6</tspan></text><text x="64" y="36">10<tspan baseline-shift="super" style="font-size:75%">7</tspan></text></g>
+  <text x="240" y="266" class="dg-label" text-anchor="middle">1000/T (K⁻¹)</text>
+  <text x="22" y="132" class="dg-label" text-anchor="middle" transform="rotate(-90 22 132)">time to breakdown (s)</text>
+</svg>
+      <figcaption>
+        <b>Figure 3.</b> An Arrhenius plot: the logarithm of the time to breakdown against 1000/<em>T</em>,
+        on which (17b.3) is a straight line of slope <em>E</em><sub>A</sub>/<em>k</em>. The measured
+        medians (filled points, with the full range of each set) fall on a line of about 0.57 eV; the worked
+        example's line, 0.4 eV through <em>t</em><sub>0</sub> = 1 s, is shallower, and its open points are
+        its 4.8×10⁶ s at 300 K and 2.2×10³ s at 600 K.
+        <span class="src">Data read from Deck 15 p. 17 (Grella <em>et al.</em> 2013), medians and fit
+        computed here; worked example from Deck 15 p. 18.</span>
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">The times in the Deck 15 p. 18 example</p>
+      <p>
+        The worked example's arithmetic is exact, but its two times are not lifetimes. The time constant
+        <em>t</em><sub>0</sub> = 1 s is chosen for the calculation, and the Arrhenius form carries no field,
+        while a real time to breakdown depends on field as strongly as on temperature; 4.8×10⁶ s at 300 K
+        is therefore not a predicted life for any oxide. The 0.4 eV is likewise a round value: the
+        measurement on the previous slide implies about 0.57 eV at its field. What the example does show
+        is independent of <em>t</em><sub>0</sub> and fixed by <em>E</em><sub>A</sub> and the two
+        temperatures: the factor by which the rise from 300 to 600 K shortens the time to breakdown.
+      </p>
+    </div>
+
+    <p>
+      A MOSFET meant to run hot must therefore hold its oxide at a lower field, or make the oxide thicker,
+      to keep its life. A thicker oxide lowers <em>C</em><sub>ox</sub>, which raises the body factor of
+      (1.15) and widens the subthreshold swing that §1 identified as one source of the hot leakage.
+      Qualification of a part against these mechanisms by accelerated testing is the subject of M19.
+    </p>
+
+    <h2>3 · Thermal expansion and the choice of metal</h2>
+    <p>
+      A device is a stack of materials bonded to each other at the temperatures at which they were grown
+      or deposited: silicon, its oxide, polysilicon, metals, passivation. Each expands with temperature at
+      its own rate, and a bonded interface does not allow the layers to expand independently, so heating
+      strains every interface. The strain can crack a brittle dielectric, and the metal must in addition
+      survive the temperature itself, without melting, reacting or oxidizing.
+    </p>
+    <p>
+      The linear expansion coefficient is the fractional change of length per kelvin,
+      <em>α</em> = (1/<em>L</em>)d<em>L</em>/d<em>T</em>, in K⁻¹ and usually quoted in units of 10⁻⁶ K⁻¹
+      (ppm/K). A free bar heated by Δ<em>T</em> acquires a strain, a fractional change of length,
+      Δ<em>L</em>/<em>L</em> = ∫<em>α</em> d<em>T</em>, which is <em>α</em>Δ<em>T</em> when <em>α</em>
+      changes little over the interval. A thin film bonded to a thick substrate cannot do this. The
+      substrate imposes its own expansion on the film, and the film carries the difference between the
+      two as a mismatch strain: compressive on heating if the film expands faster than the substrate,
+      tensile on cooling.
+    </p>
+
+    <div class="eq" id="m17b-eq-strain">
+      <div class="eq-body">
+        <div class="eq-math"><em>ε</em> = (<em>α</em><sub>s</sub> − <em>α</em><sub>f</sub>) Δ<em>T</em>,&nbsp;&nbsp;&nbsp; <em>σ</em> = <span class="frac"><span class="num"><em>E</em><sub>f</sub></span><span class="den">1 − <em>ν</em><sub>f</sub></span></span> <em>ε</em></div>
+        <div class="eq-num">(17b.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>ε</em> mismatch strain in the film (dimensionless; ×100 for percent), negative for compression
+        · <em>α</em><sub>s</sub>, <em>α</em><sub>f</sub> expansion coefficients of substrate and film (K⁻¹),
+        averaged over the interval · Δ<em>T</em> temperature change from the stress-free state (K) ·
+        <em>σ</em> in-plane stress in the film (Pa, or MPa with <em>E</em><sub>f</sub> in MPa) ·
+        <em>E</em><sub>f</sub> Young's modulus and <em>ν</em><sub>f</sub> Poisson's ratio of the film. The
+        stress form is for a film much thinner than its substrate, strained equally in both in-plane
+        directions (Plummer, Deal &amp; Griffin 2000, Eq. 11.21); elastic behaviour only. On the formula
+        sheet as <a href="formula-sheet.html#eq-17b-strain">(17b.4)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f17b-4-t">
+  <title id="f17b-4-t">A film bonded to a substrate at the starting temperature, the same two layers heated with nothing holding them together so that the film grows longer than the substrate, and the bonded pair heated so that the substrate holds the film to its own length and compresses it</title>
+  <defs><marker id="f17b-4-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+  <rect x="12" y="66" width="112" height="14" class="dg-soft" opacity="0.45"/>
+  <rect x="12" y="80" width="112" height="44" class="dg-fill"/>
+  <text x="68" y="58" class="dg-label" text-anchor="middle">film, α<tspan baseline-shift="sub" style="font-size:75%">f</tspan></text>
+  <text x="68" y="107" class="dg-label" text-anchor="middle">substrate, α<tspan baseline-shift="sub" style="font-size:75%">s</tspan></text>
+  <text x="68" y="148" class="dg-label" text-anchor="middle">(a) bonded, T<tspan baseline-shift="sub" style="font-size:75%">0</tspan></text>
+  <rect x="150" y="60" width="132" height="14" class="dg-soft" opacity="0.45"/>
+  <rect x="155" y="84" width="122" height="44" class="dg-fill"/>
+  <line x1="155" y1="46" x2="155" y2="134" class="dg-guide" stroke-width="0.8" stroke-dasharray="2 3"/>
+  <line x1="277" y1="46" x2="277" y2="134" class="dg-guide" stroke-width="0.8" stroke-dasharray="2 3"/>
+  <text x="216" y="52" class="dg-label" text-anchor="middle">film grows more</text>
+  <text x="216" y="148" class="dg-label" text-anchor="middle">(b) free, T<tspan baseline-shift="sub" style="font-size:75%">0</tspan> + ΔT</text>
+  <rect x="304" y="66" width="122" height="14" class="dg-soft" opacity="0.45"/>
+  <rect x="304" y="80" width="122" height="44" class="dg-fill"/>
+  <line x1="291" y1="73" x2="302" y2="73" class="dg-acc" stroke-width="1.6" marker-end="url(#f17b-4-ar)"/>
+  <line x1="439" y1="73" x2="428" y2="73" class="dg-acc" stroke-width="1.6" marker-end="url(#f17b-4-ar)"/>
+  <text x="365" y="58" class="dg-label" text-anchor="middle">film compressed</text>
+  <text x="365" y="148" class="dg-label" text-anchor="middle">(c) bonded, T<tspan baseline-shift="sub" style="font-size:75%">0</tspan> + ΔT</text>
+  <text x="220" y="184" class="dg-label" text-anchor="middle">strain in the film: ε = (α<tspan baseline-shift="sub" style="font-size:75%">s</tspan> − α<tspan baseline-shift="sub" style="font-size:75%">f</tspan>)ΔT</text>
+</svg>
+      <figcaption>
+        <b>Figure 4.</b> The origin of mismatch strain. A film and substrate bonded at
+        <em>T</em><sub>0</sub> (a) would, if free, grow by different amounts when heated (b); bonded, the
+        thick substrate holds the film to its own length, compressing a film that expands faster and
+        pulling on the substrate's surface (c). Expansion exaggerated about a thousandfold.
+      </figcaption>
+    </figure>
+
+    <p>
+      Silicon expands by 2.6×10⁻⁶ K⁻¹ at 300 K, rising to 3.6×10⁻⁶ K⁻¹ at 500 K and 4.3×10⁻⁶ K⁻¹ at
+      1,000 K (Okada and Tokumaru 1984); fused silica, which a thermal oxide resembles, by about
+      0.5×10⁻⁶ K⁻¹. Deck 15 p. 19 plots the difference measured on polysilicon and oxide films (Tada
+      <em>et al.</em> 2000): about 2.9×10⁻⁶ K⁻¹ near room temperature, rising to 5.8×10⁻⁶ K⁻¹ near 850 °C,
+      larger than bulk crystalline silicon would give. Integrated from 27 to 327 °C, that difference
+      amounts to a mismatch strain of about 0.11 %, the 0.1–0.2 % the lecture estimates for a
+      300 K rise. The same slide shows a failed cell of a silicon carbide power MOSFET, located by optical
+      beam-induced resistance change (OBIRCH, a laser scan that maps where local heating changes the
+      current) and then sectioned with a focused ion beam. The lecture points to a crack in the dielectric
+      between the polysilicon gate and the aluminium source metal, through which current flowed, and
+      attributes it to thermal expansion.
+    </p>
+    <p>
+      Metals expand much faster than silicon. Near room temperature the coefficients are, in units of
+      10⁻⁶ K⁻¹, aluminium 23.1, copper 16.5, gold 14.2, nickel 13.4, platinum 8.8, titanium 8.6,
+      molybdenum 4.8 and tungsten 4.5, against silicon's 2.6 (handbook values; Deck 15 p. 21 plots gold,
+      aluminium, molybdenum, tungsten and silicon). Aluminium and copper, the interconnect metals of
+      ordinary chips, and gold, the metal of bond wires and pads, expand five to nine times faster than
+      the silicon beneath them. Their melting points rank them a second time
+      (Deck 15 p. 20): aluminium 660 °C, gold 1,064, copper 1,085, nickel 1,455, titanium 1,668, platinum
+      1,768, molybdenum 2,623 and tungsten 3,422 °C. Aluminium on silicon fails sooner than its melting
+      point suggests, because the two form a eutectic that melts at 577 °C (Murray and McAlister 1984); the
+      slide's photograph shows a die on which the aluminium melted at a failure point near the gate
+      contact, which the lecture attributes to the temperature together with a large current. Aluminium
+      and copper oxidize. Gold does not, but it melts far below the refractory metals and expands more
+      than five times as fast as silicon.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 268" role="img" aria-labelledby="f17b-5-t">
+  <title id="f17b-5-t">Linear thermal expansion coefficient at room temperature against melting point for eight metals, with the range of silicon from 300 to 1000 kelvin marked as a band: molybdenum and tungsten combine the highest melting points with the coefficients closest to silicon, aluminium melts lowest and expands most</title>
+  <rect x="64" y="30" width="350" height="200" class="dg-fill" opacity="0.3"/>
+  <rect x="100" y="30" width="23.7" height="200" class="dg-soft" opacity="0.22"/>
+  <text x="127.6" y="222" class="dg-label-sm">silicon, 300–1000 K</text>
+  <line x1="64" y1="202.2" x2="414" y2="202.2" class="dg-guide" stroke-width="0.9" stroke-dasharray="4 3"/>
+  <text x="410" y="197.2" class="dg-label-sm" text-anchor="end">500 °C</text>
+  <line x1="71.7" y1="230" x2="71.7" y2="222" class="dg-acc" stroke-width="1.6"/>
+  <text x="74.7" y="216.1" class="dg-label-sm">SiO₂</text>
+  <circle cx="387.4" cy="193.3" r="4" class="dg-ink"/>
+  <text x="394.4" y="197.3" class="dg-label" text-anchor="start">Al</text>
+  <circle cx="295" cy="169.7" r="4" class="dg-ink"/>
+  <text x="295" y="161.7" class="dg-label" text-anchor="middle">Cu</text>
+  <circle cx="262.8" cy="170.9" r="4" class="dg-ink"/>
+  <text x="262.8" y="185.9" class="dg-label" text-anchor="middle">Au</text>
+  <circle cx="251.6" cy="149.2" r="4" class="dg-ink"/>
+  <text x="251.6" y="141.2" class="dg-label" text-anchor="middle">Ni</text>
+  <circle cx="187.2" cy="131.8" r="4" class="dg-ink"/>
+  <text x="194.2" y="135.8" class="dg-label" text-anchor="start">Pt</text>
+  <circle cx="184.4" cy="137.3" r="4" class="dg-ink"/>
+  <text x="177.4" y="141.3" class="dg-label" text-anchor="end">Ti</text>
+  <circle cx="131.2" cy="84.3" r="4" class="dg-acc-f"/>
+  <text x="138.2" y="88.3" class="dg-label" text-anchor="start">Mo</text>
+  <circle cx="127" cy="39.9" r="4" class="dg-acc-f"/>
+  <text x="134" y="43.9" class="dg-label" text-anchor="start">W</text>
+  <line x1="64" y1="230" x2="414" y2="230" class="dg-rule" stroke-width="1.2"/>
+  <line x1="64" y1="30" x2="64" y2="230" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="64" y1="230" x2="64" y2="235"/><line x1="134" y1="230" x2="134" y2="235"/><line x1="204" y1="230" x2="204" y2="235"/><line x1="274" y1="230" x2="274" y2="235"/><line x1="344" y1="230" x2="344" y2="235"/><line x1="414" y1="230" x2="414" y2="235"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="64" y="247">0</text><text x="134" y="247">5</text><text x="204" y="247">10</text><text x="274" y="247">15</text><text x="344" y="247">20</text><text x="414" y="247">25</text></g>
+  <g class="dg-label-sm" text-anchor="end"><text x="59" y="234">0</text><text x="59" y="178.4">1,000</text><text x="59" y="122.9">2,000</text><text x="59" y="67.3">3,000</text></g>
+  <text x="239" y="262" class="dg-label" text-anchor="middle">expansion coefficient near room temperature (10⁻⁶ K⁻¹)</text>
+  <text x="18" y="130" class="dg-label" text-anchor="middle" transform="rotate(-90 18 130)">melting point (°C)</text>
+</svg>
+      <figcaption>
+        <b>Figure 5.</b> The two properties that rank a metal for hot electronics: how closely it
+        expands with silicon, and how far its melting point lies above the operating temperature.
+        Molybdenum and tungsten sit in the corner of high melting point and expansion closest to
+        silicon's; aluminium has neither. The band spans silicon's coefficient from 300 to 1,000 K.
+        <span class="src">Room-temperature coefficients and melting points from standard handbook values
+        (CRC Handbook of Chemistry and Physics); the melting points as plotted on Deck 15 p. 20, the
+        expansion of Au, Al, Mo, W and Si as on p. 21; silicon's band from Okada and Tokumaru (1984).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Molybdenum and tungsten are therefore the metals of choice for hot electronics, and since both
+      oxidize in air when hot, they are covered with gold (Lecture 15). The slide's expansion curves for
+      the two (Deck 15 p. 21) end at 300 K, while the match matters when hot. In the White and Minges
+      evaluation, whose 300 K value of 4.4×10⁻⁶ K⁻¹ differs from the handbook's 4.5 only between sources,
+      tungsten's coefficient rises only to 4.7 at 500 K and 5.0 at 1,000 K (White and Minges 1997), while
+      silicon's rises from 2.6 to 4.3, so the ratio of the two falls from 1.7 to 1.2 and the match improves
+      as the device heats. NASA's silicon carbide circuits use refractory and noble materials to the same
+      end: tantalum silicide (TaSi₂) interconnect and contacts, and bond pads of platinum, iridium and
+      platinum over TaSi₂ under gold (Deck 16a pp. 62–63; M17c).
+    </p>
+    <p>
+      Deck 15 p. 22 estimates the strain in a gold gate on SiO₂ heated from 27 to 227 °C. Taking the
+      difference in expansion coefficients as 11×10⁻⁶ K⁻¹, the strain is
+      11×10⁻⁶ K⁻¹ × 200 K = 2.2×10⁻³, or 0.22 %. Bulk materials typically break at strains of about
+      0.5–1 % (Deck 15 p. 22), so a rise of only 200 K brings the gate within a factor of two to five of
+      that limit, and repeated heating and cooling cycles the strain each time. The difference is the
+      right one for a MOS structure. The gate oxide is tens of nanometres thick on a silicon wafer
+      hundreds of micrometres thick, and in (17b.4) the substrate is whatever is thick: the silicon sets
+      the in-plane strain of every thin layer on it, as Plummer, Deal and Griffin state for a metal on an
+      oxide-covered wafer. The pair that matters is gold against silicon, 14.2 − 2.6 = 11.6×10⁻⁶ K⁻¹, which
+      gives 0.23 %, compressive in the gold on heating; the oxide beneath it is itself strained by
+      (<em>α</em><sub>Si</sub> − <em>α</em><sub>SiO₂</sub>)Δ<em>T</em> ≈ 2.1×10⁻⁶ K⁻¹ × 200 K, about 0.04 %,
+      in tension.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The numbers in the Deck 15 p. 22 estimate</p>
+      <p>
+        The slide asks for, and calls its result, a thermal stress; the result is a strain, as the lecture
+        corrected aloud. The stress follows from (17b.4): with gold's Young's modulus of about 79 GPa and
+        Poisson's ratio of about 0.44, the factor <em>E</em>/(1 − <em>ν</em>) is about 140 GPa, and a strain
+        of 0.22 % corresponds to about 300 MPa if the gold stays elastic. It does not: gold is ductile, and
+        electroplated gold films yield near 160 MPa, about 0.1 % strain (Bagolini <em>et al.</em> 2005), so
+        at 0.22 % the gold flows plastically and 300 MPa is an upper bound. For a ductile metal the relevant
+        limit is its yield, and the repeated plastic flow of thermal cycling is what degrades it; the
+        brittle dielectric beside it is what cracks. The slide's label "SiO₂ and gold" names the layer the
+        gold sits on, while its 11×10⁻⁶ K⁻¹ is, correctly, the gold–silicon difference. The course's
+        estimate is 0.22 %.
+      </p>
+    </div>
+
+    <h2>4 · The junction field-effect transistor</h2>
+    <p>
+      The JFET is the transistor that answers Deck 15 p. 10's question. It was proposed and analysed by
+      Shockley in 1952, and Sze and Ng describe it as a voltage-controlled resistor: a bar of doped
+      semiconductor whose conducting cross-section a gate narrows (Sze &amp; Ng 2007, §7.2). The gate is
+      a p–n junction instead of a metal on an oxide, so the device has no gate insulator. This section
+      builds the device from the junction physics of M01 §6, in the course's n-channel form.
+    </p>
+    <p>
+      An n-channel JFET is a lightly doped n-type channel with an ohmic contact at each end, the source
+      and the drain, bounded on two sides by heavily doped p⁺ regions joined together as the gate
+      (Deck 15 p. 23 calls it a transistor made of two diodes). The gate junctions are held at zero or
+      reverse bias. Each forms a depletion region, and because the p⁺ side is far more heavily doped, the
+      region lies almost entirely in the channel, with the width of a one-sided junction from
+      (<a href="m01-semiconductor-background.html#m01-eq-vbi">1.8</a>):
+      <em>W</em> = √(2<em>ε</em><sub>s</sub>(<em>V</em><sub>bi</sub> − <em>V</em>)/(<em>qN</em><sub>d</sub>)),
+      where <em>V</em> is the junction voltage, negative for reverse bias. The depleted material carries
+      no current; the undepleted core between the two depletion regions is the conducting channel. Making
+      the gate more negative widens the depletion regions and narrows the channel.
+    </p>
+    <p>
+      At small drain voltage the channel is a resistor of uniform cross-section, and Deck 15 p. 28 writes
+      its current directly from Ohm's law.
+    </p>
+
+    <div class="eq" id="m17b-eq-jlin">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D</sub> = <span class="frac"><span class="num"><em>hw</em></span><span class="den"><em>L</em></span></span> <em>qN</em><sub>d</sub><em>µ</em><sub>n</sub> <em>V</em><sub>DS</sub></div>
+        <div class="eq-num">(17b.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D</sub> drain current (A) · <em>h</em> channel height, the dimension along the
+        gates perpendicular to the current (<b>cm</b>) · <em>w</em> channel width, the undepleted opening
+        between the depletion regions (cm) · <em>L</em> channel length from source to drain (cm) ·
+        <em>q</em> = 1.602×10⁻¹⁹ C · <em>N</em><sub>d</sub> channel doping (cm⁻³) · <em>µ</em><sub>n</sub>
+        electron mobility (cm²/V·s) · <em>V</em><sub>DS</sub> drain–source voltage (V). Linear region,
+        <em>V</em><sub>DS</sub> small enough that <em>w</em> is uniform along the channel;
+        <em>qN</em><sub>d</sub><em>µ</em><sub>n</sub> is the conductivity of the channel. On the formula sheet
+        as <a href="formula-sheet.html#eq-17b-jlin">(17b.5)</a>.
+      </div>
+    </div>
+
+    <p>
+      The current is proportional to the mobility, the dependence the lecture asks to be kept in mind
+      when the device is heated, and the gate sets <em>w</em>, which makes the JFET a voltage-controlled
+      resistor in this region. As the gate voltage falls, the depletion regions grow until they meet across
+      the channel. If each must cross a distance <em>a</em>, half the opening between facing gates, the
+      channel closes when <em>W</em> = <em>a</em>, at a gate voltage the course calls the pinch-off voltage
+      (Sze and Ng call it the threshold voltage and reserve "pinch-off" for the potential
+      <em>qN</em><sub>d</sub><em>a</em>²/2<em>ε</em><sub>s</sub>).
+    </p>
+
+    <div class="eq" id="m17b-eq-vp">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>P</sub> = <em>V</em><sub>bi</sub> − <span class="frac"><span class="num"><em>qN</em><sub>d</sub><em>a</em>²</span><span class="den">2<em>ε</em><sub>s</sub></span></span></div>
+        <div class="eq-num">(17b.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>P</sub> pinch-off voltage, the gate–source voltage that closes the channel (V),
+        negative for a normally-on n-channel device · <em>V</em><sub>bi</sub> built-in potential of the
+        gate junction, from (1.8) (V) · <em>q</em> = 1.602×10⁻¹⁹ C · <em>N</em><sub>d</sub> channel doping
+        (cm⁻³) · <em>a</em> distance each depletion region must cross to close the channel (<b>cm</b>) ·
+        <em>ε</em><sub>s</sub> semiconductor permittivity, 1.036×10⁻¹² F/cm for silicon. One-sided abrupt
+        junction, uniform channel doping (Sze &amp; Ng 2007, Eqs. 7 and 15, §7.2.1). On the formula sheet as
+        <a href="formula-sheet.html#eq-17b-vp">(17b.6)</a>.
+      </div>
+    </div>
+
+    <p>
+      For a silicon channel doped 10¹⁶ cm⁻³ with <em>a</em> = 1 µm and p⁺ gates at 10¹⁹ cm⁻³, the second
+      term is 7.7 V and <em>V</em><sub>bi</sub> is 0.89 V, so <em>V</em><sub>P</sub> = −6.8 V. Most JFETs are
+      built this way, conducting at zero gate voltage and turned off by a negative one (Sze &amp; Ng
+      2007, p. 376). Equation (17b.6) also says that the pinch-off voltage moves with the built-in
+      potential, volt for volt, which is the origin of one of the two temperature effects of §5.
+    </p>
+    <p>
+      The drain voltage makes the channel non-uniform. The potential of the channel rises from zero at
+      the source to <em>V</em><sub>DS</sub> at the drain, so the reverse bias across the gate junction is
+      −<em>V</em><sub>GS</sub> at the source end and <em>V</em><sub>DS</sub> − <em>V</em><sub>GS</sub> at the
+      drain end, and the depletion regions are wider near the drain (Deck 15 pp. 24–26). As
+      <em>V</em><sub>DS</sub> rises, the channel narrows at the drain end and the current grows more
+      slowly than Ohm's law predicts. When <em>V</em><sub>DS</sub> = <em>V</em><sub>GS</sub> −
+      <em>V</em><sub>P</sub>, the reverse bias at the drain end equals −<em>V</em><sub>P</sub>, and the
+      depletion regions meet there: the channel is pinched off (Figure 6). A further increase moves the
+      pinch-off point slightly toward the source, but the channel potential at that point stays at
+      <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub>, so the voltage across the open channel, and with it
+      the current, stays nearly fixed: the current saturates (Sze &amp; Ng 2007, §7.2.1). Electrons that
+      reach the pinch-off point are swept across the short depleted segment to the drain by its strong
+      field. The drain voltage at which saturation begins equals |<em>V</em><sub>P</sub>| when
+      <em>V</em><sub>GS</sub> = 0, which is why the sketches of Deck 15 pp. 27–28 mark the knee of the
+      zero-gate curve as <em>V</em><sub>P</sub>; for a negative gate voltage it comes earlier, at
+      <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub>.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+<svg viewBox="0 0 300 212" role="img" aria-labelledby="f17b-6a-t">
+  <title id="f17b-6a-t">n-channel JFET cross-section at small drain voltage: an n channel between two p-plus gates, with depletion regions of equal thickness along the gates and a uniform conducting channel between them</title>
+  <defs><marker id="f17b-6a-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+  <rect x="30" y="60" width="240" height="90" class="dg-fill"/>
+  <rect x="80" y="38" width="140" height="22" class="dg-soft" opacity="0.4"/>
+  <rect x="80" y="150" width="140" height="22" class="dg-soft" opacity="0.4"/>
+  <rect x="16" y="86" width="14" height="38" class="dg-ink" opacity="0.75"/>
+  <rect x="270" y="86" width="14" height="38" class="dg-ink" opacity="0.75"/>
+  <text x="150" y="53" class="dg-label-sm" text-anchor="middle">p⁺ gate</text>
+  <text x="150" y="166" class="dg-label-sm" text-anchor="middle">p⁺ gate</text>
+  <text x="23" y="140" class="dg-label-sm" text-anchor="middle">S</text>
+  <text x="277" y="140" class="dg-label-sm" text-anchor="middle">D</text>
+  <path d="M80,60 L80,75 L82,75 L84,75 L86,75 L88,75 L90,75 L92,75 L94,75 L96,75 L98,75 L100,75 L102,75 L104,75 L106,75 L108,75 L110,75 L112,75 L114,75 L116,75 L118,75 L120,75 L122,75 L124,75 L126,75 L128,75 L130,75 L132,75 L134,75 L136,75 L138,75 L140,75 L142,75 L144,75 L146,75 L148,75 L150,75 L152,75 L154,75 L156,75 L158,75 L160,75 L162,75 L164,75 L166,75 L168,75 L170,75 L172,75 L174,75 L176,75 L178,75 L180,75 L182,75 L184,75 L186,75 L188,75 L190,75 L192,75 L194,75 L196,75 L198,75 L200,75 L202,75 L204,75 L206,75 L208,75 L210,75 L212,75 L214,75 L216,75 L218,75 L220,75 L220,60 Z" class="dg-soft" opacity="0.3"/>
+  <path d="M80,150 L80,135 L82,135 L84,135 L86,135 L88,135 L90,135 L92,135 L94,135 L96,135 L98,135 L100,135 L102,135 L104,135 L106,135 L108,135 L110,135 L112,135 L114,135 L116,135 L118,135 L120,135 L122,135 L124,135 L126,135 L128,135 L130,135 L132,135 L134,135 L136,135 L138,135 L140,135 L142,135 L144,135 L146,135 L148,135 L150,135 L152,135 L154,135 L156,135 L158,135 L160,135 L162,135 L164,135 L166,135 L168,135 L170,135 L172,135 L174,135 L176,135 L178,135 L180,135 L182,135 L184,135 L186,135 L188,135 L190,135 L192,135 L194,135 L196,135 L198,135 L200,135 L202,135 L204,135 L206,135 L208,135 L210,135 L212,135 L214,135 L216,135 L218,135 L220,135 L220,150 Z" class="dg-soft" opacity="0.3"/>
+  <path d="M80,75 L82,75 L84,75 L86,75 L88,75 L90,75 L92,75 L94,75 L96,75 L98,75 L100,75 L102,75 L104,75 L106,75 L108,75 L110,75 L112,75 L114,75 L116,75 L118,75 L120,75 L122,75 L124,75 L126,75 L128,75 L130,75 L132,75 L134,75 L136,75 L138,75 L140,75 L142,75 L144,75 L146,75 L148,75 L150,75 L152,75 L154,75 L156,75 L158,75 L160,75 L162,75 L164,75 L166,75 L168,75 L170,75 L172,75 L174,75 L176,75 L178,75 L180,75 L182,75 L184,75 L186,75 L188,75 L190,75 L192,75 L194,75 L196,75 L198,75 L200,75 L202,75 L204,75 L206,75 L208,75 L210,75 L212,75 L214,75 L216,75 L218,75 L220,75" class="dg-line" stroke-width="1" stroke-dasharray="3 2"/>
+  <path d="M80,135 L82,135 L84,135 L86,135 L88,135 L90,135 L92,135 L94,135 L96,135 L98,135 L100,135 L102,135 L104,135 L106,135 L108,135 L110,135 L112,135 L114,135 L116,135 L118,135 L120,135 L122,135 L124,135 L126,135 L128,135 L130,135 L132,135 L134,135 L136,135 L138,135 L140,135 L142,135 L144,135 L146,135 L148,135 L150,135 L152,135 L154,135 L156,135 L158,135 L160,135 L162,135 L164,135 L166,135 L168,135 L170,135 L172,135 L174,135 L176,135 L178,135 L180,135 L182,135 L184,135 L186,135 L188,135 L190,135 L192,135 L194,135 L196,135 L198,135 L200,135 L202,135 L204,135 L206,135 L208,135 L210,135 L212,135 L214,135 L216,135 L218,135 L220,135" class="dg-line" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="150" y="71.5" class="dg-label-sm" text-anchor="middle">depletion region</text>
+  <line x1="40" y1="105" x2="262" y2="105" class="dg-acc" stroke-width="2" marker-end="url(#f17b-6a-ar)"/>
+  <text x="150" y="99" class="dg-label-sm" text-anchor="middle">electrons, source to drain</text>
+  <text x="150" y="196" class="dg-label" text-anchor="middle">(a) small V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan>: uniform channel</text>
+</svg>
+        <figcaption>
+          <b>Figure 6a.</b> At small drain voltage the depletion regions along the two gates have equal
+          width, and the channel between them is a uniform resistor.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+<svg viewBox="0 0 300 212" role="img" aria-labelledby="f17b-6b-t">
+  <title id="f17b-6b-t">The same JFET with the drain voltage raised to the pinch-off value: the depletion regions thicken toward the drain and meet at the drain end of the gates, while the electrons continue through the depleted neck</title>
+  <defs><marker id="f17b-6b-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+  <rect x="30" y="60" width="240" height="90" class="dg-fill"/>
+  <rect x="80" y="38" width="140" height="22" class="dg-soft" opacity="0.4"/>
+  <rect x="80" y="150" width="140" height="22" class="dg-soft" opacity="0.4"/>
+  <rect x="16" y="86" width="14" height="38" class="dg-ink" opacity="0.75"/>
+  <rect x="270" y="86" width="14" height="38" class="dg-ink" opacity="0.75"/>
+  <text x="150" y="53" class="dg-label-sm" text-anchor="middle">p⁺ gate</text>
+  <text x="150" y="166" class="dg-label-sm" text-anchor="middle">p⁺ gate</text>
+  <text x="23" y="140" class="dg-label-sm" text-anchor="middle">S</text>
+  <text x="277" y="140" class="dg-label-sm" text-anchor="middle">D</text>
+  <path d="M80,60 L80,75 L82,75 L84,75.1 L86,75.1 L88,75.2 L90,75.3 L92,75.5 L94,75.6 L96,75.8 L98,75.9 L100,76.1 L102,76.3 L104,76.5 L106,76.7 L108,76.9 L110,77.2 L112,77.4 L114,77.7 L116,78 L118,78.3 L120,78.6 L122,78.9 L124,79.2 L126,79.5 L128,79.9 L130,80.2 L132,80.6 L134,80.9 L136,81.3 L138,81.7 L140,82.1 L142,82.5 L144,82.9 L146,83.4 L148,83.8 L150,84.2 L152,84.7 L154,85.1 L156,85.6 L158,86.1 L160,86.6 L162,87.1 L164,87.6 L166,88.1 L168,88.6 L170,89.2 L172,89.7 L174,90.2 L176,90.8 L178,91.4 L180,91.9 L182,92.5 L184,93.1 L186,93.7 L188,94.3 L190,94.9 L192,95.5 L194,96.2 L196,96.8 L198,97.4 L200,98.1 L202,98.7 L204,99.4 L206,100.1 L208,100.8 L210,101.4 L212,102.1 L214,102.8 L216,103.6 L218,104.3 L220,105 L220,60 Z" class="dg-soft" opacity="0.3"/>
+  <path d="M80,150 L80,135 L82,135 L84,134.9 L86,134.9 L88,134.8 L90,134.7 L92,134.5 L94,134.4 L96,134.2 L98,134.1 L100,133.9 L102,133.7 L104,133.5 L106,133.3 L108,133.1 L110,132.8 L112,132.6 L114,132.3 L116,132 L118,131.7 L120,131.4 L122,131.1 L124,130.8 L126,130.5 L128,130.1 L130,129.8 L132,129.4 L134,129.1 L136,128.7 L138,128.3 L140,127.9 L142,127.5 L144,127.1 L146,126.6 L148,126.2 L150,125.8 L152,125.3 L154,124.9 L156,124.4 L158,123.9 L160,123.4 L162,122.9 L164,122.4 L166,121.9 L168,121.4 L170,120.8 L172,120.3 L174,119.8 L176,119.2 L178,118.6 L180,118.1 L182,117.5 L184,116.9 L186,116.3 L188,115.7 L190,115.1 L192,114.5 L194,113.8 L196,113.2 L198,112.6 L200,111.9 L202,111.3 L204,110.6 L206,109.9 L208,109.2 L210,108.6 L212,107.9 L214,107.2 L216,106.4 L218,105.7 L220,105 L220,150 Z" class="dg-soft" opacity="0.3"/>
+  <path d="M80,75 L82,75 L84,75.1 L86,75.1 L88,75.2 L90,75.3 L92,75.5 L94,75.6 L96,75.8 L98,75.9 L100,76.1 L102,76.3 L104,76.5 L106,76.7 L108,76.9 L110,77.2 L112,77.4 L114,77.7 L116,78 L118,78.3 L120,78.6 L122,78.9 L124,79.2 L126,79.5 L128,79.9 L130,80.2 L132,80.6 L134,80.9 L136,81.3 L138,81.7 L140,82.1 L142,82.5 L144,82.9 L146,83.4 L148,83.8 L150,84.2 L152,84.7 L154,85.1 L156,85.6 L158,86.1 L160,86.6 L162,87.1 L164,87.6 L166,88.1 L168,88.6 L170,89.2 L172,89.7 L174,90.2 L176,90.8 L178,91.4 L180,91.9 L182,92.5 L184,93.1 L186,93.7 L188,94.3 L190,94.9 L192,95.5 L194,96.2 L196,96.8 L198,97.4 L200,98.1 L202,98.7 L204,99.4 L206,100.1 L208,100.8 L210,101.4 L212,102.1 L214,102.8 L216,103.6 L218,104.3 L220,105" class="dg-line" stroke-width="1" stroke-dasharray="3 2"/>
+  <path d="M80,135 L82,135 L84,134.9 L86,134.9 L88,134.8 L90,134.7 L92,134.5 L94,134.4 L96,134.2 L98,134.1 L100,133.9 L102,133.7 L104,133.5 L106,133.3 L108,133.1 L110,132.8 L112,132.6 L114,132.3 L116,132 L118,131.7 L120,131.4 L122,131.1 L124,130.8 L126,130.5 L128,130.1 L130,129.8 L132,129.4 L134,129.1 L136,128.7 L138,128.3 L140,127.9 L142,127.5 L144,127.1 L146,126.6 L148,126.2 L150,125.8 L152,125.3 L154,124.9 L156,124.4 L158,123.9 L160,123.4 L162,122.9 L164,122.4 L166,121.9 L168,121.4 L170,120.8 L172,120.3 L174,119.8 L176,119.2 L178,118.6 L180,118.1 L182,117.5 L184,116.9 L186,116.3 L188,115.7 L190,115.1 L192,114.5 L194,113.8 L196,113.2 L198,112.6 L200,111.9 L202,111.3 L204,110.6 L206,109.9 L208,109.2 L210,108.6 L212,107.9 L214,107.2 L216,106.4 L218,105.7 L220,105" class="dg-line" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="118" y="73" class="dg-label-sm" text-anchor="middle">depletion</text>
+  <path d="M40,105 L200,105 L262,105" class="dg-acc" stroke-width="2" marker-end="url(#f17b-6b-ar)"/>
+  <circle cx="220" cy="105" r="4" class="dg-rule" fill="none" stroke-width="1.2"/>
+  <line x1="224" y1="101" x2="246" y2="76" class="dg-guide" stroke-width="0.9"/>
+  <text x="248" y="73" class="dg-label-sm" text-anchor="middle">pinch-off</text>
+  <text x="110" y="99" class="dg-label-sm" text-anchor="middle">channel narrows</text>
+  <text x="150" y="196" class="dg-label" text-anchor="middle">(b) V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> = V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan> − V<tspan baseline-shift="sub" style="font-size:75%">P</tspan>: drain end closes</text>
+</svg>
+        <figcaption>
+          <b>Figure 6b.</b> At <em>V</em><sub>DS</sub> = <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub> the
+          depletion regions meet at the drain end. Electrons still cross the pinched region, and the
+          current saturates. Schematic.
+          <span class="src">After Deck 15 pp. 24, 27.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      In saturation the drain current depends on the gate voltage through a square law, the
+      approximation that Deck 15 p. 28 uses. Sze and Ng derive the exact form for constant mobility; for
+      the same <em>I</em><sub>DSS</sub> and <em>V</em><sub>P</sub> the square law exceeds it by about 4 % near
+      zero gate voltage and by 15–25 % toward cut-off, and near threshold the exact form itself reduces to a
+      square law (Sze &amp; Ng 2007, Eqs. 17 and 19). The transconductance
+      <em>g</em><sub>m</sub> = d<em>I</em><sub>D</sub>/d<em>V</em><sub>GS</sub>, the change of drain current per
+      unit change of gate voltage, follows by differentiation.
+    </p>
+
+    <div class="eq" id="m17b-eq-sq">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>D</sub> = <em>I</em><sub>DSS</sub> <span class="dl">(</span>1 − <span class="frac"><span class="num"><em>V</em><sub>GS</sub></span><span class="den"><em>V</em><sub>P</sub></span></span><span class="dl">)</span><sup>2</sup>,&nbsp;&nbsp;&nbsp; <em>g</em><sub>m</sub> = <span class="frac"><span class="num">2<em>I</em><sub>DSS</sub></span><span class="den">|<em>V</em><sub>P</sub>|</span></span> <span class="dl">(</span>1 − <span class="frac"><span class="num"><em>V</em><sub>GS</sub></span><span class="den"><em>V</em><sub>P</sub></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(17b.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D</sub> drain current in saturation (A) · <em>I</em><sub>DSS</sub> saturation current at
+        <em>V</em><sub>GS</sub> = 0 (A) · <em>V</em><sub>GS</sub> gate–source voltage (V), between
+        <em>V</em><sub>P</sub> and 0 for an n-channel device · <em>V</em><sub>P</sub> pinch-off voltage from
+        (17b.6) (V) · <em>g</em><sub>m</sub> transconductance (<b>A/V = S</b>). <em>I</em><sub>D</sub> = 0 at
+        <em>V</em><sub>GS</sub> = <em>V</em><sub>P</sub>. Valid for <em>V</em><sub>DS</sub> ≥
+        <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub>; below that the device is in the linear region of
+        (17b.5). On the formula sheet as <a href="formula-sheet.html#eq-17b-sq">(17b.7)</a>.
+      </div>
+    </div>
+
+    <div class="figrow">
+      <figure class="compact">
+<svg viewBox="0 0 300 226" role="img" aria-labelledby="f17b-7a-t">
+  <title id="f17b-7a-t">Output characteristics of a JFET from the square law with a pinch-off voltage of minus 4 volts: drain current normalized to I D S S against drain voltage for gate voltages of 0, minus 1, minus 2 and minus 3 volts, with the pinch-off locus where the drain voltage equals the gate voltage minus the pinch-off voltage</title>
+  <rect x="48" y="24" width="238" height="168" class="dg-fill" opacity="0.3"/>
+  <path d="M48,192 L49.5,188 L51,184.1 L52.5,180.2 L54,176.4 L55.4,172.6 L56.9,168.9 L58.4,165.2 L59.9,161.6 L61.4,158 L62.9,154.5 L64.4,151 L65.8,147.6 L67.3,144.2 L68.8,140.9 L70.3,137.6 L71.8,134.4 L73.3,131.2 L74.8,128.1 L76.3,125 L77.8,122 L79.2,119 L80.7,116.1 L82.2,113.2 L83.7,110.4 L85.2,107.6 L86.7,104.9 L88.2,102.2 L89.7,99.6 L91.1,97 L92.6,94.5 L94.1,92 L95.6,89.6 L97.1,87.2 L98.6,84.9 L100.1,82.6 L101.6,80.4 L103,78.2 L104.5,76.1 L106,74 L107.5,72 L109,70 L110.5,68.1 L112,66.2 L113.5,64.4 L114.9,62.6 L116.4,60.9 L117.9,59.2 L119.4,57.6 L120.9,56 L122.4,54.5 L123.9,53 L125.4,51.6 L126.8,50.2 L128.3,48.9 L129.8,47.6 L131.3,46.4 L132.8,45.2 L134.3,44.1 L135.8,43 L137.2,42 L138.7,41 L140.2,40.1 L141.7,39.2 L143.2,38.4 L144.7,37.6 L146.2,36.9 L147.7,36.2 L149.2,35.6 L150.6,35 L152.1,34.5 L153.6,34 L155.1,33.6 L156.6,33.2 L158.1,32.9 L159.6,32.6 L161.1,32.4 L162.5,32.2 L164,32.1 L165.5,32 L167,32 L168.5,32 L170,32 L171.5,32 L172.9,32 L174.4,32 L175.9,32 L177.4,32 L178.9,32 L180.4,32 L181.9,32 L183.4,32 L184.9,32 L186.3,32 L187.8,32 L189.3,32 L190.8,32 L192.3,32 L193.8,32 L195.3,32 L196.8,32 L198.2,32 L199.7,32 L201.2,32 L202.7,32 L204.2,32 L205.7,32 L207.2,32 L208.7,32 L210.1,32 L211.6,32 L213.1,32 L214.6,32 L216.1,32 L217.6,32 L219.1,32 L220.6,32 L222,32 L223.5,32 L225,32 L226.5,32 L228,32 L229.5,32 L231,32 L232.5,32 L233.9,32 L235.4,32 L236.9,32 L238.4,32 L239.9,32 L241.4,32 L242.9,32 L244.4,32 L245.8,32 L247.3,32 L248.8,32 L250.3,32 L251.8,32 L253.3,32 L254.8,32 L256.2,32 L257.7,32 L259.2,32 L260.7,32 L262.2,32 L263.7,32 L265.2,32 L266.7,32 L268.1,32 L269.6,32 L271.1,32 L272.6,32 L274.1,32 L275.6,32 L277.1,32 L278.6,32 L280.1,32 L281.5,32 L283,32 L284.5,32 L286,32" class="dg-line" stroke-width="1.8"/>
+  <text x="284" y="27" class="dg-label-sm" text-anchor="end">V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan> = 0</text>
+  <path d="M48,192 L49.5,189 L51,186.1 L52.5,183.2 L54,180.4 L55.4,177.6 L56.9,174.9 L58.4,172.2 L59.9,169.6 L61.4,167 L62.9,164.5 L64.4,162 L65.8,159.6 L67.3,157.2 L68.8,154.9 L70.3,152.6 L71.8,150.4 L73.3,148.2 L74.8,146.1 L76.3,144 L77.8,142 L79.2,140 L80.7,138.1 L82.2,136.2 L83.7,134.4 L85.2,132.6 L86.7,130.9 L88.2,129.2 L89.7,127.6 L91.1,126 L92.6,124.5 L94.1,123 L95.6,121.6 L97.1,120.2 L98.6,118.9 L100.1,117.6 L101.6,116.4 L103,115.2 L104.5,114.1 L106,113 L107.5,112 L109,111 L110.5,110.1 L112,109.2 L113.5,108.4 L114.9,107.6 L116.4,106.9 L117.9,106.2 L119.4,105.6 L120.9,105 L122.4,104.5 L123.9,104 L125.4,103.6 L126.8,103.2 L128.3,102.9 L129.8,102.6 L131.3,102.4 L132.8,102.2 L134.3,102.1 L135.8,102 L137.2,102 L138.7,102 L140.2,102 L141.7,102 L143.2,102 L144.7,102 L146.2,102 L147.7,102 L149.2,102 L150.6,102 L152.1,102 L153.6,102 L155.1,102 L156.6,102 L158.1,102 L159.6,102 L161.1,102 L162.5,102 L164,102 L165.5,102 L167,102 L168.5,102 L170,102 L171.5,102 L172.9,102 L174.4,102 L175.9,102 L177.4,102 L178.9,102 L180.4,102 L181.9,102 L183.4,102 L184.9,102 L186.3,102 L187.8,102 L189.3,102 L190.8,102 L192.3,102 L193.8,102 L195.3,102 L196.8,102 L198.2,102 L199.7,102 L201.2,102 L202.7,102 L204.2,102 L205.7,102 L207.2,102 L208.7,102 L210.1,102 L211.6,102 L213.1,102 L214.6,102 L216.1,102 L217.6,102 L219.1,102 L220.6,102 L222,102 L223.5,102 L225,102 L226.5,102 L228,102 L229.5,102 L231,102 L232.5,102 L233.9,102 L235.4,102 L236.9,102 L238.4,102 L239.9,102 L241.4,102 L242.9,102 L244.4,102 L245.8,102 L247.3,102 L248.8,102 L250.3,102 L251.8,102 L253.3,102 L254.8,102 L256.2,102 L257.7,102 L259.2,102 L260.7,102 L262.2,102 L263.7,102 L265.2,102 L266.7,102 L268.1,102 L269.6,102 L271.1,102 L272.6,102 L274.1,102 L275.6,102 L277.1,102 L278.6,102 L280.1,102 L281.5,102 L283,102 L284.5,102 L286,102" class="dg-line" stroke-width="1.8"/>
+  <text x="284" y="97" class="dg-label-sm" text-anchor="end">−1 V</text>
+  <path d="M48,192 L49.5,190 L51,188.1 L52.5,186.2 L54,184.4 L55.4,182.6 L56.9,180.9 L58.4,179.2 L59.9,177.6 L61.4,176 L62.9,174.5 L64.4,173 L65.8,171.6 L67.3,170.2 L68.8,168.9 L70.3,167.6 L71.8,166.4 L73.3,165.2 L74.8,164.1 L76.3,163 L77.8,162 L79.2,161 L80.7,160.1 L82.2,159.2 L83.7,158.4 L85.2,157.6 L86.7,156.9 L88.2,156.2 L89.7,155.6 L91.1,155 L92.6,154.5 L94.1,154 L95.6,153.6 L97.1,153.2 L98.6,152.9 L100.1,152.6 L101.6,152.4 L103,152.2 L104.5,152.1 L106,152 L107.5,152 L109,152 L110.5,152 L112,152 L113.5,152 L114.9,152 L116.4,152 L117.9,152 L119.4,152 L120.9,152 L122.4,152 L123.9,152 L125.4,152 L126.8,152 L128.3,152 L129.8,152 L131.3,152 L132.8,152 L134.3,152 L135.8,152 L137.2,152 L138.7,152 L140.2,152 L141.7,152 L143.2,152 L144.7,152 L146.2,152 L147.7,152 L149.2,152 L150.6,152 L152.1,152 L153.6,152 L155.1,152 L156.6,152 L158.1,152 L159.6,152 L161.1,152 L162.5,152 L164,152 L165.5,152 L167,152 L168.5,152 L170,152 L171.5,152 L172.9,152 L174.4,152 L175.9,152 L177.4,152 L178.9,152 L180.4,152 L181.9,152 L183.4,152 L184.9,152 L186.3,152 L187.8,152 L189.3,152 L190.8,152 L192.3,152 L193.8,152 L195.3,152 L196.8,152 L198.2,152 L199.7,152 L201.2,152 L202.7,152 L204.2,152 L205.7,152 L207.2,152 L208.7,152 L210.1,152 L211.6,152 L213.1,152 L214.6,152 L216.1,152 L217.6,152 L219.1,152 L220.6,152 L222,152 L223.5,152 L225,152 L226.5,152 L228,152 L229.5,152 L231,152 L232.5,152 L233.9,152 L235.4,152 L236.9,152 L238.4,152 L239.9,152 L241.4,152 L242.9,152 L244.4,152 L245.8,152 L247.3,152 L248.8,152 L250.3,152 L251.8,152 L253.3,152 L254.8,152 L256.2,152 L257.7,152 L259.2,152 L260.7,152 L262.2,152 L263.7,152 L265.2,152 L266.7,152 L268.1,152 L269.6,152 L271.1,152 L272.6,152 L274.1,152 L275.6,152 L277.1,152 L278.6,152 L280.1,152 L281.5,152 L283,152 L284.5,152 L286,152" class="dg-line" stroke-width="1.8"/>
+  <text x="284" y="147" class="dg-label-sm" text-anchor="end">−2 V</text>
+  <path d="M48,192 L49.5,191 L51,190.1 L52.5,189.2 L54,188.4 L55.4,187.6 L56.9,186.9 L58.4,186.2 L59.9,185.6 L61.4,185 L62.9,184.5 L64.4,184 L65.8,183.6 L67.3,183.2 L68.8,182.9 L70.3,182.6 L71.8,182.4 L73.3,182.2 L74.8,182.1 L76.3,182 L77.8,182 L79.2,182 L80.7,182 L82.2,182 L83.7,182 L85.2,182 L86.7,182 L88.2,182 L89.7,182 L91.1,182 L92.6,182 L94.1,182 L95.6,182 L97.1,182 L98.6,182 L100.1,182 L101.6,182 L103,182 L104.5,182 L106,182 L107.5,182 L109,182 L110.5,182 L112,182 L113.5,182 L114.9,182 L116.4,182 L117.9,182 L119.4,182 L120.9,182 L122.4,182 L123.9,182 L125.4,182 L126.8,182 L128.3,182 L129.8,182 L131.3,182 L132.8,182 L134.3,182 L135.8,182 L137.2,182 L138.7,182 L140.2,182 L141.7,182 L143.2,182 L144.7,182 L146.2,182 L147.7,182 L149.2,182 L150.6,182 L152.1,182 L153.6,182 L155.1,182 L156.6,182 L158.1,182 L159.6,182 L161.1,182 L162.5,182 L164,182 L165.5,182 L167,182 L168.5,182 L170,182 L171.5,182 L172.9,182 L174.4,182 L175.9,182 L177.4,182 L178.9,182 L180.4,182 L181.9,182 L183.4,182 L184.9,182 L186.3,182 L187.8,182 L189.3,182 L190.8,182 L192.3,182 L193.8,182 L195.3,182 L196.8,182 L198.2,182 L199.7,182 L201.2,182 L202.7,182 L204.2,182 L205.7,182 L207.2,182 L208.7,182 L210.1,182 L211.6,182 L213.1,182 L214.6,182 L216.1,182 L217.6,182 L219.1,182 L220.6,182 L222,182 L223.5,182 L225,182 L226.5,182 L228,182 L229.5,182 L231,182 L232.5,182 L233.9,182 L235.4,182 L236.9,182 L238.4,182 L239.9,182 L241.4,182 L242.9,182 L244.4,182 L245.8,182 L247.3,182 L248.8,182 L250.3,182 L251.8,182 L253.3,182 L254.8,182 L256.2,182 L257.7,182 L259.2,182 L260.7,182 L262.2,182 L263.7,182 L265.2,182 L266.7,182 L268.1,182 L269.6,182 L271.1,182 L272.6,182 L274.1,182 L275.6,182 L277.1,182 L278.6,182 L280.1,182 L281.5,182 L283,182 L284.5,182 L286,182" class="dg-line" stroke-width="1.8"/>
+  <text x="284" y="177" class="dg-label-sm" text-anchor="end">−3 V</text>
+  <path d="M48,192 L49.5,192 L51,191.9 L52.5,191.8 L54,191.6 L55.4,191.4 L56.9,191.1 L58.4,190.8 L59.9,190.4 L61.4,190 L62.9,189.5 L64.4,189 L65.8,188.4 L67.3,187.8 L68.8,187.1 L70.3,186.4 L71.8,185.6 L73.3,184.8 L74.8,183.9 L76.3,183 L77.8,182 L79.2,181 L80.7,179.9 L82.2,178.8 L83.7,177.6 L85.2,176.4 L86.7,175.1 L88.2,173.8 L89.7,172.4 L91.1,171 L92.6,169.5 L94.1,168 L95.6,166.4 L97.1,164.8 L98.6,163.1 L100.1,161.4 L101.6,159.6 L103,157.8 L104.5,155.9 L106,154 L107.5,152 L109,150 L110.5,147.9 L112,145.8 L113.5,143.6 L114.9,141.4 L116.4,139.1 L117.9,136.8 L119.4,134.4 L120.9,132 L122.4,129.5 L123.9,127 L125.4,124.4 L126.8,121.8 L128.3,119.1 L129.8,116.4 L131.3,113.6 L132.8,110.8 L134.3,107.9 L135.8,105 L137.2,102 L138.7,99 L140.2,95.9 L141.7,92.8 L143.2,89.6 L144.7,86.4 L146.2,83.1 L147.7,79.8 L149.2,76.4 L150.6,73 L152.1,69.5 L153.6,66 L155.1,62.4 L156.6,58.8 L158.1,55.1 L159.6,51.4 L161.1,47.6 L162.5,43.8 L164,39.9 L165.5,36 L167,32" class="dg-acc" stroke-width="1.8" stroke-dasharray="5 3"/>
+  <text x="165.5" y="67.2" class="dg-label-sm">V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> = V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan> − V<tspan baseline-shift="sub" style="font-size:75%">P</tspan></text>
+  <text x="55.4" y="86.4" class="dg-label-sm">linear</text>
+  <text x="232.5" y="128" class="dg-label-sm" text-anchor="middle">saturation</text>
+  <line x1="48" y1="192" x2="286" y2="192" class="dg-rule" stroke-width="1.2"/>
+  <line x1="48" y1="24" x2="48" y2="192" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="48" y1="192" x2="48" y2="197"/><line x1="107.5" y1="192" x2="107.5" y2="197"/><line x1="167" y1="192" x2="167" y2="197"/><line x1="226.5" y1="192" x2="226.5" y2="197"/><line x1="286" y1="192" x2="286" y2="197"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="48" y="208">0</text><text x="107.5" y="208">2</text><text x="167" y="208">4</text><text x="226.5" y="208">6</text><text x="286" y="208">8</text></g>
+  <g class="dg-label-sm" text-anchor="end"><text x="43" y="196">0</text><text x="43" y="116">0.5</text><text x="43" y="36">1</text></g>
+  <text x="167" y="222" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> (V)</text>
+  <text x="14" y="108" class="dg-label" text-anchor="middle" transform="rotate(-90 14 108)">I<tspan baseline-shift="sub" style="font-size:75%">D</tspan>/I<tspan baseline-shift="sub" style="font-size:75%">DSS</tspan></text>
+</svg>
+        <figcaption>
+          <b>Figure 7a.</b> Output characteristics for <em>V</em><sub>P</sub> = −4 V: below saturation the
+          quadratic form <em>I</em><sub>DSS</sub>[2(<em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub>)<em>V</em><sub>DS</sub>
+          − <em>V</em><sub>DS</sub>²]/<em>V</em><sub>P</sub>², whose small-<em>V</em><sub>DS</sub> limit is (17b.5);
+          above the dashed locus <em>V</em><sub>DS</sub> = <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub> the
+          square law (17b.7), which it joins continuously.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+<svg viewBox="0 0 300 226" role="img" aria-labelledby="f17b-7b-t">
+  <title id="f17b-7b-t">Transfer characteristic of the same JFET in saturation: drain current normalized to I D S S against gate voltage, a parabola from zero at the pinch-off voltage of minus 4 volts to 1 at zero gate voltage, with its tangent at minus 2 volts showing the transconductance</title>
+  <rect x="48" y="24" width="238" height="168" class="dg-fill" opacity="0.3"/>
+  <path d="M48,192 L49,192 L50.1,192 L51.1,192 L52.1,192 L53.2,192 L54.2,192 L55.2,192 L56.3,192 L57.3,192 L58.3,192 L59.4,192 L60.4,192 L61.5,192 L62.5,192 L63.5,192 L64.6,192 L65.6,192 L66.6,192 L67.7,192 L68.7,192 L69.7,192 L70.8,192 L71.8,192 L72.8,191.9 L73.9,191.9 L74.9,191.9 L75.9,191.8 L77,191.7 L78,191.7 L79,191.6 L80.1,191.5 L81.1,191.4 L82.1,191.3 L83.2,191.2 L84.2,191.1 L85.3,191 L86.3,190.8 L87.3,190.7 L88.4,190.6 L89.4,190.4 L90.4,190.2 L91.5,190.1 L92.5,189.9 L93.5,189.7 L94.6,189.5 L95.6,189.3 L96.6,189.1 L97.7,188.9 L98.7,188.6 L99.7,188.4 L100.8,188.2 L101.8,187.9 L102.8,187.6 L103.9,187.4 L104.9,187.1 L105.9,186.8 L107,186.5 L108,186.2 L109.1,185.9 L110.1,185.6 L111.1,185.3 L112.2,184.9 L113.2,184.6 L114.2,184.3 L115.3,183.9 L116.3,183.5 L117.3,183.2 L118.4,182.8 L119.4,182.4 L120.4,182 L121.5,181.6 L122.5,181.2 L123.5,180.8 L124.6,180.3 L125.6,179.9 L126.6,179.5 L127.7,179 L128.7,178.5 L129.7,178.1 L130.8,177.6 L131.8,177.1 L132.9,176.6 L133.9,176.1 L134.9,175.6 L136,175.1 L137,174.6 L138,174 L139.1,173.5 L140.1,173 L141.1,172.4 L142.2,171.8 L143.2,171.3 L144.2,170.7 L145.3,170.1 L146.3,169.5 L147.3,168.9 L148.4,168.3 L149.4,167.7 L150.4,167 L151.5,166.4 L152.5,165.8 L153.5,165.1 L154.6,164.4 L155.6,163.8 L156.7,163.1 L157.7,162.4 L158.7,161.7 L159.8,161 L160.8,160.3 L161.8,159.6 L162.9,158.9 L163.9,158.1 L164.9,157.4 L166,156.7 L167,155.9 L168,155.1 L169.1,154.4 L170.1,153.6 L171.1,152.8 L172.2,152 L173.2,151.2 L174.2,150.4 L175.3,149.6 L176.3,148.7 L177.3,147.9 L178.4,147.1 L179.4,146.2 L180.5,145.3 L181.5,144.5 L182.5,143.6 L183.6,142.7 L184.6,141.8 L185.6,140.9 L186.7,140 L187.7,139.1 L188.7,138.2 L189.8,137.2 L190.8,136.3 L191.8,135.4 L192.9,134.4 L193.9,133.4 L194.9,132.5 L196,131.5 L197,130.5 L198,129.5 L199.1,128.5 L200.1,127.5 L201.1,126.5 L202.2,125.4 L203.2,124.4 L204.3,123.4 L205.3,122.3 L206.3,121.2 L207.4,120.2 L208.4,119.1 L209.4,118 L210.5,116.9 L211.5,115.8 L212.5,114.7 L213.6,113.6 L214.6,112.5 L215.6,111.3 L216.7,110.2 L217.7,109.1 L218.7,107.9 L219.8,106.7 L220.8,105.6 L221.8,104.4 L222.9,103.2 L223.9,102 L224.9,100.8 L226,99.6 L227,98.4 L228.1,97.1 L229.1,95.9 L230.1,94.7 L231.2,93.4 L232.2,92.1 L233.2,90.9 L234.3,89.6 L235.3,88.3 L236.3,87 L237.4,85.7 L238.4,84.4 L239.4,83.1 L240.5,81.8 L241.5,80.4 L242.5,79.1 L243.6,77.8 L244.6,76.4 L245.6,75 L246.7,73.7 L247.7,72.3 L248.7,70.9 L249.8,69.5 L250.8,68.1 L251.9,66.7 L252.9,65.3 L253.9,63.8 L255,62.4 L256,61 L257,59.5 L258.1,58 L259.1,56.6 L260.1,55.1 L261.2,53.6 L262.2,52.1 L263.2,50.6 L264.3,49.1 L265.3,47.6 L266.3,46.1 L267.4,44.5 L268.4,43 L269.4,41.5 L270.5,39.9 L271.5,38.3 L272.5,36.8 L273.6,35.2 L274.6,33.6 L275.7,32" class="dg-acc" stroke-width="2"/>
+  <path d="M120.4,192 L229.1,108" class="dg-line" stroke-width="1.1" stroke-dasharray="4 3"/>
+  <circle cx="172.2" cy="152" r="3" class="dg-ink"/>
+  <text x="195.5" y="164" class="dg-label-sm">slope g<tspan baseline-shift="sub" style="font-size:75%">m</tspan></text>
+  <text x="271.7" y="26" class="dg-label-sm" text-anchor="end">I<tspan baseline-shift="sub" style="font-size:75%">DSS</tspan></text>
+  <line x1="68.7" y1="192" x2="68.7" y2="150" class="dg-guide" stroke-width="0.9" stroke-dasharray="2 3"/>
+  <text x="72.7" y="146" class="dg-label-sm">V<tspan baseline-shift="sub" style="font-size:75%">P</tspan>: cut-off</text>
+  <line x1="48" y1="192" x2="286" y2="192" class="dg-rule" stroke-width="1.2"/>
+  <line x1="48" y1="24" x2="48" y2="192" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="68.7" y1="192" x2="68.7" y2="197"/><line x1="120.4" y1="192" x2="120.4" y2="197"/><line x1="172.2" y1="192" x2="172.2" y2="197"/><line x1="223.9" y1="192" x2="223.9" y2="197"/><line x1="275.7" y1="192" x2="275.7" y2="197"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="68.7" y="208">−4</text><text x="120.4" y="208">−3</text><text x="172.2" y="208">−2</text><text x="223.9" y="208">−1</text><text x="275.7" y="208">0</text></g>
+  <g class="dg-label-sm" text-anchor="end"><text x="43" y="196">0</text><text x="43" y="116">0.5</text><text x="43" y="36">1</text></g>
+  <text x="167" y="222" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan> (V)</text>
+  <text x="14" y="108" class="dg-label" text-anchor="middle" transform="rotate(-90 14 108)">I<tspan baseline-shift="sub" style="font-size:75%">D</tspan>/I<tspan baseline-shift="sub" style="font-size:75%">DSS</tspan></text>
+</svg>
+        <figcaption>
+          <b>Figure 7b.</b> The transfer characteristic in saturation: zero at <em>V</em><sub>P</sub>,
+          <em>I</em><sub>DSS</sub> at zero gate voltage, with the transconductance as its slope. Computed
+          here from the square law of Deck 15 p. 28.
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">Pinch-off and turning the JFET off (Deck 15 pp. 25, 27)</p>
+      <p>
+        Deck 15 p. 27 states that the two depletion regions never touch, because if they met there would
+        be no reverse bias between them, and concludes that a JFET cannot be turned off. Pinch-off by the
+        drain voltage does not stop the current, as the slide's own sketch of the saturation region shows:
+        the current through the pinched segment continues, carried by the field. A gate voltage at or
+        beyond <em>V</em><sub>P</sub> closes the channel along its whole length, and the device is off, as
+        the square law on the next slide states (<em>I</em><sub>D</sub> = 0 at
+        <em>V</em><sub>GS</sub> = <em>V</em><sub>P</sub>) and as NASA's circuits, built from normally-on
+        JFETs with negative thresholds, rely on (Deck 16a p. 57). In the off state only the reverse current
+        of the gate junction and a small current over the barrier remain.
+      </p>
+      <p>
+        Deck 15 p. 25 labels the source end of the gate junction "forward bias" beside a textbook
+        forward-biased diode. In normal operation, with <em>V</em><sub>GS</sub> ≤ 0, the gate junction is
+        at zero or reverse bias along the whole channel; the source end is the least reverse-biased and
+        the drain end the most.
+      </p>
+    </div>
+
+    <h2>5 · The JFET against temperature: two opposed effects</h2>
+    <p>
+      The JFET's drain current depends on temperature through two quantities that move in opposite
+      directions: the mobility of the electrons in the channel, which falls, and the built-in potential of
+      the gate junction, which also falls and so opens the channel. Their balance defines a gate bias at
+      which the drain current does not drift with temperature, the zero-drift or temperature-compensation
+      point (Deck 15 pp. 29–32).
+    </p>
+    <p>
+      <b>Effect 1: mobility.</b> In (17b.5) and in <em>I</em><sub>DSS</sub> the current is proportional to
+      the conductivity of the channel, and its mobility falls with temperature as lattice scattering grows
+      (M17a §4). InterFET's application note AN-107, whose analysis Deck 15 pp. 30–31 follows, gives the
+      conductivity of n- and p-type silicon a temperature coefficient of −0.6 to −0.8 %/°C, and the course
+      uses −0.7 %/K, the "mobility factor": the mobility effect alone lowers the current by 0.7 % for each
+      kelvin of heating, at a fixed channel opening (Oxner 2018, after Cobbold 1970). For a mobility that varies as <em>T</em><sup>−<em>n</em></sup>
+      the coefficient is −<em>n</em>/<em>T</em>, so the 2.42 of (17a.3) gives −0.81 %/K at 300 K and half of
+      that at 600 K.
+    </p>
+    <p>
+      <b>Effect 2: the junction barrier.</b> The built-in potential
+      <em>V</em><sub>bi</sub> = (<em>kT</em>/<em>q</em>) ln(<em>N</em><sub>a</sub><em>N</em><sub>d</sub>/<em>n</em><sub>i</sub>²)
+      falls as <em>n</em><sub>i</sub> rises, the same dependence that lowers a diode's forward voltage at
+      fixed current (<a href="m17a-temperature-semiconductor.html#m17a-eq-tc">17a.6</a>). AN-107 states that the
+      gate-to-channel junction has the temperature coefficient of a silicon junction transistor's
+      base–emitter junction, −2.2 mV/°C, and the course calls this the "thermal barrier factor", 2.2 mV/K.
+      By (17b.6) the pinch-off voltage follows the built-in potential, so at fixed gate voltage the
+      depletion regions narrow, the channel widens and the current rises, by <em>g</em><sub>m</sub> × 2.2 mV
+      for each kelvin. The channel widening is drawn on Deck 15 p. 29, with the wider channel at high
+      temperature.
+    </p>
+    <p>
+      The 2.2 mV/K is an empirical figure of the application note, not a property that the junction
+      formula yields. Differentiating <em>V</em><sub>bi</sub> with <em>n</em><sub>i</sub>² ∝
+      <em>T</em>³exp(−<em>E</em><sub>g0</sub>/<em>kT</em>) gives d<em>V</em><sub>bi</sub>/d<em>T</em> =
+      (<em>V</em><sub>bi</sub> − <em>E</em><sub>g0</sub>/<em>q</em>)/<em>T</em> − 3<em>k</em>/<em>q</em>, the form of
+      (17a.6) with <em>V</em><sub>bi</sub> in place of the forward voltage. Because a gate junction's
+      built-in potential, 0.89 V for the junction of §4, lies closer to <em>E</em><sub>g0</sub>/<em>q</em> =
+      1.20 V than a forward voltage does, the result is smaller, about −1.3 mV/K for that junction and
+      −1.1 to −1.7 mV/K for typical silicon p⁺n gates. The measured zero-drift ratios that AN-107 reports
+      constrain only the ratio of the two coefficients.
+    </p>
+    <p>
+      The drain current is stable when the two changes cancel:
+      −0.007 K⁻¹ × <em>I</em><sub>D</sub> + 0.0022 V/K × <em>g</em><sub>m</sub> = 0, which fixes the ratio of
+      current to transconductance (Deck 15 p. 31).
+    </p>
+
+    <div class="eq" id="m17b-eq-ztc">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>I</em><sub>D</sub></span><span class="den"><em>g</em><sub>m</sub></span></span> = <span class="frac"><span class="num">|d<em>V</em><sub>P</sub>/d<em>T</em>|</span><span class="den">|(1/<em>µ</em>) d<em>µ</em>/d<em>T</em>|</span></span> = <span class="frac"><span class="num">2.2 mV/K</span><span class="den">0.007 K⁻¹</span></span> ≈ 0.315 V,&nbsp;&nbsp;&nbsp; <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub> = 0.63 V,&nbsp;&nbsp;&nbsp; <em>I</em><sub>DZ</sub> = <em>I</em><sub>DSS</sub> <span class="dl">(</span><span class="frac"><span class="num">0.63 V</span><span class="den">|<em>V</em><sub>P</sub>|</span></span><span class="dl">)</span><sup>2</sup></div>
+        <div class="eq-num">(17b.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>D</sub>/<em>g</em><sub>m</sub> ratio of drain current to transconductance at which the
+        current does not drift (<b>V</b>); the quotient is 0.314 V, which AN-107 and Deck 15 p. 31 round to
+        0.315 · d<em>V</em><sub>P</sub>/d<em>T</em> temperature coefficient of the pinch-off voltage, which
+        follows <em>V</em><sub>bi</sub>; the course and AN-107 take −2.2 mV/K for silicon ·
+        (1/<em>µ</em>)d<em>µ</em>/d<em>T</em> fractional temperature coefficient of the channel conductivity,
+        −0.7 %/K = −0.007 K⁻¹ for silicon · <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub> the gate bias above
+        pinch-off, from (17b.7), for which <em>I</em><sub>D</sub>/<em>g</em><sub>m</sub> = (<em>V</em><sub>GS</sub> −
+        <em>V</em><sub>P</sub>)/2 · <em>I</em><sub>DZ</sub> drain current at the zero-drift bias (A). Silicon
+        coefficients near room temperature (AN-107); saturation region, square law. In the linear region,
+        where <em>I</em><sub>D</sub> ∝ <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub> near threshold, the same
+        ratio places the point about 0.31 V above pinch-off. On the formula sheet as
+        <a href="formula-sheet.html#eq-17b-ztc">(17b.8)</a>.
+      </div>
+    </div>
+
+    <p>
+      Dividing the square law by its transconductance gives
+      <em>I</em><sub>D</sub>/<em>g</em><sub>m</sub> = (|<em>V</em><sub>P</sub>|/2)(1 − <em>V</em><sub>GS</sub>/<em>V</em><sub>P</sub>),
+      which for an n-channel device, with <em>V</em><sub>P</sub> negative, is
+      (<em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub>)/2. Setting it to 0.315 V places the gate 0.63 V
+      above the pinch-off voltage, on the conducting side of cut-off, as the lecture states it: a gate
+      voltage 0.63 V higher than pinch-off. For <em>V</em><sub>P</sub> = −5.8 V the zero-drift bias is
+      <em>V</em><sub>GS</sub> = −5.17 V, and the current there is <em>I</em><sub>DSS</sub>(0.63/5.8)², 1.2 % of
+      <em>I</em><sub>DSS</sub>. AN-107 writes the result as <em>V</em><sub>GS(off)</sub> − <em>V</em><sub>GS</sub> =
+      0.63 V with both voltages understood as magnitudes, |<em>V</em><sub>P</sub>| − |<em>V</em><sub>GS</sub>| =
+      0.63 V, reports that measured ratios fall between 0.29 and 0.33 V, and draws its consequences: a
+      device whose pinch-off voltage is 0.63 V is compensated at zero gate voltage and full current, while a
+      device with the usual 1–5 V has its zero-drift point close to cut-off, at a current and
+      transconductance that may be too small to use (Oxner 2018). Below the point the current rises with
+      temperature; above it, it falls. The transconductance has its own zero-drift point, at half the
+      overdrive, <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub> ≈ 0.31 V, where the current is a quarter of
+      <em>I</em><sub>DZ</sub>, because <em>g</em><sub>m</sub> depends on the overdrive to the first power rather
+      than the second; AN-107's statement that both rise below <em>I</em><sub>DZ</sub> holds only below that
+      lower point.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 262" role="img" aria-labelledby="f17b-8-t">
+  <title id="f17b-8-t">Square-law transfer curves of a JFET with a pinch-off voltage of minus 4 volts at 300 and 500 kelvin on a logarithmic current scale, with mobility falling by 0.7 percent per kelvin at 300 kelvin and the pinch-off voltage moving 2.2 millivolts per kelvin more negative: the curves cross 0.62 volt above pinch-off, below which the hot device carries more current and above which it carries less</title>
+  <rect x="62" y="30" width="348" height="184" class="dg-fill" opacity="0.3"/>
+  <line x1="62" y1="170.2" x2="410" y2="170.2" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="62" y1="126.4" x2="410" y2="126.4" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="62" y1="82.6" x2="410" y2="82.6" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <line x1="62" y1="38.8" x2="410" y2="38.8" class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3"/>
+  <path d="M110.4,214 L110.4,214 L111.2,205.5 L111.9,198.6 L112.7,192.7 L113.4,187.6 L114.2,183.1 L115,179.1 L115.7,175.5 L116.5,172.2 L117.2,169.1 L118,166.3 L118.7,163.7 L119.5,161.2 L120.3,158.9 L121,156.8 L121.8,154.7 L122.5,152.8 L123.3,150.9 L124,149.1 L124.8,147.4 L125.5,145.8 L126.3,144.3 L127.1,142.8 L127.8,141.3 L128.6,140 L129.3,138.6 L130.1,137.3 L130.8,136.1 L131.6,134.9 L132.4,133.7 L133.1,132.6 L133.9,131.5 L134.6,130.4 L135.4,129.3 L136.1,128.3 L136.9,127.3 L137.7,126.4 L138.4,125.4 L139.2,124.5 L139.9,123.6 L140.7,122.8 L141.4,121.9 L142.2,121.1 L142.9,120.2 L143.7,119.4 L144.5,118.7 L145.2,117.9 L146,117.1 L146.7,116.4 L147.5,115.7 L148.2,115 L149,114.3 L149.8,113.6 L150.5,112.9 L151.3,112.2 L152,111.6 L152.8,111 L153.5,110.3 L154.3,109.7 L155.1,109.1 L155.8,108.5 L156.6,107.9 L157.3,107.3 L158.1,106.8 L158.8,106.2 L159.6,105.6 L160.3,105.1 L161.1,104.5 L161.9,104 L162.6,103.5 L163.4,103 L164.1,102.5 L164.9,102 L165.6,101.5 L166.4,101 L167.2,100.5 L167.9,100 L168.7,99.5 L169.4,99.1 L170.2,98.6 L170.9,98.1 L171.7,97.7 L172.5,97.3 L173.2,96.8 L174,96.4 L174.7,95.9 L175.5,95.5 L176.2,95.1 L177,94.7 L177.7,94.3 L178.5,93.9 L179.3,93.5 L180,93.1 L180.8,92.7 L181.5,92.3 L182.3,91.9 L183,91.5 L183.8,91.1 L184.6,90.8 L185.3,90.4 L186.1,90 L186.8,89.7 L187.6,89.3 L188.3,88.9 L189.1,88.6 L189.9,88.2 L190.6,87.9 L191.4,87.5 L192.1,87.2 L192.9,86.9 L193.6,86.5 L194.4,86.2 L195.1,85.9 L195.9,85.5 L196.7,85.2 L197.4,84.9 L198.2,84.6 L198.9,84.3 L199.7,83.9 L200.4,83.6 L201.2,83.3 L202,83 L202.7,82.7 L203.5,82.4 L204.2,82.1 L205,81.8 L205.7,81.5 L206.5,81.2 L207.3,80.9 L208,80.7 L208.8,80.4 L209.5,80.1 L210.3,79.8 L211,79.5 L211.8,79.3 L212.5,79 L213.3,78.7 L214.1,78.4 L214.8,78.2 L215.6,77.9 L216.3,77.6 L217.1,77.4 L217.8,77.1 L218.6,76.9 L219.4,76.6 L220.1,76.3 L220.9,76.1 L221.6,75.8 L222.4,75.6 L223.1,75.3 L223.9,75.1 L224.7,74.8 L225.4,74.6 L226.2,74.3 L226.9,74.1 L227.7,73.9 L228.4,73.6 L229.2,73.4 L229.9,73.2 L230.7,72.9 L231.5,72.7 L232.2,72.5 L233,72.2 L233.7,72 L234.5,71.8 L235.2,71.5 L236,71.3 L236.8,71.1 L237.5,70.9 L238.3,70.7 L239,70.4 L239.8,70.2 L240.5,70 L241.3,69.8 L242.1,69.6 L242.8,69.4 L243.6,69.1 L244.3,68.9 L245.1,68.7 L245.8,68.5 L246.6,68.3 L247.3,68.1 L248.1,67.9 L248.9,67.7 L249.6,67.5 L250.4,67.3 L251.1,67.1 L251.9,66.9 L252.6,66.7 L253.4,66.5 L254.2,66.3 L254.9,66.1 L255.7,65.9 L256.4,65.7 L257.2,65.5 L257.9,65.3 L258.7,65.1 L259.5,64.9 L260.2,64.8 L261,64.6 L261.7,64.4 L262.5,64.2 L263.2,64 L264,63.8 L264.7,63.6 L265.5,63.5 L266.3,63.3 L267,63.1 L267.8,62.9 L268.5,62.7 L269.3,62.6 L270,62.4 L270.8,62.2 L271.6,62 L272.3,61.9 L273.1,61.7 L273.8,61.5 L274.6,61.3 L275.3,61.2 L276.1,61 L276.9,60.8 L277.6,60.7 L278.4,60.5 L279.1,60.3 L279.9,60.2 L280.6,60 L281.4,59.8 L282.1,59.7 L282.9,59.5 L283.7,59.3 L284.4,59.2 L285.2,59 L285.9,58.8 L286.7,58.7 L287.4,58.5 L288.2,58.4 L289,58.2 L289.7,58 L290.5,57.9 L291.2,57.7 L292,57.6 L292.7,57.4 L293.5,57.3 L294.3,57.1 L295,57 L295.8,56.8 L296.5,56.6 L297.3,56.5 L298,56.3 L298.8,56.2 L299.5,56 L300.3,55.9 L301.1,55.7 L301.8,55.6 L302.6,55.4 L303.3,55.3 L304.1,55.2 L304.8,55 L305.6,54.9 L306.4,54.7 L307.1,54.6 L307.9,54.4 L308.6,54.3 L309.4,54.1 L310.1,54 L310.9,53.9 L311.7,53.7 L312.4,53.6 L313.2,53.4 L313.9,53.3 L314.7,53.2 L315.4,53 L316.2,52.9 L316.9,52.7 L317.7,52.6 L318.5,52.5 L319.2,52.3 L320,52.2 L320.7,52.1 L321.5,51.9 L322.2,51.8 L323,51.7 L323.8,51.5 L324.5,51.4 L325.3,51.3 L326,51.1 L326.8,51 L327.5,50.9 L328.3,50.7 L329.1,50.6 L329.8,50.5 L330.6,50.3 L331.3,50.2 L332.1,50.1 L332.8,50 L333.6,49.8 L334.3,49.7 L335.1,49.6 L335.9,49.5 L336.6,49.3 L337.4,49.2 L338.1,49.1 L338.9,49 L339.6,48.8 L340.4,48.7 L341.2,48.6 L341.9,48.5 L342.7,48.3 L343.4,48.2 L344.2,48.1 L344.9,48 L345.7,47.9 L346.5,47.7 L347.2,47.6 L348,47.5 L348.7,47.4 L349.5,47.3 L350.2,47.1 L351,47 L351.7,46.9 L352.5,46.8 L353.3,46.7 L354,46.5 L354.8,46.4 L355.5,46.3 L356.3,46.2 L357,46.1 L357.8,46 L358.6,45.9 L359.3,45.7 L360.1,45.6 L360.8,45.5 L361.6,45.4 L362.3,45.3 L363.1,45.2 L363.9,45.1 L364.6,44.9 L365.4,44.8 L366.1,44.7 L366.9,44.6 L367.6,44.5 L368.4,44.4 L369.1,44.3 L369.9,44.2 L370.7,44.1 L371.4,44 L372.2,43.8 L372.9,43.7 L373.7,43.6 L374.4,43.5 L375.2,43.4 L376,43.3 L376.7,43.2 L377.5,43.1 L378.2,43 L379,42.9 L379.7,42.8 L380.5,42.7 L381.3,42.6 L382,42.5 L382.8,42.4 L383.5,42.2 L384.3,42.1 L385,42 L385.8,41.9 L386.5,41.8 L387.3,41.7 L388.1,41.6 L388.8,41.5 L389.6,41.4 L390.3,41.3 L391.1,41.2 L391.8,41.1 L392.6,41 L393.4,40.9 L394.1,40.8 L394.9,40.7 L395.6,40.6 L396.4,40.5 L397.1,40.4 L397.9,40.3 L398.7,40.2 L399.4,40.1 L400.2,40 L400.9,39.9 L401.7,39.8 L402.4,39.7 L403.2,39.6 L403.9,39.5 L404.7,39.4 L405.5,39.3 L406.2,39.2 L407,39.1 L407.7,39 L408.5,39 L409.2,38.9 L410,38.8" class="dg-line" stroke-width="2"/>
+  <path d="M79.3,214 L79.4,213.1 L80.2,208 L80.9,203.6 L81.7,199.5 L82.4,195.9 L83.2,192.6 L83.9,189.6 L84.7,186.7 L85.5,184.1 L86.2,181.7 L87,179.4 L87.7,177.2 L88.5,175.1 L89.2,173.2 L90,171.3 L90.7,169.5 L91.5,167.8 L92.3,166.2 L93,164.7 L93.8,163.2 L94.5,161.7 L95.3,160.4 L96,159 L96.8,157.7 L97.6,156.5 L98.3,155.3 L99.1,154.1 L99.8,153 L100.6,151.9 L101.3,150.8 L102.1,149.8 L102.9,148.7 L103.6,147.8 L104.4,146.8 L105.1,145.9 L105.9,144.9 L106.6,144 L107.4,143.2 L108.1,142.3 L108.9,141.5 L109.7,140.7 L110.4,139.9 L111.2,139.1 L111.9,138.3 L112.7,137.5 L113.4,136.8 L114.2,136.1 L115,135.4 L115.7,134.7 L116.5,134 L117.2,133.3 L118,132.7 L118.7,132 L119.5,131.4 L120.3,130.7 L121,130.1 L121.8,129.5 L122.5,128.9 L123.3,128.3 L124,127.7 L124.8,127.2 L125.5,126.6 L126.3,126 L127.1,125.5 L127.8,125 L128.6,124.4 L129.3,123.9 L130.1,123.4 L130.8,122.9 L131.6,122.4 L132.4,121.9 L133.1,121.4 L133.9,120.9 L134.6,120.4 L135.4,119.9 L136.1,119.5 L136.9,119 L137.7,118.6 L138.4,118.1 L139.2,117.7 L139.9,117.2 L140.7,116.8 L141.4,116.4 L142.2,115.9 L142.9,115.5 L143.7,115.1 L144.5,114.7 L145.2,114.3 L146,113.9 L146.7,113.5 L147.5,113.1 L148.2,112.7 L149,112.3 L149.8,111.9 L150.5,111.5 L151.3,111.2 L152,110.8 L152.8,110.4 L153.5,110.1 L154.3,109.7 L155.1,109.3 L155.8,109 L156.6,108.6 L157.3,108.3 L158.1,108 L158.8,107.6 L159.6,107.3 L160.3,106.9 L161.1,106.6 L161.9,106.3 L162.6,105.9 L163.4,105.6 L164.1,105.3 L164.9,105 L165.6,104.7 L166.4,104.4 L167.2,104 L167.9,103.7 L168.7,103.4 L169.4,103.1 L170.2,102.8 L170.9,102.5 L171.7,102.2 L172.5,101.9 L173.2,101.6 L174,101.4 L174.7,101.1 L175.5,100.8 L176.2,100.5 L177,100.2 L177.7,99.9 L178.5,99.7 L179.3,99.4 L180,99.1 L180.8,98.8 L181.5,98.6 L182.3,98.3 L183,98 L183.8,97.8 L184.6,97.5 L185.3,97.3 L186.1,97 L186.8,96.7 L187.6,96.5 L188.3,96.2 L189.1,96 L189.9,95.7 L190.6,95.5 L191.4,95.2 L192.1,95 L192.9,94.8 L193.6,94.5 L194.4,94.3 L195.1,94 L195.9,93.8 L196.7,93.6 L197.4,93.3 L198.2,93.1 L198.9,92.9 L199.7,92.6 L200.4,92.4 L201.2,92.2 L202,92 L202.7,91.7 L203.5,91.5 L204.2,91.3 L205,91.1 L205.7,90.8 L206.5,90.6 L207.3,90.4 L208,90.2 L208.8,90 L209.5,89.8 L210.3,89.6 L211,89.3 L211.8,89.1 L212.5,88.9 L213.3,88.7 L214.1,88.5 L214.8,88.3 L215.6,88.1 L216.3,87.9 L217.1,87.7 L217.8,87.5 L218.6,87.3 L219.4,87.1 L220.1,86.9 L220.9,86.7 L221.6,86.5 L222.4,86.3 L223.1,86.1 L223.9,85.9 L224.7,85.7 L225.4,85.5 L226.2,85.4 L226.9,85.2 L227.7,85 L228.4,84.8 L229.2,84.6 L229.9,84.4 L230.7,84.2 L231.5,84.1 L232.2,83.9 L233,83.7 L233.7,83.5 L234.5,83.3 L235.2,83.2 L236,83 L236.8,82.8 L237.5,82.6 L238.3,82.4 L239,82.3 L239.8,82.1 L240.5,81.9 L241.3,81.7 L242.1,81.6 L242.8,81.4 L243.6,81.2 L244.3,81.1 L245.1,80.9 L245.8,80.7 L246.6,80.6 L247.3,80.4 L248.1,80.2 L248.9,80.1 L249.6,79.9 L250.4,79.7 L251.1,79.6 L251.9,79.4 L252.6,79.2 L253.4,79.1 L254.2,78.9 L254.9,78.8 L255.7,78.6 L256.4,78.5 L257.2,78.3 L257.9,78.1 L258.7,78 L259.5,77.8 L260.2,77.7 L261,77.5 L261.7,77.4 L262.5,77.2 L263.2,77.1 L264,76.9 L264.7,76.8 L265.5,76.6 L266.3,76.5 L267,76.3 L267.8,76.2 L268.5,76 L269.3,75.9 L270,75.7 L270.8,75.6 L271.6,75.4 L272.3,75.3 L273.1,75.1 L273.8,75 L274.6,74.8 L275.3,74.7 L276.1,74.6 L276.9,74.4 L277.6,74.3 L278.4,74.1 L279.1,74 L279.9,73.8 L280.6,73.7 L281.4,73.6 L282.1,73.4 L282.9,73.3 L283.7,73.2 L284.4,73 L285.2,72.9 L285.9,72.7 L286.7,72.6 L287.4,72.5 L288.2,72.3 L289,72.2 L289.7,72.1 L290.5,71.9 L291.2,71.8 L292,71.7 L292.7,71.5 L293.5,71.4 L294.3,71.3 L295,71.1 L295.8,71 L296.5,70.9 L297.3,70.8 L298,70.6 L298.8,70.5 L299.5,70.4 L300.3,70.2 L301.1,70.1 L301.8,70 L302.6,69.9 L303.3,69.7 L304.1,69.6 L304.8,69.5 L305.6,69.4 L306.4,69.2 L307.1,69.1 L307.9,69 L308.6,68.9 L309.4,68.7 L310.1,68.6 L310.9,68.5 L311.7,68.4 L312.4,68.3 L313.2,68.1 L313.9,68 L314.7,67.9 L315.4,67.8 L316.2,67.7 L316.9,67.5 L317.7,67.4 L318.5,67.3 L319.2,67.2 L320,67.1 L320.7,67 L321.5,66.8 L322.2,66.7 L323,66.6 L323.8,66.5 L324.5,66.4 L325.3,66.3 L326,66.1 L326.8,66 L327.5,65.9 L328.3,65.8 L329.1,65.7 L329.8,65.6 L330.6,65.5 L331.3,65.4 L332.1,65.2 L332.8,65.1 L333.6,65 L334.3,64.9 L335.1,64.8 L335.9,64.7 L336.6,64.6 L337.4,64.5 L338.1,64.4 L338.9,64.3 L339.6,64.1 L340.4,64 L341.2,63.9 L341.9,63.8 L342.7,63.7 L343.4,63.6 L344.2,63.5 L344.9,63.4 L345.7,63.3 L346.5,63.2 L347.2,63.1 L348,63 L348.7,62.9 L349.5,62.8 L350.2,62.7 L351,62.6 L351.7,62.4 L352.5,62.3 L353.3,62.2 L354,62.1 L354.8,62 L355.5,61.9 L356.3,61.8 L357,61.7 L357.8,61.6 L358.6,61.5 L359.3,61.4 L360.1,61.3 L360.8,61.2 L361.6,61.1 L362.3,61 L363.1,60.9 L363.9,60.8 L364.6,60.7 L365.4,60.6 L366.1,60.5 L366.9,60.4 L367.6,60.3 L368.4,60.2 L369.1,60.1 L369.9,60 L370.7,59.9 L371.4,59.8 L372.2,59.7 L372.9,59.7 L373.7,59.6 L374.4,59.5 L375.2,59.4 L376,59.3 L376.7,59.2 L377.5,59.1 L378.2,59 L379,58.9 L379.7,58.8 L380.5,58.7 L381.3,58.6 L382,58.5 L382.8,58.4 L383.5,58.3 L384.3,58.2 L385,58.1 L385.8,58 L386.5,58 L387.3,57.9 L388.1,57.8 L388.8,57.7 L389.6,57.6 L390.3,57.5 L391.1,57.4 L391.8,57.3 L392.6,57.2 L393.4,57.1 L394.1,57 L394.9,57 L395.6,56.9 L396.4,56.8 L397.1,56.7 L397.9,56.6 L398.7,56.5 L399.4,56.4 L400.2,56.3 L400.9,56.2 L401.7,56.2 L402.4,56.1 L403.2,56 L403.9,55.9 L404.7,55.8 L405.5,55.7 L406.2,55.6 L407,55.5 L407.7,55.5 L408.5,55.4 L409.2,55.3 L410,55.2" class="dg-acc" stroke-width="2.2"/>
+  <circle cx="154.3" cy="109.7" r="5" class="dg-rule" fill="none" stroke-width="1.3"/>
+  <text x="68" y="62" class="dg-label">zero drift:</text>
+  <text x="68" y="77" class="dg-label">V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan> = V<tspan baseline-shift="sub" style="font-size:75%">P</tspan> + 0.63 V</text>
+  <line x1="112" y1="83" x2="151.3" y2="105.7" class="dg-guide" stroke-width="0.9"/>
+  <text x="406" y="32.8" class="dg-label" text-anchor="end">300 K</text>
+  <text x="406" y="71.2" class="dg-label" text-anchor="end">500 K</text>
+  <text x="404" y="168" class="dg-label" text-anchor="end">right of the crossing, hot carries less</text>
+  <text x="404" y="184" class="dg-label" text-anchor="end">left of it, hot carries more</text>
+  <line x1="62" y1="214" x2="410" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <line x1="62" y1="30" x2="62" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="107.4" y1="214" x2="107.4" y2="219"/><line x1="183" y1="214" x2="183" y2="219"/><line x1="258.7" y1="214" x2="258.7" y2="219"/><line x1="334.3" y1="214" x2="334.3" y2="219"/><line x1="410" y1="214" x2="410" y2="219"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="107.4" y="231">−4</text><text x="183" y="231">−3</text><text x="258.7" y="231">−2</text><text x="334.3" y="231">−1</text><text x="410" y="231">0</text></g>
+  <g class="dg-label-sm" text-anchor="end"><text x="56" y="218">10⁻⁴</text><text x="56" y="174.2">10⁻³</text><text x="56" y="130.4">10⁻²</text><text x="56" y="86.6">10⁻¹</text><text x="56" y="42.8">1</text></g>
+  <text x="236" y="250" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">GS</tspan> (V); V<tspan baseline-shift="sub" style="font-size:75%">P</tspan> = −4 V at 300 K</text>
+  <text x="18" y="122" class="dg-label" text-anchor="middle" transform="rotate(-90 18 122)">I<tspan baseline-shift="sub" style="font-size:75%">D</tspan>/I<tspan baseline-shift="sub" style="font-size:75%">DSS</tspan> at 300 K</text>
+</svg>
+      <figcaption>
+        <b>Figure 8.</b> The two effects on one plot. At 500 K the pinch-off voltage has moved 0.44 V more
+        negative, which raises the current near cut-off, while the mobility has fallen, which lowers it
+        everywhere in proportion; the curves cross 0.62 V above the 300 K pinch-off voltage, close to the
+        0.63 V of (17b.8). On a logarithmic axis the crossing lies in the region where the current is a few
+        percent of <em>I</em><sub>DSS</sub>.
+        <span class="src">Computed here from the square law with the course's coefficients, mobility
+        varying as <em>T</em><sup>−2.1</sup> (−0.7 %/K at 300 K) and <em>V</em><sub>P</sub> moving
+        −2.2 mV/K.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Large transistors share the high-current half of this behaviour. Sze and Ng note that field-effect
+      transistors have a negative temperature coefficient of current at high current levels, the region
+      above the zero-drift point, which spreads the current evenly over a large device and protects it
+      from the thermal runaway that a bipolar transistor can suffer, in which a hotter spot draws more
+      current and heats further (Sze &amp; Ng 2007, p. 296).
+    </p>
+    <p>
+      Lecture 15 runs the effect on nanoHUB's JFET Lab, a compact-model simulator of silicon and 4H-SiC
+      JFETs whose inputs include the material, the channel and gate doping, the channel dimensions and the
+      temperature (Makris, Bucher and Jazaeri 2021; the slides do not say which material the run used).
+      At 300, 500, 700 and 900 K the output current saturates at about 5.1, 2.6, 1.45 and
+      0.95×10⁻⁴ A, a 5.4-fold fall over 600 K at the bias of the output plot, which the slide does not
+      state, so the mobility effect dominates there. The four transfer curves, plotted on a logarithmic
+      axis, cross near <em>V</em><sub>GS</sub> = −5.2 V and 6×10⁻⁸ A, about 0.5 V above the gate voltage at
+      which the 300 K curve vanishes, about −5.7 V (Deck 15 p. 32). The slide does not give their drain
+      voltage either, but their currents, two orders of magnitude below the output plot's, indicate a small
+      one, in the linear region, where the same coefficients place the zero-drift point about 0.3 V above
+      pinch-off (17b.8). The run shows that a temperature-compensation point exists; it is not a test of
+      the 0.63 V of the saturation result.
+    </p>
+
+    <figure>
+      <img src="img/jfet-transfer-nanohub-deck15.png" width="601" height="603" loading="lazy"
+           alt="nanoHUB JFET Lab transfer characteristics on a logarithmic current axis from 10 to the minus 13 to 10 to the minus 6 amperes against gate voltage from minus 6.5 to 0.8 volts, four curves for 300, 500, 700 and 900 kelvin crossing near minus 5.2 volts, circled and labelled Temperature Compensation Point">
+      <figcaption>
+        <b>Figure 9.</b> The simulator's transfer curves at 300, 500, 700 and 900 K. The coolest run is the
+        steepest at cut-off; the hottest is the flattest, drawn heavy as the 900 K run is in the slide's
+        output plot. Below the crossing the hotter device conducts more, above it less; at the crossing the
+        current is nearly the same at all four temperatures.
+        <span class="src">Deck 15 p. 32, nanoHUB JFET Lab (N. Makris, M. Bucher and F. Jazaeri, version 1.2,
+        2021, doi:10.21981/2JXY-BK35); annotation as on the slide.</span>
+      </figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">Two statements on Deck 15 pp. 29 and 31</p>
+      <p>
+        Deck 15 p. 29 lists the second effect as "width of depletion region increase → <em>I</em><sub>D</sub>
+        increase". The depletion region narrows: the built-in potential falls, so the junction depletes
+        less of the channel, and the wider channel carries more current. The hand drawing on the same slide
+        and the lecture both show the channel wider at high temperature.
+      </p>
+      <p>
+        Deck 15 p. 31 boxes the result as <em>V</em><sub>GS</sub> = <em>V</em><sub>P</sub> − 0.63 V. Read in
+        magnitudes, |<em>V</em><sub>GS</sub>| = |<em>V</em><sub>P</sub>| − 0.63 V, this is the bias of (17b.8);
+        the slide transcribes AN-107's result, which is written with unsigned symbols meant as magnitudes.
+        The slide's expression for <em>g</em><sub>m</sub> carries |<em>V</em><sub>P</sub>|, but the next step
+        drops the bars; with signed voltages for an n-channel device, <em>V</em><sub>P</sub> − 0.63 V lies
+        beyond cut-off, where no current flows. The lecture states the bias as 0.63 V higher than the
+        pinch-off voltage. The slide also labels the transconductance
+        d<em>I</em><sub>D</sub>/d<em>V</em><sub>D</sub>; it is d<em>I</em><sub>D</sub>/d<em>V</em><sub>GS</sub>.
+      </p>
+      <p>
+        Both coefficients, −0.7 %/K and 2.2 mV/K, are silicon values near room temperature. A silicon carbide
+        JFET has its own: Deck 15 p. 29's Hall mobility of 6H-SiC peaks at about 2–3×10³ cm²/V·s near
+        100–120 K in its purest samples (about 10³ in a third) and falls to about 50 by 600–700 K, and a junction with a wider gap
+        has its own barrier coefficient. Its zero-drift point must be found from its own characteristics,
+        as the simulator does.
+      </p>
+    </div>
+
+    <h2>6 · Choosing a transistor for high temperature</h2>
+    <p>
+      NASA's Glenn Research Center, setting out to build integrated circuits that run for thousands of
+      hours at 500 °C, over-designed every part for durability and gave lower priority to power and
+      frequency (Deck 16a pp. 53, 55). The material was silicon carbide, which the tutorial calls the most
+      stable and inert semiconductor crystal, with low impurity diffusion and low reactivity, and whose
+      wide gap keeps <em>n</em><sub>i</sub> about seven orders of magnitude below silicon's at 500 °C in
+      4H-SiC (<a href="m17a-temperature-semiconductor.html#m17a-eq-varshni">M17a §2</a>). The transistor was
+      the epitaxial n-channel JFET, "the most straightforward foundational transistor" for long-term
+      stability at 500 °C and above (Deck 16a p. 56), for the reasons the table gathers.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Transistor</th><th>How the channel is controlled</th><th>What limits it when hot</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>JFET</td><td>A p–n homojunction grown in the epitaxial layers; majority carriers only</td><td>The fewest weak points: low-leakage epitaxial junctions, minimal sensitivity to the p-type gate contact, n-type ohmic contacts by implantation. NASA's JFET-and-resistor circuits pay in speed, a few megahertz at most, and in logic power, more than ten times that of CMOS (Deck 16a p. 77)</td></tr>
+          <tr><td>MOSFET / CMOS</td><td>A gate on an oxide; an inversion layer induced by the field</td><td>The MOS junction: subthreshold leakage as the threshold falls (§1), the oxide's breakdown (§2), cracking under thermal strain (§3)</td></tr>
+          <tr><td>Bipolar transistor (BJT)</td><td>Minority carriers injected across a thin base</td><td>Needs both n-type and p-type ohmic contacts, and its gain depends on minority-carrier lifetime and injection, both sensitive to temperature</td></tr>
+          <tr><td>MESFET</td><td>A rectifying metal–semiconductor (Schottky) gate</td><td>Leakage and degradation of the rectifying contact; its lower barrier leaks more than a p–n gate at the same bias</td></tr>
+          <tr><td>III-nitride HFET; Ga₂O₃ FETs</td><td>A heterojunction between two semiconductors in the HFET; Ga₂O₃ transistors are made as MESFETs, MOSFETs and heterostructure FETs</td><td>The slide groups them under heterojunction sensitivity, with materials more reactive than SiC</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The JFET's advantages follow from the preceding sections. It is a majority-carrier device: its
+      current is carried by the electrons that the channel doping supplies, so it does not depend on the
+      lifetime or injection of minority carriers, which change strongly with temperature. Its gate is a
+      p–n junction grown into the crystal, so it has no gate oxide to break down and no
+      oxide–semiconductor interface in the path that controls the channel, though its surface is still
+      passivated with SiO₂ and Si₃N₄; Sze and Ng note that the JFET and MESFET avoid the interface traps
+      and the hot-carrier reliability problems of the MOSFET. Its two temperature effects partly cancel, exactly so at one
+      bias (§5). The cost is the gate current: the gate of a JFET draws the reverse current of its
+      junction, where a MOSFET's oxide blocks gate current almost entirely. The lecture reports that
+      NASA's engineers would have preferred a MOSFET for its lower leakage and use the JFET because of the
+      oxide; in silicon carbide the junction's reverse current stays small even at 500 °C, because
+      <em>n</em><sub>i</sub> does.
+    </p>
+    <p>
+      NASA's 6H-SiC JFET of 2007 shows the construction (Deck 16a p. 56; Neudeck <em>et al.</em> 2008): an
+      n-type channel doped 2×10¹⁷ cm⁻³ and about 0.2–0.4 µm thick, a p⁺ gate doped above 10²⁰ cm⁻³ on top,
+      and beneath the channel a lightly doped p-type layer, below 2×10¹⁵ cm⁻³ and 6–8 µm thick, over a
+      heavily doped p-type layer and a p-type 6H-SiC wafer, with ion-implanted source and drain contacts
+      and metallization of TaSi₂ and platinum. The lightly doped layer isolates the devices; because its
+      doping is a hundred times below the channel's, its junction depletes mostly itself, so biased through
+      the substrate it acts only as a weak back gate, and the top p⁺ gate controls the channel. In (17b.6)
+      the distance <em>a</em> for this one-sided structure is nearly the whole channel thickness. Its
+      transistors and circuits operated stably for thousands of hours at 500 °C. The integrated circuits
+      built from it, and their temperature stability, which comes mainly from resistor ratios rather than
+      from operation at the zero-drift point, are the subject of M17c.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">"BJT → no high-temperature operation" (Deck 15 p. 44)</p>
+      <p>
+        The summary slide rules the bipolar transistor out. Bipolar silicon carbide circuits have in fact
+        operated at 500 °C: an integrated OR/NOR logic gate (Lanni <em>et al.</em> 2013) and an
+        operational amplifier (Hedayati <em>et al.</em> 2014). NASA's tutorial ranks bipolar transistors as
+        harder to make durable above 450 °C, because of their two contact types and their minority
+        carriers, not as impossible, and names the SiC bipolar transistor as one of the technologies needed
+        for circuits at 100 MHz and above, beyond the few megahertz of its JFET-R circuits, and for normally-off
+        power switching (Deck 16a pp. 56, 77–78).
+      </p>
+    </div>
+
+    <p>
+      Removing the gate oxide also removes the main route by which total ionizing dose shifts a
+      transistor, the charge trapped in the gate oxide (<a href="m14-total-ionizing-dose.html">M14</a>), a
+      point the lecture makes in passing. The device is not free of dielectrics, however: the NASA JFET
+      is covered by SiO₂ and Si₃N₄, and charge trapped in such field and passivation layers still opens
+      leakage paths, as it does under the field oxide of a MOSFET (M14 §7).
+    </p>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>A hot MOSFET keeps its on state and loses its off state: the threshold falls, about −1 mV/K near 300 K by (17b.1), steepening as it heats; the swing grows as <em>T</em> (1.15); and the drain-junction leakage <em>I</em><sub>DL</sub> sets a floor under <em>I</em><sub>OFF</sub> (17b.2). For M01's example device the threshold falls from 0.34 to 0.10 V by 500 K and the off-current rises about 60-fold from 25 to 100 °C and about 4,000-fold by 500 K. For M17a's illustrative p⁺n junction the floor grows from 8×10⁻¹⁶ to 5×10⁻⁹ A per µm² between 300 and 600 K.</li>
+        <li>The on-current changes by tens of percent: falling mobility and falling threshold oppose, and cancel at one gate voltage. SOI removes most of the drain-junction area and extends silicon to about 250–300 °C.</li>
+        <li>Oxide breakdown follows <em>t</em><sub>BD</sub> = <em>t</em><sub>0</sub>exp(<em>E</em><sub>A</sub>/<em>kT</em>) (17b.3). With <em>t</em><sub>0</sub> = 1 s and 0.4 eV: 4.8×10⁶ s at 300 K, 2.2×10³ s at 600 K, a 2,200-fold shortening independent of <em>t</em><sub>0</sub> and fixed by <em>E</em><sub>A</sub> and the two temperatures. The 40 nm, 9.3 MV/cm data of Deck 15 p. 17 give about 0.57 eV.</li>
+        <li>Mismatch strain <em>ε</em> = (<em>α</em><sub>s</sub> − <em>α</em><sub>f</sub>)Δ<em>T</em>, stress <em>E</em><sub>f</sub><em>ε</em>/(1 − <em>ν</em><sub>f</sub>) (17b.4), with the thick layer, the silicon wafer, as substrate. A gold gate heated by 200 K: 0.22 % with the course's 11×10⁻⁶ K⁻¹ (gold against silicon, 11.6), against a 0.5–1 % breaking limit; gold yields near 0.1 %, so the elastic 300 MPa is an upper bound.</li>
+        <li>Expansion (10⁻⁶ K⁻¹) and melting point: Si 2.6 (4.3 at 1,000 K), SiO₂ 0.5, W 4.5 and 3,422 °C, Mo 4.8 and 2,623 °C, Pt 8.8, Ti 8.6, Ni 13.4, Au 14.2 and 1,064 °C, Cu 16.5, Al 23.1 and 660 °C (Al–Si eutectic 577 °C). Mo and W, capped with gold against oxidation, match silicon best, and better when hot.</li>
+        <li>The JFET is a channel narrowed by the depletion regions of reverse-biased p–n gates: linear <em>I</em><sub>D</sub> = (<em>hw</em>/<em>L</em>)<em>qN</em><sub>d</sub><em>µ</em><sub>n</sub><em>V</em><sub>DS</sub> (17b.5); <em>V</em><sub>P</sub> = <em>V</em><sub>bi</sub> − <em>qN</em><sub>d</sub><em>a</em>²/2<em>ε</em><sub>s</sub> (17b.6), negative for the usual normally-on device.</li>
+        <li>At <em>V</em><sub>DS</sub> = <em>V</em><sub>GS</sub> − <em>V</em><sub>P</sub> the drain end pinches off and the current saturates, <em>I</em><sub>D</sub> = <em>I</em><sub>DSS</sub>(1 − <em>V</em><sub>GS</sub>/<em>V</em><sub>P</sub>)², <em>g</em><sub>m</sub> = (2<em>I</em><sub>DSS</sub>/|<em>V</em><sub>P</sub>|)(1 − <em>V</em><sub>GS</sub>/<em>V</em><sub>P</sub>) (17b.7). A gate at or beyond <em>V</em><sub>P</sub> turns the JFET off.</li>
+        <li>Heating lowers the mobility (−0.7 %/K, current falls) and the built-in potential (2.2 mV/K, channel widens, current rises). They cancel at <em>I</em><sub>D</sub>/<em>g</em><sub>m</sub> = 0.315 V, i.e. <em>V</em><sub>GS</sub> = <em>V</em><sub>P</sub> + 0.63 V for n-channel (|<em>V</em><sub>GS</sub>| = |<em>V</em><sub>P</sub>| − 0.63 V), at <em>I</em><sub>DZ</sub> = <em>I</em><sub>DSS</sub>(0.63/|<em>V</em><sub>P</sub>|)² (17b.8): 1.2 % of <em>I</em><sub>DSS</sub> for −5.8 V. Below the point the current rises with temperature, above it falls.</li>
+        <li>For 500 °C NASA chose the epitaxial SiC n-JFET: majority carriers, junction gate, no gate oxide. Bipolar SiC circuits have also run at 500 °C; MESFETs and heterojunction FETs suffer from their gate contacts and reactivity.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Opening</td><td>Deck 15 p. 10 (the three MOSFET problems and the question that leads to the JFET), p. 44 (the summary); Lecture 15</td></tr>
+      <tr><td>§1</td><td>Deck 15 pp. 11–16 and Lecture 15 (the barrier pictures, the nanoHUB MOSFET runs at 300 and 400 K, read from the screenshots); Deck 16a pp. 4, 11, 48–51 (P. G. Neudeck, ICSCRM 2023 tutorial, after P. G. Neudeck, R. S. Okojie and L.-Y. Chen, "High-temperature electronics — a role for wide bandgap semiconductors?", <em>Proc. IEEE</em> <b>90</b>, 1065 (2002)), for <em>I</em><sub>DL</sub>, the off-state floor and SOI. Threshold coefficient: Y. Taur and T. H. Ning, <em>Fundamentals of Modern VLSI Devices</em>, 3rd ed. (Cambridge University Press, 2022), §5.3.2, Eqs. (5.61)–(5.64), and the 20–50× rise of off-state leakage at 100 °C. Zero-temperature-coefficient bias in MOSFETs: I. M. Filanovsky and A. Allam, <em>IEEE Trans. Circuits Syst. I</em> <b>48</b>, 876 (2001). Example-device numbers computed here from M01 (1.11), (1.15) and (17b.1); junction floor from M17a (17a.5)</td></tr>
+      <tr><td>§2</td><td>Deck 15 pp. 17–18 and Lecture 15; the measurement of K. Grella, S. Dreiner, H. Vogt and U. Paschen, "High temperature reliability investigations up to 350 °C of gate oxide capacitors realized in a silicon-on-insulator CMOS-technology", IMAPS HiTEN 2013, pp. 000116–000121, doi:10.4071/HITEN-TA13 (breakdown times read from the slide's plot; medians, ranges, fit and activation energy computed here). Mechanism: EEE 6338 M06 §5, after S. Wolf, <em>Silicon Processing for the VLSI Era</em>, Vol. 4, §3.3. Field dependence of the activation energy: J. W. McPherson and H. C. Mogul, <em>J. Appl. Phys.</em> <b>84</b>, 1513 (1998)</td></tr>
+      <tr><td>§3</td><td>Deck 15 pp. 19–22 and Lecture 15 (the definitions, the strain estimate and its correction to strain, molybdenum and tungsten under gold). Si–SiO₂ mismatch: H. Tada <em>et al.</em>, <em>J. Appl. Phys.</em> <b>87</b>, 4189 (2000), as plotted on p. 19; the mismatch strain integrated here. Gold's yield: A. Bagolini, B. Margesin and F. Giacomozzi, "Stress-strain behaviour of electroplated gold thin films", in <em>Sensors and Microsystems</em> (World Scientific, 2005), pp. 227–230. Silicon: Y. Okada and Y. Tokumaru, <em>J. Appl. Phys.</em> <b>56</b>, 314 (1984); the slide's panels after F. C. Nix and D. MacNair, <em>Phys. Rev.</em> <b>60</b>, 597 (1941) and <b>61</b>, 74 (1942), and Z.-K. Liu, Y. Wang and S.-L. Shang, <em>Sci. Rep.</em> <b>4</b>, 7043 (2014). Tungsten: G. K. White and M. L. Minges, <em>Int. J. Thermophys.</em> <b>18</b>, 1269 (1997), fit as given by P. Tolias, <em>Nucl. Mater. Energy</em> <b>13</b>, 42 (2017). Film stress: J. D. Plummer, M. D. Deal and P. B. Griffin, <em>Silicon VLSI Technology</em> (Prentice Hall, 2000), §11.4.4, Eq. (11.21). Al–Si eutectic: J. L. Murray and A. J. McAlister, <em>Bull. Alloy Phase Diagrams</em> <b>5</b>, 74 (1984). Room-temperature coefficients, melting points and gold's elastic constants from standard handbook tables. NASA's materials from Deck 16a pp. 56, 61–63</td></tr>
+      <tr><td>§4</td><td>Deck 15 pp. 23–28 and Lecture 15 (the structure, the linear-region equation, pinch-off, the square law). S. M. Sze and K. K. Ng, <em>Physics of Semiconductor Devices</em>, 3rd ed. (Wiley, 2007), §7.2.1, pp. 375–381 (the voltage-controlled resistor, the pinch-off potential and threshold, Eqs. 7, 15 and 16, saturation beyond pinch-off, normally-on devices, p. 376); W. Shockley, <em>Proc. IRE</em> <b>40</b>, 1365 (1952). Pinch-off example computed here. Normally-on NASA JFETs: Deck 16a p. 57</td></tr>
+      <tr><td>§5</td><td>Deck 15 pp. 29–32 and Lecture 15. E. Oxner, "Biasing JFETs to achieve zero drift", InterFET Application Note AN-107, document IF35717.R00 (InterFET Corporation, December 2018), after R. S. C. Cobbold, <em>Theory and Applications of Field-Effect Transistors</em> (Wiley, 1970), §3.7.2. Thermal stability at high current: Sze &amp; Ng (2007) p. 296. nanoHUB JFET Lab: N. Makris, M. Bucher and F. Jazaeri, version 1.2 (2021), doi:10.21981/2JXY-BK35; the run's values read from the slide. Figure 8 computed here</td></tr>
+      <tr><td>§6</td><td>Deck 16a pp. 53, 55–57, 77–78 (P. G. Neudeck, ICSCRM 2023 tutorial: the transistor comparison of the table, the JFET-R circuits' speed and power) and Deck 15 pp. 33, 44, with Lecture 15 (NASA's preference, the remark on gate leakage and on total dose); the MESFET's lower barrier from Sze &amp; Ng (2007) §7.2. NASA's JFET: P. G. Neudeck, D. J. Spry, L.-Y. Chen, G. M. Beheim <em>et al.</em>, "Stable electrical operation of 6H–SiC JFETs and ICs for thousands of hours at 500 °C", <em>IEEE Electron Device Lett.</em> <b>29</b>, 456 (2008); Deck 16a p. 56 cites it as vol. 25 and Deck 15 p. 33 as vol. 25 (2007). Bipolar SiC at 500 °C: L. Lanni, B. G. Malm, M. Östling and C.-M. Zetterling, <em>IEEE Electron Device Lett.</em> <b>34</b>, 1091 (2013); R. Hedayati <em>et al.</em>, <em>IEEE Electron Device Lett.</em> <b>35</b>, 693 (2014). JFET and MESFET against the MOS interface: Sze &amp; Ng (2007) §7.2</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m17a-temperature-semiconductor.html"><span>Previous</span>M17a · Temperature and the Semiconductor</a>
+      <a class="next" href="m17c-high-temperature-electronics.html"><span>Next</span>M17c · High-Temperature Electronics</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

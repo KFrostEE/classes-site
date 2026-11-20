@@ -1,0 +1,1873 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M14 · Rad-Hard Circuit Design: Single-Event Effects — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M14 · Rad-Hard Circuit Design: Single-Event Effects</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 14</p>
+    <h1>Rad-Hard Circuit Design: Single-Event Effects</h1>
+    <p class="lede">
+      How a designer working in a commercial process stops a single ion from becoming an error: by
+      removing its charge before the next stage responds, by filtering out a pulse that is shorter than a
+      real signal, by storing every bit so that one struck node cannot change it, by coding stored data so
+      that flipped bits are corrected, and by giving the system a way back from states no circuit
+      technique prevents. Each technique has its price in power, speed or area, and the module sets the
+      price beside the protection.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M11 (M16 for latchup)</span>
+      <span><b>Read time</b> ~70 min</span>
+      <span><b>Sources</b> Deck 10 and its speaker notes; Deck 13; Buchner and Baze, IEEE NSREC 2001 Short Course; lecture on Deck 10; guest lectures on advanced CMOS, sequential circuits and space systems</span>
+    </div>
+
+    <p>
+      <a href="m11-single-event-effects.html">M11</a> followed one ion from the charge it deposits to the
+      bit it flips. It ended on two facts that this module turns into design rules. The critical charge
+      belongs to the circuit, not to the ion: it is the node capacitance times the voltage excursion that
+      flips the state, and the designer chooses both. And the charge an ion delivers does not shrink when
+      the transistors do, so every scaled generation that lowers the node capacitance and the supply
+      voltage lowers the critical charge with them. Radiation hardening by design (RHBD) is the
+      practice of building radiation-tolerant circuits in a commercial process, where the designer cannot
+      change the doping, the oxides or the substrate and must work with the circuit topology, the
+      transistor sizes and the layout instead (Deck 10 p. 8). The total-dose counterpart, which deals with
+      trapped charge and leakage, is <a href="m13-rhbd-total-ionizing-dose.html">M13</a>; this module deals with single events only.
+    </p>
+    <p>
+      §1 states what a strike must achieve to become an error and sorts the techniques by which of those
+      conditions each one breaks. §2 treats charge dissipation, the removal of charge before it reaches
+      the next stage, which the course returned to in three successive lectures. §3 treats temporal
+      filtering in logic and in analog circuits, §4 spatial redundancy from triple modular redundancy to
+      the dual-interlocked storage cell, and §5 the error-correcting codes, interleaving and scrubbing that
+      protect memories. §6 asks where a sequential circuit's errors actually come from, latches or the
+      logic that feeds them, and shows that the answer changes with clock frequency. §7 covers the system
+      level, §8 the new problems of FinFET and nanosheet technologies, and §9 sets the costs side by side.
+    </p>
+
+    <!-- ============================================================ -->
+    <h2>1 · What a strike must do to become an error</h2>
+    <p>
+      Hardening techniques are easiest to understand by what each one prevents. A strike becomes an
+      error only if a chain of conditions holds, and a technique works by breaking one link. This section
+      states the chain, the relation between charge and node voltage that underlies every link, and the
+      three families of circuit technique that the rest of the module develops.
+    </p>
+
+    <h3>The four conditions</h3>
+    <p>
+      A single-event transient (SET), the voltage pulse at a struck node of combinational logic
+      (<a href="m11-single-event-effects.html">M11</a> §5), becomes a stored error only if four conditions
+      hold together. Buchner and Baze list them, after Diehl-Nagle, Vinson and Petersen (1984):
+    </p>
+    <ol>
+      <li>the strike produces a voltage transient large enough to propagate into the circuitry around it;</li>
+      <li>an open logic path, a "critical pipe", connects the struck node to a latch, so that the struck
+      node controls the logic state along the path;</li>
+      <li>the pulse that arrives at the latch has the amplitude and duration to write it; and</li>
+      <li>the pulse arrives while the latch is accepting data.</li>
+    </ol>
+    <p>
+      A strike on a storage node itself needs only the first and third conditions in a modified form: the
+      collected charge must hold the node past its switching point until the cell's own feedback has
+      latched the new state, before the restoring transistor pulls the node back
+      (<a href="m11-single-event-effects.html">M11</a> §4). Each family of techniques in this module
+      attacks one or more of these conditions, and Figure 1 sets out which.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 214" role="img" aria-labelledby="m14f1-t">
+        <title id="m14f1-t">The four conditions for a transient to become an error, and the technique family that breaks each</title>
+        <g class="dg-label-sm" text-anchor="middle">
+          <rect x="6" y="22" width="100" height="46" class="dg-fill"/>
+          <text x="56" y="40">1 · transient able</text><text x="56" y="54">to propagate</text>
+          <rect x="114" y="22" width="100" height="46" class="dg-fill"/>
+          <text x="164" y="40">2 · open logic</text><text x="164" y="54">path to a latch</text>
+          <rect x="222" y="22" width="100" height="46" class="dg-fill"/>
+          <text x="272" y="40">3 · amplitude and</text><text x="272" y="54">width to write</text>
+          <rect x="330" y="22" width="104" height="46" class="dg-fill"/>
+          <text x="382" y="40">4 · arrives in the</text><text x="382" y="54">latching window</text>
+        </g>
+        <text x="220" y="14" class="dg-label-sm" text-anchor="middle">all four must hold (Buchner and Baze, after Diehl-Nagle 1984)</text>
+        <line x1="56" y1="68" x2="56" y2="104" class="dg-line"/>
+        <line x1="272" y1="68" x2="272" y2="104" class="dg-line"/>
+        <line x1="164" y1="68" x2="164" y2="150" class="dg-line"/>
+        <line x1="382" y1="68" x2="382" y2="104" class="dg-line"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <rect x="6" y="104" width="100" height="40" class="dg-fill"/>
+          <text x="56" y="120">add capacitance</text><text x="56" y="134">(§2) · costs speed</text>
+          <rect x="222" y="104" width="100" height="40" class="dg-fill"/>
+          <text x="272" y="120">more drive current,</text><text x="272" y="134">RC filter (§§2–3)</text>
+          <rect x="330" y="104" width="104" height="40" class="dg-fill"/>
+          <text x="382" y="120">delay or sample</text><text x="382" y="134">and vote (§3)</text>
+        </g>
+        <rect x="88" y="150" width="152" height="40" class="dg-acc"/>
+        <text x="164" y="166" class="dg-label-sm" text-anchor="middle">spatial redundancy (§4):</text>
+        <text x="164" y="180" class="dg-label-sm" text-anchor="middle">two nodes must fail at once</text>
+        <text x="220" y="208" class="dg-label-sm" text-anchor="middle">dissipation and filtering raise the threshold LET; redundancy cuts the cross-section</text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The chain from strike to stored error, and where each family breaks it. Charge
+        dissipation and temporal filtering make a larger strike necessary; spatial redundancy blocks
+        propagation unless two separate elements fail together, which cuts the effective cross-section.
+        Conditions after Buchner and Baze (IEEE NSREC 2001 Short Course, §6), who assign a condition to
+        capacitance (1), drive current (3) and spatial redundancy (2); the placement of the RC filter and
+        the voting techniques is this module's reading.
+      </figcaption>
+    </figure>
+
+    <h3>Charge, capacitance and voltage</h3>
+    <p>
+      Deck 10 p. 11 puts the whole design problem into one relation. A strike adds charge to or removes
+      charge from a node, and the node's voltage moves by that charge divided by the node's total
+      capacitance: the gate capacitance of the transistors it drives, its own junction capacitance and the
+      capacitance of its wiring. The lecture stressed that most of a logic node's capacitance is gate
+      capacitance.
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>q</em> = <em>C</em> · Δ<em>V</em></div>
+        <div class="eq-num">(14.1)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>q</em> charge added to or removed from the node by the strike (C; fC to pC) ·
+        <em>C</em> total node capacitance (F; fF) · Δ<em>V</em> resulting voltage excursion (V).
+        With Δ<em>V</em> set to the excursion that flips the state, Δ<em>q</em> is the critical charge,
+        (11.3) of <a href="m11-single-event-effects.html">M11</a>. Assumes the charge arrives faster than
+        the node's restoring current can remove it; §2 relaxes that.
+      </div>
+    </div>
+    <p>
+      The three quantities scale differently, and that is why each generation is more sensitive. The
+      charge an ion generates per micrometre is fixed by its LET and the material; Deck 10 p. 11 writes
+      that charged particles do not scale with technology. The node capacitance falls with feature size,
+      so the same charge produces a larger excursion. And the supply voltage falls too, so the excursion
+      needed to cause a soft error is smaller. Both effects lower the critical charge. The lecture on
+      Deck 10 concluded that without hardening by design, a smaller node is a more sensitive one. The
+      designer controls <em>C</em>, the excursion the circuit tolerates and, through the transistor drive,
+      how long the excursion lasts; the incoming charge is not under the designer's control.
+    </p>
+    <p>
+      The incoming charge does follow from the ion's LET. Buchner and Baze give a working form in the units
+      that circuit designers use:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>Q</em> = 1.03×10⁻² · LET · <em>D</em></div>
+        <div class="eq-num">(14.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>Q</em> charge generated along the collection length (pC) · LET linear energy transfer in silicon
+        (MeV·cm²/mg) · <em>D</em> length of the ion path over which the charge is collected (µm).
+        Equivalent to the rule of <a href="m11-single-event-effects.html">M11</a> that an LET of
+        97 MeV·cm²/mg generates 1 pC/µm in silicon, since 1/97 = 1.03×10⁻². Generated charge, not collected
+        charge: <em>D</em> stands in for the collection depth of M11 §3.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">The design charge of a hardened logic library</div>
+      <div class="ex-body">
+        <p><b>Given</b> The design point Buchner and Baze use throughout their hardening examples: an ion of
+        LET 40 MeV·cm²/mg, which they choose because the heavy-ion LET spectrum in space falls steeply
+        above it, and a collection length of 1 µm, a typical order of magnitude for logic of their time.
+        <b>Find</b> the charge to be dissipated, and check the coefficient of (14.2) from the energy per
+        electron–hole pair.</p>
+        <p><b>Plan.</b> Substitute into (14.2). Then rebuild the result from the energy deposited and the
+        3.6 eV needed per pair in silicon (<a href="m04-quantifying-energy-deposition.html">M04</a> §4);
+        the density of silicon must be in mg/cm³ to cancel the per-milligram LET.</p>
+        <p class="ex-step"><b>Charge from (14.2).</b> <em>Q</em> = 1.03×10⁻² × 40 × 1.0 = 0.412 pC.</p>
+        <p class="ex-step"><b>Energy deposited over 1 µm.</b> <em>E</em> = LET · <em>ρ</em> · <em>D</em> =
+          40 MeV·cm²/mg × 2329 mg/cm³ × 1.0×10⁻⁴ cm = 9.32 MeV.</p>
+        <p class="ex-step"><b>Pairs and charge.</b> 9.32×10⁶ eV ÷ 3.6 eV = 2.59×10⁶ pairs;
+          × 1.602×10⁻¹⁹ C = 4.15×10⁻¹³ C = 0.415 pC.</p>
+        <p class="ex-answer"><em>Q</em> ≈ 0.41 pC, the worst-case charge on Deck 10 p. 13. Check: the two
+          routes agree to 0.6 %. The difference lies in the constants behind the published coefficient,
+          not in the method: these constants give 1.04×10⁻² pC per MeV·cm²/mg per µm, while 1.03×10⁻²
+          corresponds to a density of 2.32 g/cm³ at 3.6 eV per pair, or to 3.62 eV per pair.</p>
+      </div>
+    </div>
+
+    <h3>Three families, and what each costs</h3>
+    <p>
+      Deck 10 p. 10 asks the designer to treat single events as random transient pulses, as if the
+      circuit had to work in a noisy environment, and names three families of technique: charge
+      dissipation, temporal filtering and spatial redundancy. It adds that trade-offs in cost, area, power
+      and speed cannot be avoided. Buchner and Baze attach a characteristic penalty to each family:
+    </p>
+    <ul>
+      <li><b>Charge dissipation</b> removes or absorbs the collected charge so that the node never moves
+      far enough or long enough. It consumes power, through larger currents or larger capacitances to
+      switch. It breaks condition 1 or 3.</li>
+      <li><b>Temporal filtering</b> makes the circuit ignore pulses shorter than a chosen time. It slows the
+      circuit. On this page's reading it breaks conditions 3 and 4; Buchner and Baze assign it no
+      condition.</li>
+      <li><b>Spatial redundancy</b> stores or computes each value in more than one place, so that one
+      struck element cannot decide the result. It increases area. It breaks condition 2 unless two
+      elements fail together.</li>
+    </ul>
+    <p>
+      The first two families raise the circuit's threshold LET: a larger strike is needed to cause an
+      error. Spatial redundancy reduces the effective sensitive cross-section instead (Buchner and Baze):
+      the charge needed to upset any one copy is unchanged, but an error now needs a coincidence. Above the circuit sit the
+      architecture and the system: Deck 10 p. 32 lists triple modular redundancy, lock-stepped processors
+      and pipeline protection at the architecture level; error-correcting codes, scrubbing, watchdog resets
+      and latchup protection at the system level; and redundancy, graceful degradation and autonomy at the
+      mission level. Its stated goal is resilience, continued function under radiation-induced faults,
+      rather than hardness alone. Below the circuit sits the process, which Buchner and Baze describe as
+      working on every element at once by reducing the sensitive volume for charge collection: an
+      epitaxial layer over a heavily doped, strongly recombining substrate shortens the collection depth,
+      and silicon-on-insulator (SOI) shortens it in every direction.
+    </p>
+
+    <details class="check">
+      <summary>A designer can (a) double the capacitance of a sensitive node, (b) triplicate a block and vote its outputs, or (c) insert a delay before a latch. For each, say which of the four conditions it breaks, whether it raises the threshold LET or lowers the cross-section, and what it costs.</summary>
+      <div class="answer">
+        <p>(a) Doubling <em>C</em> halves the excursion a given charge produces (14.1), so a strike needs
+        twice the charge to move the node through the same voltage: it breaks condition 1 (and 3 for the
+        pulse that does propagate), raises the threshold LET, and costs speed and power, because every
+        legitimate transition must now charge twice the capacitance. (b) Triplication with voting breaks
+        condition 2: one struck copy no longer controls the output, because the voter follows the two
+        unstruck copies. It does not change the charge needed to upset any one copy, so the threshold LET
+        is unchanged and the cross-section falls instead, since an error now requires two copies to fail
+        together. It costs area, roughly three times plus the voter. (c) A delay chosen longer than the
+        transient breaks conditions 3 and 4 in the form of §3: the latch accepts a value only if it
+        persists, so a short pulse cannot write it. It raises the threshold LET, because only a larger
+        strike makes a long enough pulse, and it costs speed.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>2 · Charge dissipation</h2>
+    <p>
+      Three lectures in a row came back to one idea: if the deposited charge is removed before it reaches
+      the node that matters, or before the next stage responds, there is no event. Charge dissipation is
+      the family of techniques that acts on this idea. It works in two ways. More capacitance at the node
+      makes the same charge move the node less. More current from the restoring transistor makes the node
+      recover faster. A third group of techniques acts before the charge reaches the node at all, by giving
+      it another place to go. Deck 10's speaker notes call charge dissipation the first line of defense,
+      because it acts at the device level before circuit or system redundancy is needed.
+    </p>
+
+    <h3>Node capacitance</h3>
+    <p>
+      Adding capacitance to a sensitive node reduces the excursion of (14.1) for a fixed collected charge,
+      so a pulse that would have crossed the next gate's switching threshold no longer does (Deck 10 p. 13).
+      The required capacitance is the charge divided by the excursion the circuit can tolerate. The
+      lecture noted two properties that make a capacitor suit this job. A capacitor passes a fast
+      transient to ground while leaving the steady logic level untouched. And unlike a clamping diode, it
+      works for either polarity of collected charge, which depends on the state the circuit holds. The
+      added capacitance must sit on the node it protects, since (14.1) involves that node's own
+      capacitance.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">How large a capacitor absorbs the design charge</div>
+      <div class="ex-body">
+        <p><b>Given</b> The 0.41 pC of the previous example; a 5 V logic family whose switching threshold
+        is about 2.5 V; a high-density on-chip capacitor of 2 fF/µm², the figures Buchner and Baze use.
+        <b>Find</b> the capacitance and area that keep the node from crossing the threshold, then repeat
+        for a 1.0 V family with a 0.5 V threshold.</p>
+        <p><b>Plan.</b> Set Δ<em>V</em> in (14.1) to the threshold and solve for <em>C</em>; divide by the
+        capacitance per unit area for the area. The second case shows what supply scaling alone does.</p>
+        <p class="ex-step"><b>Capacitance, 5 V logic.</b> <em>C</em> = <em>Q</em>/Δ<em>V</em> =
+          0.412 pC ÷ 2.5 V = 0.165 pF.</p>
+        <p class="ex-step"><b>Area.</b> 165 fF ÷ 2 fF/µm² = 82 µm². Buchner and Baze, rounding to
+          0.16 pF, quote 80 µm² and note that it is about ten times the capacitive load of a typical logic
+          node of their process.</p>
+        <p class="ex-step"><b>Capacitance, 1.0 V logic.</b> 0.412 pC ÷ 0.5 V = 0.824 pF, five times more,
+          and 412 µm² at the same capacitor density.</p>
+        <p class="ex-answer"><em>C</em> ≈ 0.16 pF and ≈ 80 µm² per protected node at 5 V (Buchner and
+          Baze; Deck 10 p. 13 gives the 0.41 pC and about 80 µm²);
+          five times that at a 0.5 V threshold. Check: <em>C</em> scales as 1/Δ<em>V</em>, and 2.5/0.5 = 5.
+          The charge did not shrink with the supply, so the capacitor grew.</p>
+      </div>
+    </div>
+    <p>
+      An area of this size at every gate is impractical, and Deck 10 p. 13 draws that conclusion for
+      modern designs. Buchner and Baze write that capacitance hardening carries perhaps the greatest
+      relative performance penalties of the charge-dissipation techniques, because every legitimate
+      transition must also charge the added capacitance, but they also rank it the easiest to add to an
+      existing design. They note two places where
+      it pays: analog circuits, where the speed penalty matters less, and clock trees and global control
+      lines, whose capacitance is already large. One capacitor can also filter transients from the logic
+      upstream of it, so it is placed at selected nodes rather than at every gate. Memory designers use the
+      same idea inside the cell: Dodd and Massengill describe capacitors added to the feedback path of SOI
+      and deep-submicron static memories, which slow the cell's response to a strike as resistors do, with
+      less dependence on temperature.
+    </p>
+
+    <h3>Drive current and transistor upsizing</h3>
+    <p>
+      A struck node does not stay disturbed: the transistor that holds it, the "restoring" transistor,
+      keeps driving it back toward its correct value. In an inverter whose input is low, the p-channel
+      transistor is on and holds the output high; a strike on the drain of the off n-channel transistor
+      collects electrons there and pulls the output low, and the on p-channel transistor recharges the
+      node once the collection is over (Deck 13 pp. 10–12). Deck 10 p. 12 states the time this takes:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>t</em> = <span class="frac"><span class="num">Δ<em>q</em></span><span class="den"><em>I</em><sub>D</sub></span></span></div>
+        <div class="eq-num">(14.3)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>t</em> time to remove the collected charge and restore the node (s) · Δ<em>q</em> collected
+        charge (C) · <em>I</em><sub>D</sub> drain current of the restoring transistor (A). Treats the
+        restoring current as constant and the collection as fast compared with Δ<em>t</em>. Deck 10 p. 12
+        draws the case of a strike that charges the node and an n-channel transistor that sinks it; the
+        relation is the same for either polarity.
+      </div>
+    </div>
+    <p>
+      The lever is the drain current. In saturation the drain current of a MOSFET is proportional to its
+      width-to-length ratio <em>W</em>/<em>L</em> (<a href="m06-device-physics.html">M06</a>), so tripling
+      the width at fixed length triples the current and divides the recovery time by three. If the node
+      recovers before the next gate switches, the transient never propagates: Deck 10 p. 12 states that if
+      the transistor can sink the collected charge in time to suppress the transition of the next gate, the
+      SET has no effect. The cost the slide gives is about three times the area. Figure 2 computes the
+      node voltage for a small node struck by a fixed charge, at two drive strengths.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 196" role="img" aria-labelledby="m14f2-t">
+        <title id="m14f2-t">Node voltage after a strike for a restoring current of 50 and 150 microamperes</title>
+        <line x1="50" y1="150" x2="414" y2="150" class="dg-rule"/>
+        <line x1="50" y1="150" x2="50" y2="24" class="dg-rule"/>
+        <line x1="50" y1="95.5" x2="410" y2="95.5" class="dg-guide" stroke-dasharray="4 3"/>
+        <text x="408" y="90" class="dg-label-sm" text-anchor="end">next gate switches below <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">DD</tspan>/2</text>
+        <path d="M50,40.9 L50,150 L275,150 L320,40.9 L410,40.9" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="6 3"/>
+        <path d="M50,40.9 L50,150 L125,150 L140,40.9 L410,40.9" class="dg-acc" fill="none" stroke-width="2.2"/>
+        <text x="150" y="58" class="dg-label-sm"><tspan class="dg-acc-f">150 µA: back in 0.20 ns</tspan></text>
+        <text x="326" y="64" class="dg-label-sm">50 µA: 0.60 ns</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="50" y="164">0</text><text x="140" y="164">0.2</text><text x="230" y="164">0.4</text><text x="320" y="164">0.6</text><text x="410" y="164">0.8</text>
+          <text x="230" y="182">time after the strike (ns)</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="46" y="44">1.0 V</text><text x="46" y="99">0.5</text><text x="46" y="153">0</text>
+        </g>
+        <text x="58" y="20" class="dg-label-sm">node voltage</text>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> A 5 fF node at 1.0 V receives 30 fC in a time short compared with its recovery.
+        The node is held at ground until the restoring transistor has replaced all but
+        <em>C</em>·<em>V</em><sub>DD</sub> = 5 fC, then rises to its rail; the whole recovery takes
+        Δ<em>q</em>/<em>I</em><sub>D</sub> (14.3). Tripling the drive current cuts the time spent below the
+        next gate's switching point from 0.55 ns to 0.18 ns. Illustrative values; computed in
+        <code>figures-m14.py</code> from <em>V</em> = <em>V</em><sub>DD</sub> − max(0, (Δ<em>q</em> −
+        <em>I</em><sub>D</sub><em>t</em>)/<em>C</em>), clipped at 0 V.
+      </figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Sizing a pull-down to sink the design charge</div>
+      <div class="ex-body">
+        <p><b>Given</b> Buchner and Baze's case: 0.41 pC to be removed within 200 ps, since conventional
+        register and memory cells do not respond to input pulses shorter than about 200 ps; an n-channel
+        transistor in a 0.4 µm process drives about 0.25 mA per µm of gate width; a standard inverter uses
+        1 to 2 µm. <b>Find</b> the drive current and width needed, and the recovery time of a 1 µm and a
+        3 µm device.</p>
+        <p><b>Plan.</b> Rearrange (14.3) for <em>I</em><sub>D</sub> with Δ<em>t</em> = 200 ps, divide by the
+        current per micrometre for the width, then apply (14.3) forwards for the two given widths.</p>
+        <p class="ex-step"><b>Current needed.</b> <em>I</em><sub>D</sub> = Δ<em>q</em>/Δ<em>t</em> =
+          0.412×10⁻¹² C ÷ 200×10⁻¹² s = 2.06 mA.</p>
+        <p class="ex-step"><b>Width.</b> 2.06 mA ÷ 0.25 mA/µm = 8.2 µm, four to eight times the standard
+          width.</p>
+        <p class="ex-step"><b>Recovery of a 1 µm device.</b> <em>I</em><sub>D</sub> = 0.25 mA;
+          Δ<em>t</em> = 0.412 pC ÷ 0.25 mA = 1.65 ns.</p>
+        <p class="ex-step"><b>Recovery of a 3 µm device.</b> <em>I</em><sub>D</sub> = 0.75 mA;
+          Δ<em>t</em> = 0.412 pC ÷ 0.75 mA = 0.549 ns.</p>
+        <p class="ex-answer"><em>I</em><sub>D</sub> ≈ 2.1 mA and <em>W</em> ≈ 8 µm, the values Buchner and
+          Baze give; tripling <em>W</em> divides Δ<em>t</em> by three. Check: units, C/A = s. Buchner and
+          Baze put the area penalty of such a NAND gate at 1.5 to 3 times, depending on the rail pitch of
+          the original cell.</p>
+      </div>
+    </div>
+    <p>
+      Buchner and Baze judge current-drive hardening acceptable for raising the threshold LET by less than
+      about three times, and costly in power and speed for raising it more than about five times. A wide
+      gate need not be a new cell: smaller gates of the same type can be wired in parallel, and for short
+      logic paths of one to three cells between registers the approach can use less power and area than
+      temporal or spatial techniques. The 1.65 ns recovery of the 1 µm device returns in §3, where it is
+      the width of the transient that temporal filtering must reject.
+    </p>
+
+    <h3>Quiescent current in analog circuits</h3>
+    <p>
+      The same relation holds in analog circuits, where the restoring current is the bias current.
+      Deck 10 p. 14 draws a common-source amplifier whose load is a current sink. A strike that deposits
+      charge on the output node is removed by that sink, so the value of the load current
+      <em>I</em><sub>LOAD</sub> sets how quickly the output returns to its operating point. Raising the
+      quiescent current, the steady current that flows when no signal is present, therefore shortens and
+      shrinks analog transients. The price is static power, drawn whether or not a strike ever
+      occurs.
+    </p>
+    <p>
+      Deck 10 p. 22 turns this into a rule for finding the nodes to protect. Low-gain, low-impedance,
+      high-current nodes resist transients better than high-gain, high-impedance, low-current nodes,
+      because a low impedance means a large current is available to remove the charge and a low gain means
+      a small disturbance is not amplified. The slide recommends single-event transient simulations and
+      measurements to find the most sensitive nodes, and notes that hardening one or two critical nodes
+      may harden the whole circuit. It also warns that the effect is nonlinear: a slight increase in
+      quiescent current or capacitance can raise the transient hardness abruptly, by an order of magnitude
+      or more. The lecture added the practical consequence: finding those nodes takes simulation, a test
+      chip, measurement and redesign, several times over, which is one reason rad-hard parts trail
+      commercial ones by generations.
+    </p>
+
+    <h3>Giving the charge somewhere else to go</h3>
+    <p>
+      A strike's charge spreads by drift and diffusion before a node collects it
+      (<a href="m11-single-event-effects.html">M11</a> §§2–3). Contacts placed near the sensitive junctions
+      collect part of it first. Deck 10's speaker notes for p. 12 list four such measures:
+    </p>
+    <ul>
+      <li><b>Well and substrate ties</b> hold the wells and substrate at fixed potentials and shorten the
+      path by which carriers leave, so less charge reaches the sensitive junctions.</li>
+      <li><b>Guard rings</b>, rings of heavily doped diffusion around a transistor tied to a fixed bias,
+      collect excess carriers before they diffuse into the active device regions.
+      <a href="m11-single-event-effects.html">M11</a> §9 gives the simulated size of the effect in a
+      130 nm process (3-D device simulation, LET 40 MeV·cm²/mg): a contacted guard ring around the struck
+      transistor cut the charge collected by an adjacent p-channel drain in the same n-well by 97 %, and by
+      an adjacent n-channel drain by 35 %, for about 30 % more area.</li>
+      <li><b>Capacitance balancing</b>, the added node capacitance treated above.</li>
+      <li><b>Body contacts</b>, which give a low-impedance path for excess charge in the body of the
+      transistor; Dodd and Massengill call careful body-tie design crucial to the upset performance of
+      SOI.</li>
+    </ul>
+    <p>
+      Well engineering is the process-level form of the same idea. Dodd and Massengill call the reduction
+      of charge collection at sensitive nodes the most fundamental method of SEU hardening. They describe
+      extra doping layers that limit collection from the substrate in memories; triple-well and even
+      quadruple-well structures proposed for advanced static memories, in which every strike is in effect
+      an "inside-the-well" strike; and retrograde wells and buried layers whose built-in field opposes the
+      collection of charge deposited in the substrate. A triple well is a p-well enclosed by a deep n-well,
+      so that the n-channel transistors sit in a well isolated from the substrate rather than in the
+      substrate itself; the first lecture of the course named the triple well, the double well and the
+      floating island among the options that design offers. Buchner and Baze add two layout rules: keep
+      every junction, the drains above all, at its design-rule minimum area, and build large transistors as
+      short interdigitated segments rather than one long stripe, which can raise the sensitivity to
+      low-LET particles.
+    </p>
+    <div class="box warn">
+      <p>
+        Collection-limiting structures change where the charge goes, not how much is deposited, and a
+        structure that isolates a well also confines what is collected in it. Dodd and Massengill note
+        that a strike in the body of an SOI transistor can trigger a parasitic bipolar mechanism that
+        limits the hardness of SOI circuits, and <a href="m11-single-event-effects.html">M11</a> §9 shows
+        how charge left in a shared well collapses its potential and turns on the neighbouring
+        transistors' parasitic bipolar transistors. Each structure is judged by measurement in its own
+        process, not assumed to help.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>A 1.2 V logic node has a switching threshold of 0.4 V below its rail. The design ion has an LET of 20 MeV·cm²/mg and a collection length of 0.5 µm. What capacitance keeps it from crossing the threshold, and how much area does that take with a capacitor of 10 fF/µm²? Would tripling the restoring transistor's width achieve the same protection?</summary>
+      <div class="answer">
+        <p><b>Charge.</b> By (14.2), <em>Q</em> = 1.03×10⁻² × 20 × 0.5 = 0.103 pC.
+        <b>Capacitance.</b> <em>C</em> = <em>Q</em>/Δ<em>V</em> = 0.103 pC ÷ 0.4 V = 0.258 pF.
+        <b>Area.</b> 258 fF ÷ 10 fF/µm² = 25.8 µm². Buchner and Baze describe 0.16 pF as about ten
+        times the load of a typical logic node of their process, and node capacitance has fallen with
+        feature size since (Deck 10 p. 11), so this is a load many times the node's own capacitance, with
+        the speed and power penalty that implies.</p>
+        <p><b>Upsizing.</b> Not in the same sense. A larger capacitance limits how far the node moves;
+        a larger drive current limits how long it stays moved (14.3). With 0.103 pC on an unhardened node,
+        whose capacitance is far below 0.26 pF, the node is still driven to the opposite rail, but tripling <em>I</em><sub>D</sub> divides the time
+        it spends there by three. Upsizing protects only if that shorter pulse is then too short for the
+        next stage or the latch to respond, condition 3 of §1, so the answer depends on the minimum pulse
+        width the downstream circuit can respond to.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>3 · Temporal filtering</h2>
+    <p>
+      A single-event transient is short: §2 computed 1.65 ns for the design charge on a 0.4 µm logic
+      gate, and Deck 10 puts transients in 7 nm and smaller technologies at tens of picoseconds. A
+      legitimate signal, by contrast, holds its value for at least a clock cycle. Temporal filtering exploits
+      that difference. Deck 10 p. 15 calls it essentially low-pass filtering of SET pulses: the circuit is
+      made to respond only to inputs that persist longer than the transients it must reject. In logic this
+      is done with delay elements, slower storage cells, or several samples taken at different times; in
+      analog circuits it is done by limiting the amplifier's bandwidth.
+    </p>
+
+    <h3>Filtering in logic</h3>
+    <p>
+      The simplest filter is a resistor between the output of one gate and the input of the next, with the
+      next gate's input capacitance completing a low-pass network (Deck 10 p. 15). The resistor delays the
+      transient so that the first gate's output transistors can sink the collected charge before the
+      second gate's input crosses its switching level. Buchner and Baze size it by equating two times. The
+      first gate needs (14.3) to remove the charge; the input of the second gate, charged through the
+      resistor, takes −ln(½)·<em>RC</em> to reach half the supply. Setting them equal gives the
+      resistance:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>Q</em></span><span class="den"><em>I</em><sub>out1</sub></span></span> = 0.693 <em>R C</em><sub>in2</sub> &nbsp;⟹&nbsp; <em>R</em> ≈ <span class="frac"><span class="num">1.44 <em>Q</em></span><span class="den"><em>C</em><sub>in2</sub> <em>I</em><sub>out1</sub></span></span></div>
+        <div class="eq-num">(14.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em> series resistance between the two gates (Ω) · <em>Q</em> collected charge (C) ·
+        <em>C</em><sub>in2</sub> input capacitance of the second gate (F) · <em>I</em><sub>out1</sub> output
+        drive current of the first gate (A). 0.693 = ln 2, and 1.44 = 1/ln 2. Single-pole RC response;
+        assumes the second gate switches at half the supply.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">A resistive filter for the design charge</div>
+      <div class="ex-body">
+        <p><b>Given</b> Buchner and Baze's values: <em>Q</em> = 0.41 pC, an output drive of 0.25 mA, an input
+        capacitance of 5 fF; the resistor made of a metal film of 2000 Ω per square at the minimum width of
+        1 µm. <b>Find</b> the resistance and the length of resistor it implies.</p>
+        <p><b>Plan.</b> Substitute into (14.4). A film resistor of width <em>w</em> and length <em>l</em> has
+        <em>R</em> = <em>R</em><sub>s</sub> <em>l</em>/<em>w</em>, so the number of squares is
+        <em>R</em>/<em>R</em><sub>s</sub>.</p>
+        <p class="ex-step"><b>Resistance.</b> <em>R</em> = 1.44 × 0.412×10⁻¹² C ÷ (5×10⁻¹⁵ F ×
+          0.25×10⁻³ A) = 1.44 × 0.412×10⁻¹² ÷ 1.25×10⁻¹⁸ = 4.75×10⁵ Ω.</p>
+        <p class="ex-step"><b>Squares and length.</b> 4.75×10⁵ Ω ÷ 2000 Ω = 237 squares; at 1 µm width the
+          resistor is 237 µm long.</p>
+        <p class="ex-answer"><em>R</em> ≈ 475 kΩ (Buchner and Baze, with 0.41 pC, quote 470 kΩ), a
+          resistor about 240 µm long for every protected gate.
+          Check: <em>RC</em><sub>in2</sub> = 4.75×10⁵ × 5×10⁻¹⁵ = 2.4 ns, and 0.693 of that is 1.65 ns, the
+          recovery time of the 1 µm device in §2, as the derivation requires.</p>
+      </div>
+    </div>
+    <p>
+      Buchner and Baze conclude that this filter would consume substantial area at every gate, and that it
+      belongs at the end of a logic string or in combination with added capacitance or drive current. They
+      also exclude diffused and pinched resistors, because the resistor must not itself collect charge.
+      Deck 10 p. 16 states the same economy for every temporal technique: not every gate needs slowing.
+      Filtering is applied to the "critical pipe", the paths along which a transient is likely to reach a
+      storage element, and identifying them is not easy.
+    </p>
+    <p>
+      A storage cell can be made into its own filter by lengthening its write time, the time the input
+      must be held for the cell to change state. Deck 10 p. 15 gives the condition: added resistance or
+      capacitance makes <em>t</em><sub>write</sub> ≫ <em>t</em><sub>SET</sub>, so a transient ends before
+      it can write the cell. The price is the whole circuit's speed. In Buchner and Baze's 0.4 µm example a
+      0.25 mA gate output struck with 0.41 pC produces a transient of about 0.41 pC ÷ 0.25 mA = 1.6 ns,
+      against a normal register write time of about 260 ps, so the register's write time must grow about
+      sixfold. In static memories the same technique takes the form of resistors in the cell's feedback
+      loop. Dodd and Massengill point out its cost there: an upset looks to the cell exactly like a write,
+      so the same RC delay lengthens the write pulse, and the polysilicon resistors used are hard to
+      control and make both the write speed and the upset response depend on temperature.
+    </p>
+
+    <h3>Delay and vote, sample and vote</h3>
+    <p>
+      Voting turns the time difference into a decision. In delay-and-vote hardening (Deck 10 p. 17) the
+      output of a logic block is split three ways: one copy goes directly to a voter, one through a delay,
+      and one through two delays. The voter outputs the value held by at least two of its three inputs. A
+      transient of width <em>t</em><sub>SET</sub> on the block's output reaches the three voter inputs at
+      three different times; if each delay exceeds <em>t</em><sub>SET</sub>, the copies of the pulse never
+      overlap, at most one voter input is wrong at any instant, and the voter rejects it. For the 1.6 ns
+      transient of the example, each delay must exceed 1.6 ns, 3.2 ns in total on the longest branch.
+    </p>
+    <p>
+      Sample-and-vote hardening (Deck 10 p. 18) moves the delays to the clock. Three latches load the same
+      logic output on three clocks, the second delayed by 1.6 ns and the third by 3.2 ns, and a voter
+      combines the three stored values. Buchner and Baze point out an advantage: the clock delays can be set
+      by software, so in an environment without single events the three clocks can run together at full
+      speed. Both forms carry the same two requirements. Each delay must exceed the longest transient to be
+      rejected, which makes every number here specific to a technology: the lecture stressed that 1.6 ns
+      and 3.2 ns belong to the 0.4 µm example of 2001, and that transients in current technologies are far
+      shorter. And the voter must itself be hardened (Deck 10 p. 17), since a strike on the voter's own
+      output passes straight through.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 200" role="img" aria-labelledby="m14f3-t">
+        <title id="m14f3-t">Three sampling instants spaced by delta, against transients narrower and wider than delta</title>
+        <line x1="30" y1="170" x2="420" y2="170" class="dg-rule"/>
+        <line x1="120" y1="20" x2="120" y2="170" class="dg-guide" stroke-dasharray="3 3"/>
+        <line x1="220" y1="20" x2="220" y2="170" class="dg-guide" stroke-dasharray="3 3"/>
+        <line x1="320" y1="20" x2="320" y2="170" class="dg-guide" stroke-dasharray="3 3"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="120" y="186">sample 1</text><text x="220" y="186">sample 2</text><text x="320" y="186">sample 3</text>
+        </g>
+        <line x1="120" y1="28" x2="220" y2="28" class="dg-line"/>
+        <text x="170" y="22" class="dg-label-sm" text-anchor="middle">Δ</text>
+        <!-- pulse narrower than delta -->
+        <path d="M30,80 L180,80 L180,52 L250,52 L250,80 L420,80" class="dg-line" fill="none" stroke-width="1.6"/>
+        <text x="262" y="62" class="dg-label-sm">W &lt; Δ: one sample at most</text>
+        <!-- pulse wider than delta -->
+        <path d="M30,148 L205,148 L205,118 L335,118 L335,148 L420,148" class="dg-acc" fill="none" stroke-width="2.2"/>
+        <text x="34" y="112" class="dg-label-sm"><tspan class="dg-acc-f">Δ &lt; W: two samples</tspan></text>
+        <circle cx="220" cy="52" r="3.5" class="dg-ink"/>
+        <circle cx="220" cy="118" r="3.5" class="dg-acc-f"/>
+        <circle cx="120" cy="80" r="3" class="dg-faint"/>
+        <circle cx="320" cy="80" r="3" class="dg-faint"/>
+        <circle cx="120" cy="148" r="3" class="dg-faint"/>
+        <circle cx="320" cy="118" r="3.5" class="dg-acc-f"/>
+        <text x="34" y="44" class="dg-label-sm">latch input with a transient</text>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> Triple sampling with spacing Δ. A transient narrower than Δ can cover at most one
+        sampling instant, so a two-of-three voter always outputs the correct value. A transient wider than
+        Δ (accent), arriving at an unlucky time, covers two instants and outvotes the correct one.
+        Schematic.
+      </figcaption>
+    </figure>
+
+    <h3>Triple sampling quantified</h3>
+    <p>
+      Deck 10 p. 39 counts temporal triple-sampling flip-flops among the latch designs that reduce upset
+      cross-sections significantly, and a probability argument shows by how much. Take one sampling
+      instant and a rectangular transient of width <em>W</em> whose arrival time is equally likely
+      anywhere in an interval <em>T</em> over which the sampling pattern repeats. The sample captures the
+      transient if the instant falls inside the pulse. A pulse no wider than <em>T</em> does so with
+      probability <em>W</em>/<em>T</em>; a pulse wider than <em>T</em> always covers an instant, so in
+      general the probability is min(<em>W</em>, <em>T</em>)/<em>T</em>. When <em>W</em> varies from
+      strike to strike, the probability is its average:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>p</em> = <span class="frac"><span class="num">⟨min(<em>W</em>, <em>T</em>)⟩</span><span class="den"><em>T</em></span></span>, &nbsp;&nbsp; <em>P</em><sub>vote</sub> = 3<em>p</em>²(1 − <em>p</em>) + <em>p</em>³ = 3<em>p</em>² − 2<em>p</em>³</div>
+        <div class="eq-num">(14.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>p</em> probability that one sampling instant captures the transient · <em>W</em> transient
+        width (s) · <em>T</em> interval over which the arrival time is uniformly distributed (s): the clock
+        period when one sample per clock is considered; for three samples spaced Δ with no clock period
+        given, the course takes <em>T</em> = Δ, the arrival time uniform over one inter-sample interval ·
+        ⟨ ⟩ average over the distribution of <em>W</em> · <em>P</em><sub>vote</sub> probability that a
+        two-of-three voter outputs the wrong value, which needs at least two of the three samples to be
+        wrong. The binomial form assumes the three samples err independently, each with probability
+        <em>p</em>. The same expression gives the failure probability of any two-of-three majority vote over
+        independent inputs, including triple modular redundancy (§4).
+      </div>
+    </div>
+    <p>
+      The independence assumption is a simplification, and Figure 3 shows what it leaves out. The three
+      instants sample the same pulse, so whether the second sample is wrong depends on whether the first
+      was. When the spacing Δ exceeds the widest transient, no pulse can cover two instants and the true
+      voter failure probability is zero, which is exactly the design rule of delay-and-vote and
+      sample-and-vote. When Δ is shorter than some transients, a pulse of width <em>W</em> between Δ and
+      2Δ covers two adjacent instants if it starts in a window of length <em>W</em> − Δ before one of the
+      two pairs.
+    </p>
+    <div class="box warn">
+      <p>
+        The binomial form of (14.5) is the course's model of a sampled voter. Its assumption is weakest
+        where <em>T</em> = Δ: the samples of one pulse are then strongly correlated, and the answer depends
+        on the interval chosen for the arrival time. The model can err in either direction. When every
+        transient is narrower than Δ it predicts voter errors that the timing does not allow, as the next
+        example shows; when the spacing shrinks toward zero the three samples coincide, the true probability
+        tends to <em>p</em>, and <em>p</em> exceeds 3<em>p</em>² − 2<em>p</em>³ for <em>p</em> below one
+        half. Use the model for the probability it defines, and the timing argument to choose the spacing.
+      </p>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Choosing the spacing of a triple-sampling latch</div>
+      <div class="ex-body">
+        <p><b>Given</b> Transients at a flip-flop's input all have width <em>W</em> = 0.30 ns (an
+        illustrative value). The flip-flop samples its input three times, Δ apart, and votes.
+        <b>Find</b> for Δ = 0.40 ns the probability that one sample captures a transient and that the voter
+        errs, from (14.5) with <em>T</em> = Δ and from the timing; then the spacing the model would need for
+        a voter error of 1 %, and the spacing the timing needs.</p>
+        <p><b>Plan.</b> Every width is below Δ, so min(<em>W</em>, Δ) = <em>W</em>. Apply (14.5), then the
+        geometry of Figure 3. For the 1 % target, solve 3<em>p</em>² − 2<em>p</em>³ = 0.01 for <em>p</em>
+        and set Δ = <em>W</em>/<em>p</em>.</p>
+        <p class="ex-step"><b>One sample.</b> <em>p</em> = 0.30 ns ÷ 0.40 ns = 0.75.</p>
+        <p class="ex-step"><b>Voter, model.</b> 3<em>p</em>²(1 − <em>p</em>) = 3 × 0.5625 × 0.25 = 0.422;
+          <em>p</em>³ = 0.422; sum 0.844.</p>
+        <p class="ex-step"><b>Voter, timing.</b> <em>W</em> = 0.30 ns is less than Δ = 0.40 ns, so a pulse
+          covers at most one instant and the other two outvote it in every case: probability zero. A Monte
+          Carlo simulation of random arrivals gives zero as well.</p>
+        <p class="ex-step"><b>Spacing for 1 %, model.</b> 3<em>p</em>² − 2<em>p</em>³ = 0.01 gives
+          <em>p</em> = 0.0589 (solved numerically); Δ = 0.30 ns ÷ 0.0589 = 5.09 ns.</p>
+        <p class="ex-step"><b>Spacing, timing.</b> Any Δ above 0.30 ns.</p>
+        <p class="ex-answer">At Δ = 0.40 ns, <em>p</em> = 0.75 and the voter errs with probability 0.84
+          by the model and 0 by the timing. The model asks for Δ ≈ 5.1 ns to reach 1 %, seventeen times the
+          0.30 ns that the timing requires. Check: at <em>p</em> = 0.0589, 3 × 0.003469 − 2 × 0.000204 =
+          0.0104 − 0.0004 = 0.0100.</p>
+      </div>
+    </div>
+    <p>
+      Buchner and Baze describe a "temporal latch" (after Mavis and Eaton, 2000) that combines the two
+      ideas: sampling at three master–slave latches filters transients from the logic, and triple modular
+      redundancy in the data latches that follow protects against upsets of the stored bits themselves.
+    </p>
+
+    <h3>Filtering in analog circuits</h3>
+    <p>
+      In an analog circuit operating in its linear region, the transient response is fixed by the
+      frequency response, so temporal filtering is the same thing as limiting bandwidth (Deck 10 p. 19).
+      The slide states the consequence: as the gain–bandwidth product falls and the phase margin rises, an
+      amplifier's transient response is damped until a single-event transient has no effect at its output.
+      For the two-stage Miller-compensated operational amplifier of Deck 10 p. 20, whose input stage is a
+      bipolar differential pair, the gain–bandwidth product is set by two quantities:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">GBW = <span class="frac"><span class="num"><em>g</em><sub>m</sub></span><span class="den"><em>C</em><sub>C</sub></span></span></div>
+        <div class="eq-num">(14.6)</div>
+      </div>
+      <div class="eq-says">
+        GBW gain–bandwidth product, the unity-gain angular frequency (rad/s; divide by 2π for Hz) ·
+        <em>g</em><sub>m</sub> transconductance of the input differential pair (A/V) ·
+        <em>C</em><sub>C</sub> Miller compensation capacitor (F). For a bipolar pair with tail current
+        <em>I</em><sub>tail</sub>, each transistor carries <em>I</em><sub>tail</sub>/2 and
+        <em>g</em><sub>m</sub> = <em>I</em><sub>tail</sub>/(2<em>V</em><sub>T</sub>), with
+        <em>V</em><sub>T</sub> = <em>kT</em>/<em>q</em> = 25.85 mV at 300 K. Deck 10 p. 20 writes the
+        ratio without the 2π; it is the angular frequency.
+      </div>
+    </div>
+    <p>
+      The bandwidth can therefore be reduced in two ways: by reducing <em>g</em><sub>m</sub> or by
+      increasing <em>C</em><sub>C</sub> (Deck 10 p. 20). They are not equivalent, and Deck 10 p. 21 says
+      which to choose. Reducing <em>g</em><sub>m</sub> means reducing the tail current of the differential
+      pair, which also reduces the current available to remove a strike's charge, and so degrades the
+      pair's resistance to transients. Increasing <em>C</em><sub>C</sub> filters equally well and leaves
+      the current alone; from the viewpoint of both charge dissipation and temporal filtering, the slide
+      concludes, the larger capacitor is the better choice. A larger <em>C</em><sub>C</sub> moves the
+      amplifier's dominant pole to a lower frequency, which is what lowers the cutoff; Deck 10's speaker
+      notes for p. 20 describe the same change as "increasing the dominant pole", which reads the wrong
+      way. The slide's final line is a reminder that either
+      choice degrades the amplifier in order to harden it.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Halving the bandwidth of a Miller amplifier two ways</div>
+      <div class="ex-body">
+        <p><b>Given</b> A Miller amplifier with a bipolar input pair biased at <em>I</em><sub>tail</sub> =
+        100 µA and <em>C</em><sub>C</sub> = 10 pF, the compensation capacitor of Deck 10 p. 20; 300 K.
+        <b>Find</b> the gain–bandwidth product in hertz, and compare halving it by halving the tail current
+        with halving it by doubling <em>C</em><sub>C</sub>, using the tail current and the slew rate
+        <em>I</em><sub>tail</sub>/<em>C</em><sub>C</sub> (the fastest rate at which the input stage can
+        charge the compensation capacitor) as measures of how fast the stage can restore itself.</p>
+        <p><b>Plan.</b> <em>g</em><sub>m</sub> from the tail current, then (14.6), then divide by 2π. The
+        slew rate of a two-stage Miller amplifier is the tail current divided by <em>C</em><sub>C</sub>,
+        a standard result of analog design.</p>
+        <p class="ex-step"><b>Transconductance.</b> <em>g</em><sub>m</sub> = 50 µA ÷ 25.85 mV = 1.93 mS.</p>
+        <p class="ex-step"><b>GBW.</b> 1.93×10⁻³ ÷ 10×10⁻¹² = 1.93×10⁸ rad/s; ÷ 2π = 30.8 MHz.</p>
+        <p class="ex-step"><b>Halve <em>I</em><sub>tail</sub> to 50 µA.</b> <em>g</em><sub>m</sub> halves, GBW =
+          15.4 MHz; slew rate 50 µA ÷ 10 pF = 5 V/µs.</p>
+        <p class="ex-step"><b>Double <em>C</em><sub>C</sub> to 20 pF.</b> GBW = 15.4 MHz; slew rate
+          100 µA ÷ 20 pF = 5 V/µs; tail current still 100 µA.</p>
+        <p class="ex-answer">GBW = 30.8 MHz, halved to 15.4 MHz either way. The two choices have the same
+          bandwidth and slew rate, but only the larger capacitor keeps the full 100 µA flowing in the input
+          pair, which is the charge-dissipation advantage of Deck 10 p. 21. Check: 1 mS ÷ 1 pF =
+          10⁹ s⁻¹, so 1.93 mS ÷ 10 pF = 1.93×10⁸ s⁻¹.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 196" role="img" aria-labelledby="m14f4-t">
+        <title id="m14f4-t">Open-loop gain magnitude against frequency for gain-bandwidth products of 30.8 and 15.4 megahertz</title>
+        <line x1="50" y1="150" x2="414" y2="150" class="dg-rule"/>
+        <line x1="50" y1="150" x2="50" y2="24" class="dg-rule"/>
+        <path d="M50.0,38.9 L60.3,38.9 L70.6,38.9 L80.9,39.0 L91.1,39.1 L101.4,39.5 L111.7,40.3 L122.0,42.0 L132.3,44.8 L142.6,48.8 L152.9,53.6 L163.1,58.9 L173.4,64.3 L183.7,69.8 L194.0,75.3 L204.3,80.9 L214.6,86.4 L224.9,92.0 L235.1,97.5 L245.4,103.1 L255.7,108.7 L266.0,114.2 L276.3,119.8 L286.6,125.3 L296.9,130.9 L307.1,136.4 L317.4,142.0 L327.7,147.5 L330.3,148.9" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="6 3"/>
+        <path d="M50.0,38.9 L60.3,39.0 L70.6,39.0 L80.9,39.3 L91.1,39.8 L101.4,41.0 L111.7,43.2 L122.0,46.7 L132.3,51.2 L142.6,56.3 L152.9,61.6 L163.1,67.1 L173.4,72.6 L183.7,78.1 L194.0,83.7 L204.3,89.2 L214.6,94.8 L224.9,100.4 L235.1,105.9 L245.4,111.5 L255.7,117.0 L266.0,122.6 L276.3,128.1 L286.6,133.7 L296.9,139.2 L307.1,144.8 L314.9,149.0" class="dg-acc" fill="none" stroke-width="2.2"/>
+        <circle cx="332.3" cy="150" r="3" class="dg-ink"/>
+        <circle cx="316.8" cy="150" r="3" class="dg-acc-f"/>
+        <text x="336" y="140" class="dg-label-sm">30.8 MHz</text>
+        <text x="236" y="140" class="dg-label-sm"><tspan class="dg-acc-f">15.4 MHz</tspan></text>
+        <text x="132" y="34" class="dg-label-sm">dominant pole 3.1 kHz → 1.5 kHz</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="50" y="164">100</text><text x="152.9" y="164">10⁴</text><text x="255.7" y="164">10⁶</text><text x="358.6" y="164">10⁸</text>
+          <text x="232" y="184">frequency (Hz)</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="46" y="42">80 dB</text><text x="46" y="98">40</text><text x="46" y="153">0</text>
+        </g>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> Single-pole open-loop gain of the amplifier in the example, with a low-frequency
+        gain of 80 dB (assumed): GBW = 30.8 MHz (dashed) and, after halving <em>I</em><sub>tail</sub> or doubling
+        <em>C</em><sub>C</sub>, 15.4 MHz (accent). The amplifier no longer responds to the fastest
+        components of a transient; which way the bandwidth was halved decides how much current remains to
+        restore the output. Computed in <code>figures-m14.py</code>.
+      </figcaption>
+    </figure>
+    <p>
+      Except in analog-to-digital converters, Buchner and Baze note, spatial techniques that need a vote
+      are not generally applicable to analog signals; Deck 10 p. 25 states the general form, that voting
+      works with digital output signals but not analog ones, and gives the example of an SEU-hardened quad
+      comparator that votes internally; Buchner and Baze apply the same idea to optical
+      receivers, triplicating the analog front end up to the point where its output becomes digital and
+      voting there. They add analog layout and bias rules that follow from §2: interdigitate large
+      devices, minimize junction areas, stabilize current sources and other bias circuits that carry no
+      signal with capacitance or resistance, and do not make signal stages faster than the application
+      needs.
+    </p>
+
+    <details class="check">
+      <summary>A sample-and-vote latch samples three times, 0.5 ns apart. Half of the transients reaching it are 0.1 ns wide and half are 1.0 ns wide. Using (14.5) with the arrival time uniform over one spacing, what are the single-sample and voted error probabilities? Which transients cause the voter errors that actually occur, and what spacing removes them, at what cost?</summary>
+      <div class="answer">
+        <p><b>Model.</b> min(0.1, 0.5) = 0.1 ns and min(1.0, 0.5) = 0.5 ns, so ⟨min(<em>W</em>, Δ)⟩ =
+        0.30 ns and <em>p</em> = 0.30 ÷ 0.5 = 0.60. Then 3 × 0.36 × 0.40 + 0.216 = 0.432 + 0.216 = 0.648.
+        <b>Timing.</b> A 0.1 ns pulse covers at most one instant and is always outvoted. A 1.0 ns pulse is
+        twice the spacing: whenever it covers the middle instant it also covers an outer one, so it defeats
+        the voter. Every voter error that occurs comes from the wide pulses. A spacing above 1.0 ns removes
+        them, which places the third sample more than 2 ns after the first and delays the latch's result by
+        that much.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>4 · Spatial redundancy</h2>
+    <p>
+      Spatial redundancy stores or computes each value in more than one place, arranged so that a single
+      wrong element cannot change the result. It does not make any one element harder to upset; it makes a
+      single upset harmless, so an error requires two elements to fail together. Buchner and Baze put the
+      reduction in cross-section at factors of 10 to 100, depending on how far apart the redundant elements
+      are, for area penalties of two to three times. The family runs from triplicating whole blocks to
+      building redundancy into a single gate or a single storage cell.
+    </p>
+
+    <h3>Triple modular redundancy</h3>
+    <p>
+      Triple modular redundancy (TMR) implements the same circuit three times and passes the three
+      outputs to a voter that outputs the value at least two of them agree on (Deck 10 p. 23). If one copy
+      is struck and produces a wrong value, the other two outvote it. With each copy wrong independently
+      with probability <em>q</em>, the voted output is wrong with probability 3<em>q</em>² − 2<em>q</em>³,
+      the majority expression of (14.5): a copy error of 10⁻⁶ becomes a voted error of 3×10⁻¹². That
+      quadratic gain is the attraction. Deck 10 p. 23 names the two drawbacks that limit it:
+    </p>
+    <ul>
+      <li><b>An upset at the input is not corrected.</b> A wrong value that enters before the triplication
+      point reaches all three copies, which then agree on it, and the voter passes it as valid.</li>
+      <li><b>The voter can itself be upset.</b> It is a single point through which every result passes. A
+      voter error of 10⁻⁸ would dominate the 3×10⁻¹² of the copies, so the voter must be hardened by the
+      other techniques of this module.</li>
+    </ul>
+    <p>
+      The quadratic gain also assumes that the copies fail independently, and that depends on layout.
+      Deck 10 p. 24 states that critical nodes and circuits must be physically separated so that the same
+      ion cannot upset two adjacent copies: the design is meant to require two simultaneous upsets. A
+      single track, or the charge sharing of <a href="m11-single-event-effects.html">M11</a> §9, can supply
+      that coincidence if two copies sit close together, and the voter then follows the two wrong copies.
+      Deck 10's speaker notes add guard rings, deep n-wells and isolation trenches as layout aids that
+      confine collection. Buchner and Baze give TMR the greatest penalties of the spatial techniques:
+      about three times the area and power, plus the voter's area and its delay (Table III; Deck 10
+      notes).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 170" role="img" aria-labelledby="m14f5-t">
+        <title id="m14f5-t">Triple modular redundancy: one input, three separated copies, a hardened voter</title>
+        <text x="16" y="89" class="dg-label">in</text>
+        <line x1="34" y1="85" x2="70" y2="85" class="dg-line"/>
+        <line x1="70" y1="30" x2="70" y2="140" class="dg-line"/>
+        <line x1="70" y1="30" x2="110" y2="30" class="dg-line"/>
+        <line x1="70" y1="85" x2="110" y2="85" class="dg-line"/>
+        <line x1="70" y1="140" x2="110" y2="140" class="dg-line"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <rect x="110" y="14" width="90" height="32" class="dg-fill"/><text x="155" y="34">copy A</text>
+          <rect x="110" y="69" width="90" height="32" class="dg-fill"/><text x="155" y="89">copy B</text>
+          <rect x="110" y="124" width="90" height="32" class="dg-fill"/><text x="155" y="144">copy C</text>
+        </g>
+        <path d="M200,30 L290,70 M200,85 L290,85 M200,140 L290,100" class="dg-line" fill="none"/>
+        <rect x="290" y="60" width="74" height="50" class="dg-acc"/>
+        <text x="327" y="82" class="dg-label-sm" text-anchor="middle">voter</text>
+        <text x="327" y="96" class="dg-label-sm" text-anchor="middle">2 of 3</text>
+        <line x1="364" y1="85" x2="404" y2="85" class="dg-line"/>
+        <text x="408" y="89" class="dg-label">out</text>
+        <text x="236" y="56" class="dg-label-sm">separated in layout</text>
+        <text x="16" y="164" class="dg-label-sm">an error before the split reaches all three copies</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> Triple modular redundancy. One wrong copy is outvoted; an input error is common to
+        all three and passes; the voter (accent) is a single point that must be hardened; and the copies
+        must be far enough apart that one track cannot reach two. After Deck 10 pp. 23–24.
+      </figcaption>
+    </figure>
+    <p>
+      TMR applies at every level from the gate to the system, and the 9 Nov guest lecture showed how its
+      granularity matters in field-programmable gate arrays (FPGAs), where the user implements it on a
+      commercial device. Taking the three names in their usual sense, in FPGAs whose configuration is held
+      in static memory, distributed TMR, which triplicates the logic and votes at intermediate points, is
+      the preferred compromise between
+      efficiency, complexity and area; local TMR, which triplicates only the storage elements, can have an
+      error cross-section similar to or even worse than the unmitigated circuit there and should be avoided;
+      and global TMR, which triplicates everything including the clocks, is too complex because of clock
+      skew. In flash-based FPGAs, whose configuration memory is non-volatile and largely immune to single
+      events, local TMR suffices at low LET. For software executed repeatedly on one processor core, the
+      same lecture stated the rule that also governs copies in hardware: with two executions an error can
+      only be detected; with more than two it can be detected and corrected.
+    </p>
+
+    <h3>Dual-stream logic</h3>
+    <p>
+      Dual-stream redundancy builds the redundancy into each gate (Wiseman, 1994; Deck 10 pp. 26–27). Each
+      logic function is duplicated in a p-channel and an n-channel version with two outputs, POUT and NOUT.
+      In the two-input NAND of Figure 6, POUT is driven by the two parallel p-channel pull-ups and NOUT by the
+      two series n-channel pull-downs. Two cross-coupled, weakly driving transistors complete each output
+      for the opposite level: a p-channel transistor, gated by NOUT, pulls POUT down to a weak "0", and an
+      n-channel transistor, gated by POUT, pulls NOUT up to a weak "1". Deck 10 p. 26 labels POUT strong
+      "1", weak "0", and NOUT strong "0", weak "1". The outputs feed the next stage separately: POUT drives
+      only p-channel gates and NOUT only n-channel gates, which Buchner and Baze describe as connecting
+      p-channel outputs only to p-channel inputs and n-channel outputs only to n-channel inputs.
+    </p>
+    <p>
+      The protection follows from which diffusions each node touches. Every transistor terminal on POUT is
+      a p⁺ diffusion: the drains of the pull-ups and the source of the weak p-channel pull-down; the
+      n-channel transistor it connects to sees it only at its gate. A strike on a p⁺ diffusion collects
+      holes, which raise the node voltage. POUT can therefore only be pulled up, and NOUT, which touches
+      only n⁺ diffusions, can only be pulled down. Deck 10 p. 27 and Buchner and Baze state the result:
+      POUT can only upset "high", NOUT can only upset "low". Now follow a strike into the next stage. If
+      the output is "0", POUT and NOUT are both low, the next p-channel transistor is on and the next
+      n-channel transistor is off. A strike can only push POUT high, which turns the next p-channel
+      transistor off as well: the next stage's output is then driven by neither network and holds its
+      previous value on its capacitance, instead of switching to the wrong one. The mirror case holds for
+      a "1" output and a strike on NOUT. One strike can make a following stage float briefly; it cannot make
+      it switch. A wrong logic value needs both streams to carry the wrong level at once (Deck 10 notes:
+      both outputs must fail simultaneously), and a strike on either output node alone cannot produce
+      that, because each node can be moved in one direction only.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 236" role="img" aria-labelledby="m14f6-t">
+        <title id="m14f6-t">Dual-stream two-input NAND gate: POUT on p-type diffusions only, NOUT on n-type diffusions only</title>
+        <line x1="60" y1="18" x2="230" y2="18" class="dg-rule"/>
+        <text x="236" y="22" class="dg-label-sm">V<tspan baseline-shift="sub" style="font-size:75%">DD</tspan></text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <rect x="60" y="30" width="56" height="26" class="dg-fill"/><text x="88" y="47">pMOS A</text>
+          <rect x="140" y="30" width="56" height="26" class="dg-fill"/><text x="168" y="47">pMOS B</text>
+        </g>
+        <line x1="60" y1="18" x2="60" y2="30" class="dg-line"/>
+        <line x1="88" y1="18" x2="88" y2="30" class="dg-line"/><line x1="168" y1="18" x2="168" y2="30" class="dg-line"/>
+        <line x1="88" y1="56" x2="88" y2="76" class="dg-line"/><line x1="168" y1="56" x2="168" y2="76" class="dg-line"/>
+        <line x1="40" y1="76" x2="330" y2="76" class="dg-acc" stroke-width="2.2"/>
+        <text x="336" y="80" class="dg-label"><tspan class="dg-acc-f">POUT</tspan></text>
+        <text x="336" y="94" class="dg-label-sm">p⁺ only · upsets high</text>
+        <rect x="200" y="96" width="70" height="24" class="dg-fill"/>
+        <text x="235" y="112" class="dg-label-sm" text-anchor="middle">weak pMOS</text>
+        <line x1="235" y1="76" x2="235" y2="96" class="dg-line"/>
+        <line x1="235" y1="120" x2="235" y2="134" class="dg-line"/>
+        <text x="242" y="134" class="dg-label-sm">to ground; gate = NOUT</text>
+        <rect x="70" y="96" width="70" height="24" class="dg-fill"/>
+        <text x="105" y="112" class="dg-label-sm" text-anchor="middle">weak nMOS</text>
+        <line x1="105" y1="120" x2="105" y2="150" class="dg-line"/>
+        <text x="16" y="104" class="dg-label-sm">gate</text><text x="16" y="116" class="dg-label-sm">= POUT</text>
+        <text x="146" y="104" class="dg-label-sm">from V<tspan baseline-shift="sub" style="font-size:75%">DD</tspan></text>
+        <line x1="40" y1="150" x2="330" y2="150" class="dg-line" stroke-width="2.2"/>
+        <text x="336" y="154" class="dg-label">NOUT</text>
+        <text x="336" y="168" class="dg-label-sm">n⁺ only · upsets low</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <rect x="140" y="164" width="56" height="24" class="dg-fill"/><text x="168" y="180">nMOS A</text>
+          <rect x="140" y="196" width="56" height="24" class="dg-fill"/><text x="168" y="212">nMOS B</text>
+        </g>
+        <line x1="168" y1="150" x2="168" y2="164" class="dg-line"/>
+        <line x1="168" y1="188" x2="168" y2="196" class="dg-line"/>
+        <line x1="168" y1="220" x2="168" y2="230" class="dg-line"/>
+        <text x="176" y="232" class="dg-label-sm">ground</text>
+      </svg>
+      <figcaption>
+        <b>Figure 6.</b> The dual-stream NAND gate of Deck 10 p. 26 (after Wiseman, 1994), drawn as blocks.
+        POUT (accent) connects only to p⁺ diffusions and to a gate, so a strike can only pull it up; NOUT
+        connects only to n⁺ diffusions and to a gate, so a strike can only pull it down. POUT drives the
+        next stage's p-channel gates and NOUT its n-channel gates. Schematic, not a layout.
+      </figcaption>
+    </figure>
+    <p>
+      Deck 10's speaker notes for p. 27 describe POUT's upset as a pull from "1" toward "0", the opposite of
+      the slide's own label. The slide, Buchner and Baze's figure of the same gate, and the diffusion
+      argument above agree that POUT can only be pulled up and NOUT only down; the slide is the version
+      used here. The technique has costs that the slide calls significant in speed and area, and it
+      requires careful transistor sizing so that the weak cross-coupled transistors restore the outputs
+      quickly enough without fighting the strong ones. Buchner and Baze estimate about twice the area,
+      power and delay of standard logic, and judge it the least costly spatial technique, but one that
+      requires a new logic-cell library and architecture.
+    </p>
+
+    <h3>The dual-interlocked storage cell (DICE)</h3>
+    <p>
+      The DICE cell extends the dual-stream idea to storage (Calin, Nicolaidis and Velazco, 1996; Deck 10
+      p. 28). An ordinary static memory cell holds a bit on two nodes in a single feedback loop, and a
+      strike that flips one node flips the bit (<a href="m11-single-event-effects.html">M11</a> §4). The
+      DICE cell holds the bit on four nodes, arranged as two latches whose outputs drive each other's
+      inputs: latch 1's POUT and NOUT become latch 2's PIN and NIN, and the reverse. Deck 10 p. 28 states
+      the consequence: a transient in either latch is damped out by the other, and both latches must be
+      upset at the same time to lose the data. A strike that disturbs one node drives the nodes it controls
+      only partway, because each of those nodes is also held by an undisturbed node of the other latch;
+      when the collection ends, the undisturbed nodes restore the struck one. Dodd and Massengill note
+      that hardened memory cells of this kind use 12 to 16 transistors against the six of a standard cell,
+      and Deck 10's speaker notes for p. 29 put a DICE flip-flop at about two to three times the area of a
+      standard D flip-flop.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 170" role="img" aria-labelledby="m14f7-t">
+        <title id="m14f7-t">DICE cell: two latches whose outputs feed each other's inputs</title>
+        <rect x="140" y="18" width="160" height="50" class="dg-fill"/>
+        <text x="220" y="48" class="dg-label" text-anchor="middle">latch 1</text>
+        <rect x="140" y="102" width="160" height="50" class="dg-fill"/>
+        <text x="220" y="132" class="dg-label" text-anchor="middle">latch 2</text>
+        <g class="dg-label-sm">
+          <text x="146" y="34">PIN</text><text x="146" y="62">NIN</text>
+          <text x="294" y="34" text-anchor="end">POUT</text><text x="294" y="62" text-anchor="end">NOUT</text>
+          <text x="146" y="118">POUT</text><text x="146" y="146">NOUT</text>
+          <text x="294" y="118" text-anchor="end">PIN</text><text x="294" y="146" text-anchor="end">NIN</text>
+        </g>
+        <path d="M300,30 L350,30 L350,114 L300,114" class="dg-acc" fill="none" stroke-width="2"/>
+        <path d="M300,58 L370,58 L370,142 L300,142" class="dg-acc" fill="none" stroke-width="2"/>
+        <path d="M140,114 L90,114 L90,30 L140,30" class="dg-line" fill="none" stroke-width="1.6"/>
+        <path d="M140,142 L70,142 L70,58 L140,58" class="dg-line" fill="none" stroke-width="1.6"/>
+        <text x="376" y="92" class="dg-label-sm">1 → 2</text>
+        <text x="18" y="92" class="dg-label-sm">2 → 1</text>
+        <text x="220" y="90" class="dg-label-sm" text-anchor="middle">both must be upset at once</text>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> The DICE cell as drawn on Deck 10 p. 28 (after Calin <em>et al.</em>, 1996): each
+        latch's outputs are the other latch's inputs, so a transient in one is damped by the other. One
+        track that deposits charge on sensitive nodes of both latches defeats it, which is why the layout
+        separates them.
+      </figcaption>
+    </figure>
+    <p>
+      The DICE cell's weakness is the same coincidence that limits TMR. One track that delivers charge to
+      sensitive nodes of both latches upsets them together, and charge sharing supplies exactly that in a
+      dense layout: <a href="m11-single-event-effects.html">M11</a> §9 describes the upsets of a 130 nm DICE
+      latch at low LET traced to charge sharing between its node pairs. The response is to separate the
+      sensitive node pairs in layout, at a further cost in area, and Deck 10 p. 35 records that the
+      classical DICE latch, still the baseline hardened latch, faces scaling limitations below 16 nm.
+    </p>
+    <p>
+      Isolation offers spatial redundancy at the device level. Deck 10 p. 30 notes that SOI gives every
+      transistor its own isolated body, which reduces the charge-collection volume and permits gate designs
+      in which a transient propagates only if two separate p-channel or n-channel transistors are struck at
+      once; the slide adds the condition that leakage near the buried oxide be controlled to keep the
+      total-dose hardness (<a href="m08-tid-effects-devices-ics.html">M08</a> §7), and the lecture added that the
+      buried oxide's isolation also impedes heat removal. Buchner and Baze's biased-well inverter applies
+      the same principle at the gate level: series isolation transistors in separately biased wells pass
+      the drive signal but block an upset in the drive transistors, so at least two transistors must be
+      upset. It costs speed, through the load of the added series transistors, and about two to three
+      times the area, and it needs a process that can form separately isolated p- and n-wells, for which
+      their example is SOI.
+    </p>
+
+    <details class="check">
+      <summary>In a dual-stream inverter chain, the gate's output is "1". A heavy ion strikes the drain of the n-channel pull-down transistor on NOUT. What happens to NOUT, to the next stage's two transistors, and to the next stage's output? Why would the same strike on POUT do nothing?</summary>
+      <div class="answer">
+        <p>With the output at "1", the p-channel pull-ups drive POUT high and the weak n-channel transistor
+        holds NOUT at a weak "1". The struck n⁺ drain collects electrons, which pull NOUT down. In the next
+        stage, NOUT drives only the n-channel gate: that transistor turns off. POUT is still high, so the
+        next stage's p-channel transistor is also off. Neither network drives the next stage's output, which
+        floats and holds its correct value on its capacitance until NOUT recovers; it does not switch. A
+        strike on POUT in the same state could only push it higher (holes collected on p⁺ diffusions raise
+        the voltage), and POUT is already at the supply, so nothing changes. An error needs both streams to
+        carry the wrong level at once; a strike on either output node alone cannot do that, because each
+        node can be moved in one direction only.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>5 · Error-correcting codes, interleaving and scrubbing</h2>
+    <p>
+      Memories are the largest and most numerous storage elements on a chip, and making every cell a
+      hardened cell costs too much area. Codes protect them instead: extra bits stored with each word let
+      the circuit detect and correct a flipped bit when the word is read. Dodd and Massengill describe error
+      detection and correction (EDAC) as a system-level approach whose overhead can be nonnegligible, but
+      which is sometimes the only method available when susceptible parts must be used, and the IEEE NSREC
+      2025 Short Course notes that most modern complex devices include it. A code is limited by
+      how many bits it can correct in one word, so its partners are interleaving, which keeps one strike
+      from flipping several bits of one word, and scrubbing, which keeps errors from accumulating.
+    </p>
+
+    <h3>How a code corrects a bit</h3>
+    <p>
+      A parity bit makes the number of 1s in a stored word even (or odd); a single flipped bit changes that
+      count and is detected, but not located. Hamming codes (Hamming, 1950) add <em>r</em> check bits,
+      each the parity of a different subset of the data bits, chosen so that the pattern of failed checks,
+      the syndrome, names the flipped bit. For a single-error-correcting (SEC) code, the syndrome must
+      distinguish every bit position plus the case of no error:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">2<sup><em>r</em></sup> ≥ <em>k</em> + <em>r</em> + 1</div>
+        <div class="eq-num">(14.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>r</em> number of check bits for single-error correction · <em>k</em> number of data bits per
+        word. A single-error-correcting, double-error-detecting (SEC-DED) code adds one more, overall parity
+        bit: <em>r</em> + 1 check bits in all. Smallest <em>r</em> + 1 for SEC-DED: 6 bits for 16 data
+        bits, 7 for 32, 8 for 64, giving the (72,64) SEC-DED codes used in many memories. Hsiao (1970)
+        gave a construction of such codes, with odd-weight columns in the parity-check matrix, that reaches
+        the same distance with the same number of check bits and no separate overall parity bit.
+      </div>
+    </div>
+    <p>
+      The code's power is set by its minimum distance, the smallest number of bits in which two valid
+      codewords differ. A Hamming SEC code has distance 3: a single flip leaves the word closer to the
+      original codeword than to any other, so it is corrected; two flips can leave it closer to a wrong
+      codeword, so it is miscorrected. The extra parity bit of SEC-DED raises the distance to 4, so a double
+      flip is recognized as uncorrectable instead of being miscorrected. The guest lecture's overview of
+      codes describes the Hamming (7,4) code, four data bits and three check bits, as enabling SEC-DED;
+      (7,4) satisfies (14.7) with equality and is SEC only, and the SEC-DED version is the extended (8,4)
+      code with one more parity bit. The storage overhead of SEC-DED falls with word length: 8 check bits are
+      12.5 % of a 64-bit word, against 200 % for storing the word three times.
+    </p>
+    <p>
+      Other codes serve other error patterns (9 Nov guest lecture): cyclic redundancy checks detect burst
+      errors without correcting them; Reed–Solomon codes work on multi-bit symbols of <em>b</em> bits, so a
+      burst of up to <em>b</em> + 1 consecutive bit errors corrupts at most two symbols, which suits the
+      burst errors that single-event functional interrupts cause in dynamic memories;
+      Bose–Chaudhuri–Hocquenghem (BCH) codes are prized for compact, power-efficient syndrome decoders;
+      and low-density parity-check codes give high correction capability with simpler decoding than
+      Reed–Solomon or BCH, which suits high-speed memories. All of them cost more check bits and decoder
+      logic than a SEC-DED Hamming code.
+    </p>
+    <div class="box insight">
+      <p>
+        A code corrects random, independent bit flips that are few per word. That is the signature of
+        single-event upsets, and it is why the course stressed that error correction protects against
+        single-event upset but not against total ionizing dose. The reason, on this page's reading, is
+        that total dose acts gradually on every transistor at once, through threshold shifts and leakage
+        (<a href="m08-tid-effects-devices-ics.html">M08</a>): it degrades the cells, the peripheral circuits
+        and the code circuitry together instead of flipping a few random bits. A code also cannot clear an
+        interrupted state: a latchup needs a power cycle and a persistent functional interrupt a reset or
+        power cycle, although a symbol code such as Reed–Solomon can correct the burst of data errors that a
+        functional interrupt leaves in a dynamic memory.
+      </p>
+    </div>
+
+    <h3>Multiple-cell upsets and interleaving</h3>
+    <p>
+      SEC-DED corrects one flipped bit per word. A multiple-cell upset (MCU), one strike flipping several
+      physically adjacent cells (<a href="m11-single-event-effects.html">M11</a> §§1, 9), defeats it if the
+      adjacent cells belong to the same word. Deck 10 p. 37 notes that MCUs grow with scaling and with
+      three-dimensional integration, because of smaller cell spacing and stronger coupling, and lists the
+      mitigation: error correction with interleaving, which disperses the spatial correlation, layout
+      separation, and hardened cell design. Bit interleaving assigns physically adjacent cells to different
+      logical words. With an interleaving factor of four, as in Figure 8, the bits of word A sit in every
+      fourth column, so a strike that flips up to four adjacent cells puts at most one wrong bit in each of
+      four words, and SEC-DED corrects all four. The interleaving factor must be at least the span of the
+      largest MCU that is to be corrected.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 150" role="img" aria-labelledby="m14f8-t">
+        <title id="m14f8-t">A four-cell multiple-cell upset without and with four-way bit interleaving</title>
+        <text x="10" y="30" class="dg-label-sm">no interleaving</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <rect x="110" y="16" width="24" height="22" class="dg-fill"/><text x="122" y="31">A</text>
+          <rect x="134" y="16" width="24" height="22" class="dg-acc-f"/><text x="146" y="31" style="fill:var(--bg)">A</text>
+          <rect x="158" y="16" width="24" height="22" class="dg-acc-f"/><text x="170" y="31" style="fill:var(--bg)">A</text>
+          <rect x="182" y="16" width="24" height="22" class="dg-acc-f"/><text x="194" y="31" style="fill:var(--bg)">A</text>
+          <rect x="206" y="16" width="24" height="22" class="dg-acc-f"/><text x="218" y="31" style="fill:var(--bg)">A</text>
+          <rect x="230" y="16" width="24" height="22" class="dg-fill"/><text x="242" y="31">A</text>
+          <rect x="254" y="16" width="24" height="22" class="dg-fill"/><text x="266" y="31">B</text>
+          <rect x="278" y="16" width="24" height="22" class="dg-fill"/><text x="290" y="31">B</text>
+        </g>
+        <text x="312" y="31" class="dg-label-sm">4 errors in word A:</text>
+        <text x="312" y="44" class="dg-label-sm">uncorrectable</text>
+        <text x="10" y="96" class="dg-label-sm">4-way interleaved</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <rect x="110" y="82" width="24" height="22" class="dg-fill"/><text x="122" y="97">A</text>
+          <rect x="134" y="82" width="24" height="22" class="dg-acc-f"/><text x="146" y="97" style="fill:var(--bg)">B</text>
+          <rect x="158" y="82" width="24" height="22" class="dg-acc-f"/><text x="170" y="97" style="fill:var(--bg)">C</text>
+          <rect x="182" y="82" width="24" height="22" class="dg-acc-f"/><text x="194" y="97" style="fill:var(--bg)">D</text>
+          <rect x="206" y="82" width="24" height="22" class="dg-acc-f"/><text x="218" y="97" style="fill:var(--bg)">A</text>
+          <rect x="230" y="82" width="24" height="22" class="dg-fill"/><text x="242" y="97">B</text>
+          <rect x="254" y="82" width="24" height="22" class="dg-fill"/><text x="266" y="97">C</text>
+          <rect x="278" y="82" width="24" height="22" class="dg-fill"/><text x="290" y="97">D</text>
+        </g>
+        <text x="312" y="97" class="dg-label-sm">1 error in each of</text>
+        <text x="312" y="110" class="dg-label-sm">B, C, D, A: corrected</text>
+        <path d="M134,128 L230,128" class="dg-acc" stroke-width="2"/>
+        <text x="182" y="144" class="dg-label-sm" text-anchor="middle">one strike, four adjacent cells</text>
+      </svg>
+      <figcaption>
+        <b>Figure 8.</b> The same four-cell upset (filled) in one row of a memory. Without interleaving, all
+        four flipped bits belong to word A and exceed what SEC-DED can correct. With four-way interleaving,
+        adjacent cells belong to four different words, each of which receives one correctable error.
+        Schematic.
+      </figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Choosing an interleaving factor</div>
+      <div class="ex-body">
+        <p><b>Given</b> A memory protected by SEC-DED records 3.0 upset events per day in its environment.
+        Of these events, 75 % flip one cell, 18 % two adjacent cells of a row, 5 % three and 2 % four (an
+        assumed distribution). <b>Find</b> the number of events per year that leave a word with more than one
+        wrong bit, for interleaving factors of 1, 2 and 4, and the smallest factor that removes them.</p>
+        <p><b>Plan.</b> With interleaving factor <em>I</em>, consecutive cells of a row belong to
+        <em>I</em> different words in turn, so an event spanning <em>s</em> cells puts ⌈<em>s</em>/<em>I</em>⌉
+        wrong bits into at least one word. SEC-DED corrects one bit per word, so a word with two or more is
+        uncorrectable. Events that straddle the end of a word's cells are ignored.</p>
+        <p class="ex-step"><b>Events per year.</b> 3.0 × 365.25 = 1096.</p>
+        <p class="ex-step"><b><em>I</em> = 1.</b> Every multi-cell event puts all its bits in one word:
+          18 + 5 + 2 = 25 % of events, 274 per year.</p>
+        <p class="ex-step"><b><em>I</em> = 2.</b> A two-cell event gives one bit to each of two words, both
+          corrected. A three-cell event gives two bits to one word, and a four-cell event two bits to each of
+          two words: 5 + 2 = 7 %, 77 per year.</p>
+        <p class="ex-step"><b><em>I</em> = 4.</b> No event spans more than four cells, so no word receives
+          more than one bit: none.</p>
+        <p class="ex-answer">274, 77 and 0 events per year; the smallest factor is 4, the span of the largest
+          MCU, as the rule above states. Check: what remains at <em>I</em> = 4 is second order, two
+          independent events landing in the same word before it is read and corrected, which is what
+          scrubbing addresses below.</p>
+      </div>
+    </div>
+    <p>
+      The same counting applies to a single read. Suppose that on one access a word holds a single-bit
+      upset with a small probability <em>p</em><sub>s</sub> and a two-cell MCU with a small probability
+      <em>p</em><sub>m</sub>. Without interleaving the word is uncorrectable with probability
+      ≈ <em>p</em><sub>m</sub>, to first order: the MCU term sets the result. With interleaving at least as
+      wide as the MCU, the MCU contributes no uncorrectable word at first order, and what remains is the
+      coincidence of two independent events in one word. For a per-word event probability <em>r</em> ≪ 1
+      that coincidence has probability about <em>r</em>²/2 (the Poisson term used for scrubbing below), with
+      <em>r</em> ≈ <em>p</em><sub>s</sub> + 2<em>p</em><sub>m</sub>, since each interleaved two-cell MCU
+      now delivers one bit to each of two words; MCUs wider than the interleaving factor add to it.
+      Interleaving turns a first-order failure into a second-order one, the same change that TMR makes for
+      logic.
+    </p>
+    <p>
+      The guest lecture on space systems showed how much of a modern memory's event rate MCUs carry. In
+      measured data on a 5 nm static memory, about 83 % of events at an LET of 2.19 MeV·cm²/mg flipped one
+      bit, and about 8 % at 85.76 MeV·cm²/mg, where the plotted events reach 12 bits (the chart's legend
+      provides for up to 16). The same lecture
+      recommended interleaving of the cells within memory blocks against multiple-bit upsets in dynamic
+      memories, and Reed–Solomon coding against the bursts of errors that functional interrupts cause there.
+    </p>
+
+    <h3>Scrubbing</h3>
+    <p>
+      A code corrects an error only when the word is read, and a word that is rarely read can collect a
+      second upset before the first is removed. Scrubbing prevents this: the memory is periodically read,
+      corrected and written back, so that any correctable single-bit error is repaired before a second one
+      joins it (IEEE NSREC 2025 Short Course, Part IV-A). Deck 10 p. 33 lists memory scrubbing with error
+      correction among the system-level strategies, for memories and for the configuration memory of
+      FPGAs. The scrub rate sets the window in which two upsets must coincide, and a short derivation gives
+      the mean time to failure.
+    </p>
+    <p>
+      Let a memory hold <em>N</em> words of <em>M</em> stored bits, each bit upset at a rate
+      <em>λ</em>, and scrub every word at a rate <em>ν</em>, so that each word is cleaned every
+      <em>T</em> = 1/<em>ν</em>. In one interval a word receives on average <em>MλT</em> upsets; when that is
+      small, the probability of two or more is (<em>MλT</em>)²/2. The word therefore fails at a rate
+      (<em>MλT</em>)²/(2<em>T</em>) = <em>M</em>²<em>λ</em>²/(2<em>ν</em>), and <em>N</em> independent words
+      fail <em>N</em> times as often:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">MTTF<sub>no ECC</sub> = <span class="frac"><span class="num">1</span><span class="den"><em>λ N M</em></span></span>, &nbsp; MTTF<sub>ECC</sub> ≈ <span class="frac"><span class="num">1</span><span class="den"><em>λ</em>(<em>M</em> + <em>C</em>)</span></span><span class="sqrt"><span class="frac"><span class="num">π</span><span class="den">2<em>N</em></span></span></span>, &nbsp; MTTF<sub>ECC+scrub</sub> ≈ <span class="frac"><span class="num">2<em>ν</em></span><span class="den"><em>N M</em>² <em>λ</em>²</span></span></div>
+        <div class="eq-num">(14.8)</div>
+      </div>
+      <div class="eq-says">
+        MTTF mean time to the first uncorrectable error (s, or the time unit of <em>λ</em>) · <em>N</em>
+        number of words · <em>M</em> bits per word · <em>C</em> check bits per word · <em>λ</em> upset rate
+        per bit (s⁻¹) · <em>ν</em> scrub rate per word (s⁻¹). The first two forms are as tabulated in the
+        IEEE NSREC 2025 Short Course (Part IV-A, after its ref. [20]); the second is the mean time until some
+        word, never scrubbed, receives its second upset. The third is the derivation above, with
+        <em>M</em> taken as all stored bits including the check bits. Valid when <em>MλT</em> ≪ 1.
+      </div>
+    </div>
+    <p>
+      The short course prints the third entry as 2<em>ν</em>/(<em>Mλ</em>²<em>N</em>²) while defining
+      <em>N</em> as the number of words and <em>M</em> as the bits per word, so with its own definitions the
+      powers are interchanged relative to the derivation. The likely cause is notation: the result goes back
+      to Saleh, Serrano and Patel (1990), and later reviews tabulate it with <em>M</em> counting words and
+      <em>N</em> bits per word, in which notation the printed form is the derived one. The derivation's
+      dependence is the physically required one: words fail independently, so doubling the number of words halves the time to
+      the first failure, while doubling the word length doubles both the chance of a first upset and the
+      chance of a second in the same word. The short course's stated conclusion holds for either form: the
+      MTTF falls with the square of the upset rate and rises linearly with the scrub rate, so a radiation
+      test at high flux must raise the scrub rate faster than the flux to keep the memory consistent.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Mean time to failure of a scrubbed memory</div>
+      <div class="ex-body">
+        <p><b>Given</b> A memory of <em>N</em> = 2²⁰ words of 64 data bits, stored with SEC-DED as 72 bits;
+        per-bit upset rate <em>λ</em> = 1×10⁻⁷ per day. <b>Find</b> the MTTF without a code, with SEC-DED and
+        no scrubbing, and with SEC-DED scrubbed hourly and daily.</p>
+        <p><b>Plan.</b> Apply the three forms of (14.8) in days. Without a code the word has 64 bits; with the
+        code, <em>M</em> + <em>C</em> = 72 in the second form and <em>M</em> = 72 in the third.</p>
+        <p class="ex-step"><b>No code.</b> 1/(10⁻⁷ × 1 048 576 × 64) = 0.149 day, about 3.6 hours.</p>
+        <p class="ex-step"><b>SEC-DED, no scrub.</b> 1/(10⁻⁷ × 72) × √(π/(2 × 1 048 576)) =
+          1.39×10⁵ × 1.22×10⁻³ = 170 days.</p>
+        <p class="ex-step"><b>SEC-DED, hourly scrub.</b> <em>ν</em> = 24 per day: 2 × 24 ÷ (1 048 576 × 72² ×
+          10⁻¹⁴) = 48 ÷ 5.44×10⁻⁵ = 8.83×10⁵ days, about 2400 years.</p>
+        <p class="ex-step"><b>SEC-DED, daily scrub.</b> <em>ν</em> = 1 per day: 2 ÷ 5.44×10⁻⁵ =
+          3.68×10⁴ days, about 100 years.</p>
+        <p class="ex-answer">0.15 day; 170 days; 8.8×10⁵ days hourly; 3.7×10⁴ days daily. Check: the hourly
+          result is 24 times the daily one, the linear dependence on <em>ν</em>; and in one hour a word
+          collects 72 × 10⁻⁷/24 = 3×10⁻⁷ upsets on average, so the small-<em>MλT</em> condition holds.</p>
+      </div>
+    </div>
+    <p>
+      Deck 10 p. 34 gives examples of these measures in flight hardware: a processor family used in Mars
+      rovers and deep-space probes combines TMR logic, ECC memory and a watchdog reset, and a family of
+      SRAM-based FPGAs uses TMR logic with periodic scrubbing of the configuration memory. The 9 Nov guest
+      lecture added that the scrub rate of an FPGA's configuration memory must be chosen from the
+      availability requirement, the scrub and reconfiguration latencies, the upset rate of that memory and,
+      where the vendor identifies them, which configuration bits are essential to the design.
+    </p>
+
+    <details class="check">
+      <summary>An orbit change raises a memory's per-bit upset rate tenfold. By what factor must the scrub rate change to keep the same mean time to failure with SEC-DED, and why does interleaving not remove the need for scrubbing?</summary>
+      <div class="answer">
+        <p>With scrubbing, MTTF ∝ <em>ν</em>/<em>λ</em>² (14.8). A tenfold rise in <em>λ</em> divides the MTTF
+        by 100, so the scrub rate must rise a hundredfold to restore it. Interleaving and scrubbing remove
+        different second errors. Interleaving keeps the bits of one strike out of a single word, so an MCU
+        no wider than the interleaving factor is never a double error. Scrubbing keeps two separate strikes, at different times, from accumulating
+        in one word. A memory with interleaving but no scrubbing still fails when a rarely read word collects
+        two independent upsets, at the rate of the second form of (14.8).</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>6 · Where a sequential circuit's errors come from</h2>
+    <p>
+      Hardening costs area, power or speed, so it should go where the errors originate. A sequential
+      circuit, logic feeding flip-flops on every clock, has two sources: a strike on a flip-flop's own
+      storage nodes, and a transient in the logic that the flip-flop captures. The guest lecture on Deck 13
+      showed that their relative size changes with clock frequency, so the right place to harden depends on
+      how fast the circuit runs. This section builds the cross-section of each source and the frequency at
+      which they are equal.
+    </p>
+
+    <h3>Latch upsets and logic upsets</h3>
+    <p>
+      A D flip-flop is two latches in series, a primary (master) stage and a secondary (slave) stage, each
+      holding its value in a loop of two inverters while its input is closed off by the clock (Deck 13
+      pp. 13–19). Its next state after the rising clock edge equals the D input just before the edge. A
+      strike on a holding latch produces a transient on one inverter output; if the transient has enough
+      amplitude and width, the loop feeds it back and stores it, and the wrong value persists until the next
+      write (Deck 13 p. 20). The guest lectures gave the timing form of the condition: a transient becomes a
+      persistent upset when it is wider than the time the feedback loop takes to complete. Transient widths
+      are conventionally measured at half the supply voltage.
+    </p>
+    <p>
+      A strike in the logic upstream instead produces a transient that travels to the flip-flop's input,
+      including the transparent stage of the flip-flop itself, which behaves as part of the logic. Whether
+      it is stored depends on its width and on when it arrives relative to the setup and hold window, the
+      interval around the clock edge in which the input must be steady to be written correctly (Deck 13
+      pp. 23–28). A higher clock frequency opens that window more often, so logic upsets become more
+      frequent as the clock speeds up, while a latch upset, which needs no clock edge, does not.
+    </p>
+
+    <h3>Cross-sections and the three maskings</h3>
+    <p>
+      Deck 13 defines the single-event cross-section of a latch the way M11 §6 does, normalized per
+      flip-flop (p. 21) or per test block (p. 48) because tests use many copies for statistics:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>σ</em><sub>latch</sub> = <span class="frac"><span class="num">number of errors</span><span class="den"><em>Φ</em> · <em>N</em><sub>FF</sub></span></span>, &nbsp;&nbsp; <em>σ</em><sub>logic</sub> = <span class="dl">∑</span><sub>nodes</sub> <span class="dl">∑</span><sub><em>t</em><sub>SET</sub></sub> <em>A</em> · <em>E</em> · <em>L</em> · <em>T</em></div>
+        <div class="eq-num">(14.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>σ</em><sub>latch</sub> latch cross-section per flip-flop (cm²) · <em>Φ</em> beam fluence
+        (ions/cm²), flux times exposure time · <em>N</em><sub>FF</sub> number of flip-flops under test ·
+        <em>σ</em><sub>logic</sub> logic cross-section (cm²), summed over the sensitive nodes of the logic cone
+        and over the distribution of transient widths · <em>A</em> sensitive area of the node (cm²) ·
+        <em>E</em>, <em>L</em>, <em>T</em> probabilities (0–1) that the transient escapes electrical, logical and
+        temporal masking. Measure the latch value at low frequency or with static data (Deck 13 p. 48).
+      </div>
+    </div>
+    <p>
+      Each masking factor is the probability that one of the four conditions of §1 holds. Deck 13
+      pp. 29–34 defines them:
+    </p>
+    <ul>
+      <li><b>Logical masking</b> occurs when no logically sensitized path connects the struck gate to an
+      output or flip-flop. A NAND gate whose other input is "0" outputs "1" whatever its struck input does,
+      so a transient on that input stops there. It depends on the input pattern and is estimated by fault
+      simulation.</li>
+      <li><b>Electrical masking</b> occurs when the transient is attenuated as it propagates along a
+      sensitized path, because each gate it passes reshapes it according to its drive strength. It is
+      estimated by circuit simulation over a range of deposited charge, and matters only where a sensitized
+      path exists.</li>
+      <li><b>Temporal masking</b> occurs when the transient does not overlap the latching window. It depends
+      on the clock frequency and is the same for all gates of a logic block for transients of the same
+      width.</li>
+    </ul>
+    <p>
+      The guest added that the first two tend to go together: a gate deep in the logic, far from any
+      flip-flop, is both more likely to be logically masked and more likely to be electrically attenuated,
+      while a gate near a flip-flop input is exposed to both. For temporal masking, Deck 13 p. 34 gives the
+      fraction of a clock cycle in which a transient of width <em>t</em><sub>SET</sub> is captured:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em> = <span class="dl">∑</span><sub><em>t</em><sub>SET</sub></sub> <span class="frac"><span class="num"><em>t</em><sub>SET</sub> + <em>t</em><sub>SH</sub></span><span class="den"><em>t</em><sub>cycle</sub> + <em>t</em><sub>SET</sub></span></span></div>
+        <div class="eq-num">(14.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em> probability that the transient is captured (escapes temporal masking) ·
+        <em>t</em><sub>SET</sub> transient width (s) · <em>t</em><sub>SH</sub> setup-plus-hold window of the
+        flip-flop (s) · <em>t</em><sub>cycle</sub> clock period (s). After Harrington (2017) and Zhou (2006),
+        as given on Deck 13 p. 34, which uses the same letter for the factor and the period. The 9 Nov guest
+        lecture uses the simpler <em>t</em><sub>SET</sub>/<em>t</em><sub>clk</sub>, which omits the window;
+        both are nearly proportional to frequency while <em>t</em><sub>cycle</sub> ≫ <em>t</em><sub>SET</sub>.
+        (11.6) of M11 gives the capture probability for a clock edge that falls near the pulse; (14.10) gives
+        the probability per clock cycle, which is what makes the logic term scale with frequency.
+      </div>
+    </div>
+    <p>
+      For a 50 ps transient and a 20 ps window, (14.10) gives 70/10 050 = 0.0070 at 100 MHz and
+      70/1050 = 0.067 at 1 GHz, a ratio of 9.6 for a tenfold frequency increase; the simple form gives
+      0.005 and 0.05. The logic cross-section is therefore close to linear in clock frequency, and Deck 13
+      p. 37 draws it with slope 1 on log–log axes. The latch cross-section, set by the critical charge and
+      the sensitive area of the flip-flop, does not depend on frequency.
+    </p>
+
+    <h3>The threshold frequency</h3>
+    <p>
+      The circuit's total cross-section is the sum: a constant latch term plus a logic term that rises
+      with frequency (Deck 13 p. 37). The frequency at which the two are equal is the threshold frequency.
+      Below it latch errors dominate and hardening the flip-flops pays; above it logic errors dominate, and
+      hardening only the flip-flops may fail to meet the specification (Deck 13 pp. 38, 45). Changing the
+      latch design moves the flat line up or down; changing the logic, through logical masking, sizing or
+      drive current, moves the slope; either moves the threshold (pp. 39–44).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 200" role="img" aria-labelledby="m14f9-t">
+        <title id="m14f9-t">Latch, logic and total cross-section against clock frequency on log-log axes, with the threshold frequency</title>
+        <line x1="60" y1="160" x2="414" y2="160" class="dg-rule"/>
+        <line x1="60" y1="160" x2="60" y2="22" class="dg-rule"/>
+        <path d="M60,76.4 L410,76.4" class="dg-line" stroke-dasharray="6 3"/>
+        <path d="M60,110.1 L410,110.1" class="dg-guide" stroke-dasharray="3 3"/>
+        <path d="M60,149.8 L410,48.6" class="dg-line" stroke-width="1.6"/>
+        <path d="M60.0,76.3 L83.3,76.2 L106.7,76.2 L130.0,76.0 L153.3,75.8 L176.7,75.5 L200.0,74.9 L223.3,74.1 L246.7,72.9 L270.0,71.3 L293.3,68.9 L316.7,65.8 L340.0,62.0 L363.3,57.4 L386.7,52.2 L410.0,46.5" class="dg-acc" fill="none" stroke-width="2.2"/>
+        <line x1="313.9" y1="160" x2="313.9" y2="76.4" class="dg-guide" stroke-dasharray="3 3"/>
+        <circle cx="313.9" cy="76.4" r="3.5" class="dg-ink"/>
+        <text x="66" y="70" class="dg-label-sm">latch (flat)</text>
+        <text x="66" y="104" class="dg-label-sm">latch hardened 10×</text>
+        <text x="176" y="128" class="dg-label-sm">logic (slope 1)</text>
+        <text x="250" y="56" class="dg-label-sm"><tspan class="dg-acc-f">total</tspan></text>
+        <text x="318" y="96" class="dg-label-sm">threshold 1.5 GHz</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="174">10 MHz</text><text x="176.7" y="174">100 MHz</text><text x="293.3" y="174">1 GHz</text><text x="404" y="174">10 GHz</text>
+          <text x="236" y="192">clock frequency</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="56" y="129">10⁻¹⁰</text><text x="56" y="96">10⁻⁹</text><text x="56" y="62">10⁻⁸</text>
+        </g>
+        <text x="64" y="18" class="dg-label-sm">cross-section (cm² per flip-flop)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 9.</b> The total cross-section (accent) is the latch term (dashed, constant) plus the logic
+        term (rising, slope 1 on log–log axes). They cross at the threshold frequency, here 1.5 GHz. The
+        dotted line shows the latch term after a tenfold hardening: it lowers the threshold to 150 MHz but
+        reduces the total only 1.6-fold at 2 GHz, 1.4-fold at 3 GHz and 1.1-fold at 10 GHz. Illustrative values from the example; computed
+        in <code>figures-m14.py</code>. Shape after Deck 13 pp. 37–45.
+      </figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Is hardening the flip-flops enough?</div>
+      <div class="ex-body">
+        <p><b>Given</b> A pipeline stage has a latch cross-section of 3×10⁻⁹ cm² per flip-flop, independent
+        of frequency, and a logic cross-section of 4×10⁻¹⁰ cm² per flip-flop at 200 MHz, proportional to
+        frequency. <b>Find</b> the threshold frequency; the total cross-section and the logic share at 100 MHz
+        and at 3 GHz; and the improvement at 3 GHz from a latch design ten times harder. Then find the logic
+        cross-section per gate when a test of a similar block measures 1.1×10⁻⁸ cm² at high frequency,
+        3×10⁻⁹ cm² at low frequency, with 40 sensitive gates per block.</p>
+        <p><b>Plan.</b> The logic term is 4×10⁻¹⁰ × (<em>f</em>/200 MHz); the threshold is where it equals the
+        latch term. For the measurement, subtract the frequency-independent part and divide by the number of
+        sensitive gates (Deck 13 p. 48).</p>
+        <p class="ex-step"><b>Threshold.</b> <em>f</em><sub>th</sub> = 200 MHz × (3×10⁻⁹ ÷ 4×10⁻¹⁰) =
+          1.5 GHz.</p>
+        <p class="ex-step"><b>At 100 MHz.</b> Logic = 2×10⁻¹⁰; total = 3.2×10⁻⁹ cm²; logic share 6.3 %.</p>
+        <p class="ex-step"><b>At 3 GHz.</b> Logic = 6×10⁻⁹; total = 9×10⁻⁹ cm²; logic share 67 %.</p>
+        <p class="ex-step"><b>Latch hardened tenfold, at 3 GHz.</b> Total = 3×10⁻¹⁰ + 6×10⁻⁹ = 6.3×10⁻⁹ cm²,
+          an improvement of 9 ÷ 6.3 = 1.43 times.</p>
+        <p class="ex-step"><b>Logic per gate from the test.</b> (1.1×10⁻⁸ − 3×10⁻⁹) ÷ 40 = 2×10⁻¹⁰ cm² per
+          sensitive gate.</p>
+        <p class="ex-answer"><em>f</em><sub>th</sub> = 1.5 GHz; at 3 GHz a tenfold harder latch reduces the
+          total by only 1.43 times, because two-thirds of the errors come from the logic. Check: at
+          <em>f</em><sub>th</sub> the two terms are equal, 3×10⁻⁹ each; at 100 MHz the latch term dominates and
+          the same hardening would cut the total 6.4 times (3.2×10⁻⁹ ÷ 0.5×10⁻⁹).</p>
+      </div>
+    </div>
+    <p>
+      The measured threshold frequencies have fallen with scaling. In 28 nm planar CMOS the lines
+      extrapolated from data up to 500 MHz cross at about 1.6 GHz for an inverter chain and below 1 GHz for
+      a comparator (Deck 13 p. 36). Test chips of D flip-flop shift registers with seven minimum-size
+      sensitive nodes in the logic, at nominal supply and high LET, gave about 550, 335 and 230 MHz for
+      16, 7 and 5 nm bulk FinFETs (Deck 13 p. 51; values read from the plot). The threshold also depends on
+      the particle: in the 5 nm flip-flop it is about 230 MHz for a heavy ion of 35 MeV·cm²/mg but about
+      18 MHz for alpha particles (p. 52). For alpha particles both terms fall, the logic term by about two
+      orders of magnitude, since lower LET gives shorter transients, and the latch term by about three, so
+      the crossing moves down (values read from the plot); and it depends on the supply voltage in a way the deck calls a complex function of many
+      parameters that must be established empirically (pp. 53–55). Since low-LET particles are far more
+      numerous in most environments, the guest concluded that logic must be hardened as well as flip-flops
+      in these technologies. The 9 Nov guest lecture, showing the same 16, 7 and 5 nm data, drew a different
+      conclusion: logic errors have not been as dominant as expected, and with processor clock frequencies
+      stagnating they are unlikely to dominate a chip's error rate, though a higher operating frequency
+      would raise their contribution.
+    </p>
+    <div class="box warn">
+      <p>
+        Deck 13 p. 35, for a 40 nm technology, states that the flip-flop cross-section is 2 to 8 times the
+        logic cross-section at 1 GHz. The points plotted on the same slide give a flip-flop chain at about
+        1.9×10⁻⁹ cm² per bit and logic circuits between about 0.45×10⁻⁹ and 1.25×10⁻⁹ at 1 GHz, ratios of
+        about 1.5 to 4, with wide error bars. The slide's text is the course's statement; the plotted data
+        support a narrower range. Either way the flip-flops still dominated at 1 GHz in 40 nm, which is the
+        contrast with the sub-gigahertz thresholds of the FinFET nodes.
+      </p>
+    </div>
+    <p>
+      Measuring the logic term requires circuits that run at gigahertz rates under the beam. Deck 13 p. 47
+      describes identical logic-and-flip-flop stages chained as a shift register with on-chip clock
+      generation, error detection and error counting, because external pads cannot carry such clocks. Low
+      frequency yields the latch cross-section; high frequency yields latch plus logic.
+    </p>
+
+    <details class="check">
+      <summary>A designer measures a flip-flop design at 5 MHz and at 1 GHz and finds nearly the same cross-section. A second design, with half the latch cross-section, shows a cross-section at 1 GHz three times its 5 MHz value. Which design has the lower threshold frequency, and what does the second result say about where its errors come from at 1 GHz?</summary>
+      <div class="answer">
+        <p>For the first design the 1 GHz value is nearly the 5 MHz value, so the logic term is small even
+        at 1 GHz: its threshold frequency lies well above 1 GHz. For the second, the total at 1 GHz is three
+        times the latch term, so the logic term is twice the latch term there; since the logic term is
+        proportional to frequency, it equals the latch term at about 500 MHz, which is its threshold
+        frequency. The second design has the lower threshold, partly because its latch was hardened. At
+        1 GHz two-thirds of its errors come from the logic, and further latch hardening would at best cut
+        its total by a third.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>7 · The system level</h2>
+    <p>
+      No combination of device and circuit techniques prevents every error, and some errors leave a
+      system in a state from which it does not recover on its own. Deck 10 pp. 31–34 closes its treatment
+      of single events at the system level, and the 9 Nov guest lecture organized its whole treatment of
+      commercial parts in space around the levels at which mitigation is applied. The aim at this level
+      shifts from preventing upsets to continuing to operate despite them.
+    </p>
+
+    <h3>The hard reset and the watchdog</h3>
+    <p>
+      Deck 10 p. 31 asks whether an upset or a latchup can push a digital state machine, such as a
+      microprocessor, into an unrecoverable error state, and whether a transient or latchup can push an
+      analog circuit into an unrecoverable but nondestructive operating state. Both are possible, and
+      standard digital test vectors rarely exercise such states, because they were never designed in. The
+      slide's answer is a failsafe ability to power the whole mixed-signal system down and up, a hard
+      reset, which clears every stored state at once. The event that typically requires it is the
+      single-event functional interrupt (SEFI), defined in the JESD57 test standard as a nondestructive
+      interruption, caused by a single ion strike, that makes a component reset, hang, or enter a different
+      operating condition or test mode (9 Nov guest lecture). In dynamic memories and flash, the same
+      lecture distinguished SEFIs that clear on the next access or by software housekeeping from persistent
+      ones that only a reset or a power cycle removes.
+    </p>
+    <p>
+      A watchdog timer makes the reset automatic (9 Nov guest lecture). It counts down from a preset value,
+      and the software resets it periodically as a health check. If an upset disrupts execution or freezes
+      the processor, the software stops refreshing the timer, the timer expires, and its expiry triggers a
+      reset, or signals an external supervisor that resets or power-cycles the processor. The watchdog
+      detects a loss of normal execution: a hang, a stuck state, or control-flow corruption such as an
+      unexpected program-counter value. Silent data corruption, a wrong result produced by a processor
+      that keeps running normally, needs the redundancy of the next paragraphs (IEEE NSREC 2025 Short Course,
+      Part IV-A).
+    </p>
+
+    <h3>Mitigation by level</h3>
+    <p>
+      Deck 10 p. 32 states that device-level hardening alone is not enough, because it reduces sensitivity
+      without preventing all events, and assigns techniques to levels. The 9 Nov guest lecture gives the
+      corresponding view from the user of a commercial part:
+    </p>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Level</th><th>Deck 10 p. 32</th><th>9 Nov guest lecture (commercial parts)</th></tr></thead>
+      <tbody>
+        <tr><td>Device and circuit</td><td>Guard rings, enclosed transistors, DICE; temporal filtering, charge dissipation, transient pulse shaping</td><td>— (the lecture's hierarchy starts at the logic level, where the user of a commercial part can act)</td></tr>
+        <tr><td>Logic or architecture</td><td>TMR, lock-stepped processors, pipeline protection</td><td>Redundancy, EDAC and protected state machines in the logic or FPGA fabric; temporal redundancy, lock-step and watchdogs in software</td></tr>
+        <tr><td>Component and system</td><td>ECC, scrubbing, watchdog resets, latchup protection</td><td>Redundancy, EDAC, latchup protection per component; redundancy, extra shielding, supervision, latchup protection per module</td></tr>
+        <tr><td>Mission or unit</td><td>Redundancy, graceful degradation, autonomy</td><td>Redundancy and extra shielding per unit; switching to back-up systems; in-flight data</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      Several of these are the circuit techniques of §§3–5 applied to larger blocks. Lock-step operation
+      duplicates each instruction on more than one processor core and compares or votes the results (9 Nov
+      guest lecture). In fine-grain lock-step the cores are fully synchronized and compared every cycle; in
+      coarse-grain lock-step they run independently and are compared periodically; on a disagreement,
+      execution returns to a checkpoint. A voter in hardware can itself be hardened, while a voter in
+      software is exposed to the same events as the code it checks. Temporal redundancy in software, running
+      a task several times on one core and comparing, costs little hardware but much execution time. The
+      rule of §4 applies: two executions detect, three or more correct.
+    </p>
+    <p>
+      Latchup belongs here because the response to it is a system response (<a
+      href="m16-destructive-single-event-effects.html">M16</a> §3): the current is limited and the power is
+      cycled before the struck structure is damaged. Deck 10 p. 33 adds subsystem isolation, which limits a
+      latchup's effect by separating power domains and signal lines. The 9 Nov guest lecture described the
+      latching current limiter, which protects a power bus by cutting it on overcurrent, and two of its
+      limitations: it can miss micro-latchups, because an FPGA's consumption is dynamic and their current
+      step is hard to tell from it, and it can trip falsely on
+      the normal current steps of a component, such as an FPGA rewriting its configuration memory. Deck 10
+      p. 34 lists current limiting with automatic recovery for spacecraft power and mixed-signal
+      circuits, and among its flight examples a quad-core processor that uses lock-stepped cores and on-chip
+      fault detection.
+    </p>
+    <p>
+      The system view also explains why system error rates rise even when the rate per circuit stays
+      roughly constant across technology nodes. The 9 Nov guest lecture quoted an estimate (after Bhuva,
+      2015): each system built from thousands of integrated circuits, each circuit unhardened at
+      10 000 FIT; taking the thousands as 1000 circuits gives 10⁷ FIT, one failure per 10⁹ h ÷
+      10⁷ = 100 hours, a soft error about every four days (FIT as defined in
+      <a href="m11-single-event-effects.html">M11</a> §8). More circuits per system multiply the rate even at
+      a fixed rate per circuit, which is why system-level detection and recovery are not optional.
+    </p>
+
+    <details class="check">
+      <summary>A spacecraft computer occasionally stops responding after a heavy-ion event and recovers only when power is cycled from the ground, hours later. Its memory already has SEC-DED and scrubbing. Name the event, explain why the existing protection cannot help, and propose the two-part system change that restores autonomous recovery.</summary>
+      <div class="answer">
+        <p>A hang that needs a reset or power cycle is a single-event functional interrupt (or, if the
+        current also rose, a latchup). The code and scrubbing correct flipped bits in stored words; they do
+        nothing for a control register or state machine driven into a state it cannot leave, which is not a
+        memory error. The change is a watchdog timer refreshed by the software as a health check, whose
+        expiry triggers a reset, combined with an external supervisor, hardened or radiation-tolerant, that
+        can power-cycle the computer when a reset is not enough; if latchup is possible, a current
+        limiter that removes power on overcurrent. Recovery then takes the watchdog period instead of hours.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>8 · Hardening at FinFET and nanosheet nodes</h2>
+    <p>
+      The techniques of §§2–5 were developed in planar technologies of micrometre to hundred-nanometre
+      dimensions. Deck 10 pp. 35–39 and the guest lecture on advanced CMOS describe what changes in FinFET
+      and gate-all-around technologies: the critical charge keeps falling, the charge collected by a strike
+      no longer falls with it, single strikes reach more nodes, and new failure modes appear. Some of the
+      classical techniques lose effectiveness as a result.
+    </p>
+    <p>
+      <b>Cross-sections no longer fall with scaling.</b> The move from planar transistors to FinFETs cut
+      the per-bit cross-section considerably at LET below about 10 MeV·cm²/mg, because a fin presents a
+      much smaller collection volume, but only weakly at high LET
+      (<a href="m11-single-event-effects.html">M11</a> §9). Below 7 nm the trend reversed. Deck 10 p. 36 states that
+      5 nm upset cross-sections can be larger than 7 nm ones at the same LET, and that in 7 nm bulk FinFETs
+      the cross-section depends strongly on the supply voltage and the threshold-voltage option; M11 §9
+      records where that paper's data qualify the slide. The guest lecture gave two equivalent explanations:
+      the critical charge fell while the collected charge stayed about the same, or, seen from the circuit,
+      transients widened faster than the feedback loops sped up. A threshold-voltage option acts on both
+      sides of that race: it sets the restoring transistor's drive current, which sets the transient width
+      through (14.3), and it also sets the delay of the latch's feedback loop, so the net effect depends on
+      which changes more (M11 §9).
+      Deck 10 p. 36 concludes that scaling does not guarantee better hardness: a smaller feature size is not
+      a mitigation.
+    </p>
+    <p>
+      <b>Multiple-cell upsets and micro-latchup.</b> Dense FinFET memories show MCUs from charge sharing and
+      diffusion, more than one bit flipped per strike, and the probability grows with scaling and with
+      three-dimensional integration (Deck 10 p. 37). The same slide reports a new event in the single-event
+      taxonomy, the micro-latchup (micro-SEL): a localized, latchup-like event triggered by parasitic
+      paths between adjacent fins or wells. Its supply-current step is small against the large step of
+      classical latchup (<a href="m16-destructive-single-event-effects.html">M16</a> §3), which is why a
+      current limiter can miss it (§7). Deck 10 p. 37 lists three
+      mitigations: error correction with interleaving (§5), layout separation and isolation wells, and
+      cells with enclosed-layout transistors or guard rings that suppress the spread of charge.
+    </p>
+    <p>
+      <b>Nanosheets and forksheets.</b> Gate-all-around transistors replace the fin with stacked horizontal
+      sheets of silicon surrounded by the gate; the forksheet places two such stacks against a dielectric
+      wall. Deck 10 p. 38 reports a critical charge below 1 fC, new charge-collection geometries, and early
+      data showing transients of about 10 to 50 ps, shorter than in older technologies but still long enough
+      to be latched, with shallow-trench isolation and coupling between fins dominating the upset physics.
+      These are the slide's own values: the paper its notes cite for them is a total-dose study of FinFET
+      shallow-trench isolation and contains none of them, so they await a published single-event source.
+      The deck's closing slide (p. 39) draws the design consequence: transients shorter than 50 ps still exceed
+      latch windows, so pulse filtering, charge-steering latches and joint optimization of bias and layout are
+      needed. The guest lecture on advanced CMOS added that gate-all-around devices are very tolerant of total
+      dose, while their single-event response depends on the implementation and has not proved clearly
+      better than that of FinFETs.
+    </p>
+    <p>
+      <b>Latches for these nodes.</b> Deck 10 p. 35 keeps the DICE latch as the baseline hardened latch but
+      notes its scaling limits below 16 nm, and states that charge-steering latches in FinFET technologies
+      offer comparable or better upset tolerance for 30 to 50 % less area and power overhead than
+      conventional DICE; the paper the slide cites for this could not be located, so the figure is the
+      slide's. It adds that temporal filtering and redundancy, including sampling-based voting,
+      remain effective at the cost of design complexity and latency, and that layout techniques combined with
+      suppression of charge sharing strengthen any hardened latch. The guest lecture on advanced CMOS added
+      the economic limit: separating nodes costs area that dense designs will not pay, so spatial separation
+      becomes less effective with each node, and interleaving and the pulse quenching of
+      <a href="m11-single-event-effects.html">M11</a> §9 take over part of its role. The same lecture
+      summarized the field: there is no single technique that suffices, and every one has a cost.
+    </p>
+
+    <details class="check">
+      <summary>A team moving a hardened design from a 7 nm to a 5 nm bulk FinFET process plans to keep the same DICE flip-flops, the same layout spacing in units of the cell pitch, and the same low-threshold-voltage option, and expects the smaller transistors to improve hardness. Give three reasons from this module to expect the opposite.</summary>
+      <div class="answer">
+        <p>First, the measured trend has reversed below 7 nm: the critical charge falls while the collected
+        charge does not, so the 5 nm cross-section at a given LET can exceed the 7 nm one (Deck 10 p. 36).
+        Second, keeping the spacing in units of pitch means a smaller absolute distance between the DICE
+        cell's sensitive node pairs, so one track's charge reaches both latches more easily and defeats the
+        cell (§4); Deck 10 p. 35 puts DICE's scaling limit below 16 nm. Third, the logic matters more: the
+        5 nm threshold frequency is lower (about 230 MHz at high LET, tens of megahertz for alpha particles),
+        so at any gigahertz clock most errors come from the logic, which flip-flop hardening does not touch
+        (§6). In addition, the threshold-voltage option affects the cross-section strongly at 5 nm, so the
+        choice must be re-evaluated rather than carried over.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>9 · Costs compared</h2>
+    <p>
+      Every technique in this module trades a resource for hardness, and Deck 10 p. 10 states that the
+      trade cannot be avoided. The table collects the costs and the protection, mostly from Buchner and
+      Baze's comparison of hardening techniques, with the storage-element and memory techniques added. The
+      multipliers are those of the sources' examples and technologies; they show the relative order, not
+      values for any particular process.
+    </p>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Technique</th><th>Area</th><th>Power</th><th>Speed</th><th>Protection</th></tr></thead>
+      <tbody>
+        <tr><td>Added node capacitance</td><td>Grows with <em>C</em>; ~80 µm² per node in the 0.41 pC example</td><td>Variable, ~3×</td><td>Slower in proportion to node <em>C</em></td><td>Threshold LET ∝ <em>C</em></td></tr>
+        <tr><td>Transistor upsizing (drive current)</td><td>~1.5–3×</td><td>Grows with <em>I</em></td><td>Little or none</td><td>Threshold LET ∝ <em>I</em></td></tr>
+        <tr><td>Quiescent current (analog)</td><td>—</td><td>Static power ∝ <em>I</em></td><td>—</td><td>Faster restoring of the struck node</td></tr>
+        <tr><td>Series resistance</td><td>Grows with <em>R</em> (~240 µm of film per gate)</td><td>Little or none</td><td>Delay ∝ <em>R</em></td><td>Threshold LET ∝ <em>R</em></td></tr>
+        <tr><td>Longer write time</td><td>Little or none</td><td>Variable, ~3×</td><td>1–10 ns per clock</td><td>Rejects transients shorter than the write time</td></tr>
+        <tr><td>Delay and vote; sample and vote</td><td>Delay or sampling circuit and voter</td><td>Variable, ~50 %</td><td>2–20 ns per clock</td><td>Rejects transients shorter than the delay</td></tr>
+        <tr><td>Analog bandwidth limiting</td><td>Larger <em>C</em><sub>C</sub></td><td>None if <em>g</em><sub>m</sub> is kept</td><td>Lower bandwidth and slew rate</td><td>Damps transients at the output</td></tr>
+        <tr><td>Triple modular redundancy</td><td>3× plus voter</td><td>3× plus voter</td><td>Voter delay</td><td>Cross-section ~10–100× lower; needs separation and a hardened voter</td></tr>
+        <tr><td>Dual-stream logic</td><td>~2×</td><td>~2×</td><td>~2× slower</td><td>Single strike cannot switch the next stage; new cell library</td></tr>
+        <tr><td>DICE cell</td><td>~2–3× a standard flip-flop; hardened memory cells in general use 12–16 transistors against 6</td><td>Somewhat higher</td><td>Somewhat slower</td><td>Needs two nodes upset together; defeated by charge sharing</td></tr>
+        <tr><td>SEC-DED with interleaving and scrubbing</td><td>12.5 % check bits for 64-bit words, plus coder</td><td>Coder and scrub reads</td><td>Coding latency</td><td>Corrects one bit per word; MCUs spread by interleaving; accumulation stopped by scrubbing</td></tr>
+        <tr><td>Watchdog and hard reset</td><td>Small</td><td>Small</td><td>Outage while resetting</td><td>Recovers from hangs and SEFIs; prevents nothing</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      Two rankings follow. By area, the table's multipliers make triple modular redundancy the most
+      expensive general technique, at three times the circuit plus the voter; Buchner and Baze call it,
+      among the spatial techniques, the one with the greatest penalties and also the easiest to implement,
+      and dual-stream logic the one with the least penalties but the largest change to the design flow. By effectiveness per unit cost, the
+      answer depends on where the errors come from (§6) and on how many nodes are critical (§2): a few
+      critical nodes hardened by capacitance or current, a code over the memories, and a watchdog over the
+      system often achieve what triplicating everything would, at a fraction of the area. The 2001 short
+      course concluded that spatial redundancy is preferred when large improvements are required, its two-
+      to threefold area offset by error rates ten to a hundred times lower; the guest lectures of this
+      course added that no single technique suffices and that each has its cost, so at the newest nodes
+      the techniques are combined at every level.
+    </p>
+
+    <details class="check">
+      <summary>A radiation-tolerant controller for a low-Earth-orbit instrument, built in a 5 nm FinFET process, runs at 50 MHz, has 8 Mbit of data memory, and has a power budget that cannot accept a threefold increase. Which techniques would you combine, and which would you rule out, and why?</summary>
+      <div class="answer">
+        <p>For high-LET ions the 5 nm threshold frequency of §6 is about 230 MHz, so at 50 MHz the logic
+        term is 50/230 ≈ 22 % of the latch term and the flip-flops carry most of those errors: they are the
+        first place to harden,
+        with DICE or another hardened latch laid out with its node pairs separated, at roughly two to three
+        times the flip-flop area but not the whole design. The 8 Mbit memory gets SEC-DED with interleaving at
+        least as wide as the expected multiple-cell upsets, and scrubbing at a rate set from (14.8) and the
+        orbit's upset rate. Full TMR is ruled out by the power budget, since it triples power; it can be
+        kept for a few control registers whose corruption would be catastrophic, with a hardened voter. A
+        watchdog and an external supervisor with current limiting handle hangs, functional interrupts and
+        latchup, which no circuit technique prevents. Temporal filtering of selected critical paths is
+        affordable at 50 MHz, where a nanosecond of added delay is a small fraction of the 20 ns cycle, and
+        it is needed: for low-LET particles, which §6 notes are the more numerous, the measured 5 nm
+        threshold is about 18 MHz, below the 50 MHz clock, so for that population the logic errors exceed
+        the latch errors (50/18 ≈ 2.8 times) and must be evaluated rather than assumed small.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>Where this leaves us</h2>
+    <p>
+      Hardening by design starts from (14.1). The charge an ion delivers is fixed by the ion, so the
+      designer works on the capacitance that absorbs it, the current that removes it, the time a circuit
+      takes to respond, and the number of places a value is held. Charge dissipation and temporal filtering
+      raise the LET needed to cause an error at a cost in power and speed; spatial redundancy, from TMR to
+      dual-stream logic and the DICE cell, makes one strike harmless at a cost in area, and depends on
+      layout to keep two elements from failing together. Memories are protected by codes, interleaving and
+      scrubbing, and the system by watchdogs, resets and current limiting for the events nothing else
+      prevents. At nanosheet nodes the critical charge is put below a femtocoulomb, logic
+      transients dominate above a threshold frequency that has fallen to hundreds of megahertz, and single
+      strikes reach several nodes, so the techniques must be combined at every level.
+      <a href="m15-hardness-assurance.html">M15</a> turns to how a part's total-dose hardness is assured by
+      test.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li><b>Four conditions</b> (Buchner and Baze, after Diehl-Nagle): a propagating transient, an open path,
+          enough amplitude and width to write, arrival in the latching window. Each technique breaks one.</li>
+        <li><b>(14.1)</b> Δ<em>q</em> = <em>C</em>Δ<em>V</em>: charge does not scale; <em>C</em> and the
+          tolerable Δ<em>V</em> fall with each node. <b>(14.2)</b> <em>Q</em>[pC] = 1.03×10⁻² LET·<em>D</em>[µm];
+          LET 40 over 1 µm → 0.41 pC.</li>
+        <li><b>Charge dissipation:</b> capacitance (0.16 pF, ~80 µm² per node at 2.5 V); drive current
+          Δ<em>t</em> = Δ<em>q</em>/<em>I</em><sub>D</sub> (14.3), <em>I</em><sub>D</sub> ∝ <em>W</em>/<em>L</em>,
+          ~3× area; quiescent current in analog (static power); low-impedance, high-current nodes resist;
+          ties, guard rings, triple wells, epi and SOI collect charge before the node.</li>
+        <li><b>Temporal filtering:</b> RC filter <em>R</em> ≈ 1.44<em>Q</em>/(<em>C</em><sub>in</sub><em>I</em><sub>out</sub>)
+          (14.4); <em>t</em><sub>write</sub> ≫ <em>t</em><sub>SET</sub>; delay or sample and vote with each delay &gt;
+          the widest transient; critical paths only. Analog: GBW = <em>g</em><sub>m</sub>/<em>C</em><sub>C</sub>
+          (14.6); raise <em>C</em><sub>C</sub>, keep the tail current.</li>
+        <li><b>Voting (14.5):</b> <em>p</em> = ⟨min(<em>W</em>, <em>T</em>)⟩/<em>T</em> (course: <em>T</em> = Δ),
+          3<em>p</em>² − 2<em>p</em>³ for independent errors; for sampling, spacing beyond the widest
+          transient makes the vote immune.</li>
+        <li><b>TMR:</b> triplicate and vote; input errors and the voter are not covered; separate the copies;
+          3× area and power, the costliest spatial technique. <b>Dual stream:</b> POUT on p⁺ only upsets high, NOUT on n⁺ only
+          upsets low; next stage floats, does not switch; ~2×. <b>DICE:</b> four nodes, two interlocked latches;
+          both must be upset; charge sharing defeats it.</li>
+        <li><b>Codes:</b> 2<sup><em>r</em></sup> ≥ <em>k</em> + <em>r</em> + 1 (14.7); SEC-DED (72,64);
+          protects against SEU, not TID. Interleave ≥ MCU span (uncorrectable ≈ MCU probability without, second
+          order with); scrub so that MTTF ≈ 2<em>ν</em>/(<em>NM</em>²<em>λ</em>²)
+          (14.8).</li>
+        <li><b>Sequential circuits:</b> <em>σ</em><sub>logic</sub> = ∑∑ <em>AELT</em> (14.9), temporal masking
+          (14.10) ∝ frequency; threshold frequency where logic = latch; FinFET 16/7/5 nm ≈ 550/335/230 MHz.</li>
+        <li><b>System:</b> hard reset, watchdog, lock-step, current limiting, subsystem isolation; two
+          executions detect, three correct.</li>
+        <li><b>Advanced nodes:</b> 5 nm can exceed 7 nm; micro-SEL; nanosheets <em>Q</em><sub>crit</sub> &lt; 1 fC,
+          10–50 ps transients still latchable (slide values); charge-steering latches 30–50 % below DICE
+          overhead (slide value).</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <div class="table-scroll">
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 10 pp. 7–11, 32; S. P. Buchner and M. P. Baze, "Single-Event Transients in Fast Electronic Circuits", IEEE NSREC Short Course, Section V (2001), §§6.1–6.3 (four conditions after S. E. Diehl-Nagle, J. E. Vinson and E. L. Petersen 1984; eq. (10)); lecture on Deck 10</td></tr>
+      <tr><td>§2</td><td>Deck 10 pp. 12–14, 22 and speaker notes; Deck 13 pp. 10–12; Buchner and Baze (2001) §§6.2, 6.3.1, 6.3.4; P. E. Dodd and L. W. Massengill, <em>IEEE Trans. Nucl. Sci.</em> <b>50</b>, 583 (2003) §VI; O. A. Amusan <em>et al.</em> (via M11 §9) for the guard-ring figures; lectures of the course's first week and on Deck 10</td></tr>
+      <tr><td>§3</td><td>Deck 10 pp. 15–21, 25, 39; Buchner and Baze (2001) §§6.3.2, 6.3.5, 6.4 (after Mavis and Eaton 2000 for sample-and-vote and the temporal latch); Dodd and Massengill (2003) §VI (resistive hardening); P. R. Gray, P. J. Hurst, S. H. Lewis and R. G. Meyer, <em>Analysis and Design of Analog Integrated Circuits</em> (Wiley) (Miller amplifier slew rate); lecture on Deck 10</td></tr>
+      <tr><td>§4</td><td>Deck 10 pp. 23–30, 35 and speaker notes; D. Wiseman, IEEE Radiation Effects Data Workshop, p. 51 (1994) (via Deck 10 p. 26); T. Calin, M. Nicolaidis and R. Velazco, <em>IEEE Trans. Nucl. Sci.</em> <b>43</b>, 2874 (1996); Buchner and Baze (2001) §§6.3.3–6.3.4; Dodd and Massengill (2003) §VI; 9 Nov guest lecture (TMR in FPGAs, detection against correction)</td></tr>
+      <tr><td>§5</td><td>Deck 10 pp. 33–34, 37; R. W. Hamming, <em>Bell Syst. Tech. J.</em> <b>29</b>, 147 (1950); M. Y. Hsiao, <em>IBM J. Res. Dev.</em> <b>14</b>, 395 (1970); IEEE NSREC 2025 Short Course, Part IV-A (scrubbing and the MTTF table, after its ref. [20]); A. M. Saleh, J. J. Serrano and J. H. Patel, <em>IEEE Trans. Reliab.</em> <b>39</b>, 114 (1990) (the scrubbed-MTTF result, notation via later reviews); 9 Nov guest lecture (code types, memory mitigation table, 5 nm MCU fractions, FPGA scrubbing); Dodd and Massengill (2003) §VI; early lecture on single events (ECC and TID)</td></tr>
+      <tr><td>§6</td><td>Deck 13 pp. 9–55 and its recorded lecture (after N. N. Mahatme, R. Harrington and Q. Zhou); 9 Nov guest lecture (combinational-logic scaling, clock-frequency trend); guest lecture on advanced CMOS</td></tr>
+      <tr><td>§7</td><td>Deck 10 pp. 31–34; 9 Nov guest lecture (hierarchy, SEFI after JESD57, watchdog, lock-step, latching current limiters, system FIT after Bhuva); IEEE NSREC 2025 Short Course, Part IV-A; Dodd and Massengill (2003) §VI</td></tr>
+      <tr><td>§8</td><td>Deck 10 pp. 35–39 and notes; Y. Xiong <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>70</b>, 381 (2023) (via Deck 10 p. 36 and M11 §9); the charge-steering-latch reference given on Deck 10 p. 35 (W. H. Robinson <em>et al.</em>, cited as IEEE TNS 61, 1747 (2014)) could not be located; guest lecture on advanced CMOS (published results only)</td></tr>
+      <tr><td>§9</td><td>Buchner and Baze (2001) Table III and §6.3.4; Deck 10 pp. 10, 12–13, 23, 27, 29; Dodd and Massengill (2003)</td></tr>
+    </table>
+    </div>
+
+    <nav class="pagination">
+      <a class="prev" href="m13-rhbd-total-ionizing-dose.html"><span>Previous</span>M13 · Rad-Hard Circuit Design: Total Ionizing Dose</a>
+      <a class="next" href="m15-hardness-assurance.html"><span>Next</span>M15 · Total-Dose Hardness Assurance</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

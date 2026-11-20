@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M05 · The Three Effects: A Taxonomy — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M05 · The Three Effects: A Taxonomy</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 05</p>
+    <h1>The Three Effects: A Taxonomy</h1>
+    <p class="lede">
+      Two questions sort every radiation effect in microelectronics: what the deposited
+      energy did, and how many particles it took. The answers generate total ionizing dose,
+      displacement damage and single-event effects, and decide which test source, which
+      unit and which countermeasure apply.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M04</span>
+      <span><b>Read time</b> ~30 min</span>
+      <span><b>Sources</b> Deck 03 pp. 9–10, 16–19, 23–27, 30–34, 36–38, 45; Lectures 4–5; Xapsos 2006; the course textbook</span>
+    </div>
+
+    <p>
+      <a href="m04-quantifying-energy-deposition.html">M04</a> ended with two quantities that
+      measure the same event in different currencies. Absorbed dose measures the energy a
+      particle leaves behind that goes into liberating charge; non-ionizing energy loss
+      measures the much smaller share that goes into moving atoms off their lattice sites.
+      Both are per unit mass, both are computed from the same stopping power, and both
+      describe one particle crossing one piece of silicon. What neither says is what the
+      device does about it.
+    </p>
+    <p>
+      That question has a second variable, and it is the one this module adds. Energy
+      deposited by a particle is either <b>spread thinly over the whole part by a great many
+      particles</b>, in which case the device responds to the running total and drifts
+      slowly, or it is <b>concentrated by one particle into one micrometre-scale volume</b>,
+      in which case the device responds to that single event and nothing about the running
+      total matters. The first is a cumulative effect and is measured in dose; the second is
+      a single-event effect and is measured as a probability per unit fluence. A part can be
+      perfectly tolerant of one and destroyed by the other.
+    </p>
+    <p>
+      Crossing those two questions produces the classification the rest of the course
+      follows. This module states it, places each of the three named effects inside it,
+      describes what each does to a device in enough detail to tell them apart, and then
+      shows where the divisions blur — because a single proton routinely produces all three
+      at once. Parts III, IV and V then take one cell each: total ionizing dose in
+      <a href="m06-device-physics.html">M06</a> through
+      <a href="m10-gate-oxide-processing.html">M10</a>, single-event effects in
+      <a href="m11-single-event-effects.html">M11</a>, displacement damage in
+      <a href="m12-displacement-damage.html">M12</a>.
+    </p>
+
+    <h2>1 · The two questions</h2>
+    <p>
+      A particle that enters a device deposits energy through the mechanisms of
+      <a href="m01-radiation-and-matter.html">M01</a>: it ionizes, it excites, and in a small
+      minority of encounters it strikes a nucleus hard enough to move it. The device response
+      is determined by two properties of that deposition, and only two.
+    </p>
+    <p>
+      The first is <b>where the energy went</b>. Energy transferred to atomic electrons
+      breaks bonds and creates free electron–hole pairs; this is the ionizing channel, it
+      carries almost all of the energy, and its measure is absorbed dose. Energy transferred
+      to whole nuclei displaces atoms from lattice sites and leaves vacancies and
+      interstitials behind; this is the non-ionizing channel, it carries a small fraction of
+      one per cent of the energy for most particles, and its measure is non-ionizing energy
+      loss. The two produce entirely different damage. Liberated charge either recombines,
+      is swept away, or is trapped in an insulator; displaced atoms form defect states inside
+      the semiconductor bandgap that persist regardless of what the charge does.
+    </p>
+    <p>
+      The second is <b>how many particles were needed</b>. A cumulative effect requires the
+      deposition of many particles to accumulate before any device parameter moves
+      measurably, so the device degrades gradually and monotonically with exposure, and the
+      controlling variable is the integrated quantity — dose, or displacement damage dose. A
+      single-event effect requires exactly one particle, because that particle deposits
+      enough energy in a small enough volume to exceed a circuit threshold by itself. Its
+      controlling variable is not an integral but the energy density along one track, which
+      is the linear energy transfer of
+      <a href="m04-quantifying-energy-deposition.html">M04</a> §2, and the observable is a
+      rate: how often such a particle arrives and lands somewhere that matters.
+    </p>
+
+    <figure>
+      <svg viewBox="0 0 700 400" role="img" aria-labelledby="m05f1-t">
+        <title id="m05f1-t">The four combinations of ionizing against non-ionizing energy and cumulative against single-particle response</title>
+
+        <text x="368" y="20" class="dg-label" text-anchor="middle">Where the deposited energy went</text>
+        <text x="248" y="42" class="dg-label-sm" text-anchor="middle">Ionizing — energy to electrons,</text>
+        <text x="248" y="56" class="dg-label-sm" text-anchor="middle">liberating electron–hole pairs</text>
+        <text x="522" y="42" class="dg-label-sm" text-anchor="middle">Non-ionizing — energy to nuclei,</text>
+        <text x="522" y="56" class="dg-label-sm" text-anchor="middle">displacing atoms from lattice sites</text>
+
+        <text x="24" y="232" class="dg-label" text-anchor="middle" transform="rotate(-90 24 232)">How many particles it took</text>
+
+        <text x="70" y="128" class="dg-label-sm" text-anchor="middle">Many</text>
+        <text x="70" y="142" class="dg-label-sm" text-anchor="middle">particles,</text>
+        <text x="70" y="156" class="dg-label-sm" text-anchor="middle">accumulating</text>
+
+        <text x="70" y="292" class="dg-label-sm" text-anchor="middle">One</text>
+        <text x="70" y="306" class="dg-label-sm" text-anchor="middle">particle,</text>
+        <text x="70" y="320" class="dg-label-sm" text-anchor="middle">localized</text>
+
+        <rect x="112" y="72" width="272" height="152" rx="5" class="dg-fill"/>
+        <text x="248" y="102" class="dg-label" text-anchor="middle">Total ionizing dose (TID)</text>
+        <text x="248" y="126" class="dg-label-sm" text-anchor="middle">Charge trapped in insulators accumulates</text>
+        <text x="248" y="142" class="dg-label-sm" text-anchor="middle">Parameters drift: threshold voltage,</text>
+        <text x="248" y="158" class="dg-label-sm" text-anchor="middle">leakage current, bipolar gain</text>
+        <text x="248" y="182" class="dg-label-sm" text-anchor="middle">Measured in rad(Si) or rad(SiO₂)</text>
+        <text x="248" y="206" class="dg-label-sm" text-anchor="middle">Part III · M06–M10</text>
+
+        <rect x="392" y="72" width="256" height="152" rx="5" class="dg-fill"/>
+        <text x="520" y="102" class="dg-label" text-anchor="middle">Displacement damage (DD)</text>
+        <text x="520" y="126" class="dg-label-sm" text-anchor="middle">Stable lattice defects accumulate</text>
+        <text x="520" y="142" class="dg-label-sm" text-anchor="middle">Minority-carrier lifetime falls; charge</text>
+        <text x="520" y="158" class="dg-label-sm" text-anchor="middle">transfer and dark current degrade</text>
+        <text x="520" y="182" class="dg-label-sm" text-anchor="middle">Measured as DDD = <tspan class="dg-math">Φ</tspan> · NIEL</text>
+        <text x="520" y="206" class="dg-label-sm" text-anchor="middle">Part V · M12</text>
+
+        <rect x="112" y="238" width="272" height="140" rx="5" class="dg-fill"/>
+        <rect x="112" y="238" width="272" height="140" rx="5" class="dg-acc" fill="none" stroke-width="2"/>
+        <text x="248" y="268" class="dg-label" text-anchor="middle">Single-event effects (SEE)</text>
+        <text x="248" y="292" class="dg-label-sm" text-anchor="middle">One dense track deposits more charge</text>
+        <text x="248" y="308" class="dg-label-sm" text-anchor="middle">than a circuit node can absorb</text>
+        <text x="248" y="332" class="dg-label-sm" text-anchor="middle">Measured as a cross-section, cm²/device</text>
+        <text x="248" y="356" class="dg-label-sm" text-anchor="middle">Part IV · M11</text>
+
+        <rect x="392" y="238" width="256" height="140" rx="5" class="dg-rule" fill="none" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="520" y="274" class="dg-label-sm" text-anchor="middle">No separately named effect class.</text>
+        <text x="520" y="294" class="dg-label-sm" text-anchor="middle">One cascade leaves a small cluster of</text>
+        <text x="520" y="310" class="dg-label-sm" text-anchor="middle">stable defects — invisible in a transistor,</text>
+        <text x="520" y="326" class="dg-label-sm" text-anchor="middle">but visible in one pixel of an imager</text>
+        <text x="520" y="350" class="dg-label-sm" text-anchor="middle">as a single hot pixel (§6)</text>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> The classification. The horizontal axis is the physics of the
+        deposition and the vertical axis is the statistics of the response; the three named
+        effects occupy three of the four cells. Nothing in the left column is caused by
+        displaced atoms and nothing in the right column is caused by liberated charge, which
+        is why a part hardened against one column can fail immediately in the other.
+      </figcaption>
+    </figure>
+
+    <div class="box insight">
+      <p>
+        The two axes are independent, and that independence is the practical content of the
+        classification. Ionizing against non-ionizing is a statement about the particle and
+        the target — fixed once the species, its energy and the material are fixed. Cumulative
+        against single-particle is a statement about the <em>circuit</em> — the same track in
+        the same silicon is a negligible dose contribution and a catastrophic single event,
+        depending only on whether a node nearby happens to hold state.
+      </p>
+    </div>
+
+    <h2>2 · Total ionizing dose</h2>
+    <p>
+      Total ionizing dose is the accumulated ionizing energy deposited per unit mass, and the
+      effect named after it is the drift in device behaviour that accumulates alongside it.
+      <a href="m03-dose-shielding-terrestrial.html">M03</a> §1 defined the quantity: one rad
+      is 100 erg per gram, one gray is one joule per kilogram, and one gray is 100 rad. The
+      material must always be named, because the energy absorbed per unit mass differs between
+      silicon and its oxide, so a dose is quoted as rad(Si) or rad(SiO₂).
+    </p>
+    <p>
+      The mechanism is charge that does not leave. Ionizing radiation liberates electron–hole
+      pairs everywhere in the device, at the cost of 3.6 eV per pair in silicon and 17 eV per
+      pair in silicon dioxide. In the silicon, those carriers are mobile, the material is
+      conductive, and they recombine or are swept out within nanoseconds; nothing persists. In
+      the oxide, electrons remain mobile but holes are slower by six to eight orders of
+      magnitude — they move only by hopping between localized states — and the material offers
+      no path to ground. A fraction of the holes therefore survives, transports slowly toward
+      the silicon interface under whatever field the oxide carries, and is captured at defect
+      sites near that interface. The charge stays there, and a device sees it as a permanent
+      change in the potential its gate applies.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 660 126" role="img" aria-labelledby="m05f2-t">
+        <title id="m05f2-t">The causal chain of a total ionizing dose effect</title>
+        <g class="dg-fill">
+          <rect x="8" y="30" width="106" height="52" rx="4"/>
+          <rect x="142" y="30" width="112" height="52" rx="4"/>
+          <rect x="282" y="30" width="112" height="52" rx="4"/>
+          <rect x="422" y="30" width="106" height="52" rx="4"/>
+        </g>
+        <rect x="556" y="30" width="96" height="52" rx="4" class="dg-fill"/>
+        <rect x="556" y="30" width="96" height="52" rx="4" class="dg-acc" fill="none" stroke-width="1.8"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="61" y="51">many particles</text><text x="61" y="67">over months</text>
+          <text x="198" y="51">pairs generated</text><text x="198" y="67">in the oxide</text>
+          <text x="338" y="51">holes survive and</text><text x="338" y="67">reach the interface</text>
+          <text x="475" y="51">trapped charge</text><text x="475" y="67">accumulates</text>
+          <text x="604" y="51">parameter</text><text x="604" y="67">drifts</text>
+        </g>
+        <g class="dg-rule" stroke-width="1.3" marker-end="url(#m05a1)">
+          <line x1="118" y1="56" x2="136" y2="56"/>
+          <line x1="258" y1="56" x2="276" y2="56"/>
+          <line x1="398" y1="56" x2="416" y2="56"/>
+          <line x1="532" y1="56" x2="550" y2="56"/>
+        </g>
+        <text x="330" y="108" class="dg-label-sm" text-anchor="middle">Trapped holes anneal over time while interface traps keep building, so the response evolves after the exposure stops</text>
+        <defs><marker id="m05a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+      </svg>
+      <figcaption>Total ionizing dose is slow at both ends: the exposure accumulates over the mission, and the response continues to change once it ends.</figcaption>
+    </figure>
+
+    <p>
+      Two device consequences follow, and they are separable because they have opposite signs.
+      Trapped charge in the oxide is net positive, so it shifts a transistor's threshold
+      voltage negative whether the transistor is n-channel or p-channel. Defect states created
+      at the silicon–oxide interface exchange charge with the silicon and are negatively
+      charged at threshold in an n-channel device, shifting its threshold positive. The two
+      build up on different timescales and anneal differently, so the net shift of a real
+      device is a sum of two competing terms.
+      <a href="m07-oxide-interface-trap-charge.html">M07</a> develops both mechanisms and the
+      measurement that separates them.
+    </p>
+    <p>
+      Any ionizing radiation produces total ionizing dose, which makes it the effect with the
+      broadest set of causes: photons, electrons, protons, neutrons through their charged
+      recoils, and heavy ions all contribute. Laboratory testing exploits that breadth by
+      choosing a source that produces almost nothing <em>but</em> dose. A 10 keV X-ray tube
+      displaces no atoms at all: its photons average about 10 keV and reach at most about 50 keV, so
+      no electron it frees approaches the 0.22 MeV an electron needs before it can give a silicon atom the 21 eV
+      displacement threshold (<a href="m12-displacement-damage.html">M12</a> §1). A cobalt-60 source
+      displaces very few: its gamma rays move atoms only through the Compton electrons they
+      liberate, of at most about 1 MeV, and those make isolated point defects rather than
+      cascades. The course textbook accordingly treats cobalt-60 as a simulator of ionization only:
+      it simulates the ionization effects of electrons and protons but not their displacement damage. Neither source normally
+      deposits enough charge from one photon to upset a node, so a total-dose test isolates one
+      variable. That last condition is a property of the technology, not of the source: in
+      28 nm and 45 nm SRAMs operated at reduced supply voltage, single electrons freed by X-ray
+      irradiation have upset cells — for the 28 nm parts, within 10 % of nominal (King <em>et al.</em>
+      2013; §7).
+    </p>
+
+    <details class="check">
+      <summary>A team must measure the total-dose drift of a precision bipolar amplifier and, separately, its displacement-damage response. They have a cobalt-60 cell, a 10 keV X-ray irradiator and a reactor neutron beam. Which source suits which measurement, and which of them cannot deliver its effect alone?</summary>
+      <div class="answer">
+        <p>
+          The 10 keV X-ray irradiator gives total dose with no displacement at all: its photons reach
+          at most about 50 keV, so the electrons they free stay far below the ≈0.22 MeV an electron needs to displace a silicon atom. Cobalt-60 also measures total dose, and it is the
+          standard source, but it is not perfectly free of displacement: its Compton electrons of up to about 1 MeV can
+          displace atoms, one or a few at a time. For a bipolar part, whose gain also falls with
+          displacement damage, that small contribution is the reason the cobalt-60 result is a dose
+          result to a very good approximation rather than exactly. For a
+          linear bipolar part the source is not the only choice to make: its total-dose response depends on
+          dose rate (§6 and <a href="m15-hardness-assurance.html">M15</a> §§7–8), so the test must use a low
+          dose rate or an elevated-temperature irradiation, which is one reason cobalt-60 remains the source
+          used despite its small displacement component. The neutron beam measures displacement damage —
+          neutrons do not ionize directly — but its recoils ionize too, so it delivers some dose as well:
+          displacement damage is never produced without some dose, while 10 keV X-rays give dose alone. The
+          two measurements must also not simply be added afterwards, for the reason §6 gives.
+        </p>
+      </div>
+    </details>
+
+    <h2>3 · Displacement damage</h2>
+    <p>
+      Displacement damage is the accumulation of stable defects in the semiconductor lattice,
+      produced by the non-ionizing share of the deposited energy. Deck 03 states the scale
+      plainly: only a very small fraction of the deposited energy goes into displacement, and
+      the applications affected are solar cells, charge-coupled devices and bipolar devices.
+    </p>
+    <p>
+      The mechanism begins with a single elastic or inelastic nuclear collision. An incident
+      particle strikes a lattice atom and transfers enough energy to break it free of its
+      site. That atom is the <b>primary knock-on atom</b>, and the vacancy it leaves together
+      with the interstitial it becomes is a <b>Frenkel pair</b>. The threshold for the
+      process in silicon is 21 eV; below it the atom returns to its site. A primary knock-on
+      atom of 50 keV, which Deck 03 gives as typical of a 1 MeV neutron or an energetic
+      proton, carries far more than the threshold, so it displaces further atoms along its own
+      path and produces a cascade of secondary displacements clustered in a region tens of
+      nanometres across. About 90% of the resulting Frenkel pairs recombine within the
+      cascade; the surviving 10% migrate and settle into stable configurations —
+      vacancy–impurity complexes, divacancies — that sit as energy levels inside the bandgap.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 220" role="img" aria-labelledby="m05f3-t">
+        <title id="m05f3-t">A primary knock-on atom producing a cascade of lattice displacements</title>
+
+        <g class="dg-faint">
+          <circle cx="60" cy="60" r="4"/><circle cx="110" cy="60" r="4"/><circle cx="160" cy="60" r="4"/><circle cx="210" cy="60" r="4"/><circle cx="260" cy="60" r="4"/><circle cx="310" cy="60" r="4"/>
+          <circle cx="60" cy="110" r="4"/><circle cx="110" cy="110" r="4"/><circle cx="210" cy="110" r="4"/><circle cx="260" cy="110" r="4"/><circle cx="310" cy="110" r="4"/>
+          <circle cx="60" cy="160" r="4"/><circle cx="110" cy="160" r="4"/><circle cx="160" cy="160" r="4"/><circle cx="260" cy="160" r="4"/><circle cx="310" cy="160" r="4"/>
+        </g>
+
+        <line x1="20" y1="26" x2="150" y2="102" class="dg-acc" stroke-width="1.8" marker-end="url(#m05a2)"/>
+        <text x="20" y="20" class="dg-label-sm">incident proton or neutron</text>
+
+        <circle cx="160" cy="110" r="5.5" class="dg-rule" fill="none" stroke-dasharray="2 2"/>
+        <circle cx="210" cy="160" r="5.5" class="dg-rule" fill="none" stroke-dasharray="2 2"/>
+        <text x="96" y="136" class="dg-label-sm">vacancy</text>
+        <line x1="132" y1="132" x2="154" y2="118" class="dg-rule" stroke-width="0.8"/>
+
+        <path d="M160,110 L196,146 L232,132" class="dg-acc" stroke-width="1.5" fill="none" stroke-dasharray="5 3"/>
+        <circle cx="232" cy="132" r="4.5" class="dg-acc-f"/>
+        <circle cx="196" cy="146" r="4.5" class="dg-acc-f"/>
+        <text x="246" y="128" class="dg-label-sm">interstitials, displaced</text>
+        <text x="246" y="142" class="dg-label-sm">along the cascade</text>
+
+        <text x="40" y="196" class="dg-label-sm">Threshold displacement energy in Si: <tspan class="dg-math">T</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">d</tspan> = 21 eV</text>
+        <text x="40" y="211" class="dg-label-sm">About 90% of Frenkel pairs recombine; about 10% remain as stable defects</text>
+
+        <defs><marker id="m05a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+      </svg>
+      <figcaption>Displacement is a nuclear collision, not an electronic one, so it is governed by a threshold energy rather than by a continuous rate of loss. The tenth of the pairs that survive recombination are what the device sees.</figcaption>
+    </figure>
+
+    <p>
+      Defect levels inside the bandgap act as generation and recombination centres, and their
+      device consequences follow from that one property. They shorten minority-carrier
+      lifetime, which reduces bipolar current gain and reduces the collection efficiency of a
+      solar cell. They generate carriers thermally in a depleted region, which raises dark
+      current in any imaging device and produces hot pixels. They trap and re-emit signal
+      charge on its way through a charge-coupled device, which degrades charge transfer
+      efficiency and smears an image along the transfer direction. None of these mechanisms
+      involves an insulator, and none is affected by anything done to the gate oxide.
+    </p>
+    <p>
+      The measure is non-ionizing energy loss, in MeV·cm²/g, and the accumulated quantity is
+      the displacement damage dose: the product of particle fluence and NIEL, which is the
+      non-ionizing counterpart of absorbed dose. Its usefulness is that damage scales with
+      that product, so a measurement made with one particle at one energy transfers to
+      another — within the limits
+      <a href="m04-quantifying-energy-deposition.html">M04</a> §6 records for gallium arsenide
+      above roughly 40 MeV protons. Protons and neutrons dominate the displacement budget in
+      practice because they have both large nuclear cross-sections and high fluences in the
+      environments of <a href="m02-space-radiation-environment.html">M02</a>.
+    </p>
+
+    <h2>4 · Single-event effects</h2>
+    <p>
+      A single-event effect is a disruption caused by one particle. Deck 03 states the chain
+      in one line: a single energetic particle deposits charge, and that charge upsets the
+      circuit. Nothing accumulates, the device was not degraded beforehand and is not degraded
+      afterwards in the non-destructive case, and the probability that it happens again in the
+      next second is exactly what it was in the last one.
+    </p>
+    <p>
+      The particle loses energy by ionization along its path and leaves a dense column of
+      electron–hole pairs behind it — Deck 03 calls it a plasma track — with the linear energy
+      transfer of <a href="m04-quantifying-energy-deposition.html">M04</a> §2 setting how
+      dense. Where that track crosses a reverse-biased junction, the junction field sweeps the
+      carriers out as a current pulse. The circuit node connected to that junction receives a
+      quantity of charge it did not expect, and its voltage moves.
+    </p>
+    <p>
+      Whether anything follows is decided by a comparison between two charges. The
+      <b>collected charge</b> is what the track delivers to the node, and it is set by the
+      particle: its LET, its angle, and how much of its track lies inside the volume from
+      which the junction can collect. The <b>critical charge</b> is the smallest collected
+      charge that flips the node, and it is set by the circuit: the node capacitance, the
+      supply voltage and the drive strength of the transistors holding the state. Deck 03
+      gives it as below 50 fC — equivalent to 3×10⁵ electrons — in modern circuits that have
+      not been hardened. An upset occurs when the collected charge exceeds the critical
+      charge.
+    </p>
+
+    <div class="box warn">
+      <p>
+        Critical charge is a property of the technology and the circuit, not of the ion. The
+        same node has the same critical charge under every beam; changing the ion changes the
+        collected charge on the other side of the comparison.
+      </p>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 640 230" role="img" aria-labelledby="m05f4-t">
+        <title id="m05f4-t">Ion track crossing a reverse-biased junction, and the charge comparison that decides an upset</title>
+
+        <rect x="40" y="66" width="240" height="118" class="dg-fill"/>
+        <rect x="40" y="66" width="240" height="26" class="dg-fill"/>
+        <text x="160" y="84" class="dg-label-sm" text-anchor="middle">n⁺ drain</text>
+        <text x="120" y="150" class="dg-label-sm" text-anchor="middle">p substrate</text>
+
+        <line x1="40" y1="92" x2="280" y2="92" class="dg-rule" stroke-width="1"/>
+        <line x1="40" y1="114" x2="280" y2="114" class="dg-rule" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="288" y="108" class="dg-label-sm">depletion region</text>
+
+        <line x1="130" y1="40" x2="196" y2="184" class="dg-acc" stroke-width="2"/>
+        <text x="70" y="34" class="dg-label-sm">ion track</text>
+        <g class="dg-acc-f">
+          <circle cx="141" cy="64" r="2.6"/><circle cx="152" cy="88" r="2.6"/><circle cx="163" cy="112" r="2.6"/>
+          <circle cx="174" cy="136" r="2.6"/><circle cx="185" cy="160" r="2.6"/>
+        </g>
+
+        <line x1="420" y1="192" x2="420" y2="36" class="dg-rule" stroke-width="1.2"/>
+        <line x1="420" y1="192" x2="618" y2="192" class="dg-rule" stroke-width="1.2"/>
+        <line x1="420" y1="112" x2="618" y2="112" class="dg-rule" stroke-width="1.4" stroke-dasharray="5 3"/>
+        <text x="618" y="106" class="dg-label-sm" text-anchor="end"><tspan class="dg-math">Q</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">crit</tspan></text>
+        <rect x="450" y="148" width="34" height="44" class="dg-fill"/>
+        <rect x="512" y="62" width="34" height="130" class="dg-acc-f"/>
+        <text x="467" y="210" class="dg-label-sm" text-anchor="middle">light ion</text>
+        <text x="529" y="210" class="dg-label-sm" text-anchor="middle">heavy ion</text>
+        <text x="412" y="42" class="dg-label-sm" text-anchor="end"><tspan class="dg-math">Q</tspan><tspan font-size="8" baseline-shift="sub" class="dg-math">coll</tspan></text>
+        <text x="556" y="84" class="dg-label-sm">upset</text>
+        <text x="440" y="140" class="dg-label-sm">no upset</text>
+      </svg>
+      <figcaption>The junction field collects the track charge as a current pulse. The dashed level is fixed by the circuit; only the bars move when the beam changes.</figcaption>
+    </figure>
+
+    <p>
+      The observable is not a threshold voltage but a rate, and the quantity that carries it
+      is the <b>cross-section</b>: the number of events divided by the particle fluence that
+      produced them, in <b>cm² per device</b>. It has the dimensions of an area because it is
+      one — the effective target area a particle must hit to cause the event. A cross-section
+      measured as a function of LET is the standard characterisation of a part's single-event
+      response. <a href="m11-single-event-effects.html">M11</a> §6 develops it, and §8 the
+      conversion from cross-section and environment to an in-orbit error rate.
+    </p>
+    <p>
+      Heavy ions cause single-event effects by direct ionization, because their LET is large
+      enough to exceed a critical charge on its own. Protons usually cannot: Deck 03 states
+      that direct proton ionization is rarely sufficient. Protons matter instead through
+      nuclear interaction — a proton that strikes a silicon nucleus produces recoils and alpha
+      particles whose LET is far higher than its own, and those secondaries cause the event.
+      This is why proton fluence predicts upset rates in the proton-dominated environments of the inner belt and a solar event, where heavy ions are far too rare to account for the observed rate,
+      and it is treated in <a href="m01-radiation-and-matter.html">M01</a> §7.
+    </p>
+
+    <h2>5 · Soft errors and hard errors</h2>
+    <p>
+      Single-event effects divide again, on whether the device survives. Deck 03 draws the
+      line by whether the error can be removed by rewriting the circuit's state.
+    </p>
+    <p>
+      A <b>soft error</b> is a corruption of stored or propagating information with no damage
+      to the device. It arises when a particle deposits enough energy to change the logic
+      state of a circuit node — a bit flip in an SRAM cell or a register, or a transient pulse
+      in combinational logic that a latch captures. The silicon is unharmed, and reprogramming
+      the circuit into its correct state repairs it completely. What makes soft errors serious
+      is rate rather than severity: if the rate is high enough, the system degrades and the
+      mission can fail even though no part is damaged.
+    </p>
+    <p>
+      A <b>hard error</b> is an event that rewriting the circuit's state does not recover.
+      Deck 03 lists the types: latchup, snapback, single-event burnout and single-event gate
+      rupture. Each is a mechanism by which the deposited charge
+      triggers a self-sustaining or destructive current path rather than merely displacing a
+      stored voltage — a parasitic four-layer structure in the CMOS well that latches on and
+      draws supply current until power is removed, a current density in a power device high
+      enough to destroy it thermally, or a conductive path across a thin gate oxide that lets
+      the applied field break it down. Deck 03 places hard errors predominantly in high-power
+      devices, where the stored energy available to feed the event is large; its burnout
+      example is a power MOSFET, and its gate-rupture examples are a power MOSFET and
+      thin-oxide capacitors. In each, the controlling variables are the LET of the ion and the
+      voltage applied across the struck structure — gate voltage for rupture, joined by the
+      drain voltage in a power MOSFET, and drain voltage for burnout — and the threat rises
+      with both, the dependence
+      <a href="m11-single-event-effects.html">M11</a> §10 develops.
+    </p>
+    <p>
+      The two ends of that list differ in how final they are, and the difference matters for
+      system design. Gate rupture and burnout destroy the device outright. Latchup and snapback
+      are <em>self-sustaining current states</em> rather than damage: removing power collapses
+      the parasitic conduction and the part returns to service, which is why spacecraft carry
+      latchup-detection circuits that cycle power on an over-current. They become permanent only
+      when the sustained current causes thermal damage first. Deck 03 groups all four as hard
+      errors on the criterion that matters for the classification — none is corrected by
+      reprogramming — and that is the criterion used here.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 196" role="img" aria-labelledby="m05f5-t">
+        <title id="m05f5-t">Classification of a single-event effect as a soft or hard error</title>
+        <rect x="222" y="10" width="176" height="38" rx="4" class="dg-fill"/>
+        <text x="310" y="26" class="dg-label-sm" text-anchor="middle">one particle deposits</text>
+        <text x="310" y="40" class="dg-label-sm" text-anchor="middle">charge at a node</text>
+
+        <line x1="310" y1="48" x2="310" y2="62" class="dg-rule" stroke-width="1.2"/>
+        <line x1="150" y1="62" x2="470" y2="62" class="dg-rule" stroke-width="1.2"/>
+        <line x1="150" y1="62" x2="150" y2="88" class="dg-rule" stroke-width="1.2" marker-end="url(#m05a3)"/>
+        <line x1="470" y1="62" x2="470" y2="88" class="dg-rule" stroke-width="1.2" marker-end="url(#m05a3)"/>
+        <text x="150" y="80" class="dg-label-sm" text-anchor="middle">state changes only</text>
+        <text x="470" y="80" class="dg-label-sm" text-anchor="middle">a destructive current path opens</text>
+
+        <rect x="46" y="94" width="208" height="50" rx="4" class="dg-fill"/>
+        <text x="150" y="114" class="dg-label" text-anchor="middle">Soft error</text>
+        <text x="150" y="134" class="dg-label-sm" text-anchor="middle">SEU in SRAM, transient in logic</text>
+
+        <rect x="366" y="94" width="208" height="50" rx="4" class="dg-fill"/>
+        <rect x="366" y="94" width="208" height="50" rx="4" class="dg-acc" fill="none" stroke-width="1.8"/>
+        <text x="470" y="114" class="dg-label" text-anchor="middle">Hard error</text>
+        <text x="470" y="134" class="dg-label-sm" text-anchor="middle">latchup, snapback, burnout, gate rupture</text>
+
+        <text x="150" y="170" class="dg-label-sm" text-anchor="middle">corrected by rewriting the state</text>
+        <text x="470" y="170" class="dg-label-sm" text-anchor="middle">not correctable by rewriting the state</text>
+        <defs><marker id="m05a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+      </svg>
+      <figcaption>The division is by whether rewriting the state repairs it, not by magnitude. A soft error in a control register can end a mission; a hard error needs power removed at best, and at worst has destroyed the part.</figcaption>
+    </figure>
+
+    <p>
+      The distinction governs which countermeasures are available. A soft error can be
+      tolerated by design: redundancy, error-correcting codes and voting schemes detect and
+      repair the corrupted state, and the fault never reaches the system. A hard error must be
+      prevented, because once it has occurred there is nothing left to correct — which moves
+      the mitigation from the architecture into the process and the layout. Error-correcting
+      codes address single-event upsets and have no effect on parameter drift from total
+      ionizing dose, which changes no stored value and corrupts no codeword.
+    </p>
+
+    <h2>6 · Where the divisions blur</h2>
+    <p>
+      The classification sorts <em>effects</em> cleanly. It does not sort particles, and a
+      single particle commonly produces more than one of the three.
+    </p>
+    <p>
+      A proton crossing a device deposits ionizing energy continuously along its path, so it
+      contributes to total ionizing dose. It transfers a small non-ionizing share to nuclei it
+      passes, so it contributes to displacement damage. And it may undergo a nuclear
+      interaction that produces a short, heavily ionizing recoil, so it may cause a
+      single-event effect. All three at once, from one particle, and the reason the three are
+      nonetheless treated separately is that each has a different controlling variable, a
+      different accumulation law and a different countermeasure.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 176" role="img" aria-labelledby="m05f6-t">
+        <title id="m05f6-t">One proton contributing to all three effect classes</title>
+        <line x1="24" y1="38" x2="250" y2="38" class="dg-acc" stroke-width="2" marker-end="url(#m05a4)"/>
+        <text x="24" y="28" class="dg-label-sm">one energetic proton</text>
+
+        <g class="dg-rule" stroke-width="1.1" marker-end="url(#m05a5)">
+          <line x1="270" y1="38" x2="328" y2="38"/>
+          <line x1="270" y1="38" x2="328" y2="86"/>
+          <line x1="270" y1="38" x2="328" y2="134"/>
+        </g>
+
+        <rect x="336" y="20" width="266" height="36" rx="4" class="dg-fill"/>
+        <text x="348" y="43" class="dg-label-sm">ionization along the path → TID, accumulating</text>
+
+        <rect x="336" y="68" width="266" height="36" rx="4" class="dg-fill"/>
+        <text x="348" y="91" class="dg-label-sm">elastic nuclear recoils → DD, accumulating</text>
+
+        <rect x="336" y="116" width="266" height="36" rx="4" class="dg-fill"/>
+        <rect x="336" y="116" width="266" height="36" rx="4" class="dg-acc" fill="none" stroke-width="1.6"/>
+        <text x="348" y="139" class="dg-label-sm">a nuclear reaction secondary → SEE, one event</text>
+        <defs>
+          <marker id="m05a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker>
+          <marker id="m05a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker>
+        </defs>
+      </svg>
+      <figcaption>The proton is not three kinds of particle. The three outcomes are three different fates of its energy, and only the third depends on a single interaction happening in a particular place.</figcaption>
+    </figure>
+
+    <p>
+      The bottom-right cell of Figure 1 is the classification's genuine edge case. A single nuclear interaction produces one displacement cascade, and in a transistor of conventional size that is far too small to move any terminal quantity; in a nanoscale transistor one cascade can be enough (<a href="m12b-dd-measurement-modelling.html">M12b</a> §7). In an imaging array it is not, because each
+      pixel is an independently readable, very low-current device. Deck 03 shows the
+      signature and its fluence dependence together. A pixel array's dark-current distribution
+      carries a <b>high-energy tail produced by very infrequent but large nuclear reaction
+      events</b> — one pixel at a time, which is single-particle displacement damage — alongside
+      a bulk that represents damage accumulated from many small interactions. As the number of
+      primary proton–silicon interactions per pixel rises, the distribution
+      <em>approaches a Gaussian</em>: the tail is most prominent at low fluence and the central
+      limit theorem absorbs it as exposure continues. The single-particle and cumulative
+      contributions are therefore separable in one histogram, and they separate best early.
+    </p>
+    <p>
+      Two further qualifications matter later. Total ionizing dose depends not only on how much
+      dose was delivered but on <b>how fast</b>, because the trapped charge responsible anneals
+      on its own timescale and the interface states build on another; a bipolar part can be
+      degraded more by a small dose delivered slowly than by a large dose delivered quickly.
+      And a hard error can require both classes at once — a gate oxide weakened by accumulated
+      dose ruptures under a strike that an undamaged oxide would have survived. In both cases
+      the classification still holds; what fails is the assumption that the cumulative and
+      single-event budgets can be evaluated independently.
+    </p>
+    <p>
+      That assumption fails in documented ways. <b>Total dose with displacement damage.</b> A proton
+      delivers both at once, and in bipolar devices the two do not add: Schrimpf's chapter in the course
+      textbook reports linear integrated circuits failing under protons at much lower total dose than they
+      tolerate under gamma irradiation, sometimes through different failure mechanisms. Pease, in the same
+      book, draws the testing consequence: cobalt-60 simulates the ionization of electrons and protons but
+      not their displacement damage, and if a cobalt-60 exposure and a neutron exposure are combined to
+      stand in for protons, they must be performed in sequence on the same samples, because the effects are
+      interactive and not simply additive. <a href="m12-displacement-damage.html">M12</a> §3 shows where
+      each acts in the bipolar transistor — dose at the surface of the emitter–base junction, displacement
+      in the bulk — both adding to the same base current.
+    </p>
+    <p>
+      <b>Total dose with single-event effects.</b> Here the interaction runs through a parameter that dose
+      moves and the upset depends on: prior dose changes the circuit's side of the upset comparison of §4,
+      the margin a strike has to overcome. In floating-gate flash cells, whose stored state is itself a
+      threshold voltage, prior total-dose exposure raises the heavy-ion upset cross-section of cells not
+      re-written after irradiation, because the dose-induced threshold shift and the ion-induced one
+      combine (Bagatin, NSREC 2025 Short Course, after Bagatin <em>et al.</em> 2010). In SRAMs, Schwank
+      <em>et al.</em> (2006) characterized parts from six vendors and found that total dose, together with
+      the stored pattern, substantially changed proton-induced upset hardness in some of them; in one, the
+      pattern made more than two orders of magnitude of difference in cross-section at the highest dose.
+      They attributed it to radiation-induced leakage currents that reduce the cells' noise margins or
+      disturb the bias of peripheral circuits, and concluded that the worst-case upset test is made at the
+      maximum mission dose and temperature with the minimum supply voltage.
+    </p>
+    <p>
+      A third case is related but different in kind. At the 5 nm node, SRAMs irradiated with heavy ions
+      develop weak bits that correlate with the displacement damage the ions deposit and not with total
+      dose (Auden, NSREC 2024 Short Course, after Xiong <em>et al.</em> 2024); the damage reported is
+      cumulative, at extreme fluences, from defect clusters comparable in size to the transistors. This is
+      not a documented change in single-event response. It is a heavy-ion exposure changing the part it
+      is measuring through displacement damage, which a cobalt-60 or X-ray exposure does not reproduce.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 620 170" role="img" aria-labelledby="m05f7-t">
+        <title id="m05f7-t">Two documented interactions between the effect classes, and a heavy-ion test that deposits displacement damage</title>
+        <g class="dg-fill">
+          <rect x="10" y="62" width="120" height="46" rx="4"/>
+          <rect x="250" y="10" width="120" height="46" rx="4"/>
+          <rect x="250" y="114" width="120" height="46" rx="4"/>
+        </g>
+        <g class="dg-label" text-anchor="middle">
+          <text x="70" y="90">TID</text>
+          <text x="310" y="38">DD</text>
+          <text x="310" y="142">SEE</text>
+        </g>
+        <g class="dg-rule" stroke-width="1.3" marker-end="url(#m05a6)">
+          <line x1="132" y1="74" x2="246" y2="38"/>
+          <line x1="132" y1="98" x2="246" y2="136"/>
+        </g>
+        <line x1="310" y1="112" x2="310" y2="60" class="dg-rule" stroke-width="1.1" stroke-dasharray="4 3" marker-end="url(#m05a6)"/>
+        <g class="dg-label-sm">
+          <text x="384" y="30">bipolar ICs under protons:</text>
+          <text x="384" y="46">not additive (Schrimpf; Pease)</text>
+          <text x="384" y="128">flash cells: dose raises the ion cross-section;</text>
+          <text x="384" y="144">SRAMs: leakage lowers noise margin (Schwank)</text>
+          <text x="318" y="82">5 nm: a heavy-ion test</text>
+          <text x="318" y="96">deposits DD (weak bits)</text>
+        </g>
+        <defs><marker id="m05a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+      </svg>
+      <figcaption>The two solid arrows are documented interactions: dose and displacement damage do not add in bipolar circuits, and prior dose moves the margin an upset has to overcome. The dashed arrow is not an interaction but a side effect of testing: at 5 nm the heavy ions used to measure single events also deposit displacement damage the part responds to.</figcaption>
+    </figure>
+
+    <p>
+      The common consequence is for qualification. A part qualified separately against a dose
+      specification, a heavy-ion cross-section and a displacement-damage fluence has been tested in three
+      states that never occur together in orbit, where every part carries all three histories at once.
+      Where an interaction is known, the exposures should be sequenced or combined on the same parts
+      (Pease), and Schwank <em>et al.</em> conclude that the worst-case upset test is made on parts already
+      irradiated to the maximum mission dose. <a href="m15-hardness-assurance.html">M15</a> develops the
+      total-dose programme, and <a href="m16-destructive-single-event-effects.html">M16</a> the destructive
+      single-event effects, for which a dose-weakened oxide is the case already named above.
+    </p>
+
+    <details class="check">
+      <summary>An SRAM passes its heavy-ion qualification with a comfortable margin on unirradiated parts written with one data pattern, and passes a separate cobalt-60 test to three times the mission dose. Give two reasons the upset rate late in the mission can still exceed the prediction, and the test change that would expose each.</summary>
+      <div class="answer">
+        <p>
+          First, total dose changes the circuit's side of the upset comparison. Dose raises transistor
+          leakage currents, which reduce the cells' noise margins, so a smaller disturbance flips a cell; the
+          same leakage can also shift the bias of the peripheral circuits. The heavy-ion test on unirradiated
+          parts never saw that reduced margin. The fix is to run the single-event test on parts first
+          irradiated to the mission dose, at the worst-case temperature and the minimum supply voltage, as
+          Schwank <em>et al.</em> recommend.
+        </p>
+        <p>
+          Second, after dose the stored pattern matters: in one SRAM Schwank <em>et al.</em> measured, the
+          cross-section at the highest dose differed by more than two orders of magnitude between stored
+          patterns. A test with one pattern on unirradiated parts can miss the worst one. The fix is to
+          repeat the irradiated-part test with the patterns the mission will hold, including the worst. In
+          both cases the separate tests each passed honestly; what they could not measure is the
+          interaction.
+        </p>
+      </div>
+    </details>
+
+    <h2>7 · What the classification decides</h2>
+    <p>
+      The taxonomy earns its place because each cell implies a different engineering
+      programme. Choosing the wrong cell for a failure produces a countermeasure that cannot
+      work.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th></th><th>Total ionizing dose</th><th>Displacement damage</th><th>Single-event effects</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Controlling quantity</b></td>
+          <td>Accumulated dose, rad(Si) or rad(SiO₂)</td>
+          <td>Displacement damage dose, <em>Φ</em> · NIEL</td>
+          <td>LET of the individual particle, MeV·cm²/mg</td>
+        </tr>
+        <tr>
+          <td><b>Where the damage sits</b></td>
+          <td>Insulators — gate, field and buried oxides</td>
+          <td>The semiconductor lattice</td>
+          <td>Nowhere for a soft error — the charge is transient. A hard error damages the struck structure itself</td>
+        </tr>
+        <tr>
+          <td><b>What the device does</b></td>
+          <td>Threshold voltage shifts, leakage rises, bipolar gain falls</td>
+          <td>Minority-carrier lifetime falls, dark current rises, charge transfer degrades</td>
+          <td>A stored bit changes, or a destructive current path opens</td>
+        </tr>
+        <tr>
+          <td><b>Most affected</b></td>
+          <td>MOS devices, bipolar analogue circuits</td>
+          <td>Solar cells, imagers, bipolar devices</td>
+          <td>Memory, logic, power devices</td>
+        </tr>
+        <tr>
+          <td><b>Typical test source</b></td>
+          <td>Co-60 gamma, 10 keV X-ray</td>
+          <td>Protons, reactor neutrons</td>
+          <td>Heavy-ion or proton accelerator beam</td>
+        </tr>
+        <tr>
+          <td><b>Time dependence</b></td>
+          <td>Rate-dependent; anneals and continues to evolve after exposure</td>
+          <td>Partly anneals over minutes to hours, then recovers slowly over much longer times; the residue is treated as permanent</td>
+          <td>None — events are independent</td>
+        </tr>
+        <tr>
+          <td><b>Countermeasure</b></td>
+          <td>Process and layout: thin or hardened oxides, enclosed geometry, guard rings</td>
+          <td>Material and shielding choice, operating-point margin, device geometry</td>
+          <td>Architecture for soft errors, process and layout for hard errors</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      The consequence worth carrying forward is that hardness is never a single number. A part
+      qualified to a total-dose level has been shown to survive accumulated charge trapping and
+      has been shown nothing about its response to one heavy ion. A part with a measured
+      heavy-ion cross-section may still drift out of specification after a year in orbit.
+      Displacement damage will be invisible in both tests if the part contains no
+      minority-carrier device. Each cell of Figure 1 requires its own evidence, and hardness
+      assurance is the discipline of assembling all of it;
+      <a href="m15-hardness-assurance.html">M15</a> develops that discipline for total ionizing
+      dose.
+    </p>
+
+    <p>
+      The table above is organised by effect. A mission analysis starts from the other end: from the
+      particle populations of <a href="m02-space-radiation-environment.html">M02</a>, each of which
+      produces some of the three effects and not others, for reasons that follow from its mass, charge,
+      energy and flux. Xapsos's 2006 NSREC Short Course gives the correspondence population by population, in its tables
+      and text, and names the metric for most of them; the table below follows it. Where its values differ
+      from the course slides of <a href="m02-space-radiation-environment.html">M02</a>, both are given.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Population</th><th>Effects it causes</th><th>Metric</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Trapped protons</b> (inner belt; up to hundreds of MeV)</td>
+          <td>TID, DD, SEE</td>
+          <td>Dose; 10 MeV equivalent fluence or displacement damage dose; incident proton energy for SEE</td>
+          <td>High flux ionizes continuously (dose); the proton's mass lets it give a nucleus a large recoil (displacement); its own LET is too low to upset most nodes, so most of its single events come from nuclear-reaction recoils (§4)</td>
+        </tr>
+        <tr>
+          <td><b>Trapped electrons</b> (inner and outer zones; up to about 4.5 and 10 MeV in Xapsos 2006; the course slide quotes about 7 MeV, M02 §7)</td>
+          <td>TID, DD, charging and discharging</td>
+          <td>Dose; 1 MeV equivalent electron fluence or displacement damage dose</td>
+          <td>High flux and penetration deliver dose; above about 0.22 MeV an electron can displace a silicon atom; near 1 MeV, only one or a few (M12 §1); low-energy electrons charge spacecraft surfaces and high-energy ones charge dielectrics internally</td>
+        </tr>
+        <tr>
+          <td><b>Galactic cosmic rays</b> (hadrons: 87 % protons, 12 % alphas, 1 % heavier ions in Xapsos 2006; the course slide gives about 89 %, 9 % and 2 %, M02 §2; energies up to 10¹¹ GeV)</td>
+          <td>SEE</td>
+          <td>LET</td>
+          <td>A flux of only a few particles per cm² per second delivers negligible dose or displacement over a mission, but the charge a heavy ion deposits by direct ionization in a single track can exceed a critical charge</td>
+        </tr>
+        <tr>
+          <td><b>Solar particle events</b> (coronal mass ejections: 96.4 % protons, 3.5 % alphas, ~0.1 % heavier ions)</td>
+          <td>TID, DD, SEE</td>
+          <td>As for protons and heavy ions</td>
+          <td>Dose and displacement come mainly from the protons and possibly the alphas; the heavy-ion component, though small, causes single events, and so do the protons and alphas</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Read the second row with one exception. Electrons are assigned to the cumulative effects because
+      an electron's LET is far too low to supply a critical charge of tens of femtocoulombs, the order of
+      the bound §4 quotes — but critical charge falls with scaling, to 0.06 fC, a few hundred electrons, in
+      the 22 nm part below. King <em>et al.</em> (2013) observed upsets in 28 nm and 45 nm CMOS
+      SRAMs operated at reduced supply voltage, produced by single energetic electrons freed by X-ray
+      irradiation; the 28 nm parts upset within 10 % of their nominal supply voltage; the errors were shown not to come from weak
+      bits or photocurrents. Casey <em>et al.</em> (NSREC 2020) upset a 128 Mb SRAM in GlobalFoundries'
+      22 nm fully depleted silicon-on-insulator process with electrons from 130 keV to 1.4 MeV, at
+      nominal and higher supply voltages; the critical charge estimated from heavy-ion data was
+      0.06 fC. At these critical charges a single electron's direct ionization is enough, and electrons
+      join the single-event column. Casey's group places the result beside the upsets from direct ionization by protons and muons
+      already observed in deep-submicron parts: the populations do not change, but the circuit's side of the
+      comparison of §4 does.
+    </p>
+
+    <details class="check">
+      <summary>A geostationary mission sees mostly trapped electrons, galactic cosmic rays and occasional solar particle events. For each, name the effects it can cause in a 22 nm fully depleted SOI SRAM, and say which one a 1990s 0.5 µm SRAM in the same orbit would not have shown.</summary>
+      <div class="answer">
+        <p>
+          Trapped electrons deliver total dose and some displacement damage, and charge the spacecraft's
+          surfaces and dielectrics; in a cell whose critical charge is a small fraction of a femtocoulomb
+          (0.06 fC was estimated for one 22 nm SOI SRAM), single electrons can also
+          upset cells by direct ionization (the test that showed it used beam energies from 130 keV to
+          1.4 MeV). Galactic cosmic rays cause single-event effects, through the
+          LET of their heavy ions, and nothing cumulative of consequence. Solar particle events cause all
+          three: dose and displacement mainly from their protons, single events from their protons,
+          alphas and heavy ions. The 0.5 µm SRAM, with a far larger critical charge, is not expected
+          to show electron-induced upsets — the reports cited here are at the 45 nm node and below; for it, electrons were purely a cumulative and
+          charging hazard.
+        </p>
+      </div>
+    </details>
+
+    <details class="check">
+      <summary>A part is qualified to 100 krad(Si) and flown in an orbit where it accumulates 5 krad(Si) per year. Two years in, its imaging sensor shows rising dark current and its data bus shows occasional corrupted words. Which effects are these, and does the total-dose margin bear on either?</summary>
+      <div class="answer">
+        <p>
+          Rising dark current in an imager is displacement damage: nuclear collisions from
+          trapped and solar protons have left stable defect levels in the bandgap of the
+          silicon, and those levels generate carriers thermally in the depleted pixel. It is
+          cumulative and non-ionizing. Total ionizing dose also raises dark current in a
+          charge-coupled device, through interface traps rather than lattice defects, so the
+          two contributions must be separated by which dominates for that sensor and orbit —
+          but the total-dose margin bounds neither, because 100 krad(Si) is a statement about
+          trapped charge in insulators and says nothing about lattice damage.
+        </p>
+        <p>
+          Corrupted words on a bus are single-event effects: individual particles depositing
+          more than the critical charge on individual nodes. They are not cumulative, so they
+          would have appeared at the same rate in the first week as in the second year, and the
+          10× total-dose margin is irrelevant to them entirely. The rate depends on the LET
+          spectrum at that orbit and the part's cross-section, neither of which a total-dose
+          qualification measures.
+        </p>
+      </div>
+    </details>
+
+    <h2>Where this leaves us</h2>
+    <p>
+      Every radiation effect in this course is located by two answers. Ionizing energy that
+      accumulates as trapped charge in an insulator is total ionizing dose; non-ionizing energy
+      that accumulates as lattice defects is displacement damage; ionizing energy concentrated
+      by one particle into one sensitive volume is a single-event effect, soft if the state can
+      be rewritten and hard if the device is damaged. The three are produced by overlapping
+      sets of particles and often by the same particle, but they have different controlling
+      variables, different accumulation laws, different test sources and different
+      countermeasures, and no measurement of one bounds another.
+    </p>
+    <p>
+      Part III now takes the first cell. The chain sketched in §2 — pairs generated in the
+      oxide, holes surviving and transporting, charge trapped near the interface, a parameter
+      drifting — is four distinct pieces of physics, each with its own dependence on field,
+      thickness, temperature and time. <a href="m06-device-physics.html">M06</a> supplies the
+      device electrostatics that make the last step quantitative: what a charge in an oxide
+      does to a transistor, and where it has to sit to do the most.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Quick reference</p>
+      <ul>
+        <li><b>Two axes:</b> ionizing against non-ionizing energy (a property of the particle and target), crossed with cumulative against single-particle response (a property of the circuit).</li>
+        <li><b>TID</b> — ionizing, cumulative. Charge trapped in insulators; threshold shifts, leakage, gain loss. Measured in rad(Si)/rad(SiO₂). Any ionizing species contributes.</li>
+        <li><b>DD</b> — non-ionizing, cumulative. Vacancies and interstitials in the lattice; lifetime, dark current, charge transfer efficiency. Measured as DDD = <em>Φ</em> · NIEL. Protons and neutrons dominate.</li>
+        <li><b>SEE</b> — ionizing, single particle. Upset when <em>Q</em><sub>coll</sub> &gt; <em>Q</em><sub>crit</sub>. Governed by LET; measured as a cross-section in <b>cm² per device</b>. <em>Q</em><sub>crit</sub> is set by the technology and circuit; <em>Q</em><sub>coll</sub> is set by the ion <em>and</em> by the volume the struck junction can collect from — below 50 fC (3×10⁵ electrons) in unhardened modern circuits.</li>
+        <li><b>Soft error</b> — state corrupted, device undamaged, corrected by rewriting: SEU in SRAM or logic. <b>Hard error</b> — permanent damage, not correctable: latchup, snapback, single-event burnout, single-event gate rupture. Predominantly a high-power-device concern. Controlled by ion LET and applied voltage (gate voltage for rupture, drain voltage for burnout); the threat rises with both.</li>
+        <li><b>Displacement numbers:</b> threshold 21 eV in Si; 50 keV primary knock-on atom typical of a 1 MeV neutron or energetic proton; about 90% of Frenkel pairs recombine, about 10% remain.</li>
+        <li><b>Pair creation:</b> 3.6 eV in Si, 17 eV in SiO₂. Silicon does not retain charge because it is conductive and the carriers recombine or are swept out; an oxide does because holes are immobile and have no path to ground.</li>
+        <li><b>One particle, three effects.</b> A proton ionizes (TID), recoils nuclei (DD), and may produce a heavily ionizing nuclear secondary (SEE). The effects are separated by their controlling variable, not by the particle.</li>
+        <li><b>Population → effect (Xapsos 2006):</b> trapped protons → TID, DD, SEE; trapped electrons → TID, DD, charging; GCR → SEE (metric LET); solar particle events → TID, DD, SEE. <b>Exception:</b> single electrons upset 28/45 nm SRAMs at reduced supply (King 2013) and a 22 nm FDSOI SRAM, 130 keV–1.4 MeV (Casey 2020).</li>
+        <li><b>Synergy:</b> TID + DD not additive in bipolar ICs under protons (sequence Co-60 and neutrons on the same parts; Pease). Prior TID raises heavy-ion SEU cross-section in floating-gate cells (Bagatin) and, with the stored pattern, changes SRAM SEU hardness via leakage (Schwank 2006: test at maximum dose and temperature, minimum supply). At 5 nm a heavy-ion test itself deposits DD: weak bits track DD, not TID (Auden 2024).</li>
+        <li><b>Test sources:</b> 10 keV X-rays (mean; ≤ ~50 keV) displace nothing; Co-60 a little (Compton e⁻ ≤ ~1 MeV); a single X-ray-freed electron can still upset a 28 nm SRAM at reduced supply.</li>
+        <li><b>No test bounds another.</b> A total-dose qualification says nothing about single-event response or lattice damage, and a heavy-ion cross-section says nothing about parameter drift.</li>
+        <li><b>Error-correcting codes</b> address single-event upsets. They have no effect on total-dose parameter drift, which corrupts no stored value.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 03 pp. 9–10 for the mechanism-to-effect mapping; Lecture 5, where the professor states the two-way division directly — ionizing against non-ionizing, then single event against cumulative. The 2×2 presentation arranges the course's own two axes</td></tr>
+      <tr><td>§2</td><td>Deck 03 pp. 16–19, 23; the displacement limits of the two test sources from <a href="m12-displacement-damage.html">M12</a> §1 and Deck 15 p. 7 (Compton electrons), and Pease (2004) p. 548 for cobalt-60 not simulating displacement damage; King <em>et al.</em> (2013) for X-ray-induced electron upsets; <a href="m03-dose-shielding-terrestrial.html">M03</a> §1 for the dose definition and units; Lectures 3 and 5 for the conductor-against-insulator argument, which the professor returned to in each</td></tr>
+      <tr><td>§3</td><td>Deck 03 pp. 34, 36–38 (after C. Poivey, ESA–CERN Workshop (2017); G. P. Summers, 1992 IEEE NSREC Short Course; J. R. Srour, C. J. Marshall and P. W. Marshall, <em>IEEE Trans. Nucl. Sci.</em> <b>50</b>, 653 (2003))</td></tr>
+      <tr><td>§4</td><td>Deck 03 pp. 25–27 (after E. L. Petersen, J. B. Langworthy and S. E. Diehl, <em>IEEE Trans. Nucl. Sci.</em> <b>30</b>, 4533 (1983)); Lecture 4 for the extended exchange establishing that critical charge belongs to the circuit</td></tr>
+      <tr><td>§5</td><td>Deck 03 p. 24 (after NSREC 2013 Short Course) for the soft/hard definitions and the list of hard-error types; Deck 03 pp. 30–33 for gate rupture and burnout in power devices and thin oxides, and pp. 30–32 for their dependence on LET and applied voltage (after F. W. Sexton <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>45</b>, 2509 (1998); J. M. Lauenstein <em>et al.</em>, <em>ibid.</em> <b>58</b>, 2628 (2011); S. Liu <em>et al.</em>, <em>ibid.</em> <b>58</b>, 2991 (2011)). The slides name gate voltage only for rupture; its joint dependence on drain voltage in a power MOSFET is added from K. Shenai, K. F. Galloway and R. D. Schrimpf, in R. D. Schrimpf and D. M. Fleetwood (eds.), <em>Radiation Effects and Soft Errors in Integrated Circuits and Electronic Devices</em> (World Scientific, 2004), pp. 457–458 (after C. F. Wheatley, J. L. Titus and D. I. Burton, <em>IEEE Trans. Nucl. Sci.</em> <b>41</b>, 2152 (1994), and J. L. Titus and C. F. Wheatley, <em>ibid.</em> <b>43</b>, 533 (1996)), as developed in M11 §10; Lecture 4 for the professor's confirmation that error-correcting codes address upset and not dose</td></tr>
+      <tr><td>§6</td><td>Interactions between the classes: R. D. Schrimpf's chapter (p. 508); <a href="m12-displacement-damage.html">M12</a> §3 for where each acts in the bipolar transistor; ASTM F1467 for the 10 keV X-ray tester's ≈10 keV mean and ≈50 keV maximum photon energy (§2); and R. L. Pease, "Hardness assurance for commercial microelectronics" (pp. 548–549), in R. D. Schrimpf and D. M. Fleetwood (eds.), <em>Radiation Effects and Soft Errors in Integrated Circuits and Electronic Devices</em> (World Scientific, 2004); M. Bagatin, "Radiation effects in nonvolatile memories," IEEE NSREC 2025 Short Course, Part III-A (after M. Bagatin <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>57</b>, 3407 (2010)); J. R. Schwank <em>et al.</em>, <em>ibid.</em> <b>53</b>, 1772 (2006), abstract only; E. Auden, IEEE NSREC 2024 Short Course, Part I, §7.1 and Fig. 24 (after Y. Xiong <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>71</b> (2024)). Deck 03 p. 45 for the proton-induced dark-current histogram and its nuclear-reaction tail, which is the single-particle displacement case — a 256×256 charge-injection device under 12 MeV protons, and the slide states explicitly that the distribution approaches a Gaussian as interactions per pixel rise. After C. J. Marshall and P. W. Marshall, 1999 IEEE NSREC Short Course Section IV; Deck 03 pp. 42–45 print the initials as "S. J. Marshall", corrected here; Lecture 5 for the professor's framing of one particle producing several effects. Dose-rate sensitivity and dose-weakened gate oxides are named here; dose rate is treated in <a href="m08-tid-effects-devices-ics.html">M08</a> §9, <a href="m09-oxide-charge-kinetics.html">M09</a> §9 and <a href="m15-hardness-assurance.html">M15</a> §4 and §7, and weakened gate oxides in <a href="m10-gate-oxide-processing.html">M10</a> §7 and <a href="m11-single-event-effects.html">M11</a> §10</td></tr>
+      <tr><td>§7</td><td>Synthesis of the above; test-source practice from Deck 03 p. 18 and Lecture 5, where the professor gives the reason a total-dose source is chosen to produce dose alone. The population table follows M. Xapsos, "Modeling the space radiation environment," IEEE NSREC 2006 Short Course, Section I: Table 1 and §III.B (trapped protons), §III.E (trapped electrons), Table 3 and §IV.A (galactic cosmic rays), Table 4 and §V.A (solar particle events); the "Why" column is this page's, from §4 and M12 §1. Single-electron upsets: M. P. King <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>60</b>, 4122 (2013), abstract; M. C. Casey <em>et al.</em>, "Direct ionization from low-energy electrons in a highly-scaled CMOS process," IEEE NSREC 2020, NASA NTRS 20205010699, slides 3–4, 6 and 13</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m04-quantifying-energy-deposition.html"><span>Previous</span>M04 · Quantifying Energy Deposition</a>
+      <a class="next" href="m06-device-physics.html"><span>Next</span>M06 · Device Physics for Radiation Effects</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

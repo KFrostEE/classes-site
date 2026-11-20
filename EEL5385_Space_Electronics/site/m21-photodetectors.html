@@ -1,0 +1,1684 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M21 · Photodetectors for Space — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M21 · Photodetectors for Space</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 21</p>
+    <h1>Photodetectors for Space</h1>
+    <p class="lede">
+      How a semiconductor junction turns light into current, how much current a watt of light gives, what sets the
+      smallest signal a detector can see, why every infrared detector must be cold, which materials reach which
+      wavelengths, how a detector becomes an imaging array, what a superconducting nanowire adds, and what radiation does
+      to all of them — with the detectors of the James Webb Space Telescope as the worked case.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m01-semiconductor-background.html">M01</a> §1–§3, §6 (bands, doping, the p–n junction), <a href="m10-photon-interaction.html">M10</a> §1–§2 (photon energy, band-regime absorption), <a href="m17a-temperature-semiconductor.html">M17a</a> §2, §5 (<em>n</em><sub>i</sub>(<em>T</em>), the junction against temperature), <a href="m11-displacement-damage.html">M11</a> §6–§7, <a href="m18-chip-bonding-packaging.html">M18</a> §6–§7 (bumps, 3D integration)</span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Lecture 24 deck (Space Photodetectors); Lecture 24 (18 Nov); Lecture 23 deck (JWST) pp. 23–28; JWST User Documentation; Rieke et al. 2015; Hansen et al. 1982; Natarajan et al. 2012; Goiffon 2021 short course</span>
+    </div>
+
+    <p>
+      A photodetector converts optical power into an electrical signal, and in a space instrument it is the element that
+      decides what the instrument can see. Most detectors in this module rest on one rule from
+      <a href="m10-photon-interaction.html">M10</a> §2: a photon is absorbed in a semiconductor only if its energy exceeds
+      the bandgap, and the absorption lifts an electron into the conduction band, leaving a hole. §6 adds the extrinsic
+      route, in which a photon lifts an electron from a dopant level just below the conduction band, and §8 a
+      superconducting detector that uses neither. The rest is engineering of the absorption event. A reverse-biased junction separates the pair and delivers it as current (§1–§2); the ratio of
+      current to optical power is the responsivity (§3); the smallest optical power the detector can distinguish is set by
+      its noise, of which the dark current is the professor's measure (§4). A gap small enough to absorb infrared photons
+      is also small enough for heat to excite carriers across it, so infrared detectors are operated tens of kelvin or a
+      few kelvin above absolute zero (§5). The materials that reach the infrared — narrow-gap compounds, mercury cadmium
+      telluride with its composition-tuned gap, and arsenic-doped silicon — are §6, and the hybrid arrays that turn
+      millions of these junctions into a camera are §7. The James Webb Space Telescope (JWST) carries both of these
+      technologies: HgCdTe arrays at about 37 K in its near-infrared instruments
+      and Si:As arrays below 6.7 K in its mid-infrared instrument. §8 covers the superconducting nanowire detector that
+      may succeed them, and §9 what radiation does to each. The telescope that carries these detectors — its mirror,
+      sunshield, orbit and operations — is <a href="m21a-space-telescopes.html">M21a</a>.
+    </p>
+
+    <!-- ================================================================== 1 -->
+    <h2>1 · Absorption and the cutoff wavelength</h2>
+
+    <p>
+      Which wavelengths a detector can see is fixed before any circuit is attached: it is set by the bandgap of the
+      absorbing material. This section states that rule, turns it into the cutoff wavelength, and applies it to the
+      materials the lecture compared.
+    </p>
+
+    <p>
+      A photon of wavelength λ carries energy <em>E</em><sub>ph</sub> = <em>hc</em>/λ (<a href="m10-photon-interaction.html">M10</a> §1).
+      In the band regime — photon energies of a few electronvolts and below, where the wavelength is far larger than the
+      atomic spacing — the photon interacts with the solid's band structure as a whole. It can be absorbed only by
+      promoting an electron from a filled state to an empty one. In an intrinsic semiconductor the nearest empty states
+      lie across the gap, so absorption requires <em>E</em><sub>ph</sub> ≥ <em>E</em><sub>g</sub>. A photon with less
+      energy than the gap finds no allowed transition and passes through: below its gap a semiconductor is transparent.
+      A photon with more energy than the gap is absorbed and generates one electron–hole pair; the excess energy above
+      <em>E</em><sub>g</sub> passes to lattice vibrations as the electron and hole relax to the band edges.
+    </p>
+
+    <div class="eq" id="eq-21-1">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>ph</sub> = <span class="frac"><span class="num"><em>hc</em></span><span class="den">λ</span></span>&emsp;&emsp;λ<sub>c</sub> = <span class="frac"><span class="num"><em>hc</em></span><span class="den"><em>E</em><sub>g</sub></span></span>&emsp;&emsp;λ<sub>c</sub>(nm) = <span class="frac"><span class="num">1239.8</span><span class="den"><em>E</em><sub>g</sub>(eV)</span></span></div>
+        <div class="eq-num">(21.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>ph</sub> photon energy · <em>h</em> Planck constant, 6.626×10⁻³⁴ J·s · <em>c</em> speed of light,
+        2.998×10⁸ m/s · λ wavelength · λ<sub>c</sub> cutoff wavelength, the longest wavelength absorbed ·
+        <em>E</em><sub>g</sub> bandgap. <em>hc</em> = 1239.8 eV·nm, so the last form takes <em>E</em><sub>g</sub> in eV and
+        returns λ<sub>c</sub> in nm with no conversion. A detector responds to λ &lt; λ<sub>c</sub>; λ<sub>c</sub> falls
+        when the gap widens. <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+    <p>
+      The cutoff is therefore an inverse of the gap. Silicon, the usual material of visible-light cameras, absorbs out to
+      about 1.1 µm and is blind beyond. Reaching the infrared means a narrower gap: germanium, indium arsenide and indium
+      antimonide are the candidates the lecture named, because their gaps are progressively smaller. The deck's values
+      and their cutoffs are worked in E1 and drawn in Figure 1 against the bands of JWST's two camera systems: the
+      near-infrared camera NIRCam covers 0.6–5 µm and the mid-infrared instrument MIRI 5–28 µm (Lecture 24 deck p. 27).
+      Of the deck's list only InSb reaches into MIRI's band, and only its short end: to 7.75 µm on the deck's 0.16 eV,
+      and to about 5.4 µm at the wider gap of cold InSb (E1). Nothing on the list approaches 28 µm, which is why §6 needs
+      mercury cadmium telluride and doped silicon.
+    </p>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 250" role="img" aria-labelledby="f21-cut-t">
+<title id="f21-cut-t">Cutoff wavelengths on a logarithmic wavelength axis from 0.3 to 40 micrometres: silicon 1.09, germanium 1.85, indium arsenide 3.76, indium antimonide 7.75 and arsenic-doped silicon 25.3 micrometres, with the NIRCam band 0.6 to 5 and the MIRI band 5 to 28 micrometres beneath</title>
+<text x="92" y="34" class="dg-label-sm" text-anchor="end">Si (1.14 eV)</text>
+<line x1="96" y1="30" x2="175.0" y2="30" class="dg-line" stroke-width="5"/>
+<line x1="175.0" y1="23" x2="175.0" y2="37" class="dg-rule"/>
+<text x="180.0" y="34" class="dg-label-sm">1.09 µm</text>
+<text x="92" y="62" class="dg-label-sm" text-anchor="end">Ge (0.67 eV)</text>
+<line x1="96" y1="58" x2="207.6" y2="58" class="dg-line" stroke-width="5"/>
+<line x1="207.6" y1="51" x2="207.6" y2="65" class="dg-rule"/>
+<text x="212.6" y="62" class="dg-label-sm">1.85 µm</text>
+<text x="92" y="90" class="dg-label-sm" text-anchor="end">InAs (0.33 eV)</text>
+<line x1="96" y1="86" x2="251.0" y2="86" class="dg-line" stroke-width="5"/>
+<line x1="251.0" y1="79" x2="251.0" y2="93" class="dg-rule"/>
+<text x="256.0" y="90" class="dg-label-sm">3.76 µm</text>
+<text x="92" y="118" class="dg-label-sm" text-anchor="end">InSb (0.16 eV)</text>
+<line x1="96" y1="114" x2="295.4" y2="114" class="dg-line" stroke-width="5"/>
+<line x1="295.4" y1="107" x2="295.4" y2="121" class="dg-rule"/>
+<text x="300.4" y="118" class="dg-label-sm">7.75 µm</text>
+<text x="92" y="146" class="dg-label-sm" text-anchor="end">Si:As (0.049 eV)</text>
+<line x1="96" y1="142" x2="367.9" y2="142" class="dg-line" stroke-width="5"/>
+<line x1="367.9" y1="135" x2="367.9" y2="149" class="dg-rule"/>
+<text x="372.9" y="146" class="dg-label-sm">25.3 µm</text>
+<rect x="138.5" y="174" width="130.0" height="14" class="dg-acc-f" opacity="0.35"/>
+<text x="203.5" y="185" class="dg-label-sm" text-anchor="middle">NIRCam 0.6–5 µm</text>
+<rect x="268.5" y="174" width="105.6" height="14" class="dg-acc-f" opacity="0.35"/>
+<text x="321.3" y="185" class="dg-label-sm" text-anchor="middle">MIRI 5–28 µm</text>
+<line x1="96" y1="204" x2="396" y2="204" class="dg-rule"/>
+<line x1="96.0" y1="204" x2="96.0" y2="208" class="dg-rule"/>
+<text x="96.0" y="220" class="dg-label-sm" text-anchor="middle">0.3</text>
+<line x1="169.8" y1="204" x2="169.8" y2="208" class="dg-rule"/>
+<text x="169.8" y="220" class="dg-label-sm" text-anchor="middle">1</text>
+<line x1="237.2" y1="204" x2="237.2" y2="208" class="dg-rule"/>
+<text x="237.2" y="220" class="dg-label-sm" text-anchor="middle">3</text>
+<line x1="311.0" y1="204" x2="311.0" y2="208" class="dg-rule"/>
+<text x="311.0" y="220" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="378.4" y1="204" x2="378.4" y2="208" class="dg-rule"/>
+<text x="378.4" y="220" class="dg-label-sm" text-anchor="middle">30</text>
+<text x="246.0" y="234" class="dg-label-sm" text-anchor="middle">wavelength (µm), logarithmic; bar = absorbed (λ &lt; λ<tspan baseline-shift="sub" style="font-size:75%">c</tspan>)</text>
+</svg>
+      <figcaption><b>Figure 1.</b> Cutoff wavelengths from (21.1) for the gaps on Lecture 24 deck pp. 10 and 13, on a logarithmic wavelength axis; each bar spans the wavelengths the material absorbs. Si, Ge and InAs stop short of NIRCam's 5 µm; InSb (the deck's 0.16 eV) reaches only the short end of MIRI's band; only the arsenic level of Si:As approaches its long end.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E1 · Cutoff wavelengths from the bandgap</div>
+      <div class="ex-body">
+        <p><b>Given</b> the bandgaps on p. 10 of the Lecture 24 deck: Si 1.14 eV, Ge 0.67 eV, InAs 0.33 eV, InSb 0.16 eV.
+          <b>Find</b> the cutoff wavelength of each, and the gap a detector needs for a 5.3 µm cutoff.</p>
+        <p><b>Plan.</b> Apply λ<sub>c</sub> = 1239.8/<em>E</em><sub>g</sub> (21.1) with <em>E</em><sub>g</sub> in eV; the
+          answer is in nm. The inverse problem uses the same relation solved for <em>E</em><sub>g</sub>. These are the
+          figures the professor worked on the slide, so the first step reproduces them.</p>
+        <p class="ex-step"><b>Silicon.</b> λ<sub>c</sub> = 1239.8/1.14 = 1087.6 nm = 1.088 µm. The slide gives
+          1.087 µm, the same value truncated rather than rounded.</p>
+        <p class="ex-step"><b>Germanium.</b> λ<sub>c</sub> = 1239.8/0.67 = 1850.5 nm = 1.85 µm.</p>
+        <p class="ex-step"><b>Indium arsenide and indium antimonide.</b> 1239.8/0.33 = 3757 nm = 3.76 µm;
+          1239.8/0.16 = 7749 nm = 7.75 µm. Each halving of the gap doubles the cutoff, because λ<sub>c</sub> ∝
+          1/<em>E</em><sub>g</sub>.</p>
+        <p class="ex-step"><b>The inverse: gap for a 5.3 µm cutoff.</b> <em>E</em><sub>g</sub> = 1239.8/5300 =
+          0.234 eV. Why this target: NIRCam's long-wavelength arrays have a cutoff near 5 µm (§6), and 0.234 eV lies between
+          the deck's InAs and InSb values. The deck's gaps are near-room-temperature values, and every gap widens on
+          cooling: Sze and Ng list InSb at 0.17 eV at 300 K and 0.23 eV at 0 K, so a cooled InSb detector cuts off near
+          1239.8/0.23 = 5.4 µm, about this target. NIRCam uses HgCdTe instead, whose cutoff is set by composition
+          (§6).</p>
+        <p class="ex-answer">Si 1.09 µm, Ge 1.85 µm, InAs 3.76 µm, InSb 7.75 µm; a 5.3 µm cutoff needs
+          <em>E</em><sub>g</sub> = 0.234 eV. Check: silicon's cutoff in the near infrared, just beyond the visible, is the
+          familiar result; every value matches the slide to within 1 nm.</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p><b>Source note — the silicon gap.</b> The deck gives silicon's gap as 1.14 eV. The rest of this site uses
+        1.12 eV at 300 K (<a href="m01-semiconductor-background.html">M01</a>, <a href="m17a-temperature-semiconductor.html">M17a</a>),
+        which puts the cutoff at 1239.8/1.12 = 1.107 µm. The 2 % difference changes no conclusion here; use the deck's
+        1.14 eV when reproducing its table.</p>
+    </div>
+
+    <details class="check">
+      <summary>A detector must see out to 10 µm. What gap does it need, and does InSb qualify?</summary>
+      <div class="answer">
+        <p>From (21.1), <em>E</em><sub>g</sub> = 1239.8/10,000 = 0.124 eV. InSb, at 0.16 eV, cuts off at 7.75 µm and
+          therefore absorbs nothing between 7.75 and 10 µm: photons in that band carry less energy than its gap and pass
+          through. The detector needs a material with a gap of 0.124 eV or less, which no binary compound on the deck's
+          list supplies. §6 shows the two routes the field uses: an alloy whose gap can be tuned that low (HgCdTe), and a
+          transition that does not cross the gap at all (Si:As).</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 2 -->
+    <h2>2 · The photodiode and its current–voltage characteristic</h2>
+
+    <p>
+      An absorbed photon creates a pair, but a pair that recombines where it was made produces no signal. The
+      photodiode is a p–n junction arranged so that the pair is separated and collected before it recombines. This
+      section describes the structure, then reads its current–voltage curve, which shows in one figure the photodetector,
+      the solar cell and the avalanche photodiode as three operating regions of the same junction.
+    </p>
+
+    <details class="recap">
+      <summary>Assumes: the p–n junction in reverse bias (M01 §6)</summary>
+      <p>Where p-type and n-type silicon meet, electrons diffuse into the p side and holes into the n side, leaving the
+        ionized dopants uncovered in a depletion region that carries an electric field from the n side to the p side.
+        Reverse bias (n side positive) widens the depletion region and strengthens the field. A small reverse current
+        still flows. One part is the diffusion saturation current <em>I</em><sub>0</sub> of the diode law, carried by
+        minority carriers that reach the depletion region by diffusion; the other is a generation current from pairs
+        thermally generated inside the depletion region, which in silicon near room temperature is usually the larger
+        (<a href="m01-semiconductor-background.html">M01</a> §6). Together they are the photodiode's dark current, and
+        both grow steeply with temperature (<a href="m17a-temperature-semiconductor.html">M17a</a> §5).</p>
+    </details>
+
+    <p>
+      The structure the lecture drew is the <b>p–i–n photodiode</b>: a thin p⁺ layer, a wide undoped (intrinsic) layer,
+      and an n⁺ layer, with electrodes on top and bottom and a window on top carrying an anti-reflection coating so that
+      the light enters the semiconductor instead of reflecting from its surface. Under reverse bias the intrinsic layer is
+      fully depleted, so the junction field extends across the whole of it. A photon absorbed there generates a pair inside
+      the field, and the field drives the electron toward the n⁺ side and the hole toward the p⁺ side (Figure 2). The pair
+      is separated by drift, which is fast, rather than by diffusion, which is slow; pairs generated in the thin doped
+      layers within a diffusion length of the depletion edge can still reach it by diffusion and add to the current. The
+      wide intrinsic layer is there to make the absorbing volume thick: the thicker the depleted layer, the larger the
+      fraction of incident photons absorbed inside the field.
+    </p>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 210" role="img" aria-labelledby="f21-pin-t">
+<title id="f21-pin-t">A p-i-n photodiode under reverse bias: light enters through an anti-reflection coating, is absorbed in the wide intrinsic layer, and the junction field drives electrons to the n side and holes to the p side; beneath, the band diagram tilts across the intrinsic layer</title>
+<defs><marker id="f21-pin-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+<rect x="20" y="30" width="14" height="70" class="dg-acc-f" opacity="0.4"/>
+<text x="27" y="22" class="dg-label-sm" text-anchor="middle">AR</text>
+<rect x="34" y="30" width="40" height="70" class="dg-fill"/>
+<text x="54.0" y="70" class="dg-label" text-anchor="middle">p⁺</text>
+<rect x="74" y="30" width="220" height="70" class="dg-fill"/>
+<text x="184.0" y="70" class="dg-label" text-anchor="middle">i (depleted)</text>
+<rect x="294" y="30" width="40" height="70" class="dg-fill"/>
+<text x="314.0" y="70" class="dg-label" text-anchor="middle">n⁺</text>
+<text x="380" y="58" class="dg-label-sm">reverse</text><text x="380" y="72" class="dg-label-sm">bias: n⁺</text><text x="380" y="86" class="dg-label-sm">positive</text>
+<path d="M2,8 q6,-6 12,0 t12,0 t12,0 t12,0 t12,0" class="dg-acc" fill="none"/>
+<text x="70" y="14" class="dg-label-sm">hν &gt; E<tspan baseline-shift="sub" style="font-size:75%">g</tspan></text>
+<path d="M34,120 L74,120 L294,167 L334,167" class="dg-rule" fill="none"/>
+<path d="M34,150 L74,150 L294,197 L334,197" class="dg-rule" fill="none"/>
+<text x="340" y="171" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">C</tspan></text><text x="340" y="201" class="dg-label-sm">E<tspan baseline-shift="sub" style="font-size:75%">V</tspan></text>
+<line x1="180" y1="169.6" x2="180" y2="146.6" class="dg-acc" marker-end="url(#f21-pin-a)"/>
+<circle cx="180" cy="142.6" r="3.5" class="dg-ink"/><circle cx="180" cy="172.6" r="3.5" class="dg-fill"/>
+<line x1="188" y1="144.6" x2="240" y2="158.6" class="dg-line" marker-end="url(#f21-pin-a)"/>
+<text x="242" y="154.6" class="dg-label-sm">e⁻ → n⁺</text>
+<line x1="172" y1="170.6" x2="120" y2="156.6" class="dg-line" marker-end="url(#f21-pin-a)"/>
+<text x="62" y="166.6" class="dg-label-sm">h⁺ → p⁺</text>
+</svg>
+      <figcaption><b>Figure 2.</b> A p–i–n photodiode under reverse bias, after Lecture 24. The photon is absorbed in the depleted intrinsic layer, and the field across it drives the electron to the n⁺ side and the hole to the p⁺ side. Schematic, not to scale.</figcaption>
+    </figure>
+
+    <p>
+      The separated carriers flow out through the external circuit as the <b>photocurrent</b> <em>I</em><sub>ph</sub>.
+      Its direction is the direction of the reverse current — electrons leave through the n contact — so the
+      photocurrent adds to the reverse saturation current rather than opposing it. Even with no light at all, the reverse
+      saturation current flows; in a photodetector it is called the <b>dark current</b>, because it is the current
+      measured in the dark. The professor made both points the ones to remember: a photodiode is operated in reverse
+      bias, and the photon energy must exceed the bandgap.
+    </p>
+
+    <p>
+      The current–voltage curve (Figure 3) collects this. In the dark the junction follows the diode law: a small,
+      nearly constant reverse current at negative voltage and an exponential rise in forward bias. Illumination adds the
+      photocurrent, which is to first order independent of the bias across the junction, so light shifts the whole curve
+      downward by <em>I</em><sub>ph</sub>, and more light shifts it further.
+    </p>
+
+    <div class="eq" id="eq-21-2">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em> = <em>I</em><sub>0</sub>&thinsp;<span class="dl">[</span>exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>qV</em></span><span class="den"><em>kT</em></span></span><span class="dl">)</span> − 1<span class="dl">]</span> − <em>I</em><sub>ph</sub></div>
+        <div class="eq-num">(21.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em> terminal current (A), positive into the p contact · <em>I</em><sub>0</sub> diffusion saturation
+        current (A); the measured dark current adds the depletion-region generation current, which (21.2) does not carry · <em>V</em> voltage, p side relative to n side (V) · <em>q</em> elementary charge,
+        1.602×10⁻¹⁹ C · <em>k</em> Boltzmann constant, 1.381×10⁻²³ J/K (or 8.617×10⁻⁵ eV/K with <em>V</em> in volts and
+        <em>q</em> = 1) · <em>T</em> temperature (K) · <em>I</em><sub>ph</sub> photocurrent (A). The ideal-diode form;
+        a real junction adds an ideality factor <em>n</em> in the exponent and a series resistance, and breaks down at
+        large reverse bias, which (21.2) does not describe. It is the single-diode model of
+        <a href="m20-space-power.html">M20</a> §3 written with the opposite current sign: M20 counts current delivered
+        to the load as positive, <em>I</em> = <em>I</em><sub>L</sub> − <em>I</em><sub>0</sub>[…], so its <em>I</em> is
+        minus this one, and its solar-cell point at <em>I</em> &gt; 0 is the fourth-quadrant point here. <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 230" role="img" aria-labelledby="f21-iv-t">
+<title id="f21-iv-t">Current against voltage of a photodiode in the dark and at two light levels, schematic. Light shifts the curve downward by the photocurrent. Reverse bias with negative current is the photodetector region; positive voltage with negative current is the solar-cell region, where the product of voltage and current is negative and the device delivers power; near breakdown the current rises steeply, the avalanche region</title>
+<rect x="20" y="10" width="44" height="205" class="dg-faint" opacity="0.35"/>
+<line x1="20" y1="100" x2="430" y2="100" class="dg-rule"/><line x1="260.0" y1="10" x2="260.0" y2="215" class="dg-rule"/>
+<text x="428" y="95" class="dg-label-sm" text-anchor="end">V</text><text x="265.0" y="20" class="dg-label-sm">I</text>
+<path d="M50.0,194.4 L51.2,172.3 L52.4,155.1 L53.6,141.8 L54.8,131.3 L56.0,123.2 L57.2,116.9 L58.4,112.0 L59.6,108.1 L60.8,105.1 L62.0,102.8 L63.2,101.0 L64.4,100.0 L65.6,100.0 L66.8,100.0 L68.0,100.0 L69.2,100.0 L70.4,100.0 L71.6,100.0 L72.8,100.0 L74.0,100.0 L75.2,100.0 L76.4,100.0 L77.6,100.0 L78.8,100.0 L80.0,100.0 L81.2,100.0 L82.4,100.0 L83.6,100.0 L84.8,100.0 L86.0,100.0 L87.2,100.0 L88.4,100.0 L89.6,100.0 L90.8,100.0 L92.0,100.0 L93.2,100.0 L94.4,100.0 L95.6,100.0 L96.8,100.0 L98.0,100.0 L99.2,100.0 L100.4,100.0 L101.6,100.0 L102.8,100.0 L104.0,100.0 L105.2,100.0 L106.4,100.0 L107.6,100.0 L108.8,100.0 L110.0,100.0 L111.2,100.0 L112.4,100.0 L113.6,100.0 L114.8,100.0 L116.0,100.0 L117.2,100.0 L118.4,100.0 L119.6,100.0 L120.8,100.0 L122.0,100.0 L123.2,100.0 L124.4,100.0 L125.6,100.0 L126.8,100.0 L128.0,100.0 L129.2,100.0 L130.4,100.0 L131.6,100.0 L132.8,100.0 L134.0,100.0 L135.2,100.0 L136.4,100.0 L137.6,100.0 L138.8,100.0 L140.0,100.0 L141.2,100.0 L142.4,100.0 L143.6,100.0 L144.8,100.0 L146.0,100.0 L147.2,100.0 L148.4,100.0 L149.6,100.0 L150.8,100.0 L152.0,100.0 L153.2,100.0 L154.4,100.0 L155.6,100.0 L156.8,100.0 L158.0,100.0 L159.2,100.0 L160.4,100.0 L161.6,100.0 L162.8,100.0 L164.0,100.0 L165.2,100.0 L166.4,100.0 L167.6,100.0 L168.8,100.0 L170.0,100.0 L171.2,100.0 L172.4,100.0 L173.6,100.0 L174.8,100.0 L176.0,100.0 L177.2,100.0 L178.4,100.0 L179.6,100.0 L180.8,100.0 L182.0,100.0 L183.2,100.0 L184.4,100.0 L185.6,100.0 L186.8,100.0 L188.0,100.0 L189.2,100.0 L190.4,100.0 L191.6,100.0 L192.8,100.0 L194.0,100.0 L195.2,100.0 L196.4,100.0 L197.6,100.0 L198.8,100.0 L200.0,100.0 L201.2,100.0 L202.4,100.0 L203.6,100.0 L204.8,100.0 L206.0,100.0 L207.2,100.0 L208.4,100.0 L209.6,100.0 L210.8,100.0 L212.0,100.0 L213.2,100.0 L214.4,100.0 L215.6,100.0 L216.8,100.0 L218.0,100.0 L219.2,100.0 L220.4,100.0 L221.6,100.0 L222.8,100.0 L224.0,100.0 L225.2,100.0 L226.4,100.0 L227.6,100.0 L228.8,100.0 L230.0,100.0 L231.2,100.0 L232.4,100.0 L233.6,100.0 L234.8,100.0 L236.0,100.0 L237.2,100.0 L238.4,100.0 L239.6,100.0 L240.8,100.0 L242.0,100.0 L243.2,100.0 L244.4,100.0 L245.6,100.0 L246.8,100.0 L248.0,100.0 L249.2,100.0 L250.4,100.0 L251.6,100.0 L252.8,100.0 L254.0,100.0 L255.2,100.0 L256.4,100.0 L257.6,100.0 L258.8,100.0 L260.0,100.0 L261.2,100.0 L262.4,100.0 L263.6,100.0 L264.8,100.0 L266.0,100.0 L267.2,100.0 L268.4,100.0 L269.6,100.0 L270.8,100.0 L272.0,100.0 L273.2,100.0 L274.4,100.0 L275.6,100.0 L276.8,100.0 L278.0,100.0 L279.2,100.0 L280.4,100.0 L281.6,99.9 L282.8,99.9 L284.0,99.9 L285.2,99.9 L286.4,99.9 L287.6,99.9 L288.8,99.9 L290.0,99.9 L291.2,99.9 L292.4,99.9 L293.6,99.9 L294.8,99.9 L296.0,99.8 L297.2,99.8 L298.4,99.8 L299.6,99.8 L300.8,99.8 L302.0,99.8 L303.2,99.8 L304.4,99.7 L305.6,99.7 L306.8,99.7 L308.0,99.7 L309.2,99.6 L310.4,99.6 L311.6,99.6 L312.8,99.5 L314.0,99.5 L315.2,99.5 L316.4,99.4 L317.6,99.4 L318.8,99.3 L320.0,99.3 L321.2,99.2 L322.4,99.1 L323.6,99.1 L324.8,99.0 L326.0,98.9 L327.2,98.8 L328.4,98.7 L329.6,98.6 L330.8,98.5 L332.0,98.4 L333.2,98.3 L334.4,98.1 L335.6,98.0 L336.8,97.8 L338.0,97.7 L339.2,97.5 L340.4,97.3 L341.6,97.1 L342.8,96.8 L344.0,96.6 L345.2,96.3 L346.4,96.0 L347.6,95.7 L348.8,95.4 L350.0,95.0 L351.2,94.6 L352.4,94.2 L353.6,93.8 L354.8,93.3 L356.0,92.8 L357.2,92.2 L358.4,91.6 L359.6,90.9 L360.8,90.2 L362.0,89.5 L363.2,88.6 L364.4,87.7 L365.6,86.8 L366.8,85.8 L368.0,84.6 L369.2,83.4 L370.4,82.2 L371.6,80.8 L372.8,79.3 L374.0,77.7 L375.2,75.9 L376.4,74.0 L377.6,72.0 L378.8,69.8 L380.0,67.5 L381.2,64.9 L382.4,62.2 L383.6,59.3 L384.8,56.1 L386.0,52.7 L387.2,49.0 L388.4,45.0 L389.6,40.7 L390.8,36.1 L392.0,31.1 L393.2,25.8 L394.4,20.0 L395.6,13.7" class="dg-line" fill="none"/>
+<text x="156.0" y="96.0" class="dg-label-sm">dark</text>
+<path d="M51.2,208.3 L52.4,191.1 L53.6,177.8 L54.8,167.3 L56.0,159.2 L57.2,152.9 L58.4,148.0 L59.6,144.1 L60.8,141.1 L62.0,138.8 L63.2,137.0 L64.4,136.0 L65.6,136.0 L66.8,136.0 L68.0,136.0 L69.2,136.0 L70.4,136.0 L71.6,136.0 L72.8,136.0 L74.0,136.0 L75.2,136.0 L76.4,136.0 L77.6,136.0 L78.8,136.0 L80.0,136.0 L81.2,136.0 L82.4,136.0 L83.6,136.0 L84.8,136.0 L86.0,136.0 L87.2,136.0 L88.4,136.0 L89.6,136.0 L90.8,136.0 L92.0,136.0 L93.2,136.0 L94.4,136.0 L95.6,136.0 L96.8,136.0 L98.0,136.0 L99.2,136.0 L100.4,136.0 L101.6,136.0 L102.8,136.0 L104.0,136.0 L105.2,136.0 L106.4,136.0 L107.6,136.0 L108.8,136.0 L110.0,136.0 L111.2,136.0 L112.4,136.0 L113.6,136.0 L114.8,136.0 L116.0,136.0 L117.2,136.0 L118.4,136.0 L119.6,136.0 L120.8,136.0 L122.0,136.0 L123.2,136.0 L124.4,136.0 L125.6,136.0 L126.8,136.0 L128.0,136.0 L129.2,136.0 L130.4,136.0 L131.6,136.0 L132.8,136.0 L134.0,136.0 L135.2,136.0 L136.4,136.0 L137.6,136.0 L138.8,136.0 L140.0,136.0 L141.2,136.0 L142.4,136.0 L143.6,136.0 L144.8,136.0 L146.0,136.0 L147.2,136.0 L148.4,136.0 L149.6,136.0 L150.8,136.0 L152.0,136.0 L153.2,136.0 L154.4,136.0 L155.6,136.0 L156.8,136.0 L158.0,136.0 L159.2,136.0 L160.4,136.0 L161.6,136.0 L162.8,136.0 L164.0,136.0 L165.2,136.0 L166.4,136.0 L167.6,136.0 L168.8,136.0 L170.0,136.0 L171.2,136.0 L172.4,136.0 L173.6,136.0 L174.8,136.0 L176.0,136.0 L177.2,136.0 L178.4,136.0 L179.6,136.0 L180.8,136.0 L182.0,136.0 L183.2,136.0 L184.4,136.0 L185.6,136.0 L186.8,136.0 L188.0,136.0 L189.2,136.0 L190.4,136.0 L191.6,136.0 L192.8,136.0 L194.0,136.0 L195.2,136.0 L196.4,136.0 L197.6,136.0 L198.8,136.0 L200.0,136.0 L201.2,136.0 L202.4,136.0 L203.6,136.0 L204.8,136.0 L206.0,136.0 L207.2,136.0 L208.4,136.0 L209.6,136.0 L210.8,136.0 L212.0,136.0 L213.2,136.0 L214.4,136.0 L215.6,136.0 L216.8,136.0 L218.0,136.0 L219.2,136.0 L220.4,136.0 L221.6,136.0 L222.8,136.0 L224.0,136.0 L225.2,136.0 L226.4,136.0 L227.6,136.0 L228.8,136.0 L230.0,136.0 L231.2,136.0 L232.4,136.0 L233.6,136.0 L234.8,136.0 L236.0,136.0 L237.2,136.0 L238.4,136.0 L239.6,136.0 L240.8,136.0 L242.0,136.0 L243.2,136.0 L244.4,136.0 L245.6,136.0 L246.8,136.0 L248.0,136.0 L249.2,136.0 L250.4,136.0 L251.6,136.0 L252.8,136.0 L254.0,136.0 L255.2,136.0 L256.4,136.0 L257.6,136.0 L258.8,136.0 L260.0,136.0 L261.2,136.0 L262.4,136.0 L263.6,136.0 L264.8,136.0 L266.0,136.0 L267.2,136.0 L268.4,136.0 L269.6,136.0 L270.8,136.0 L272.0,136.0 L273.2,136.0 L274.4,136.0 L275.6,136.0 L276.8,136.0 L278.0,136.0 L279.2,136.0 L280.4,136.0 L281.6,135.9 L282.8,135.9 L284.0,135.9 L285.2,135.9 L286.4,135.9 L287.6,135.9 L288.8,135.9 L290.0,135.9 L291.2,135.9 L292.4,135.9 L293.6,135.9 L294.8,135.9 L296.0,135.8 L297.2,135.8 L298.4,135.8 L299.6,135.8 L300.8,135.8 L302.0,135.8 L303.2,135.8 L304.4,135.7 L305.6,135.7 L306.8,135.7 L308.0,135.7 L309.2,135.6 L310.4,135.6 L311.6,135.6 L312.8,135.5 L314.0,135.5 L315.2,135.5 L316.4,135.4 L317.6,135.4 L318.8,135.3 L320.0,135.3 L321.2,135.2 L322.4,135.1 L323.6,135.1 L324.8,135.0 L326.0,134.9 L327.2,134.8 L328.4,134.7 L329.6,134.6 L330.8,134.5 L332.0,134.4 L333.2,134.3 L334.4,134.1 L335.6,134.0 L336.8,133.8 L338.0,133.7 L339.2,133.5 L340.4,133.3 L341.6,133.1 L342.8,132.8 L344.0,132.6 L345.2,132.3 L346.4,132.0 L347.6,131.7 L348.8,131.4 L350.0,131.0 L351.2,130.6 L352.4,130.2 L353.6,129.8 L354.8,129.3 L356.0,128.8 L357.2,128.2 L358.4,127.6 L359.6,126.9 L360.8,126.2 L362.0,125.5 L363.2,124.6 L364.4,123.7 L365.6,122.8 L366.8,121.8 L368.0,120.6 L369.2,119.4 L370.4,118.2 L371.6,116.8 L372.8,115.3 L374.0,113.7 L375.2,111.9 L376.4,110.0 L377.6,108.0 L378.8,105.8 L380.0,103.5 L381.2,100.9 L382.4,98.2 L383.6,95.3 L384.8,92.1 L386.0,88.7 L387.2,85.0 L388.4,81.0 L389.6,76.7 L390.8,72.1 L392.0,67.1 L393.2,61.8 L394.4,56.0 L395.6,49.7 L396.8,43.0 L398.0,35.8 L399.2,28.0 L400.4,19.6 L401.6,10.5" class="dg-acc" fill="none"/>
+<text x="156.0" y="132.0" class="dg-label-sm">light</text>
+<path d="M53.6,213.8 L54.8,203.3 L56.0,195.2 L57.2,188.9 L58.4,184.0 L59.6,180.1 L60.8,177.1 L62.0,174.8 L63.2,173.0 L64.4,172.0 L65.6,172.0 L66.8,172.0 L68.0,172.0 L69.2,172.0 L70.4,172.0 L71.6,172.0 L72.8,172.0 L74.0,172.0 L75.2,172.0 L76.4,172.0 L77.6,172.0 L78.8,172.0 L80.0,172.0 L81.2,172.0 L82.4,172.0 L83.6,172.0 L84.8,172.0 L86.0,172.0 L87.2,172.0 L88.4,172.0 L89.6,172.0 L90.8,172.0 L92.0,172.0 L93.2,172.0 L94.4,172.0 L95.6,172.0 L96.8,172.0 L98.0,172.0 L99.2,172.0 L100.4,172.0 L101.6,172.0 L102.8,172.0 L104.0,172.0 L105.2,172.0 L106.4,172.0 L107.6,172.0 L108.8,172.0 L110.0,172.0 L111.2,172.0 L112.4,172.0 L113.6,172.0 L114.8,172.0 L116.0,172.0 L117.2,172.0 L118.4,172.0 L119.6,172.0 L120.8,172.0 L122.0,172.0 L123.2,172.0 L124.4,172.0 L125.6,172.0 L126.8,172.0 L128.0,172.0 L129.2,172.0 L130.4,172.0 L131.6,172.0 L132.8,172.0 L134.0,172.0 L135.2,172.0 L136.4,172.0 L137.6,172.0 L138.8,172.0 L140.0,172.0 L141.2,172.0 L142.4,172.0 L143.6,172.0 L144.8,172.0 L146.0,172.0 L147.2,172.0 L148.4,172.0 L149.6,172.0 L150.8,172.0 L152.0,172.0 L153.2,172.0 L154.4,172.0 L155.6,172.0 L156.8,172.0 L158.0,172.0 L159.2,172.0 L160.4,172.0 L161.6,172.0 L162.8,172.0 L164.0,172.0 L165.2,172.0 L166.4,172.0 L167.6,172.0 L168.8,172.0 L170.0,172.0 L171.2,172.0 L172.4,172.0 L173.6,172.0 L174.8,172.0 L176.0,172.0 L177.2,172.0 L178.4,172.0 L179.6,172.0 L180.8,172.0 L182.0,172.0 L183.2,172.0 L184.4,172.0 L185.6,172.0 L186.8,172.0 L188.0,172.0 L189.2,172.0 L190.4,172.0 L191.6,172.0 L192.8,172.0 L194.0,172.0 L195.2,172.0 L196.4,172.0 L197.6,172.0 L198.8,172.0 L200.0,172.0 L201.2,172.0 L202.4,172.0 L203.6,172.0 L204.8,172.0 L206.0,172.0 L207.2,172.0 L208.4,172.0 L209.6,172.0 L210.8,172.0 L212.0,172.0 L213.2,172.0 L214.4,172.0 L215.6,172.0 L216.8,172.0 L218.0,172.0 L219.2,172.0 L220.4,172.0 L221.6,172.0 L222.8,172.0 L224.0,172.0 L225.2,172.0 L226.4,172.0 L227.6,172.0 L228.8,172.0 L230.0,172.0 L231.2,172.0 L232.4,172.0 L233.6,172.0 L234.8,172.0 L236.0,172.0 L237.2,172.0 L238.4,172.0 L239.6,172.0 L240.8,172.0 L242.0,172.0 L243.2,172.0 L244.4,172.0 L245.6,172.0 L246.8,172.0 L248.0,172.0 L249.2,172.0 L250.4,172.0 L251.6,172.0 L252.8,172.0 L254.0,172.0 L255.2,172.0 L256.4,172.0 L257.6,172.0 L258.8,172.0 L260.0,172.0 L261.2,172.0 L262.4,172.0 L263.6,172.0 L264.8,172.0 L266.0,172.0 L267.2,172.0 L268.4,172.0 L269.6,172.0 L270.8,172.0 L272.0,172.0 L273.2,172.0 L274.4,172.0 L275.6,172.0 L276.8,172.0 L278.0,172.0 L279.2,172.0 L280.4,172.0 L281.6,171.9 L282.8,171.9 L284.0,171.9 L285.2,171.9 L286.4,171.9 L287.6,171.9 L288.8,171.9 L290.0,171.9 L291.2,171.9 L292.4,171.9 L293.6,171.9 L294.8,171.9 L296.0,171.8 L297.2,171.8 L298.4,171.8 L299.6,171.8 L300.8,171.8 L302.0,171.8 L303.2,171.8 L304.4,171.7 L305.6,171.7 L306.8,171.7 L308.0,171.7 L309.2,171.6 L310.4,171.6 L311.6,171.6 L312.8,171.5 L314.0,171.5 L315.2,171.5 L316.4,171.4 L317.6,171.4 L318.8,171.3 L320.0,171.3 L321.2,171.2 L322.4,171.1 L323.6,171.1 L324.8,171.0 L326.0,170.9 L327.2,170.8 L328.4,170.7 L329.6,170.6 L330.8,170.5 L332.0,170.4 L333.2,170.3 L334.4,170.1 L335.6,170.0 L336.8,169.8 L338.0,169.7 L339.2,169.5 L340.4,169.3 L341.6,169.1 L342.8,168.8 L344.0,168.6 L345.2,168.3 L346.4,168.0 L347.6,167.7 L348.8,167.4 L350.0,167.0 L351.2,166.6 L352.4,166.2 L353.6,165.8 L354.8,165.3 L356.0,164.8 L357.2,164.2 L358.4,163.6 L359.6,162.9 L360.8,162.2 L362.0,161.5 L363.2,160.6 L364.4,159.7 L365.6,158.8 L366.8,157.8 L368.0,156.6 L369.2,155.4 L370.4,154.2 L371.6,152.8 L372.8,151.3 L374.0,149.7 L375.2,147.9 L376.4,146.0 L377.6,144.0 L378.8,141.8 L380.0,139.5 L381.2,136.9 L382.4,134.2 L383.6,131.3 L384.8,128.1 L386.0,124.7 L387.2,121.0 L388.4,117.0 L389.6,112.7 L390.8,108.1 L392.0,103.1 L393.2,97.8 L394.4,92.0 L395.6,85.7 L396.8,79.0 L398.0,71.8 L399.2,64.0 L400.4,55.6 L401.6,46.5 L402.8,36.7 L404.0,26.2 L405.2,14.8" class="dg-line" fill="none"/>
+<text x="156.0" y="168.0" class="dg-label-sm">brighter</text>
+<text x="52" y="26" class="dg-label-sm" text-anchor="middle">avalanche</text>
+<text x="156.0" y="205" class="dg-label-sm" text-anchor="middle">photodetector: V &lt; 0, I &lt; 0</text>
+<text x="324.0" y="190" class="dg-label-sm" text-anchor="middle">solar cell:</text>
+<text x="324.0" y="203" class="dg-label-sm" text-anchor="middle">V &gt; 0, I &lt; 0, VI &lt; 0</text>
+<text x="268.0" y="40" class="dg-label-sm">forward conduction</text>
+</svg>
+      <figcaption><b>Figure 3.</b> The current–voltage curve of (21.2) in the dark and at two light levels, with a breakdown region added at large reverse bias (schematic: arbitrary units, the forward side expanded; after deck p. 12). Light shifts the curve down by <em>I</em><sub>ph</sub>. The same junction is a photodetector in reverse bias, a solar cell where <em>VI</em> &lt; 0, and an avalanche photodiode near breakdown.</figcaption>
+    </figure>
+
+    <p>
+      The sign of the product <em>VI</em> identifies three operating regions of the same device.
+    </p>
+    <ul>
+      <li><b>Photodetector, V &lt; 0 and I &lt; 0.</b> Reverse bias. The current is −(<em>I</em><sub>0</sub> +
+        <em>I</em><sub>ph</sub>), linear in the light, and the product <em>VI</em> is positive: the external supply does
+        work on the device. The background against which the photocurrent is read is <em>I</em><sub>0</sub>, which is
+        small, so a small photocurrent is a large fractional change.</li>
+      <li><b>Solar cell, V &gt; 0 and I &lt; 0.</b> The fourth quadrant. Here <em>VI</em> &lt; 0: the device delivers
+        power to the load, and the light is the source of that power. This is the region the solar array of
+        <a href="m20-space-power.html">M20</a> §3 operates in, at the maximum power point between the short-circuit current
+        and the open-circuit voltage.</li>
+      <li><b>Avalanche photodiode, near breakdown.</b> At a reverse bias close to breakdown, carriers crossing the
+        high-field region gain enough energy to create further pairs by impact ionization (the multiplication of
+        <a href="m01-semiconductor-background.html">M01</a> §6), so each photogenerated pair yields many. The avalanche
+        photodiode gains signal this way, but the multiplication process is random and multiplies the dark current too,
+        so its noise is higher. The professor's summary was "pros and cons": gain, at the cost of noise and of operating
+        a junction at the edge of breakdown.</li>
+    </ul>
+    <p>
+      Forward bias with large positive current, the remaining region, is useless for detection: the forward current is
+      exponentially large, so a photocurrent of picoamperes is a negligible change on top of it.
+    </p>
+
+    <details class="check">
+      <summary>Why is a photodiode operated in reverse bias rather than at zero bias or in forward bias? Give one reason for each alternative.</summary>
+      <div class="answer">
+        <p><b>Against forward bias:</b> the forward current grows as exp(<em>qV</em>/<em>kT</em>), so at a few hundred
+          millivolts it is many orders of magnitude larger than <em>I</em><sub>0</sub>. The photocurrent adds the same
+          absolute amount in any region (21.2), so against a large forward current it is a vanishing fraction and cannot be
+          resolved. In reverse bias the background is only <em>I</em><sub>0</sub>.</p>
+        <p><b>Against zero bias:</b> at <em>V</em> = 0 the device still collects photocurrent, and it carries no
+          bias-driven current at all, but the depletion region is at its built-in width only. Reverse bias widens it,
+          which in a p–i–n device depletes the whole intrinsic layer, so more of the absorbed photons are generated inside
+          the field and are collected by drift rather than lost to recombination. The stronger field also sweeps carriers
+          out faster, which shortens the response.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 3 -->
+    <h2>3 · Responsivity and quantum efficiency</h2>
+
+    <p>
+      A detector is characterized first by how much output it gives for a given input. For a photodiode the input is
+      optical power and the output is photocurrent, and their ratio is the responsivity. This section defines it, works
+      the lecture's example, and connects it to the quantum efficiency, which says what fraction of the photons produce a
+      collected electron.
+    </p>
+
+    <p>
+      The <b>responsivity</b> ℜ is the output signal produced per unit of input (Lecture 24 deck p. 14). For a
+      photodiode it is the photocurrent per watt of incident optical power, in A/W. A photodiode's response is linear
+      over a wide range of power, so ℜ is a constant at a given wavelength and the photocurrent is simply ℜ times the
+      power. The reason ℜ depends on wavelength follows from counting photons. Light of wavelength λ carries
+      λ/(<em>hc</em>) photons per joule, so one watt delivers λ/(<em>hc</em>) photons per second; at longer wavelength the same power carries more photons, each of lower
+      energy. If each absorbed photon yields one collected electron, the current per watt rises in proportion to λ — up
+      to the cutoff, beyond which no photon is absorbed and ℜ falls to zero. The fraction of incident photons that
+      produce a collected electron is the <b>quantum efficiency</b> η; it is below 1 because of reflection at the
+      surface, photons that pass through the absorbing layer unabsorbed, and pairs that recombine before collection.
+    </p>
+
+    <div class="eq" id="eq-21-3">
+      <div class="eq-body">
+        <div class="eq-math">ℜ(λ) = <span class="frac"><span class="num"><em>I</em><sub>ph</sub></span><span class="den"><em>P</em></span></span> = <span class="frac"><span class="num">η<em>q</em>λ</span><span class="den"><em>hc</em></span></span>&emsp;&emsp;ℜ (A/W) = <span class="frac"><span class="num">η λ(µm)</span><span class="den">1.2398</span></span></div>
+        <div class="eq-num">(21.3)</div>
+      </div>
+      <div class="eq-says">
+        ℜ responsivity (A/W) · <em>I</em><sub>ph</sub> photocurrent (A) · <em>P</em> incident optical power (W) ·
+        η quantum efficiency, collected electrons per incident photon, 0–1 · <em>q</em> elementary charge ·
+        λ wavelength (m in the first form, µm in the second) · <em>hc</em> as in (21.1). Holds for λ &lt;
+        λ<sub>c</sub>; ℜ = 0 beyond. The second form is the first with <em>hc</em>/<em>q</em> = 1.2398 µm·W/A. With η = 1,
+        ℜ = 0.806 A/W per µm of wavelength. <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 220" role="img" aria-labelledby="f21-resp-t">
+<title id="f21-resp-t">Responsivity against wavelength. The ideal line for unit quantum efficiency rises in proportion to wavelength, 0.806 amperes per watt per micrometre, up to the silicon cutoff at 1.107 micrometres and drops to zero beyond it; a line for quantum efficiency 0.8 lies below it; the lecture example, 0.45 amperes per watt at 700 nanometres, sits on the 0.8 line</title>
+<line x1="50" y1="180" x2="410" y2="180" class="dg-rule"/><line x1="50" y1="180" x2="50" y2="30" class="dg-rule"/>
+<text x="45" y="184.0" class="dg-label-sm" text-anchor="end">0</text>
+<text x="45" y="134.0" class="dg-label-sm" text-anchor="end">0.4</text>
+<text x="45" y="84.0" class="dg-label-sm" text-anchor="end">0.8</text>
+<text x="45" y="34.0" class="dg-label-sm" text-anchor="end">1.2</text>
+<text x="50.0" y="194" class="dg-label-sm" text-anchor="middle">0.2</text>
+<text x="170.0" y="194" class="dg-label-sm" text-anchor="middle">0.6</text>
+<text x="290.0" y="194" class="dg-label-sm" text-anchor="middle">1</text>
+<text x="410.0" y="194" class="dg-label-sm" text-anchor="middle">1.4</text>
+<text x="230.0" y="210" class="dg-label-sm" text-anchor="middle">wavelength (µm)</text>
+<text x="14" y="105.0" class="dg-label-sm" transform="rotate(-90 14 105.0)" text-anchor="middle">ℜ (A/W)</text>
+<path d="M50.0,159.8 L322.1,68.4 L322.1,180.0 L410.0,180.0" class="dg-line" fill="none"/>
+<text x="200.0" y="101.4" class="dg-label-sm" text-anchor="end">η = 1</text>
+<path d="M50.0,163.9 L322.1,90.7 L322.1,180.0 L410.0,180.0" class="dg-acc" fill="none"/>
+<text x="275.0" y="119.4" class="dg-label-sm">η = 0.8</text>
+<line x1="322.1" y1="180" x2="322.1" y2="30" class="dg-guide" stroke-dasharray="3 3"/>
+<text x="326.1" y="40" class="dg-label-sm">λ<tspan baseline-shift="sub" style="font-size:75%">c</tspan> (Si) = 1.107 µm</text>
+<circle cx="200.0" cy="123.8" r="3.5" class="dg-acc-f"/>
+<text x="206.0" y="137.8" class="dg-label-sm">0.45 A/W at 700 nm</text>
+</svg>
+      <figcaption><b>Figure 4.</b> Responsivity from (21.3) for η = 1 and η = 0.8, cut off at silicon's 1.107 µm (<em>E</em><sub>g</sub> = 1.12 eV). The lecture's 0.45 A/W at 700 nm falls on the η = 0.8 line: a real detector lies below the η = 1 line, and the line rises with wavelength because a watt carries more photons at longer wavelength.</figcaption>
+    </figure>
+
+    <p>
+      A measured silicon curve (the Thorlabs FDS1010 on deck p. 14) has the shape this predicts: low in the ultraviolet,
+      where photons are few per watt and are absorbed so close to the surface that many of the pairs recombine there; a
+      rise through the visible; a peak in the near infrared; and a steep fall near 1.1 µm as photon energy approaches the
+      gap and absorption weakens. Part of the rise is the λ factor of (21.3), but most of it, below about 700 nm, is η itself increasing: read off
+      the curve, η = ℜ/ℜ<sub>η=1</sub> climbs from about 0.2 at 400 nm to about 0.8 at 700 nm as the light penetrates
+      deeper and fewer pairs are lost at the surface. η approaches 0.9 only between about 800 and 1000 nm, and falls
+      again near the gap.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">E2 · Photocurrent from responsivity, and the quantum efficiency behind it</div>
+      <div class="ex-body">
+        <p><b>Given</b> the lecture's example (deck p. 15): a silicon photodiode with responsivity 0.45 A/W at 700 nm,
+          illuminated with 1 mW at 700 nm. <b>Find</b> the photocurrent, then the quantum efficiency that responsivity
+          implies.</p>
+        <p><b>Plan.</b> The photocurrent is ℜ<em>P</em> (21.3). The quantum efficiency is the ratio of electrons per
+          second to photons per second, which (21.3) gives directly as η = ℜ<em>hc</em>/(<em>q</em>λ); computing both
+          rates separately shows where the formula comes from.</p>
+        <p class="ex-step"><b>Photocurrent.</b> <em>I</em><sub>ph</sub> = ℜ<em>P</em> = 0.45 A/W × 1×10⁻³ W =
+          4.5×10⁻⁴ A = 0.45 mA, the slide's answer.</p>
+        <p class="ex-step"><b>Photons per second.</b> One photon at 700 nm carries <em>hc</em>/λ = 1239.8/700 = 1.771 eV
+          = 2.838×10⁻¹⁹ J. The photon rate is <em>P</em>/<em>E</em><sub>ph</sub> = 1×10⁻³ W / 2.838×10⁻¹⁹ J =
+          3.52×10¹⁵ photons/s.</p>
+        <p class="ex-step"><b>Electrons per second.</b> <em>I</em><sub>ph</sub>/<em>q</em> = 4.5×10⁻⁴ A /
+          1.602×10⁻¹⁹ C = 2.81×10¹⁵ electrons/s.</p>
+        <p class="ex-step"><b>Quantum efficiency.</b> η = 2.81×10¹⁵ / 3.52×10¹⁵ = 0.797. The same from (21.3):
+          η = ℜ × 1.2398/λ(µm) = 0.45 × 1.2398/0.700 = 0.797.</p>
+        <p class="ex-answer"><em>I</em><sub>ph</sub> = 0.45 mA; η = 0.80. Check: the ideal responsivity at 700 nm
+          (η = 1) is 0.700/1.2398 = 0.565 A/W, and 0.45 A/W is below it, as a real detector must be; a responsivity above
+          the η = 1 line would mean more than one electron per photon, which only a device with internal gain can give: an
+          avalanche photodiode, a photoconductor or a phototransistor.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A detector has ℜ = 0.85 A/W at 1550 nm and receives 20 µW. What is the photocurrent and the quantum efficiency? Could a silicon photodiode replace it?</summary>
+      <div class="answer">
+        <p><em>I</em><sub>ph</sub> = 0.85 × 20×10⁻⁶ = 1.70×10⁻⁵ A = 17.0 µA. η = 0.85 × 1.2398/1.550 = 0.680. The ideal
+          responsivity at this wavelength is 1.550/1.2398 = 1.25 A/W, so 0.85 A/W is physically allowed. A silicon
+          photodiode cannot replace it: 1550 nm is beyond silicon's cutoff of about 1.1 µm (E1), so a 1550 nm photon has
+          0.800 eV, less than silicon's gap, and is not absorbed. The responsivity of silicon at 1550 nm is zero, however
+          high its responsivity in the visible. Germanium (λ<sub>c</sub> = 1.85 µm) absorbs it.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 4 -->
+    <h2>4 · Noise and the minimum detectable signal</h2>
+
+    <p>
+      Responsivity says how much signal a watt produces; it says nothing about the smallest power that can be seen. That
+      limit is set by noise — the random fluctuation present in every electronic measurement — because a signal smaller
+      than the noise cannot be told apart from it. This section gives the professor's measure of a photodiode's limit,
+      the noise-equivalent power computed from the dark current, then the two fundamental noise sources and the
+      datasheet calculation the lecture worked through a transimpedance amplifier.
+    </p>
+
+    <p>
+      The <b>sensitivity</b>, or resolution, of a sensor is the smallest input it can distinguish (deck p. 17). The
+      criterion the course uses is a signal-to-noise ratio of one: a response equal to the noise is just discernible, and
+      a response below the noise is buried in it (deck p. 20; Figure 5). The input that produces a signal equal to the
+      noise is therefore the minimum detectable input.
+    </p>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 170" role="img" aria-labelledby="f21-snr-t">
+<title id="f21-snr-t">Two noisy output traces with the same noise. In the upper trace a step equal to the rms noise appears and is just discernible; in the lower trace a step of one fifth of the noise is buried</title>
+<path d="M20.0,49.5 L22.2,45.8 L24.4,60.3 L26.6,61.0 L28.8,52.4 L31.0,42.9 L33.2,52.0 L35.4,62.8 L37.6,60.1 L39.8,55.2 L42.0,48.3 L44.2,54.9 L46.4,57.3 L48.6,56.4 L50.8,53.6 L53.0,59.9 L55.2,54.8 L57.4,53.0 L59.6,43.5 L61.8,55.2 L64.0,48.2 L66.2,61.8 L68.4,48.9 L70.6,53.7 L72.8,58.5 L75.0,54.9 L77.2,48.6 L79.4,57.0 L81.6,47.7 L83.8,44.3 L86.0,43.6 L88.2,43.7 L90.4,63.5 L92.6,52.4 L94.8,59.4 L97.0,48.3 L99.2,54.3 L101.4,53.2 L103.6,51.6 L105.8,58.8 L108.0,54.1 L110.2,59.7 L112.4,40.5 L114.6,57.9 L116.8,54.6 L119.0,66.9 L121.2,64.9 L123.4,60.5 L125.6,49.3 L127.8,49.5 L130.0,52.8 L132.2,59.2 L134.4,42.0 L136.6,61.8 L138.8,60.6 L141.0,51.4 L143.2,61.6 L145.4,52.9 L147.6,48.1 L149.8,55.2 L152.0,44.9 L154.2,47.5 L156.4,52.4 L158.6,69.6 L160.8,56.1 L163.0,47.8 L165.2,59.0 L167.4,51.6 L169.6,46.3 L171.8,38.6 L174.0,57.2 L176.2,51.4 L178.4,46.2 L180.6,44.1 L182.8,57.3 L185.0,34.9 L187.2,53.4 L189.4,40.2 L191.6,49.1 L193.8,44.9 L196.0,36.2 L198.2,42.9 L200.4,46.9 L202.6,54.7 L204.8,52.3 L207.0,57.6 L209.2,33.8 L211.4,58.5 L213.6,65.6 L215.8,36.4 L218.0,38.9 L220.2,50.2 L222.4,42.0 L224.6,53.4 L226.8,51.7 L229.0,44.3 L231.2,45.0 L233.4,50.9 L235.6,36.5 L237.8,42.7 L240.0,46.8 L242.2,56.0 L244.4,46.8 L246.6,50.0 L248.8,48.3 L251.0,42.2 L253.2,51.7 L255.4,45.9 L257.6,42.2 L259.8,45.3 L262.0,31.8 L264.2,59.9 L266.4,48.2 L268.6,56.0 L270.8,48.2 L273.0,30.3 L275.2,59.2 L277.4,49.8 L279.6,43.2 L281.8,47.1 L284.0,48.4 L286.2,65.6 L288.4,48.0 L290.6,61.4 L292.8,63.3 L295.0,50.9 L297.2,51.5 L299.4,59.9 L301.6,60.5 L303.8,56.2 L306.0,54.9 L308.2,56.0 L310.4,61.9 L312.6,71.0 L314.8,45.7 L317.0,53.6 L319.2,63.5 L321.4,65.7 L323.6,59.7 L325.8,57.7 L328.0,69.7 L330.2,45.1 L332.4,51.9 L334.6,57.1 L336.8,52.4 L339.0,53.3 L341.2,47.5 L343.4,53.8 L345.6,46.1 L347.8,44.1 L350.0,57.0 L352.2,58.0 L354.4,61.0 L356.6,56.5 L358.8,59.9 L361.0,54.8 L363.2,52.8 L365.4,51.1 L367.6,62.9 L369.8,47.4 L372.0,57.0 L374.2,55.7 L376.4,58.5 L378.6,68.8 L380.8,53.1 L383.0,67.2 L385.2,47.2 L387.4,54.6 L389.6,44.0 L391.8,50.4 L394.0,50.0 L396.2,45.2 L398.4,55.2 L400.6,44.2 L402.8,55.8 L405.0,53.1 L407.2,59.6 L409.4,51.1 L411.6,50.2 L413.8,58.4 L416.0,63.8" class="dg-line" fill="none" stroke-width="0.9"/>
+<path d="M152.0,55 L152.0,48.0 L284.0,48.0 L284.0,55" class="dg-acc" fill="none"/>
+<text x="420" y="27" class="dg-label-sm" text-anchor="end">S/N = 1: step just discernible</text>
+<path d="M20.0,135.2 L22.2,132.0 L24.4,136.0 L26.6,141.7 L28.8,140.0 L31.0,136.8 L33.2,153.2 L35.4,139.0 L37.6,124.9 L39.8,143.9 L42.0,136.4 L44.2,123.2 L46.4,130.0 L48.6,128.5 L50.8,136.0 L53.0,144.2 L55.2,114.9 L57.4,132.8 L59.6,133.3 L61.8,123.5 L64.0,129.3 L66.2,134.5 L68.4,142.6 L70.6,136.0 L72.8,136.0 L75.0,139.7 L77.2,141.0 L79.4,141.9 L81.6,135.8 L83.8,139.1 L86.0,132.1 L88.2,127.9 L90.4,132.7 L92.6,134.8 L94.8,124.1 L97.0,130.4 L99.2,145.2 L101.4,139.9 L103.6,133.6 L105.8,141.1 L108.0,129.7 L110.2,147.2 L112.4,148.2 L114.6,128.1 L116.8,130.9 L119.0,146.1 L121.2,134.4 L123.4,125.6 L125.6,142.7 L127.8,143.2 L130.0,143.4 L132.2,141.8 L134.4,147.1 L136.6,138.3 L138.8,145.1 L141.0,134.5 L143.2,119.4 L145.4,142.3 L147.6,128.7 L149.8,126.8 L152.0,149.7 L154.2,132.8 L156.4,133.7 L158.6,135.9 L160.8,128.0 L163.0,136.6 L165.2,131.1 L167.4,136.3 L169.6,134.5 L171.8,139.0 L174.0,117.7 L176.2,134.0 L178.4,141.4 L180.6,120.0 L182.8,122.6 L185.0,135.0 L187.2,138.2 L189.4,138.7 L191.6,125.0 L193.8,135.9 L196.0,138.5 L198.2,127.7 L200.4,135.5 L202.6,134.0 L204.8,120.1 L207.0,127.6 L209.2,124.9 L211.4,130.7 L213.6,124.6 L215.8,134.8 L218.0,126.9 L220.2,126.3 L222.4,136.5 L224.6,142.5 L226.8,129.9 L229.0,134.4 L231.2,129.3 L233.4,137.8 L235.6,129.9 L237.8,126.9 L240.0,117.1 L242.2,121.1 L244.4,130.9 L246.6,123.6 L248.8,138.0 L251.0,125.4 L253.2,132.6 L255.4,124.3 L257.6,131.3 L259.8,135.2 L262.0,138.5 L264.2,124.8 L266.4,133.2 L268.6,128.6 L270.8,130.2 L273.0,147.8 L275.2,129.4 L277.4,136.2 L279.6,130.9 L281.8,130.2 L284.0,147.6 L286.2,137.2 L288.4,135.4 L290.6,132.3 L292.8,128.4 L295.0,139.7 L297.2,136.6 L299.4,130.6 L301.6,147.8 L303.8,122.1 L306.0,141.6 L308.2,125.8 L310.4,134.0 L312.6,121.9 L314.8,127.7 L317.0,135.2 L319.2,146.8 L321.4,134.1 L323.6,132.7 L325.8,131.2 L328.0,143.8 L330.2,140.7 L332.4,140.4 L334.6,133.0 L336.8,141.0 L339.0,135.8 L341.2,128.5 L343.4,137.9 L345.6,125.6 L347.8,132.9 L350.0,136.7 L352.2,127.4 L354.4,131.5 L356.6,137.0 L358.8,139.1 L361.0,135.3 L363.2,132.6 L365.4,127.0 L367.6,133.1 L369.8,139.3 L372.0,144.2 L374.2,133.2 L376.4,132.2 L378.6,127.1 L380.8,138.7 L383.0,144.0 L385.2,129.2 L387.4,136.2 L389.6,143.5 L391.8,123.4 L394.0,128.8 L396.2,134.5 L398.4,133.0 L400.6,140.2 L402.8,128.1 L405.0,138.0 L407.2,138.1 L409.4,137.0 L411.6,142.9 L413.8,127.8 L416.0,123.4" class="dg-line" fill="none" stroke-width="0.9"/>
+<path d="M152.0,135 L152.0,133.6 L284.0,133.6 L284.0,135" class="dg-acc" fill="none"/>
+<text x="420" y="107" class="dg-label-sm" text-anchor="end">S/N = 0.2: step buried</text>
+</svg>
+      <figcaption><b>Figure 5.</b> The signal-to-noise criterion of deck p. 20, drawn with computed Gaussian noise whose rms equals the upper step. A step equal to the rms noise (top) can just be seen, because it persists over many samples; a step of one fifth of it (bottom) cannot.</figcaption>
+    </figure>
+
+    <p>
+      For a photodiode in the dark, the professor took the dark current as the noise level. Dividing that current by the
+      responsivity converts it to the optical power that would produce the same current: the <b>noise-equivalent
+      power</b> (NEP). Light weaker than this produces a photocurrent smaller than the dark current and, on this
+      criterion, cannot be distinguished from it.
+    </p>
+
+    <div class="eq" id="eq-21-4">
+      <div class="eq-body">
+        <div class="eq-math"><em>P</em><sub>eq</sub> = <span class="frac"><span class="num"><em>I</em><sub>dark</sub></span><span class="den">ℜ</span></span></div>
+        <div class="eq-num">(21.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>P</em><sub>eq</sub> noise-equivalent power in the course's form (W) · <em>I</em><sub>dark</sub> dark current
+        (A) · ℜ responsivity (A/W). The course's definition: the dark current itself is treated as the noise floor. The
+        standard definition, (21.6), uses the fluctuation of the current and carries units of W/√Hz.
+        <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">E3 · Noise-equivalent power from the dark current</div>
+      <div class="ex-body">
+        <p><b>Given</b> the lecture's numbers (deck p. 16): dark current 1 pA, responsivity 0.5 A/W. <b>Find</b> the
+          noise-equivalent power in the course's form, and compare it with the limit set by the shot noise of the same
+          dark current.</p>
+        <p><b>Plan.</b> (21.4) gives the course's answer in one division. The comparison needs the shot-noise density
+          (21.5) and the standard NEP (21.6), which depend on the measurement bandwidth; the hinge is to find the bandwidth
+          at which the two definitions agree.</p>
+        <p class="ex-step"><b>Course NEP.</b> <em>P</em><sub>eq</sub> = 1×10⁻¹² A / 0.5 A/W = 2×10⁻¹² W = 2 pW, the
+          slide's value.</p>
+        <p class="ex-step"><b>Shot-noise density of the dark current.</b> <em>i</em><sub>n</sub> =
+          (2<em>qI</em><sub>dark</sub>)<sup>1/2</sup> = (2 × 1.602×10⁻¹⁹ C × 1×10⁻¹² A)<sup>1/2</sup> =
+          5.66×10⁻¹⁶ A/√Hz.</p>
+        <p class="ex-step"><b>Standard NEP.</b> NEP = <em>i</em><sub>n</sub>/ℜ = 5.66×10⁻¹⁶ / 0.5 = 1.13×10⁻¹⁵ W/√Hz.
+          In a 1 kHz bandwidth the minimum detectable power is NEP × √Δ<em>f</em> = 1.13×10⁻¹⁵ × √1000 =
+          3.58×10⁻¹⁴ W = 0.036 pW.</p>
+        <p class="ex-step"><b>Bandwidth at which the two agree.</b> Setting <em>I</em><sub>dark</sub>/ℜ =
+          (2<em>qI</em><sub>dark</sub>Δ<em>f</em>)<sup>1/2</sup>/ℜ gives Δ<em>f</em> = <em>I</em><sub>dark</sub>/(2<em>q</em>)
+          = 1×10⁻¹² / (3.204×10⁻¹⁹) = 3.12 MHz. Why this matters: below about 3 MHz the fluctuation of the dark current
+          is smaller than the dark current itself, so the course's 2 pW is the more conservative limit.</p>
+        <p class="ex-answer">Course NEP 2 pW; shot-noise-limited NEP 1.13×10⁻¹⁵ W/√Hz, equal to 2 pW at a bandwidth of
+          3.1 MHz. Check: units — A ÷ (A/W) = W, and (A/√Hz) ÷ (A/W) = W/√Hz.</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p><b>Two definitions of NEP.</b> The lecture's (21.4) treats the dark current as the noise. In the detector
+        literature the NEP is the signal power that gives a signal-to-noise ratio of one in a 1 Hz output bandwidth, in
+        W/√Hz: the steady part of the dark current can be measured with the shutter closed and subtracted, and what limits
+        detection is its random fluctuation, (21.5)–(21.6). The two coincide only at the bandwidth found in E3. For anything
+        graded in this course, use (21.4); quote a datasheet NEP in W/√Hz with (21.6).</p>
+    </div>
+
+    <p>
+      Two noise mechanisms underlie any such fluctuation. <b>Johnson–Nyquist (thermal) noise</b> is the voltage
+      fluctuation across any resistor at a temperature above absolute zero: the conduction electrons move randomly with
+      thermal energy of order <em>k</em><sub>B</sub><em>T</em>, so the number crossing a given point fluctuates about its
+      mean, and so does the voltage (deck p. 18). Its mean-square value per hertz of bandwidth is 4<em>k</em><sub>B</sub><em>TR</em>.
+      <b>Shot noise</b> is the fluctuation of a current made of discrete charges arriving at random: the arrivals are a
+      Poisson process, so a current <em>I</em> fluctuates with a mean-square value 2<em>qI</em> per hertz. A dark current
+      therefore carries shot noise in proportion to the square root of its size, and so does a photocurrent.
+    </p>
+
+    <div class="eq" id="eq-21-5">
+      <div class="eq-body">
+        <div class="eq-math"><em>v</em><sub>n</sub> = <span class="sqrt">4<em>k</em><sub>B</sub><em>TR</em>Δ<em>f</em></span>&emsp;&emsp;<em>i</em><sub>n,shot</sub> = <span class="sqrt">2<em>qI</em>Δ<em>f</em></span></div>
+        <div class="eq-num">(21.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>v</em><sub>n</sub> rms Johnson noise voltage (V) · <em>k</em><sub>B</sub> Boltzmann constant,
+        1.381×10⁻²³ J/K · <em>T</em> resistor temperature (K) · <em>R</em> resistance (Ω) · Δ<em>f</em> measurement
+        bandwidth (Hz) · <em>i</em><sub>n,shot</sub> rms shot-noise current (A) · <em>q</em> elementary charge (C) ·
+        <em>I</em> mean current (A). With Δ<em>f</em> = 1 Hz each gives a <em>spectral density</em>, in V/√Hz or A/√Hz.
+        The deck writes the Johnson term as (4<em>k</em><sub>B</sub><em>TR</em>)<sup>1/2</sup>, which is that density; the
+        rms voltage needs the √Δ<em>f</em>. <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+    <p>
+      Johnson noise scales as √<em>T</em>, so cooling helps it, but only as a square root: a 1 MΩ resistor has a noise
+      density of (4 × 1.381×10⁻²³ × 300 × 10⁶)<sup>1/2</sup> = 128.7 nV/√Hz at 300 K and 45.2 nV/√Hz at 37 K, a factor
+      of 2.85. The dark current, as §5 shows, falls by orders of magnitude over the same cooling, which is why cooling is
+      decisive for an infrared detector and only helpful for its resistors.
+    </p>
+
+    <div class="eq" id="eq-21-6">
+      <div class="eq-body">
+        <div class="eq-math">NEP = <span class="frac"><span class="num"><em>i</em><sub>n</sub></span><span class="den">ℜ</span></span>&emsp;&emsp;<em>P</em><sub>min</sub> = NEP · <span class="sqrt">Δ<em>f</em></span></div>
+        <div class="eq-num">(21.6)</div>
+      </div>
+      <div class="eq-says">
+        NEP noise-equivalent power (W/√Hz) · <em>i</em><sub>n</sub> total noise current spectral density referred to the
+        detector (A/√Hz) · ℜ responsivity (A/W) · <em>P</em><sub>min</sub> optical power giving S/N = 1 in bandwidth
+        Δ<em>f</em> (W). Halving the bandwidth lowers <em>P</em><sub>min</sub> by √2, not by 2.
+        <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+    <p>
+      A photodiode is almost always read through a <b>transimpedance amplifier</b>, which converts its current to a
+      voltage with a gain <em>G</em> in V/A (equivalently V/mA). A photoreceiver datasheet then gives the noise measured
+      at the output, in V/√Hz. To find the optical power that this noise corresponds to, the lecture referred the noise
+      back through the chain (Figure 6): dividing the output noise density by <em>G</em> gives the equivalent current
+      noise at the photodiode, and dividing that by ℜ gives the NEP. The responsivity acts as a gain from the optical
+      domain to the electrical one, and each division undoes one gain.
+    </p>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 150" role="img" aria-labelledby="f21-tia-t">
+<title id="f21-tia-t">Referring the output noise back to the input: output noise density in volts per root hertz is divided by the transimpedance gain to give current noise density, which is divided by the responsivity to give the noise-equivalent power in watts per root hertz</title>
+<defs><marker id="f21-tia-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+<rect x="10" y="30" width="120" height="44" rx="4" class="dg-fill"/>
+<text x="70" y="49" class="dg-label" text-anchor="middle">optical power</text>
+<text x="70" y="65" class="dg-label-sm" text-anchor="middle">W/√Hz</text>
+<rect x="160" y="30" width="120" height="44" rx="4" class="dg-fill"/>
+<text x="220" y="49" class="dg-label" text-anchor="middle">photocurrent</text>
+<text x="220" y="65" class="dg-label-sm" text-anchor="middle">A/√Hz</text>
+<rect x="310" y="30" width="120" height="44" rx="4" class="dg-fill"/>
+<text x="370" y="49" class="dg-label" text-anchor="middle">output voltage</text>
+<text x="370" y="65" class="dg-label-sm" text-anchor="middle">V/√Hz</text>
+<line x1="130" y1="44" x2="158" y2="44" class="dg-line" marker-end="url(#f21-tia-a)"/>
+<text x="144" y="24" class="dg-label-sm" text-anchor="middle">× ℜ</text>
+<line x1="280" y1="44" x2="308" y2="44" class="dg-line" marker-end="url(#f21-tia-a)"/>
+<text x="294" y="24" class="dg-label-sm" text-anchor="middle">× G</text>
+<path d="M370,74 L370,110 L70,110 L70,76" class="dg-acc" fill="none" marker-end="url(#f21-tia-a)"/>
+<text x="220" y="128" class="dg-label-sm" text-anchor="middle">refer the noise back: ÷ G, then ÷ ℜ → NEP</text>
+<text x="220" y="143" class="dg-label-sm" text-anchor="middle">0.225 µV/√Hz ÷ 4×10⁴ V/A ÷ 0.5 A/W = 11 pW/√Hz</text>
+</svg>
+      <figcaption><b>Figure 6.</b> Referring noise back through a photoreceiver (deck p. 21, E4). The responsivity and the transimpedance gain each multiply the signal on the way out; dividing the output noise by each in turn gives the optical power that would produce it.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E4 · NEP from a photoreceiver datasheet</div>
+      <div class="ex-body">
+        <p><b>Given</b> the lecture's numbers (deck p. 21), shown beside the datasheet of the Newport 1801/1811 photoreceivers:
+          output noise density 0.225 µV/√Hz, transimpedance gain 40 V/mA = 4×10⁴ V/A, responsivity 0.5 A/W.
+          <b>Find</b> the NEP and the minimum detectable power in a 50 kHz bandwidth.</p>
+        <p><b>Plan.</b> Refer the noise back through each gain in turn (Figure 6), keeping the per-√Hz units; then
+          multiply by √Δ<em>f</em> (21.6). The unit trap is the gain: 40 V/mA must be converted to V/A before dividing.</p>
+        <p class="ex-step"><b>Convert the gain.</b> 40 V/mA × 1000 mA/A = 4×10⁴ V/A.</p>
+        <p class="ex-step"><b>Input-referred current noise.</b> <em>i</em><sub>n</sub> = 0.225×10⁻⁶ V/√Hz / 4×10⁴ V/A =
+          5.63×10⁻¹² A/√Hz.</p>
+        <p class="ex-step"><b>NEP.</b> NEP = 5.63×10⁻¹² A/√Hz / 0.5 A/W = 1.13×10⁻¹¹ W/√Hz = 11.3 pW/√Hz.</p>
+        <p class="ex-step"><b>Minimum detectable power in 50 kHz.</b> <em>P</em><sub>min</sub> = 1.13×10⁻¹¹ ×
+          √(5×10⁴) = 1.13×10⁻¹¹ × 223.6 = 2.52×10⁻⁹ W = 2.52 nW.</p>
+        <p class="ex-answer">NEP = 11 pW/√Hz; <em>P</em><sub>min</sub> = 2.5 nW in 50 kHz. Check: the slide's answer,
+          10 pW/√Hz, agrees to one significant figure.</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p><b>Source discrepancy — deck p. 21.</b> The slide's intermediate step reads 0.225×10⁻⁶ / 4×10⁴ =
+        6×10⁻¹¹ A/√Hz. The quotient is 5.6×10⁻¹² A/√Hz, ten times smaller; the slide's final 10 pW/√Hz is correct and
+        follows from the right value (6×10⁻¹¹/0.5 would give 120 pW/√Hz). The second fraction on the slide is labelled
+        "Amplifier Gain" in its denominator; the divisor there is the responsivity, 0.5 A/W. The 0.225 µV/√Hz is the
+        course's figure: the manufacturer's guide gives the 1801's minimum NEP directly, 3.3 pW/√Hz from 0 to 10 MHz.</p>
+    </div>
+
+    <details class="check">
+      <summary>A different photoreceiver shows 0.9 µV/√Hz of output noise with a gain of 10⁵ V/A, and its photodiode has ℜ = 0.6 A/W. What is its NEP, and what power can it detect in a 1 kHz bandwidth?</summary>
+      <div class="answer">
+        <p>Current noise at the photodiode: 0.9×10⁻⁶ / 10⁵ = 9.0×10⁻¹² A/√Hz. NEP = 9.0×10⁻¹² / 0.6 = 1.50×10⁻¹¹ W/√Hz =
+          15 pW/√Hz. In 1 kHz, <em>P</em><sub>min</sub> = 1.50×10⁻¹¹ × √1000 = 4.74×10⁻¹⁰ W = 474 pW. The higher gain does
+          not by itself lower the NEP: what matters is the output noise per unit of gain, here 9.0 pA/√Hz against E4's
+          5.6 pA/√Hz.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 5 -->
+    <h2>5 · Temperature, dark current, and why infrared detectors are cold</h2>
+
+    <p>
+      §4 made the dark current the floor of detection. This section shows why that floor rises steeply with temperature,
+      why the rise is worst for exactly the narrow-gap materials that infrared detection needs, and what it costs to cool
+      a detector in space. It is the temperature argument of <a href="m17a-temperature-semiconductor.html">M17a</a>
+      applied at the cold end.
+    </p>
+
+    <p>
+      The dark current of a junction is carried by thermally generated carriers. In <a href="m17a-temperature-semiconductor.html">M17a</a>
+      §5 the two parts of the reverse current were the diffusion current, proportional to <em>n</em><sub>i</sub>², and
+      the generation current from the depletion region, proportional to <em>n</em><sub>i</sub>; and
+      <em>n</em><sub>i</sub> grows as exp(−<em>E</em><sub>g</sub>/2<em>kT</em>). What controls both is the ratio of the
+      gap to the thermal energy <em>kT</em>. The deck tabulates <em>kT</em>: 8.6 meV at 100 K, 17 meV at 200 K, 26 meV at
+      300 K, 43 meV at 500 K (deck p. 22). For silicon at 300 K, <em>E</em><sub>g</sub>/<em>kT</em> = 1.12/0.02585 = 43,
+      and a silicon junction works well; the deck notes that by 500 K it no longer does. For a material with a 0.1 eV gap
+      — a 12.4 µm cutoff, which the deck rounds to 10 µm — the same ratio is only 11.6 at 100 K, a lower ratio than silicon has at room temperature, and
+      23 at 50 K. The professor's conclusion on the slide was that for a 0.1 eV material "T≈50K is already too high".
+      The narrower the gap, the colder the detector must be to keep <em>E</em><sub>g</sub>/<em>kT</em> large, so the
+      operating temperature of an infrared detector falls as its cutoff wavelength rises.
+    </p>
+
+    <div class="eq" id="eq-21-7">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>dark</sub> ∝ exp&thinsp;<span class="dl">(</span>−<span class="frac"><span class="num"><em>E</em><sub>a</sub></span><span class="den"><em>kT</em></span></span><span class="dl">)</span>&emsp;&emsp;<em>E</em><sub>a</sub> = <span class="frac"><span class="num"><em>k</em> ln(<em>I</em><sub>2</sub>/<em>I</em><sub>1</sub>)</span><span class="den">1/<em>T</em><sub>1</sub> − 1/<em>T</em><sub>2</sub></span></span></div>
+        <div class="eq-num">(21.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>dark</sub> dark current (A) · <em>E</em><sub>a</sub> activation energy of the dominant mechanism
+        (eV) · <em>k</em> = 8.617×10⁻⁵ eV/K · <em>T</em> temperature (K) · <em>I</em><sub>1</sub>, <em>I</em><sub>2</sub>
+        dark currents at <em>T</em><sub>1</sub> &lt; <em>T</em><sub>2</sub>. An Arrhenius reading that ignores the weaker
+        power-law prefactors of <a href="m17a-temperature-semiconductor.html">M17a</a> (17a.4). For diffusion current
+        <em>E</em><sub>a</sub> ≈ <em>E</em><sub>g</sub>; for depletion-region generation <em>E</em><sub>a</sub> ≈
+        <em>E</em><sub>g</sub>/2; a much smaller <em>E</em><sub>a</sub> means another mechanism dominates.
+        <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+    <p>
+      The lecture's measured case was a germanium photodetector (deck p. 23). The cited paper, Siontas et al., phys.
+      stat. sol. (a) 215, 1700453 (2018), describes a germanium quantum-dot photodetector: germanium nanocrystals
+      embedded in a 200 nm SiO₂ film on p-type silicon, read through a transparent top contact, with photoconductive gain
+      (external quantum efficiency 226 % at −10 V). It is not a bulk germanium junction, so germanium's 0.67 eV gap is a
+      reference point here, not the device's gap. At the paper's working bias of −10 V its dark current falls from about
+      10⁻⁷ A at 300 K to about 2×10⁻¹² A at 100 K, close to five orders of magnitude for 200 K of cooling, which is the
+      figure the lecture gave. The paper attributes the dark current to thermal generation of electron–hole pairs. E5
+      reads the slide's data with (21.7), and Figure 7 plots them.
+    </p>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 220" role="img" aria-labelledby="f21-ge-t">
+<title id="f21-ge-t">Germanium quantum-dot photodetector dark current against temperature on a logarithmic current axis. Open circles: the five values listed on the slide, from 1e-13 ampere at 100 kelvin to 1e-7 ampere at 300 kelvin. Filled circles: the curves plotted on the slide, read at minus 10 volts, from 2e-12 ampere at 100 kelvin to 1e-7 ampere at 300 kelvin. Dashed lines: the fitted activation energies, 0.30 electronvolt through the warm points and 0.05 electronvolt through the cold ones</title>
+<line x1="60" y1="180" x2="400" y2="180" class="dg-rule"/><line x1="60" y1="180" x2="60" y2="30" class="dg-rule"/>
+<text x="55" y="184.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">−14</tspan></text>
+<text x="55" y="146.5" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">−12</tspan></text>
+<text x="55" y="109.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">−10</tspan></text>
+<text x="55" y="71.5" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">−8</tspan></text>
+<text x="55" y="34.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">−6</tspan></text>
+<text x="75.5" y="194" class="dg-label-sm" text-anchor="middle">100</text>
+<text x="152.7" y="194" class="dg-label-sm" text-anchor="middle">150</text>
+<text x="230.0" y="194" class="dg-label-sm" text-anchor="middle">200</text>
+<text x="307.3" y="194" class="dg-label-sm" text-anchor="middle">250</text>
+<text x="384.5" y="194" class="dg-label-sm" text-anchor="middle">300</text>
+<text x="230.0" y="210" class="dg-label-sm" text-anchor="middle">temperature (K)</text>
+<text x="14" y="105.0" class="dg-label-sm" transform="rotate(-90 14 105.0)" text-anchor="middle">I<tspan baseline-shift="sub" style="font-size:75%">dark</tspan> (A)</text>
+<path d="M206.8,107.5 L208.4,106.7 L209.9,105.9 L211.5,105.0 L213.0,104.2 L214.5,103.5 L216.1,102.7 L217.6,101.9 L219.2,101.1 L220.7,100.4 L222.3,99.6 L223.8,98.9 L225.4,98.2 L226.9,97.4 L228.5,96.7 L230.0,96.0 L231.5,95.3 L233.1,94.6 L234.6,93.9 L236.2,93.2 L237.7,92.5 L239.3,91.9 L240.8,91.2 L242.4,90.5 L243.9,89.9 L245.5,89.2 L247.0,88.6 L248.5,88.0 L250.1,87.3 L251.6,86.7 L253.2,86.1 L254.7,85.5 L256.3,84.9 L257.8,84.3 L259.4,83.7 L260.9,83.1 L262.5,82.5 L264.0,82.0 L265.5,81.4 L267.1,80.8 L268.6,80.2 L270.2,79.7 L271.7,79.1 L273.3,78.6 L274.8,78.0 L276.4,77.5 L277.9,77.0 L279.5,76.4 L281.0,75.9 L282.5,75.4 L284.1,74.9 L285.6,74.4 L287.2,73.9 L288.7,73.4 L290.3,72.9 L291.8,72.4 L293.4,71.9 L294.9,71.4 L296.5,70.9 L298.0,70.4 L299.5,70.0 L301.1,69.5 L302.6,69.0 L304.2,68.6 L305.7,68.1 L307.3,67.6 L308.8,67.2 L310.4,66.7 L311.9,66.3 L313.5,65.9 L315.0,65.4 L316.5,65.0 L318.1,64.6 L319.6,64.1 L321.2,63.7 L322.7,63.3 L324.3,62.9 L325.8,62.5 L327.4,62.0 L328.9,61.6 L330.5,61.2 L332.0,60.8 L333.5,60.4 L335.1,60.0 L336.6,59.6 L338.2,59.2 L339.7,58.9 L341.3,58.5 L342.8,58.1 L344.4,57.7 L345.9,57.3 L347.5,57.0 L349.0,56.6 L350.5,56.2 L352.1,55.9 L353.6,55.5 L355.2,55.1 L356.7,54.8 L358.3,54.4 L359.8,54.1 L361.4,53.7 L362.9,53.4 L364.5,53.0 L366.0,52.7 L367.5,52.3 L369.1,52.0 L370.6,51.7 L372.2,51.3 L373.7,51.0 L375.3,50.7 L376.8,50.4 L378.4,50.0 L379.9,49.7 L381.5,49.4 L383.0,49.1 L384.5,48.8 L386.1,48.4 L387.6,48.1 L389.2,47.8 L390.7,47.5 L392.3,47.2" class="dg-guide" fill="none" stroke-dasharray="4 3"/>
+<path d="M67.7,139.3 L69.3,138.8 L70.8,138.3 L72.4,137.8 L73.9,137.3 L75.5,136.9 L77.0,136.4 L78.5,135.9 L80.1,135.5 L81.6,135.0 L83.2,134.6 L84.7,134.2 L86.3,133.8 L87.8,133.4 L89.4,133.0 L90.9,132.6 L92.5,132.2 L94.0,131.8 L95.5,131.4 L97.1,131.1 L98.6,130.7 L100.2,130.3 L101.7,130.0 L103.3,129.6 L104.8,129.3 L106.4,129.0 L107.9,128.7 L109.5,128.3 L111.0,128.0 L112.5,127.7 L114.1,127.4 L115.6,127.1 L117.2,126.8 L118.7,126.5 L120.3,126.2 L121.8,126.0 L123.4,125.7 L124.9,125.4 L126.5,125.1 L128.0,124.9 L129.5,124.6 L131.1,124.3 L132.6,124.1 L134.2,123.8 L135.7,123.6 L137.3,123.4 L138.8,123.1 L140.4,122.9 L141.9,122.6 L143.5,122.4 L145.0,122.2 L146.5,122.0 L148.1,121.7 L149.6,121.5 L151.2,121.3 L152.7,121.1 L154.3,120.9 L155.8,120.7 L157.4,120.5 L158.9,120.3 L160.5,120.1 L162.0,119.9 L163.5,119.7 L165.1,119.5 L166.6,119.3 L168.2,119.1 L169.7,119.0 L171.3,118.8 L172.8,118.6 L174.4,118.4 L175.9,118.2 L177.5,118.1 L179.0,117.9 L180.5,117.7 L182.1,117.6 L183.6,117.4 L185.2,117.2 L186.7,117.1 L188.3,116.9 L189.8,116.8 L191.4,116.6 L192.9,116.5 L194.5,116.3 L196.0,116.2 L197.5,116.0 L199.1,115.9 L200.6,115.7 L202.2,115.6 L203.7,115.4 L205.3,115.3 L206.8,115.1 L208.4,115.0 L209.9,114.9 L211.5,114.7 L213.0,114.6 L214.5,114.5 L216.1,114.3 L217.6,114.2 L219.2,114.1 L220.7,114.0 L222.3,113.8 L223.8,113.7 L225.4,113.6 L226.9,113.5 L228.5,113.4 L230.0,113.2" class="dg-guide" fill="none" stroke-dasharray="4 3"/>
+<text x="279.5" y="116.2" class="dg-label-sm">0.30 eV</text>
+<text x="168.2" y="135.6" class="dg-label-sm" text-anchor="end">0.05 eV</text>
+<path d="M75.5,136.9 L152.7,123.8 L230.0,99.4 L307.3,73.1 L384.5,48.8" class="dg-acc" fill="none"/>
+<circle cx="75.5" cy="136.9" r="3.5" class="dg-acc-f"/>
+<circle cx="152.7" cy="123.8" r="3.5" class="dg-acc-f"/>
+<circle cx="230.0" cy="99.4" r="3.5" class="dg-acc-f"/>
+<circle cx="307.3" cy="73.1" r="3.5" class="dg-acc-f"/>
+<circle cx="384.5" cy="48.8" r="3.5" class="dg-acc-f"/>
+<path d="M75.5,161.2 L152.7,142.5 L230.0,123.8 L307.3,86.2 L384.5,48.8" class="dg-line" fill="none" stroke-dasharray="1 3"/>
+<circle cx="75.5" cy="161.2" r="3.5" class="dg-line" fill="none"/>
+<circle cx="152.7" cy="142.5" r="3.5" class="dg-line" fill="none"/>
+<circle cx="230.0" cy="123.8" r="3.5" class="dg-line" fill="none"/>
+<circle cx="307.3" cy="86.2" r="3.5" class="dg-line" fill="none"/>
+<circle cx="384.5" cy="48.8" r="3.5" class="dg-line" fill="none"/>
+<circle cx="72" cy="36" r="3.5" class="dg-acc-f"/><text x="80" y="40" class="dg-label-sm">plotted curves at −10 V</text>
+<circle cx="72" cy="52" r="3.5" class="dg-line" fill="none"/><text x="80" y="56" class="dg-label-sm">values listed on the slide</text>
+</svg>
+      <figcaption><b>Figure 7.</b> The germanium quantum-dot device of deck p. 23: the slide's own curves read at −10 V (filled; E5) and the values its bullets list (open), which mix low-bias and −10 V readings. Dashed: the paper's Arrhenius fits at −10 V, 0.30 eV on the warm branch and 0.05 eV on the cold (Siontas et al. 2018, Fig. 2), each drawn through an end point of the −10 V data.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E5 · Reading the germanium quantum-dot dark-current data</div>
+      <div class="ex-body">
+        <p><b>Given</b> two sets of dark currents from deck p. 23. (a) The values the slide lists: 10⁻¹³ A at 100 K,
+          10⁻¹² A at 150 K, 10⁻¹¹ A at 200 K, 10⁻⁹ A at 250 K, 10⁻⁷ A at 300 K. (b) The slide's own plotted curves read at
+          their −10 V end, to one significant figure: 2×10⁻¹² A at 100 K, 10⁻¹¹ A at 150 K, 2×10⁻¹⁰ A at 200 K,
+          5×10⁻⁹ A at 250 K, 10⁻⁷ A at 300 K. <b>Find</b> the factor per 50 K in each set, compare each with the slide's
+          rule of "~10× in every 50 K", and find the activation energy (21.7) in each interval of the −10 V set.</p>
+        <p><b>Plan.</b> Take ratios of successive values; then apply (21.7) to each pair. The hinge is that (b) is one
+          bias point, so its ratios measure the temperature dependence alone; the listed values turn out not to be.</p>
+        <p class="ex-step"><b>Factors per 50 K, listed values.</b> 100→150 K: 10; 150→200 K: 10; 200→250 K: 100;
+          250→300 K: 100. Over the range 10⁻⁷/10⁻¹³ = 10⁶, six decades, a mean of 10<sup>6/4</sup> = 31.6 per 50 K. The
+          rule would give 10⁴. Comparing them with the plotted curves explains the excess: 10⁻¹³ A at 100 K and
+          10⁻¹² A at 150 K are the low-bias plateaus of those curves near 0 V, while 10⁻⁹ A and 10⁻⁷ A are the −10 V ends
+          of the 250 K and 300 K curves. The list mixes bias points.</p>
+        <p class="ex-step"><b>Factors per 50 K, −10 V.</b> 100→150 K: 5; 150→200 K: 20; 200→250 K: 25; 250→300 K: 20.
+          Over the range 10⁻⁷/(2×10⁻¹²) = 5×10⁴, 4.7 decades, a mean of 15 per 50 K: about one decade per 50 K, as the
+          rule and the paper say.</p>
+        <p class="ex-step"><b>Activation energies, −10 V.</b> 250→300 K: <em>E</em><sub>a</sub> = 8.617×10⁻⁵ × ln 20 /
+          (1/250 − 1/300) = 2.581×10⁻⁴ / 6.667×10⁻⁴ = 0.387 eV; 200→250 K: 0.277 eV; 150→200 K: 0.155 eV; 100→150 K:
+          0.042 eV. Why compute them interval by interval: a single mechanism gives one <em>E</em><sub>a</sub> throughout,
+          so a drift exposes more than one.</p>
+        <p class="ex-step"><b>Compare with the paper's fits.</b> Siontas et al. fit straight lines to their Arrhenius plot
+          at −10 V and find <em>E</em><sub>a</sub> = 0.30 eV on the warm branch and 0.05 eV on the cold branch; the
+          two-point values above straddle the first and match the second. The warm-branch value is near half of bulk
+          germanium's gap, 0.335 eV, the signature (21.7) gives for depletion-region generation, but the device is not
+          bulk germanium, so the match is suggestive only. The cold branch, 0.05 eV, is far below any gap-activated
+          process.</p>
+        <p class="ex-answer">Listed values: 10, 10, 100, 100 per 50 K, six decades, because they mix bias points. At
+          −10 V: 5, 20, 25, 20 per 50 K, 4.7 decades, about the rule's one decade per 50 K; two-point activation energies
+          0.04, 0.15, 0.28 and 0.39 eV from the coldest interval to the warmest, against the paper's fits of 0.05 and
+          0.30 eV. Check: every ratio is above 1, as a thermally activated current must give. For a single activation
+          energy the factor per 50 K would fall as the temperature rises (for 0.30 eV: 1.1×10⁵, 331, 33 and 10 from the
+          coldest interval to the warmest); here it rises from 5 to about 20, so no single mechanism covers the range.</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p><b>Source discrepancy — deck p. 23.</b> The slide's bullet says the dark current rises "~10x in every 50K",
+        the cited paper's own summary ("approximately one order of magnitude for every 50 K"), and Lecture 24 called the
+        range "five orders of magnitude". The plotted curves on the same slide agree with both at −10 V (4.7 decades from
+        100 to 300 K). The five values the slide lists do not: they rise 10× per 50 K below 200 K and 100× per 50 K above,
+        six decades in all, because the cold ones are low-bias readings and the warm ones −10 V readings. Applied to the
+        warmest interval, the rule's factor of 10 per 50 K implies <em>E</em><sub>a</sub> = 0.30 eV, the paper's warm-branch fit. For a question that
+        asks for the slide's numbers, use the listed values and the rule as the slide gives them; for the physics, use
+        the −10 V curves and the paper's 0.30 and 0.05 eV. The slide calls the device a germanium photodetector; it is a
+        germanium quantum-dot device on silicon, not a bulk germanium junction.</p>
+    </div>
+
+    <p>
+      The pattern holds across detector materials, and Han and Zhang's review of space cryogenics, the source of the
+      deck's temperature chart (deck p. 24), gives the working temperatures by band: about 150 K for a short-wave infrared
+      detector, about 77 K for medium wave, and about 40 K or 20 K and below for long-wave and very-long-wave detectors.
+      JWST's detectors fit the same ladder: the near-infrared HgCdTe arrays, with cutoffs of 2.5 and about 5 µm, work at
+      about 37 K, and the mid-infrared Si:As arrays, which reach 28 µm, need 6.7 K or less (§6).
+    </p>
+
+    <p>
+      Cooling has a second purpose besides suppressing dark current. Everything warm emits infrared radiation, so a
+      detector, its optics and its enclosure glow in the band the detector is trying to measure. The design document for
+      MIRI's cooler states that the instrument is cooled below what passive cooling can reach "to optimise the detector
+      performance and reduce the thermal background below the detector dark current" (Wright et al. 2015). How JWST's
+      sunshield removes the Sun's heat is <a href="m21a-space-telescopes.html">M21a</a> §5; the detector-side choice is
+      between three kinds of cooling (deck p. 29):
+    </p>
+    <ul>
+      <li><b>Passive (radiative) cooling:</b> the detector is shaded and radiates its heat to cold space. It has no
+        moving parts, no vibration and a long life, but a small cooling capacity and a floor set by the environment. JWST
+        cools its near-infrared instruments this way; NASA states that the HgCdTe detectors "work ideally for Webb at
+        37 kelvin. We can get them this cold in space 'passively'". In flight the NIRCam and NIRISS detector planes are
+        held at 38.5 K, and NIRSpec's at 42.8 K, by heaters (Gardner et al. 2023).</li>
+      <li><b>Active (mechanical) cooling:</b> a cryocooler, a refrigerator that pumps heat from a cold head to a warm
+        radiator. It reaches lower temperatures with larger capacity, at the cost of electrical power and vibration.
+        MIRI's cryocooler, the only active cooling on JWST, circulates helium through a three-stage pulse-tube precooler
+        that reaches 18 K and a Joule–Thomson stage at 6 K; the compressor sits in the spacecraft bus at room temperature
+        and the cold head on the instrument module (Gardner et al. 2023; Wright et al. 2015). Its only moving parts are
+        two pairs of horizontally opposed pistons, balanced so that their vibration largely cancels, because vibration
+        would shake the optics and blur the image (NASA).</li>
+      <li><b>Stored cryogen (a dewar):</b> no vibration, but a lifetime limited by the cryogen it carries (deck p. 29).</li>
+    </ul>
+    <p>
+      The deck's summary of the state of the art is that cooling to 5 K or lower in space is now possible "but there is
+      not perfect system". Because a cooler cannot be repaired in orbit, the review the deck draws on makes the
+      reliability and life of the cryocooler the factor that sets the service life of a space infrared detector (Han and
+      Zhang 2022).
+    </p>
+
+    <details class="check">
+      <summary>A detector material has a gap of 0.25 eV. At what temperature does it have the same E<sub>g</sub>/kT as silicon at 300 K, and why is that only a rough guide to its operating temperature?</summary>
+      <div class="answer">
+        <p>Silicon at 300 K has <em>E</em><sub>g</sub>/<em>kT</em> = 1.12/(8.617×10⁻⁵ × 300) = 43.3. Equal ratio for
+          0.25 eV needs <em>T</em> = 0.25/(43.3 × 8.617×10⁻⁵) = 67 K. The guide is rough for three reasons. The prefactors
+          of the dark current (the <em>T</em>³ and <em>T</em><sup>3/2</sup> terms and the material's densities of states)
+          differ between materials. Below some temperature, mechanisms that are not gap-activated take over, as E5 showed
+          for the germanium quantum-dot device. And an astronomical detector must reach a far lower dark current than a room-temperature silicon
+          diode, because its signals are a few photons per second per pixel: JWST runs its roughly 0.25 eV long-wave HgCdTe
+          arrays near 37 K, well below 67 K.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 6 -->
+    <h2>6 · Infrared detector materials</h2>
+
+    <p>
+      §1 showed that no common binary semiconductor reaches far into the infrared. This section covers the two routes JWST
+      uses: an alloy whose gap can be set by its composition, mercury cadmium telluride, and a silicon detector that does
+      not use the silicon gap at all, arsenic-doped silicon. Each is explained from its band structure, then by what JWST
+      asks of it.
+    </p>
+
+    <h3>Mercury cadmium telluride: a gap set by composition</h3>
+    <p>
+      Mercury telluride and cadmium telluride have nearly the same lattice constant — on the bandgap–lattice-constant
+      chart of deck p. 10 the two points sit almost on one vertical line — and they mix in any proportion to form the
+      alloy Hg<sub>1−x</sub>Cd<sub>x</sub>Te, written HgCdTe or MCT. Their
+      gaps are at the two extremes. CdTe is a semiconductor with a gap of about 1.5 eV at room temperature. HgTe is a
+      semimetal: its band structure is inverted, so the band edge that is the conduction band in CdTe lies below the
+      valence band edge (deck p. 10). The literature therefore quotes its gap as negative, and the professor's engineering
+      summary was to treat it as zero. Mixing the two gives any gap between 0 and about 1.5 eV, so the cutoff wavelength
+      can be chosen by choosing x. Hansen, Schmit and Casselman fitted the gap to 22 data sets over the full composition
+      range and from 4.2 to 300 K (Figure 8):
+    </p>
+
+    <div class="eq" id="eq-21-8">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em><sub>g</sub>(<em>x</em>, <em>T</em>) = −0.302 + 1.93<em>x</em> − 0.810<em>x</em>² + 0.832<em>x</em>³ + 5.35×10⁻⁴&thinsp;<em>T</em>&thinsp;(1 − 2<em>x</em>)</div>
+        <div class="eq-num">(21.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em><sub>g</sub> bandgap of Hg<sub>1−x</sub>Cd<sub>x</sub>Te (eV) · <em>x</em> cadmium fraction, 0 (HgTe) to
+        1 (CdTe) · <em>T</em> temperature (K), valid 4.2–300 K. Standard error 0.013 eV (Hansen, Schmit &amp; Casselman,
+        J. Appl. Phys. 53, 7099 (1982)). The temperature term changes sign at <em>x</em> = 0.5: for the mid- and
+        long-wave compositions (<em>x</em> &lt; 0.5), which include both NIRCam materials, the gap <em>widens</em> on
+        heating, the opposite of silicon; short-wave material with <em>x</em> &gt; 0.5 behaves like silicon.
+        <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 230" role="img" aria-labelledby="f21-hct-t">
+<title id="f21-hct-t">Bandgap of mercury cadmium telluride against cadmium fraction x from the Hansen relation at 37 kelvin and 300 kelvin: from about minus 0.3 electronvolt for mercury telluride to about 1.5 for cadmium telluride, crossing zero near x = 0.16; the NIRCam short-wave cutoff 2.5 micrometres needs x = 0.46 and the long-wave cutoff 5.3 micrometres needs x = 0.30 at 37 kelvin</title>
+<line x1="55" y1="190" x2="375" y2="190" class="dg-rule"/><line x1="55" y1="190" x2="55" y2="25" class="dg-rule"/>
+<line x1="55" y1="157.0" x2="375" y2="157.0" class="dg-guide" stroke-dasharray="2 3"/>
+<text x="50" y="194.0" class="dg-label-sm" text-anchor="end">-0.4</text>
+<text x="50" y="161.0" class="dg-label-sm" text-anchor="end">0</text>
+<text x="50" y="128.0" class="dg-label-sm" text-anchor="end">0.4</text>
+<text x="50" y="95.0" class="dg-label-sm" text-anchor="end">0.8</text>
+<text x="50" y="62.0" class="dg-label-sm" text-anchor="end">1.2</text>
+<text x="50" y="29.0" class="dg-label-sm" text-anchor="end">1.6</text>
+<text x="55.0" y="204" class="dg-label-sm" text-anchor="middle">0</text>
+<text x="119.0" y="204" class="dg-label-sm" text-anchor="middle">0.2</text>
+<text x="183.0" y="204" class="dg-label-sm" text-anchor="middle">0.4</text>
+<text x="247.0" y="204" class="dg-label-sm" text-anchor="middle">0.6</text>
+<text x="311.0" y="204" class="dg-label-sm" text-anchor="middle">0.8</text>
+<text x="375.0" y="204" class="dg-label-sm" text-anchor="middle">1</text>
+<text x="215.0" y="220" class="dg-label-sm" text-anchor="middle">Cd fraction x in Hg<tspan baseline-shift="sub" style="font-size:75%">1−x</tspan>Cd<tspan baseline-shift="sub" style="font-size:75%">x</tspan>Te</text>
+<text x="14" y="107.5" class="dg-label-sm" transform="rotate(-90 14 107.5)" text-anchor="middle">E<tspan baseline-shift="sub" style="font-size:75%">g</tspan> (eV)</text>
+<path d="M55.0,180.3 L58.2,178.7 L61.4,177.2 L64.6,175.7 L67.8,174.1 L71.0,172.6 L74.2,171.2 L77.4,169.7 L80.6,168.2 L83.8,166.7 L87.0,165.3 L90.2,163.8 L93.4,162.4 L96.6,161.0 L99.8,159.6 L103.0,158.2 L106.2,156.8 L109.4,155.4 L112.6,154.0 L115.8,152.6 L119.0,151.2 L122.2,149.8 L125.4,148.5 L128.6,147.1 L131.8,145.8 L135.0,144.4 L138.2,143.0 L141.4,141.7 L144.6,140.3 L147.8,139.0 L151.0,137.7 L154.2,136.3 L157.4,135.0 L160.6,133.6 L163.8,132.3 L167.0,130.9 L170.2,129.6 L173.4,128.2 L176.6,126.9 L179.8,125.6 L183.0,124.2 L186.2,122.8 L189.4,121.5 L192.6,120.1 L195.8,118.8 L199.0,117.4 L202.2,116.0 L205.4,114.6 L208.6,113.2 L211.8,111.8 L215.0,110.4 L218.2,109.0 L221.4,107.6 L224.6,106.2 L227.8,104.7 L231.0,103.3 L234.2,101.8 L237.4,100.4 L240.6,98.9 L243.8,97.4 L247.0,95.9 L250.2,94.4 L253.4,92.9 L256.6,91.4 L259.8,89.8 L263.0,88.3 L266.2,86.7 L269.4,85.1 L272.6,83.5 L275.8,81.9 L279.0,80.3 L282.2,78.7 L285.4,77.0 L288.6,75.3 L291.8,73.7 L295.0,71.9 L298.2,70.2 L301.4,68.5 L304.6,66.7 L307.8,64.9 L311.0,63.1 L314.2,61.3 L317.4,59.5 L320.6,57.6 L323.8,55.7 L327.0,53.8 L330.2,51.9 L333.4,50.0 L336.6,48.0 L339.8,46.0 L343.0,44.0 L346.2,42.0 L349.4,39.9 L352.6,37.8 L355.8,35.7 L359.0,33.6 L362.2,31.4 L365.4,29.2 L368.6,27.0 L371.8,24.8 L375.0,22.5" class="dg-acc" fill="none"/>
+<path d="M55.0,168.7 L58.2,167.4 L61.4,166.0 L64.6,164.7 L67.8,163.5 L71.0,162.2 L74.2,160.9 L77.4,159.7 L80.6,158.4 L83.8,157.2 L87.0,156.0 L90.2,154.8 L93.4,153.6 L96.6,152.4 L99.8,151.2 L103.0,150.0 L106.2,148.9 L109.4,147.7 L112.6,146.5 L115.8,145.4 L119.0,144.2 L122.2,143.1 L125.4,142.0 L128.6,140.8 L131.8,139.7 L135.0,138.6 L138.2,137.5 L141.4,136.4 L144.6,135.2 L147.8,134.1 L151.0,133.0 L154.2,131.9 L157.4,130.8 L160.6,129.7 L163.8,128.6 L167.0,127.5 L170.2,126.3 L173.4,125.2 L176.6,124.1 L179.8,123.0 L183.0,121.9 L186.2,120.8 L189.4,119.6 L192.6,118.5 L195.8,117.4 L199.0,116.2 L202.2,115.1 L205.4,113.9 L208.6,112.8 L211.8,111.6 L215.0,110.4 L218.2,109.3 L221.4,108.1 L224.6,106.9 L227.8,105.7 L231.0,104.5 L234.2,103.2 L237.4,102.0 L240.6,100.8 L243.8,99.5 L247.0,98.3 L250.2,97.0 L253.4,95.7 L256.6,94.4 L259.8,93.1 L263.0,91.8 L266.2,90.4 L269.4,89.1 L272.6,87.7 L275.8,86.3 L279.0,85.0 L282.2,83.5 L285.4,82.1 L288.6,80.7 L291.8,79.2 L295.0,77.7 L298.2,76.3 L301.4,74.7 L304.6,73.2 L307.8,71.7 L311.0,70.1 L314.2,68.5 L317.4,66.9 L320.6,65.3 L323.8,63.6 L327.0,62.0 L330.2,60.3 L333.4,58.6 L336.6,56.8 L339.8,55.1 L343.0,53.3 L346.2,51.5 L349.4,49.7 L352.6,47.8 L355.8,45.9 L359.0,44.0 L362.2,42.1 L365.4,40.1 L368.6,38.2 L371.8,36.2 L375.0,34.1" class="dg-line" fill="none"/>
+<text x="311.0" y="55.1" class="dg-label-sm" text-anchor="end">37 K</text>
+<text x="330.2" y="74.3" class="dg-label-sm">300 K</text>
+<line x1="55" y1="116.1" x2="202.0" y2="116.1" class="dg-guide" stroke-dasharray="3 3"/>
+<line x1="202.0" y1="116.1" x2="202.0" y2="190" class="dg-guide" stroke-dasharray="3 3"/>
+<circle cx="202.0" cy="116.1" r="3" class="dg-acc-f"/>
+<text x="207.0" y="128.1" class="dg-label-sm">2.5 µm: x = 0.46</text>
+<line x1="55" y1="137.7" x2="150.9" y2="137.7" class="dg-guide" stroke-dasharray="3 3"/>
+<line x1="150.9" y1="137.7" x2="150.9" y2="190" class="dg-guide" stroke-dasharray="3 3"/>
+<circle cx="150.9" cy="137.7" r="3" class="dg-acc-f"/>
+<text x="155.9" y="149.7" class="dg-label-sm">5.3 µm: x = 0.30</text>
+<text x="61.4" y="175.8" class="dg-label-sm">HgTe</text>
+<text x="368.6" y="47.2" class="dg-label-sm" text-anchor="end">CdTe</text>
+</svg>
+      <figcaption><b>Figure 8.</b> The HgCdTe gap from (21.8) against cadmium fraction at 37 K and 300 K. The curve crosses zero, the semimetal–semiconductor boundary, near x ≈ 0.16 at 37 K. The two NIRCam cutoffs (E6) need x = 0.46 and 0.30. At these compositions the gap widens on warming.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E6 · Choosing the HgCdTe composition for a cutoff</div>
+      <div class="ex-body">
+        <p><b>Given</b> NIRCam's two detector types: a short-wave cutoff of 2.5 µm and a long-wave cutoff near 5 µm
+          (take 5.3 µm), both operated at 37 K. <b>Find</b> the cadmium fraction x for each, and the long-wave material's
+          cutoff if it were warmed to 300 K.</p>
+        <p><b>Plan.</b> Convert each cutoff to a gap with (21.1), then solve the cubic (21.8) for x at 37 K. The cubic has
+          one root in 0–1 because <em>E</em><sub>g</sub> rises monotonically with x; it is found numerically (bisection in
+          <code>examples-m21.py</code>).</p>
+        <p class="ex-step"><b>Target gaps.</b> 2.5 µm: <em>E</em><sub>g</sub> = 1239.8/2500 = 0.496 eV. 5.3 µm:
+          1239.8/5300 = 0.234 eV.</p>
+        <p class="ex-step"><b>Solve for x at 37 K.</b> At 37 K the temperature term is 5.35×10⁻⁴ × 37 × (1 − 2x) =
+          0.0198 (1 − 2x) eV. Solving −0.302 + 1.93x − 0.810x² + 0.832x³ + 0.0198(1 − 2x) = 0.496 gives x = 0.459; with
+          0.234 on the right, x = 0.300.</p>
+        <p class="ex-step"><b>Sensitivity to composition.</b> Near x = 0.300 the slope d<em>E</em><sub>g</sub>/dx is
+          1.63 eV per unit x, so an error of 0.01 in x moves the gap by 0.016 eV and the 5.3 µm cutoff by 0.40 µm. Why it
+          matters: the cutoff of a long-wave HgCdTe detector depends on controlling the composition of the grown layer to
+          better than a percent.</p>
+        <p class="ex-step"><b>Warm the long-wave material.</b> With x = 0.300 at 300 K, (21.8) gives
+          <em>E</em><sub>g</sub> = 0.290 eV, and λ<sub>c</sub> = 1239.8/290 = 4.27 µm.</p>
+        <p class="ex-answer">x = 0.46 for the 2.5 µm arrays and x = 0.30 for the 5.3 µm arrays at 37 K; warmed to 300 K
+          the long-wave material's cutoff moves in to 4.3 µm. Check: the end points of (21.8) — −0.302 eV for HgTe at 0 K,
+          1.49 eV for CdTe at 300 K — match the semimetal and the 1.5 eV semiconductor described above, and both
+          compositions lie between them.</p>
+      </div>
+    </div>
+
+    <p>
+      NIRCam uses ten such arrays: eight with a 2.5 µm cutoff in its short-wavelength channel (0.6–2.3 µm) and two with
+      cutoffs near 5 µm in its long-wavelength channel (2.4–5.0 µm), each a Teledyne HAWAII-2RG array of 2048 × 2048
+      pixels on an 18 µm pitch (JWST User Documentation; Lecture 23 deck p. 25). HgCdTe could in principle be tuned
+      further, toward MIRI's 28 µm, but the gap this needs, 0.044 eV, is so small that the dark current would be too high:
+      the JWST documentation gives this as the reason MIRI uses a different material.
+    </p>
+
+    <h3>Arsenic-doped silicon: absorption without crossing the gap</h3>
+    <p>
+      Silicon's 1.12 eV gap is useless beyond about 1.1 µm, but a dopant offers a much smaller transition. An arsenic
+      atom substituted on a silicon site is a donor (<a href="m01-semiconductor-background.html">M01</a> §3): its fifth
+      electron is bound in a level just below the conduction band. A photon with energy above that binding energy can
+      lift the electron from the donor level into the conduction band, where it conducts (Figure 9). This is
+      <b>extrinsic</b> absorption, from an impurity level to a band, as opposed to the <b>intrinsic</b> band-to-band
+      absorption of §1. The deck gives the arsenic level as 0.049 eV below the conduction band edge, which by (21.1) is
+      a cutoff of 1239.8/0.049 nm = 25.3 µm (deck p. 13).
+    </p>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 190" role="img" aria-labelledby="f21-ext-t">
+<title id="f21-ext-t">Three absorption routes. Intrinsic: a photon above the gap lifts an electron from valence to conduction band. Extrinsic: a photon of only tens of millielectronvolts lifts an electron from a donor level just below the conduction band. Impurity band: at high donor density the levels broaden into a band and the threshold falls further</title>
+<defs><marker id="f21-ext-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+<rect x="10" y="20" width="125" height="26" class="dg-fill"/><text x="72" y="37" class="dg-label-sm" text-anchor="middle">conduction band</text>
+<rect x="10" y="140" width="125" height="26" class="dg-fill"/><text x="72" y="157" class="dg-label-sm" text-anchor="middle">valence band</text>
+<line x1="72" y1="138" x2="72" y2="50" class="dg-acc" marker-end="url(#f21-ext-a)"/>
+<text x="78" y="98" class="dg-label-sm">hν ≥ E<tspan baseline-shift="sub" style="font-size:75%">g</tspan></text>
+<text x="72" y="184" class="dg-label-sm" text-anchor="middle">intrinsic (Si, HgCdTe)</text>
+<rect x="155" y="20" width="125" height="26" class="dg-fill"/><text x="217" y="37" class="dg-label-sm" text-anchor="middle">conduction band</text>
+<rect x="155" y="140" width="125" height="26" class="dg-fill"/><text x="217" y="157" class="dg-label-sm" text-anchor="middle">valence band</text>
+<line x1="185" y1="62" x2="250" y2="62" class="dg-line" stroke-dasharray="4 3"/>
+<line x1="217" y1="62" x2="217" y2="50" class="dg-acc" marker-end="url(#f21-ext-a)"/>
+<text x="217" y="78" class="dg-label-sm" text-anchor="middle">donor level</text>
+<text x="217" y="92" class="dg-label-sm" text-anchor="middle">E<tspan baseline-shift="sub" style="font-size:75%">C</tspan> − E<tspan baseline-shift="sub" style="font-size:75%">d</tspan> ≈ 0.05 eV</text>
+<text x="217" y="184" class="dg-label-sm" text-anchor="middle">extrinsic (isolated As)</text>
+<rect x="300" y="20" width="125" height="26" class="dg-fill"/><text x="362" y="37" class="dg-label-sm" text-anchor="middle">conduction band</text>
+<rect x="300" y="140" width="125" height="26" class="dg-fill"/><text x="362" y="157" class="dg-label-sm" text-anchor="middle">valence band</text>
+<rect x="320" y="56" width="85" height="12" class="dg-acc-f" opacity="0.35"/>
+<line x1="362" y1="58" x2="362" y2="49" class="dg-acc" marker-end="url(#f21-ext-a)"/>
+<text x="362" y="84" class="dg-label-sm" text-anchor="middle">broadened levels:</text>
+<text x="362" y="98" class="dg-label-sm" text-anchor="middle">lower threshold</text>
+<text x="362" y="184" class="dg-label-sm" text-anchor="middle">impurity band (Si:As IBC)</text>
+</svg>
+      <figcaption><b>Figure 9.</b> Three absorption routes. Intrinsic absorption crosses the gap (§1); extrinsic absorption lifts an electron from a donor level tens of millielectronvolts below the conduction band; at high donor density the levels broaden into an impurity band (after deck p. 13). Energies not to scale.</figcaption>
+    </figure>
+
+    <p>
+      A lightly doped layer has few donors and therefore absorbs weakly, so a practical detector would need to be very
+      thick. Raising the doping raises the absorption, but at high donor density the donor wavefunctions overlap, the
+      discrete levels broaden into an <b>impurity band</b> (the hyperdoped panel of deck p. 13), and electrons can hop
+      from donor to donor through it. That hopping is a conduction path in the dark, and in a simple photoconductor it
+      would be an unacceptable dark current. The <b>impurity band conduction</b> (IBC) detector, also called the blocked
+      impurity band (BIB) detector, solves this with a layered structure (Rieke et al. 2015):
+    </p>
+    <ul>
+      <li>an infrared-active layer 25–35 µm thick, heavily doped with arsenic (7×10¹⁷ cm⁻³ in MIRI's baseline arrays) so
+        that it absorbs strongly and carries an impurity band;</li>
+      <li>an undoped intrinsic blocking layer about 3–4 µm thick between it and the pixel contact. The impurity band ends
+        at this layer, so dark charge cannot hop through; it can leak only by thermal excitation up into the conduction
+        band. Photoexcited electrons, which are already in the conduction band, pass through;</li>
+      <li>a pixel contact on the blocking layer, indium-bump bonded to the input of the readout amplifier (§7).</li>
+    </ul>
+    <p>
+      Because the blocking layer stops the hopping current, the active layer can be doped two orders of magnitude more
+      heavily than a bulk photoconductor (Rieke et al. 2015), which is what makes a layer only tens of micrometres thick
+      absorb well. The broadening of the levels at that doping also lowers the energy needed to free an electron, which is
+      consistent with MIRI's arrays responding out to 28 µm (JWST documentation: 5–28.5 µm), where the photon energy is
+      0.044 eV, below the slide's 0.049 eV. The price of the small energy is a very low operating temperature: the only
+      barrier against dark current is thermal excitation over a few tens of millielectronvolts, and at 6.7 K, where
+      <em>kT</em> = 0.58 meV, the MIRI arrays reach a dark current of about 0.2 electrons per second per pixel.
+    </p>
+
+    <div class="box warn">
+      <p><b>Source discrepancy — deck p. 13 and p. 34.</b> (i) The slide says arsenic-doped silicon gives "efficient IR
+        absorption above 25 µm". A transition of 0.049 eV absorbs photons with <em>more</em> energy than 0.049 eV, that is
+        wavelengths <em>shorter</em> than 25 µm; the detector is blind beyond its cutoff. (ii) The slide's title and the
+        summary on p. 34 call the material "lightly doped silicon". MIRI's IBC layer is heavily doped, as Lecture 24 itself
+        said ("highly doped"), and the impurity band of the slide's own hyperdoped panel requires it. (iii) The measured
+        ionization energy of an isolated arsenic donor in silicon is 0.054 eV (Sze and Ng, 3rd ed., Fig. 10, p. 23;
+        cutoff 23 µm); the slide's 0.049 eV is lower, and the slide does not give its source. Use 0.049 eV and 25 µm for
+        the course's calculations.</p>
+    </div>
+
+    <table>
+      <thead><tr><th></th><th>HgCdTe (NIRCam)</th><th>Si:As IBC (MIRI)</th></tr></thead>
+      <tbody>
+        <tr><td>Absorption</td><td>Intrinsic, band to band</td><td>Extrinsic, impurity band to conduction band</td></tr>
+        <tr><td>What sets λ<sub>c</sub></td><td>Composition x through (21.8)</td><td>Donor binding energy, lowered by heavy doping</td></tr>
+        <tr><td>Band on JWST</td><td>0.6–5 µm (cutoffs 2.5 and ≈5 µm)</td><td>5–28 µm</td></tr>
+        <tr><td>Junction</td><td>p–n photodiode, p-type implant per pixel</td><td>Blocking layer; not a p–n junction</td></tr>
+        <tr><td>Operating temperature</td><td>≈37 K (38.5 K regulated), passive</td><td>≤6.7 K, cryocooler</td></tr>
+        <tr><td>Format and pitch</td><td>2048 × 2048 (2040 × 2040 active), 18 µm</td><td>1024 × 1024, 25 µm</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The comparison makes the general principle plain: the longer the wavelength, the smaller the energy that the
+      absorption step can rely on, and the colder the detector must be to keep that energy large against <em>kT</em>.
+      The correspondence stops at the junction: an IBC detector has no p–n junction, and its dark current is blocked by a
+      layer, not by a depletion region.
+    </p>
+
+    <details class="check">
+      <summary>Why does MIRI not use HgCdTe tuned to 28 µm, and why do the NIRCam arrays not use Si:As?</summary>
+      <div class="answer">
+        <p>A 28 µm HgCdTe photodiode needs a gap of 1239.8/28,000 = 0.044 eV. Its intrinsic carrier density,
+          ∝ exp(−<em>E</em><sub>g</sub>/2<em>kT</em>), and with it the dark current (the diffusion part ∝
+          <em>n</em><sub>i</sub>² ∝ exp(−<em>E</em><sub>g</sub>/<em>kT</em>)), would be too high; the JWST documentation gives exactly this reason. It would also need the composition held extremely
+          tightly, because near so small a gap a composition error of 0.01 shifts the cutoff by many micrometres (E6 shows
+          0.4 µm at 5 µm, and the shift grows as λ<sub>c</sub>² for a fixed gap error). Si:As reaches 28 µm with a
+          blocking layer that suppresses the hopping dark current. NIRCam does not use Si:As because Si:As needs 6.7 K or
+          less, which only the cryocooler provides, while HgCdTe tuned to 2.5 and 5 µm works at about 37 K, which JWST
+          reaches passively: the near-infrared instruments need no cooler at all.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 7 -->
+    <h2>7 · From pixel to image: arrays, readout and the detection chain</h2>
+
+    <p>
+      A single photodiode measures one number. A camera needs millions of them read out in order, with their tiny
+      currents amplified and digitized, at the detector's temperature. This section follows the signal from the pixel to
+      the digital output, explains the hybrid construction that JWST's arrays share, and compares the two readout
+      architectures, CCD and CMOS.
+    </p>
+
+    <p>
+      Every detector, the deck stresses, needs a <b>readout integrated circuit</b> (ROIC): the photosensitive element
+      generates the charge, the focal plane array arranges the elements in a grid, and the readout chain sequences them,
+      converts the signal to digital and sends it on (deck p. 26). For a silicon visible-light sensor the photodiodes and
+      the readout can be made in the same silicon. For an infrared array a CMOS readout chip is generally required, and it is
+      hybridized to the infrared-sensitive layer (Goiffon 2021, §1.2.5): the two are made separately and joined in a
+      <b>hybrid sensor chip assembly</b> (Figure 10). Teledyne names the three technologies this takes as the growth and
+      processing of the HgCdTe layer, the design of the CMOS readout, and the hybridization of one to the other
+      (Beletic 2008). The detector layer, with one p–n junction per pixel, is connected pixel by pixel to a silicon readout
+      chip through an array of <b>indium bumps</b>, a soft, cold-compatible form of the flip-chip bumps of
+      <a href="m18-chip-bonding-packaging.html">M18</a> §6, with epoxy filling the gap. Teledyne's cross-section on deck
+      p. 28 shows the arrangement for HgCdTe: light enters a bulk n-type HgCdTe layer through an anti-reflection coating,
+      implanted p-type regions collect the holes, and each implant connects through its indium bump to the MOSFET input of
+      its own pixel circuit in the silicon multiplexer. The substrate on which the HgCdTe was grown is removed so the light
+      can enter from the back. MIRI's Si:As arrays are joined to their readout by indium bumps in the same way, but keep their
+      substrate: it is transparent, high-resistivity silicon about 500 µm thick, and light enters through it and a buried
+      transparent contact before reaching the infrared-active layer (Rieke et al. 2015).
+    </p>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f21-hyb-t">
+<title id="f21-hyb-t">Cross-section of a hybrid sensor chip assembly: light enters an anti-reflection coated, back-illuminated n-type HgCdTe layer; implanted p-type regions form one junction per pixel; each pixel connects through an indium bump, in epoxy, to the input transistor of its own pixel circuit in the silicon readout integrated circuit beneath</title>
+<path d="M50,6 q4,-5 8,0 t8,0 t8,0" class="dg-acc" fill="none"/>
+<path d="M86,6 q4,-5 8,0 t8,0 t8,0" class="dg-acc" fill="none"/>
+<path d="M122,6 q4,-5 8,0 t8,0 t8,0" class="dg-acc" fill="none"/>
+<path d="M158,6 q4,-5 8,0 t8,0 t8,0" class="dg-acc" fill="none"/>
+<path d="M194,6 q4,-5 8,0 t8,0 t8,0" class="dg-acc" fill="none"/>
+<path d="M230,6 q4,-5 8,0 t8,0 t8,0" class="dg-acc" fill="none"/>
+<rect x="30" y="18" width="380" height="6" class="dg-acc-f" opacity="0.4"/>
+<text x="415" y="24" class="dg-label-sm">AR</text>
+<rect x="30" y="24" width="380" height="56" class="dg-fill"/>
+<text x="200" y="50" class="dg-label" text-anchor="middle">n-type HgCdTe absorber</text>
+<rect x="50" y="66" width="44" height="14" class="dg-soft"/>
+<rect x="62" y="84" width="20" height="22" rx="4" class="dg-ink"/>
+<rect x="56" y="106" width="32" height="6" class="dg-soft"/>
+<rect x="124" y="66" width="44" height="14" class="dg-soft"/>
+<rect x="136" y="84" width="20" height="22" rx="4" class="dg-ink"/>
+<rect x="130" y="106" width="32" height="6" class="dg-soft"/>
+<rect x="198" y="66" width="44" height="14" class="dg-soft"/>
+<rect x="210" y="84" width="20" height="22" rx="4" class="dg-ink"/>
+<rect x="204" y="106" width="32" height="6" class="dg-soft"/>
+<rect x="272" y="66" width="44" height="14" class="dg-soft"/>
+<rect x="284" y="84" width="20" height="22" rx="4" class="dg-ink"/>
+<rect x="278" y="106" width="32" height="6" class="dg-soft"/>
+<rect x="346" y="66" width="44" height="14" class="dg-soft"/>
+<rect x="358" y="84" width="20" height="22" rx="4" class="dg-ink"/>
+<rect x="352" y="106" width="32" height="6" class="dg-soft"/>
+<text x="200" y="76" class="dg-label-sm" text-anchor="middle" style="font-size:9px"> </text>
+<rect x="30" y="80" width="380" height="26" class="dg-faint" opacity="0.25"/>
+<rect x="30" y="112" width="380" height="50" class="dg-fill"/>
+<text x="200" y="142" class="dg-label" text-anchor="middle">silicon ROIC: one pixel circuit per bump</text>
+<text x="30" y="180" class="dg-label-sm">p-type implant (one junction per pixel)  ·  indium bump in epoxy  ·  ROIC input pad</text>
+<text x="30" y="194" class="dg-label-sm">schematic, not to scale</text>
+</svg>
+      <figcaption><b>Figure 10.</b> A hybrid sensor chip assembly, after the Teledyne cross-section on deck p. 28. Each pixel's junction connects through its own indium bump to its own input transistor in the silicon readout; the growth substrate has been removed so light enters through the anti-reflection coating.</figcaption>
+    </figure>
+
+    <p>
+      The deck's six-step chain (deck p. 28) names the job of each part: (1) the anti-reflection coating and substrate
+      removal admit the light; (2) the detector material generates charge; (3) the electric field of the junction collects
+      it — steps 1–2 set the quantum efficiency of §3, and step 3 sets how sharply a point source is imaged, because charge
+      that diffuses sideways before collection lands in a neighbouring pixel; (4) a source follower in each pixel converts
+      the collected charge to a voltage; (5) the voltages are transferred out, by random access to chosen pixels or by
+      reading the full frame; (6) a separate chip digitizes them. On JWST that chip is the SIDECAR ASIC (System for Image
+      Digitization, Enhancement, Control And Retrieval), one per detector in NIRCam (JWST documentation). It sits in the
+      cold next to the array, operating at about 37 K, and was designed to provide 16-bit conversion within a power budget
+      of less than 10 mW per detector, because every milliwatt dissipated in the cold has to be radiated away by the
+      passive cooling (Loose et al. 2005).
+    </p>
+
+    <p>
+      The professor drew a wider lesson from this stack. Space electronics is usually generations behind commercial
+      technology (<a href="m03-space-electronics-gap.html">M03</a>), yet the most capable space detectors are
+      heterogeneously integrated systems — a compound-semiconductor detector, indium bumps, a silicon readout chip and a
+      cryogenic mixed-signal ASIC — of the kind <a href="m18-chip-bonding-packaging.html">M18</a> §7 described as the
+      frontier of integration. JWST's near-infrared spectrograph NIRSpec adds a MEMS
+      device in front of its detectors, in the spectrograph's aperture plane: a micro-shutter array (deck p. 25;
+      <a href="m14b-radiation-effects-mems.html">M14b</a> §1) of four quadrants of 365 × 171 individually addressable
+      shutters, 249,660 in all, silicon nitride membranes on a pitch of about 100 × 200 µm, opened by a moving magnet and
+      latched electrostatically (Li et al., NASA Goddard; JWST documentation). Light passes the filter wheel, then the
+      open shutters, then the disperser and the camera optics, and only then reaches NIRSpec's two H2RG arrays, so
+      opening chosen shutters admits the light of chosen objects to the spectrograph and blocks the rest of the
+      field.
+    </p>
+
+    <p>
+      Two readout architectures appear on deck p. 26 (Figure 11). In a <b>charge-coupled device</b> (CCD) the signal
+      charge is held in potential wells under clocked gates and moved packet by packet along the columns and through a
+      serial register to a single output amplifier; the charge transfer efficiency per transfer, compounded over
+      thousands of transfers, decides how much of the packet arrives (EEE 5416
+      <a href="../../EEE5416_Radiation_Effects/site/m12b-dd-measurement-modelling.html">M12b</a> §4). In a <b>CMOS image
+      sensor</b>, an active-pixel design, each pixel has its own amplifier and is addressed by row and column switches,
+      with the analog readout and often one analog-to-digital converter per column on the same chip (Goiffon 2021). The
+      hybrid infrared arrays of JWST are of the CMOS kind: the readout chip is a CMOS multiplexer with a source follower
+      per pixel, which is what allows random access. The CMOS architecture moves no charge from pixel to pixel, so the
+      transfer losses that limit a damaged CCD (§9) do not arise in it.
+    </p>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f21-cc-t">
+<title id="f21-cc-t">Two readout architectures. In a CCD the charge packets are shifted pixel to pixel along columns into a serial register and out through one output amplifier. In a CMOS or hybrid array each pixel converts its own charge to a voltage with a source follower and is addressed by row and column switches</title>
+<defs><marker id="f21-cc-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+<rect x="20" y="20" width="30" height="26" class="dg-fill"/>
+<rect x="54" y="20" width="30" height="26" class="dg-fill"/>
+<rect x="88" y="20" width="30" height="26" class="dg-fill"/>
+<rect x="122" y="20" width="30" height="26" class="dg-fill"/>
+<rect x="20" y="50" width="30" height="26" class="dg-fill"/>
+<rect x="54" y="50" width="30" height="26" class="dg-fill"/>
+<rect x="88" y="50" width="30" height="26" class="dg-fill"/>
+<rect x="122" y="50" width="30" height="26" class="dg-fill"/>
+<rect x="20" y="80" width="30" height="26" class="dg-fill"/>
+<rect x="54" y="80" width="30" height="26" class="dg-fill"/>
+<rect x="88" y="80" width="30" height="26" class="dg-fill"/>
+<rect x="122" y="80" width="30" height="26" class="dg-fill"/>
+<rect x="20" y="110" width="30" height="26" class="dg-fill"/>
+<rect x="54" y="110" width="30" height="26" class="dg-fill"/>
+<rect x="88" y="110" width="30" height="26" class="dg-fill"/>
+<rect x="122" y="110" width="30" height="26" class="dg-fill"/>
+<line x1="35" y1="30" x2="35" y2="132" class="dg-guide" marker-end="url(#f21-cc-a)"/>
+<line x1="69" y1="30" x2="69" y2="132" class="dg-guide" marker-end="url(#f21-cc-a)"/>
+<line x1="103" y1="30" x2="103" y2="132" class="dg-guide" marker-end="url(#f21-cc-a)"/>
+<line x1="137" y1="30" x2="137" y2="132" class="dg-guide" marker-end="url(#f21-cc-a)"/>
+<rect x="20" y="140" width="132" height="16" class="dg-soft" opacity="0.6"/>
+<line x1="24" y1="148" x2="168" y2="148" class="dg-acc" marker-end="url(#f21-cc-a)"/>
+<polygon points="170,138 190,148 170,158" class="dg-fill"/>
+<text x="86" y="176" class="dg-label-sm" text-anchor="middle">CCD: charge moved pixel to pixel,</text>
+<text x="86" y="190" class="dg-label-sm" text-anchor="middle">one output amplifier</text>
+<rect x="250" y="20" width="30" height="26" class="dg-fill"/>
+<polygon points="268,26 278,33 268,40" class="dg-soft"/>
+<rect x="290" y="20" width="30" height="26" class="dg-fill"/>
+<polygon points="308,26 318,33 308,40" class="dg-soft"/>
+<rect x="330" y="20" width="30" height="26" class="dg-fill"/>
+<polygon points="348,26 358,33 348,40" class="dg-soft"/>
+<rect x="370" y="20" width="30" height="26" class="dg-fill"/>
+<polygon points="388,26 398,33 388,40" class="dg-soft"/>
+<rect x="250" y="50" width="30" height="26" class="dg-fill"/>
+<polygon points="268,56 278,63 268,70" class="dg-soft"/>
+<rect x="290" y="50" width="30" height="26" class="dg-fill"/>
+<polygon points="308,56 318,63 308,70" class="dg-soft"/>
+<rect x="330" y="50" width="30" height="26" class="dg-fill"/>
+<polygon points="348,56 358,63 348,70" class="dg-soft"/>
+<rect x="370" y="50" width="30" height="26" class="dg-fill"/>
+<polygon points="388,56 398,63 388,70" class="dg-soft"/>
+<rect x="250" y="80" width="30" height="26" class="dg-fill"/>
+<polygon points="268,86 278,93 268,100" class="dg-soft"/>
+<rect x="290" y="80" width="30" height="26" class="dg-fill"/>
+<polygon points="308,86 318,93 308,100" class="dg-soft"/>
+<rect x="330" y="80" width="30" height="26" class="dg-fill"/>
+<polygon points="348,86 358,93 348,100" class="dg-soft"/>
+<rect x="370" y="80" width="30" height="26" class="dg-fill"/>
+<polygon points="388,86 398,93 388,100" class="dg-soft"/>
+<rect x="250" y="110" width="30" height="26" class="dg-fill"/>
+<polygon points="268,116 278,123 268,130" class="dg-soft"/>
+<rect x="290" y="110" width="30" height="26" class="dg-fill"/>
+<polygon points="308,116 318,123 308,130" class="dg-soft"/>
+<rect x="330" y="110" width="30" height="26" class="dg-fill"/>
+<polygon points="348,116 358,123 348,130" class="dg-soft"/>
+<rect x="370" y="110" width="30" height="26" class="dg-fill"/>
+<polygon points="388,116 398,123 388,130" class="dg-soft"/>
+<line x1="240" y1="33" x2="410" y2="33" class="dg-guide" stroke-dasharray="2 2"/>
+<line x1="240" y1="63" x2="410" y2="63" class="dg-guide" stroke-dasharray="2 2"/>
+<line x1="240" y1="93" x2="410" y2="93" class="dg-guide" stroke-dasharray="2 2"/>
+<line x1="240" y1="123" x2="410" y2="123" class="dg-guide" stroke-dasharray="2 2"/>
+<line x1="280" y1="18" x2="280" y2="136" class="dg-guide" stroke-dasharray="2 2"/>
+<line x1="320" y1="18" x2="320" y2="136" class="dg-guide" stroke-dasharray="2 2"/>
+<line x1="360" y1="18" x2="360" y2="136" class="dg-guide" stroke-dasharray="2 2"/>
+<line x1="400" y1="18" x2="400" y2="136" class="dg-guide" stroke-dasharray="2 2"/>
+<rect x="250" y="138" width="150" height="14" class="dg-soft" opacity="0.6"/>
+<text x="325" y="149" class="dg-label-sm" text-anchor="middle">column amplifiers, ADC</text>
+<text x="325" y="176" class="dg-label-sm" text-anchor="middle">CMOS / hybrid: amplifier in every pixel,</text>
+<text x="325" y="190" class="dg-label-sm" text-anchor="middle">random access by row and column</text>
+</svg>
+      <figcaption><b>Figure 11.</b> The two readout architectures of deck p. 26. A CCD moves every charge packet through many transfers to one amplifier; a CMOS or hybrid array amplifies in each pixel and reads any pixel directly.</figcaption>
+    </figure>
+
+    <div class="eq" id="eq-21-9">
+      <div class="eq-body">
+        <div class="eq-math">σ<sub>total</sub> = <span class="sqrt"><em>N</em><sub>dark</sub> + σ<sub>read</sub>²</span>&emsp;&emsp;<em>N</em><sub>dark</sub> = <em>i</em><sub>dark</sub> · <em>t</em></div>
+        <div class="eq-num">(21.9)</div>
+      </div>
+      <div class="eq-says">
+        σ<sub>total</sub> noise of one pixel in one exposure, in electrons rms, with no light · <em>N</em><sub>dark</sub>
+        dark charge collected (e⁻), whose shot noise is √<em>N</em><sub>dark</sub> · <em>i</em><sub>dark</sub> dark current
+        per pixel (e⁻/s) · <em>t</em> exposure time (s) · σ<sub>read</sub> read noise (e⁻ rms). Independent noise sources
+        add in quadrature. Signal shot noise adds a further term equal to the signal in electrons.
+        <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">E7 · MIRI: when does the dark current matter?</div>
+      <div class="ex-body">
+        <p><b>Given</b> the MIRI array figures on Lecture 23 deck p. 24: read noise 14 e⁻, dark current 0.2 e⁻/s per pixel.
+          (The same slide gives MIRI's band as 5–30 µm and its temperature as &lt;6.7 K; Lecture 24 deck p. 27 gives
+          5–28 µm and 7 K; the JWST documentation gives 5–28.5 µm and ≤6.7 K. This page uses the documentation's values;
+          where a question asks for a slide's figures, use that slide's.)
+          <b>Find</b> the exposure time at which the dark current's shot noise equals the read noise, and the total noise
+          at 100 s, 1000 s and 10,000 s.</p>
+        <p><b>Plan.</b> The dark charge grows linearly with time and its shot noise as the square root (21.9); the read
+          noise is fixed per read. Setting √(<em>i</em><sub>dark</sub><em>t</em>) = σ<sub>read</sub> gives the crossover.</p>
+        <p class="ex-step"><b>Crossover time.</b> <em>t</em> = σ<sub>read</sub>²/<em>i</em><sub>dark</sub> = 14²/0.2 =
+          196/0.2 = 980 s.</p>
+        <p class="ex-step"><b>At 100 s.</b> <em>N</em><sub>dark</sub> = 0.2 × 100 = 20 e⁻; √20 = 4.47 e⁻; σ<sub>total</sub>
+          = √(20 + 196) = 14.7 e⁻, almost all read noise.</p>
+        <p class="ex-step"><b>At 1000 s and 10,000 s.</b> 200 e⁻, shot noise 14.1 e⁻, total √(200 + 196) = 19.9 e⁻;
+          2000 e⁻, shot noise 44.7 e⁻, total √(2000 + 196) = 46.9 e⁻, almost all dark current.</p>
+        <p class="ex-answer">The two noises are equal at about 980 s, roughly a quarter of an hour; shorter exposures are
+          read-noise limited, longer ones dark-current limited. Check: at the crossover the total is √2 × 14 = 19.8 e⁻,
+          matching the 1000 s value.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A NIRCam array has 2040 × 2040 light-sensitive pixels on an 18 µm pitch. How large is its sensitive area, and how many light-sensitive pixels do NIRCam's ten arrays have together?</summary>
+      <div class="answer">
+        <p>Side: 2040 × 18 µm = 36,720 µm = 36.7 mm, so the sensitive area is 36.7 mm × 36.7 mm = 13.5 cm². Pixels per
+          array: 2040² = 4.16×10⁶; ten arrays: 4.16×10⁷, about 42 million. Each array is 2048 × 2048 in total; the outer
+          four-pixel border is reference pixels that are not light-sensitive and are used to track drifts of temperature and
+          bias during an exposure (JWST documentation). Every one of these pixels has its own indium bump and its own input
+          transistor in the readout chip.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 8 -->
+    <h2>8 · Superconducting nanowire single-photon detectors</h2>
+
+    <p>
+      The detectors so far turn a photon into an electron–hole pair. The professor closed with a detector that uses a
+      different physical effect: the photon breaks superconductivity in a short length of wire, and the detector reads the
+      resulting voltage pulse. This section describes the superconducting state the device needs, the detection cycle, the
+      recovery time, and why the technology is not yet ready for a space instrument.
+    </p>
+
+    <p>
+      A <b>superconductor</b> is a material whose resistance falls abruptly to zero below a critical temperature
+      <em>T</em><sub>c</sub> (deck p. 32; Figure 13, left), whereas an ordinary metal's resistance falls smoothly toward a
+      finite residual value. Below <em>T</em><sub>c</sub> the conduction electrons form bound pairs (Cooper pairs) that
+      carry current without dissipation, up to a critical current density above which superconductivity breaks down.
+      Superconductivity survives only below both the critical temperature and the critical current. Common nanowire
+      materials have critical temperatures of about 16 K for NbN and NbTiN, 7.5 K for MoSi and 5 K for WSi, the last two
+      amorphous films (Holzman and Ivry 2019); in the few-nanometre films of a detector the superconducting properties are
+      suppressed further.
+    </p>
+
+    <p>
+      A <b>superconducting nanowire single-photon detector</b> (SNSPD) is a film about 5–10 nm thick patterned into a wire
+      about 100 nm wide, folded into a meander that covers the detector area (Nicolich et al. 2019). It has no p–n
+      junction (deck p. 31). It is held well below <em>T</em><sub>c</sub> and driven with a steady bias current just
+      below its critical current (Natarajan, Tanner &amp; Hadfield 2012). The detection cycle (Figure 12; deck p. 32):
+    </p>
+    <ol>
+      <li>The wire is superconducting, the bias current <em>I</em><sub>b</sub> flows with no resistance, and the voltage
+        across it is zero.</li>
+      <li>An absorbed photon breaks hundreds of Cooper pairs and forms a small resistive <b>hotspot</b>, narrower than the
+        wire.</li>
+      <li>The supercurrent is forced around the hotspot, so the current density in the remaining strips exceeds the critical
+        value; superconductivity breaks across the full width, and the resistive section diverts the bias current into the
+        load resistor <em>R</em><sub>L</sub>. A voltage pulse appears across the load.</li>
+      <li>With the current diverted, the resistive section stops heating, cools, and returns to the superconducting
+        state; the current flows back into the wire, and the voltage returns to zero.</li>
+    </ol>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 150" role="img" aria-labelledby="f21-hs-t">
+<title id="f21-hs-t">The detection cycle in a current-biased nanowire: superconducting with bias current flowing; a photon creates a hotspot; the hotspot spreads across the wire, which becomes resistive and diverts the current into the load; the wire cools and returns to the superconducting state</title>
+<defs><marker id="f21-hs-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+<rect x="10" y="30" width="92" height="40" rx="3" class="dg-fill"/>
+<text x="56" y="90" class="dg-label-sm" text-anchor="middle">1 superconducting</text>
+<text x="56" y="104" class="dg-label-sm" text-anchor="middle">I = I<tspan baseline-shift="sub" style="font-size:75%">b</tspan>, V = 0</text>
+<line x1="103" y1="50" x2="116" y2="50" class="dg-line" marker-end="url(#f21-hs-a)"/>
+<rect x="118" y="30" width="92" height="40" rx="3" class="dg-fill"/>
+<circle cx="164" cy="50" r="7" class="dg-acc-f" opacity="0.6"/>
+<path d="M148,10 q3,-4 6,0 t6,0 t6,0" class="dg-acc" fill="none"/>
+<text x="164" y="90" class="dg-label-sm" text-anchor="middle">2 photon absorbed</text>
+<text x="164" y="104" class="dg-label-sm" text-anchor="middle">hotspot forms</text>
+<line x1="211" y1="50" x2="224" y2="50" class="dg-line" marker-end="url(#f21-hs-a)"/>
+<rect x="226" y="30" width="92" height="40" rx="3" class="dg-fill"/>
+<rect x="260" y="30" width="24" height="40" class="dg-acc-f" opacity="0.6"/>
+<text x="272" y="90" class="dg-label-sm" text-anchor="middle">3 resistive across</text>
+<text x="272" y="104" class="dg-label-sm" text-anchor="middle">I → load, V pulse</text>
+<line x1="319" y1="50" x2="332" y2="50" class="dg-line" marker-end="url(#f21-hs-a)"/>
+<rect x="334" y="30" width="92" height="40" rx="3" class="dg-fill"/>
+<rect x="374" y="30" width="12" height="40" class="dg-acc-f" opacity="0.2"/>
+<text x="380" y="90" class="dg-label-sm" text-anchor="middle">4 recovery</text>
+<text x="380" y="104" class="dg-label-sm" text-anchor="middle">cools, I returns</text>
+<text x="220" y="134" class="dg-label-sm" text-anchor="middle">nanowire segment, current flowing left to right; after Lec_21 p. 32</text>
+</svg>
+      <figcaption><b>Figure 12.</b> The detection cycle of a current-biased nanowire (after deck p. 32, from Nicolich et al. 2019). The photon's hotspot forces the current around it until the whole width goes resistive; the current moves into the load, the wire cools, and the current returns.</figcaption>
+    </figure>
+
+    <p>
+      The return of the current is slowed by the <b>kinetic inductance</b> <em>L</em><sub>k</sub> of the nanowire, an
+      inductance that comes from the inertia of the Cooper pairs rather than from a magnetic field, and which grows with
+      the wire's length. In the lumped model of deck p. 32 the wire is <em>L</em><sub>k</sub> in series with a switch
+      and resistor that represent the hotspot, in parallel with the load. Once the hotspot has closed, the current
+      re-enters <em>L</em><sub>k</sub> through <em>R</em><sub>L</sub>, an <em>LR</em> circuit:
+    </p>
+
+    <div class="eq" id="eq-21-10">
+      <div class="eq-body">
+        <div class="eq-math">τ<sub>r</sub> = <span class="frac"><span class="num"><em>L</em><sub>k</sub></span><span class="den"><em>R</em><sub>L</sub></span></span>&emsp;&emsp;<em>V</em>(<em>t</em>) ≈ <em>V</em><sub>0</sub>&thinsp;e<sup>−<em>t</em>/τ<sub>r</sub></sup></div>
+        <div class="eq-num">(21.10)</div>
+      </div>
+      <div class="eq-says">
+        τ<sub>r</sub> 1/e recovery time (s) · <em>L</em><sub>k</sub> kinetic inductance of the nanowire (H) ·
+        <em>R</em><sub>L</sub> load resistance (Ω), often the 50 Ω input of the amplifier · <em>V</em>(<em>t</em>) pulse
+        voltage after the hotspot closes · <em>V</em><sub>0</sub> its peak. With <em>R</em><sub>L</sub> = 50 Ω, τ<sub>r</sub>
+        is typically tens of nanoseconds (Nicolich et al. 2019). Making τ<sub>r</sub> too short returns the current before
+        the wire has cooled, and the wire latches in the resistive state (Natarajan et al. 2012).
+        <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+        <figure class="compact">
+<svg viewBox="0 0 440 214" role="img" aria-labelledby="f21-sn-t">
+<title id="f21-sn-t">Left: resistance against temperature for a normal metal, which falls smoothly to a residual value, and for a superconductor, which drops to zero at the critical temperature. Right: the output voltage after a photon is absorbed, a fast rise followed by an exponential decay with time constant equal to the kinetic inductance divided by the load resistance, here 10 nanoseconds</title>
+<line x1="30" y1="160" x2="200" y2="160" class="dg-rule"/><line x1="30" y1="160" x2="30" y2="30" class="dg-rule"/>
+<path d="M30.0,127.5 L33.4,127.5 L36.8,127.4 L40.2,127.2 L43.6,127.0 L47.0,126.7 L50.4,126.4 L53.8,126.0 L57.2,125.5 L60.6,125.0 L64.0,124.4 L67.4,123.7 L70.8,123.0 L74.2,122.2 L77.6,121.4 L81.0,120.5 L84.4,119.5 L87.8,118.5 L91.2,117.4 L94.6,116.2 L98.0,115.0 L101.4,113.7 L104.8,112.4 L108.2,111.0 L111.6,109.5 L115.0,108.0 L118.4,106.4 L121.8,104.8 L125.2,103.0 L128.6,101.3 L132.0,99.4 L135.4,97.5 L138.8,95.6 L142.2,93.5 L145.6,91.4 L149.0,89.3 L152.4,87.1 L155.8,84.8 L159.2,82.4 L162.6,80.0 L166.0,77.6 L169.4,75.1 L172.8,72.5 L176.2,69.8 L179.6,67.1 L183.0,64.3 L186.4,61.5 L189.8,58.6 L193.2,55.6 L196.6,52.6 L200.0,49.5" class="dg-line" fill="none"/>
+<path d="M30,160 L106.5,160 L106.5,132.6 106.5,132.6 L108.4,132.0 L110.2,131.4 L112.1,130.8 L114.0,130.1 L115.8,129.5 L117.7,128.8 L119.6,128.2 L121.5,127.5 L123.3,126.8 L125.2,126.1 L127.1,125.3 L128.9,124.6 L130.8,123.8 L132.7,123.1 L134.6,122.3 L136.4,121.5 L138.3,120.7 L140.2,119.8 L142.0,119.0 L143.9,118.1 L145.8,117.3 L147.6,116.4 L149.5,115.5 L151.4,114.6 L153.2,113.7 L155.1,112.7 L157.0,111.8 L158.9,110.8 L160.7,109.8 L162.6,108.8 L164.5,107.8 L166.3,106.8 L168.2,105.7 L170.1,104.7 L171.9,103.6 L173.8,102.5 L175.7,101.4 L177.6,100.3 L179.4,99.2 L181.3,98.1 L183.2,96.9 L185.0,95.7 L186.9,94.6 L188.8,93.4 L190.7,92.2 L192.5,90.9 L194.4,89.7 L196.3,88.4 L198.1,87.2 L200.0,85.9" class="dg-acc" fill="none"/>
+<text x="106.5" y="174" class="dg-label-sm" text-anchor="middle">T<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+<text x="200" y="174" class="dg-label-sm" text-anchor="end">T</text>
+<text x="34" y="34" class="dg-label-sm">R</text>
+<text x="196" y="45.5" class="dg-label-sm" text-anchor="end">normal metal</text>
+<text x="102.5" y="154" class="dg-label-sm" text-anchor="end">superconductor</text>
+<line x1="250" y1="160" x2="420" y2="160" class="dg-rule"/><line x1="250" y1="160" x2="250" y2="30" class="dg-rule"/>
+<path d="M250.0,160.0 L268.9,160.0 L268.9,160.0 L269.6,104.2 L270.4,77.2 L271.2,64.7 L271.9,59.5 L272.7,57.9 L273.4,58.1 L274.2,59.2 L274.9,60.8 L275.7,62.5 L276.4,64.3 L277.2,66.2 L278.0,68.0 L278.7,69.8 L279.5,71.6 L280.2,73.3 L281.0,75.0 L281.7,76.7 L282.5,78.4 L283.2,80.0 L284.0,81.6 L284.8,83.1 L285.5,84.6 L286.3,86.1 L287.0,87.6 L287.8,89.0 L288.5,90.4 L289.3,91.8 L290.0,93.2 L290.8,94.5 L291.6,95.8 L292.3,97.1 L293.1,98.3 L293.8,99.5 L294.6,100.7 L295.3,101.9 L296.1,103.0 L296.8,104.2 L297.6,105.3 L298.4,106.4 L299.1,107.4 L299.9,108.5 L300.6,109.5 L301.4,110.5 L302.1,111.5 L302.9,112.4 L303.6,113.4 L304.4,114.3 L305.2,115.2 L305.9,116.1 L306.7,117.0 L307.4,117.8 L308.2,118.6 L308.9,119.5 L309.7,120.3 L310.4,121.1 L311.2,121.8 L312.0,122.6 L312.7,123.3 L313.5,124.0 L314.2,124.8 L315.0,125.5 L315.7,126.1 L316.5,126.8 L317.2,127.5 L318.0,128.1 L318.8,128.7 L319.5,129.4 L320.3,130.0 L321.0,130.6 L321.8,131.1 L322.5,131.7 L323.3,132.3 L324.0,132.8 L324.8,133.4 L325.6,133.9 L326.3,134.4 L327.1,134.9 L327.8,135.4 L328.6,135.9 L329.3,136.4 L330.1,136.8 L330.8,137.3 L331.6,137.8 L332.4,138.2 L333.1,138.6 L333.9,139.0 L334.6,139.5 L335.4,139.9 L336.1,140.3 L336.9,140.7 L337.6,141.0 L338.4,141.4 L339.2,141.8 L339.9,142.1 L340.7,142.5 L341.4,142.8 L342.2,143.2 L342.9,143.5 L343.7,143.8 L344.4,144.2 L345.2,144.5 L346.0,144.8 L346.7,145.1 L347.5,145.4 L348.2,145.7 L349.0,146.0 L349.7,146.2 L350.5,146.5 L351.2,146.8 L352.0,147.0 L352.8,147.3 L353.5,147.5 L354.3,147.8 L355.0,148.0 L355.8,148.3 L356.5,148.5 L357.3,148.7 L358.0,149.0 L358.8,149.2 L359.6,149.4 L360.3,149.6 L361.1,149.8 L361.8,150.0 L362.6,150.2 L363.3,150.4 L364.1,150.6 L364.8,150.8 L365.6,151.0 L366.4,151.1 L367.1,151.3 L367.9,151.5 L368.6,151.7 L369.4,151.8 L370.1,152.0 L370.9,152.1 L371.6,152.3 L372.4,152.4 L373.2,152.6 L373.9,152.7 L374.7,152.9 L375.4,153.0 L376.2,153.2 L376.9,153.3 L377.7,153.4 L378.4,153.6 L379.2,153.7 L380.0,153.8 L380.7,153.9 L381.5,154.1 L382.2,154.2 L383.0,154.3 L383.7,154.4 L384.5,154.5 L385.2,154.6 L386.0,154.7 L386.8,154.8 L387.5,154.9 L388.3,155.0 L389.0,155.1 L389.8,155.2 L390.5,155.3 L391.3,155.4 L392.0,155.5 L392.8,155.6 L393.6,155.7 L394.3,155.8 L395.1,155.9 L395.8,155.9 L396.6,156.0 L397.3,156.1 L398.1,156.2 L398.8,156.2 L399.6,156.3 L400.4,156.4 L401.1,156.5 L401.9,156.5 L402.6,156.6 L403.4,156.7 L404.1,156.7 L404.9,156.8 L405.6,156.9 L406.4,156.9 L407.2,157.0 L407.9,157.0 L408.7,157.1 L409.4,157.2 L410.2,157.2 L410.9,157.3 L411.7,157.3 L412.4,157.4 L413.2,157.4 L414.0,157.5 L414.7,157.5 L415.5,157.6 L416.2,157.6 L417.0,157.7 L417.7,157.7 L418.5,157.8 L419.2,157.8 L420.0,157.9" class="dg-acc" fill="none"/>
+<text x="268.9" y="174" class="dg-label-sm" text-anchor="middle">0</text>
+<text x="306.7" y="174" class="dg-label-sm" text-anchor="middle">10</text>
+<text x="344.4" y="174" class="dg-label-sm" text-anchor="middle">20</text>
+<text x="382.2" y="174" class="dg-label-sm" text-anchor="middle">30</text>
+<text x="420.0" y="174" class="dg-label-sm" text-anchor="middle">40</text>
+<text x="335.0" y="188" class="dg-label-sm" text-anchor="middle">time after absorption (ns)</text>
+<text x="254" y="34" class="dg-label-sm">V</text>
+<line x1="306.7" y1="117.0" x2="306.7" y2="160" class="dg-guide" stroke-dasharray="3 3"/>
+<text x="310.4" y="111.0" class="dg-label-sm">τ = L<tspan baseline-shift="sub" style="font-size:75%">k</tspan>/R<tspan baseline-shift="sub" style="font-size:75%">L</tspan> = 10 ns</text>
+<text x="115" y="208" class="dg-label-sm" text-anchor="middle">schematic shapes</text>
+<text x="335" y="208" class="dg-label-sm" text-anchor="middle">500 nH / 50 Ω (E8)</text>
+</svg>
+      <figcaption><b>Figure 13.</b> Left: a superconductor's resistance drops to zero at <em>T</em><sub>c</sub>, unlike a normal metal's (after deck p. 32; schematic). Right: the output pulse computed from (21.10) with E8's 500 nH and 50 Ω; the decay constant is <em>L</em><sub>k</sub>/<em>R</em><sub>L</sub> = 10 ns.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E8 · Recovery time of a nanowire detector</div>
+      <div class="ex-body">
+        <p><b>Given</b> a nanowire with kinetic inductance 500 nH read into a 50 Ω amplifier (assumed values).
+          <b>Find</b> the recovery time and the time to recover to within 5 % of the bias current.</p>
+        <p><b>Plan.</b> Apply (21.10). An exponential reaches 5 % of its initial deviation after ln 20 ≈ 3 time constants.</p>
+        <p class="ex-step"><b>Time constant.</b> τ<sub>r</sub> = 500×10⁻⁹ H / 50 Ω = 1.0×10⁻⁸ s = 10 ns. Units:
+          H/Ω = (V·s/A)/(V/A) = s.</p>
+        <p class="ex-step"><b>Recovery to 95 %.</b> e<sup>−3</sup> = 0.050, so 3τ<sub>r</sub> = 30 ns.</p>
+        <p class="ex-answer">τ<sub>r</sub> = 10 ns; the detector is fully ready again about 30 ns after a detection.
+          Check: units are seconds, and Nicolich et al. give τ<sub>r</sub> as tens of nanoseconds for a 50 Ω load, the
+          range this lies at the bottom of.</p>
+      </div>
+    </div>
+
+    <p>
+      These properties are what make the technology attractive: single-photon sensitivity, very low dark counts,
+      timing jitter of tens of picoseconds and recovery in nanoseconds. Reported best values include 93 % system
+      detection efficiency, 10⁻⁴ dark counts per second and 4.6 ps jitter at 1550 nm, though no single device has shown
+      all of them at once (Holzman and Ivry 2019). The professor noted the speed as the reason optical communication is
+      interested in the same device. The challenges for space are the ones the deck lists (p. 33):
+    </p>
+    <ul>
+      <li><b>Radiation:</b> few radiation tests exist and there is no established rad-hard design. Testing is itself hard,
+        because the device must be held at cryogenic temperature inside the beam.</li>
+      <li><b>Temperature stability:</b> the detector's operating point depends on the bias current's distance below the
+        critical current, which itself depends on temperature, so the base temperature must be held steady while the
+        spacecraft's thermal environment cycles.</li>
+      <li><b>Cooling power:</b> the operating temperatures on deck p. 33 — NbN 1–4 K, MoSi 2.5 K, NbTiN below 8.4 K —
+        are lower than MIRI's 6.7 K for most materials, and need stronger active cooling, hence more power and
+        vibration.</li>
+    </ul>
+
+    <div class="box warn">
+      <p><b>Source note — how the nanowire is operated.</b> Deck p. 31 says the device must be "operated at a critical
+        temperature of the superconductivity (~10K)", and Lecture 24 described holding the wire just below
+        <em>T</em><sub>c</sub>, so that a small heating crosses the transition. The deck's own p. 32 figure shows a
+        current-biased wire, and in practice the wire is held well below <em>T</em><sub>c</sub> with the bias current just
+        below the critical current; the photon pushes the local current density over its critical value (Natarajan et al.
+        2012). Both pictures share the essential point: the wire is poised at the edge of the superconducting state, so a
+        single photon tips it over.</p>
+    </div>
+
+    <details class="check">
+      <summary>Why does an SNSPD need no p–n junction, and what limits how often it can detect photons?</summary>
+      <div class="answer">
+        <p>An SNSPD does not separate electron–hole pairs: its signal is the change of a superconducting wire from zero
+          resistance to a finite resistance, which diverts the bias current into the load and produces a voltage. No
+          built-in field is needed to collect anything, so no junction is needed. After each detection the wire must cool
+          back into the superconducting state and the current must return through the kinetic inductance, with time
+          constant <em>L</em><sub>k</sub>/<em>R</em><sub>L</sub> (21.10). A photon arriving before the current has
+          recovered meets a wire biased further below its critical current and is less likely to be detected, so the
+          recovery time sets the maximum count rate. With 2 µH and 50 Ω, τ<sub>r</sub> = 40 ns, four times E8's; a longer
+          meander, which covers a larger area, has a larger <em>L</em><sub>k</sub> and is slower.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 9 -->
+    <h2>9 · Radiation and photodetectors</h2>
+
+    <p>
+      The professor's closing point was that every detector in this module must be tested under radiation. A detector is
+      built to turn small amounts of deposited energy into signal, and radiation deposits energy too. This section sorts
+      what radiation does into the three mechanisms of the course — transient ionization, total ionizing dose and
+      displacement damage — and applies each to the detectors of §6–§8, with the radiation-effects literature on imagers
+      as the reference.
+    </p>
+
+    <p>
+      Most infrared detectors, the HgCdTe photodiodes among them, are reverse-biased p–n junctions (MIRI's Si:As IBC
+      arrays are an exception), like the photodiodes of visible-light CMOS sensors, and they
+      are turned into imaging devices by a hybridized CMOS readout chip; Goiffon's short course on image-sensor hardening
+      notes that the radiation literature on infrared detectors is less developed than on CMOS sensors, but that these
+      similarities allow its recommendations to be transposed in part (Goiffon 2021, §1.2.5). The same short course names
+      the dark current increase as the main radiation-induced degradation to be mitigated in image sensors. The three
+      mechanisms reach the dark current, and the image, by different routes.
+    </p>
+
+    <h3>Transient ionization: cosmic-ray hits</h3>
+    <p>
+      A charged particle crossing a pixel ionizes along its track (<a href="m08-ionization-excitation.html">M08</a>), and
+      the pairs it frees are collected exactly like photogenerated pairs. The pixel records a signal that no photon made.
+      In a JWST exposure the readout samples each pixel repeatedly while the charge accumulates (a "ramp"), so a hit
+      appears as a near-instant jump in the ramp; the processing pipeline's jump step detects and flags it, and the rest
+      of the ramp is still usable. Most hits affect one or two pixels. Large events, called snowballs in the near-infrared
+      arrays and showers in the mid-infrared arrays, affect hundreds; the JWST documentation estimates roughly one
+      snowball every 20 s in each near-infrared array, and about half that rate of showers in MIRI. For planning, the
+      exposure time calculator assumes 8 events per second per square centimetre, each affecting 9 pixels.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">E9 · Charge from a cosmic ray against the read noise, and how often it happens</div>
+      <div class="ex-body">
+        <p><b>Given</b> a minimum-ionizing particle crossing a 35 µm silicon layer (the thickness of MIRI's
+          infrared-active Si:As layer) at normal incidence; minimum mass stopping power in silicon 1.664 MeV·cm²/g; silicon
+          density 2.329 g/cm³; 3.6 eV per pair (<a href="m08-ionization-excitation.html">M08</a>); MIRI read noise
+          14 e⁻; the JWST planning rate of 8 events/(s·cm²), 9 pixels per event; MIRI pixel pitch 25 µm. <b>Find</b> the
+          number of pairs freed if the whole mean energy loss is deposited, its ratio to the read noise, and the fraction of pixels affected in a 1000 s
+          exposure.</p>
+        <p><b>Plan.</b> Energy deposited = stopping power × density × path length; pairs = energy / 3.6 eV. The hit rate
+          per pixel is the flux times the pixel area. The trap is the treatment of a doped layer as silicon: at
+          7×10¹⁷ cm⁻³ the arsenic is a small fraction of the atoms, so silicon's stopping power applies; the pair energy at
+          6.7 K is taken as the course's room-temperature value, an approximation.</p>
+        <p class="ex-step"><b>Energy deposited.</b> 1.664 MeV·cm²/g × 2.329 g/cm³ × 35×10⁻⁴ cm = 1.356×10⁻² MeV =
+          13.6 keV.</p>
+        <p class="ex-step"><b>Pairs.</b> 13,560 eV / 3.6 eV = 3770 pairs, which is 3770/14 = 269 times the read noise. This is an upper estimate: part of the
+          mean energy loss is carried out of a thin layer by energetic secondary (delta) electrons, so the typical deposit,
+          and the most probable one even more, is smaller. The comparison with the read noise is unaffected.</p>
+        <p class="ex-step"><b>Hit rate per pixel.</b> Pixel area (25×10⁻⁴ cm)² = 6.25×10⁻⁶ cm²; rate =
+          8 × 6.25×10⁻⁶ = 5.0×10⁻⁵ hits/s.</p>
+        <p class="ex-step"><b>Fraction affected in 1000 s.</b> Each event affects 9 pixels, so the fraction is
+          8 × 9 × 6.25×10⁻⁶ × 1000 = 0.45, a linear estimate that ignores pixels hit twice. For NIRCam's 18 µm pixels the
+          same estimate gives 0.23.</p>
+        <p class="ex-answer">About 3,800 pairs, 270 times the read noise; roughly 45 % of MIRI's pixels (by this linear
+          estimate) are touched by a hit during a 1000 s exposure. Check: 3770/35 = 108 pairs per micrometre, the mean rate that
+          1.664 MeV·cm²/g implies in silicon. A hit stands far above the read noise, which is why it can be flagged, but at
+          this rate it cannot be ignored either.</p>
+      </div>
+    </div>
+
+    <h3>Total ionizing dose: the readout chip and the surfaces</h3>
+    <p>
+      The readout chip and the SIDECAR ASIC are CMOS integrated circuits, and for those circuits the effects of total
+      ionizing dose and their hardening are the same as for any CMOS IC (Goiffon 2021): trapped oxide charge and interface
+      traps shift thresholds and open leakage paths (<a href="m14-total-ionizing-dose.html">M14</a>). In a silicon
+      photodiode the dose adds interface traps at the oxide around the diode's perimeter, and the generation current
+      from those traps raises the dark current in proportion to their density (Goiffon 2021). The SIDECAR ASIC was tested
+      with 63 MeV protons while operating at 37 K, and accumulated 80 krad (material not stated in the source) with no noticeable degradation of performance
+      (Loose et al. 2005).
+    </p>
+
+    <h3>Displacement damage: hot pixels, dark current and charge transfer</h3>
+    <p>
+      Protons and neutrons that displace atoms leave defects with levels in the gap (<a href="m11-displacement-damage.html">M11</a>
+      §6). A defect inside a reverse-biased depletion volume is an efficient Shockley–Read–Hall generation centre, so it
+      adds dark current; a single strong one can make a pixel saturate in the dark, a <b>hot pixel</b> (Goiffon 2021,
+      §3.1.2). Some defects switch between two generation rates, so the pixel's dark current jumps between discrete
+      levels at random, a random telegraph signal; it has been observed in irradiated CCDs, CMOS sensors and HgCdTe,
+      InGaAs and InSb infrared detectors (Goiffon 2021, §1.3.4.3). In a CCD the same defects in the transfer channel
+      capture charge from passing packets and release it later, which lowers the charge transfer efficiency and smears the
+      image (EEE 5416 <a href="../../EEE5416_Radiation_Effects/site/m12b-dd-measurement-modelling.html">M12b</a> §4). For
+      silicon at room temperature, the mean dark current added scales with the displacement damage dose and the depleted
+      volume:
+    </p>
+
+    <div class="eq" id="eq-21-11">
+      <div class="eq-body">
+        <div class="eq-math"><em>Ī</em><sub>DDD</sub> = <em>K</em><sub>dark</sub> · DDD · <em>V</em><sub>dep</sub></div>
+        <div class="eq-num">(21.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>Ī</em><sub>DDD</sub> mean dark current added per pixel (carriers/s) · <em>K</em><sub>dark</sub> universal
+        damage factor, 1.9×10⁵ carriers·s⁻¹·(MeV/g)⁻¹·cm⁻³ for silicon at 300 K after one week of annealing ·
+        DDD displacement damage dose (MeV/g) · <em>V</em><sub>dep</sub> depleted volume of the pixel (cm³). Srour and Lo's
+        universal damage factor, as given by Goiffon (2021) eq. (23), for protons and neutrons of a few MeV to a few hundred
+        MeV. Silicon at room temperature only: it does not transfer to a cryogenic HgCdTe or Si:As array.
+        <a href="formula-sheet.html">Formula sheet</a>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">E10 · Dark current added by displacement damage in a silicon pixel</div>
+      <div class="ex-body">
+        <p><b>Given</b> a silicon image-sensor pixel 10 µm × 10 µm with a depleted depth of 2 µm, at 300 K, after a
+          displacement damage dose of 1×10⁸ MeV/g (assumed values). <b>Find</b> the mean added dark current.</p>
+        <p><b>Plan.</b> Apply (21.11); the only conversion is the volume, from µm³ to cm³ (1 µm = 10⁻⁴ cm, so
+          1 µm³ = 10⁻¹² cm³).</p>
+        <p class="ex-step"><b>Depleted volume.</b> 10 × 10 × 2 = 200 µm³ = 2×10⁻¹⁰ cm³.</p>
+        <p class="ex-step"><b>Added dark current.</b> <em>Ī</em> = 1.9×10⁵ × 1×10⁸ × 2×10⁻¹⁰ = 3.8×10³ e⁻/s.</p>
+        <p class="ex-answer">About 3,800 e⁻/s per pixel on average. Check: Goiffon's equivalent form,
+          0.1 e⁻·s⁻¹·(TeV/g)⁻¹·µm⁻³ at 22 °C after six weeks of annealing, gives 0.1 × 100 × 200 = 2,000 e⁻/s, the same
+          order; the difference is the annealing time and temperature.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A 5 µm × 5 µm silicon pixel with a 3 µm depleted depth receives 3×10⁸ MeV/g. What mean dark current does displacement damage add at 300 K, and how much dark charge does it collect in a 10 s exposure? Which radiation effect would show up first in a CCD with the same damage?</summary>
+      <div class="answer">
+        <p><em>V</em><sub>dep</sub> = 5 × 5 × 3 = 75 µm³ = 7.5×10⁻¹¹ cm³. <em>Ī</em> = 1.9×10⁵ × 3×10⁸ × 7.5×10⁻¹¹ =
+          4.3×10³ e⁻/s, so 4.3×10⁴ e⁻ in 10 s: the mean, on top of which the strongest defects make some pixels far hotter.
+          In a CCD the same defects also sit in the transfer channel, and each pixel's charge passes through many
+          transfers on its way to the output, so the loss of charge transfer efficiency — smearing and trailing behind bright
+          features — is the effect most directly tied to displacement damage (EEE 5416 M12b §4). A CMOS or hybrid array
+          shows the dark current and hot pixels but no transfer loss.</p>
+      </div>
+    </details>
+
+    <p>
+      The superconducting detector of §8 is the open case. The deck's summary is that radiation testing is limited and no
+      rad-hard design yet exists; Lecture 24 added that the professor's group, which tests electronics under radiation,
+      is interested in it for that reason. The class discussion raised the two obvious concerns, that a particle
+      depositing energy in the wire heats it as a photon does and could disturb its operation; how large such effects are
+      in practice is what the testing has yet to establish.
+    </p>
+
+    <details class="check">
+      <summary>For each of the three radiation mechanisms, name the part of a hybrid HgCdTe sensor chip assembly it acts on and the symptom in the image.</summary>
+      <div class="answer">
+        <p><b>Transient ionization</b> acts on the detector layer, and in principle on the readout: a particle frees
+          charge in a pixel's absorber, which the pixel collects as signal. Symptom: a jump in that pixel's ramp, one or two
+          pixels usually, hundreds for a snowball; flagged and removed by the processing.</p>
+        <p><b>Total ionizing dose</b> acts mainly on the silicon readout chip and the cryogenic ASIC, which are CMOS
+          circuits: threshold shifts and leakage in their transistors, and extra dark current where an oxide borders a
+          junction. Symptom: drifts in bias and offset, rising dark level, eventually circuit failure.</p>
+        <p><b>Displacement damage</b> acts on the detector material's crystal: defects in the depletion volumes become
+          generation centres. Symptom: rising mean dark current, hot pixels, and pixels with random telegraph switching.
+          The array, being CMOS-type, has no charge-transfer loss.</p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>A photon is absorbed only if <em>hc</em>/λ ≥ <em>E</em><sub>g</sub>; the cutoff is λ<sub>c</sub>(nm) =
+          1239.8/<em>E</em><sub>g</sub>(eV) (21.1). Si 1.09 µm, Ge 1.85, InAs 3.76, InSb 7.75 µm.</li>
+        <li>A p–i–n photodiode in reverse bias separates the pair in the depletion field; light shifts the I–V curve down
+          by <em>I</em><sub>ph</sub> (21.2). Reverse bias: detector. Fourth quadrant, <em>VI</em> &lt; 0: solar cell.
+          Near breakdown: avalanche photodiode, gain with more noise.</li>
+        <li>ℜ = <em>I</em><sub>ph</sub>/<em>P</em> = η<em>q</em>λ/(<em>hc</em>) (21.3); 0.45 A/W at 700 nm is η = 0.80.</li>
+        <li>The course's NEP is <em>I</em><sub>dark</sub>/ℜ, in W (21.4); the standard NEP is the noise current density
+          over ℜ, in W/√Hz, with <em>P</em><sub>min</sub> = NEP√Δ<em>f</em> (21.6). Johnson noise 4<em>kTR</em> and shot
+          noise 2<em>qI</em> per hertz (21.5). A datasheet NEP is found by dividing the output noise by the transimpedance
+          gain, then by ℜ.</li>
+        <li>Dark current is thermally activated (21.7); the narrower the gap, the colder the detector: about 150 K
+          short-wave, 77 K mid-wave, 40 K and below long-wave. JWST: HgCdTe at about 37 K passively, Si:As at 6.7 K or
+          less with a helium cryocooler that costs power and must not vibrate.</li>
+        <li>HgCdTe's gap is set by composition (21.8): x = 0.46 for a 2.5 µm cutoff, 0.30 for 5.3 µm at 37 K. Si:As IBC
+          detectors absorb from an impurity band into the conduction band, with a blocking layer that stops the hopping
+          dark current, out to 28 µm.</li>
+        <li>Infrared arrays are hybrids: detector layer, indium bumps, silicon CMOS readout, cryogenic ASIC. CMOS-type
+          readout addresses each pixel; a CCD moves charge and so suffers transfer loss.</li>
+        <li>An SNSPD is a current-biased superconducting nanowire: a photon creates a hotspot, the wire goes resistive,
+          the current pulses into the load and recovers with τ<sub>r</sub> = <em>L</em><sub>k</sub>/<em>R</em><sub>L</sub>
+          (21.10). Single-photon sensitivity and nanosecond recovery, but colder operation, temperature sensitivity and
+          little radiation data.</li>
+        <li>Radiation: cosmic-ray hits are flagged as jumps in the ramp; dose acts on the CMOS readout; displacement damage
+          raises dark current and makes hot and telegraph pixels (21.11). Every detector must be tested under radiation.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Orienting paragraph, §1</td><td>Lecture 24 deck ("Space Photodetectors") pp. 9–10, 27; Lecture 24 (18 Nov). Photon energy and band-regime absorption: M10 §1–§2. Cutoffs computed in <code>_work/examples-m21.py</code> (E1); silicon gap 1.12 eV from M01 and M17a (Sze)</td></tr>
+      <tr><td>§2</td><td>Deck pp. 9, 12; Lecture 24 (p–i–n structure, the four regions, dark current, avalanche photodiode). The junction: M01 §6, M17a §5; the solar cell: M20 §3</td></tr>
+      <tr><td>§3</td><td>Deck pp. 14–15 (the Thorlabs FDS1010 curve; the 700 nm example). ℜ = η<em>q</em>λ/(<em>hc</em>): K. W. Busch and M. A. Busch, <em>Multielement Detection Systems for Spectrochemical Analysis</em> (Wiley, 1990), as summarized in the Wikipedia article "Responsivity"</td></tr>
+      <tr><td>§4</td><td>Deck pp. 16–21; Lecture 24 (spectral density against integrated noise). Johnson noise: H. Nyquist, Phys. Rev. 32, 110 (1928); shot noise and the NEP definition from the corresponding reference articles. Photoreceiver: New Focus 1801/1811 User's Guide, Rev. G (2001)</td></tr>
+      <tr><td>§5</td><td>Deck pp. 22–24, 29. Germanium device: S. Siontas et al., "Low-Temperature Operation of High-Efficiency Germanium Quantum Dot Photodetectors in the Visible and Near Infrared", phys. stat. sol. (a) 215, 1700453 (2018). Operating-temperature tiers and cryocooler life: Y. Han and A. Zhang, "Cryogenic technology for infrared detection in space", Sci. Rep. 12 (2022), doi 10.1038/s41598-022-06216-5. JWST temperatures and the MIRI cooler: J. P. Gardner et al., PASP 135, 068001 (2023); G. S. Wright et al., PASP 127, 595 (2015); NASA Webb mission page "Cryocooler"</td></tr>
+      <tr><td>§6</td><td>Deck pp. 10, 13, 34; Lecture 24. G. L. Hansen, J. L. Schmit and T. N. Casselman, J. Appl. Phys. 53, 7099 (1982). NIRCam and MIRI detectors: JWST User Documentation, "NIRCam Detector Overview" and "MIRI Detector Overview"; Lecture 23 deck pp. 24–25. IBC structure: G. H. Rieke et al., "The Mid-Infrared Instrument for JWST, VII: The MIRI Detectors", PASP 127, 665 (2015). Arsenic donor binding energy: J. Claes et al., arXiv:2508.14738 (2025), quoting the experimental 53.77 meV</td></tr>
+      <tr><td>§7</td><td>Deck pp. 25–28 (Teledyne cross-section, after J. W. Beletic, Fermilab detector seminar, 2017); Lecture 24. Hybridization: J. W. Beletic, "Scientific Detectors for Astronomy", Teledyne Imaging Sensors talk (Dec 2008). SIDECAR: M. Loose et al., Proc. SPIE 5904, 59040V (2005). Micro-shutter array: M. J. Li et al. (NASA GSFC), "MEMS Microshutter Array System for James Webb Space Telescope" (NTRS 20080040771). CMOS architecture: V. Goiffon, "Radiation Effects and Hardening Techniques for Image Sensors", IEEE NSREC Short Course (2021), §1.3.1; CCD transfer: EEE 5416 M12b §4. E7 computed in <code>examples-m21.py</code></td></tr>
+      <tr><td>§8</td><td>Deck pp. 30–33. C. M. Natarajan, M. G. Tanner and R. H. Hadfield, Supercond. Sci. Technol. 25, 063001 (2012); K. L. Nicolich et al., Phys. Rev. Applied 12, 034020 (2019) (the source of deck p. 32's figure); I. Holzman and Y. Ivry, Adv. Quantum Technol. 2, 1800058 (2019)</td></tr>
+      <tr><td>§9</td><td>Deck p. 34; Lecture 24. Goiffon (2021) §1.2.5, §1.3.4, §3.1.2 (universal damage factor after Srour and Lo); JWST User Documentation, "Shower and Snowball Artifacts" and "JWST ETC Cosmic Ray Implementation"; Loose et al. (2005) for the SIDECAR proton test. Minimum stopping power of silicon: Particle Data Group, atomic and nuclear properties of materials. E9–E10 computed in <code>examples-m21.py</code></td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m20-space-power.html"><span>Previous</span>M20 · Space Power</a>
+      <a class="next" href="m21a-space-telescopes.html"><span>Next</span>M21a · Space Telescopes: Hubble and JWST</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

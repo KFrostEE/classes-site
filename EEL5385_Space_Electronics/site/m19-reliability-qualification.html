@@ -1,0 +1,1398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M19 · Reliability and Qualification — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M19 · Reliability and Qualification</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 19</p>
+    <h1>Reliability and Qualification</h1>
+    <p class="lede">
+      How a part is shown, before launch, to survive the loads of launch and the years of thermal cycling that
+      follow: the two ways a part fails, the vibration, resonance and acoustic loads of launch and how they are
+      specified, the fatigue of solder joints under temperature cycling, the test levels that separate
+      qualification from acceptance, and the derating and parts grades that keep every part far from its limits.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m03-space-electronics-gap.html">M03</a> §4, <a href="m17a-temperature-semiconductor.html">M17a</a> §1, <a href="m17b-transistors-high-temperature.html">M17b</a> §2–§3, <a href="m18-chip-bonding-packaging.html">M18</a></span>
+      <span><b>Read time</b> ~50 min</span>
+      <span><b>Sources</b> Deck 19 pp. 18–21, 31–37; Deck 12 pp. 9–16; Deck 13 pp. 13–15; Lectures 13, 20 and 22</span>
+    </div>
+
+    <p>
+      A spacecraft cannot be repaired, so every part on it must be shown to work for the whole mission before it
+      leaves the ground. <a href="m03-space-electronics-gap.html">M03 §4</a> listed what that demonstration covers;
+      this module explains the mechanical and thermal half of it, which the radiation modules did not treat. The
+      loads come in two kinds. Launch lasts minutes and is violent: random vibration of 3 to 13 G<sub>rms</sub> at the
+      spacecraft interface (more at a component: 14.1 G<sub>rms</sub> in NASA's generalized specification), the structure's own resonances, pyrotechnic shock and the sound pressure inside the fairing.
+      Orbit lasts years and is repetitive: a part in low orbit passes through Earth's shadow about sixteen times a
+      day, and each passage cycles its temperature (<a href="m17a-temperature-semiconductor.html">M17a §1</a>). The
+      expansion mismatch of <a href="m17b-transistors-high-temperature.html">M17b §3</a> then strains every joint on
+      every cycle, and the packaging joints of <a href="m18-chip-bonding-packaging.html">M18</a> fail by fatigue.
+      Section 1 sorts failures into those that happen when a stress exceeds a part's strength and those that
+      accumulate. Sections 2 to 4 treat the launch loads, §5 the thermal cycling of joints, §6 the test levels and
+      margins of qualification and acceptance, and §7 derating, the practice of operating every part well below
+      its ratings. <a href="m19a-failure-analysis.html">M19a</a> takes up the failure analysis that locates a failure once
+      a test has produced one.
+    </p>
+
+    <h2>1 · Two ways a part fails</h2>
+
+    <p>
+      A part fails when a stress, the load its environment and its operation apply to it, meets its strength, the
+      load it can bear. The reliability chapter of the 2021 IEEE Heterogeneous Integration Roadmap puts the risk in
+      exactly these terms, as a stress–strength interference: a product is unreliable to the extent that the applied
+      stress may exceed its inherent strength. Stress and strength meet in one of two ways, and the distinction
+      decides how a failure can be tested for.
+    </p>
+
+    <p>
+      <b>Overstress and wear-out.</b> Deck 19 p. 35 reproduces the roadmap's tree of degradation and failure
+      mechanisms (Ch. 24, Reliability). An <b>overstress</b> failure occurs when the stress exceeds the item's
+      strength, and the failure is sudden: a solder joint fractures under a shock, a dielectric breaks down under an
+      overvoltage. The roadmap describes these mechanisms as triggered by sudden catastrophic stress events. A
+      <b>wear-out</b> failure is the progressive accumulation of damage under a sustained stress, which the roadmap
+      describes as gradual damage accumulation over the life cycle under routine operational and environmental
+      stresses: each thermal cycle extends a fatigue crack a little, each hour at high field adds to the damage in a
+      gate oxide, and the part fails when the accumulated damage has lowered its strength to the stress it
+      carries. Figure 1 draws both. An overstress failure is tested for by applying the worst stress once, with
+      margin. A wear-out failure is tested for by accumulating the mission's damage, usually faster than the
+      mission would, and the rate at which a test accumulates damage relative to the mission is what §5 and §6
+      calculate.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f19-ss-t">
+  <title id="f19-ss-t">Two panels of stress and strength against time. Left, overstress: the strength is constant and the stress is low except for one brief spike that rises above the strength, where the part fails suddenly. Right, wear-out: the stress is constant and the strength declines steadily as damage accumulates until it falls to the stress, where the part fails</title>
+  <text x="110" y="16" class="dg-label" text-anchor="middle">overstress</text>
+  <text x="330" y="16" class="dg-label" text-anchor="middle">wear-out</text>
+  <line x1="20" y1="170" x2="200" y2="170" class="dg-rule"/>
+  <line x1="20" y1="170" x2="20" y2="28" class="dg-rule"/>
+  <line x1="240" y1="170" x2="420" y2="170" class="dg-rule"/>
+  <line x1="240" y1="170" x2="240" y2="28" class="dg-rule"/>
+  <text x="110" y="188" class="dg-label-sm" text-anchor="middle">time</text>
+  <text x="330" y="188" class="dg-label-sm" text-anchor="middle">time</text>
+  <!-- left: constant strength, stress with a spike -->
+  <line x1="20" y1="62" x2="196" y2="62" class="dg-line"/>
+  <text x="26" y="56" class="dg-label-sm">strength</text>
+  <polyline points="20,138 60,134 90,140 118,136 124,44 130,136 160,139 196,135" class="dg-acc" fill="none" style="stroke-width:2"/>
+  <text x="28" y="156" class="dg-label-sm">stress</text>
+  <circle cx="124" cy="62" r="4" class="dg-acc-f"/>
+  <text x="132" y="40" class="dg-label-sm">sudden failure</text>
+  <!-- right: declining strength, constant stress -->
+  <line x1="240" y1="124" x2="416" y2="124" class="dg-line"/>
+  <text x="246" y="140" class="dg-label-sm">stress</text>
+  <path d="M240,52 C300,58 340,80 386,124" class="dg-acc" fill="none" style="stroke-width:2"/>
+  <text x="250" y="46" class="dg-label-sm">strength, falling with damage</text>
+  <circle cx="386" cy="124" r="4" class="dg-acc-f"/>
+  <text x="386" y="144" class="dg-label-sm" text-anchor="middle">failure</text>
+</svg>
+      <figcaption><b>Figure 1.</b> An overstress failure (left) occurs when one stress event exceeds a strength that has not changed; a wear-out failure (right) occurs when accumulated damage has lowered the strength to a stress that has not changed. The roadmap frames both as stress–strength interference.</figcaption>
+    </figure>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Stress</th><th>Overstress mechanisms</th><th>Wear-out mechanisms</th><th>Where the course treats it</th></tr></thead>
+        <tbody>
+          <tr><td>Mechanical</td><td>Yield, fracture, interfacial de-adhesion</td><td>Fatigue, creep, stress migration</td><td>Bond-wire heel fatigue, <a href="m18-chip-bonding-packaging.html">M18 §5</a>; joint fatigue, §5 here</td></tr>
+          <tr><td>Thermal</td><td>Glass transition (<em>T</em><sub>g</sub>), phase transition</td><td>Stress-driven diffusion voiding (SDDV)</td><td>Not treated; temperature cycling drives the mechanical fatigue of §5</td></tr>
+          <tr><td>Electrical</td><td>Dielectric breakdown, electrical overstress, electrostatic discharge, second breakdown</td><td>TDDB, electromigration, surface charge spreading, HCI, NBTI, slow trapping</td><td>TDDB, <a href="m17b-transistors-high-temperature.html">M17b §2</a>; ESD at the bonder, <a href="m18-chip-bonding-packaging.html">M18 §3</a></td></tr>
+          <tr><td>Radiation</td><td>Single-event upset</td><td>Radiation embrittlement, charge trapping in oxides</td><td>Single events, <a href="m08-ionization-excitation.html">M08 §8</a>; trapped charge, <a href="m14-total-ionizing-dose.html">M14</a></td></tr>
+          <tr><td>Chemical</td><td>—</td><td>Corrosion, dendrite growth, conductive anodic filament (CAF), depolymerization, intermetallic growth</td><td>Au–Al intermetallics, <a href="m18-chip-bonding-packaging.html">M18 §4</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The table is the roadmap's tree as Deck 19 p. 35 prints it. Three of its entries need expanding. Time-dependent
+      dielectric breakdown (TDDB) is the wear-out of a gate oxide under field, whose Arrhenius dependence on
+      temperature <a href="m17b-transistors-high-temperature.html">M17b §2</a> derived. Hot-carrier injection (HCI) and
+      negative-bias temperature instability (NBTI) are the slow drifts of a transistor's threshold voltage under
+      bias, the first from carriers accelerated in the channel, the second from charge built up at the interface of a
+      p-channel device under negative gate bias. The radiation row reproduces the course's own division: a single
+      event is sudden, the effect of one particle (an upset is a transient error, while the destructive single-event
+      effects such as latch-up and burnout are true overstress failures), whereas the charge that total dose traps in an
+      oxide accumulates with the mission (<a href="m14-total-ionizing-dose.html">M14</a>). The photograph on the same slide shows a
+      chemical wear-out: a gold ball bond on aluminium after 2,000 hours of a highly accelerated stress test (HAST,
+      heat and humidity under bias), with micro-cracks and uneven Au–Al intermetallic growth (Gan <em>et al.</em>,
+      <em>Gold Bulletin</em> 47, 2014).
+    </p>
+
+    <div class="box insight">
+      <p class="box-title">Where an integrated system fails</p>
+      <p>
+        The problem statement beside the tree on Deck 19 p. 35 is that the reliability of a heterogeneously integrated
+        (HI) system, one that joins dies of different kinds in one package (<a href="m18-chip-bonding-packaging.html">M18 §7</a>),
+        is limited not by the wear-out of its devices but by the degradation of its bonded interfaces, and that the
+        failure modes customers report most are thermal and mechanical, often sudden. The slide credits only its tree
+        to the roadmap, and the roadmap's chapter does not state the sentence in those words; it does say that in
+        multi-chiplet architectures the interconnects add dominant degradation mechanisms to the electrical ones that
+        dominated traditional devices. Lecture 20 closed on
+        the same point: thermal and mechanical failures belong together, because a temperature change produces the
+        expansion mismatch that produces the force that fractures or delaminates a joint. The green box Deck 19 p. 35
+        draws around the mechanical and thermal rows marks the part of the tree this module treats; electrical overstress
+        is the subject of the failure-analysis cases in <a href="m19a-failure-analysis.html">M19a</a>.
+      </p>
+    </div>
+
+    <p>
+      <b>Failure rate against time.</b> A large population of parts fails at a rate that changes over its life in a
+      characteristic way, the bathtub curve of Figure 2 (as the NIST/SEMATECH handbook describes it). Early in life
+      the rate is high and falling rapidly: parts with manufacturing defects, such as a weak bond, a contaminated
+      oxide or a crack in the die, fail first, and the population is progressively cleared of them. This is
+      <b>infant mortality</b>. Then follows a long period of low, roughly constant rate, the intrinsic failure rate
+      of the useful life. Last the rate rises again, as materials wear out and the wear-out mechanisms of the table
+      reach the end of their accumulated damage in many parts at once. The roadmap's reliability chapter makes the
+      same division: failures at the end of life depend on the robustness of the design, and those before it on weak
+      sub-populations left by variations and defects in manufacturing and materials. Because the early failures are
+      concentrated in defective parts, they can be removed before flight. <b>Screening</b> tests remove the parts
+      with random defects likely to fail early, and the principal one is <b>burn-in</b>: every part of a lot is
+      operated at elevated temperature and bias for a fixed time, so that the defective ones fail on the ground
+      (NASA's parts instructions, EEE-INST-002, call for microcircuit burn-in to MIL-STD-883 Method 1015 at 125 °C, for a
+      duration set by part type and reliability level: 160 hours at level 2, and 240 to 320 hours for most level 1 parts). Lecture 22 described what follows a screen: every failure in the lot gets a root-cause analysis
+      before the lot is accepted, since two or three failures in a thousand may be isolated defects or handling
+      damage, while a hundred mean the parts are being driven outside their envelope.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f19-bt-t">
+  <title id="f19-bt-t">Schematic failure rate of a population of parts against time, the bathtub curve: high and falling during infant mortality, low and nearly constant during the useful life, and rising during wear-out. A burn-in interval at the start removes the early-failing parts before flight</title>
+  <line x1="40" y1="168" x2="420" y2="168" class="dg-rule"/>
+  <line x1="40" y1="168" x2="40" y2="20" class="dg-rule"/>
+  <text x="230" y="190" class="dg-label" text-anchor="middle">time in service</text>
+  <text x="18" y="94" class="dg-label" text-anchor="middle" transform="rotate(-90 18 94)">failure rate</text>
+  <rect x="41" y="22" width="44" height="145" class="dg-fill" style="opacity:.35"/>
+  <text x="63" y="36" class="dg-label-sm" text-anchor="middle">burn-in</text>
+  <path d="M44,40 C60,110 80,132 120,136 L320,136 C360,134 385,112 412,52" class="dg-acc" fill="none" style="stroke-width:2.2"/>
+  <line x1="120" y1="168" x2="120" y2="148" class="dg-guide" stroke-dasharray="3 3"/>
+  <line x1="320" y1="168" x2="320" y2="148" class="dg-guide" stroke-dasharray="3 3"/>
+  <text x="100" y="98" class="dg-label-sm">infant mortality</text>
+  <text x="100" y="110" class="dg-label-sm">(defective parts)</text>
+  <text x="220" y="126" class="dg-label-sm" text-anchor="middle">useful life: low, roughly constant rate</text>
+  <text x="372" y="40" class="dg-label-sm" text-anchor="end">wear-out</text>
+  <text x="372" y="52" class="dg-label-sm" text-anchor="end">(accumulated damage)</text>
+</svg>
+      <figcaption><b>Figure 2.</b> The bathtub curve, schematic: a falling rate of early failures from defective parts, a long period of low, roughly constant rate, and a rising rate as wear-out mechanisms complete. Burn-in spends the first region on the ground. No scale: the shape only.</figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>A bond wire cracks at its heel during the two minutes of a random-vibration test, and a die cracks when a pyrotechnic separation bolt fires beside its board. Which failure is overstress and which wear-out, and what does the answer imply about how each test must be run?</summary>
+      <div class="answer">
+        <p>
+          The cracked die is an overstress failure: the shock pulse, lasting milliseconds, applied a stress larger
+          than the die's fracture strength once. A test reproduces it by applying the specified peak shock, with
+          margin; repeating a shock below the strength does not, in this picture, damage the part.
+        </p>
+        <p>
+          The heel crack is a wear-out failure, although it happened in minutes. The wire bends at its heel on every
+          cycle of its vibration (<a href="m18-chip-bonding-packaging.html">M18 §5</a>), and at hundreds of hertz two
+          minutes is tens of thousands of cycles, each extending the fatigue crack: the mechanism is fatigue in the
+          table's mechanical wear-out row. A test of it must therefore reproduce not only the level of the vibration
+          but its duration, since the damage scales with the number of cycles. This is why a vibration specification
+          gives a duration per axis as well as a spectrum (§6), and why a prototype qualification unit, which has absorbed a longer exposure (2 minutes per axis at the limit level
+          plus 3 dB) than any flight unit will, is not flown; a protoflight unit, which does fly, receives the qualification
+          level for only the acceptance duration.
+        </p>
+      </div>
+    </details>
+
+    <h2>2 · Random vibration and its spectrum</h2>
+
+    <p>
+      The engines, the turbulent boundary layer and the sound field of a launch drive the vehicle's structure with
+      motion at every frequency at once, and the motion of the spacecraft's mounting interface is never the same
+      twice. Such a motion cannot be specified as a waveform. It is specified statistically, by how its mean-square
+      acceleration is distributed over frequency, and Deck 12 p. 10 gives the range that matters: random vibration
+      from 20 to 2,000 Hz, at qualification and acceptance levels of 3 to 13 G<sub>rms</sub>. This section defines
+      that measure and computes it from a specification.
+    </p>
+
+    <p>
+      <b>The acceleration spectral density.</b> The acceleration of the mounting interface, measured in units of
+      the standard gravity <em>g</em> = 9.80665 m/s², is a random signal <em>a</em>(<em>t</em>). Passing it through a
+      narrow band-pass filter of width Δ<em>f</em> centred on <em>f</em> and averaging the square of the output gives
+      the mean-square acceleration in that band; dividing by Δ<em>f</em> gives the <b>acceleration spectral
+      density</b> (ASD) <em>W</em>(<em>f</em>), in g²/Hz. It is the power spectral density of the acceleration. Because
+      the mean-square values of non-overlapping bands add, the total mean-square acceleration is the area under the
+      ASD, and its square root is the root-mean-square acceleration:
+    </p>
+
+    <div class="eq" id="m19-eq-grms">
+      <div class="eq-body">
+        <div class="eq-math"><em>G</em><sub>rms</sub> = <span class="dl">(</span>∫<sub><em>f</em><sub>1</sub></sub><sup><em>f</em><sub>2</sub></sup> <em>W</em>(<em>f</em>) d<em>f</em><span class="dl">)</span><sup>1/2</sup></div>
+        <div class="eq-num">(19.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>G</em><sub>rms</sub> root-mean-square acceleration (g) · <em>W</em>(<em>f</em>) acceleration spectral density
+        (g²/Hz) · <em>f</em><sub>1</sub>, <em>f</em><sub>2</sub> the band of the specification, 20 and 2,000 Hz for random
+        vibration (Hz). G<sub>rms</sub> is the standard deviation of a zero-mean acceleration; for the Gaussian signal a
+        shaker produces, the instantaneous acceleration exceeds 3 G<sub>rms</sub> 0.27 % of the time.
+      </div>
+    </div>
+
+    <p>
+      A specification gives the ASD as a few breakpoints joined by straight lines on logarithmic axes, each segment
+      rising or falling at a stated number of decibels per octave. An octave is a doubling of frequency, and a decibel
+      of a power-like quantity such as the ASD is 10 log<sub>10</sub> of a ratio, so a slope of <em>S</em> dB/oct means
+      <em>W</em> ∝ <em>f</em><sup><em>m</em></sup> with <em>m</em> = <em>S</em>/(10 log<sub>10</sub> 2) =
+      <em>S</em>/3.01. A segment from <em>f</em><sub>a</sub>, where the ASD is <em>W</em><sub>a</sub>, to
+      <em>f</em><sub>b</sub> then has the area
+    </p>
+
+    <div class="eq" id="m19-eq-seg">
+      <div class="eq-body">
+        <div class="eq-math"><em>A</em> = <span class="frac"><span class="num"><em>W</em><sub>a</sub><em>f</em><sub>a</sub></span><span class="den"><em>m</em> + 1</span></span> <span class="dl">[</span><span class="dl">(</span><span class="frac"><span class="num"><em>f</em><sub>b</sub></span><span class="den"><em>f</em><sub>a</sub></span></span><span class="dl">)</span><sup><em>m</em>+1</sup> − 1<span class="dl">]</span>,&nbsp;&nbsp;&nbsp; <em>m</em> = <span class="frac"><span class="num"><em>S</em></span><span class="den">10 log<sub>10</sub> 2</span></span>;&nbsp;&nbsp;&nbsp; <em>A</em> = <em>W</em><sub>a</sub><em>f</em><sub>a</sub> ln(<em>f</em><sub>b</sub>/<em>f</em><sub>a</sub>) if <em>m</em> = −1</div>
+        <div class="eq-num">(19.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>A</em> area of one segment, a mean-square acceleration (g²) · <em>W</em><sub>a</sub> ASD at the segment's lower
+        frequency <em>f</em><sub>a</sub> (g²/Hz; Hz) · <em>f</em><sub>b</sub> its upper frequency (Hz) · <em>S</em> slope
+        (dB/oct, positive rising) · <em>m</em> the exponent of the power law <em>W</em> ∝ <em>f</em><sup><em>m</em></sup>.
+        It is the integral of a power law; the special case <em>m</em> = −1 (−3 dB/oct) integrates to a logarithm. Sum the
+        segments, then take the square root, (19.1).
+      </div>
+    </div>
+
+    <p>
+      NASA Goddard's General Environmental Verification Standard (GEVS, GSFC-STD-7000B, 2021) gives a generalized
+      random-vibration specification for components of 22.7 kg or less, used when no measured launch environment
+      is available, in its Table 2.4-3. Figure 3 draws it. Its shape is the one Lecture 13 described for a launch
+      spectrum: a rise, a plateau, and a fall.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 250" role="img" aria-labelledby="f19-asd-t">
+<title id="f19-asd-t">Acceleration spectral density against frequency on logarithmic axes for the GEVS generalized random vibration levels for components: the qualification profile rises at 6 dB per octave from 0.026 g squared per hertz at 20 hertz to a plateau of 0.16 from 50 to 800 hertz, then falls at 6 dB per octave to 0.026 at 2000 hertz, 14.1 g rms overall; the acceptance profile has the same shape at half the level, 10.0 g rms</title>
+<line x1="62" y1="210" x2="420" y2="210" class="dg-rule"/>
+<line x1="62" y1="210" x2="62" y2="22" class="dg-rule"/>
+<line x1="62.0" y1="210" x2="62.0" y2="214" class="dg-rule"/>
+<text x="62.0" y="226" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="105.5" y1="210" x2="105.5" y2="214" class="dg-rule"/>
+<text x="105.5" y="226" class="dg-label-sm" text-anchor="middle">20</text>
+<line x1="163.0" y1="210" x2="163.0" y2="214" class="dg-rule"/>
+<text x="163.0" y="226" class="dg-label-sm" text-anchor="middle">50</text>
+<line x1="206.5" y1="210" x2="206.5" y2="214" class="dg-rule"/>
+<text x="206.5" y="226" class="dg-label-sm" text-anchor="middle">100</text>
+<line x1="250.0" y1="210" x2="250.0" y2="214" class="dg-rule"/>
+<text x="250.0" y="226" class="dg-label-sm" text-anchor="middle">200</text>
+<line x1="307.5" y1="210" x2="307.5" y2="214" class="dg-rule"/>
+<text x="307.5" y="226" class="dg-label-sm" text-anchor="middle">500</text>
+<line x1="351.0" y1="210" x2="351.0" y2="214" class="dg-rule"/>
+<text x="351.0" y="226" class="dg-label-sm" text-anchor="middle">1000</text>
+<line x1="394.6" y1="210" x2="394.6" y2="214" class="dg-rule"/>
+<text x="394.6" y="226" class="dg-label-sm" text-anchor="middle">2000</text>
+<line x1="58" y1="181.7" x2="62" y2="181.7" class="dg-rule"/>
+<text x="55" y="185.7" class="dg-label-sm" text-anchor="end">0.01</text>
+<line x1="62" y1="181.7" x2="420" y2="181.7" class="dg-guide" stroke-dasharray="2 4"/>
+<line x1="58" y1="87.7" x2="62" y2="87.7" class="dg-rule"/>
+<text x="55" y="91.7" class="dg-label-sm" text-anchor="end">0.1</text>
+<line x1="62" y1="87.7" x2="420" y2="87.7" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="241" y="244" class="dg-label" text-anchor="middle">frequency (Hz)</text>
+<text x="16" y="116" class="dg-label" text-anchor="middle" transform="rotate(-90 16 116)">ASD (g²/Hz)</text>
+<polygon points="105.5,210 105.5,142.7 163.0,68.5 337.0,68.5 394.6,142.7 394.6,210" class="dg-fill" style="opacity:.35"/>
+<polyline points="105.5,142.7 163.0,68.5 337.0,68.5 394.6,142.7" class="dg-acc" fill="none" style="stroke-width:2.2"/>
+<polyline points="105.5,171.0 163.0,96.8 337.0,96.8 394.6,171.0" class="dg-line" fill="none" stroke-dasharray="5 3"/>
+<text x="250.0" y="60.5" class="dg-label" text-anchor="middle">qualification 0.16 · 14.1 G<tspan baseline-shift="sub" style="font-size:75%">rms</tspan></text>
+<text x="250.0" y="112.8" class="dg-label-sm" text-anchor="middle">acceptance 0.08 · 10.0 G<tspan baseline-shift="sub" style="font-size:75%">rms</tspan></text>
+<text x="122.6" y="102.3" class="dg-label-sm" text-anchor="end">+6 dB/oct</text>
+<text x="376.2" y="108.6" class="dg-label-sm">−6 dB/oct</text>
+</svg>
+      <figcaption><b>Figure 3.</b> The GEVS generalized random-vibration levels for components of 22.7 kg or less (GSFC-STD-7000B, Table 2.4-3). Qualification and acceptance have the same shape, 3 dB apart; the overall level is the square root of the area under the curve on linear axes, so the plateau and the falling segment carry almost all of it.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">The overall level of a random-vibration specification</div>
+      <div class="ex-body">
+        <p><b>Given</b> the GEVS component qualification profile: 0.026 g²/Hz at 20 Hz, rising at +6 dB/oct to 50 Hz,
+          0.16 g²/Hz from 50 to 800 Hz, falling at −6 dB/oct to 0.026 g²/Hz at 2,000 Hz. <b>Find</b> its overall level,
+          G<sub>rms</sub>, and that of the acceptance profile, which has the same breakpoints at half the ASD.</p>
+        <p><b>Plan.</b> The overall level is the square root of the area under the ASD, (19.1). The area is the sum of
+          three segments, each a power law, (19.2). The trap is to treat the sloped segments as straight lines on linear
+          axes; they are straight only on logarithmic axes.</p>
+        <p class="ex-step"><b>Exponent of the sloped segments.</b> The breakpoints fix it exactly: from 0.026 at 20 Hz to
+          0.16 at 50 Hz, <em>m</em> = ln(0.16/0.026)/ln(50/20) = 1.817/0.916 = 1.983, which is 1.983 × 3.01 =
+          5.97 dB/oct, the specification's +6 dB/oct rounded. The falling segment has <em>m</em> = −1.983. Why use the
+          breakpoints rather than exactly 6 dB/oct: the specification tabulates 0.026 at both ends, and a slope of
+          exactly 6 dB/oct from 0.16 at 50 Hz would reach 0.0258 at 20 Hz; the difference is below the rounding.</p>
+        <p class="ex-step"><b>Rising segment, 20–50 Hz.</b> <em>A</em><sub>1</sub> = (0.026 × 20/2.983) × [(50/20)<sup>2.983</sup>
+          − 1] = 0.1743 × (15.38 − 1) = 2.51 g².</p>
+        <p class="ex-step"><b>Plateau, 50–800 Hz.</b> <em>m</em> = 0, so the area is a rectangle: <em>A</em><sub>2</sub> =
+          0.16 × (800 − 50) = 120 g².</p>
+        <p class="ex-step"><b>Falling segment, 800–2,000 Hz.</b> <em>m</em> + 1 = −0.983: <em>A</em><sub>3</sub> =
+          (0.16 × 800/(−0.983)) × [(2000/800)<sup>−0.983</sup> − 1] = (−130.2) × (0.406 − 1) = 77.3 g². The falling
+          segment contributes far more than the rising one because it spans higher frequencies, where each hertz of a
+          given ASD counts the same and there are more of them.</p>
+        <p class="ex-step"><b>Overall level.</b> <em>A</em> = 2.51 + 120 + 77.3 = 199.8 g², so <em>G</em><sub>rms</sub> =
+          √199.8 = 14.1 g.</p>
+        <p class="ex-step"><b>Acceptance.</b> Every ASD value is halved, so every area halves: <em>A</em> = 99.9 g² and
+          <em>G</em><sub>rms</sub> = 10.0 g. Halving a power-like quantity is −3.01 dB, and it divides G<sub>rms</sub> by
+          √2 = 1.41.</p>
+        <p class="ex-answer">14.1 G<sub>rms</sub> for qualification and 10.0 G<sub>rms</sub> for acceptance, the overall
+          levels GEVS prints under its table. Check: the plateau alone would give √120 = 11.0 g; the sloped segments add
+          the rest, and nothing can exceed the level of the whole band at the plateau value, √(0.16 × 1,980) = 17.8 g.</p>
+      </div>
+    </div>
+
+    <p>
+      <b>The launch-vehicle table.</b> Deck 19 p. 19 (and Deck 12 p. 11) reproduces the random-vibration levels that a
+      NASA Electronic Parts and Packaging (NEPP) survey collected for thirteen launch vehicles (Plante and Lee, 2004,
+      Table 2), all over 20–2,000 Hz. The Space Shuttle's are the highest, 12.9 G<sub>rms</sub> for qualification and
+      9.1 for acceptance; Lecture 20 summarised the table as levels of nearly ten times Earth's gravity, and these are rms
+      values, whose Gaussian peaks reach about three times as much. Figure 4 plots them,
+      and the plot shows a rule the table does not state: in all five rows that give both levels, qualification divided
+      by acceptance is 1.41 to 1.42, that is √2, a difference of 3 dB in ASD. GEVS states the rule directly:
+      qualification and protoflight random vibration are applied at the flight limit level plus 3 dB, and acceptance at
+      the limit level (§6).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 268" role="img" aria-labelledby="f19-veh-t">
+<title id="f19-veh-t">Random-vibration qualification and acceptance levels in g rms for ten launch vehicles from the NEPP survey: Shuttle 12.9 and 9.1, Scout 8.2 and 5.8, LMLV 7.2 and 5.1, Conestoga 4.8 and 3.4, Pegasus 4.5 and 3.2, and qualification only for Delta 8.7, Ariane 7.3, Taurus XLS 6.5, Titan III 4.2 and Atlas 2.7; in every row that has both, qualification divided by acceptance is 1.41 to 1.42, the square root of 2</title>
+<text x="104" y="28" class="dg-label-sm" text-anchor="end">Shuttle (SS)</text>
+<line x1="112" y1="24" x2="386.6" y2="24" class="dg-guide"/>
+<circle cx="386.6" cy="24" r="4.2" class="dg-acc-f"/>
+<circle cx="305.7" cy="24" r="4.2" class="dg-fill"/>
+<text x="394.6" y="28" class="dg-label-sm">×1.42</text>
+<text x="104" y="49" class="dg-label-sm" text-anchor="end">Scout</text>
+<line x1="112" y1="45" x2="286.5" y2="45" class="dg-guide"/>
+<circle cx="286.5" cy="45" r="4.2" class="dg-acc-f"/>
+<circle cx="235.5" cy="45" r="4.2" class="dg-fill"/>
+<text x="294.5" y="49" class="dg-label-sm">×1.41</text>
+<text x="104" y="70" class="dg-label-sm" text-anchor="end">LMLV</text>
+<line x1="112" y1="66" x2="265.3" y2="66" class="dg-guide"/>
+<circle cx="265.3" cy="66" r="4.2" class="dg-acc-f"/>
+<circle cx="220.6" cy="66" r="4.2" class="dg-fill"/>
+<text x="273.3" y="70" class="dg-label-sm">×1.41</text>
+<text x="104" y="91" class="dg-label-sm" text-anchor="end">Conestoga</text>
+<line x1="112" y1="87" x2="214.2" y2="87" class="dg-guide"/>
+<circle cx="214.2" cy="87" r="4.2" class="dg-acc-f"/>
+<circle cx="184.4" cy="87" r="4.2" class="dg-fill"/>
+<text x="222.2" y="91" class="dg-label-sm">×1.41</text>
+<text x="104" y="112" class="dg-label-sm" text-anchor="end">Pegasus</text>
+<line x1="112" y1="108" x2="207.8" y2="108" class="dg-guide"/>
+<circle cx="207.8" cy="108" r="4.2" class="dg-acc-f"/>
+<circle cx="180.1" cy="108" r="4.2" class="dg-fill"/>
+<text x="215.8" y="112" class="dg-label-sm">×1.41</text>
+<text x="104" y="133" class="dg-label-sm" text-anchor="end">Delta</text>
+<line x1="112" y1="129" x2="297.2" y2="129" class="dg-guide"/>
+<circle cx="297.2" cy="129" r="4.2" class="dg-acc-f"/>
+<text x="104" y="154" class="dg-label-sm" text-anchor="end">Ariane</text>
+<line x1="112" y1="150" x2="267.4" y2="150" class="dg-guide"/>
+<circle cx="267.4" cy="150" r="4.2" class="dg-acc-f"/>
+<text x="104" y="175" class="dg-label-sm" text-anchor="end">Taurus XLS</text>
+<line x1="112" y1="171" x2="250.4" y2="171" class="dg-guide"/>
+<circle cx="250.4" cy="171" r="4.2" class="dg-acc-f"/>
+<text x="104" y="196" class="dg-label-sm" text-anchor="end">Titan III</text>
+<line x1="112" y1="192" x2="201.4" y2="192" class="dg-guide"/>
+<circle cx="201.4" cy="192" r="4.2" class="dg-acc-f"/>
+<text x="104" y="217" class="dg-label-sm" text-anchor="end">Atlas</text>
+<line x1="112" y1="213" x2="169.5" y2="213" class="dg-guide"/>
+<circle cx="169.5" cy="213" r="4.2" class="dg-acc-f"/>
+<line x1="112" y1="228" x2="410" y2="228" class="dg-rule"/>
+<line x1="112.0" y1="228" x2="112.0" y2="232" class="dg-rule"/>
+<text x="112.0" y="244" class="dg-label-sm" text-anchor="middle">0</text>
+<line x1="154.6" y1="228" x2="154.6" y2="232" class="dg-rule"/>
+<text x="154.6" y="244" class="dg-label-sm" text-anchor="middle">2</text>
+<line x1="197.1" y1="228" x2="197.1" y2="232" class="dg-rule"/>
+<text x="197.1" y="244" class="dg-label-sm" text-anchor="middle">4</text>
+<line x1="239.7" y1="228" x2="239.7" y2="232" class="dg-rule"/>
+<text x="239.7" y="244" class="dg-label-sm" text-anchor="middle">6</text>
+<line x1="282.3" y1="228" x2="282.3" y2="232" class="dg-rule"/>
+<text x="282.3" y="244" class="dg-label-sm" text-anchor="middle">8</text>
+<line x1="324.9" y1="228" x2="324.9" y2="232" class="dg-rule"/>
+<text x="324.9" y="244" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="367.4" y1="228" x2="367.4" y2="232" class="dg-rule"/>
+<text x="367.4" y="244" class="dg-label-sm" text-anchor="middle">12</text>
+<line x1="410.0" y1="228" x2="410.0" y2="232" class="dg-rule"/>
+<text x="410.0" y="244" class="dg-label-sm" text-anchor="middle">14</text>
+<text x="261" y="260" class="dg-label" text-anchor="middle">random vibration level (G<tspan baseline-shift="sub" style="font-size:75%">rms</tspan>), 20–2,000 Hz</text>
+<circle cx="314.2" cy="194" r="4.2" class="dg-acc-f"/><text x="322.2" y="198" class="dg-label-sm">qualification</text>
+<circle cx="314.2" cy="215" r="4.2" class="dg-fill"/><text x="322.2" y="219" class="dg-label-sm">acceptance</text>
+</svg>
+      <figcaption><b>Figure 4.</b> Random-vibration levels by launch vehicle (Deck 19 p. 19, after Plante and Lee 2004, Table 2). Ten of the table's thirteen rows (Taurus and Taurus XL, 5.4 G<sub>rms</sub> qualification, and H-II, no data, omitted). Where both levels are given, qualification is 1.41–1.42 times acceptance, √2: 3 dB in ASD.</figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">The column heading on Deck 19 p. 19</p>
+      <p>
+        The table heads its level columns "ASD Level (G²/Hz)", but every entry is in G<sub>rms</sub>. The two are not the
+        same quantity: an ASD is a density, in g²/Hz, and G<sub>rms</sub> is the square root of its integral over the band,
+        (19.1), in g. The entries are overall levels in G<sub>rms</sub>, as their units say; the heading is carried over
+        from the NEPP survey, whose Table 2 prints it the same way. A specification at "12.9 G<sub>rms</sub>" does not fix the
+        spectrum: Figure 3's shape and many others have that overall level, and a part can fail at a resonance where one
+        spectrum puts more energy than another (§3). The slide also prints the Shuttle's band as "20 to 2,00T0", a typo
+        Lecture 20 pointed out, for 20 to 2,000 Hz.
+      </p>
+    </div>
+
+    <p>
+      <b>Sine vibration and shock.</b> Two other launch loads are specified separately (Deck 12 p. 10). The
+      vehicle structure has low-frequency modes of its own, excited during powered flight, mainly in the atmospheric phase, and
+      during transient events such as ignition and engine cut-off (Ariane 5 user's manual), and these appear at
+      the spacecraft interface as nearly sinusoidal motion between 5 and 200 Hz, specified as a zero-to-peak level of 1 to
+      2 G<sub>0-p</sub> and tested by sweeping a sine through the band. GEVS qualifies at 1.25 times the flight limit level of
+      a sine environment, a factor in amplitude rather than in decibels. Shock is the response to pyrotechnic events such
+      as stage and fairing separation: very short, with energy from 100 Hz to 10 kHz, and severe, up to about 7,000 g on
+      the deck's summary slide (Deck 12 p. 13's table, from the same survey, gives Delta 7,700 g at 4–5 kHz). Lecture 13 compared it to putting the electronics
+      on a bullet that strikes a wall.
+    </p>
+
+    <details class="check">
+      <summary>A workmanship screen specifies 0.01 g²/Hz at 20 Hz, rising at +3 dB/oct to 0.04 g²/Hz at 80 Hz, flat to 500 Hz, and falling at −3 dB/oct to 0.01 g²/Hz at 2,000 Hz. What is its overall level, and why does one of its segments need the logarithmic form of (19.2)?</summary>
+      <div class="answer">
+        <p>
+          The rising segment quadruples the ASD over two octaves (20 to 80 Hz), so its exponent is <em>m</em> =
+          ln 4/ln 4 = 1 (+3.01 dB/oct). Its area is (0.01 × 20/2)[(80/20)² − 1] = 0.1 × 15 = 1.50 g². The plateau gives
+          0.04 × (500 − 80) = 16.8 g². The falling segment has <em>m</em> = −1, for which (<em>m</em> + 1) = 0 and the
+          power-law form divides by zero; the ASD then falls as 1/<em>f</em>, whose integral is a logarithm:
+          <em>A</em> = 0.04 × 500 × ln(2000/500) = 20 × 1.386 = 27.7 g². The total is 46.0 g², and
+          <em>G</em><sub>rms</sub> = √46.0 = 6.78 g.
+        </p>
+        <p>
+          This is the GEVS minimum workmanship level (Table 2.4-4), printed as 6.8 G<sub>rms</sub>. It is about half the
+          qualification level in G<sub>rms</sub>, and a quarter in mean square. GEVS makes it the minimum level of every
+          component random-vibration test, a workmanship screen for defects such as bad solder joints and loose or missing
+          fasteners; its lower mean-square level limits, but does not eliminate, the fatigue life the screen consumes.
+        </p>
+      </div>
+    </details>
+
+    <h2>3 · Resonance: where a board multiplies its input</h2>
+
+    <p>
+      A specification gives the motion at the spacecraft's mounting interface. A part does not feel that motion: it feels
+      the motion of the board it is soldered to, after the board, its supports and the box around it have filtered it.
+      Lecture 13 showed why this matters with a measured board: near its resonance, a printed circuit board amplifies the
+      displacement it is given, by 5 to 10 times in air (Deck 13 p. 13; about ten times, the lecture said), and electronics
+      must be tested before they are integrated for exactly this reason. This section quantifies the amplification and what it does to the motion a joint sees.
+    </p>
+
+    <p>
+      <b>The resonator.</b> A board on its supports behaves, near its first mode, as a mass <em>m</em> on a spring of
+      stiffness <em>k</em> with a little damping. Its natural frequency is <em>f</em><sub>n</sub> = (1/2π)(<em>k</em>/<em>m</em>)<sup>1/2</sup>.
+      Driven at its base by a sinusoid of frequency <em>f</em>, the mass moves with the base when <em>f</em> ≪ <em>f</em><sub>n</sub>,
+      because the spring is stiff on that time scale; its motion is amplified near <em>f</em><sub>n</sub>, where the spring
+      returns energy in phase with each cycle and only damping limits the amplitude; and it barely moves when
+      <em>f</em> ≫ <em>f</em><sub>n</sub>, because the mass cannot follow. The ratio of response to input amplitude is the
+      <b>transmissibility</b>, drawn in Figure 5. Its peak is very nearly the <b>quality factor</b> <em>Q</em> = 1/(2<em>ζ</em>),
+      where <em>ζ</em> is the damping as a fraction of the critical value. An amplification of 5 to 10 is <em>Q</em> ≈ 5–10; GEVS assumes <em>Q</em> = 10 to 20 when no test data exist.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 240" role="img" aria-labelledby="f19-tr-t">
+<title id="f19-tr-t">Transmissibility of a single-degree-of-freedom resonator with quality factor 10 against frequency ratio on logarithmic axes: 1 well below resonance, a peak of about 10 at the natural frequency, and falling below 1 above about 1.4 times the natural frequency, where the mount isolates</title>
+<line x1="58" y1="200" x2="420" y2="200" class="dg-rule"/><line x1="58" y1="200" x2="58" y2="20" class="dg-rule"/>
+<line x1="58.0" y1="200" x2="58.0" y2="204" class="dg-rule"/><text x="58.0" y="216" class="dg-label-sm" text-anchor="middle">0.1</text>
+<line x1="112.5" y1="200" x2="112.5" y2="204" class="dg-rule"/><text x="112.5" y="216" class="dg-label-sm" text-anchor="middle">0.2</text>
+<line x1="184.5" y1="200" x2="184.5" y2="204" class="dg-rule"/><text x="184.5" y="216" class="dg-label-sm" text-anchor="middle">0.5</text>
+<line x1="239.0" y1="200" x2="239.0" y2="204" class="dg-rule"/><text x="239.0" y="216" class="dg-label-sm" text-anchor="middle">1</text>
+<line x1="293.5" y1="200" x2="293.5" y2="204" class="dg-rule"/><text x="293.5" y="216" class="dg-label-sm" text-anchor="middle">2</text>
+<line x1="365.5" y1="200" x2="365.5" y2="204" class="dg-rule"/><text x="365.5" y="216" class="dg-label-sm" text-anchor="middle">5</text>
+<line x1="420.0" y1="200" x2="420.0" y2="204" class="dg-rule"/><text x="420.0" y="216" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="54" y1="200.0" x2="58" y2="200.0" class="dg-rule"/><text x="51" y="204.0" class="dg-label-sm" text-anchor="end">0.01</text>
+<line x1="54" y1="145.5" x2="58" y2="145.5" class="dg-rule"/><text x="51" y="149.5" class="dg-label-sm" text-anchor="end">0.1</text>
+<line x1="54" y1="90.9" x2="58" y2="90.9" class="dg-rule"/><text x="51" y="94.9" class="dg-label-sm" text-anchor="end">1</text>
+<line x1="54" y1="36.4" x2="58" y2="36.4" class="dg-rule"/><text x="51" y="40.4" class="dg-label-sm" text-anchor="end">10</text>
+<line x1="58" y1="90.9" x2="420" y2="90.9" class="dg-guide" stroke-dasharray="3 3"/>
+<polyline points="58.0,90.7 60.3,90.7 62.5,90.7 64.8,90.7 67.1,90.6 69.3,90.6 71.6,90.6 73.8,90.6 76.1,90.6 78.4,90.5 80.6,90.5 82.9,90.5 85.2,90.5 87.4,90.4 89.7,90.4 91.9,90.4 94.2,90.3 96.5,90.3 98.7,90.3 101.0,90.2 103.2,90.2 105.5,90.1 107.8,90.1 110.0,90.0 112.3,90.0 114.6,89.9 116.8,89.9 119.1,89.8 121.3,89.7 123.6,89.7 125.9,89.6 128.1,89.5 130.4,89.4 132.7,89.3 134.9,89.2 137.2,89.1 139.4,89.0 141.7,88.9 144.0,88.7 146.2,88.6 148.5,88.5 150.8,88.3 153.0,88.1 155.3,88.0 157.6,87.8 159.8,87.6 162.1,87.3 164.3,87.1 166.6,86.9 168.9,86.6 171.1,86.3 173.4,86.0 175.7,85.7 177.9,85.3 180.2,85.0 182.4,84.6 184.7,84.1 187.0,83.6 189.2,83.1 191.5,82.6 193.8,82.0 196.0,81.3 198.3,80.6 200.5,79.9 202.8,79.0 205.1,78.1 207.3,77.0 209.6,75.9 211.8,74.6 214.1,73.2 216.4,71.7 218.6,69.9 220.9,67.8 223.2,65.4 225.4,62.7 227.7,59.4 229.9,55.4 232.2,50.7 234.5,44.9 236.7,39.0 239.0,36.3 241.3,40.4 243.5,47.6 245.8,54.7 248.1,60.8 250.3,66.1 252.6,70.8 254.8,74.9 257.1,78.6 259.4,82.0 261.6,85.1 263.9,88.1 266.1,90.8 268.4,93.4 270.7,95.9 272.9,98.3 275.2,100.6 277.5,102.8 279.7,104.9 282.0,106.9 284.2,108.9 286.5,110.9 288.8,112.7 291.0,114.6 293.3,116.4 295.6,118.2 297.8,119.9 300.1,121.6 302.4,123.3 304.6,125.0 306.9,126.6 309.1,128.2 311.4,129.8 313.7,131.3 315.9,132.9 318.2,134.4 320.4,135.9 322.7,137.4 325.0,138.9 327.2,140.4 329.5,141.9 331.8,143.3 334.0,144.7 336.3,146.2 338.6,147.6 340.8,149.0 343.1,150.4 345.3,151.7 347.6,153.1 349.9,154.5 352.1,155.8 354.4,157.1 356.6,158.5 358.9,159.8 361.2,161.1 363.4,162.4 365.7,163.7 368.0,165.0 370.2,166.2 372.5,167.5 374.8,168.7 377.0,170.0 379.3,171.2 381.5,172.4 383.8,173.6 386.1,174.8 388.3,176.0 390.6,177.2 392.9,178.4 395.1,179.5 397.4,180.7 399.6,181.8 401.9,182.9 404.2,184.0 406.4,185.1 408.7,186.2 410.9,187.3 413.2,188.4 415.5,189.5 417.7,190.5 420.0,191.6" class="dg-acc" fill="none" style="stroke-width:2"/>
+<text x="245.0" y="38.3" class="dg-label-sm">peak ≈ Q = 10</text>
+<line x1="266.2" y1="84.9" x2="266.2" y2="96.9" class="dg-rule"/>
+<text x="301.0" y="119.5" class="dg-label-sm">isolation above √2·f<tspan baseline-shift="sub" style="font-size:75%">n</tspan></text>
+<text x="72.3" y="82.9" class="dg-label-sm">moves with the base</text>
+<text x="239" y="234" class="dg-label" text-anchor="middle">frequency ratio f / f<tspan baseline-shift="sub" style="font-size:75%">n</tspan></text>
+<text x="15" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 15 110)">response / input</text>
+</svg>
+      <figcaption><b>Figure 5.</b> Transmissibility of a single resonance with <em>Q</em> = 10, computed: below resonance the mass moves with its base, at resonance it moves about <em>Q</em> times as far, and above √2 <em>f</em><sub>n</sub> it moves less than its base.</figcaption>
+    </figure>
+
+    <p>
+      Random input excites every frequency at once, so the resonator responds most strongly in the band of width
+      <em>f</em><sub>n</sub>/<em>Q</em> around its natural frequency. If the input ASD is flat across that band and well beyond it,
+      the rms acceleration of the mass follows from integrating the squared transmissibility against the ASD, and the
+      result is Miles' equation (J. W. Miles, 1954):
+    </p>
+
+    <div class="eq" id="m19-eq-miles">
+      <div class="eq-body">
+        <div class="eq-math"><em>G</em><sub>rms,resp</sub> = <span class="dl">(</span><span class="frac"><span class="num">π</span><span class="den">2</span></span> <em>f</em><sub>n</sub> <em>Q</em> <em>W</em>(<em>f</em><sub>n</sub>)<span class="dl">)</span><sup>1/2</sup>,&nbsp;&nbsp;&nbsp; <em>z</em><sub>rms</sub> = <span class="frac"><span class="num"><em>G</em><sub>rms,resp</sub> <em>g</em></span><span class="den">(2π<em>f</em><sub>n</sub>)²</span></span></div>
+        <div class="eq-num">(19.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>G</em><sub>rms,resp</sub> rms acceleration of the resonating mass (g) · <em>f</em><sub>n</sub> natural frequency (Hz) ·
+        <em>Q</em> quality factor, the peak transmissibility (dimensionless) · <em>W</em>(<em>f</em><sub>n</sub>) input ASD at
+        <em>f</em><sub>n</sub> (g²/Hz) · <em>z</em><sub>rms</sub> rms displacement of the mass relative to its base (m) ·
+        <em>g</em> = 9.80665 m/s². One degree of freedom, with a flat input ASD extending well beyond the resonance on both
+        sides (about two octaves); then the response is dominated by the resonance, and the displacement follows because the
+        motion is nearly sinusoidal at <em>f</em><sub>n</sub>.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">A circuit board on the qualification plateau</div>
+      <div class="ex-body">
+        <p><b>Given</b> a board whose first mode is at <em>f</em><sub>n</sub> = 450 Hz, near the resonance of the
+          finite-element board model on Deck 13 p. 13, with <em>Q</em> = 10, the top of the slide's 5–10× and the bottom of the
+          GEVS range, mounted in a box driven by the GEVS qualification profile of Figure 3. <b>Find</b> the board's rms acceleration and rms
+          displacement, and how both change if the board is stiffened to raise its resonance to 900 Hz.</p>
+        <p><b>Plan.</b> 450 Hz lies on the plateau, 0.16 g²/Hz, which extends more than three octaves below it and nearly one
+          above it, less than the two octaves of the rule of thumb; Miles' equation (19.3) is still a close estimate, because the
+          resonance's half-power band, 45 Hz wide, lies wholly on the plateau, and the input above 800 Hz falls only
+          gradually. The displacement, not the acceleration, is what bends the
+          board and strains the joints of the parts on it, so compute both.</p>
+        <p class="ex-step"><b>Response acceleration.</b> <em>G</em><sub>rms,resp</sub> = [(π/2) × 450 × 10 × 0.16]<sup>1/2</sup> =
+          (1131)<sup>1/2</sup> = 33.6 g, against the input's 14.1 G<sub>rms</sub>: 2.39 times. Why not ten times: the input
+          spreads its energy over 2,000 Hz, and the resonance amplifies only the part of it in a band about
+          <em>f</em><sub>n</sub>/<em>Q</em> = 45 Hz wide around 450 Hz, but amplifies that part greatly.</p>
+        <p class="ex-step"><b>Response displacement.</b> <em>z</em><sub>rms</sub> = 33.6 × 9.807/(2π × 450)² = 329.8/7.99×10⁶ =
+          4.13×10⁻⁵ m, 41.3 µm rms. The peaks a joint must survive are larger: 3<em>z</em><sub>rms</sub> = 124 µm is exceeded
+          0.27 % of the time.</p>
+        <p class="ex-step"><b>Stiffened board.</b> 900 Hz lies past the plateau, on the −6 dB/oct segment, where (19.2)'s power
+          law gives <em>W</em> = 0.16 × (900/800)<sup>−1.983</sup> = 0.127 g²/Hz. Then <em>G</em><sub>rms,resp</sub> = [(π/2) × 900
+          × 10 × 0.127]<sup>1/2</sup> = 42.3 g, 1.26 times higher, and <em>z</em><sub>rms</sub> = 42.3 × 9.807/(2π × 900)² =
+          13.0 µm, 3.18 times smaller. At a constant input ASD the factors would be √2 and 2<sup>3/2</sup> = 2.83, since
+          <em>z</em> ∝ <em>f</em><sub>n</sub><sup>1/2</sup>/<em>f</em><sub>n</sub>²; the falling input adds to the gain.</p>
+        <p class="ex-answer">33.6 g rms and 41.3 µm rms at 450 Hz; 42.3 g rms and 13.0 µm rms at 900 Hz. Check: units,
+          (Hz × g²/Hz)<sup>1/2</sup> = g, and g/(Hz)² = m. Stiffening a board raises the acceleration of what sits on it but cuts the
+          deflection that bends its solder joints, which is why boards are stiffened and why the stiffening must keep the
+          resonance clear of the band where the input is highest.</p>
+      </div>
+    </div>
+
+    <p>
+      The same physics governs every level of the assembly: the spacecraft on its adapter, the box on its panel, the board in
+      the box, and a bond wire between its two feet, whose own resonance <a href="m18-chip-bonding-packaging.html">M18 §5</a>
+      computed. Each level amplifies near its resonance what the level below transmits, so a test must reach the part
+      through the same mounting it will fly on. A test can also over-test: a shaker is far stiffer than the spacecraft
+      structure a box flies on, so at the box's own resonance the shaker holds the input level while the flight structure
+      would have yielded. GEVS therefore limits the loads induced while sweeping through a resonance to 1.25 times the flight
+      limit loads, reducing (<b>notching</b>) the input at critical frequencies, and may limit the responses of critical items
+      the same way. The Swift observatory's payload sine test on Deck 13 p. 15 shows both kinds: one notch near 9 Hz that
+      holds the force at the interface, and response notches at resonances of the payload's own items.
+    </p>
+
+    <details class="check">
+      <summary>A board with its first mode at 300 Hz and <em>Q</em> = 15 is tested at the GEVS acceptance plateau, 0.08 g²/Hz. What rms acceleration and rms displacement does it see? A second board of the same mass has the same resonance but <em>Q</em> = 30: which number changes, and by how much?</summary>
+      <div class="answer">
+        <p>
+          (19.3): <em>G</em><sub>rms,resp</sub> = [(π/2) × 300 × 15 × 0.08]<sup>1/2</sup> = (565.5)<sup>1/2</sup> = 23.8 g, and
+          <em>z</em><sub>rms</sub> = 23.8 × 9.807/(2π × 300)² = 233.2/3.55×10⁶ = 65.6 µm (197 µm at 3σ). The lower resonance
+          gives a larger displacement than the 450 Hz board of the example despite the lower input.
+        </p>
+        <p>
+          Doubling <em>Q</em> at the same <em>f</em><sub>n</sub> multiplies both the acceleration and the displacement by
+          √2 = 1.41, to 33.6 g and 92.8 µm, since both are proportional to <em>Q</em><sup>1/2</sup>. Damping the board, by a
+          viscoelastic layer or by constrained mounting, is therefore a second lever besides stiffening, weaker because of the
+          square root.
+        </p>
+      </div>
+    </details>
+
+    <h2>4 · Acoustic loading</h2>
+
+    <p>
+      During lift-off the rocket's exhaust generates intense noise, which reflects from the launch pad, and in transonic
+      flight the turbulent flow over the fairing adds more. The sound passes through the fairing into the cavity around the
+      payload, where, as Deck 13 p. 14 adds, the geometry between payload and fairing walls shapes it. Sound is a pressure
+      fluctuation, and it loads a structure directly over its whole surface. It matters most for large, light structures with
+      a lot of area per unit mass, such as solar-array panels and antenna reflectors, which it drives into vibration at their
+      own resonances; equipment mounted on those panels then sees random vibration generated by the sound.
+    </p>
+
+    <p>
+      <b>The decibel scale of sound.</b> A sound is measured by its root-mean-square pressure fluctuation
+      <em>p</em><sub>rms</sub>, and its level in decibels refers that pressure to 20 µPa, the nominal threshold of hearing. Because
+      the power a sound carries is proportional to the square of its pressure, the level is 20 log<sub>10</sub> of the pressure
+      ratio, not 10 log<sub>10</sub>:
+    </p>
+
+    <div class="eq" id="m19-eq-spl">
+      <div class="eq-body">
+        <div class="eq-math"><em>L</em><sub>p</sub> = 20 log<sub>10</sub> <span class="frac"><span class="num"><em>p</em><sub>rms</sub></span><span class="den"><em>p</em><sub>ref</sub></span></span>,&nbsp;&nbsp;&nbsp; <em>p</em><sub>rms</sub> = <em>p</em><sub>ref</sub> × 10<sup><em>L</em><sub>p</sub>/20</sup></div>
+        <div class="eq-num">(19.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>L</em><sub>p</sub> sound pressure level (dB) · <em>p</em><sub>rms</sub> rms pressure fluctuation (Pa) ·
+        <em>p</em><sub>ref</sub> = 20 µPa = 2×10⁻⁵ Pa. A difference of 3 dB is a factor 2 in acoustic power and √2 in pressure;
+        6 dB is a factor 2 in pressure. Launch levels are overall levels, summed over the test band.
+      </div>
+    </div>
+
+    <p>
+      Deck 19 p. 20 (and Deck 12 p. 13) reproduces the survey's acoustic table: tests over 25 to 10,000 Hz (50 to 10,000 Hz for
+      Scout), at overall qualification levels from 140 to 145 dB (Titan's row excepted). Lecture 13 described one way a test
+      reaches them, with many speakers arranged so that their waves add at the centre, where the equipment sits, at levels
+      loud enough to damage an unprotected ear; GEVS prefers a reverberant chamber for flight hardware, because a speaker
+      field and a reverberant field load a structure differently. Figure 6 compares the two levels of each row.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Vehicle</th><th>Fundamental frequency, thrust axis (Hz)</th><th>Lateral axis (Hz)</th><th>Test range (Hz)</th><th>Qualification (dB)</th><th>Acceptance (dB)</th></tr></thead>
+        <tbody>
+          <tr><td>Delta</td><td>35</td><td>15</td><td>25–10,000</td><td>142.6</td><td>139.6</td></tr>
+          <tr><td>Titan</td><td>26</td><td>15</td><td>25–10,000</td><td>130</td><td>136</td></tr>
+          <tr><td>Scout</td><td>not defined</td><td>not defined</td><td>50–10,000</td><td>140</td><td>137</td></tr>
+          <tr><td>Ariane</td><td>31</td><td>10</td><td>25–10,000</td><td>145</td><td>142</td></tr>
+          <tr><td>H-II</td><td>30</td><td>10</td><td>25–10,000</td><td>144</td><td>141</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 170" role="img" aria-labelledby="f19-ac-t">
+<title id="f19-ac-t">Acoustic qualification and acceptance levels in decibels for five launch vehicles: Delta 142.6 and 139.6, Titan 130 and 136, Scout 140 and 137, Ariane 145 and 142, H-II 144 and 141; four rows have qualification 3 dB above acceptance, and Titan alone has acceptance 6 dB above qualification</title>
+<text x="72" y="28" class="dg-label-sm" text-anchor="end">Delta</text>
+<line x1="284.0" y1="24" x2="329.0" y2="24" class="dg-line"/>
+<circle cx="329.0" cy="24" r="4.2" class="dg-acc-f"/>
+<circle cx="284.0" cy="24" r="4.2" class="dg-fill"/>
+<text x="337.0" y="28" class="dg-label-sm">+3 dB</text>
+<text x="72" y="50" class="dg-label-sm" text-anchor="end">Titan</text>
+<line x1="140.0" y1="46" x2="230.0" y2="46" class="dg-acc"/>
+<circle cx="140.0" cy="46" r="4.2" class="dg-acc-f"/>
+<circle cx="230.0" cy="46" r="4.2" class="dg-fill"/>
+<text x="238.0" y="50" class="dg-label-sm">acceptance above qualification</text>
+<text x="72" y="72" class="dg-label-sm" text-anchor="end">Scout</text>
+<line x1="245.0" y1="68" x2="290.0" y2="68" class="dg-line"/>
+<circle cx="290.0" cy="68" r="4.2" class="dg-acc-f"/>
+<circle cx="245.0" cy="68" r="4.2" class="dg-fill"/>
+<text x="298.0" y="72" class="dg-label-sm">+3 dB</text>
+<text x="72" y="94" class="dg-label-sm" text-anchor="end">Ariane</text>
+<line x1="320.0" y1="90" x2="365.0" y2="90" class="dg-line"/>
+<circle cx="365.0" cy="90" r="4.2" class="dg-acc-f"/>
+<circle cx="320.0" cy="90" r="4.2" class="dg-fill"/>
+<text x="373.0" y="94" class="dg-label-sm">+3 dB</text>
+<text x="72" y="116" class="dg-label-sm" text-anchor="end">H-II</text>
+<line x1="305.0" y1="112" x2="350.0" y2="112" class="dg-line"/>
+<circle cx="350.0" cy="112" r="4.2" class="dg-acc-f"/>
+<circle cx="305.0" cy="112" r="4.2" class="dg-fill"/>
+<text x="358.0" y="116" class="dg-label-sm">+3 dB</text>
+<line x1="80" y1="128" x2="410" y2="128" class="dg-rule"/>
+<line x1="80.0" y1="128" x2="80.0" y2="132" class="dg-rule"/><text x="80.0" y="144" class="dg-label-sm" text-anchor="middle">126</text>
+<line x1="140.0" y1="128" x2="140.0" y2="132" class="dg-rule"/><text x="140.0" y="144" class="dg-label-sm" text-anchor="middle">130</text>
+<line x1="200.0" y1="128" x2="200.0" y2="132" class="dg-rule"/><text x="200.0" y="144" class="dg-label-sm" text-anchor="middle">134</text>
+<line x1="260.0" y1="128" x2="260.0" y2="132" class="dg-rule"/><text x="260.0" y="144" class="dg-label-sm" text-anchor="middle">138</text>
+<line x1="320.0" y1="128" x2="320.0" y2="132" class="dg-rule"/><text x="320.0" y="144" class="dg-label-sm" text-anchor="middle">142</text>
+<line x1="380.0" y1="128" x2="380.0" y2="132" class="dg-rule"/><text x="380.0" y="144" class="dg-label-sm" text-anchor="middle">146</text>
+<text x="245" y="160" class="dg-label" text-anchor="middle">overall sound pressure level (dB re 20 µPa)</text>
+</svg>
+      <figcaption><b>Figure 6.</b> Acoustic qualification and acceptance levels (Deck 19 p. 20, after Plante and Lee 2004, Table 5). Four rows have the 3 dB margin; Titan's levels are reversed and 6 dB apart.</figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">Titan's acoustic row</p>
+      <p>
+        In four of the five rows the qualification level is exactly 3 dB above acceptance, which is the margin GEVS
+        specifies for acoustics as for random vibration (§6). Titan's row reverses the order, with acceptance at 136 dB and
+        qualification at 130 dB, 6 dB apart. A qualification level below the acceptance level would qualify a design at a
+        lower stress than every flight unit then receives, which defeats the purpose of qualifying. The NEPP survey itself
+        prints the row this way (Table 5), so the slide reproduces its source faithfully; the entry is probably an error in
+        the survey, and its two numbers should not be used.
+      </p>
+    </div>
+
+    <p>
+      <b>The fundamental-frequency columns.</b> The table's other two columns concern the spacecraft's own lowest modes,
+      26–35 Hz along the thrust axis and 10–15 Hz laterally (Deck 12 p. 10 lists them as the acoustic table's
+      "resonance"). The survey heads them "Fundamental Frequency Maximum", but the launch-vehicle documents state them as
+      minima: the Delta II payload planners' guide asks, for its three-stage 792X configuration, that a spacecraft have fundamental
+      frequencies above 35 Hz in the thrust axis and 15 Hz laterally (12 to 20 Hz laterally for other configurations), and the
+      Ariane 5 user's manual requires at least 31 Hz longitudinally and, in a dual launch, 10 Hz laterally, for a spacecraft
+      under 4,500 kg. A spacecraft stiff enough to keep its lowest modes above these values does not
+      couple with the vehicle's low-frequency modes, the sine environment of §2, and so is not driven at its own
+      resonance by them, the amplification of §3 applied to the whole spacecraft. Read the columns as minimum spacecraft
+      frequencies.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The pressure behind a launch acoustic level</div>
+      <div class="ex-body">
+        <p><b>Given</b> Ariane's qualification level of 145 dB and acceptance level of 142 dB, acting on one face of a solar-array
+          panel 1.0 m × 0.5 m. <b>Find</b> the rms pressure of each level, its ratio to atmospheric pressure, and the rms force on
+          the panel at qualification.</p>
+        <p><b>Plan.</b> Invert (19.4) for the pressure; use 20 log, not 10 log, because the level is defined on pressure. The
+          force is pressure times area, an rms value like the pressure.</p>
+        <p class="ex-step"><b>Qualification pressure.</b> <em>p</em><sub>rms</sub> = 2×10⁻⁵ × 10<sup>145/20</sup> = 2×10⁻⁵ ×
+          1.778×10⁷ = 356 Pa.</p>
+        <p class="ex-step"><b>Acceptance pressure.</b> <em>p</em><sub>rms</sub> = 2×10⁻⁵ × 10<sup>142/20</sup> = 252 Pa. The ratio is
+          356/252 = 1.41, √2, as a 3 dB difference must be; the acoustic power differs by 2.00.</p>
+        <p class="ex-step"><b>Against the atmosphere.</b> 356/101,325 = 3.51×10⁻³: the loudest qualification level in the table is a
+          pressure fluctuation of 0.35 % of one atmosphere. Why it still matters: it acts on the whole area at once and at the panel's resonances.</p>
+        <p class="ex-step"><b>Force on the panel.</b> <em>F</em><sub>rms</sub> = 356 × 0.5 = 178 N, the weight of 18.1 kg at 1 g,
+          applied to a panel that may itself weigh a few kilograms.</p>
+        <p class="ex-answer"><em>p</em><sub>rms</sub> = 356 Pa (qualification) and 252 Pa (acceptance); 0.35 % of an atmosphere;
+          178 N rms on the panel. Check: 145 − 142 = 3 dB gives a pressure ratio of 10<sup>3/20</sup> = 1.41, consistent.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A spacecraft is qualified at 141 dB overall and later assigned to a vehicle whose acoustic acceptance level is 144 dB. By what factors do the rms pressure and the acoustic power at the new acceptance level exceed the old qualification level, and is the old qualification still valid?</summary>
+      <div class="answer">
+        <p>
+          The new acceptance level is 3 dB above the old qualification level: (19.4) gives a pressure ratio of
+          10<sup>3/20</sup> = 1.41 and a power ratio of 10<sup>3/10</sup> = 2.00. The old qualification is not valid. A qualification
+          must exceed the flight level by the margin (3 dB in GEVS), so for a 144 dB acceptance level the design must have been
+          qualified at 147 dB, which is 6 dB, a factor 2 in pressure and 4 in power, above what it actually survived. The design must
+          be re-qualified, or the new environment analysed to show the 141 dB test still envelopes the levels at the spacecraft's
+          own panels.
+        </p>
+      </div>
+    </details>
+
+    <h2>5 · Thermal cycling and the fatigue of joints</h2>
+
+    <p>
+      Launch loads a part for minutes; orbit cycles its temperature for years. A spacecraft in low orbit near 200 km has
+      a period of about 88.5 minutes and passes through Earth's shadow once per orbit, about 5,940 times a year or 16 times a
+      day, and the parts exposed to space swing between about −65 and +125 °C (Deck 19 p. 21, the table
+      <a href="m17a-temperature-semiconductor.html">M17a §1</a> took apart, with its "2 km" for 200 km). Even inside a
+      thermally managed box each orbit cycles the temperature by some tens of kelvin. Each cycle strains every joint between
+            materials that expand differently, and over a mission the damage accumulates through tens of thousands of cycles;
+      Deck 19 p. 33 shows a micro-bump cracked by the 1,000 cycles of a ground test. This section explains how a joint is strained, how many cycles it survives, and how
+      a ground test of a thousand cycles stands for a mission of years.
+    </p>
+
+    <p>
+      <b>How a joint is sheared.</b> <a href="m17b-transistors-high-temperature.html">M17b §3</a> treated a film bonded to a
+      substrate: the substrate holds the film to its own length, and the mismatch strain is (<em>α</em><sub>s</sub> −
+      <em>α</em><sub>f</sub>)Δ<em>T</em> (17b.4). A flip-chip die on its substrate is a different geometry. The die and the
+      substrate are each thick enough to expand almost freely, and they are joined only by an array of solder joints between
+      them. When the assembly is heated, every point of the substrate moves away from the centre of the die faster than the
+      point of the die above it, and each joint is sheared by the difference. The difference is zero at the centre, the
+      <b>neutral point</b>, and grows in proportion to the distance from it, so the corner joints are sheared most
+      (Figure 7). The shear strain of a joint of height <em>h</em> is its relative displacement divided by its height:
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 210" role="img" aria-labelledby="f19-dnp-t">
+  <title id="f19-dnp-t">A flip-chip die on its substrate seen edge on, heated: the substrate expands more than the die, so each joint is sheared by the difference in their displacements, which grows with distance from the neutral point at the centre of the die. The corner joint, at distance L D from the neutral point and of height h, is sheared most, by the angle gamma</title>
+  <defs><marker id="f19-dnp-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-soft"/></marker></defs>
+  <!-- die -->
+  <rect x="110" y="44" width="220" height="30" class="dg-fill"/>
+  <text x="170" y="64" class="dg-label" text-anchor="middle">die, α ≈ 2.6 ppm/K</text>
+  <!-- substrate -->
+  <rect x="40" y="110" width="360" height="34" class="dg-fill"/>
+  <text x="140" y="132" class="dg-label" text-anchor="middle">substrate, α larger</text>
+  <!-- joints: sheared outward at the bottom, more at the ends -->
+  <polygon points="118,74 134,74 140,110 124,110" class="dg-acc-f"/>
+  <polygon points="152,74 166,74 170,110 156,110" class="dg-soft"/>
+  <polygon points="186,74 200,74 202,110 188,110" class="dg-soft"/>
+  <polygon points="213,74 227,74 227,110 213,110" class="dg-soft"/>
+  <polygon points="240,74 254,74 252,110 238,110" class="dg-soft"/>
+  <polygon points="274,74 288,74 284,110 270,110" class="dg-soft"/>
+  <polygon points="306,74 322,74 316,110 300,110" class="dg-acc-f"/>
+  <!-- neutral point -->
+  <line x1="220" y1="30" x2="220" y2="160" class="dg-guide" stroke-dasharray="3 3"/>
+  <text x="220" y="24" class="dg-label-sm" text-anchor="middle">neutral point</text>
+  <!-- L_D -->
+  <line x1="220" y1="174" x2="318" y2="174" class="dg-line" marker-start="url(#f19-dnp-ar)" marker-end="url(#f19-dnp-ar)"/>
+  <text x="269" y="192" class="dg-math" text-anchor="middle">L<tspan baseline-shift="sub" style="font-size:75%">D</tspan></text>
+  <line x1="318" y1="150" x2="318" y2="178" class="dg-guide" stroke-dasharray="2 3"/>
+  <!-- h -->
+  <line x1="350" y1="74" x2="350" y2="110" class="dg-line" marker-start="url(#f19-dnp-ar)" marker-end="url(#f19-dnp-ar)"/>
+  <text x="358" y="96" class="dg-math">h</text>
+  <!-- expansion arrows on substrate -->
+  <line x1="60" y1="152" x2="40" y2="152" class="dg-line" marker-end="url(#f19-dnp-ar)"/>
+  <line x1="380" y1="152" x2="400" y2="152" class="dg-line" marker-end="url(#f19-dnp-ar)"/>
+  <text x="40" y="170" class="dg-label-sm">heated: substrate grows more</text>
+  <text x="96" y="96" class="dg-label-sm" text-anchor="end">corner joint</text>
+  <text x="96" y="108" class="dg-label-sm" text-anchor="end">sheared most</text>
+</svg>
+      <figcaption><b>Figure 7.</b> Shear of flip-chip joints by expansion mismatch, schematic and not to scale: the relative displacement of die and substrate grows with distance from the neutral point, so the corner joint is sheared most.</figcaption>
+    </figure>
+
+    <div class="eq" id="m19-eq-dnp">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>γ</em> = <em>F</em> <span class="frac"><span class="num"><em>L</em><sub>D</sub> Δ<em>α</em> Δ<em>T</em></span><span class="den"><em>h</em></span></span></div>
+        <div class="eq-num">(19.5)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>γ</em> cyclic shear strain range of the joint (dimensionless; ×100 for percent) · <em>L</em><sub>D</sub> distance
+        of the joint from the neutral point (m) · Δ<em>α</em> = |<em>α</em><sub>substrate</sub> − <em>α</em><sub>die</sub>|
+        (K⁻¹) · Δ<em>T</em> temperature range of the cycle (K) · <em>h</em> joint height (m, same unit as <em>L</em><sub>D</sub>)
+        · <em>F</em> an empirical factor near 1 for the non-ideal geometry, taken as 1 here. Rigid die and substrate, no
+        underfill; the strain is an upper bound once the joints are bonded to the substrate by an underfill.
+      </div>
+    </div>
+
+    <p>
+      <b>Fatigue.</b> A strain of a few percent exceeds the elastic limit of solder, so each cycle deforms the joint
+      plastically, and plastic deformation repeated cycle after cycle initiates and extends a crack: low-cycle fatigue. The
+      number of cycles a material survives falls as a power of the plastic strain range, the Coffin–Manson law. Engelmaier
+      calibrated it for joints of near-eutectic tin–lead solder (in leadless ceramic chip carriers), with an exponent that
+      depends on the temperature and the rate of cycling, because solder creeps, and a slower cycle or a hotter one gives the
+      creep more time to add damage:
+    </p>
+
+    <div class="eq" id="m19-eq-cm">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>f</sub> = <span class="frac"><span class="num">1</span><span class="den">2</span></span> <span class="dl">(</span><span class="frac"><span class="num">Δ<em>γ</em></span><span class="den">2<em>ε</em><sub>f</sub>′</span></span><span class="dl">)</span><sup>1/<em>c</em></sup>,&nbsp;&nbsp;&nbsp; <em>c</em> = −0.442 − 6×10⁻⁴ <em>T</em><sub>s</sub> + 1.74×10⁻² ln(1 + <em>f</em>)</div>
+        <div class="eq-num">(19.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>f</sub> mean cycles to failure (half the population failed) · Δ<em>γ</em> shear strain range, (19.5) ·
+        2<em>ε</em><sub>f</sub>′ = 0.65, twice the fatigue ductility coefficient of tin–lead solder · <em>c</em> fatigue
+        exponent, negative, about −0.4 · <em>T</em><sub>s</sub> mean temperature of the joint over the cycle (°C) ·
+        <em>f</em> cycling frequency (cycles per day). The constants are those of eutectic tin–lead solder; lead-free alloys
+        need their own. Because 1/<em>c</em> ≈ −2.5, life falls roughly as the 2.5th power of strain.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">The corner joint of a flip-chip die through the qualification cycle</div>
+      <div class="ex-body">
+        <p><b>Given</b> a silicon die 5.0 mm square, flip-chip bonded with tin–lead joints 100 µm high and no underfill, cycled
+          between −55 and +125 °C once an hour. Silicon expands at 2.6×10⁻⁶ K⁻¹; two substrates: 96 % alumina, 6.4×10⁻⁶ K⁻¹
+          (25–200 °C), and an FR-4 glass–epoxy laminate, 16×10⁻⁶ K⁻¹ in plane. <b>Find</b> the shear strain range of the
+          corner joint and its mean life in cycles on each substrate, and compare with the 1,000 cycles of Deck 19 p. 32.</p>
+        <p><b>Plan.</b> (19.5) gives the strain from the geometry, with the corner joint's distance from the neutral point.
+          (19.6) gives the life from the strain, with <em>c</em> evaluated at the test's mean temperature and rate. Use the
+          room-temperature expansion coefficients: the cycle is centred near 35 °C, and alumina's mean coefficient up to
+          1,000 °C (8.2×10⁻⁶ K⁻¹, <a href="m18-chip-bonding-packaging.html">M18 §2</a>) would overstate the mismatch.</p>
+        <p class="ex-step"><b>Distance to the corner joint.</b> The neutral point is the centre of the die, so the corner joint
+          lies half a diagonal away: <em>L</em><sub>D</sub> = 5.0 mm/√2 = 3.54 mm.</p>
+        <p class="ex-step"><b>Strain on alumina.</b> Δ<em>α</em> = 6.4 − 2.6 = 3.8×10⁻⁶ K⁻¹ and Δ<em>T</em> = 125 − (−55) =
+          180 K, so Δ<em>γ</em> = 3.54×10⁻³ m × 3.8×10⁻⁶ K⁻¹ × 180 K/(100×10⁻⁶ m) = 0.0242, 2.42 %.</p>
+        <p class="ex-step"><b>Strain on FR-4.</b> Δ<em>α</em> = 16 − 2.6 = 13.4×10⁻⁶ K⁻¹, so Δ<em>γ</em> = 0.0853, 8.53 %,
+          3.53 times larger.</p>
+        <p class="ex-step"><b>Fatigue exponent.</b> The mean temperature is (−55 + 125)/2 = 35 °C and the rate 24 cycles a day:
+          <em>c</em> = −0.442 − 6×10⁻⁴ × 35 + 1.74×10⁻² × ln 25 = −0.442 − 0.021 + 0.056 = −0.407, so 1/<em>c</em> = −2.46.</p>
+        <p class="ex-step"><b>Life on alumina.</b> <em>N</em><sub>f</sub> = ½ (0.0242/0.65)<sup>−2.46</sup> = ½ (0.0372)<sup>−2.46</sup>
+          = ½ × 3,250 = 1,630 cycles.</p>
+        <p class="ex-step"><b>Life on FR-4.</b> <em>N</em><sub>f</sub> = ½ (0.0853/0.65)<sup>−2.46</sup> = ½ (0.131)<sup>−2.46</sup> =
+          73.5 cycles. The ratio of lives is 3.53<sup>2.46</sup> = 22.1, against 3.53 in strain: the power law turns a modest
+          difference in mismatch into a large one in life.</p>
+        <p class="ex-answer">2.42 % and about 1,630 cycles on alumina; 8.53 % and about 74 cycles on FR-4. The joint on
+          alumina outlasts a 1,000-cycle test, though with little margin given that <em>N</em><sub>f</sub> is a median; the joint
+          on the laminate fails in a few days of cycling. Check: the strain is a ratio of lengths, so dimensionless; and halving
+          the strain by doubling the joint height would multiply the life by 2<sup>2.46</sup> = 5.5.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 240" role="img" aria-labelledby="f19-cm-t">
+<title id="f19-cm-t">Mean cycles to failure against cyclic shear strain range on logarithmic axes from the Engelmaier form of the Coffin-Manson law for tin-lead solder, cycled between minus 55 and plus 125 degrees once an hour: a straight line of slope about minus 2.5. The corner joint of a 5 millimetre die on alumina, at 2.4 percent strain, lasts about 1,600 cycles, above the 1,000 cycles of the qualification test; the same joint on an FR-4 laminate, at 8.5 percent, lasts about 74 cycles</title>
+<line x1="62" y1="200" x2="420" y2="200" class="dg-rule"/><line x1="62" y1="200" x2="62" y2="20" class="dg-rule"/>
+<line x1="62.0" y1="200" x2="62.0" y2="204" class="dg-rule"/><text x="62.0" y="216" class="dg-label-sm" text-anchor="middle">0.5</text>
+<line x1="129.3" y1="200" x2="129.3" y2="204" class="dg-rule"/><text x="129.3" y="216" class="dg-label-sm" text-anchor="middle">1</text>
+<line x1="196.5" y1="200" x2="196.5" y2="204" class="dg-rule"/><text x="196.5" y="216" class="dg-label-sm" text-anchor="middle">2</text>
+<line x1="285.5" y1="200" x2="285.5" y2="204" class="dg-rule"/><text x="285.5" y="216" class="dg-label-sm" text-anchor="middle">5</text>
+<line x1="352.7" y1="200" x2="352.7" y2="204" class="dg-rule"/><text x="352.7" y="216" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="420.0" y1="200" x2="420.0" y2="204" class="dg-rule"/><text x="420.0" y="216" class="dg-label-sm" text-anchor="middle">20</text>
+<line x1="58" y1="200.0" x2="62" y2="200.0" class="dg-rule"/><text x="55" y="204.0" class="dg-label-sm" text-anchor="end">1</text>
+<line x1="58" y1="164.0" x2="62" y2="164.0" class="dg-rule"/><text x="55" y="168.0" class="dg-label-sm" text-anchor="end">10</text>
+<line x1="58" y1="128.0" x2="62" y2="128.0" class="dg-rule"/><text x="55" y="132.0" class="dg-label-sm" text-anchor="end">10²</text>
+<line x1="58" y1="92.0" x2="62" y2="92.0" class="dg-rule"/><text x="55" y="96.0" class="dg-label-sm" text-anchor="end">10³</text>
+<line x1="58" y1="56.0" x2="62" y2="56.0" class="dg-rule"/><text x="55" y="60.0" class="dg-label-sm" text-anchor="end">10⁴</text>
+<line x1="58" y1="20.0" x2="62" y2="20.0" class="dg-rule"/><text x="55" y="24.0" class="dg-label-sm" text-anchor="end">10⁵</text>
+<line x1="62" y1="92.0" x2="420" y2="92.0" class="dg-guide" stroke-dasharray="4 3"/>
+<text x="420" y="87.0" class="dg-label-sm" text-anchor="end">1,000-cycle test</text>
+<line x1="62.0" y1="23.9" x2="420.0" y2="165.6" class="dg-acc"/>
+<circle cx="215.0" cy="84.4" r="4.5" class="dg-acc-f"/>
+<text x="223.0" y="76.4" class="dg-label-sm">alumina, 2.4 %: 1,630</text>
+<circle cx="337.3" cy="132.8" r="4.5" class="dg-acc-f"/>
+<text x="345.3" y="124.8" class="dg-label-sm">FR-4, 8.5 %: 74</text>
+<text x="241" y="234" class="dg-label" text-anchor="middle">cyclic shear strain range Δγ (%)</text>
+<text x="15" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 15 110)">mean cycles to failure</text>
+</svg>
+      <figcaption><b>Figure 8.</b> Mean cycles to failure against shear strain range from (19.6), for tin–lead solder cycled over −55/+125 °C once an hour (<em>c</em> = −0.407), with the two corner joints of the example. A factor 3.5 in strain is a factor 22 in life.</figcaption>
+    </figure>
+
+    <p>
+      Figure 8 plots the law with both joints marked. The example shows why flip chip on an organic laminate needs an <b>underfill</b>: an epoxy that fills the gap between die
+      and substrate and bonds to both, so that the assembly bends and strains as one body rather than shearing its joints,
+      which is what made silicon dies on FR-4 practical (Brenner, 2012; <a href="m18-chip-bonding-packaging.html">M18 §6</a>
+      gives a NASA measurement of its effect). It also shows why the formula is a guide rather than a prediction: the
+      constants were fitted to one solder and one package style, the empirical factor <em>F</em> and the real joint shape are
+            not in it, and the result is a median with a wide spread. The model was built for leadless chip carriers under power
+      cycling, and the fatigue data behind its exponent (Wild's) cover temperatures above room temperature and 4 to 300
+      cycles an hour, so a cycle reaching −55 °C at one cycle an hour is an extrapolation. Its reliable use is in ratios,
+      where most of the uncertainty cancels: a design change that halves the strain multiplies the life by about five.
+    </p>
+
+    <p>
+            <b>The micro-bump of Deck 19 p. 33.</b> A die on a silicon interposer, or one die stacked on another, has almost no
+      global mismatch, since both sides are silicon: (19.5) gives Δ<em>γ</em> ≈ 0. Deck 19 p. 33 shows micro-bumps of a
+      3D-integrated part, which Lecture 20 described as working before thermal cycling and failing after, cracked after 1,000
+      cycles of −55/+125 °C; the slide gives neither the materials on the two sides nor the solder alloy. Lecture 20 gave the
+      mechanism. Within the joint itself the copper and the solder have different expansion coefficients (copper
+      16.5×10⁻⁶ K⁻¹; tin–lead solder, for example, about 23×10⁻⁶ K⁻¹), so each cycle stresses their interface and releases
+      it, and the repeated stress produces metal fatigue that opens a crack. The crack in the photograph
+      runs through the solder just above the copper pad, along the intermetallic layer where solder and copper react
+      (Figure 9). The joint is small, and the mismatch is local rather than global, so the strain is not given by (19.5); but
+      the damage per cycle accumulates in the same way, and this is the "bonded-interface degradation" of §1.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 210" role="img" aria-labelledby="f19-jt-t">
+  <title id="f19-jt-t">Schematic cross-section of a solder joint after thermal cycling, drawn after Deck 19 page 33: a solder ball between the pad of the upper die and a copper pad on the lower side, with a thin intermetallic layer where the solder meets the copper and a fatigue crack running through the solder just above that layer, across most of the joint's width</title>
+  <!-- upper die and pad -->
+  <rect x="60" y="20" width="320" height="22" class="dg-fill"/>
+  <text x="220" y="36" class="dg-label-sm" text-anchor="middle">upper die or interposer</text>
+  <rect x="150" y="42" width="140" height="6" class="dg-soft"/>
+  <!-- solder ball -->
+  <path d="M152,48 C110,70 110,130 160,150 L280,150 C330,130 330,70 288,48 Z" class="dg-fill"/>
+  <text x="220" y="96" class="dg-label" text-anchor="middle">solder</text>
+  <!-- IMC layer -->
+  <rect x="150" y="150" width="140" height="5" class="dg-ink"/>
+  <!-- copper pad -->
+  <rect x="140" y="155" width="160" height="22" class="dg-soft"/>
+  <rect x="190" y="177" width="60" height="20" class="dg-soft"/>
+  <text x="314" y="172" class="dg-label-sm">copper pad</text>
+  <text x="314" y="157" class="dg-label-sm">intermetallic layer</text>
+  <line x1="312" y1="154" x2="292" y2="153" class="dg-guide"/>
+  <!-- crack -->
+  <path d="M158,146 C190,140 230,139 262,142" class="dg-acc" fill="none" stroke-dasharray="5 3" style="stroke-width:2.4"/>
+  <text x="96" y="132" class="dg-label-sm" text-anchor="end">fatigue crack</text>
+  <text x="96" y="144" class="dg-label-sm" text-anchor="end">in the solder,</text>
+  <text x="96" y="156" class="dg-label-sm" text-anchor="end">above the copper</text>
+  <line x1="100" y1="142" x2="156" y2="145" class="dg-guide"/>
+</svg>
+      <figcaption><b>Figure 9.</b> A fatigue crack in a solder joint after 1,000 cycles of −55/+125 °C, redrawn schematically after the cross-section on Deck 19 p. 33 (which gives no source or scale). The crack runs through the solder just above the copper pad and its intermetallic layer.</figcaption>
+    </figure>
+
+    <p>
+      <b>The test.</b> Deck 19 p. 32 shows how such a result is obtained: a single-zone temperature-cycling chamber holds boards
+      wired out through hundreds of harness wires, cycled between −55 and +125 °C while every channel is monitored
+      continuously; failed channels are recorded and removed, and the cycling continues to a total of 1,000 cycles. The range
+      is condition B of JEDEC's temperature-cycling standard, JESD22-A104, and of MIL-STD-883 Test Method 1010, the military
+      range Lecture 20 named, and 1,000 cycles at it is a common qualification requirement. Monitoring every channel turns the
+      test from a pass/fail check into a measurement of the distribution of cycles to failure, which is what a life prediction
+      needs.
+    </p>
+
+    <p>
+      <b>From test cycles to mission years.</b> A ground cycle of 180 K once an hour damages a joint more than an orbital
+      cycle of a few tens of kelvin, and the ratio is the <b>acceleration factor</b>. Norris and Landzberg (1969) fitted the
+      life of IBM's controlled-collapse (C4) joints as a power of the temperature range and of the cycling frequency, times an
+      Arrhenius factor in the maximum temperature, which gives the ratio of field to test life:
+    </p>
+
+    <div class="eq" id="m19-eq-nl">
+      <div class="eq-body">
+        <div class="eq-math">AF = <span class="frac"><span class="num"><em>N</em><sub>field</sub></span><span class="den"><em>N</em><sub>test</sub></span></span> = <span class="dl">(</span><span class="frac"><span class="num">Δ<em>T</em><sub>test</sub></span><span class="den">Δ<em>T</em><sub>field</sub></span></span><span class="dl">)</span><sup><em>n</em></sup> <span class="dl">(</span><span class="frac"><span class="num"><em>f</em><sub>field</sub></span><span class="den"><em>f</em><sub>test</sub></span></span><span class="dl">)</span><sup><em>m</em></sup> exp<span class="dl">[</span><span class="frac"><span class="num"><em>E</em><sub>a</sub></span><span class="den"><em>k</em></span></span><span class="dl">(</span><span class="frac"><span class="num">1</span><span class="den"><em>T</em><sub>max,field</sub></span></span> − <span class="frac"><span class="num">1</span><span class="den"><em>T</em><sub>max,test</sub></span></span><span class="dl">)</span><span class="dl">]</span></div>
+        <div class="eq-num">(19.7)</div>
+      </div>
+      <div class="eq-says">
+        AF acceleration factor, field cycles equivalent to one test cycle (dimensionless) · Δ<em>T</em> temperature range of
+        each cycle (K) · <em>f</em> cycling frequency (any unit, the same for both) · <em>T</em><sub>max</sub> maximum temperature of
+        the cycle (K, absolute) · for eutectic tin–lead: <em>n</em> = 1.9, <em>m</em> = 1/3, <em>E</em><sub>a</sub>/<em>k</em> =
+        1414 K; for tin–silver–copper lead-free joints, Pan <em>et al.</em> fitted <em>n</em> = 2.65, <em>m</em> = 0.136,
+                <em>E</em><sub>a</sub>/<em>k</em> = 2185 K. Same failure mechanism in test and field.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">The sign of the frequency term</p>
+      <p>
+        Vasudevan and Fan (ECTC 2008), the source of the constants above, print the frequency ratio
+        (<em>f</em><sub>field</sub>/<em>f</em><sub>test</sub>) with the exponent −<em>m</em>. Their own text and test data
+        say that a longer cycle shortens the life, because the solder creeps for longer in each cycle, and that requires the
+        exponent +<em>m</em> used in (19.7): a field cycle slower than the test cycle must lower the acceleration factor. Taken
+        literally, the printed form would give 52.3 instead of 39.9 in the example below. The original paper of Norris and
+        Landzberg was not consulted for this page.
+      </p>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">What a thousand cycles are worth in orbit</div>
+      <div class="ex-body">
+        <p><b>Given</b> the Deck 19 p. 32 test, −55/+125 °C, run at one cycle an hour, 24 a day, on tin–lead joints; and a
+          board in a managed box in low orbit that cycles between 0 and +40 °C sixteen times a day. <b>Find</b> the acceleration
+          factor and the mission duration that 1,000 test cycles represent.</p>
+        <p><b>Plan.</b> Evaluate the three factors of (19.7) separately, then multiply. The temperatures in the exponential must
+          be absolute.</p>
+        <p class="ex-step"><b>Range.</b> (180/40)<sup>1.9</sup> = 4.5<sup>1.9</sup> = 17.4. This factor dominates: the test's
+          larger swing does most of the accelerating.</p>
+        <p class="ex-step"><b>Frequency.</b> (16/24)<sup>1/3</sup> = 0.667<sup>1/3</sup> = 0.874. The orbital cycle is slower,
+          so each one allows more creep and does more damage, which reduces the factor slightly.</p>
+        <p class="ex-step"><b>Maximum temperature.</b> exp[1414 × (1/313.15 − 1/398.15)] = exp(1414 × 6.82×10⁻⁴) = exp(0.964) = 2.62.
+          The test's hotter maximum, 398 K against 313 K, adds creep damage per cycle.</p>
+        <p class="ex-step"><b>Acceleration factor.</b> AF = 17.4 × 0.874 × 2.62 = 39.9.</p>
+        <p class="ex-step"><b>Mission equivalent.</b> 1,000 × 39.9 = 39,900 orbital cycles; at 16 a day that is 39,900/(16 × 365.25)
+          = 6.83 years.</p>
+        <p class="ex-answer">AF ≈ 40: a joint that survives 1,000 qualification cycles has survived the damage of about
+          40,000 orbital cycles, about 6.8 years in this box. Check: if the box swings only 20 K, the range factor becomes
+          9<sup>1.9</sup> = 65.1 and the equivalent life 25.5 years, so the result is most sensitive to the field ΔT, which must
+          come from the thermal analysis, not from the environment table.</p>
+      </div>
+    </div>
+
+    <p>
+      This is the arithmetic behind the professor's account of lifetime prediction in Lecture 20: measure the stress and
+      strain a part accumulates in its thermal environment, model the damage, and state a guarantee in hours or cycles in
+      that environment. The alternative he named is to change the material or the structure so the crack does not form,
+      which is what underfill, taller joints, matched substrates and copper pillars each do.
+    </p>
+
+    <details class="check">
+      <summary>The die of the example is replaced by one 10 mm square on the same alumina substrate, with the same 100 µm joints and the same test. What happens to the corner joint's strain and life, and does it pass 1,000 cycles? Name two changes that would restore the margin.</summary>
+      <div class="answer">
+        <p>
+          <em>L</em><sub>D</sub> doubles to 7.07 mm, so by (19.5) the strain doubles to 4.84 %. By (19.6) the life scales as
+          the strain to the power 1/<em>c</em> = −2.46, so it falls by 2<sup>2.46</sup> = 5.5, from about 1,630 to about 296
+          cycles. The joint fails the 1,000-cycle test.
+        </p>
+        <p>
+          Two changes restore the margin. Doubling the joint height to 200 µm halves the strain again and restores the life;
+          an underfill couples die and substrate so that the joints no longer carry the whole mismatch. A substrate matched more
+          closely to silicon, such as aluminium nitride (<a href="m18-chip-bonding-packaging.html">M18 §2</a>), reduces
+          Δ<em>α</em> itself.
+        </p>
+      </div>
+    </details>
+
+    <h2>6 · Qualification, acceptance and margin</h2>
+
+    <p>
+      Sections 2 to 5 gave levels at two strengths: a qualification level and a lower acceptance level. Lecture 13 asked what
+      the difference is, and a student's answer, which the professor endorsed, is the standard one: qualification tests a type
+      of part once, on a unit that may be broken in the process and so is not flown; acceptance tests every unit that will fly,
+      at a lower stress that does not damage it. This section states the two in the terms of NASA's verification standard,
+      explains the margins between them, and shows how a life test is accelerated.
+    </p>
+
+    <p>
+      <b>The three kinds of test.</b> GEVS defines them as follows. <b>Design qualification</b> tests demonstrate that the item
+      functions within its specifications under conditions more severe than those expected from ground handling, launch and
+      mission operations; their purpose is to uncover deficiencies in design and in the method of manufacture, not to exceed
+      the design's safety margins. They are run on <b>prototype</b> hardware, of a new design and not intended for flight, or on
+      <b>protoflight</b> hardware, a flight unit of a new design tested at qualification levels but for acceptance durations.
+            <b>Acceptance</b> tests demonstrate that a unit of hardware is acceptable for flight, and also serve as a quality-control
+      screen to detect deficiencies, the defects of workmanship and materials that a single unit can carry. Qualification answers
+      whether the design can survive; acceptance answers whether this unit was built right.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Test (GEVS Table 2.2-2)</th><th>Prototype qualification</th><th>Protoflight qualification</th><th>Acceptance</th></tr></thead>
+        <tbody>
+          <tr><td>Random vibration level</td><td>limit + 3 dB</td><td>limit + 3 dB</td><td>limit</td></tr>
+          <tr><td>Random vibration duration</td><td>2 min per axis</td><td>1 min per axis</td><td>1 min per axis</td></tr>
+          <tr><td>Acoustics level and duration</td><td>limit + 3 dB, 2 min</td><td>limit + 3 dB, 1 min</td><td>limit, 1 min</td></tr>
+          <tr><td>Sine vibration level</td><td>1.25 × limit</td><td>1.25 × limit</td><td>limit</td></tr>
+          <tr><td>Thermal vacuum, beyond the predicted maximum and minimum</td><td>10 °C</td><td>10 °C</td><td>5 °C</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The <b>limit level</b> is the highest level the flight environment is expected to reach, so acceptance tests at the flight
+      environment and qualification above it. The +3 dB is the √2 in G<sub>rms</sub> of Figure 4 and the 3 dB of Figure 6. The
+      margin exists because the environment is predicted, not known, and because units of one design differ; a design shown to
+      survive twice the mean-square acceleration of the predicted environment, for twice the time, survives the real one with
+      room for both uncertainties. The prototype's doubled duration matters for the fatigue mechanisms of §1 and §5, where damage
+      grows with exposure: a qualification unit that has absorbed more fatigue damage than any flight unit will is worn, and that
+      is why it is not flown. A protoflight unit, which does fly, is tested at qualification level for only the acceptance
+      duration, trading margin of exposure for the cost of a separate unit.
+    </p>
+
+    <p>
+      <b>Temperature limits nest.</b> Deck 12 p. 16 gives qualification, acceptance and mission temperature ranges for six
+      components from the NEPP survey, and Figure 10 draws five of them (the sixth, solar cells and panels, runs from −180 to
+      +85 °C at qualification and would compress the scale). Each mission range lies inside the acceptance range, and each
+      acceptance range inside the qualification range. The steps are regular: acceptance extends the mission range by 5 °C at 11
+      of the 12 ends, and qualification extends acceptance by 10 °C at 8 of them. The exception breaks the nesting, and the
+            figure shows it: the S-band pre-amplifier's mission maximum, +45 °C, lies above its acceptance maximum, +43 °C, which as
+      printed would let a flight unit operate 2 °C above the highest temperature it was accepted at. The survey's numbers are reproduced
+      as printed; that end is probably a transcription error.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 236" role="img" aria-labelledby="f19-nest-t">
+<title id="f19-nest-t">Qualification, acceptance and mission temperature ranges for five spacecraft components from the NEPP survey, drawn as three nested bars per component: the qualification range is widest, the acceptance range lies inside it and the mission range inside that, except that the S-band pre-amplifier mission maximum of plus 45 degrees exceeds its acceptance maximum of plus 43</title>
+<text x="112" y="34" class="dg-label-sm" text-anchor="end">Power control unit</text>
+<rect x="166.4" y="21" width="199.1" height="18" class="dg-fill" style="opacity:.45"/>
+<rect x="193.6" y="25" width="144.5" height="10" class="dg-fill"/>
+<line x1="207.3" y1="30" x2="324.5" y2="30" class="dg-acc" style="stroke-width:3"/>
+<text x="112" y="68" class="dg-label-sm" text-anchor="end">Battery</text>
+<rect x="215.5" y="55" width="109.1" height="18" class="dg-fill" style="opacity:.45"/>
+<rect x="215.5" y="59" width="81.8" height="10" class="dg-fill"/>
+<line x1="229.1" y1="64" x2="283.6" y2="64" class="dg-acc" style="stroke-width:3"/>
+<text x="112" y="102" class="dg-label-sm" text-anchor="end">Heater control</text>
+<rect x="133.6" y="89" width="272.7" height="18" class="dg-fill" style="opacity:.45"/>
+<rect x="160.9" y="93" width="218.2" height="10" class="dg-fill"/>
+<line x1="174.5" y1="98" x2="365.5" y2="98" class="dg-acc" style="stroke-width:3"/>
+<text x="112" y="136" class="dg-label-sm" text-anchor="end">S-band pre-amp</text>
+<rect x="174.5" y="123" width="204.5" height="18" class="dg-fill" style="opacity:.45"/>
+<rect x="188.2" y="127" width="158.2" height="10" class="dg-fill"/>
+<line x1="201.8" y1="132" x2="351.8" y2="132" class="dg-acc" style="stroke-width:3"/>
+<text x="112" y="170" class="dg-label-sm" text-anchor="end">S-band output mux</text>
+<rect x="188.2" y="157" width="177.3" height="18" class="dg-fill" style="opacity:.45"/>
+<rect x="215.5" y="161" width="136.4" height="10" class="dg-fill"/>
+<line x1="229.1" y1="166" x2="338.2" y2="166" class="dg-acc" style="stroke-width:3"/>
+<line x1="120" y1="188" x2="420" y2="188" class="dg-rule"/>
+<line x1="120.0" y1="188" x2="120.0" y2="192" class="dg-rule"/><text x="120.0" y="204" class="dg-label-sm" text-anchor="middle">-40</text>
+<line x1="174.5" y1="188" x2="174.5" y2="192" class="dg-rule"/><text x="174.5" y="204" class="dg-label-sm" text-anchor="middle">-20</text>
+<line x1="229.1" y1="188" x2="229.1" y2="192" class="dg-rule"/><text x="229.1" y="204" class="dg-label-sm" text-anchor="middle">0</text>
+<line x1="283.6" y1="188" x2="283.6" y2="192" class="dg-rule"/><text x="283.6" y="204" class="dg-label-sm" text-anchor="middle">20</text>
+<line x1="338.2" y1="188" x2="338.2" y2="192" class="dg-rule"/><text x="338.2" y="204" class="dg-label-sm" text-anchor="middle">40</text>
+<line x1="392.7" y1="188" x2="392.7" y2="192" class="dg-rule"/><text x="392.7" y="204" class="dg-label-sm" text-anchor="middle">60</text>
+<text x="270" y="220" class="dg-label" text-anchor="middle">temperature (°C)</text>
+<text x="120.0" y="14" class="dg-label-sm">wide pale: qualification · solid: acceptance · line: mission</text>
+</svg>
+      <figcaption><b>Figure 10.</b> Qualification, acceptance and mission temperature ranges for five components (Deck 12 p. 16, after Plante and Lee 2004). Each range nests inside the next, except the S-band pre-amplifier's mission maximum, +45 °C, above its acceptance maximum, +43 °C.</figcaption>
+    </figure>
+
+    <p>
+      <b>Accelerated life testing.</b> A qualification can show that a design survives the environment once. It cannot run for
+      the mission's ten years, so wear-out mechanisms are tested at elevated stress, and the result is carried to the mission by
+      an acceleration factor, as (19.7) did for joints. For a mechanism thermally activated over an energy barrier, such as the
+      oxide breakdown of <a href="m17b-transistors-high-temperature.html">M17b §2</a>, the time to failure varies as
+      exp(<em>E</em><sub>A</sub>/<em>kT</em>) (17b.3), and the ratio between two temperatures is the Arrhenius acceleration factor:
+    </p>
+
+    <div class="eq" id="m19-eq-arr">
+      <div class="eq-body">
+        <div class="eq-math">AF = <span class="frac"><span class="num"><em>t</em><sub>use</sub></span><span class="den"><em>t</em><sub>test</sub></span></span> = exp<span class="dl">[</span><span class="frac"><span class="num"><em>E</em><sub>A</sub></span><span class="den"><em>k</em></span></span><span class="dl">(</span><span class="frac"><span class="num">1</span><span class="den"><em>T</em><sub>use</sub></span></span> − <span class="frac"><span class="num">1</span><span class="den"><em>T</em><sub>test</sub></span></span><span class="dl">)</span><span class="dl">]</span></div>
+        <div class="eq-num">(19.8)</div>
+      </div>
+      <div class="eq-says">
+        AF acceleration factor (dimensionless) · <em>t</em><sub>use</sub>, <em>t</em><sub>test</sub> times to failure at the
+        use and test temperatures (any unit) · <em>E</em><sub>A</sub> activation energy of the mechanism (eV) · <em>k</em> =
+        8.617×10⁻⁵ eV/K · <em>T</em> absolute temperatures (K). The ratio of (17b.3) at two temperatures, so the prefactor
+        cancels. Valid only if the same mechanism, with the same <em>E</em><sub>A</sub>, governs at both temperatures.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">A 2,000-hour test as a guarantee</div>
+      <div class="ex-body">
+        <p><b>Given</b> a life test of 2,000 hours at 125 °C on a part whose dominant wear-out mechanism has the activation energy
+          <a href="m17b-transistors-high-temperature.html">M17b §2</a> fitted to the oxide capacitors of Deck 15 p. 17,
+          <em>E</em><sub>A</sub> = 0.55 eV; the part will operate at 55 °C. <b>Find</b> the acceleration factor and the
+          operating life the test demonstrates, and how the answer changes if <em>E</em><sub>A</sub> is really 0.7 eV.</p>
+        <p><b>Plan.</b> (19.8) with absolute temperatures; then multiply the test time by AF. The 2,000 hours echo the guarantee
+          Lecture 20 described ("up to 2000 hours in certain environment, we guarantee"); here they are test hours, which the
+          factor converts to use hours.</p>
+        <p class="ex-step"><b>Temperatures.</b> <em>T</em><sub>use</sub> = 328.15 K, <em>T</em><sub>test</sub> = 398.15 K;
+          1/328.15 − 1/398.15 = 5.358×10⁻⁴ K⁻¹.</p>
+        <p class="ex-step"><b>Exponent.</b> <em>E</em><sub>A</sub>/<em>k</em> = 0.55/8.617×10⁻⁵ = 6,383 K; × 5.358×10⁻⁴ = 3.42.</p>
+        <p class="ex-step"><b>Acceleration factor.</b> AF = e<sup>3.42</sup> = 30.6.</p>
+        <p class="ex-step"><b>Demonstrated life.</b> 2,000 h × 30.6 = 61,100 h, which is 61,100/8,766 = 6.97 years at 55 °C.</p>
+        <p class="ex-step"><b>Sensitivity.</b> With <em>E</em><sub>A</sub> = 0.7 eV the exponent is 8,123 × 5.358×10⁻⁴ = 4.35 and AF =
+          77.6, so the same test would demonstrate 155,000 h, about 18 years.</p>
+        <p class="ex-answer">AF = 30.6, so 2,000 test hours demonstrate about 61,000 hours, 7.0 years, at 55 °C. Check: a larger
+          activation energy means a stronger temperature dependence and hence a larger factor, as found; and the result is only as
+          good as the assumption that the test and use temperatures share one mechanism.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A project has one flight unit of a new design and no budget for a second. Which kind of test does it run, at what random-vibration level and duration, and what risk does it accept that a prototype programme would not?</summary>
+      <div class="answer">
+        <p>
+          It runs a protoflight programme: the flight unit is tested at qualification levels, the flight limit level plus 3 dB
+          (twice the mean-square acceleration, √2 in G<sub>rms</sub>), but for the acceptance duration, 1 minute per axis rather
+          than the prototype's 2. The levels demonstrate the design's margin against the predicted environment.
+        </p>
+        <p>
+          It accepts two risks. The design is never shown to survive the doubled exposure, so a fatigue mechanism with little
+          margin in cycles may go undetected. And the unit that flies has absorbed a qualification-level test, which consumed
+                part of its fatigue life and may have damaged it; a prototype programme tests a separate unit at qualification levels
+      for the full qualification duration, and flies units that have seen only acceptance levels.
+        </p>
+      </div>
+    </details>
+
+    <h2>7 · Derating, stress ratio and parts grades</h2>
+
+    <p>
+      Qualification and acceptance test the hardware against its environment. The design itself carries a second margin, at the
+      level of every component: no part is operated near its rated limits. Lecture 22 called this the first thing to take from
+      it, and NASA's parts instructions make it a requirement. This section defines the quantities, gives the rules, and places
+      them alongside the screening and grading of parts.
+    </p>
+
+    <p>
+      <b>Derating and the stress ratio.</b> NASA's EEE-INST-002 defines <b>derating</b> as the reduction of the electrical and
+      thermal stresses applied to a part in normal operation, to decrease its degradation rate and prolong its life. It is
+      expressed as a factor: the stress applied to a part may not exceed its rated value multiplied by the derating factor. The
+      same rule, seen from the design, is a limit on the <b>stress ratio</b>, the applied stress divided by the rated stress:
+    </p>
+
+    <div class="eq" id="m19-eq-sr">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> = <span class="frac"><span class="num"><em>X</em><sub>applied</sub></span><span class="den"><em>X</em><sub>rated</sub></span></span> ≤ <em>D</em></div>
+        <div class="eq-num">(19.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em> stress ratio (dimensionless) · <em>X</em> any stress parameter of the part, in the same unit for both:
+        voltage, current, power, junction temperature · <em>D</em> derating factor for that parameter and part type, from the
+        derating standard (dimensionless, below 1). Evaluated for every parameter of every part, at the worst case the part
+        will see, including ripple, transients and temperature.
+      </div>
+    </div>
+
+    <p>
+      Lecture 22 gave the working rule a reviewer applies to a stress-ratio analysis, drawn in Figure 11: a ratio of 0.8 or less
+      leaves 20 % margin and passes; above 0.8 the design must justify the part by analysis; near 1 it is rejected; and above 1
+      the applied stress exceeds the rating, so the part must be re-screened and tested to the higher stress, or replaced. A
+      part drawing 1 A from a 4 A rating has <em>S</em> = 1/4 = 0.25. The rule applies to every parameter, voltage, current,
+      power, temperature and radiation, not only the one that first comes to mind. EEE-INST-002 is stricter than 0.8 for many
+      parts, and specific: ceramic capacitors 0.60 of rated voltage, applied to the sum of the DC voltage and the peak ripple;
+            solid tantalum capacitors 0.50 up to 70 °C and 0.30 at 110 °C; fixed film resistors 0.6 of rated power (0.5 for some other
+      styles), with the power derated further above a stated temperature, and a voltage no higher than the lesser of 0.8 of the
+      rated voltage and (<em>PR</em>)<sup>1/2</sup>; transistors 0.60 of rated power and 0.75 of
+      rated current, power MOSFETs 0.75 of rated drain–source voltage and 0.60 of gate–source voltage; diodes 0.70 of peak
+      inverse voltage and 0.50 of forward current; and junction temperatures no higher than 125 °C or 40 °C below the
+      manufacturer's maximum, whichever is lower.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 172" role="img" aria-labelledby="f19-sr-t">
+  <title id="f19-sr-t">A stress-ratio scale from 0 to 1.2, applied stress divided by rated stress: up to 0.8 the part is used without further argument, from 0.8 to 1 its use must be justified by analysis, and above 1 the applied stress exceeds the rating, so the part must be re-screened and tested to the higher stress or replaced. Four examples are marked: 1 ampere drawn from a 4 ampere part at 0.25, 30 volts of bus and ripple on a 100 volt transistor at 0.30, on a 50 volt capacitor at 0.60, and on a 35 volt capacitor at 0.86</title>
+  <line x1="30" y1="70" x2="420" y2="70" class="dg-rule"/>
+  <rect x="30" y="56" width="260" height="14" class="dg-fill" style="opacity:.35"/>
+  <rect x="290" y="56" width="65" height="14" class="dg-fill" style="opacity:.75"/>
+  <rect x="355" y="56" width="65" height="14" class="dg-acc-f" style="opacity:.6"/>
+  <g class="dg-label-sm" text-anchor="middle">
+    <text x="30" y="86">0</text><text x="111.25" y="86">0.25</text><text x="192.5" y="86">0.5</text><text x="273.75" y="86">0.75</text><text x="355" y="86">1.0</text>
+  </g>
+  <line x1="290" y1="50" x2="290" y2="74" class="dg-rule"/>
+  <line x1="355" y1="50" x2="355" y2="74" class="dg-rule"/>
+  <text x="160" y="48" class="dg-label-sm" text-anchor="middle">used as designed</text>
+  <text x="322" y="40" class="dg-label-sm" text-anchor="middle">justify</text>
+  <text x="322" y="51" class="dg-label-sm" text-anchor="middle">by analysis</text>
+  <text x="388" y="40" class="dg-label-sm" text-anchor="middle">re-screen</text>
+  <text x="388" y="51" class="dg-label-sm" text-anchor="middle">or replace</text>
+  <text x="225" y="166" class="dg-label" text-anchor="middle">stress ratio = applied / rated</text>
+  <g>
+    <circle cx="111.25" cy="104" r="4" class="dg-acc-f"/><text x="106" y="122" class="dg-label-sm" text-anchor="end">1 A of 4 A</text>
+    <circle cx="127.5" cy="104" r="4" class="dg-acc-f"/>
+    <circle cx="225" cy="104" r="4" class="dg-acc-f"/><text x="225" y="122" class="dg-label-sm" text-anchor="middle">30 V on 50 V</text>
+    <circle cx="308.6" cy="104" r="4" class="dg-acc-f"/><text x="308.6" y="122" class="dg-label-sm" text-anchor="middle">30 V on 35 V</text>
+    <text x="127.5" y="140" class="dg-label-sm" text-anchor="middle">30 V on 100 V</text><line x1="127.5" y1="109" x2="127.5" y2="130" class="dg-guide"/>
+  </g>
+</svg>
+      <figcaption><b>Figure 11.</b> The stress-ratio rule of Lecture 22, with the examples of this section. EEE-INST-002's derating factors are lower than 0.8 for many part types (0.60 for a ceramic capacitor's voltage), and the stricter limit governs.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Choosing parts for a 28 V bus</div>
+      <div class="ex-body">
+        <p><b>Given</b> a ceramic capacitor across a 28 V DC bus that carries 2 V of peak ripple, and a power MOSFET switching the
+          same bus; candidate capacitors rated 35 V and 50 V, and MOSFETs rated 60 V and 100 V. Derating factors from
+          EEE-INST-002: 0.60 for the capacitor's voltage, 0.75 for the MOSFET's drain–source voltage. <b>Find</b> the stress
+                    ratio of each candidate, which pass the lecture's 0.8 rule, and which pass EEE-INST-002.</p>
+        <p><b>Plan.</b> (19.9) for each part, with the worst-case applied voltage. The standard applies the capacitor's factor to
+          DC plus peak ripple, and the transistor's to the worst case of DC, AC and transient voltage, so the applied stress is at
+          least 30 V for both, not 28 V.</p>
+        <p class="ex-step"><b>Capacitor, 35 V.</b> <em>S</em> = 30/35 = 0.857 (0.80 on the DC voltage alone). It fails both rules once
+          the ripple is counted; on DC alone it would sit exactly at the lecture's limit and still fail the standard's 0.60.</p>
+        <p class="ex-step"><b>Capacitor, 50 V.</b> <em>S</em> = 30/50 = 0.60: it meets EEE-INST-002 exactly and the lecture's rule
+          easily. The minimum rating the standard allows is 30/0.60 = 50 V.</p>
+                <p class="ex-step"><b>MOSFET, 60 V.</b> <em>S</em> = 30/60 = 0.50, within 0.75 and 0.8; a switching transient above the
+          ripple would raise it.</p>
+        <p class="ex-step"><b>MOSFET, 100 V.</b> <em>S</em> = 30/100 = 0.30. Why consider it when the 60 V part already passes: the derating
+          tables do not include radiation. EEE-INST-002 notes that its factors do not preclude more stringent derating, for
+          example for radiation-induced degradation, and refers single-event burnout and gate rupture of power MOSFETs to the
+          project's radiation engineer. A heavy ion can trigger burnout at a drain voltage well below the rating
+          (<a href="../../EEE5416_Radiation_Effects/site/m16-destructive-single-event-effects.html">EEE 5416 M16</a>), which is
+          what Lecture 22 meant by a 400 V transistor that cannot be used at 400 V in space.</p>
+        <p class="ex-answer">Capacitor: only the 50 V part passes EEE-INST-002 (<em>S</em> = 0.60); the 35 V part fails both rules
+          once ripple is counted (0.857). MOSFET: both pass the voltage derating (at least 0.50 and 0.30); the choice between them rests on
+          its radiation data. Check: every ratio is below 1 for a part that is used as rated, and the stricter of two rules governs.</p>
+      </div>
+    </div>
+
+    <p>
+      <b>Parts grades and levels.</b> <a href="m03-space-electronics-gap.html">M03 §4</a> described the commercial, industrial
+      and automotive, military and space grades of parts, which differ in screening rather than design; Lecture 22 added the
+      downhole grades rated for high temperature. NASA's instructions organise parts by three reliability levels. Level 1
+      parts have the highest manufacturing control and testing, to military specifications, for missions requiring the highest
+      reliability and lowest risk, typically five years or longer. Level 2 parts have reduced control and testing, for missions
+      of low to moderate risk, typically one to five years. Level 3 parts have no guaranteed reliability controls in
+      manufacture and no standard testing, so their reliability can vary with every manufacturer, part type and lot, and they
+            are for missions that can accept high risk. Crewed missions carry the strictest requirements. The derating factors are
+      tabulated by part type and set by the designer for each application, so a high-level part is derated as a low-level one
+      is.
+    </p>
+
+    <p>
+      <b>Lots, screening and upscreening.</b> Parts made together in one manufacturing lot, identified by a lot date code, are
+      assumed to behave alike, so one lot is characterised by testing samples from it; Lecture 22 stressed that the assumption is
+      not exactly true and is still the basis of the whole system. When a part is not available in the grade a mission needs, a
+      commercial part is <b>upscreened</b>: tested, lot by lot, by the user or a test house, to the screens and characterisation
+      the grade requires, including burn-in (§1) and, for space, radiation testing. A design that needs a part beyond its rating,
+      a stress ratio above 1, can be justified only by such tests; Lecture 22's phrasing was that the numbers, not belief, decide.
+    </p>
+
+    <details class="check">
+      <summary>A solid tantalum capacitor on a 28 V bus with 1 V of peak ripple will run at 70 °C. What is the lowest voltage rating EEE-INST-002 permits? What if it runs at 110 °C, and what does the difference say about where in a box the part should go?</summary>
+      <div class="answer">
+        <p>
+          The applied stress is 28 + 1 = 29 V. At 70 °C the factor is 0.50, so the rating must be at least 29/0.50 = 58 V. At
+          110 °C the factor falls to 0.30, so the rating must be at least 29/0.30 = 96.7 V, about 1.7 times higher.
+        </p>
+        <p>
+          A tantalum capacitor's voltage capability is a strong function of temperature, and the standard derates it further as
+          temperature rises; the same applies to the resistor power derating above its temperature T1. Placing the part where the
+          box runs cool, away from power devices and on a good conduction path, permits a smaller and lighter part with the same
+          margin. Derating and thermal design are one problem.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>A part fails when stress meets strength: by <b>overstress</b> (a sudden stress above the strength: fracture, breakdown, ESD, single events) or by <b>wear-out</b> (damage accumulated under sustained stress: fatigue, creep, TDDB, electromigration, trapped charge, corrosion). Failure rate follows the bathtub curve; burn-in and screening remove infant mortality. Deck 19 p. 35: integrated systems are limited by bonded-interface degradation, thermal and mechanical together.</li>
+        <li>Random vibration is specified by its ASD (g²/Hz) over 20–2,000 Hz; G<sub>rms</sub> = (∫<em>W</em> d<em>f</em>)<sup>1/2</sup> (19.1), summed over power-law segments (19.2). GEVS components: 0.16 g²/Hz plateau, 14.1 G<sub>rms</sub> qualification, 10.0 acceptance. Vehicle levels 2.7–12.9 G<sub>rms</sub> (Shuttle); qualification/acceptance = √2, i.e. +3 dB. Deck 19 p. 19's "ASD (G²/Hz)" heading sits over G<sub>rms</sub> entries.</li>
+        <li>A resonance amplifies its input by about <em>Q</em> (a board ≈ 10); Miles: <em>G</em><sub>rms</sub> = (π<em>f</em><sub>n</sub><em>QW</em>/2)<sup>1/2</sup>, <em>z</em><sub>rms</sub> = <em>G</em><sub>rms</sub><em>g</em>/(2π<em>f</em><sub>n</sub>)² (19.3): 450 Hz, <em>Q</em> = 10 on 0.16 g²/Hz gives 33.6 g and 41 µm rms; stiffening to 900 Hz, past the plateau, cuts the deflection 3.2×. Sine 5–200 Hz (qualified at 1.25 × limit), shock to ~7,000 g.</li>
+        <li>Acoustic levels 130–145 dB re 20 µPa, <em>p</em> = <em>p</em><sub>ref</sub>10<sup><em>L</em>/20</sup> (19.4): 145 dB is 356 Pa rms; 3 dB is ×√2 in pressure. Titan's 130/136 dB is reversed in the survey itself; the fundamental-frequency columns are spacecraft minima, not maxima.</li>
+        <li>Thermal cycling shears joints by Δ<em>γ</em> = <em>L</em><sub>D</sub>Δ<em>α</em>Δ<em>T</em>/<em>h</em> (19.5), and fatigue life falls as Δ<em>γ</em><sup>1/<em>c</em></sup>, 1/<em>c</em> ≈ −2.5 (19.6): a 5 mm die over −55/+125 °C, 1,630 cycles on alumina, 74 on FR-4 without underfill. Micro-bumps on silicon crack from the local Cu–solder mismatch (Deck 19 p. 33). Norris–Landzberg (19.7): 1,000 cycles of −55/+125 °C ≈ 40,000 orbital cycles of 0–40 °C, about 7 years.</li>
+        <li>Qualification (prototype or protoflight) proves the design at limit + 3 dB (2 min/axis prototype); acceptance screens each flight unit at the limit level. Temperature ranges nest mission ⊂ acceptance (+5 °C) ⊂ qualification (+10 °C) in the survey's table, with one printed exception. Arrhenius (19.8): 2,000 h at 125 °C with 0.55 eV ≈ 7 years at 55 °C.</li>
+        <li>Derating: stress ratio <em>S</em> = applied/rated ≤ <em>D</em> (19.9) for every parameter. Lecture rule ≤ 0.8; EEE-INST-002: ceramic capacitors 0.60 (DC + ripple), MOSFET <em>V</em><sub>DS</sub> 0.75, transistor power 0.60, <em>T</em><sub>j</sub> ≤ 125 °C or 40 °C below the maximum, whichever is lower; radiation (SEB) derating comes on top. Levels 1–3; upscreening of COTS lots.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Opening</td><td>Deck 19 pp. 18, 31, 37; Lecture 20; cycle counts from M17a §1</td></tr>
+      <tr><td>§1</td><td>Deck 19 p. 35 (the tree after the 2021 IEEE Heterogeneous Integration Roadmap, Ch. 24; the photograph after Gan <em>et al.</em>, <em>Gold Bulletin</em> 47, 2014); stress–strength interference, the overstress and wear-out descriptions and the bathtub phases from HIR 2021 Ch. 24 (eps.ieee.org/hir), pp. 1–3; the bathtub curve from the NIST/SEMATECH e-Handbook of Statistical Methods, §8.1.2.4; screening and burn-in from NASA/TP-2003-212242, EEE-INST-002 (2003, with Addendum 1, 2008), §3.0 and the screening tables of Sections M2–M4; single-event classes after K. LaBel <em>et al.</em>, NEPP proton RHA guide (2009); Lectures 20 and 22</td></tr>
+      <tr><td>§2</td><td>Deck 19 p. 19 (= Deck 12 p. 11) and Deck 12 pp. 10, 13, after J. Plante and B. Lee, "Environmental Conditions for Space Flight Hardware – A Survey", NASA NEPP (2004), NTRS 20060013394, Tables 2 and 5; the component profile, workmanship profile and test factors from GSFC-STD-7000B, General Environmental Verification Standard (2021), Tables 2.2-2, 2.4-3 and 2.4-4, and §1.8 (workmanship tests); sine excitation from the Ariane 5 User's Manual, Issue 5 Rev. 2 (2016), §3.2.3; Lectures 13 and 20</td></tr>
+      <tr><td>§3</td><td>Lecture 13 and Deck 13 pp. 13, 15 (board resonance; the Swift notched sine test); GEVS sine-test notching and typical <em>Q</em>, GSFC-STD-7000B pp. 2.4-22 to 2.4-23; Miles' equation after J. W. Miles, <em>J. Aeronaut. Sci.</em> 21, 753 (1954); M18 §5</td></tr>
+      <tr><td>§4</td><td>Deck 19 p. 20 (= Deck 12 p. 13 acoustic half) and Deck 13 p. 14, after Plante and Lee (2004), Table 5; GEVS Table 2.2-2 and the acoustic-test methods (p. 2.4-15); minimum spacecraft frequencies from the Delta II Payload Planners Guide (2006), §4.2.3.2, and the Ariane 5 User's Manual, Issue 5 Rev. 2 (2016), §4.2.3.4; Lecture 13</td></tr>
+      <tr><td>§5</td><td>Deck 19 pp. 21, 32, 33 and Lecture 20; mismatch strain from M17b §3; the shear-strain and fatigue model after W. Engelmaier, <em>IEEE Trans. CHMT</em> 6, 232 (1983), from the fatigue data of R. N. Wild (IBM, 1973), as stated by A. Purushotaman, N. Raines and N. Blattau, IMAPS 2025; Norris–Landzberg after K. C. Norris and A. H. Landzberg, <em>IBM J. Res. Dev.</em> 13, 266 (1969), with constants as given by V. Vasudevan and X. Fan, ECTC 2008, including those of Pan <em>et al.</em> for SAC; expansion coefficients: alumina from the Morgan AL600 (96 %) data sheet, FR-4 in-plane 16×10⁻⁶ K⁻¹ and Sn–37Pb 23×10⁻⁶ K⁻¹ (J. S. Hwang, SMT007; RF Essentials gives 14–17 for FR-4), copper and silicon from M17b §3; underfill after W. Brenner, <em>Electronic Design</em> (2012); test conditions from JESD22-A104 and MIL-STD-883 Method 1010 as tabulated by eesemi.com</td></tr>
+      <tr><td>§6</td><td>Lecture 13 (qualification against acceptance); GEVS §1.8 (definitions) and Table 2.2-2; Deck 12 p. 16, after Plante and Lee; Arrhenius from M17b §2 and Deck 15 p. 17; Lecture 20 (lifetime prediction)</td></tr>
+      <tr><td>§7</td><td>Lecture 22 (stress ratio, parts grades, lots, upscreening); EEE-INST-002 §2.0, §3.0, §6 and the derating tables of Sections C1, R2 and S1; M03 §4; SEB from EEE 5416 M16</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m18-chip-bonding-packaging.html"><span>Previous</span>M18 · Chip Bonding and Packaging</a>
+      <a class="next" href="m19a-failure-analysis.html"><span>Next</span>M19a · Failure Analysis</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

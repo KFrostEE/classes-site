@@ -1,0 +1,1655 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M18 · Chip Bonding and Packaging — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M18 · Chip Bonding and Packaging</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 18</p>
+    <h1>Chip Bonding and Packaging</h1>
+    <p class="lede">
+      How a die millimetres across, with transistors micrometres across, is connected to the world and kept
+      working: the package and its ceramic substrate, wire bonding and how a bond is tested, flip-chip bumps,
+      2.5D and 3D integration through interposers and through-silicon vias, hybrid bonding, and the package
+      materials that misbehave in space.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M03, M17b §3, M17c §5</span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Deck 18 (wire bonding); Deck 19 pp. 1–17 (integration and packaging); Lectures 19, 20 and 22; MIL-STD-883K Method 2011; NBS SP 400-18</span>
+    </div>
+
+    <p>
+      Every module so far has treated the die: the transistor, its oxide and junctions, what radiation and
+      temperature do to them. A die cannot be used as it leaves the wafer. It is a few millimetres square, its
+      devices are tens of micrometres across, and no cable can be soldered to it. The package connects the die
+      to a circuit board, carries it, removes its heat and protects it, and in space it must do this through
+      launch vibration, thermal cycling and vacuum. Packaging has also become the main route to faster systems
+      (<a href="m02-scaling-of-electronics.html">M02 §5</a>): when transistors stop shrinking usefully, more
+      performance comes from placing more dies closer together with more connections between them. The
+      professor's statement of the field is that packaging technology rests on how fine a metal line can be made
+      and how well two parts can be aligned (Lecture 20).
+    </p>
+    <p>
+      §1 sets out what a package does and the three ways a die is first connected. §2 treats the substrate a
+      high-temperature die sits on, alumina, and what heat does to its insulation and its fit with the die.
+      §3–§5 cover wire bonding: how a wire is welded to a pad without melting, what the operator controls and
+      what goes wrong, and how a bond is tested by pulling, shearing and shaking. §6 turns the die face down
+      onto bumps, §7 places several dies on an interposer or stacks them with through-silicon vias, and §8
+      describes hybrid bonding, the finest of these connections. §9 states what integration costs: heat that
+      cannot escape a stack, interconnects that become the weak points, and two material problems specific to
+      space, tin whiskers and outgassing.
+    </p>
+
+    <h2>1 · What a package does</h2>
+    <p>
+      A semiconductor chip is typically 3–5 mm on a side, and the devices on it are 10–100 µm across
+      (Deck 18 p. 7). Connections to it are made at bond pads, metal areas at the edge of the die that are
+      typically 50–150 µm wide; the bond pads of a package are typically 1–2 mm (Deck 18 p. 10). The package
+      bridges the two scales: fine connections land on the die, and each is carried out to a pin, a lead or a
+      solder ball large enough to be soldered to a printed circuit board. Lecture 19's example is the
+      professor's own radiation test vehicle, nine MEMS devices on one die, bonded into a ceramic package whose
+      pins connect through a vacuum feedthrough to instruments outside the chamber.
+    </p>
+    <p>
+      The die is first fixed to the package, a step called die attach, with conductive glue, silver paint,
+      tape or epoxy (Deck 18 p. 10). The attach is made conductive because the back of the die is normally
+      grounded through it (Lecture 19). A package for 500 °C needs a die attach that survives the same
+      temperature: NASA's silicon carbide chips use a gold thick-film attach fired at 600 °C
+      (<a href="m17c-high-temperature-electronics.html">M17c §5</a>).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 150" role="img" aria-labelledby="f18-1-t">
+  <title id="f18-1-t">The chain from wafer to product: wafers of 6, 8 and 12 inches are cut into dice, each die is packaged or mounted bare on a module, packages are mounted on modules, modules and packages are assembled onto printed circuit boards, and boards go into products</title>
+  <defs><marker id="f18-1-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-soft"/></marker></defs>
+  <g class="dg-label" text-anchor="middle">
+    <rect x="6" y="22" width="76" height="40" rx="4" class="dg-fill"/>
+    <text x="44" y="40">wafer</text><text x="44" y="55" class="dg-label-sm">6, 8, 12 in</text>
+    <rect x="96" y="22" width="76" height="40" rx="4" class="dg-fill"/>
+    <text x="134" y="40">die</text><text x="134" y="55" class="dg-label-sm">3–5 mm</text>
+    <rect x="186" y="22" width="76" height="40" rx="4" class="dg-fill" stroke-width="2"/>
+    <text x="224" y="40" class="dg-acc-f">package</text><text x="224" y="55" class="dg-label-sm">pads 1–2 mm</text>
+    <rect x="276" y="22" width="76" height="40" rx="4" class="dg-fill"/>
+    <text x="314" y="40">module</text>
+    <rect x="186" y="96" width="76" height="40" rx="4" class="dg-fill"/>
+    <text x="224" y="114">board</text><text x="224" y="129" class="dg-label-sm">(PCBA)</text>
+    <rect x="276" y="96" width="76" height="40" rx="4" class="dg-fill"/>
+    <text x="314" y="120">product</text>
+  </g>
+  <g class="dg-line" stroke-width="1.4">
+    <line x1="82" y1="42" x2="94" y2="42" marker-end="url(#f18-1-ar)"/>
+    <line x1="172" y1="42" x2="184" y2="42" marker-end="url(#f18-1-ar)"/>
+    <line x1="262" y1="42" x2="274" y2="42" marker-end="url(#f18-1-ar)"/>
+    <line x1="224" y1="62" x2="224" y2="94" marker-end="url(#f18-1-ar)"/>
+    <line x1="314" y1="62" x2="262" y2="96" marker-end="url(#f18-1-ar)"/>
+    <line x1="262" y1="116" x2="274" y2="116" marker-end="url(#f18-1-ar)"/>
+    <path d="M134,22 C160,4 290,4 312,20" fill="none" stroke-dasharray="3 3" marker-end="url(#f18-1-ar)"/>
+  </g>
+  <text x="400" y="40" class="dg-label-sm" text-anchor="middle">this</text>
+  <text x="400" y="54" class="dg-label-sm" text-anchor="middle">module:</text>
+  <text x="400" y="68" class="dg-label-sm" text-anchor="middle">die → package</text>
+</svg>
+      <figcaption>
+        <b>Figure 1.</b> Where packaging sits. A wafer is cut into dice; a die is packaged, or mounted bare on
+        a module; packages go onto modules and boards, and boards into products. Deck 19 p. 7 also shows a "complex integrated system"
+        level between module and board, omitted here.
+        <span class="src">After Deck 19 p. 7 (source: Jabil).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The electrical connection between die and package is the first-level interconnect, and it is made in one
+      of three ways (Deck 18 p. 7). In <b>wire bonding</b> the die sits face up on the package and a thin metal
+      wire, typically 25 µm in diameter (Deck 18 p. 26), runs from each pad on the die to a pad on the package. In <b>flip-chip
+      bonding</b> the die is turned face down and its pads meet the package through metal bumps; a polymer
+      underfill fills the gap around the bumps. In <b>tape-automated bonding</b> the die is joined to metal
+      leads carried on a polymer tape, at the inner lead bonds. Wire bonding is the oldest and, in the
+      professor's assessment, still the most versatile; it is the method of his own laboratory, while flip-chip
+      bumps carry the dense connections of modern processors (Lectures 19 and 20).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 236" role="img" aria-labelledby="f18-2-t">
+  <title id="f18-2-t">Three first-level interconnects in cross-section: wire bonding, with the die face up on a die attach and wires arching from its top pads to the substrate; flip-chip bonding, with the die face down on a row of bumps surrounded by underfill; and tape-automated bonding, with the die held by inner lead bonds to metal leads on a tape</title>
+  <!-- (a) wire bond -->
+  <text x="8" y="16" class="dg-label">(a) wire bonding</text>
+  <rect x="20" y="60" width="180" height="12" class="dg-fill"/>
+  <text x="110" y="86" class="dg-label-sm" text-anchor="middle">substrate (package)</text>
+  <rect x="70" y="55" width="80" height="5" class="dg-soft" opacity="0.6"/>
+  <rect x="70" y="35" width="80" height="20" class="dg-fill"/>
+  <text x="110" y="49" class="dg-label-sm" text-anchor="middle">die, face up</text>
+  <path d="M76,35 C68,18 50,20 42,60" class="dg-acc" stroke-width="1.8" fill="none"/>
+  <path d="M144,35 C152,18 170,20 178,60" class="dg-acc" stroke-width="1.8" fill="none"/>
+  <text x="186" y="30" class="dg-label-sm">wire</text>
+  <text x="156" y="102" class="dg-label-sm">die attach</text>
+  <line x1="152" y1="98" x2="140" y2="60" class="dg-guide" stroke-width="0.8"/>
+  <!-- (b) flip chip -->
+  <text x="236" y="16" class="dg-label">(b) flip-chip bonding</text>
+  <rect x="244" y="60" width="180" height="12" class="dg-fill"/>
+  <text x="334" y="86" class="dg-label-sm" text-anchor="middle">substrate</text>
+  <rect x="290" y="56" width="88" height="4" class="dg-soft" opacity="0.35"/>
+  <rect x="290" y="34" width="88" height="18" class="dg-fill"/>
+  <text x="334" y="47" class="dg-label-sm" text-anchor="middle">die, face down</text>
+  <g class="dg-acc-f"><circle cx="298" cy="56" r="3.6"/><circle cx="312" cy="56" r="3.6"/><circle cx="326" cy="56" r="3.6"/><circle cx="340" cy="56" r="3.6"/><circle cx="354" cy="56" r="3.6"/><circle cx="368" cy="56" r="3.6"/></g>
+  <text x="400" y="30" class="dg-label-sm">bumps</text>
+  <text x="384" y="104" class="dg-label-sm" text-anchor="middle">underfill</text>
+  <line x1="384" y1="96" x2="376" y2="58" class="dg-guide" stroke-width="0.8"/>
+  <!-- (c) TAB -->
+  <text x="8" y="134" class="dg-label">(c) tape-automated bonding</text>
+  <rect x="150" y="160" width="80" height="20" class="dg-fill"/>
+  <text x="190" y="174" class="dg-label-sm" text-anchor="middle">die</text>
+  <rect x="40" y="182" width="104" height="7" class="dg-soft" opacity="0.5"/>
+  <rect x="236" y="182" width="104" height="7" class="dg-soft" opacity="0.5"/>
+  <text x="92" y="204" class="dg-label-sm" text-anchor="middle">tape with leads</text>
+  <text x="288" y="204" class="dg-label-sm" text-anchor="middle">tape with leads</text>
+  <path d="M144,182 L156,182 L156,180" class="dg-acc" stroke-width="2.2" fill="none"/>
+  <path d="M236,182 L224,182 L224,180" class="dg-acc" stroke-width="2.2" fill="none"/>
+  <text x="360" y="156" class="dg-label-sm" text-anchor="middle">inner lead bond</text>
+  <line x1="350" y1="160" x2="228" y2="180" class="dg-guide" stroke-width="0.8"/>
+</svg>
+      <figcaption>
+        <b>Figure 2.</b> The three first-level interconnects. A wire bond leaves the die face up and connects only
+        its edge; a flip chip uses the whole face, through bumps; tape-automated bonding joins the die to leads on
+        a tape. Not to scale.
+        <span class="src">After Deck 18 p. 7.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The package also carries heat and mechanical load. The power a die dissipates leaves through the die
+      attach and the package, so the substrate's thermal conductivity matters (§2), and the package and its
+      bonds must hold together through the vibration of launch and the expansion and contraction of every
+      thermal cycle. Deck 19's summary states the problem for space: advanced packaging has progressed far, but
+      thermal and vibration effects can damage both the packaging and the electronics inside it (Deck 19
+      p. 37). <a href="m19-reliability-qualification.html">M19</a> takes up the qualification tests that look
+      for this damage.
+    </p>
+
+    <details class="check">
+      <summary>A die 4 mm square has pads 80 µm wide; the board it must reach has features a millimetre wide. Why can neither connection simply be scaled to the other, and which part of the assembly reconciles them?</summary>
+      <div class="answer">
+        <p>
+          The die's pads are small because the die is small: a 4 mm edge holds only so many pads, and every
+          pad takes area that transistors could use, so pads sit at the 50–150 µm scale. A board connection must
+          be large enough to solder by conventional assembly and to carry a pin, lead or solder ball, which puts it
+          at the 1–2 mm scale of package pads. Enlarging the die's pads would waste die area and limit how many
+          connections the die can have; shrinking the board's connections would make them impossible to assemble.
+          The package reconciles the two: its first-level interconnect (wire bonds, bumps or tape leads) lands
+          on the die's fine pads, and its wiring fans each connection out to a large pad or pin on the outside.
+        </p>
+      </div>
+    </details>
+
+    <h2>2 · The substrate at high temperature</h2>
+    <p>
+      A package is built on a substrate, the insulating plate that carries the die, its wiring and its pads.
+      For electronics that run hot, the substrate must stay insulating, expand with the die closely enough not to
+      crack the attach, conduct the die's heat away and, for radio-frequency circuits, absorb little of the
+      signal. Lecture 19 opened on this problem, with the silicon carbide parts of
+      <a href="m17c-high-temperature-electronics.html">M17c</a> in view: Cree's CRF24010, an unmatched silicon
+      carbide RF power MESFET (Deck 18 p. 3), and, on Deck 18 p. 4, a chip antenna and an oscillator of about
+      1 GHz built around a Cree SiC MESFET on a thin-film alumina substrate, CoorsTek's SuperStrate 996, which
+      the slide credits with low thermal expansion and low loss.
+    </p>
+    <p>
+      Alumina is aluminium oxide, Al₂O₃, made as a dense polycrystalline ceramic. Commercial grades are
+      named by their nominal Al₂O₃ content: AD-85 is 85 % Al₂O₃ and AD-995 99.5 % (Deck 18 p. 5). The table collects the properties the lecture used, from the
+      manufacturer's data on Deck 18 p. 5. Thermal conductivity, in W/(m·K), sets how much temperature
+      difference a given heat flux needs; relative permittivity sets the capacitance between conductors; the
+      loss tangent, tan <em>δ</em>, is the ratio of the imaginary to the real part of the permittivity, so a
+      small value means little signal power is absorbed as heat; volume resistivity is the resistance of a unit
+      cube of the material, measured between opposite faces.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Property</th><th>AD-85</th><th>AD-96</th><th>AD-995</th><th>AD-998</th></tr></thead>
+        <tbody>
+          <tr><td>Al₂O₃ content (nominal or minimum)</td><td>85 %</td><td>96 %</td><td>99.5 %</td><td>99.8 %</td></tr>
+          <tr><td>Density (g/cm³)</td><td>3.42</td><td>3.72</td><td>3.90</td><td>3.92</td></tr>
+          <tr><td>Thermal conductivity at 20 °C (W/(m·K))</td><td>16.0</td><td>24.7</td><td>30.0</td><td>31.0</td></tr>
+          <tr><td>Expansion coefficient, mean over 25–1000 °C (10⁻⁶ /°C)</td><td>7.2</td><td>8.2</td><td>8.2</td><td>8.2</td></tr>
+          <tr><td>Relative permittivity at 1 MHz</td><td>8.2</td><td>9.0</td><td>9.7</td><td>9.8</td></tr>
+          <tr><td>Loss tangent at 1 MHz</td><td>0.0009</td><td>0.0002</td><td>0.0001</td><td>&lt; 0.0001</td></tr>
+          <tr><td>Volume resistivity at 25 °C (Ω·cm)</td><td>&gt; 10¹⁴</td><td>&gt; 10¹⁴</td><td>&gt; 10¹⁴</td><td>&gt; 10¹⁴</td></tr>
+          <tr><td>at 500 °C</td><td>4×10⁸</td><td>4×10⁹</td><td>2×10¹⁰</td><td>2×10¹¹</td></tr>
+          <tr><td>at 1000 °C</td><td>—</td><td>1×10⁶</td><td>2×10⁶</td><td>2×10⁷</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The resistivity rows carry the point Lecture 19 stressed. At room temperature every grade insulates
+      better than 10¹⁴ Ω·cm. By 500 °C the resistivity is lower by a factor of at least 500 in the purest grade,
+      AD-998, and at least 2.5×10⁵ in AD-85; by 1000 °C it is lower by at least 5×10⁶ in AD-998 and 10⁸ in
+      AD-96. (The room-temperature entries are lower bounds, so these factors are too.) Conduction through the ceramic is thermally activated: fitting
+      <em>ρ</em> ∝ exp(<em>E</em><sub>a</sub>/<em>kT</em>) to the 500 and 1000 °C values gives an apparent
+      activation energy of about 1.4 eV for AD-96 and 1.6 eV for the purer grades, so each step in temperature
+      multiplies the conductivity by a large factor, as it multiplies a semiconductor's intrinsic carrier density
+      (<a href="m17a-temperature-semiconductor.html">M17a §2</a>). Purity raises the hot resistivity strongly:
+      at 500 °C, AD-998 insulates five hundred times better than AD-85. The consequence the lecture drew is that
+      at 500–1000 °C the package, not the silicon carbide transistor, carries most of the leakage current, which
+      is what NASA measured on its JFET circuits above 500 °C
+      (<a href="m17c-high-temperature-electronics.html">M17c §5</a>, Figure 8).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 262" role="img" aria-labelledby="f18-3-t">
+  <title id="f18-3-t">Volume resistivity of three alumina grades on a logarithmic scale against temperature: above 10 to the 14 ohm centimetres at 25 degrees for all; at 500 degrees 4 times 10 to the 9 for AD-96, 2 times 10 to the 10 for AD-995 and 2 times 10 to the 11 for AD-998; at 1000 degrees 1 times 10 to the 6, 2 times 10 to the 6 and 2 times 10 to the 7</title>
+  <defs><marker id="f18-3-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-soft"/></marker></defs>
+  <rect x="64" y="30" width="340" height="184" class="dg-fill" opacity="0.3"/>
+  <g class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3">
+    <line x1="64" y1="195.6" x2="404" y2="195.6"/><line x1="64" y1="158.8" x2="404" y2="158.8"/>
+    <line x1="64" y1="122" x2="404" y2="122"/><line x1="64" y1="85.2" x2="404" y2="85.2"/><line x1="64" y1="48.4" x2="404" y2="48.4"/>
+  </g>
+  <rect x="64" y="30" width="16" height="18.4" class="dg-soft" opacity="0.35"/>
+  <text x="86" y="44" class="dg-label-sm">all grades &gt; 10¹⁴ at 25 °C</text>
+  <line x1="225.9" y1="129.3" x2="387.8" y2="195.6" class="dg-line" stroke-width="1.4" stroke-dasharray="4 3"/>
+  <line x1="225.9" y1="116.5" x2="387.8" y2="190.1" class="dg-line" stroke-width="1.4" stroke-dasharray="4 3"/>
+  <line x1="225.9" y1="98.1" x2="387.8" y2="171.7" class="dg-acc" stroke-width="1.8" stroke-dasharray="4 3"/>
+  <g class="dg-ink"><circle cx="225.9" cy="129.3" r="3.4"/><circle cx="387.8" cy="195.6" r="3.4"/>
+    <circle cx="225.9" cy="116.5" r="3.4"/><circle cx="387.8" cy="190.1" r="3.4"/></g>
+  <g class="dg-acc-f"><circle cx="225.9" cy="98.1" r="3.6"/><circle cx="387.8" cy="171.7" r="3.6"/></g>
+  <text x="232" y="94" class="dg-label-sm">AD-998</text>
+  <text x="166" y="113" class="dg-label-sm">AD-995</text>
+  <text x="170" y="136" class="dg-label-sm">AD-96</text>
+  <line x1="64" y1="214" x2="404" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <line x1="64" y1="30" x2="64" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="64" y1="214" x2="64" y2="219"/><line x1="145" y1="214" x2="145" y2="219"/><line x1="225.9" y1="214" x2="225.9" y2="219"/><line x1="306.9" y1="214" x2="306.9" y2="219"/><line x1="387.8" y1="214" x2="387.8" y2="219"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="64" y="231">0</text><text x="145" y="231">250</text><text x="225.9" y="231">500</text><text x="306.9" y="231">750</text><text x="387.8" y="231">1,000</text></g>
+  <g class="dg-label-sm" text-anchor="end"><text x="58" y="218">10⁵</text><text x="58" y="199.6">10⁶</text><text x="58" y="162.8">10⁸</text><text x="58" y="126">10¹⁰</text><text x="58" y="89.2">10¹²</text><text x="58" y="52.4">10¹⁴</text></g>
+  <text x="234" y="250" class="dg-label" text-anchor="middle">temperature (°C)</text>
+  <text x="16" y="122" class="dg-label" text-anchor="middle" transform="rotate(-90 16 122)">ρ (Ω·cm)</text>
+</svg>
+      <figcaption>
+        <b>Figure 3.</b> Alumina stops being a near-perfect insulator when hot: AD-96 loses at least four orders
+        of magnitude by 500 °C and eight by 1000 °C. The purest grade, AD-998, stays ten to fifty times more
+        resistive than the other two at both temperatures. Only the tabulated points are data; the dashed lines
+        join them.
+        <span class="src">Data from Deck 18 p. 5 (CoorsTek property table); plotted here.</span>
+      </figcaption>
+    </figure>
+
+    <div class="eq" id="m18-eq-leak">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em> = <span class="frac"><span class="num"><em>ρ</em> <em>t</em></span><span class="den"><em>A</em></span></span>,&nbsp;&nbsp;&nbsp; <em>I</em><sub>leak</sub> = <span class="frac"><span class="num"><em>V</em></span><span class="den"><em>R</em></span></span></div>
+        <div class="eq-num">(18.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em> resistance of the insulating slab between two conductors (Ω) · <em>ρ</em> volume resistivity at the
+        operating temperature (Ω·cm) · <em>t</em> thickness of insulator between the conductors (cm) · <em>A</em>
+        area of the conductors facing each other through it (cm²) · <em>V</em> voltage between them (V) ·
+        <em>I</em><sub>leak</sub> leakage current (A). For parallel conductors whose width is large against
+        <em>t</em>; fringing paths add conductance. Use <em>ρ</em> in Ω·cm with lengths in cm. On the formula sheet as
+        <a href="formula-sheet.html#eq-18-leak">(18.1)</a>.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Leakage under one package pad, cold and hot</div>
+      <div class="ex-body">
+        <p><b>Given</b> a package pad 2 mm × 2 mm, at the top of the 1–2 mm range of Deck 18 p. 10, separated from
+        a buried ground conductor of the same size by 0.5 mm of AD-96 alumina; 10 V between them; resistivities
+        from the table. <b>Find</b> the leakage current at 25, 500 and 1000 °C, and compare the 500 °C value with
+        a SiC JFET's off-current.</p>
+        <p><b>Plan.</b> The pad and the conductor form a parallel-plate resistor, so (18.1) applies with the
+        resistivity at each temperature. The only trap is units: the table gives Ω·cm, so lengths go in cm.</p>
+        <p class="ex-step"><b>Geometry in cm.</b> <em>A</em> = 0.2 cm × 0.2 cm = 0.04 cm²;
+        <em>t</em> = 0.05 cm; <em>t</em>/<em>A</em> = 0.05/0.04 = 1.25 cm⁻¹.</p>
+        <p class="ex-step"><b>Resistance at each temperature.</b> <em>R</em> = <em>ρ</em> × 1.25 cm⁻¹. At 25 °C,
+        <em>ρ</em> &gt; 10¹⁴ Ω·cm gives <em>R</em> &gt; 1.25×10¹⁴ Ω. At 500 °C, 4×10⁹ Ω·cm gives
+        5.00×10⁹ Ω. At 1000 °C, 1×10⁶ Ω·cm gives 1.25×10⁶ Ω.</p>
+        <p class="ex-step"><b>Leakage current.</b> <em>I</em> = 10 V/<em>R</em>: below 8.00×10⁻¹⁴ A at 25 °C;
+        2.00×10⁻⁹ A at 500 °C; 8.00×10⁻⁶ A at 1000 °C.</p>
+        <p class="ex-step"><b>Compare with the transistor.</b> NASA's SiC JFET measurements had a noise floor of
+        10⁻¹⁰ to 10⁻⁹ A (M17c §5). One pad of this geometry leaks 2 nA at 500 °C, at or above that floor, and a
+        package has many pads: 32 such paths in parallel would pass 6.4×10⁻⁸ A. In AD-998, whose non-alumina
+        content is a twentieth of AD-96's (0.2 % against 4 %) and whose resistivity at 500 °C is fifty times
+        higher, the same pad would leak 4.00×10⁻¹¹ A.</p>
+        <p class="ex-answer"><em>I</em><sub>leak</sub> &lt; 8×10⁻¹⁴ A at 25 °C, 2.00 nA at 500 °C, 8.00 µA at 1000 °C.
+        Check: the current scales as 1/<em>ρ</em>, so from 25 to 500 °C it rises by at least the table's factor of
+        2.5×10⁴, and from 500 to 1000 °C by exactly 4,000.</p>
+      </div>
+    </div>
+
+    <p>
+      The geometry here is illustrative; a real package's leakage paths run between adjacent pads and traces and
+      along surfaces as well as through the bulk. The scaling is general, however: a substrate that is a perfect
+      insulator at room temperature becomes, at 500 °C, a resistor in parallel with every junction on the die,
+      and at 1000 °C a poor one. Choosing a purer grade buys a factor of 50 over AD-96 and 500 over AD-85 at
+      500 °C.
+    </p>
+
+    <p>
+      The second requirement is fit. A die bonded to a substrate is a two-layer stack of the kind
+      <a href="m17b-transistors-high-temperature.html#m17b-eq-strain">M17b §3</a> analysed for thin films:
+      each layer would expand by its own coefficient if free, and the bond forces them to a common length. Over a
+      whole die the difference in free expansion appears as a displacement at the die's edges, which the die
+      attach must take up in shear, or which a rigid attach turns into stress in the die and the substrate.
+      Alumina expands at a mean 8.2×10⁻⁶ K⁻¹ over 25–1000 °C (Deck 18 p. 5); silicon at 2.618×10⁻⁶ K⁻¹ at
+      300 K, rising to 3.610×10⁻⁶ at 500 K and 4.159×10⁻⁶ at 800 K (Swenson 1983); silicon carbide at below
+      2.4×10⁻⁶ K⁻¹ near room temperature (Neumeier <em>et al.</em> 2024). Aluminium nitride, AlN, the other
+      ceramic Lecture 19 named, expands at a mean 4.5–5.9×10⁻⁶ K⁻¹ over 100–600 °C and conducts heat at
+      170 W/(m·K), about seven times better than 96 % alumina's 24 W/(m·K) (CeramTec data sheet). On these
+      numbers AlN fits a silicon or silicon carbide die better and removes heat better; the professor reported
+      that AlN is being tried for high-temperature packages, but that his laboratory found alumina slightly
+      better (Lecture 19), and NASA's 500 °C packages are alumina (M17c §5).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Expansion mismatch across a die on its substrate</div>
+      <div class="ex-body">
+        <p><b>Given</b> a silicon die 4 mm long, in the middle of Deck 18's 3–5 mm range, attached at 25 °C and
+        heated to 500 °C; AD-96 alumina at its tabulated mean 8.2×10⁻⁶ K⁻¹; AlN at 4.5–5.9×10⁻⁶ K⁻¹; silicon's
+        coefficient from Swenson's table. <b>Find</b> the difference in free expansion across the die on each
+        substrate, and the mismatch strain.</p>
+        <p><b>Plan.</b> The mismatch strain is (<em>α</em><sub>sub</sub> − <em>α</em><sub>die</sub>)Δ<em>T</em>
+        (M17b (17b.4)); multiplied by the die length it gives the displacement the attach must absorb. Silicon's
+        coefficient rises with temperature, so use its mean over the interval, not its room-temperature value.</p>
+        <p class="ex-step"><b>Silicon's mean coefficient over 298–773 K.</b> Swenson's values, 2.555 at 293 K,
+        2.618 at 300 K, 3.251 at 400 K, 3.610 at 500 K, 3.935 at 650 K, 4.017 at 700 K, 4.091 at 750 K and
+        4.159×10⁻⁶ K⁻¹ at 800 K, interpolated linearly and averaged over the interval:
+        <em>ᾱ</em><sub>Si</sub> = 3.59×10⁻⁶ K⁻¹. Using the room-temperature 2.6 would overstate the mismatch.</p>
+        <p class="ex-step"><b>Mismatch on alumina.</b> Δ<em>α</em> = 8.2 − 3.59 = 4.61×10⁻⁶ K⁻¹;
+        Δ<em>T</em> = 475 K; <em>ε</em> = 4.61×10⁻⁶ × 475 = 2.19×10⁻³, or 0.219 %.</p>
+        <p class="ex-step"><b>Displacement across the die.</b> 2.19×10⁻³ × 4 mm = 8.76 µm, which is 4.38 µm at
+        each edge measured from the centre.</p>
+        <p class="ex-step"><b>Mismatch on AlN.</b> Δ<em>α</em> = 4.5 − 3.59 = 0.913 to 5.9 − 3.59 =
+        2.31×10⁻⁶ K⁻¹, so <em>ε</em> = 0.0434–0.110 % and the displacement 1.73–4.39 µm.</p>
+        <p class="ex-answer">Alumina: 0.219 %, 8.76 µm across 4 mm; AlN: 0.043–0.11 %, 1.7–4.4 µm, two to five
+        times less. Check: 0.219 % is under half of the lower end of the 0.5–1 % at which bulk materials typically break
+        (M17b §3), and it recurs on every thermal cycle. The alumina value uses a mean over 25–1000 °C, which
+        overstates its expansion over 25–500 °C somewhat; the comparison, not the third digit, is the result.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A package for a 500 °C sensor can be made in 96 % alumina or in 99.8 % alumina, at a higher price. Which electrical property decides, by how much, and what does the choice not change?</summary>
+      <div class="answer">
+        <p>
+          The volume resistivity at the operating temperature decides. At 500 °C AD-96 is at 4×10⁹ Ω·cm and AD-998
+          at 2×10¹¹ Ω·cm, so by (18.1) every leakage path through the bulk of the purer substrate carries one
+          fiftieth of the current. At room temperature both exceed 10¹⁴ Ω·cm and the choice would not matter.
+          What it does not change is the fit with the die: both grades expand at a mean 8.2×10⁻⁶ K⁻¹ over
+          25–1000 °C, so the mismatch strain against a silicon die (about 0.22 % from 25 to 500 °C) is the same.
+          Thermal conductivity improves only modestly, from 24.7 to 31.0 W/(m·K). If the fit or the heat
+          removal were the problem, the material would have to change (AlN), not the grade.
+        </p>
+      </div>
+    </details>
+
+    <h2>3 · Wire bonding: a weld without melting</h2>
+    <p>
+      A wire bond joins a thin wire, usually gold or aluminium about 25 µm in diameter, to a pad by a weld made
+      in the solid state: neither the wire nor the pad melts at the bond. Metal-to-metal contact is created by
+      pressing the wire onto the pad while supplying energy as heat, as ultrasonic vibration, or both. Three
+      variants exist, distinguished by that energy (Charles 2010):
+    </p>
+    <ul>
+      <li><b>Thermocompression</b> bonding uses force and heat alone; the interface reaches 300–400 °C, so the
+      die attach must survive that temperature too. Lecture 19's video pairs it with gold wire.</li>
+      <li><b>Ultrasonic</b> bonding drives the bonding tool with a transducer vibrating at 20–300 kHz, most
+      commonly 60 kHz, and supplies the weld's energy through that vibration with little or no heating of the
+      stage. It is used with aluminium or aluminium-alloy wire on aluminium or gold pads, and it is the usual
+      wedge-bonding process.</li>
+      <li><b>Thermosonic</b> bonding combines a heated stage, typically 150 °C or less, with short bursts of
+      ultrasonic energy, tens of milliseconds long, while the wire is pressed on the pad. It is used primarily
+      with gold wire, in ball bonding.</li>
+    </ul>
+    <p>
+      Lecture 19's video describes ultrasonic bonding as a cold weld made by ultrasonic energy and pressure,
+      and notes that a flat ribbon replaces the round wire where a connection must carry high current, because
+      a ribbon has a lower series resistance. The weld does not form uniformly under the tool. An aluminium
+      wedge bond lifted from its pad shows the weld around the edges of the contact, with the centre left
+      unbonded (Deck 18 p. 20; Lecture 19).
+    </p>
+
+    <p>
+      <b>Wedge bonding.</b> The wire passes at an angle through a hole in the back of a wedge-shaped tool (Deck 18
+      pp. 12–14). The tool presses the wire onto the die's pad, applies force and ultrasonic energy and makes
+      the first bond; it then rises, moves to the package pad drawing the wire into a loop, and makes the
+      second bond the same way. A clamp behind the tool closes and pulls, and the wire breaks at the thinned end
+      of the second bond. Wedges differ for gold and aluminium wire and for vertical wire feed (Deck 18
+      pp. 12–14). Threading the wire through the wedge's hole is done by hand, and the professor's own first
+      attempt took several hours (Lecture 19).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 210" role="img" aria-labelledby="f18-4-t">
+  <title id="f18-4-t">Wedge bonding: the wire is fed at an angle through the back of a wedge tool, which presses it flat onto the pad with force and ultrasonic vibration; the flattened wire is the bond foot, with a heel where the wire leaves the foot toward the loop and a toe at the far end</title>
+  <defs><marker id="f18-4-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+  <rect x="20" y="170" width="400" height="22" class="dg-fill"/>
+  <text x="330" y="186" class="dg-label-sm" text-anchor="middle">die</text>
+  <rect x="120" y="162" width="200" height="8" class="dg-soft" opacity="0.6"/>
+  <text x="300" y="158" class="dg-label-sm">pad</text>
+  <path d="M190,40 L230,40 L230,148 L222,160 L178,160 L190,120 Z" class="dg-fill"/>
+  <text x="248" y="70" class="dg-label">wedge</text>
+  <path d="M60,60 L176,150" class="dg-acc" stroke-width="3" fill="none"/>
+  <path d="M176,150 Q180,158 190,160 L222,160" class="dg-acc" stroke-width="4" fill="none"/>
+  <text x="50" y="52" class="dg-label-sm">wire, fed at an angle</text>
+  <line x1="246" y1="104" x2="246" y2="128" class="dg-acc" stroke-width="1.6" marker-end="url(#f18-4-ar)"/>
+  <text x="252" y="118" class="dg-label-sm">force</text>
+  <line x1="200" y1="28" x2="232" y2="28" class="dg-line" stroke-width="1.4"/>
+  <line x1="200" y1="28" x2="196" y2="24" class="dg-line" stroke-width="1.4"/>
+  <line x1="200" y1="28" x2="196" y2="32" class="dg-line" stroke-width="1.4"/>
+  <line x1="232" y1="28" x2="236" y2="24" class="dg-line" stroke-width="1.4"/>
+  <line x1="232" y1="28" x2="236" y2="32" class="dg-line" stroke-width="1.4"/>
+  <text x="248" y="32" class="dg-label-sm">ultrasonic vibration (≈ 60 kHz)</text>
+  <text x="150" y="146" class="dg-label-sm" text-anchor="end">heel</text>
+  <text x="236" y="152" class="dg-label-sm">toe</text>
+  <text x="206" y="204" class="dg-label-sm" text-anchor="middle">bond foot: welded at its edges</text>
+</svg>
+      <figcaption>
+        <b>Figure 4.</b> The wedge bond. The tool flattens the wire into a foot and welds it by force and
+        ultrasonic vibration. The heel, where the wire bends up out of the foot, is thinned by the tool; it is
+        where a wedge bond cracks in a pull test and under vibration (§5). Not to scale.
+        <span class="src">After Deck 18 pp. 12–16, 20, and Lecture 19; frequency from Charles (2010).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Ball bonding.</b> The wire passes down the centre of a ceramic tube, the capillary. An electric spark
+      from an electrode, the electronic flame-off, melts the end of the wire, and surface tension pulls the
+      molten metal into a sphere, the free air ball (Deck 18 p. 21; Charles 2010). The capillary presses the
+      ball onto the die's pad with force, ultrasonic energy and usually heat, which makes the first bond, a
+      flattened ball. The capillary rises, paying out wire as a loop, descends on the package pad and presses
+      the wire against it with the edge of its tip. That makes the second bond, the stitch bond, and at the same
+      moment a tail bond, a short weld of the wire beyond the stitch that holds it while the clamp closes
+      (Deck 18 p. 21). The capillary then rises with the clamp closed, the wire breaks at the thinned stitch,
+      and the tail left below the capillary is melted into the next ball. A ball bond has a larger bonded area
+      than a wedge bond and is therefore stronger (Lecture 19).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 196" role="img" aria-labelledby="f18-5-t">
+  <title id="f18-5-t">Ball bonding in four steps: a spark melts the wire end below the capillary into a free air ball; the capillary presses the ball onto the die pad to form the ball bond; it draws a loop to the package pad; it presses the wire edge-on to make the stitch bond and tail bond, after which the wire is broken and a new ball formed</title>
+  <rect x="10" y="160" width="420" height="16" class="dg-fill"/>
+  <text x="220" y="190" class="dg-label-sm" text-anchor="middle">die pad (left steps) · package pad (step 4)</text>
+  <!-- step 1 -->
+  <path d="M38,30 L66,30 L60,108 L44,108 Z" class="dg-fill"/>
+  <line x1="52" y1="30" x2="52" y2="118" class="dg-line" stroke-width="2"/>
+  <circle cx="52" cy="124" r="7" class="dg-acc-f"/>
+  <path d="M72,126 L80,120 L76,128 L84,124" class="dg-acc" stroke-width="1.2" fill="none"/>
+  <text x="52" y="22" class="dg-label-sm" text-anchor="middle">1 · spark, ball</text>
+  <!-- step 2 -->
+  <path d="M138,40 L166,40 L160,140 L144,140 Z" class="dg-fill"/>
+  <line x1="152" y1="40" x2="152" y2="146" class="dg-line" stroke-width="2"/>
+  <ellipse cx="152" cy="155" rx="12" ry="5" class="dg-acc-f"/>
+  <text x="152" y="22" class="dg-label-sm" text-anchor="middle">2 · ball bond</text>
+  <text x="152" y="34" class="dg-label-sm" text-anchor="middle">force + ultrasonic + heat</text>
+  <!-- step 3 -->
+  <ellipse cx="236" cy="155" rx="12" ry="5" class="dg-acc-f"/>
+  <path d="M236,150 C236,90 270,80 300,96" class="dg-acc" stroke-width="2" fill="none"/>
+  <path d="M292,40 L320,40 L314,90 L298,90 Z" class="dg-fill"/>
+  <text x="262" y="22" class="dg-label-sm" text-anchor="middle">3 · loop</text>
+  <!-- step 4 -->
+  <path d="M340,60 C348,72 362,96 372,152 L392,155" class="dg-acc" stroke-width="2" fill="none"/>
+  <path d="M376,70 L404,70 L400,146 L384,146 Z" class="dg-fill"/>
+  <text x="390" y="22" class="dg-label-sm" text-anchor="middle">4 · stitch and tail</text>
+  <text x="390" y="34" class="dg-label-sm" text-anchor="middle">bonds; clamp, break</text>
+  <text x="356" y="146" class="dg-label-sm" text-anchor="end">stitch</text>
+</svg>
+      <figcaption>
+        <b>Figure 5.</b> The ball-bonding cycle. The spark that forms the ball (1) is the step that can damage a
+        die electrostatically; the stitch bond (4) is made by the capillary's edge, and the wire breaks there.
+        Schematic, not to scale.
+        <span class="src">After Deck 18 pp. 18–21 and Lecture 19.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Deck 18 p. 21 gives the voltage that forms the free air ball as about 800 V; the published descriptions
+      consulted for this page give the mechanism without a general figure. Lecture 19 added a hazard
+      that follows from it: the spark can leave charge on the system, and its discharge through the die can
+      destroy a device, so the bonder and the part must be grounded. This is electrostatic discharge, the same
+      overstress that appears among the failure mechanisms of <a href="m19-reliability-qualification.html">M19 §1</a>.
+    </p>
+
+    <details class="check">
+      <summary>A MEMS die has already been attached with an epoxy rated to 150 °C, and its pads are aluminium. Which bonding process suits it, with which wire, and why not the other two?</summary>
+      <div class="answer">
+        <p>
+          Ultrasonic wedge bonding with aluminium wire. It supplies the weld's energy by vibrating the tool, with
+          little or no stage heating, and it is the process for aluminium wire on aluminium or gold pads, so
+          neither the epoxy nor the die is heated. Thermocompression needs interface temperatures of 300–400 °C,
+          far beyond the epoxy's rating, and is in any case a gold-wire process. Thermosonic ball bonding runs
+          the stage at about 150 °C or less, at the epoxy's limit, and uses gold wire, which on an aluminium
+          pad makes a gold–aluminium joint whose intermetallic compounds grow and embrittle it if the part later
+          runs hot (§4); it is possible, but it buys nothing here.
+        </p>
+      </div>
+    </details>
+
+    <h2>4 · The process window, and what goes wrong at the pad</h2>
+    <p>
+      A bond forms only inside a window of process settings, and it fails in ways that can be read from where
+      it breaks. Deck 18 p. 16 lists what the operator controls: ultrasonic power, substrate temperature, the
+      height of the wire loop, the force pushing the tool down, and the time. Lecture 19 named three of these
+      as the most important: ultrasonic power, the time it is applied, and the force.
+    </p>
+    <ul>
+      <li><b>Too little</b> energy, force or time leaves the contact unwelded or weakly welded, and the bond
+      lifts off the pad (the lift-off of §5).</li>
+      <li><b>Too much</b> power, force or time over-deforms the bond: the foot spreads and the heel or the neck
+      above a ball is thinned, which weakens the bond where it bends. Poor pad surface quality produces the same
+      result, which is why every bond is inspected after bonding (Deck 18 p. 24).</li>
+      <li>The same excess can <b>crater</b> the silicon under the pad: a piece of the die fractures out beneath
+      the bond (Deck 18 p. 24).</li>
+      <li>The <b>loop height</b> sets the clearance between the wire and the die. A loop that is too low lets the
+      wire touch the die's edge, which shorts it if that edge is metallized or biased; the fix is simple but the
+      fault is easy to miss (Deck 18 p. 25). A loop also leaves the wire slack, which takes up strain when the
+      die and package move relative to each other (Lecture 19).</li>
+    </ul>
+    <p>
+      Many failures are not the machine's fault but the pad's (Deck 18 pp. 23, 26–28). A gold pad on silicon is
+      laid on a thin layer of titanium or chromium (Deck 18 p. 23), which holds it to the die: without that
+      layer the pad peels (Lecture 19).
+    </p>
+    <ul>
+      <li><b>Soft or impure pad metal</b> bonds poorly. The causes are a poor vacuum during the metal's
+      deposition, too many impurities in the metal, and, at high temperature, mixing between the gold and its
+      adhesion layer (Deck 18 p. 23); Lecture 19 added that a pad whose layers have intermixed at high
+      temperature fails.</li>
+      <li><b>Contamination</b>: organic dust or photoresist left on the pad blocks the weld (Deck 18 p. 23).</li>
+      <li><b>Adhesion failure</b>: the pad metal, usually aluminium on silicon or glass, lifts off its substrate
+      with the bond foot, during bonding or later. It resembles cratering, but the silicon stays intact and the
+      metal comes away (Deck 18 p. 28).</li>
+      <li><b>Pad size</b>: wedge bonding 25 µm aluminium wire needs a rectangular pad of at least
+      60 µm × 150 µm, wider if the wire must leave the pad at an angle (skew bonding). On a pad too small for a
+      skewed bond, the foot can short the neighbouring pad or the heel is weakened (Deck 18 p. 26).</li>
+      <li><b>Corrosion</b>: wires can be eaten through in service. Deck 18 p. 27 shows a Fermilab detector
+      module whose aluminium wires, exposed in air, were eaten through, with chlorine on the corroded wires by
+      elemental analysis (energy-dispersive X-ray spectroscopy); Lecture 19 added that a part that fails this
+      way is opened and analysed to find the agent responsible. Chlorine also appeared on the copper–beryllium feedthroughs tested in the Venus chamber
+      (M17c §3).</li>
+    </ul>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 214" role="img" aria-labelledby="f18-6-t">
+  <title id="f18-6-t">Cross-section of a bond on a gold pad: gold over a titanium or chromium adhesion layer on silicon, with the bond above; labelled failure sites are contamination on the pad surface, soft or impure gold, intermixing of gold and the adhesion layer at high temperature, the pad metal lifting from the substrate, and a crater fractured into the silicon below the bond</title>
+  <rect x="20" y="130" width="400" height="66" class="dg-fill"/>
+  <text x="390" y="186" class="dg-label-sm" text-anchor="end">silicon (die)</text>
+  <rect x="110" y="122" width="220" height="8" class="dg-soft" opacity="0.8"/>
+  <rect x="110" y="104" width="220" height="18" class="dg-soft" opacity="0.4"/>
+  <text x="336" y="128" class="dg-label-sm">Ti or Cr</text>
+  <text x="336" y="114" class="dg-label-sm">Au pad</text>
+  <path d="M160,104 Q170,84 220,84 Q270,84 280,104 Z" class="dg-ink" opacity="0.55"/>
+  <path d="M220,84 L220,30" class="dg-line" stroke-width="3"/>
+  <text x="228" y="40" class="dg-label-sm">wire</text>
+  <path d="M190,130 L200,152 L240,156 L252,130" class="dg-acc" stroke-width="1.8" fill="none"/>
+  <g class="dg-label-sm">
+    <text x="40" y="70">① contamination</text><line x1="96" y1="74" x2="150" y2="102" class="dg-guide" stroke-width="0.8"/>
+    <text x="40" y="90">② soft, impure Au</text><line x1="100" y1="94" x2="128" y2="110" class="dg-guide" stroke-width="0.8"/>
+    <text x="300" y="66">③ Au–Ti/Cr mixing</text><line x1="330" y1="70" x2="310" y2="122" class="dg-guide" stroke-width="0.8"/>
+    <text x="300" y="50">when hot</text>
+    <text x="36" y="160">④ adhesion failure:</text><text x="36" y="173">metal lifts</text><line x1="100" y1="160" x2="118" y2="130" class="dg-guide" stroke-width="0.8"/>
+    <text x="262" y="160" class="dg-acc-f">⑤ crater in Si</text>
+  </g>
+</svg>
+      <figcaption>
+        <b>Figure 6.</b> Where a bond on a gold pad fails. Sites ①–④ are the pad's problems, laid down before the
+        bonder arrives; ⑤, cratering, comes from too much power, force or time. The broken-out piece of silicon
+        under a crater identifies it; in an adhesion failure ④ the silicon is clean. Not to scale.
+        <span class="src">After Deck 18 pp. 23–24, 28 and Lecture 19.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Gold wire on an aluminium pad, or aluminium wire on a gold pad, makes a third material at the joint.
+      Gold–aluminium intermetallic compounds form during bonding and contribute to the bond's strength, but
+      they are brittle and can break by fatigue or stress cracking under vibration or flexing. AuAl₂ is
+      purple, hence the old name purple plague; Au₅Al₂ was called white plague. At elevated temperature
+      aluminium diffuses rapidly into the gold to form AuAl₂, leaving Kirkendall voids, cavities left where
+      more atoms have diffused out than in, at the interface; the voids can coalesce until the bond separates
+      (Charles 2010, after Philofsky 1970). A wire bond held for 150 hours at 250 °C cracked and
+      cavitated near its Au₈Al₃ and Au₄Al layers (Noolu <em>et al.</em> 2004, as reproduced by Susan, Knorovsky
+      and Vianco 2011). A gold wire on a gold
+      pad has no such reaction: gold–gold bonds have held to 500 °C on oxidized silicon, and began to lift at
+      550 °C (Charles 2010). NASA's 500 °C silicon carbide chips use gold wire on gold-capped pads at both ends
+      (M17c §5).
+    </p>
+    <p>
+      The consequences differ in how recoverable they are. A bond that fails can be removed and made again; a
+      lifted pad or a cratered die cannot, and the chip is discarded (Lecture 19). Re-depositing gold onto a
+      damaged pad through a stencil mask is the last resort.
+    </p>
+
+    <details class="check">
+      <summary>Pull testing a batch of gold ball bonds made on new chips, you find several bonds came away carrying a thin flake of gold, with bare oxidized silicon underneath and no fractured silicon. What happened, whose fault is it, and what do you change?</summary>
+      <div class="answer">
+        <p>
+          The pad metal separated from the die: an adhesion failure (Figure 6, ④). Cratering would have taken a
+          piece of silicon with the bond; here the silicon is intact and the metal came off cleanly. The bond
+          itself held, since it is still attached to the flake, so the bonder's settings are not the cause. The
+          pad is: the gold lacks a working adhesion layer of titanium or chromium beneath it, or that layer was
+          deposited poorly or has intermixed with the gold during a high-temperature step. The fix is in the pad
+          deposition (add or restore the adhesion layer, deposit under a good vacuum, keep later process steps
+          cool enough not to intermix the layers), not in the ultrasonic power or force. Those chips' pads cannot
+          simply be rebonded; only re-depositing the pad metal, the last resort of this section, could recover
+          them.
+        </p>
+      </div>
+    </details>
+
+    <h2>5 · Testing a bond: pull, shear and vibration</h2>
+    <p>
+      Three tests check a bond: pulling the wire until something breaks, pushing a ball bond sideways until it
+      shears, and shaking the assembly. The first two are destructive and are run on samples; the third
+      reproduces what launch and transport do (Deck 18 pp. 29–32).
+    </p>
+    <p>
+      <b>The pull test.</b> A hook is placed under the wire loop and pulled away from the die until the bond
+      system fails, and the force at failure is recorded. It is the most widely used bond test (Lecture 19).
+      Where the failure occurs identifies its cause (Deck 18 p. 29): at sites 1 and 5 of Figure 7, a bond lifts
+      off the pad metallization; at 2 and 4, the wire breaks at the bond, by a heel crack at a wedge or a neck
+      break above a ball; at 3, the wire itself breaks in its span. A break in the span means both bonds were
+      stronger than the wire, which is the result wanted.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 206" role="img" aria-labelledby="f18-7-t">
+  <title id="f18-7-t">Pull-test geometry: a wire bonded at both ends to pads at the same level, spanning a distance d, pulled upward at mid-span by a hook with force F to a height h; each leg of the wire makes an angle theta with the surface and carries a tension F sub w; failure sites 1 and 5 are lift-off at the two bonds, 2 and 4 are breaks at the heel or neck, 3 is a break in the span</title>
+  <defs><marker id="f18-7-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker>
+  <marker id="f18-7-ln" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-soft"/></marker></defs>
+  <rect x="20" y="160" width="400" height="18" class="dg-fill"/>
+  <rect x="60" y="154" width="50" height="6" class="dg-soft" opacity="0.7"/>
+  <rect x="330" y="154" width="50" height="6" class="dg-soft" opacity="0.7"/>
+  <path d="M85,154 L220,90 L355,154" class="dg-line" stroke-width="2.2" fill="none"/>
+  <line x1="220" y1="90" x2="220" y2="34" class="dg-acc" stroke-width="2" marker-end="url(#f18-7-ar)"/>
+  <text x="228" y="44" class="dg-label">F (hook)</text>
+  <path d="M212,94 Q220,82 228,94" class="dg-ink" stroke-width="2" fill="none"/>
+  <line x1="85" y1="154" x2="160" y2="154" class="dg-guide" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <path d="M130,154 A45,45 0 0,0 126,135" class="dg-line" stroke-width="1" fill="none"/>
+  <text x="134" y="148" class="dg-math">θ</text>
+  <line x1="150" y1="122" x2="120" y2="136" class="dg-acc" stroke-width="1.4" marker-end="url(#f18-7-ar)"/>
+  <text x="110" y="116" class="dg-label-sm">F<tspan baseline-shift="sub" style="font-size:75%">w</tspan></text>
+  <line x1="85" y1="192" x2="355" y2="192" class="dg-line" stroke-width="1" marker-start="url(#f18-7-ln)" marker-end="url(#f18-7-ln)"/>
+  <text x="220" y="203" class="dg-label-sm" text-anchor="middle">d</text>
+  <line x1="236" y1="90" x2="236" y2="154" class="dg-guide" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <text x="242" y="128" class="dg-label-sm">h</text>
+  <g class="dg-label-sm" text-anchor="middle">
+    <text x="70" y="146">1</text><text x="100" y="140">2</text><text x="282" y="112">3</text><text x="340" y="140">4</text><text x="372" y="146">5</text>
+  </g>
+  <text x="30" y="30" class="dg-label-sm">1, 5 lift-off from the pad</text>
+  <text x="30" y="44" class="dg-label-sm">2, 4 heel crack or neck break</text>
+  <text x="30" y="58" class="dg-label-sm">3 wire break in the span</text>
+</svg>
+      <figcaption>
+        <b>Figure 7.</b> The hook pull. The hook's force is shared between two wire legs, each pulled along its
+        own direction, so the tension in the wire depends on the angle <em>θ</em> as well as on <em>F</em>. The
+        numbers mark where a bond system can fail.
+        <span class="src">Failure sites after Deck 18 p. 29 (Schneider-Ramelow, CERN); geometry after NBS SP
+        400-18.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The hook force is not the force on the bond. Each leg of the wire leaves the hook at an angle
+      <em>θ</em> to the surface, and the vertical components of the two leg tensions together balance
+      <em>F</em>. For bonds at the same level, pulled normal to the surface at mid-span, the resolution of
+      forces gives (Albers, NBS SP 400-18, eqs. 3 and 8):
+    </p>
+
+    <div class="eq" id="m18-eq-pull">
+      <div class="eq-body">
+        <div class="eq-math"><em>F</em><sub>w</sub> = <span class="frac"><span class="num"><em>F</em></span><span class="den">2 sin <em>θ</em></span></span> = <span class="frac"><span class="num"><em>F</em></span><span class="den">2</span></span><span class="dl">(</span>1 + <span class="frac"><span class="num"><em>d</em>²</span><span class="den">4<em>h</em>²</span></span><span class="dl">)</span><sup>1/2</sup>,&nbsp;&nbsp;&nbsp; tan <em>θ</em> = <span class="frac"><span class="num">2<em>h</em></span><span class="den"><em>d</em></span></span></div>
+        <div class="eq-num">(18.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>F</em><sub>w</sub> tension in each leg of the wire (gf or N) · <em>F</em> force on the hook (same unit) ·
+        <em>θ</em> angle between each leg and the substrate surface · <em>d</em> spacing between the two bonds
+        (any length unit) · <em>h</em> height of the hook above the bonds at failure (same unit as <em>d</em>).
+        For a single-level bond pulled at mid-span normal to the substrate; the general case, with the bonds at
+        different heights or the hook off-centre, gives different tensions in the two legs (NBS SP 400-18
+        eqs. 1–7). Valid when the wire fails in tension, by a heel or neck break. 1 gf = 9.80665 mN (Deck 18
+        p. 30 rounds it to 9.8 mN). On the formula sheet as <a href="formula-sheet.html#eq-18-pull">(18.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      Because <em>F</em><sub>w</sub> = <em>F</em>/(2 sin <em>θ</em>), the tension in each leg exceeds the hook force
+      once sin <em>θ</em> &lt; 1/2: at <em>θ</em> = 30° each leg carries the full hook force, and at smaller angles
+      more. A tall loop does the opposite, and at 90° each leg carries
+      half. MIL-STD-883, the US military test-method standard for microcircuits, therefore fixes where the hook
+      goes. Its Method 2011, test condition D, places the hook between mid-span and the loop apex, and pulls
+      perpendicular to the die or substrate (MIL-STD-883K, Method 2011.9). Table I of the method gives the
+      minimum force a bond must withstand; a pull that separates the bond system below it is a failure.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Wire diameter</th><th>Al, pre-seal</th><th>Al, post-seal</th><th>Au, pre-seal</th><th>Au, post-seal</th></tr></thead>
+        <tbody>
+          <tr><td>0.0007 in (17.8 µm)</td><td>1.5</td><td>1.0</td><td>2.0</td><td>1.5</td></tr>
+          <tr><td>0.0010 in (25.4 µm)</td><td>2.5</td><td>1.5</td><td>3.0</td><td>2.5</td></tr>
+          <tr><td>0.0013 in (33.0 µm)</td><td>3.0</td><td>2.0</td><td>4.0</td><td>3.0</td></tr>
+          <tr><td>0.0015 in (38.1 µm)</td><td>4.0</td><td>2.5</td><td>5.0</td><td>4.0</td></tr>
+          <tr><td>0.0030 in (76.2 µm)</td><td>12.0</td><td>8.0</td><td>15.0</td><td>12.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">
+      Minimum bond pull strength in gram-force, test conditions C or D, from MIL-STD-883K Method 2011.9
+      Table I. "Post-seal" means after the package is sealed and after any further processing and screening;
+      the standard sets lower minima there. 0.00125 in wire takes the 0.0013 in limits. Other diameters are read
+      from the curves of the method's Figure 2011-2, which Deck 18 p. 30 reproduces: curve 1 is gold pre-seal,
+      curve 2 aluminium pre-seal and gold post-seal, which the table shows are equal, and curve 3 aluminium
+      post-seal.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">What the wire feels when the hook reads the minimum</div>
+      <div class="ex-body">
+        <p><b>Given</b> a 1 mil (25.4 µm) gold wire bonded between two pads at the same level, 1.5 mm apart; a
+        hook at mid-span pulling normal to the surface reaches the pre-seal minimum of Table I, 3.0 gf. Two
+        loops: the hook has lifted the wire to <em>h</em> = 0.25 mm in one case and 0.75 mm in the other.
+        <b>Find</b> the tension in each leg of the wire in each case, in gf and mN.</p>
+        <p><b>Plan.</b> The wire's two legs share the hook force along their own directions, so (18.2) gives the
+        tension from the angle. The angle comes from the geometry: tan <em>θ</em> = 2<em>h</em>/<em>d</em>.</p>
+        <p class="ex-step"><b>Angles.</b> Low loop: tan <em>θ</em> = 2 × 0.25/1.5 = 0.333, <em>θ</em> = 18.4°,
+        sin <em>θ</em> = 0.316. High loop: tan <em>θ</em> = 2 × 0.75/1.5 = 1, <em>θ</em> = 45.0°,
+        sin <em>θ</em> = 0.707.</p>
+        <p class="ex-step"><b>Tension, low loop.</b> <em>F</em><sub>w</sub> = 3.0/(2 × 0.316) = 4.74 gf; check by the
+        second form, (3.0/2)(1 + 3²)<sup>1/2</sup> = 1.5 × 3.162 = 4.74 gf. In SI, 4.74 × 9.80665 mN =
+        46.5 mN.</p>
+        <p class="ex-step"><b>Tension, high loop.</b> <em>F</em><sub>w</sub> = 3.0/(2 × 0.707) = 2.12 gf, or
+        20.8 mN.</p>
+        <p class="ex-answer"><em>F</em><sub>w</sub> = 4.74 gf (46.5 mN) for the low loop and 2.12 gf (20.8 mN) for the
+        high one, against 3.0 gf (29.4 mN) on the hook. Check: the same hook reading puts 2.24 times more tension
+        on the low loop's wire, which is why the standard fixes the hook's position and why a flat-loop
+        microwave part gets its own correction in the standard (its minimum scaled by sin <em>θ</em>).</p>
+      </div>
+    </div>
+
+    <p>
+      <b>The shear test.</b> A tool pushes a ball bond sideways, parallel to the die, until it shears. The ways
+      it can fail (Deck 18 p. 31) are the ball lifting off the pad, the pad metallization lifting off the die,
+      the ball shearing through itself, the metallization cracking, and the die cratering; MIL-STD-883K refers
+      ball shear to JEDEC JESD22-B116. A shear through the ball, leaving a layer of gold welded to the pad,
+      shows the weld was stronger than the gold.
+    </p>
+    <p>
+      <b>Vibration.</b> A bonded assembly is also shaken across the frequencies of transport and launch, and a
+      bond wire can fail there without ever being pulled. Deck 18 p. 32 reports a vibration tester that found
+      a resonant mode of a silicon module at 69 Hz, against a transport spectrum that extends from 0 to 2 kHz.
+      When the two feet of a wire move relative to each other, the wire oscillates, bending at its first bond's
+      heel on every cycle, and the heel cracks by metal fatigue. Lecture 19 added that the wire has its own
+      resonance: when the excitation matches it, the wire swings like a plucked string, and the bond breaks.
+      Vibration testing of this kind is required for space and military qualification
+      (<a href="m19-reliability-qualification.html">M19 §2–§3, §6</a>).
+    </p>
+    <p>
+      A straight wire fixed at both ends behaves as a beam clamped at both ends, whose lowest natural frequency
+      follows from Euler–Bernoulli beam theory: the root of cos <em>λ</em> cosh <em>λ</em> = 1,
+      <em>λ</em><sub>1</sub> = 4.730, fixes the mode, and the wire's stiffness and mass per length fix the
+      frequency. For a round wire the cross-section's moment of inertia is <em>I</em> = π<em>d</em>⁴/64 and its
+      area <em>A</em> = π<em>d</em>²/4, which reduces the result to the second form below.
+    </p>
+
+    <div class="eq" id="m18-eq-reso">
+      <div class="eq-body">
+        <div class="eq-math"><em>f</em><sub>1</sub> = <span class="frac"><span class="num"><em>λ</em><sub>1</sub>²</span><span class="den">2π<em>L</em>²</span></span><span class="dl">(</span><span class="frac"><span class="num"><em>E</em><sub>Y</sub><em>I</em></span><span class="den"><em>ρ</em><em>A</em></span></span><span class="dl">)</span><sup>1/2</sup> = <span class="frac"><span class="num"><em>λ</em><sub>1</sub>² <em>d</em></span><span class="den">8π<em>L</em>²</span></span><span class="dl">(</span><span class="frac"><span class="num"><em>E</em><sub>Y</sub></span><span class="den"><em>ρ</em></span></span><span class="dl">)</span><sup>1/2</sup></div>
+        <div class="eq-num">(18.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>f</em><sub>1</sub> lowest natural frequency (Hz) · <em>λ</em><sub>1</sub> = 4.730, first root of
+        cos <em>λ</em> cosh <em>λ</em> = 1 for a beam clamped at both ends · <em>L</em> free length between the
+        bonds (m) · <em>E</em><sub>Y</sub> Young's modulus of the wire (Pa) · <em>I</em> second moment of area of
+        the cross-section (m⁴) · <em>ρ</em> density (kg/m³) · <em>A</em> cross-sectional area (m²) ·
+        <em>d</em> wire diameter (m). All in SI. A straight, slender wire; a real loop is curved and its feet are
+        not perfectly rigid, both of which lower the frequency, so (18.3) gives the order of magnitude and the
+        scaling. On the formula sheet as <a href="formula-sheet.html#eq-18-reso">(18.3)</a>.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">At what length does a gold bond wire resonate inside the transport band?</div>
+      <div class="ex-body">
+        <p><b>Given</b> a gold wire 25 µm in diameter; Young's modulus 79 GPa and density 19,300 kg/m³ (handbook
+        values for bulk gold); free lengths of 2 mm and 5 mm; the transport spectrum of Deck 18 p. 32, 0–2 kHz.
+        <b>Find</b> <em>f</em><sub>1</sub> for each length, and the length at which <em>f</em><sub>1</sub> falls
+        to 2 kHz.</p>
+        <p><b>Plan.</b> Use the second form of (18.3), which needs only <em>d</em>, <em>L</em> and the material's
+        <em>E</em><sub>Y</sub>/<em>ρ</em>. Since <em>f</em><sub>1</sub> ∝ 1/<em>L</em>², solve for <em>L</em> at
+        the end. Keep everything in metres.</p>
+        <p class="ex-step"><b>Material factor.</b> (<em>E</em><sub>Y</sub>/<em>ρ</em>)<sup>1/2</sup> =
+        (79×10⁹/19,300)<sup>1/2</sup> = 2,023 m/s. Why this combination: stiffness drives the restoring force and
+        density the inertia, so their ratio sets every beam frequency of a given shape.</p>
+        <p class="ex-step"><b>Geometric factor for <em>L</em> = 2 mm.</b> <em>λ</em><sub>1</sub>²<em>d</em>/(8π<em>L</em>²)
+        = 22.37 × 25×10⁻⁶ m/(8π × (2×10⁻³ m)²) = 5.593×10⁻⁴/1.005×10⁻⁴ = 5.564 m⁻¹.</p>
+        <p class="ex-step"><b>Frequency.</b> <em>f</em><sub>1</sub> = 5.564 m⁻¹ × 2,023 m/s = 1.13×10⁴ Hz, about
+        11 kHz. Equivalently from the first form: <em>E</em><sub>Y</sub><em>I</em>/(<em>ρA</em>) =
+        1.599×10⁻⁴ m⁴/s², whose root is 0.01264 m²/s, times 22.37/(2π × 4×10⁻⁶ m²) gives the same.</p>
+        <p class="ex-step"><b>Five millimetres.</b> Lengthening by 2.5 times divides <em>f</em><sub>1</sub> by
+        2.5² = 6.25: 1.13×10⁴/6.25 = 1.80×10³ Hz, inside the 0–2 kHz band.</p>
+        <p class="ex-step"><b>Length for 2 kHz.</b> <em>L</em> = [<em>λ</em><sub>1</sub>²<em>d</em>(<em>E</em><sub>Y</sub>/<em>ρ</em>)<sup>1/2</sup>/(8π × 2,000 Hz)]<sup>1/2</sup>
+        = 4.74 mm.</p>
+        <p class="ex-answer"><em>f</em><sub>1</sub> ≈ 11.3 kHz at 2 mm and 1.80 kHz at 5 mm; a straight gold wire
+        longer than about 4.7 mm has its lowest mode inside the 0–2 kHz band. Check: aluminium, with
+        (<em>E</em><sub>Y</sub>/<em>ρ</em>)<sup>1/2</sup> = 5,092 m/s for 70 GPa and 2,700 kg/m³, is 2.5 times higher
+        at every length (28.3 kHz at 2 mm), and reaches 2 kHz only at 7.5 mm.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 262" role="img" aria-labelledby="f18-8-t">
+  <title id="f18-8-t">Lowest natural frequency of straight 25 micrometre gold and aluminium wires clamped at both ends, on logarithmic axes from 0.5 to 10 millimetres length and 100 hertz to 1 megahertz: both fall as one over length squared, aluminium 2.5 times higher; the shaded band below 2 kilohertz is the transport spectrum, which the gold line enters near 4.7 millimetres</title>
+  <rect x="64" y="30" width="340" height="184" class="dg-fill" opacity="0.3"/>
+  <rect x="64" y="154.2" width="340" height="59.8" class="dg-soft" opacity="0.22"/>
+  <text x="70" y="206" class="dg-label-sm">transport spectrum, 0–2 kHz (Deck 18 p. 32)</text>
+  <g class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3">
+    <line x1="64" y1="168" x2="404" y2="168"/><line x1="64" y1="122" x2="404" y2="122"/><line x1="64" y1="76" x2="404" y2="76"/>
+    <line x1="142.7" y1="30" x2="142.7" y2="214"/><line x1="221.3" y1="30" x2="221.3" y2="214"/><line x1="325.3" y1="30" x2="325.3" y2="214"/>
+  </g>
+  <line x1="64" y1="45.8" x2="404" y2="165.5" class="dg-line" stroke-width="1.8" stroke-dasharray="5 3"/>
+  <line x1="64" y1="64.2" x2="404" y2="183.9" class="dg-acc" stroke-width="2.2"/>
+  <text x="300" y="118" class="dg-label">Al</text>
+  <text x="250" y="142" class="dg-label">Au</text>
+  <circle cx="221.3" cy="119.6" r="3.4" class="dg-acc-f"/>
+  <text x="227" y="113" class="dg-label-sm">11.3 kHz</text>
+  <circle cx="325.3" cy="156.2" r="3.4" class="dg-acc-f"/>
+  <text x="331" y="150" class="dg-label-sm">1.8 kHz</text>
+  <line x1="64" y1="214" x2="404" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <line x1="64" y1="30" x2="64" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="64" y1="214" x2="64" y2="219"/><line x1="142.7" y1="214" x2="142.7" y2="219"/><line x1="221.3" y1="214" x2="221.3" y2="219"/><line x1="325.3" y1="214" x2="325.3" y2="219"/><line x1="404" y1="214" x2="404" y2="219"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="64" y="231">0.5</text><text x="142.7" y="231">1</text><text x="221.3" y="231">2</text><text x="325.3" y="231">5</text><text x="404" y="231">10</text></g>
+  <g class="dg-label-sm" text-anchor="end"><text x="58" y="218">10²</text><text x="58" y="172">10³</text><text x="58" y="126">10⁴</text><text x="58" y="80">10⁵</text><text x="58" y="34">10⁶</text></g>
+  <text x="234" y="250" class="dg-label" text-anchor="middle">free length L (mm)</text>
+  <text x="16" y="122" class="dg-label" text-anchor="middle" transform="rotate(-90 16 122)">f<tspan baseline-shift="sub" style="font-size:75%">1</tspan> (Hz)</text>
+</svg>
+      <figcaption>
+        <b>Figure 8.</b> The bond wire's lowest mode, from (18.3), for 25 µm wires. Frequency falls as
+        1/<em>L</em>², so long wires reach down into the vibration spectrum of transport and launch. A real loop
+        resonates lower than this straight-beam line.
+        <span class="src">Computed here from (18.3) with handbook moduli and densities.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The same resonance has broken wire bonds in service. In the CDF silicon vertex detector at Fermilab,
+      4 % of one side of the detector's ladders was lost soon after data taking began in 2002. Bond wires
+      perpendicular to the detector's 1.4 T magnetic field carried a current that pulsed with every readout,
+      so the Lorentz force kicked them at the readout rate; some of their resonant frequencies lay in the
+      10 kHz range, which matched the trigger rate under certain conditions, and the wires broke by fatigue
+      (Aaltonen <em>et al.</em> 2013). The force there was magnetic rather than mechanical, but the failure was
+      the one Deck 18 p. 32 shows: a periodic excitation at the wire's resonance, and a fatigue crack.
+    </p>
+
+    <details class="check">
+      <summary>An engineer shortens the bond wires of a module from 4 mm to 2 mm and also lowers the loop to make the package thinner. Does the change help or hurt the wires in vibration testing, and in hook-pull testing?</summary>
+      <div class="answer">
+        <p>
+          Vibration: it helps. By (18.3) the lowest resonance scales as 1/<em>L</em>², so halving the length raises
+          it fourfold. A straight 25 µm gold wire goes from about 2.8 kHz at 4 mm (11.3 kHz × (2/4)²) to about
+          11 kHz at 2 mm. In the straight-beam estimate both lie above the 0–2 kHz transport band, but the
+          margin grows from about 1.4 to about 5.6 times the band edge; since a real loop resonates lower than
+          (18.3), the 4 mm wire may lie inside the band in practice, and the 2 mm wire very probably does not.
+        </p>
+        <p>
+          Pull test: lowering the loop hurts the reading. By (18.2) the tension in each leg is
+          <em>F</em>/(2 sin <em>θ</em>), with tan <em>θ</em> = 2<em>h</em>/<em>d</em>. A flatter loop has a smaller
+          <em>θ</em>, so the wire reaches its breaking tension at a lower hook force, and a sound bond can read
+          below the Table I minimum. The bonds are no weaker; the test geometry is less favourable. Halving
+          <em>d</em> at the same <em>h</em> raises <em>θ</em> and partly offsets it. This is why the standard fixes
+          the hook's position, and why it allows a reduced minimum for parts that need very flat loops.
+        </p>
+      </div>
+    </details>
+
+    <h2>6 · Flip chip and bumps</h2>
+    <p>
+      A wire bond can only reach the edge of the die, so the number of connections grows with the die's
+      perimeter. Flip-chip bonding uses the whole face. Each pad on the die carries a raised metal bump; the die
+      is turned face down and its bumps are joined to matching pads on the substrate, so connections can sit
+      anywhere on the die in a two-dimensional grid, an area array (Deck 18 p. 7). Lecture 20 describes the
+      original process: electrodes on the chip, a solder ball on each, then flip the chip and attach it. The
+      connections are also much shorter than a wire loop. This section follows the bump from solder to copper
+      as its pitch has shrunk.
+    </p>
+    <p>
+      The first flip-chip bumps were solder spheres, C4 (controlled-collapse chip connection) bumps, listed
+      at 150 µm in Deck 19 p. 12's sequence. Copper then replaced solder in the bump body: first a copper
+      pillar at the same 150 µm, then copper micro-pillars at 50, 30, 20 and 10 µm (Deck 19 p. 12). A copper
+      pillar is a plated copper post on the pad, joined to the substrate through a thin solder cap; under it the
+      pad carries a stack of metal layers, the under-bump metallization (UBM), to which the bump is made
+      (Deck 19 p. 14). The professor's reason for the change is conductivity: solder conducts much less well than
+      copper (Lecture 20). Micro-bumps are typically copper (Deck 19 p. 12) and are commonly joined by
+      thermocompression bonding (TCB), heat and force applied through the die, which Deck 19 p. 8 lists as
+      the chip-to-wafer step.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f18-9-t">
+  <title id="f18-9-t">Three bump types in cross-section between a face-down die above and a substrate below: a solder sphere (C4), a copper pillar with a thin solder cap, and a narrower copper micro-pillar with its cap; each sits on under-bump metallization on the die pad, and underfill fills the gap around the bumps</title>
+  <rect x="10" y="30" width="420" height="22" class="dg-fill"/>
+  <text x="220" y="45" class="dg-label-sm" text-anchor="middle">die, face down</text>
+  <rect x="10" y="146" width="420" height="20" class="dg-fill"/>
+  <text x="220" y="160" class="dg-label-sm" text-anchor="middle">substrate</text>
+  <rect x="10" y="52" width="420" height="94" class="dg-soft" opacity="0.18"/>
+  <!-- C4 -->
+  <rect x="50" y="52" width="60" height="5" class="dg-ink" opacity="0.7"/>
+  <ellipse cx="80" cy="100" rx="38" ry="43" class="dg-soft" opacity="0.85"/>
+  <rect x="50" y="141" width="60" height="5" class="dg-ink" opacity="0.7"/>
+  <text x="80" y="186" class="dg-label-sm" text-anchor="middle">C4 solder</text>
+  <text x="80" y="198" class="dg-label-sm" text-anchor="middle">150 µm</text>
+  <!-- Cu pillar -->
+  <rect x="190" y="52" width="60" height="5" class="dg-ink" opacity="0.7"/>
+  <rect x="192" y="57" width="56" height="66" class="dg-acc-f"/>
+  <path d="M192,123 L248,123 L252,141 L188,141 Z" class="dg-soft" opacity="0.85"/>
+  <rect x="190" y="141" width="60" height="5" class="dg-ink" opacity="0.7"/>
+  <text x="220" y="186" class="dg-label-sm" text-anchor="middle">Cu pillar + solder cap</text>
+  <text x="220" y="198" class="dg-label-sm" text-anchor="middle">150 µm</text>
+  <!-- Cu micro-pillar -->
+  <rect x="336" y="52" width="24" height="5" class="dg-ink" opacity="0.7"/>
+  <rect x="337" y="57" width="22" height="70" class="dg-acc-f"/>
+  <path d="M337,127 L359,127 L361,141 L335,141 Z" class="dg-soft" opacity="0.85"/>
+  <rect x="336" y="141" width="24" height="5" class="dg-ink" opacity="0.7"/>
+  <text x="348" y="186" class="dg-label-sm" text-anchor="middle">Cu µ-pillar</text>
+  <text x="348" y="198" class="dg-label-sm" text-anchor="middle">50 → 10 µm</text>
+  <text x="374" y="70" class="dg-label-sm">UBM</text>
+  <line x1="372" y1="66" x2="360" y2="56" class="dg-guide" stroke-width="0.8"/>
+  <text x="270" y="100" class="dg-label-sm">copper</text>
+  <text x="270" y="136" class="dg-label-sm">solder</text>
+  <text x="136" y="82" class="dg-label-sm">underfill</text>
+  <text x="136" y="94" class="dg-label-sm">(polymer)</text>
+</svg>
+      <figcaption>
+        <b>Figure 9.</b> The bump, from solder to copper. Each type sits on the pad's under-bump metallization;
+        copper takes over the bump body, and solder shrinks to a thin cap that makes the joint. The polymer
+        underfill fills the space around the bumps. Schematic; the three are not drawn at one scale.
+        <span class="src">After Deck 19 pp. 12, 14 and Deck 18 p. 7.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      The bumps join two parts that expand differently: the silicon die and a substrate whose coefficient
+      differs from it, as §2 computed for alumina. On every thermal cycle the die and the substrate shift
+      laterally against each other, and with bumps alone the whole of that shift is taken up in the bumps.
+      The underfill is a polymer that fills the gap between die and substrate around the bumps and bonds the
+      two faces together across the whole area (Deck 18 p. 7; Deck 19 p. 14). It redistributes the stresses
+      that the mismatch of expansion coefficients produces, and in a NASA study of underfilled flip chips over a
+      −190 to 85 °C range it increased reliability by one to two orders of magnitude (Ramesham 2010).
+    </p>
+
+    <p>
+      Lead-bearing solder bumps placed on the die face also bring an alpha-particle source into contact with
+      the circuit. In one processor family's soft-error history the upset rate rose steeply at the generation
+      that moved to flip-chip packaging with such bumps
+      (<a href="../../EEE5416_Radiation_Effects/site/m11-single-event-effects.html#9-scaling">EEE 5416 M11 §9</a>).
+    </p>
+
+    <p>
+      How many connections each method allows follows from geometry. A single row of pads around a square die
+      of side <em>L</em> at pitch <em>p</em>, the centre-to-centre spacing, holds 4<em>L</em>/<em>p</em>
+      connections. A square grid at the same pitch holds (<em>L</em>/<em>p</em>)², and its density per unit
+      area is 1/<em>p</em>².
+    </p>
+
+    <div class="eq" id="m18-eq-dens">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em> = <span class="frac"><span class="num">1</span><span class="den"><em>p</em>²</span></span>,&nbsp;&nbsp;&nbsp; <em>N</em><sub>area</sub> = <span class="dl">(</span><span class="frac"><span class="num"><em>L</em></span><span class="den"><em>p</em></span></span><span class="dl">)</span><sup>2</sup>,&nbsp;&nbsp;&nbsp; <em>N</em><sub>periph</sub> = <span class="frac"><span class="num">4<em>L</em></span><span class="den"><em>p</em></span></span></div>
+        <div class="eq-num">(18.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>n</em> contact density of a square grid (contacts per unit area; with <em>p</em> in mm, per mm²) ·
+        <em>p</em> pitch, centre-to-centre spacing of adjacent contacts (mm or µm) · <em>L</em> side of a square
+        die (same unit as <em>p</em>) · <em>N</em><sub>area</sub> contacts in a full area array ·
+        <em>N</em><sub>periph</sub> contacts in one row of pads around the edge. Their ratio is
+        <em>N</em><sub>area</sub>/<em>N</em><sub>periph</sub> = <em>L</em>/(4<em>p</em>), so the area array's
+        advantage grows as the pitch shrinks. A full grid is an upper bound; a real array leaves sites for
+        power, ground and keep-out zones. On the formula sheet as <a href="formula-sheet.html#eq-18-dens">(18.4)</a>.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Periphery against area array on one die</div>
+      <div class="ex-body">
+        <p><b>Given</b> a square die 5 mm on a side, at the top of Deck 18's 3–5 mm range; wire-bond pads in one
+        row at 100 µm pitch, consistent with the 50–150 µm chip pads of Deck 18 p. 10; flip-chip area arrays at
+        150, 50 and 10 µm pitch, from Deck 19 pp. 12 and 15. <b>Find</b> the number of connections each
+        arrangement allows, and the area density at each pitch.</p>
+        <p><b>Plan.</b> (18.4) gives both counts. The hinge is that the periphery scales as 1/<em>p</em> and the
+        area as 1/<em>p</em>²: with the edge row at pitch <em>p</em><sub>w</sub> and the array at
+        <em>p</em><sub>a</sub>, the ratio is <em>L</em><em>p</em><sub>w</sub>/(4<em>p</em><sub>a</sub>²), which
+        reduces to <em>L</em>/(4<em>p</em>) at equal pitch. Keep <em>L</em> and <em>p</em> in the same unit.</p>
+        <p class="ex-step"><b>Wire bonds around the edge.</b> <em>N</em><sub>periph</sub> = 4 × 5 mm/0.1 mm = 200.</p>
+        <p class="ex-step"><b>Area array at 150 µm.</b> <em>L</em>/<em>p</em> = 5/0.15 = 33.3, so
+        <em>N</em><sub>area</sub> = 33.3² = 1,111, 5.56 times the wire bonds; <em>n</em> = 1/(0.15 mm)² =
+        44.4 mm⁻².</p>
+        <p class="ex-step"><b>At 50 µm.</b> <em>L</em>/<em>p</em> = 100, <em>N</em><sub>area</sub> = 1.00×10⁴, 50
+        times the wire bonds; <em>n</em> = 1/(0.05 mm)² = 400 mm⁻².</p>
+        <p class="ex-step"><b>At 10 µm.</b> <em>L</em>/<em>p</em> = 500, <em>N</em><sub>area</sub> = 2.50×10⁵,
+        1,250 times the wire bonds; <em>n</em> = 1/(0.01 mm)² = 1.00×10⁴ mm⁻².</p>
+        <p class="ex-answer">200 wire bonds; 1,111, 1.00×10⁴ and 2.50×10⁵ bumps at 150, 50 and 10 µm. Check: the
+        densities at 50 and 10 µm, 400 and 10,000 mm⁻², are exactly the values Deck 19 p. 15 gives for a 50 µm
+        bump pitch and a 10 µm hybrid-bond pitch, so the slide's figures are those of a square grid.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 262" role="img" aria-labelledby="f18-10-t">
+  <title id="f18-10-t">Contact density against contact pitch on logarithmic axes from 0.5 to 200 micrometres and 10 to 10 million per square millimetre: a straight line of slope minus two, density equals one over pitch squared, with C4 flip chip near 120 per square millimetre, micro-bumps near 800, 50 micrometre bumps at 400, 10 micrometre hybrid bonding at 10,000, and the bump-less hybrid-bonding range from 12,000 to 1.2 million marked along the line</title>
+  <rect x="64" y="30" width="340" height="184" class="dg-fill" opacity="0.3"/>
+  <g class="dg-guide" stroke-width="0.7" stroke-dasharray="2 3">
+    <line x1="64" y1="183.3" x2="404" y2="183.3"/><line x1="64" y1="152.7" x2="404" y2="152.7"/><line x1="64" y1="122" x2="404" y2="122"/>
+    <line x1="64" y1="91.3" x2="404" y2="91.3"/><line x1="64" y1="60.7" x2="404" y2="60.7"/>
+    <line x1="103.3" y1="30" x2="103.3" y2="214"/><line x1="234" y1="30" x2="234" y2="214"/><line x1="364.7" y1="30" x2="364.7" y2="214"/>
+  </g>
+  <line x1="64" y1="42.2" x2="404" y2="201.8" class="dg-line" stroke-width="1.4"/>
+  <line x1="228.8" y1="119.6" x2="98.2" y2="58.2" class="dg-acc" stroke-width="5" opacity="0.55"/>
+  <text x="72" y="136" class="dg-label-sm">hybrid bonding (shaded band):</text>
+  <text x="72" y="148" class="dg-label-sm">12,000 → 1,200,000 mm⁻²</text>
+  <line x1="140" y1="126" x2="160" y2="88" class="dg-guide" stroke-width="0.8"/>
+  <g class="dg-ink"><circle cx="359.5" cy="180.9" r="3.4"/><circle cx="305.7" cy="155.6" r="3.4"/></g>
+  <g class="dg-acc-f"><circle cx="325.3" cy="164.9" r="3.6"/><circle cx="234" cy="122" r="3.6"/></g>
+  <text x="352" y="196" class="dg-label-sm" text-anchor="end">C4 ≈ 120</text>
+  <text x="298" y="174" class="dg-label-sm" text-anchor="end">µ-bump ≈ 800</text>
+  <text x="332" y="146" class="dg-label-sm">50 µm: 400</text>
+  <text x="244" y="142" class="dg-label-sm">10 µm: 10⁴</text>
+  <text x="300" y="80" class="dg-label">n = 1/p²</text>
+  <line x1="64" y1="214" x2="404" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <line x1="64" y1="30" x2="64" y2="214" class="dg-rule" stroke-width="1.2"/>
+  <g class="dg-rule" stroke-width="1"><line x1="64" y1="214" x2="64" y2="219"/><line x1="103.3" y1="214" x2="103.3" y2="219"/><line x1="234" y1="214" x2="234" y2="219"/><line x1="364.7" y1="214" x2="364.7" y2="219"/><line x1="404" y1="214" x2="404" y2="219"/></g>
+  <g class="dg-label-sm" text-anchor="middle"><text x="64" y="231">0.5</text><text x="103.3" y="231">1</text><text x="234" y="231">10</text><text x="364.7" y="231">100</text><text x="404" y="231">200</text></g>
+  <g class="dg-label-sm" text-anchor="end"><text x="58" y="218">10</text><text x="58" y="187.3">10²</text><text x="58" y="156.7">10³</text><text x="58" y="126">10⁴</text><text x="58" y="95.3">10⁵</text><text x="58" y="64.7">10⁶</text><text x="58" y="34">10⁷</text></g>
+  <text x="234" y="250" class="dg-label" text-anchor="middle">contact pitch p (µm)</text>
+  <text x="16" y="122" class="dg-label" text-anchor="middle" transform="rotate(-90 16 122)">n (mm⁻²)</text>
+</svg>
+      <figcaption>
+        <b>Figure 10.</b> Halving the pitch quadruples the density. The 50 µm and 10 µm points are Deck 19
+        p. 15's own pairs of pitch and density, and they lie on the square-grid line. The slide gives C4,
+        micro-bumps and hybrid bonding as pitch bands (C4 about 50–100 µm, micro-bumps about 15–50 µm, bump-less
+        hybrid bonding below about 15 µm, read from its chart) with a density for each; they are placed here at
+        the pitch a square grid of that density would have (91 µm, 35 µm, and 9.1 to 0.91 µm), which falls
+        inside each band.
+        <span class="src">Data from Deck 19 p. 15 (after Intel and Besi); line from (18.4); plotted here.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Deck 19 p. 15 sets out the progression in density: C4 flip chip at about 120 contacts per mm², micro-bumps
+      in three-dimensional stacks at about 800, and bump-less hybrid bonding (§8) from 12,000 to 1,200,000 per
+      mm², with the industry driving toward a 1 µm pitch. Each step multiplies the number of connections
+      between two dies, which is what the systems of §7 need.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">What Deck 19 p. 12 calls a micro-bump, and what its sizes are</p>
+      <p>
+        The slide defines micro-bumps as small metal bumps that connect the chip with the printed circuit board.
+        The deck's own cross-sections show otherwise: on Deck 19 p. 11 the connection to the package substrate
+        is made by C4 copper bumps and the board by the package's balls, while the micro-bumps join the memory
+        stack and the processor to the interposer, and on p. 9 they join die to die. A micro-bump is a
+        die-to-die or die-to-interposer connection; the connections to a package substrate are flip-chip bumps,
+        and to the board, package balls. The slide also lists its sizes (150, 50, 30, 20, 10 µm) with I/O counts
+        but does not say whether a size is a diameter or a pitch, and Lecture 20 presented them as the sizes of
+        the bumps. This page reads them as pitches, because the counts behave as densities per mm² of a square
+        grid at that pitch: 400, 2,500 and 10,000 at 50, 20 and 10 µm are exactly 1/<em>p</em>², and the C4
+        entry (50 at 150 µm, against 44) and the 30 µm entry (1,000, against 1,111) agree within about 12 %.
+        Only the 150 µm copper-pillar entry, 100, does not fit. A bump's diameter is necessarily smaller than
+        its pitch, so on either reading the bumps of the later entries are no larger than the figures given.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>A square die 8 mm on a side needs 3,000 connections. Can one row of wire-bond pads at 100 µm pitch provide them, and what is the largest area-array pitch that can?</summary>
+      <div class="answer">
+        <p>
+          One row of pads: by (18.4), <em>N</em><sub>periph</sub> = 4 × 8 mm/0.1 mm = 320, about a tenth of what is
+          needed. To reach 3,000 in a single row the pitch would have to be 4 × 8 mm/3,000 = 10.7 µm, far below
+          the 50–150 µm of a bondable pad, so wire bonding cannot do it. An area array needs
+          (<em>L</em>/<em>p</em>)² ≥ 3,000, so <em>p</em> ≤ <em>L</em>/√3,000 = 8 mm/54.8 = 146 µm. A full grid at
+          146 µm just suffices; at 150 µm it gives 2,844, slightly short, and at 50 µm it gives 2.56×10⁴, with
+          room for power and ground. The answer turns on the exponent: the periphery grows as 1/<em>p</em>, the
+          area array as 1/<em>p</em>².
+        </p>
+      </div>
+    </details>
+
+    <h2>7 · 2.5D and 3D integration</h2>
+    <p>
+      Advanced packaging integrates several dies in one package with a very high density of interconnects:
+      a large number of connections across very short distances between the dies (Deck 19 p. 6). The lateral
+      wiring between dies is comparable to the back end of line (BEOL), the metal interconnect layers built
+      above a chip's transistors; the vertical connections go through the silicon itself, by through-silicon
+      vias (Deck 19 p. 6). The dies are often chiplets; Lecture 20 defined a chiplet as a die cut from the
+      wafer, here one of several combined in one package. This is where the scaling of
+      <a href="m02-scaling-of-electronics.html">M02 §5</a> now continues: when the transistor stops shrinking
+      usefully, performance comes from moving more data between more dies over shorter wires. The professor's
+      statement of what limits it is the one quoted at the head of this module: how fine a metal line can be
+      made and how well the parts are aligned (Lecture 20).
+    </p>
+    <p>
+      Two arrangements exist. In <b>2.5D integration</b> several dies sit side by side on an interposer, and the
+      interposer acts as a bridge that connects them and provides a high-speed communication interface
+      (Deck 19 p. 10). In <b>3D integration</b> the dies are stacked vertically rather than spread horizontally,
+      which the deck credits with higher speed, lower power, a smaller form factor and more function (Deck 19
+      p. 11). Both sit on a package substrate, a wiring board that carries solder balls on its
+      underside to the printed circuit board (Deck 19 pp. 8–9).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 216" role="img" aria-labelledby="f18-11-t">
+  <title id="f18-11-t">Two cross-sections. Left, 2.5D: three dies side by side on micro-bumps on one interposer, which carries through-silicon vias down to bumps on a package substrate, which carries solder balls. Right, 3D: three dies stacked, the lower two pierced by through-silicon vias, joined by micro-bumps, on bumps on a package substrate with solder balls</title>
+  <text x="10" y="16" class="dg-label">(a) 2.5D</text>
+  <g>
+    <rect x="16" y="50" width="56" height="26" class="dg-fill"/><rect x="80" y="50" width="56" height="26" class="dg-fill"/><rect x="144" y="50" width="56" height="26" class="dg-fill"/>
+    <g class="dg-label-sm" text-anchor="middle"><text x="44" y="67">die 1</text><text x="108" y="67">die 2</text><text x="172" y="67">die 3</text></g>
+    <g class="dg-acc-f"><circle cx="26" cy="80" r="2.4"/><circle cx="38" cy="80" r="2.4"/><circle cx="50" cy="80" r="2.4"/><circle cx="62" cy="80" r="2.4"/><circle cx="90" cy="80" r="2.4"/><circle cx="102" cy="80" r="2.4"/><circle cx="114" cy="80" r="2.4"/><circle cx="126" cy="80" r="2.4"/><circle cx="154" cy="80" r="2.4"/><circle cx="166" cy="80" r="2.4"/><circle cx="178" cy="80" r="2.4"/><circle cx="190" cy="80" r="2.4"/></g>
+    <rect x="12" y="83" width="192" height="22" class="dg-soft" opacity="0.5"/>
+    <g class="dg-line" stroke-width="1.2"><line x1="22" y1="83" x2="22" y2="105"/><line x1="40" y1="83" x2="40" y2="105"/><line x1="176" y1="83" x2="176" y2="105"/><line x1="194" y1="83" x2="194" y2="105"/></g>
+    <text x="108" y="98" class="dg-label-sm" text-anchor="middle">interposer (TSVs, RDL)</text>
+    <g class="dg-ink"><circle cx="22" cy="110" r="4"/><circle cx="40" cy="110" r="4"/><circle cx="176" cy="110" r="4"/><circle cx="194" cy="110" r="4"/></g>
+    <rect x="6" y="114" width="204" height="22" class="dg-fill"/>
+    <text x="108" y="129" class="dg-label-sm" text-anchor="middle">package substrate</text>
+    <g class="dg-soft"><circle cx="22" cy="144" r="7"/><circle cx="50" cy="144" r="7"/><circle cx="78" cy="144" r="7"/><circle cx="106" cy="144" r="7"/><circle cx="134" cy="144" r="7"/><circle cx="162" cy="144" r="7"/><circle cx="190" cy="144" r="7"/></g>
+    <text x="108" y="170" class="dg-label-sm" text-anchor="middle">solder balls to the board</text>
+    <text x="12" y="40" class="dg-label-sm">micro-bumps under each die</text>
+  </g>
+  <text x="236" y="16" class="dg-label">(b) 3D</text>
+  <g>
+    <rect x="270" y="30" width="120" height="22" class="dg-fill"/><text x="330" y="45" class="dg-label-sm" text-anchor="middle">die 3</text>
+    <g class="dg-acc-f"><circle cx="286" cy="56" r="2.4"/><circle cx="310" cy="56" r="2.4"/><circle cx="350" cy="56" r="2.4"/><circle cx="374" cy="56" r="2.4"/></g>
+    <rect x="270" y="59" width="120" height="22" class="dg-fill"/><text x="330" y="74" class="dg-label-sm" text-anchor="middle">die 2</text>
+    <g class="dg-acc-f"><circle cx="286" cy="85" r="2.4"/><circle cx="310" cy="85" r="2.4"/><circle cx="350" cy="85" r="2.4"/><circle cx="374" cy="85" r="2.4"/></g>
+    <rect x="270" y="88" width="120" height="22" class="dg-fill"/><text x="330" y="103" class="dg-label-sm" text-anchor="middle">die 1</text>
+    <g class="dg-line" stroke-width="1.2"><line x1="286" y1="59" x2="286" y2="81"/><line x1="310" y1="59" x2="310" y2="81"/><line x1="350" y1="59" x2="350" y2="81"/><line x1="374" y1="59" x2="374" y2="81"/>
+      <line x1="286" y1="88" x2="286" y2="110"/><line x1="310" y1="88" x2="310" y2="110"/><line x1="350" y1="88" x2="350" y2="110"/><line x1="374" y1="88" x2="374" y2="110"/></g>
+    <g class="dg-ink"><circle cx="286" cy="114" r="4"/><circle cx="310" cy="114" r="4"/><circle cx="350" cy="114" r="4"/><circle cx="374" cy="114" r="4"/></g>
+    <rect x="246" y="118" width="168" height="22" class="dg-fill"/>
+    <text x="330" y="133" class="dg-label-sm" text-anchor="middle">package substrate</text>
+    <g class="dg-soft"><circle cx="262" cy="148" r="7"/><circle cx="290" cy="148" r="7"/><circle cx="318" cy="148" r="7"/><circle cx="346" cy="148" r="7"/><circle cx="374" cy="148" r="7"/><circle cx="402" cy="148" r="7"/></g>
+    <text x="398" y="74" class="dg-label-sm">TSVs</text>
+    <text x="330" y="172" class="dg-label-sm" text-anchor="middle">TSVs through dies 1 and 2</text>
+  </g>
+  <text x="220" y="204" class="dg-label-sm" text-anchor="middle">micro-bumps (accent) · bumps (dark) · balls (light) · not to scale</text>
+</svg>
+      <figcaption>
+        <b>Figure 11.</b> 2.5D spreads the dies over an interposer, which carries the short, dense wiring between
+        them; 3D stacks them and connects them vertically through vias in the silicon. In both, the pitch of the
+        connections coarsens at each level down toward the board.
+        <span class="src">After Deck 19 p. 9 (semiwiki.com) and p. 8 (Besi).</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>The interposer.</b> An interposer is a structure that provides the electrical connections between
+      components and dies within a package; it is made of silicon, glass or organic material and carries
+      through-silicon vias and a redistribution layer (RDL), the metal lines that carry signals laterally
+      between the dies (Deck 19 p. 14). The dies sit on it through copper pillars and solder on their
+      under-bump metallization, surrounded by underfill, and the interposer sits on the package substrate
+      through solder bumps (Deck 19 p. 14). A silicon interposer is wired with the lithography of a chip's
+      back end, which is what makes its lines fine enough; an organic interposer is coarser, and in
+      the organic example of Deck 19 p. 14 the joints to the substrate are at a 200 µm pitch.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">What the interposer is made of, and whether the Ryzen 5000 is 2.5D</p>
+      <p>
+        Lecture 20 described the interposer as a polymer, sometimes a dielectric. The interposer the deck draws
+        on p. 8 is silicon with through-silicon vias, and Deck 19 p. 14 lists silicon, glass and organic
+        materials; this page follows the slides. Lecture 20 also presented the AMD Ryzen 5000 processor of
+        Deck 19 p. 10 as a complete example of a 2.5D system. Its input-output die and its core dies sit directly on
+        the package substrate and are connected through the substrate's wiring, with no interposer (the chiplet
+        approach AMD described at ISSCC 2020 for the generation before it): it is a multi-chip package, 2.5D only in a loose sense. The schematic on the same slide, with an interposer
+        under the dies, shows 2.5D in the sense of this section.
+      </p>
+    </div>
+
+    <p>
+      <b>The through-silicon via.</b> A through-silicon via (TSV) is a vertical wire that connects stacked
+      chips; it is made by etching a hole into the silicon and filling it with an insulating liner and metal
+      (Deck 19 p. 13). The flow on the slide, with the step Lecture 20 added at the end:
+    </p>
+    <ol>
+      <li>Grow or deposit SiO₂ on the silicon, by thermal oxidation or plasma-enhanced chemical vapour
+      deposition (PECVD); pattern it with photoresist and lithography and etch the oxide to open the via.</li>
+      <li>Etch the via deep into the silicon by deep reactive-ion etching (DRIE), a plasma etch that cuts
+      deep, near-vertical holes; strip the resist.</li>
+      <li>Line the hole with SiO₂ (PECVD or sub-atmospheric CVD) to insulate the metal from the silicon;
+      deposit a barrier layer of titanium or tantalum and a copper seed layer by physical vapour deposition.</li>
+      <li>Fill the via by electroplating copper; anneal at 400 °C for 30 minutes.</li>
+      <li>Remove the copper overburden, the seed and the barrier from the surface by chemical mechanical
+      polishing (CMP).</li>
+      <li>Thin the wafer from the back until the bottom of the via is exposed, so that it passes through
+      (Lecture 20; not on the slide).</li>
+    </ol>
+    <p>
+      Steps 3–5 are the copper damascene sequence of an ordinary interconnect level, turned on end: barrier,
+      seed, plate to overfill, polish back
+      (<a href="../../EEE6338_Advanced_Microelectronics/site/m14-cmp-slurries-damascene.html#s4-2">EEE 6338 M14 §4.2</a>;
+      the polishing itself is <a href="../../EEE6338_Advanced_Microelectronics/site/m13-cmp-process.html">EEE 6338 M13</a>).
+      The liner is needed because silicon conducts: without it every via would short to the substrate and to
+      its neighbours. Lecture 20's caution is that the flow looks simple but many problems arise in making it.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 150" role="img" aria-labelledby="f18-12-t">
+  <title id="f18-12-t">The through-silicon via in five frames: a deep hole etched into silicon; the hole lined with oxide, barrier and seed; filled with plated copper that overfills the surface; the overburden polished away; the wafer thinned from the back until the copper passes through</title>
+  <g class="dg-label-sm" text-anchor="middle">
+    <text x="44" y="16">1 · DRIE</text><text x="132" y="16">2 · liner, barrier,</text><text x="132" y="28">seed</text><text x="220" y="16">3 · Cu plate,</text><text x="220" y="28">anneal</text><text x="308" y="16">4 · CMP</text><text x="396" y="16">5 · back-thin</text>
+  </g>
+  <!-- frame 1 -->
+  <rect x="14" y="40" width="60" height="80" class="dg-fill"/><rect x="38" y="40" width="12" height="56" class="dg-soft" opacity="0.15"/>
+  <rect x="14" y="36" width="24" height="4" class="dg-soft" opacity="0.7"/><rect x="50" y="36" width="24" height="4" class="dg-soft" opacity="0.7"/>
+  <!-- frame 2 -->
+  <rect x="102" y="40" width="60" height="80" class="dg-fill"/>
+  <path d="M102,36 L126,36 L126,96 L138,96 L138,36 L162,36" class="dg-acc" stroke-width="2" fill="none"/>
+  <!-- frame 3 -->
+  <rect x="190" y="40" width="60" height="80" class="dg-fill"/>
+  <rect x="214" y="38" width="12" height="58" class="dg-acc-f"/><rect x="190" y="34" width="60" height="6" class="dg-acc-f"/>
+  <!-- frame 4 -->
+  <rect x="278" y="40" width="60" height="80" class="dg-fill"/>
+  <rect x="302" y="40" width="12" height="56" class="dg-acc-f"/>
+  <!-- frame 5 -->
+  <rect x="366" y="40" width="60" height="56" class="dg-fill"/>
+  <rect x="390" y="40" width="12" height="56" class="dg-acc-f"/>
+  <line x1="366" y1="108" x2="426" y2="108" class="dg-guide" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <text x="396" y="122" class="dg-label-sm" text-anchor="middle">removed</text>
+  <text x="44" y="138" class="dg-label-sm" text-anchor="middle">silicon</text>
+  <text x="220" y="138" class="dg-label-sm" text-anchor="middle">overburden</text>
+</svg>
+      <figcaption>
+        <b>Figure 12.</b> Making a TSV. The via starts as a blind hole from the front (1–4); only thinning from
+        the back (5) turns it into a connection through the die. Not to scale.
+        <span class="src">After Deck 19 p. 13; step 5 from Lecture 20.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>The GPU and its memory.</b> Deck 19 p. 11's example combines both arrangements. A graphics processor
+      (GPU) die sits on a silicon interposer beside stacks of high-bandwidth memory (HBM). Each HBM stack is
+      3D: dynamic random-access memory (DRAM) dies stacked on a base die and connected through TSVs. The
+      stacks and the processor reach the interposer through micro-bumps, the interposer's short wires connect
+      them, and the interposer reaches the package substrate through C4 copper bumps and the board through the
+      package balls (Deck 19 p. 11). The memory sits beside the processor and is connected to it by many
+      short lines in parallel, which is how the arrangement achieves the bandwidth that the GPU needs.
+    </p>
+
+    <details class="check">
+      <summary>A TSV wafer reaches the end of the line with two faults: on one lot the oxide liner was not deposited, and another lot was never thinned from the back. What does each fault do to the vias?</summary>
+      <div class="answer">
+        <p>
+          Without the liner, the barrier and the copper sit directly on the silicon wall of the hole. Silicon is
+          a conductor, not an insulator, so every via is shorted to the substrate and, through it, to every other
+          via; the barrier alone does not insulate, since titanium and tantalum are metals. Those wafers are
+          scrap. Without back-thinning, the copper fills a blind hole that ends inside the silicon: the vias pass
+          the front-side tests, but there is nothing to connect to on the back, so no die can be stacked on that
+          side. The second lot can still be thinned and completed; the first cannot be repaired.
+        </p>
+      </div>
+    </details>
+
+    <h2>8 · Hybrid bonding</h2>
+    <p>
+      Hybrid bonding removes the bump. Two die or wafer surfaces, each a flat field of dielectric with copper
+      pads set into it, are pressed together so that the dielectric bonds to dielectric and the copper to
+      copper in one step; "hybrid" refers to these two bonds made at once. With no solder and no bump to space
+      the parts, the pitch can fall below 10 µm, and Deck 19 p. 15 puts hybrid bonding at 12,000 to 1,200,000
+      contacts per mm² (Figure 10).
+    </p>
+    <p>
+      The process has three steps (Deck 19 p. 17). It descends from the direct bonding of hydrophilic silicon
+      wafers, whose steps the slide lists:
+    </p>
+    <ol>
+      <li><b>Pre-processing.</b> The surfaces are cleaned of particles and of organic and ionic contaminants,
+      and may be activated in a plasma.</li>
+      <li><b>Pre-bonding at room temperature</b> with a low force, up to 15 N. The dielectric surfaces adhere at
+      once, first through van der Waals forces and hydrogen bonds; covalent bonds then form across the
+      interface.</li>
+      <li><b>Annealing</b> at 150 to 350 °C, with no external pressure. Diffusion in the dielectric strengthens
+      the bond, and the copper pads expand until they meet and form the electrical connection; the copper
+      needs time at temperature for a metallurgical bond to form.</li>
+    </ol>
+    <p>
+      The slide's temperature profile separates the two bonds: a hold at 150 °C for dielectric fusion, then
+      300 °C for the copper's expansion and fusion (Deck 19 p. 17). Lecture 20 gave the reason the order works:
+      the copper pads are left slightly recessed below the dielectric surface, so the dielectric can touch and
+      bond first, and the copper's own thermal expansion then closes the gap; copper left flush would, in the
+      professor's account, crack the joint. Copper expands faster than the oxide around it, by the coefficients
+      of <a href="m17b-transistors-high-temperature.html">M17b §3</a>, 16.5×10⁻⁶ against about
+      0.5×10⁻⁶ K⁻¹, and the difference over the pad's height is what is available to close the recess.
+    </p>
+
+    <div class="eq" id="m18-eq-recess">
+      <div class="eq-body">
+        <div class="eq-math"><em>δ</em> = (<em>α</em><sub>Cu</sub> − <em>α</em><sub>ox</sub>) <em>h</em> Δ<em>T</em></div>
+        <div class="eq-num">(18.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>δ</em> rise of a copper pad's surface relative to the surrounding dielectric surface (m) ·
+        <em>α</em><sub>Cu</sub> expansion coefficient of copper, 16.5×10⁻⁶ K⁻¹ near room temperature ·
+        <em>α</em><sub>ox</sub> of the oxide, about 0.5×10⁻⁶ K⁻¹ (K⁻¹) · <em>h</em> pad height (m) ·
+        Δ<em>T</em> temperature rise from bonding to anneal (K). Free one-dimensional expansion: it ignores the
+        lateral constraint of the oxide around the pad and the change of the coefficients with temperature, so
+        it estimates the order of magnitude. Two facing pads each contribute their own <em>δ</em>. On the formula
+        sheet as <a href="formula-sheet.html#eq-18-recess">(18.5)</a>.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">How much recess the anneal can close</div>
+      <div class="ex-body">
+        <p><b>Given</b> the production hybrid bond of Deck 19 p. 16: an upper copper pad 0.92 µm high and a lower
+        pad 0.97 µm high, facing each other; bonded at 25 °C; annealed at the profile's 150 °C and 300 °C steps;
+        <em>α</em><sub>Cu</sub> = 16.5×10⁻⁶ K⁻¹ and <em>α</em><sub>ox</sub> = 0.5×10⁻⁶ K⁻¹. <b>Find</b> the total
+        recess the two pads can close at each step.</p>
+        <p><b>Plan.</b> Each pad rises by (18.5) relative to its own dielectric surface; the gap between the two
+        copper faces closes by the sum. The hinge is that the dielectric, bonded at room temperature, holds the
+        two surfaces together, so only the difference in expansion counts.</p>
+        <p class="ex-step"><b>Expansion difference.</b> <em>α</em><sub>Cu</sub> − <em>α</em><sub>ox</sub> =
+        16.0×10⁻⁶ K⁻¹.</p>
+        <p class="ex-step"><b>At 300 °C</b>, Δ<em>T</em> = 275 K. Upper pad: 16.0×10⁻⁶ × 0.92×10⁻⁶ m × 275 =
+        4.05 nm. Lower pad: 16.0×10⁻⁶ × 0.97×10⁻⁶ m × 275 = 4.27 nm. Together, 8.32 nm.</p>
+        <p class="ex-step"><b>At 150 °C</b>, Δ<em>T</em> = 125 K: 1.84 + 1.94 = 3.78 nm.</p>
+        <p class="ex-answer">The pads can close about 8.3 nm of combined recess at 300 °C, about 4 nm per face, and
+        3.8 nm at 150 °C. Check: imec describes the copper as a few nanometres below the dielectric surface before
+        bonding, and IME's preferred post-CMP dishing is 5–10 nm per polished surface, with a higher risk of voids
+        at the copper interface at 10 nm or more (both secondary reports). The estimate of about 4 nm per face is
+        of that order but below IME's preferred range: free one-dimensional expansion leaves out the lateral
+        constraint of the oxide around the pad and the copper's creep and grain growth at temperature, and IME
+        gives 300–400 °C as the typical anneal for TEOS oxide. The order of magnitude is the result, and the
+        150 °C step closes less than half as much, which is why the profile bonds the dielectric there and the
+        copper at 300 °C.</p>
+      </div>
+    </div>
+
+    <p>
+      The recess is made by the copper chemical mechanical polish, as dishing, the dip a soft metal takes below
+      the harder field around it
+      (<a href="../../EEE6338_Advanced_Microelectronics/site/m14-cmp-slurries-damascene.html#s5-3">EEE 6338 M14 §5.3</a>).
+      For an ordinary interconnect level dishing is a defect to minimise; for a hybrid-bond surface it must be
+      held inside a window of a few nanometres: too little and the copper props the dielectric apart, too much
+      and the gap stays open after the anneal.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 236" role="img" aria-labelledby="f18-13-t">
+  <title id="f18-13-t">Hybrid bonding before and after the anneal. Left: two dies face to face, their oxide surfaces in contact, with a narrow gap between the two recessed copper pads. Right: after heating, the pads have expanded and met. Below, the temperature profile: room temperature, a hold at 150 degrees for dielectric fusion, then 300 degrees for copper expansion and fusion</title>
+  <text x="110" y="16" class="dg-label-sm" text-anchor="middle">bonded at room temperature</text>
+  <text x="330" y="16" class="dg-label-sm" text-anchor="middle">after the 300 °C anneal</text>
+  <!-- left -->
+  <rect x="30" y="24" width="160" height="30" class="dg-fill"/>
+  <rect x="30" y="54" width="160" height="22" class="dg-soft" opacity="0.35"/>
+  <rect x="30" y="80" width="160" height="22" class="dg-soft" opacity="0.35"/>
+  <rect x="30" y="102" width="160" height="30" class="dg-fill"/>
+  <rect x="86" y="54" width="44" height="22" class="dg-acc-f"/>
+  <rect x="80" y="80" width="56" height="22" class="dg-acc-f"/>
+  <line x1="30" y1="78" x2="190" y2="78" class="dg-line" stroke-width="1.2"/>
+  <text x="134" y="70" class="dg-label-sm">Cu gap</text>
+  <!-- right -->
+  <rect x="250" y="24" width="160" height="30" class="dg-fill"/>
+  <rect x="250" y="54" width="160" height="24" class="dg-soft" opacity="0.35"/>
+  <rect x="250" y="78" width="160" height="24" class="dg-soft" opacity="0.35"/>
+  <rect x="250" y="102" width="160" height="30" class="dg-fill"/>
+  <rect x="306" y="54" width="44" height="24" class="dg-acc-f"/>
+  <rect x="300" y="78" width="56" height="24" class="dg-acc-f"/>
+  <line x1="250" y1="78" x2="306" y2="78" class="dg-line" stroke-width="1.2"/><line x1="356" y1="78" x2="410" y2="78" class="dg-line" stroke-width="1.2"/>
+  <text x="196" y="70" class="dg-label-sm">oxide</text>
+  <text x="196" y="94" class="dg-label-sm">oxide</text>
+  <!-- profile -->
+  <line x1="40" y1="222" x2="420" y2="222" class="dg-rule" stroke-width="1"/>
+  <line x1="40" y1="150" x2="40" y2="222" class="dg-rule" stroke-width="1"/>
+  <path d="M40,214 L110,214 L140,190 L240,190 L270,160 L380,160 L410,214" class="dg-acc" stroke-width="2" fill="none"/>
+  <text x="74" y="208" class="dg-label-sm" text-anchor="middle">RT</text>
+  <text x="190" y="184" class="dg-label-sm" text-anchor="middle">150 °C: dielectric fusion</text>
+  <text x="326" y="154" class="dg-label-sm" text-anchor="middle">300 °C: Cu expansion, fusion</text>
+  <text x="430" y="232" class="dg-label-sm" text-anchor="end">time</text>
+</svg>
+      <figcaption>
+        <b>Figure 13.</b> The oxide bonds first, at room temperature and at 150 °C, while the recessed copper pads
+        stand a few nanometres apart; at 300 °C the copper has expanded across the gap and fuses. The gap is
+        exaggerated by about a thousand times.
+        <span class="src">After Deck 19 pp. 16–17 and Lecture 20.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      Alignment is the other limit. The two dies must be placed face to face with their pads in register, and
+      Lecture 20 described the alignment as made with infrared light through the silicon. Silicon transmits
+      photons whose energy is below its 1.12 eV band gap, wavelengths longer than 1.24/1.12 = 1.11 µm, so
+      alignment marks on the buried face can be seen through the die. The production bond of Deck 19 p. 16
+      shows the tolerance: a 9 µm pitch, a metal interface of about 3 µm, an upper pad 2.1 µm wide on a lower
+      pad 3.3 µm wide. The upper pad stays wholly on the lower one only while the misalignment is below
+      (3.3 − 2.1)/2 = 0.6 µm. The bond in that example joins a cache die to a compute die, with TSVs through
+      the compute die (Deck 19 p. 16).
+    </p>
+
+    <details class="check">
+      <summary>A hybrid-bond line with the pads of Deck 19 p. 16 must lower its copper anneal from 300 °C to 200 °C to protect a temperature-sensitive die. By (18.5), how much less recess can the copper close, and what does the change ask of the polish?</summary>
+      <div class="answer">
+        <p>
+          (18.5) is linear in Δ<em>T</em>. At 200 °C, Δ<em>T</em> = 175 K against 275 K, so each pad rises
+          16.0×10⁻⁶ × 0.92×10⁻⁶ m × 175 = 2.58 nm and 16.0×10⁻⁶ × 0.97×10⁻⁶ m × 175 = 2.72 nm, together 5.29 nm
+          against 8.32 nm at 300 °C: 0.636 times as much, about a third less. The free-expansion estimate
+          understates what a real anneal closes, but the ratio holds whatever the absolute figure, since every
+          term but Δ<em>T</em> is unchanged. The polish must therefore leave a shallower recess, and the window
+          narrows from both sides: IME reports a higher risk of voids at 10 nm or more of dishing and of
+          microcracks in the surrounding dielectric at 5 nm or less, so a lower anneal pushes the target toward
+          the lower, crack-prone edge. The alternatives are a longer hold at the lower temperature, which gives
+          the copper more time to diffuse (Deck 19 p. 17), or taller pads, since <em>δ</em> ∝ <em>h</em>.
+        </p>
+      </div>
+    </details>
+
+    <h2>9 · What integration costs</h2>
+    <p>
+      Every advance of §6–§8 puts more dies and more joints into one package. Lecture 20 closed on the cost:
+      integration creates weak points, the interconnects above all, and because they are weak points the field
+      needs failure analysis. This section sets out three costs: heat that a stack cannot shed, joints that
+      limit reliability, and, for space, two material problems of packages, tin whiskers and outgassing.
+    </p>
+    <p>
+      <b>Heat in a stack.</b> In 2.5D each die sits beside the others on the interposer, and each has its own
+      path for heat to the package and the heat sink. In a 3D stack every die dissipates power, and the heat of
+      each must pass through the dies between it and the surface that removes it. The professor's description
+      is that in a stack the heat only goes down, so the memory dies of a stack reach much higher temperatures
+      than they would in 2.5D, and many failures come from the temperature rising too far; heat is what limits
+      how many dies can be stacked (Lecture 20). The research directions he named are heat sinks on top of the
+      stack, removing heat laterally, which is hard, and spreaders of copper or diamond, materials of very high
+      thermal conductivity (Lecture 20). Temperature accelerates the failure mechanisms of
+      <a href="m17b-transistors-high-temperature.html">M17b</a>, such as gate-oxide breakdown, so a die that
+      runs hotter in a stack wears out sooner.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 180" role="img" aria-labelledby="f18-14-t">
+  <title id="f18-14-t">Heat paths. Left, 2.5D: two dies side by side on an interposer, each with its own short arrow of heat down into the package. Right, 3D: three dies stacked, the heat of the top die passing through both dies below it, so the arrows add up through the stack</title>
+  <defs><marker id="f18-14-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+  <text x="104" y="16" class="dg-label-sm" text-anchor="middle">2.5D: one die thick</text>
+  <rect x="24" y="70" width="70" height="24" class="dg-fill"/><rect x="114" y="70" width="70" height="24" class="dg-fill"/>
+  <rect x="14" y="98" width="180" height="16" class="dg-soft" opacity="0.5"/>
+  <rect x="8" y="118" width="192" height="18" class="dg-fill"/>
+  <text x="104" y="131" class="dg-label-sm" text-anchor="middle">package</text>
+  <line x1="59" y1="78" x2="59" y2="134" class="dg-acc" stroke-width="2" marker-end="url(#f18-14-ar)"/>
+  <line x1="149" y1="78" x2="149" y2="134" class="dg-acc" stroke-width="2" marker-end="url(#f18-14-ar)"/>
+  <text x="330" y="16" class="dg-label-sm" text-anchor="middle">3D: heat of the top die crosses the others</text>
+  <rect x="280" y="30" width="100" height="22" class="dg-fill"/><text x="330" y="45" class="dg-label-sm" text-anchor="middle">die 3</text>
+  <rect x="280" y="56" width="100" height="22" class="dg-fill"/><text x="330" y="71" class="dg-label-sm" text-anchor="middle">die 2</text>
+  <rect x="280" y="82" width="100" height="22" class="dg-fill"/><text x="330" y="97" class="dg-label-sm" text-anchor="middle">die 1</text>
+  <rect x="250" y="118" width="160" height="18" class="dg-fill"/>
+  <text x="370" y="131" class="dg-label-sm" text-anchor="middle">package</text>
+  <line x1="296" y1="40" x2="296" y2="134" class="dg-acc" stroke-width="1.4" marker-end="url(#f18-14-ar)"/>
+  <line x1="304" y1="66" x2="304" y2="134" class="dg-acc" stroke-width="1.4" marker-end="url(#f18-14-ar)"/>
+  <line x1="312" y1="92" x2="312" y2="134" class="dg-acc" stroke-width="1.4" marker-end="url(#f18-14-ar)"/>
+  <text x="388" y="60" class="dg-label-sm">hottest</text>
+  <text x="388" y="72" class="dg-label-sm">far from</text>
+  <text x="388" y="84" class="dg-label-sm">the sink</text>
+  <text x="220" y="166" class="dg-label-sm" text-anchor="middle">heat paths as described in Lecture 20; schematic</text>
+</svg>
+      <figcaption>
+        <b>Figure 14.</b> In 2.5D each die's heat crosses its own thickness to reach the package; in 3D the heat of
+        every upper die adds to the flux through the dies below, so the dies farthest from the heat-removing
+        surface run hottest.
+        <span class="src">After Lecture 20; schematic.</span>
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>The joints as the limit.</b> Every bump, micro-bump and hybrid bond joins materials that expand
+      differently, and every thermal cycle strains it by the mechanism of §2. The deck's reliability section
+      states the consequence, beside a tree of failure mechanisms it takes from the 2021 IEEE Heterogeneous
+      Integration Roadmap: the reliability of a heterogeneously integrated system is limited not by the wear-out
+      of its devices but by the degradation of its bonded interfaces (Deck 19 p. 35; the sentence is the slide's,
+      not the roadmap's). <a href="m19-reliability-qualification.html">M19</a> §1 and §5 treat the thermal-cycling and
+      vibration tests that find this degradation, and <a href="m19a-failure-analysis.html">M19a</a> the X-ray and
+      thermal imaging that locate it.
+    </p>
+    <p>
+      <b>Tin whiskers.</b> Tin whiskers are electrically conductive, crystalline structures of tin that sometimes
+      grow from tin surfaces; lengths of a few millimetres are not uncommon and typical diameters are a few
+      micrometres (NASA GSFC). No single explanation of their growth is accepted; the theories link it to the
+      relief of stress in the tin, especially compressive stress, and one source of that stress is the growth of
+      intermetallic compounds such as Cu₆Sn₅ where tin is plated over copper (NASA GSFC). A whisker that bridges
+      two conductors shorts them. In 1998 Hughes reported that the most probable cause of three failures of the
+      spacecraft control processors of in-orbit satellites was a tin-plated relay, in which a tin crystal
+      thinner than a human hair could grow from a terminal to the case and short it (Leidecker and Brusse
+      2006); NASA lists the loss of Solidaridad 1 in 2000, when its redundant control processor failed, as suspected
+      to have been caused by such a short.
+    </p>
+    <p>
+      Lead suppresses whisker growth, and tin–lead alloys are generally considered acceptable where they contain
+      at least 3 % lead by weight (NASA GSFC). Lecture 22's account is that consumer and automotive electronics have moved to
+      lead-free solder for environmental reasons, and that in space practice test houses re-tin the
+      leads of parts and replace the solder balls of ball-grid arrays with leaded solder, both to suppress
+      whiskers and so that one solder alloy, and one reflow temperature profile, serves the whole board. NASA's
+      guidance lists dipping the plated surfaces in tin–lead solder among its mitigations, and notes that a
+      conformal coating or foam can significantly reduce the risk of whisker shorts (NASA GSFC).
+    </p>
+    <p>
+      <b>Outgassing.</b> In vacuum, polymers and adhesives in a package release volatile material. The
+      molecules can deposit on cold optical and other critical surfaces, be baked on by sunlight and change
+      colour; such deposits cannot be removed easily, they degrade ultraviolet and infrared measurements by
+      obscuring wavelengths of interest, and they alter the solar absorption and infrared emission of
+      thermal-control surfaces (NASA PT-TE-1410). The screening test, ASTM E595, heats a sample to 125 °C for
+      24 hours in a vacuum of about 10⁻⁶ Torr, with a collector plate at 25 °C in line of sight of the sample
+      (PT-TE-1410; GSFC outgassing database guide). It reports two numbers:
+    </p>
+    <ul>
+      <li><b>Total mass loss</b> (TML): the fraction of the sample's mass lost in the test.</li>
+      <li><b>Collected volatile condensable material</b> (CVCM): the fraction of the sample's original mass
+      that condenses on the collector, the part that would deposit on a cold surface in orbit.</li>
+    </ul>
+    <p>
+      NASA approves materials with TML below 1.0 % and CVCM below 0.10 % for use in space unless the application
+      dictates otherwise, and a collector colder than the standard may be required to reflect the intended use
+      (PT-TE-1410). Lecture 22 added what the same polymers do over a mission: ultraviolet light and heat break
+      small fragments off their chains, which then deposit on optics; plastics become brittle, wire insulation
+      cracks, and arcing between wires can follow.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 150" role="img" aria-labelledby="f18-15-t">
+  <title id="f18-15-t">The outgassing test: a sample in a heated compartment at 125 degrees Celsius in vacuum of about 10 to the minus 6 torr for 24 hours; vapour leaves through an exit port toward a collector plate held at 25 degrees; the mass lost by the sample is TML and the mass condensed on the collector is CVCM</title>
+  <defs><marker id="f18-15-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+  <rect x="10" y="10" width="420" height="120" rx="8" class="dg-soft" opacity="0.12"/>
+  <text x="420" y="26" class="dg-label-sm" text-anchor="end">vacuum ≈ 10⁻⁶ Torr, 24 h</text>
+  <rect x="40" y="46" width="110" height="60" class="dg-fill"/>
+  <rect x="64" y="70" width="60" height="16" class="dg-ink" opacity="0.6"/>
+  <text x="95" y="62" class="dg-label-sm" text-anchor="middle">sample, 125 °C</text>
+  <text x="95" y="122" class="dg-label-sm" text-anchor="middle">mass lost → TML</text>
+  <g class="dg-acc" stroke-width="1.6"><line x1="152" y1="68" x2="300" y2="68" marker-end="url(#f18-15-ar)"/><line x1="152" y1="84" x2="300" y2="84" marker-end="url(#f18-15-ar)"/></g>
+  <text x="226" y="60" class="dg-label-sm" text-anchor="middle">volatiles</text>
+  <rect x="304" y="44" width="10" height="64" class="dg-acc-f"/>
+  <text x="322" y="70" class="dg-label-sm">collector, 25 °C</text>
+  <text x="322" y="84" class="dg-label-sm">condensed → CVCM</text>
+</svg>
+      <figcaption>
+        <b>Figure 15.</b> The outgassing screen. The collector stands in for a cold surface in orbit: what condenses
+        on it at 25 °C (CVCM) is what would deposit on optics, while the total mass lost (TML) includes water
+        and other species that do not condense there.
+        <span class="src">After NASA GSFC PT-TE-1410 and the GSFC outgassing database user guide.</span>
+      </figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>Three questions on one instrument package. (a) Its memory could be a 3D stack on the processor or a 2.5D neighbour on an interposer; which runs cooler, and why? (b) An adhesive for the optics bay tests at TML 0.8 % and CVCM 0.15 %; is it acceptable? (c) A part arrives with pure-tin-plated leads; what does space practice do with it?</summary>
+      <div class="answer">
+        <p>
+          (a) The 2.5D neighbour. Beside the processor on the interposer, the memory has its own path to the
+          package and heat sink and carries only its own heat. Stacked, it lies in the processor's heat path or
+          has the processor's heat pass through it, so it runs hotter, and its failure mechanisms are accelerated
+          by temperature. The stack buys shorter connections at the price of temperature.
+        </p>
+        <p>
+          (b) No. Its total mass loss passes the 1.0 % limit, but its CVCM, 0.15 %, exceeds the 0.10 % limit, and
+          CVCM is the criterion that matters for optics, because it measures what condenses on a cold surface.
+          In an optics bay a colder collector than the standard may even be required.
+        </p>
+        <p>
+          (c) Pure tin can grow whiskers that short adjacent leads. The leads are re-tinned, dipped in tin–lead
+          solder, which suppresses whiskers when it contains at least 3 % lead, and which matches the leaded
+          solder used for the rest of the board so that one reflow profile serves it; a conformal coating
+          further reduces the risk of a whisker short.
+        </p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>The package bridges a die of 3–5 mm with 50–150 µm pads to a board with 1–2 mm features, and carries the die's heat and mechanical load. The first-level interconnect is a wire bond, a flip-chip bump or a tape lead.</li>
+        <li>A high-temperature substrate must stay insulating: alumina's resistivity falls from above 10¹⁴ Ω·cm at 25 °C to 4×10⁹ (AD-96) and 2×10¹¹ Ω·cm (AD-998) at 500 °C, so the package, not the SiC die, carries the leakage, <em>I</em> = <em>V</em><em>A</em>/(<em>ρ</em><em>t</em>) (18.1). Alumina's 8.2×10⁻⁶ K⁻¹ against silicon's 2.6–4×10⁻⁶ gives about 0.22 % mismatch strain over 25–500 °C; AlN fits better and conducts heat about seven times better.</li>
+        <li>A wire bond is a solid-state weld: thermocompression (300–400 °C), ultrasonic (20–300 kHz, usually 60 kHz, little heat; Al wedge bonds) or thermosonic (stage ≤ 150 °C; Au ball bonds). The operator controls ultrasonic power, temperature, loop height, force and time; too little lifts the bond, too much over-deforms or craters it. Au–Al joints grow brittle intermetallics and Kirkendall voids when hot; Au–Au does not.</li>
+        <li>The hook pull loads each leg by <em>F</em>/(2 sin <em>θ</em>) (18.2), so a flat loop reads low; MIL-STD-883 Method 2011 fixes the hook position and the minima (3.0 gf for 1 mil Au pre-seal). A straight wire resonates at <em>f</em><sub>1</sub> ∝ <em>d</em>/<em>L</em>² (18.3): a 25 µm gold wire longer than about 4.7 mm resonates inside the 0–2 kHz transport band, and fatigue cracks the heel.</li>
+        <li>Flip chip uses the whole face: bumps went from C4 solder to copper pillars and micro-pillars, listed from 50 down to 10 µm (read here as pitch); contact density is 1/<em>p</em>² (18.4), from about 120 mm⁻² for C4 to 10⁴ at 10 µm. Underfill redistributes the expansion-mismatch stress and raised reliability one to two orders of magnitude in a NASA study over −190 to 85 °C.</li>
+        <li>2.5D places dies side by side on an interposer (silicon, glass or organic, with RDL and TSVs); 3D stacks them through TSVs (DRIE, liner, Ti/Ta barrier, Cu seed and plating, CMP, back-thinning). A GPU with HBM stacks on a silicon interposer uses both.</li>
+        <li>Hybrid bonding joins oxide to oxide at room temperature (≤ 15 N) and copper to copper in a 150–350 °C anneal; the copper is recessed a few nanometres and closes the gap by expanding, <em>δ</em> = (<em>α</em><sub>Cu</sub> − <em>α</em><sub>ox</sub>)<em>h</em>Δ<em>T</em> (18.5), about 4 nm per 1 µm pad at 300 °C, or 8 nm for the two facing pads of Deck 19 p. 16. Pitch reaches 9 µm in production, with sub-micrometre alignment through the silicon in the infrared.</li>
+        <li>Integration costs heat that a stack cannot shed and joints that limit reliability (bonded interfaces, not device wear-out). In space, pure tin grows whiskers (≥ 3 % Pb suppresses them; leads re-tinned), and polymers outgas (accept TML &lt; 1.0 %, CVCM &lt; 0.10 % at 125 °C, 24 h, 10⁻⁶ Torr).</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Opening</td><td>Deck 18 pp. 7, 10; Deck 19 p. 37; Lectures 19 and 20; M02 §5</td></tr>
+      <tr><td>§1</td><td>Deck 18 pp. 7, 10; Deck 19 pp. 7 (after Jabil), 37; Lectures 19 and 20; NASA's die attach from M17c §5</td></tr>
+      <tr><td>§2</td><td>Deck 18 pp. 3–5 (the CoorsTek alumina property table) and Lecture 19; silicon's expansivity from C. A. Swenson, <em>J. Phys. Chem. Ref. Data</em> <b>12</b>, 179 (1983), Table 2; SiC from J. J. Neumeier, Yu. V. Shvyd'ko and D. Haskel, <em>J. Phys. Chem. Solids</em> <b>187</b>, 111860 (2024); AlN and 96 % alumina from the CeramTec data sheet "Material properties of Rubalit, Alunit, Zirkolit and Sinalit"; mismatch strain from M17b §3</td></tr>
+      <tr><td>§3</td><td>Deck 18 pp. 9–21 and Lecture 19; the three bonding processes and their temperatures and frequencies from H. K. Charles Jr., "The microelectronic wire bond: past, present, and future", Proc. IMAPS 2010 (43rd Int. Symp. on Microelectronics), p. 000462</td></tr>
+      <tr><td>§4</td><td>Deck 18 pp. 16, 20, 23–28 and Lecture 19; Au–Al intermetallics from Charles (2010), after E. Philofsky, <em>Solid-State Electron.</em> <b>13</b>, 1391 (1970); the 250 °C example from N. J. Noolu <em>et al.</em>, <em>J. Mater. Res.</em> <b>19</b>, 1374 (2004), as reproduced by D. Susan, J. Knorovsky and P. Vianco, Sandia National Laboratories, JOWOG 28 (2011), OSTI 1118735</td></tr>
+      <tr><td>§5</td><td>Deck 18 pp. 29 (after M. Schneider-Ramelow, CERN), 30–32 and Lecture 19; Table I, test condition D and the flat-loop rule from MIL-STD-883K with Change 2 (2017), Method 2011.9 (2013); the resolution of forces from J. Albers (ed.), <em>The Destructive Bond Pull Test</em>, NBS Special Publication 400-18, eqs. 3 and 8; the clamped beam from Euler–Bernoulli theory, with handbook moduli and densities; the CDF failures from T. Aaltonen <em>et al.</em> (CDF Collaboration), arXiv:1301.3180, §3.6</td></tr>
+      <tr><td>§6</td><td>Deck 18 p. 7; Deck 19 pp. 8, 9, 11, 12 (after DOI 10.1109/ESTC.2010.5642887), 14, 15 (after Intel and Besi); Lecture 20; underfill from R. Ramesham, "Advanced flip chips in extreme temperature environments", NASA Tech Briefs NPO-41181 (2010), NTRS 20100033597; the alpha-source history from EEE 5416 M11 §9</td></tr>
+      <tr><td>§7</td><td>Deck 19 pp. 6, 8 (after Besi), 9 (after semiwiki.com), 10, 11, 13, 14 (after DOI 10.1109/ECTC.2019.00246); Lecture 20 (chiplets, back-thinning); the Ryzen package after S. Naffziger <em>et al.</em>, "AMD chiplet architecture for high-performance server and desktop products", ISSCC 2020; damascene and CMP from EEE 6338 M13 and M14 §4.2</td></tr>
+      <tr><td>§8</td><td>Deck 19 pp. 15–17 (p. 16 after Yole Développement and System Plus Consulting) and Lecture 20 (recess, alignment); expansion coefficients from M17b §3; recess and anneal from S. A. Chew, J. De Vos and E. Beyne, imec article, 19 Feb 2024, and dishing limits from P. Garrou, "IFTLE 475", 3D InCites (2021), reporting the IME (A*STAR) EPTC 2020 talk, both secondary reports; dishing from EEE 6338 M14 §5.3</td></tr>
+      <tr><td>§9</td><td>Lecture 20 (heat in stacks; the closing thesis); Deck 19 p. 35 (after the 2021 IEEE Heterogeneous Integration Roadmap, Ch. 24); tin whiskers from NASA GSFC, "Basic Info on Tin Whiskers" and "Whisker Failures" (nepp.nasa.gov/whisker), and H. Leidecker and J. Brusse, "Tin whiskers: a history of documented electrical system failures", NASA GSFC briefing (2006), NTRS 20060028088; outgassing from NASA GSFC Preferred Reliability Practice PT-TE-1410 and the GSFC Outgassing Database user guide; Lecture 22 (re-tinning, polymer ageing)</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m17c-high-temperature-electronics.html"><span>Previous</span>M17c · High-Temperature Electronics</a>
+      <a class="next" href="m19-reliability-qualification.html"><span>Next</span>M19 · Reliability and Qualification</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

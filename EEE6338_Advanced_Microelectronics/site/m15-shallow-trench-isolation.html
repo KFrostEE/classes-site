@@ -1,0 +1,1358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M15 · Shallow Trench Isolation — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M15 · Shallow Trench Isolation</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 15</p>
+    <h1>Shallow Trench Isolation</h1>
+    <p class="lede">
+      Why local oxidation stopped working as an isolation technology below about 0.35 µm; the buried-oxide trench process that came
+      before shallow trench isolation and its six drawbacks; the baseline STI flow step by step; how deep the trench must be; the
+      parasitic transistors along the trench sidewall and at its top corner; corner rounding and the divot; how the trench is filled
+      without voids; and the dishing that the final polish leaves in wide trenches.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m08-well-engineering.html">M08</a> (the field transistor, eq. 8.6), <a href="m13-cmp-process.html">M13</a>, <a href="m14-cmp-slurries-damascene.html">M14</a> (ceria slurry, dishing)</span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Class notes pp. 131–146 (Chapter 9); Lectures 4, 16, 17, 24; Wolf Vol. 4 Ch. 9; Plummer §2.2, Ch. 6</span>
+    </div>
+
+    <p>
+      Every transistor on a chip must be electrically separated from its neighbours, and the separation is made by a thick oxide in the
+      silicon surface between them, the field oxide. <a href="m08-well-engineering.html#s3">M08 §3</a> showed why it must be thick: any
+      conductor crossing the field region is the gate of a parasitic MOS transistor, and the field oxide must keep that transistor's
+      threshold above the supply. For two decades the field oxide was grown by local oxidation of silicon, LOCOS
+      (<a href="m02-deep-submicron-roadmap.html#s9">M02 §9</a>). Shallow trench isolation (STI) replaced it at the 0.35–0.25 µm
+      generations: a trench is etched into the silicon, lined with a thin thermal oxide, filled with deposited oxide and polished flat.
+      The idea is simple and old; making it work took three enabling processes, dry trench etching, void-free gap-filling deposition
+      and chemical mechanical polishing (<a href="m13-cmp-process.html">M13</a>), and it brought new problems of its own at the trench
+      sidewall and the trench corner. This module follows the class notes' Chapter 9, which follows Wolf's Chapter 9 nearly sentence
+      by sentence. The chapter had not been lectured in full when this page was written; Lecture 17 drew the flow as a preview.
+    </p>
+
+    <h2 id="s1">1 · What LOCOS costs</h2>
+    <p>
+      The notes open the chapter with four limitations of LOCOS (p. 131): the bird's beak penetrates the active regions; the surface is
+      not planar; the field oxide thins at narrow isolation spacings; and the oxidation stresses the silicon enough to create defects.
+      Each follows from one fact: LOCOS <em>grows</em> its field oxide from the substrate, so the oxide's shape is set by oxidation
+      kinetics rather than by the mask. This section recalls the process, then takes the four in turn and ends with what STI changes.
+    </p>
+
+    <h3 id="s1-1">1.1 The process, and the step it leaves</h3>
+    <p>
+      In LOCOS a thin pad oxide is grown, a silicon nitride film is deposited over it and patterned to cover the future active areas, and
+      the wafer is oxidized. Nitride is nearly impermeable to the oxidant, so the field oxide grows only where the nitride has been
+      removed. Plummer's example grows about 500 nm in H₂O at 1000 °C for 90 min, after which the nitride is stripped in hot phosphoric
+      acid, which etches nitride and leaves oxide (Plummer §2.2). Thermal oxidation consumes silicon: the course value is 0.46 of the
+      oxide thickness (<a href="m05a-bonds-and-structure.html">M05a</a>). The remaining 0.54 of the oxide lies above the original
+      silicon surface. LOCOS field oxide is therefore <em>semi-recessed</em>, partly below and partly above the surface, and the
+      active areas are left at the bottom of a step.
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>x</em><sub>Si</sub> = 0.46 <em>t</em><sub>ox</sub>,&ensp; <em>h</em><sub>above</sub> = 0.54 <em>t</em><sub>ox</sub></div>
+        <div class="eq-num">(15.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>x</em><sub>Si</sub> silicon consumed, measured below the original surface (nm) · <em>t</em><sub>ox</sub> thermal oxide
+        grown (nm) · <em>h</em><sub>above</sub> part of the oxide above the original surface (nm). The course's ratio
+        (Plummer 0.45; texts quote 0.44 to 0.46 according to the oxide density they assume, <a href="m05a-bonds-and-structure.html#s4">M05a §4</a>). Applies to any thermal oxide: the LOCOS field oxide here, the STI liner and sacrificial oxides in §3.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">The step left by a LOCOS field oxide</div>
+      <div class="ex-body">
+        <p><b>Given</b> a LOCOS field oxide of 500 nm, Plummer's example, and of 300 nm, inside the 0.3–0.5 µm Wolf gives for
+        submicron LOCOS (Wolf p. 554). <b>Find</b> how far each extends below and above the original silicon surface.</p>
+        <p><b>Plan.</b> Apply (15.1). The pad oxide under the nitride is ignored: it is thin and present on both sides of the step.</p>
+        <p class="ex-step"><b>Silicon consumed.</b> 0.46 × 500 = 230 nm below the original surface; 0.46 × 300 = 138 nm.</p>
+        <p class="ex-step"><b>Oxide above the surface.</b> 500 − 230 = 270 nm; 300 − 138 = 162 nm. This is the step between the top of
+        the field oxide and the active silicon once the nitride is stripped.</p>
+        <p class="ex-answer">A 500 nm LOCOS oxide stands 270 nm above the active areas; a 300 nm one, 162 nm. Check: 230 + 270 = 500 nm,
+        and the recessed fraction is 0.46 in both cases, so the step scales with the oxide thickness.</p>
+      </div>
+    </div>
+    <p>
+      A step of a quarter of a micrometre at the isolation is the first layer of the topography that M13 §1 built up level by level:
+      the gate polysilicon runs up and over it, and every later level inherits it. CMP can polish the field oxide flat, but the notes and
+      Wolf add a qualification at once: CMP reduces the topography but does not remove the encroachment (notes p. 131; Wolf p. 433).
+    </p>
+
+    <h3 id="s1-2">1.2 The bird's beak</h3>
+    <p>
+      The oxidant does not stop at the edge of the nitride. It diffuses sideways through the pad oxide and oxidizes the silicon under the
+      nitride edge, and the volume expansion of that oxide lifts the nitride edge, so the field oxide ends in a tapered wedge, the
+      bird's beak (Plummer §2.2, §6; Lecture 16: "bird's beak are formed due to lateral penetration of oxidation"). The wedge is field
+      oxide where the mask drew active area, so the active width is narrower than drawn by twice the length of the beak. Wolf gives the
+      scaling: the lateral encroachment is proportional to the thickness of the grown field oxide, with typical values of a fraction of a
+      micrometre for the 0.3–0.5 µm field oxides of submicron LOCOS (p. 554). That is the core of the problem. The field oxide cannot be
+      made much thinner, because its thickness sets the field threshold (M08 §3), so the encroachment stays near a fixed fraction of a
+      micrometre while the active width the lithography can print keeps shrinking.
+    </p>
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m15f1-t">
+        <title id="m15f1-t">LOCOS field oxide with bird's beak beside an STI trench filled flush with the surface</title>
+        <text x="105" y="16" class="dg-label" text-anchor="middle">LOCOS</text>
+        <text x="315" y="16" class="dg-label" text-anchor="middle">STI</text>
+        <path d="M10,90 L200,90 L200,170 L10,170 Z" class="dg-fill"/>
+        <path d="M10,84 L62,84 L62,70 L10,70 Z M148,84 L200,84 L200,70 L148,70 Z" class="dg-acc-f"/>
+        <path d="M10,90 L62,90 L62,84 L10,84 Z M148,90 L200,90 L200,84 L148,84 Z" class="dg-soft"/>
+        <path d="M42,90 C62,88 72,62 85,56 L125,56 C138,62 148,88 168,90 C150,96 140,112 125,114 L85,114 C70,112 60,96 42,90 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M10,90 L200,90" class="dg-guide" stroke-dasharray="4 3"/>
+        <text x="105" y="88" class="dg-label-sm" text-anchor="middle">field oxide</text>
+        <path d="M58,92 L40,132" class="dg-guide"/>
+        <text x="16" y="146" class="dg-label-sm">bird's beak</text>
+        <text x="36" y="64" class="dg-label-sm" text-anchor="middle">nitride</text>
+        <path d="M128,56 L128,40 M128,40 L180,40" class="dg-guide"/>
+        <text x="182" y="44" class="dg-label-sm">step</text>
+        <text x="105" y="190" class="dg-label-sm" text-anchor="middle">p-type silicon</text>
+        <path d="M220,90 L410,90 L410,170 L220,170 Z" class="dg-fill"/>
+        <path d="M282,90 L292,138 Q295,146 303,146 L327,146 Q335,146 338,138 L348,90 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M282,90 L292,138 Q295,146 303,146 L327,146 Q335,146 338,138 L348,90" class="dg-acc" fill="none" stroke-width="1.4"/>
+        <text x="315" y="118" class="dg-label-sm" text-anchor="middle">deposited</text>
+        <text x="315" y="131" class="dg-label-sm" text-anchor="middle">oxide</text>
+        <text x="250" y="84" class="dg-label-sm" text-anchor="middle">active</text>
+        <text x="380" y="84" class="dg-label-sm" text-anchor="middle">active</text>
+        <text x="315" y="190" class="dg-label-sm" text-anchor="middle">liner (accent), surface flush</text>
+      </svg>
+      <figcaption>Left: LOCOS grows its oxide from the silicon, so it is semi-recessed (dashed line: the original surface) and tapers
+      under the nitride into the bird's beak. Right: STI etches the space and fills it with deposited oxide over a thin thermal liner;
+      the surface is flush and the oxide ends at the trench wall. Oxide: pale grey; nitride: accent, over a thin pad oxide (solid grey). Schematic,
+      not to scale.</figcaption>
+    </figure>
+    <p>
+      The beak can be shortened by thinning the pad oxide, which narrows the path for lateral diffusion, and by thickening the nitride,
+      which resists being lifted. Both raise the stress the nitride exerts on the silicon during the long oxidation. Poly-buffered LOCOS
+      inserts a polysilicon layer to absorb that stress: it uses about 200 nm of nitride over about 20 nm of oxide, against about 80 nm
+      over about 40 nm in plain LOCOS, and the polysilicon relieves stresses "which would otherwise cause defects to form in the silicon
+      substrate during the LOCOS oxidation"; the polysilicon also oxidizes along its own edges, which sharpens the transition further
+      (Plummer §2.2). That is the fourth limitation of the notes' list: thinning the pad oxide and thickening the nitride shorten the beak
+      but load the silicon harder, and the polysilicon buffer is what lets both be done without defects.
+    </p>
+    <div class="box warn">
+      <p><b>The bird's beak belongs to LOCOS.</b> Lecture 4 introduced STI with the words "whenever you do the shallow trench isolation
+      you get these sharp corners. These are called bird's beak"; a few sentences later the same lecture described the LOCOS mechanism and
+      credited STI with removing the beak, so the slip is in the naming only. A bird's beak is the tapered oxide that LOCOS grows under the
+      nitride edge; STI has none (Wolf p. 433; Plummer §2.2.3). The only oxide grown under the mask edge in STI is the thin liner, which
+      consumes some 20 nm of silicon there (§3.2). STI's corner problem is the opposite one: the top corner of the trench is <em>sharp</em>, and it must be
+      deliberately rounded (§6).</p>
+    </div>
+
+    <h3 id="s1-3">1.3 Thinning at narrow spacings, and stress</h3>
+    <p>
+      The third limitation is that a LOCOS field oxide grown in a narrow opening comes out thinner than the same oxidation gives in a wide
+      one (notes p. 131; Wolf p. 433). Neither the notes nor Wolf's Chapter 9 gives the mechanism. The paper that reported the effect
+      attributes it to the oxidant supply: in a submicrometre nitride window less oxidant reaches the oxidizing surface, because oxidant
+      diffusing in is also consumed sideways by the oxidation under the two nitride edges (Mizuno et al., IEEE Trans. Electron Devices 34,
+      2255, 1987; abstract only read). Compressive stress in the confined oxide, which Plummer shows retards oxidation at etched corners
+      (Kao's experiments, §6.1 below), has been proposed as a second contributor; applying it to LOCOS windows is an inference, not
+      Plummer's. Since the charge terms of the field threshold scale with the oxide thickness (M08 eq. 8.6), the narrowest isolation spaces
+      are the ones most likely to leak. The stress-induced defects of the fourth limitation have a different source: the stress between
+      the nitride and the silicon during the long field oxidation (Plummer §2.2; Wolf p. 446).
+    </p>
+    <p>
+      Wolf adds a fifth cost in the same sentence as the bird's beak: channel-stop encroachment (p. 433). The channel-stop boron implanted
+      under the field region (M08 §3.3) diffuses sideways during the long field oxidation into the edge of the active area; Wolf credits STI with reducing that
+      redistribution. The standard account, which Wolf defers to his Vol. 3 (not among the course sources), is that this boron and the
+      bird's beak together raise the threshold of a narrow transistor: the narrow-channel effect of the next list.
+    </p>
+
+    <h3 id="s1-4">1.4 What STI changes</h3>
+    <p>
+      Wolf lists the gains of a trench filled with deposited oxide (pp. 433–434):
+    </p>
+    <ul>
+      <li>no bird's beak, and less redistribution of the channel-stop dopant, so the isolation spacing can be smaller;</li>
+      <li>a fully recessed field oxide, so the surface can be completely planar after isolation;</li>
+      <li>no field-oxide thinning in narrow spaces, since the oxide is deposited, not grown;</li>
+      <li>a threshold voltage that is constant with channel width, because "the narrow-channel effect found in LOCOS" is eliminated
+        (Wolf gives no mechanism here; see the end of §1.3);</li>
+      <li>larger transconductance and smaller subthreshold swing than with semi-recessed LOCOS;</li>
+      <li>lower trench corners that, though rounded, are tighter than the edge of a semi-recessed LOCOS oxide; the field lines spread
+        out at such a corner, which raises the threshold there and improves isolation, the so-called corner effect.</li>
+    </ul>
+    <p>
+      The price is a longer process: STI takes more steps than LOCOS (Wolf Fig. 9-1b), and §3 lists twenty-one. LOCOS remained the
+      workhorse until the 0.35 µm generation (Wolf p. 13). STI entered mainstream production in the 166 MHz Pentium (a 0.35 µm process)
+      and the PowerPC 603e (0.45 µm), and it became the standard isolation for CMOS at about the 0.25 µm node (Wolf pp. 435, 440;
+      notes p. 134). Lecture 16 summed up that LOCOS is no longer used in current technologies; by Wolf's dates it still served the first
+      submicron generations, down to 0.35 µm.
+    </p>
+
+    <details class="check">
+      <summary>A LOCOS process grows a 400 nm field oxide. How high does the field oxide stand above the active silicon after the nitride
+        strip? If the bird's beak extended 0.1 µm under each nitride edge, what fraction of a 0.35 µm drawn active width would be lost, and
+        why could the process engineer not simply grow 200 nm instead?</summary>
+      <div class="answer">
+        <p>From (15.1), 0.46 × 400 = 184 nm lies below the original surface and 400 − 184 = 216 nm above it: a 216 nm step. Two beaks of
+        0.1 µm take 0.2 µm of the 0.35 µm drawn width, 57 %, leaving 0.15 µm of active silicon. Halving the oxide would roughly halve the
+        beak, since Wolf gives the encroachment as proportional to the oxide thickness, but it would also halve both charge terms of the
+        field threshold (M08 eq. 8.6), and the field transistor would turn on below the supply unless the channel-stop doping rose to
+        compensate, which in turn spreads further into the active edge during the oxidation. The field oxide's thickness is fixed by
+        isolation, so its encroachment cannot be scaled with the lithography; that is the case for etching the space instead.</p>
+      </div>
+    </details>
+
+    <h2 id="s2">2 · Trench isolation before STI: the BOX process</h2>
+    <p>
+      Trenches were used for isolation long before STI. The notes list four uses of non-LOCOS isolation (p. 131): replacing LOCOS between
+      like devices in the same well of a CMOS chip; isolating bipolar transistors; isolating n-channel from p-channel devices and
+      preventing latch-up in CMOS; and forming the trench capacitor of a DRAM cell (<a href="m07b-high-k-memory-capacitors.html">M07b</a>).
+      The first shallow trench process was buried-oxide (BOX) isolation, and its drawbacks are the list of problems that STI had to solve.
+      This section gives the process, the six drawbacks, and the three processes that overcame them.
+    </p>
+
+    <h3 id="s2-1">2.1 The BOX process</h3>
+    <p>
+      BOX isolation refills shallow trenches with CVD SiO₂ and etches the oxide back to a planar surface (notes p. 131). The original
+      process, BOX-I, was introduced in 1981 and an improved BOX-II in 1983 (Wolf p. 435). In BOX-II:
+    </p>
+    <ol>
+      <li>Trenches 0.5–0.8 µm deep were etched with an orientation-dependent silicon etch, which gives sidewalls inclined at about 60°.</li>
+      <li>A channel-stop implant was performed; the sloped sidewalls receive enough dose to prevent weak inversion of the sidewall surface.</li>
+      <li>A thermal oxide 20–50 nm thick was grown to passivate the trench walls.</li>
+      <li>CVD oxide was deposited to fill the trenches.</li>
+      <li>The oxide was etched back by a plasma that erodes photoresist and SiO₂ at the same rate, after two layers of resist had been
+        applied to make the surface as planar as possible, so that oxide remained only in the recesses.</li>
+    </ol>
+    <p>
+      The notes write that the trenches are "isotropically etched… through orientation dependent Si-etch" (p. 132). An orientation-dependent
+      etch attacks some crystal planes much faster than others, which is what produces a fixed sidewall angle; it is anisotropic by
+      definition, and Wolf, whom the notes follow here, does not use the word "isotropically" (p. 435).
+    </p>
+
+    <h3 id="s2-2">2.2 Six drawbacks</h3>
+    <ol>
+      <li><b>Voids.</b> CVD oxide deposited into 0.5 µm deep trenches narrower than about 2 µm left voids (notes p. 132; Wolf p. 435).
+        §7 explains how a void forms.</li>
+      <li><b>Sidewall inversion.</b> The silicon at the sidewalls of p-type active regions could still invert, especially where vertical
+        sidewalls were used to save space, and boron segregating into the thin passivating oxide made it worse by lowering the boron
+        concentration at the sidewall (Wolf p. 435; §5).</li>
+      <li><b>Non-uniform field oxide.</b> The field-oxide profile after the planarization etch varied from one area to another.</li>
+      <li><b>Imperfect planarization.</b> The resist did not end up planar, even with two layers, wherever the chip had a wide range of
+        active-area sizes and spacings; global planarity was poor.</li>
+      <li><b>Gate-oxide thinning at the trench edge.</b> A thinner gate oxide at the corner degrades its reliability, raises the field at
+        the corner and lowers the threshold of the corner region (notes p. 133).</li>
+      <li><b>The overetch.</b> To be sure the CVD oxide was gone from every active area, the field oxide had to be overetched by about
+        100 nm. Its surface then lay below the active surface and exposed part of the active-area sidewall (notes p. 133).</li>
+    </ol>
+    <p>
+      Drawbacks 5 and 6 act through one device. Wolf explains it by comparison with LOCOS (pp. 436–437, Fig. 9-2). Over a LOCOS edge the
+      polysilicon gate curves upward and away from the silicon as it climbs onto the field oxide, so the part of the gate over the field
+      has little effect on the transistor. Over a trench the gate runs flat across the isolation, and the part of it over the field region
+      sets up a two-dimensional fringing field on the corner and the sidewall of the silicon mesa, the raised block of silicon that carries
+      the transistor. The same gate voltage then produces a larger field at the corner than in the middle of the channel and induces more
+      inversion charge there, so the corner behaves as a second transistor in parallel with the main one, with a lower threshold. If the
+      isolation oxide is recessed below the silicon surface, as the 100 nm overetch leaves it, the gate wraps around the corner of the
+      mesa and the effect is stronger. §5.3 quantifies the result.
+    </p>
+    <figure class="compact">
+      <svg viewBox="0 0 420 170" role="img" aria-labelledby="m15f2-t">
+        <title id="m15f2-t">Gate over a LOCOS edge curving away from the silicon, and over a recessed trench wrapping around the mesa corner</title>
+        <text x="105" y="16" class="dg-label" text-anchor="middle">over LOCOS</text>
+        <text x="315" y="16" class="dg-label" text-anchor="middle">over a recessed trench</text>
+        <path d="M10,100 L200,100 L200,160 L10,160 Z" class="dg-fill"/>
+        <path d="M110,100 C130,98 140,72 160,66 L200,66 L200,118 L160,118 C140,114 130,104 110,100 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M10,92 L105,92 C128,90 138,62 160,56 L200,56" class="dg-acc" fill="none" stroke-width="3"/>
+        <text x="40" y="86" class="dg-label-sm">gate</text>
+        <text x="60" y="140" class="dg-label-sm" text-anchor="middle">active</text>
+        <text x="178" y="96" class="dg-label-sm" text-anchor="middle">LOCOS</text>
+        <path d="M220,100 L330,100 L330,160 L220,160 Z" class="dg-fill"/>
+        <path d="M330,112 L410,112 L410,160 L330,160 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M220,92 L334,92 L338,96 L338,106 L410,106" class="dg-acc" fill="none" stroke-width="3"/>
+        <path d="M330,100 L330,112" class="dg-rule"/>
+        <path d="M318,100 L330,100 M330,100 L326,90 M330,100 L338,96 M330,100 L338,104" class="dg-line"/>
+        <text x="300" y="130" class="dg-label-sm" text-anchor="middle">mesa</text>
+        <text x="372" y="138" class="dg-label-sm" text-anchor="middle">trench oxide</text>
+        <path d="M330,110 L346,124" class="dg-guide"/>
+        <text x="348" y="130" class="dg-label-sm">recess</text>
+        <text x="255" y="86" class="dg-label-sm">gate wraps the corner</text>
+      </svg>
+      <figcaption>Left: over a LOCOS edge the gate rises away from the silicon and barely couples to the edge of the channel. Right: over a
+      trench whose oxide is recessed below the mesa, the gate wraps the corner, and field lines from the top and the side converge on it
+      (short strokes), so the corner inverts first. Gate oxide not drawn; after Wolf Figs. 9-2 and 9-3, schematic.</figcaption>
+    </figure>
+    <p>
+      The combination of these problems, above all the complex processing needed for adequately planar surfaces, kept BOX isolation from
+      displacing LOCOS (Wolf p. 437). The notes add a limitation of STI: it "is less effective in preventing latchup and isolating
+      n-channel from p-channel in CMOS devices" (p. 131). They give no reason. A plausible one is that the wells and their junctions
+      continue below a shallow trench, whereas a trench deeper than the wells replaces the junction at the well sidewall (Wolf p. 440;
+      §5.1), though even deep trenches disappointed on latch-up.
+    </p>
+
+    <h3 id="s2-3">2.3 The three enabling processes</h3>
+    <p>
+      Three developments made shallow trench isolation practical (notes pp. 133–134; Wolf pp. 438–439):
+    </p>
+    <ul>
+      <li><b>Dry etching.</b> Plasma etch processes replaced the wet etches and gave trenches with a controlled slope and rounded bottom
+        corners, which fill more easily.</li>
+      <li><b>Gap-filling CVD.</b> Low-pressure CVD from tetraethylorthosilicate (TEOS, Si(OC₂H₅)₄), atmospheric-pressure CVD from ozone and
+        TEOS, and high-density-plasma CVD (HDP-CVD) fill trenches without voids (§7). Because the trench fill is thicker than an intermetal
+        dielectric, its film stress must be lower, below 200 MPa.</li>
+      <li><b>CMP.</b> Polishing, developed at IBM in the late 1980s and introduced to the industry in the early 1990s, removes the
+        deposited oxide from the active areas and leaves a planar surface.</li>
+    </ul>
+    <p>
+      The goal they serve is stated in the notes as the optimum STI structure: a gate that runs flat across the isolation, which needs a
+      planar surface before the polysilicon is deposited. An RIE etchback followed by CMP gives one (p. 134; §3.3).
+    </p>
+
+    <details class="check">
+      <summary>Name the BOX drawback that each STI enabling process answers, and say which of the six drawbacks no enabling process removes
+        by itself.</summary>
+      <div class="answer">
+        <p>Dry etching with a controlled slope and rounded bottom corners, together with gap-filling CVD, answers drawback 1, the voids.
+        CMP answers drawbacks 3 and 4, the non-uniform field-oxide profile and the poor global planarity of the resist etchback, and it
+        removes the need for the 100 nm overetch of drawback 6, because the polish stops on a nitride layer rather than relying on a timed
+        etch (§3). Drawbacks 2 and 5, sidewall inversion and corner effects including the thinned gate oxide, are not removed by any of
+        the three: they belong to the geometry of a trench and need their own measures, sidewall doping (§5.2) and corner rounding (§6).</p>
+      </div>
+    </details>
+
+    <h2 id="s3">3 · The baseline STI flow</h2>
+    <p>
+      The notes give a baseline STI process in twenty-one steps for the 0.25 µm generation and below (pp. 135–139), Wolf's baseline step for
+      step (pp. 446–455). Lecture 17 drew a shortened version as a preview: oxidize, etch the trench through a mask, fill it with high-density
+      CVD oxide, polish, then form the wells. The full flow falls into four stages: the mask stack and the trench etch; the liner; filling
+      and planarizing; stripping the mask and forming the wells. Figure 3 follows the notes' own drawing (p. 136).
+    </p>
+    <figure>
+      <svg viewBox="0 0 640 338" role="img" aria-labelledby="m15f3-t">
+        <title id="m15f3-t">Baseline STI flow in eight panels</title>
+<!-- panel grid: 4 columns x 2 rows, each 140 wide; silicon surface at y 60 (row 1) and 230 (row 2) -->
+        <g><text x="10" y="16" class="dg-label-sm">(a) pad oxide + nitride</text><path d="M10,60 L150,60 L150,130 L10,130 Z" class="dg-fill"/><path d="M10,54 L150,54 L150,60 L10,60 Z" class="dg-soft"/><path d="M10,38 L150,38 L150,54 L10,54 Z" class="dg-acc-f"/><text x="80" y="32" class="dg-label-sm" text-anchor="middle">Si₃N₄ over pad oxide</text><text x="80" y="100" class="dg-label-sm" text-anchor="middle">Si</text></g>
+        <g><text x="170" y="16" class="dg-label-sm">(b) mask, open nitride/pad</text><path d="M170,60 L310,60 L310,130 L170,130 Z" class="dg-fill"/><path d="M170,54 L210,54 L210,60 L170,60 Z M250,54 L310,54 L310,60 L250,60 Z" class="dg-soft"/><path d="M170,38 L210,38 L210,54 L170,54 Z M250,38 L310,38 L310,54 L250,54 Z" class="dg-acc-f"/><path d="M170,26 L210,26 L210,38 L170,38 Z M250,26 L310,26 L310,38 L250,38 Z" class="dg-acc-f" fill-opacity="0.3"/><text x="280" y="35" class="dg-label-sm" text-anchor="middle">PR</text></g>
+        <g><text x="330" y="16" class="dg-label-sm">(c) strip PR, etch trench</text><path d="M330,60 L370,60 L374,106 Q376,112 382,112 L398,112 Q404,112 406,106 L410,60 L470,60 L470,130 L330,130 Z" class="dg-fill"/><path d="M330,54 L370,54 L370,60 L330,60 Z M410,54 L470,54 L470,60 L410,60 Z" class="dg-soft"/><path d="M330,38 L370,38 L370,54 L330,54 Z M410,38 L470,38 L470,54 L410,54 Z" class="dg-acc-f"/><text x="390" y="90" class="dg-label-sm" text-anchor="middle">70–85°</text></g>
+        <g><text x="490" y="16" class="dg-label-sm">(d) pad undercut, liner</text><path d="M490,60 L530,60 L534,106 Q536,112 542,112 L558,112 Q564,112 566,106 L570,60 L630,60 L630,130 L490,130 Z" class="dg-fill"/><path d="M490,54 L528,54 L528,60 L490,60 Z M572,54 L630,54 L630,60 L572,60 Z" class="dg-soft"/><path d="M490,38 L530,38 L530,54 L490,54 Z M570,38 L630,38 L630,54 L570,54 Z" class="dg-acc-f"/><path d="M527,58 Q531,60 532,66 L536,106 Q538,110 542,110 L558,110 Q562,110 564,106 L568,66 Q569,60 573,58" class="dg-acc" fill="none" stroke-width="2.5"/><text x="550" y="96" class="dg-label-sm" text-anchor="middle">liner</text></g>
+        <g><text x="10" y="168" class="dg-label-sm">(e) fill; block + planar. resist</text><path d="M10,230 L50,230 L54,276 Q56,282 62,282 L78,282 Q84,282 86,276 L90,230 L150,230 L150,300 L10,300 Z" class="dg-fill"/><path d="M10,224 L50,224 L50,230 L10,230 Z M90,224 L150,224 L150,230 L90,230 Z" class="dg-soft"/><path d="M10,208 L50,208 L50,224 L10,224 Z M90,208 L150,208 L150,224 L90,224 Z" class="dg-acc-f"/><path d="M10,194 L40,194 L48,202 L92,202 L100,194 L150,194 L150,208 L90,208 L90,230 L86,276 Q84,282 78,282 L62,282 Q56,282 54,276 L50,230 L50,208 L10,208 Z" class="dg-soft" fill-opacity="0.3"/><path d="M36,190 L104,190 L104,194 L100,194 L92,202 L48,202 L40,194 L36,194 Z" class="dg-acc-f" fill-opacity="0.6"/><path d="M10,180 L150,180 L150,194 L104,194 L104,190 L36,190 L36,194 L10,194 Z" class="dg-acc-f" fill-opacity="0.3"/><text x="70" y="256" class="dg-label-sm" text-anchor="middle">oxide</text></g>
+        <g><text x="170" y="168" class="dg-label-sm">(f) RIE etchback: spikes</text><path d="M170,230 L210,230 L214,276 Q216,282 222,282 L238,282 Q244,282 246,276 L250,230 L310,230 L310,300 L170,300 Z" class="dg-fill"/><path d="M170,224 L210,224 L210,230 L170,230 Z M250,224 L310,224 L310,230 L250,230 Z" class="dg-soft"/><path d="M170,208 L210,208 L210,224 L170,224 Z M250,208 L310,208 L310,224 L250,224 Z" class="dg-acc-f"/><path d="M170,203 L202,203 L202,192 L208,192 L210,200 L250,200 L252,192 L258,192 L258,203 L310,203 L310,208 L250,208 L250,230 L246,276 Q244,282 238,282 L222,282 Q216,282 214,276 L210,230 L210,208 L170,208 Z" class="dg-soft" fill-opacity="0.3"/><text x="230" y="186" class="dg-label-sm" text-anchor="middle">spikes</text></g>
+        <g><text x="330" y="168" class="dg-label-sm">(g) CMP, stop on nitride</text><path d="M330,230 L370,230 L374,276 Q376,282 382,282 L398,282 Q404,282 406,276 L410,230 L470,230 L470,300 L330,300 Z" class="dg-fill"/><path d="M330,224 L370,224 L370,230 L330,230 Z M410,224 L470,224 L470,230 L410,230 Z" class="dg-soft"/><path d="M330,208 L370,208 L370,224 L330,224 Z M410,208 L470,208 L470,224 L410,224 Z" class="dg-acc-f"/><path d="M370,208 L410,208 L410,230 L406,276 Q404,282 398,282 L382,282 Q376,282 374,276 L370,230 Z" class="dg-soft" fill-opacity="0.3"/></g>
+        <g><text x="490" y="168" class="dg-label-sm">(h) strip; wells; gate oxide</text><path d="M490,230 L530,230 L534,276 Q536,282 542,282 L558,282 Q564,282 566,276 L570,230 L630,230 L630,300 L490,300 Z" class="dg-fill"/><path d="M530,214 L570,214 L570,230 L566,276 Q564,282 558,282 L542,282 Q536,282 534,276 L530,230 Z" class="dg-soft" fill-opacity="0.3"/><path d="M490,228 L528,228 M572,228 L630,228" class="dg-acc" stroke-width="2"/><text x="505" y="222" class="dg-label-sm">gate ox</text></g>
+        <text x="320" y="316" class="dg-label-sm" text-anchor="middle">nitride: accent · resist: pale accent, block resist darker</text>
+        <text x="320" y="330" class="dg-label-sm" text-anchor="middle">pad oxide: solid grey · liner: accent line · deposited oxide: pale grey</text>
+      </svg>
+      <figcaption>The baseline flow of notes p. 136 and Wolf Fig. 9-10. The nitride is the trench-etch hard mask (b–c) and the polish stop
+      (g). In (e) a block resist (the reverse mask) covers the trench and a planarizing resist is spun over it; after the etchback (f) a
+      thinned oxide still covers the nitride, with spikes at the active edges, which the CMP removes. The oxide left in the trench stands a little above the active silicon after the nitride and pad are stripped (h; worked in §3.4).
+      Schematic, not to scale.</figcaption>
+    </figure>
+
+    <h3 id="s3-1">3.1 The mask stack and the trench etch (steps 1–6)</h3>
+    <ol>
+      <li><b>Pad oxide.</b> The bare wafer is cleaned and a pad oxide 10–20 nm thick is grown thermally. It keeps the nitride deposited next
+        from stressing the silicon directly; such stresses could create defects in the substrate. Because STI has no long high-temperature
+        field oxidation, the stress is smaller than in LOCOS and the pad oxide can be thinner, about 10 nm against 25–40 nm (Wolf
+        pp. 446–447). Unlike LOCOS, the trenches are the first structures formed on the bare wafer; the wells come later.</li>
+      <li><b>Nitride.</b> LPCVD silicon nitride, 100–200 nm thick, has two roles: the hard mask for the trench etch and the polish stop for
+        the CMP of the trench fill. LPCVD is a batch furnace process, so nitride is also deposited on the back of every wafer, and it must
+        be removed later (step 16).</li>
+      <li><b>Mask #1.</b> Photoresist is applied and patterned with the first mask of the process to open the regions where the trenches
+        will be.</li>
+      <li><b>Hard-mask etch.</b> The nitride and pad oxide are etched anisotropically in a plasma, usually in an etcher designed for
+        dielectrics.</li>
+      <li><b>Trench etch.</b> The silicon is etched in a plasma with four goals: the correct depth; the desired sidewall slope, 70–85°
+        depending on the node, the trench depth and the circuit; rounded bottom corners, which minimize stress during the liner oxidation
+        and the fill; and smooth sidewalls with minimum damage. The gases are HBr-based mixtures, HBr/Cl₂/O₂ or HBr/NF₃/He/O₂; Wolf
+        reports better corner rounding with the second (pp. 447–450). A sloped wall is easier to fill without a void but costs area, so
+        the slope must steepen as the trenches shrink.</li>
+      <li><b>Resist strip.</b></li>
+    </ol>
+    <p>
+      The trench etch is hard to control for two reasons (Wolf pp. 449–450). Some dry etches show aspect-ratio-dependent etching (ARDE):
+      wide trenches etch faster than narrow ones, so trenches of different widths end at different depths. And the etch is blind: there is no
+      stop layer at the bottom and no change of material to give an endpoint signal, so the depth must come from a timed etch that is
+      reproducible across the wafer and from wafer to wafer. Etching the nitride and the trench in one chamber (in-situ hard-mask open)
+      raises throughput, and its main difficulty is selectivity to the photoresist.
+    </p>
+    <div class="box warn">
+      <p><b>When is the resist stripped?</b> The step list above, like the notes' (p. 136) and Wolf's (p. 450, step 6), strips the resist
+      after the trench etch. Wolf's later discussion prefers the two-etcher process "with the resist being stripped after the 1st
+      trench-etch step" (p. 456): the hard mask is opened in a dielectric etcher, the resist removed, and the silicon etched in a modified
+      gate etcher with the nitride alone as the mask. The notes' own drawing (p. 136) shows that order, "Remove PR, Si trench etch", and so
+      does Figure 3 (c). Plummer allows either (§2.2.3). Learn the step list as the notes give it, and know that the nitride can serve as
+      the only trench mask.</p>
+    </div>
+
+    <h3 id="s3-2">3.2 The liner (steps 7–8)</h3>
+    <ol start="7">
+      <li><b>Pad-oxide undercut.</b> A short HF dip etches the pad oxide back from the trench edge, under the nitride. This lets the next
+        oxidation round the top corner more effectively (Wolf p. 451).</li>
+      <li><b>Liner oxidation.</b> A dry-O₂ thermal oxide 40–50 nm thick is grown on the trench walls; the best corner rounding comes from a
+        rapid thermal oxidation at 1050–1100 °C (notes p. 136; Wolf p. 451).</li>
+    </ol>
+    <p>
+      The liner has three roles (Wolf pp. 450–451). Its growth consumes the silicon damaged by the plasma etch. It passivates the trench
+      surface with the most electrically stable interface available, a thermal oxide on silicon, which keeps the threshold of the parasitic
+      field transistors at the trench surfaces high and stable (§5). And it rounds the sharp top corner of the active region (§6). During
+      this oxidation a thin layer of the nitride surface is converted to oxide, a fact that matters when the nitride is stripped (step 15).
+      In DRAMs a thin CVD nitride liner may be added before the fill, because it reduces leakage current (notes p. 137).
+    </p>
+    <p>
+      The liner also changes the geometry. By (15.1) it consumes 0.46 of its thickness from every silicon surface, including the sidewall
+      under the edge of the nitride, and it grows the other 0.54 into the trench.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">What the liner does to the trench and the active area</div>
+      <div class="ex-body">
+        <p><b>Given</b> the notes' middle values: pad oxide 15 nm, nitride 150 nm, a trench 500 nm deep, and a 45 nm liner; a trench 400
+        nm wide, the typical minimum in a 0.18 µm process, with active areas of 600 nm (Wolf p. 445). <b>Find</b> how much each sidewall
+        moves, how much narrower the active silicon becomes, and the aspect ratio of the gap that the fill must close.</p>
+        <p><b>Plan.</b> Apply (15.1) to the sidewalls and the bottom. The gap to be filled is measured from the top of the nitride, since the
+        deposited oxide must fill the opening through the nitride and pad oxide as well as the trench.</p>
+        <p class="ex-step"><b>Silicon consumed per sidewall.</b> 0.46 × 45 = 20.7 nm. The oxide grows 45 − 20.7 = 24.3 nm into the
+        trench.</p>
+        <p class="ex-step"><b>Narrowing of the active silicon.</b> Each edge of the mesa recedes by 20.7 nm, under the nitride, so the
+        silicon is 2 × 20.7 = 41.4 nm narrower than the nitride that defined it. For a 600 nm active area that is 41.4/600 = 6.9 %; for
+        250 nm, 16.6 %; for 150 nm, 27.6 %.</p>
+        <p class="ex-step"><b>Width of the gap.</b> The silicon walls move apart by 2 × 20.7 nm and the liner fills 2 × 45 nm:
+        400 + 41.4 − 90 = 351.4 nm.</p>
+        <p class="ex-step"><b>Depth of the gap.</b> From the nitride top: 150 + 15 + 500 = 665 nm, plus 20.7 nm of silicon consumed at
+        the bottom, less the 45 nm liner there: 640.7 nm.</p>
+        <p class="ex-step"><b>Aspect ratio.</b> 640.7/351.4 = 1.82, against 500/400 = 1.25 for the bare trench in silicon and
+        665/400 = 1.66 with the mask stack.</p>
+        <p class="ex-answer">Each sidewall recedes 20.7 nm; the active silicon loses 41.4 nm of width (6.9 % at 600 nm, 27.6 % at 150 nm);
+        the gap to fill is 351 nm wide and 641 nm deep, aspect ratio 1.82. Check: the loss is fixed in nanometres, so its share grows as
+        the active width shrinks, the same scaling argument as the bird's beak in §1.2 on a much smaller scale.</p>
+      </div>
+    </div>
+
+    <h3 id="s3-3">3.3 Filling and planarizing (steps 9–14)</h3>
+    <ol start="9">
+      <li><b>Fill.</b> CVD oxide is deposited over the whole wafer: LPCVD TEOS, sub-atmospheric CVD from ozone and TEOS (the same ozone–TEOS process §2.3 calls atmospheric-pressure, after notes p. 133; Wolf p. 452 writes "(sub)atmospheric"), or HDP-CVD. It is
+        a blanket process, so oxide also lands on the nitride over the active areas: 8000–9000 Å are deposited to fill a 5000 Å deep
+        trench (notes p. 137).</li>
+      <li><b>Densify.</b> The fill is annealed at about 900 °C so that it etches at a rate comparable to thermal oxide; without it the HF
+        dips of steps 15, 17 and 20 would remove too much of the trench fill (notes p. 137; Wolf p. 452). Wolf's text says densification
+        lowers the wet-etch rate by about 20 %. His own Table 9-1, measured after an 850 °C anneal, shows the HF rate relative to thermal
+        oxide falling from 5 to 1.3 for SACVD ozone–TEOS and from 2.1 to 1.1 for LPCVD TEOS, and unchanged at 1.1 for HDP oxide: the
+        reduction depends on the film.</li>
+      <li><b>Reverse mask.</b> Photoresist is patterned as the reverse of the active-area pattern, covering the trenches, and a
+        planarizing resist layer is spun over it.</li>
+      <li><b>Etchback.</b> RIE removes resist and oxide at the same rate, thinning the oxide over the active areas while the trench oxide
+        stays covered. The point is to shorten the CMP that follows, because a shorter polish dishes the wide trenches less (Wolf p. 452;
+        §8).</li>
+      <li><b>Resist strip.</b> Small spikes of oxide remain near the edges of the active regions, because the reverse mask is drawn
+        slightly smaller than the active areas (Wolf p. 465). They must go to leave a globally planar surface.</li>
+      <li><b>CMP.</b> The oxide is polished back, removing the spikes, until the nitride is reached; the nitride is the polish stop.
+        Dishing may occur in wide trenches (notes p. 138; §8).</li>
+    </ol>
+    <p>
+      How much nitride survives the polish depends on the slurry's selectivity, the ratio of the oxide removal rate to the nitride removal
+      rate (<a href="m14-cmp-slurries-damascene.html#s1">M14 §1</a>). In Wolf's comparison of trench fills the CMP rate against
+      nitride was about 5:1 for every film (Wolf Table 9-1). Ceria slurries reach 250:1, which is why ceria is used for STI (M14 §1.2;
+      Lecture 24: ceria "can be used for the shallow trench isolation and sometimes also the ILD").
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>t</em><sub>N</sub> = <span class="frac"><span class="num"><em>f</em> · <em>t</em><sub>clear</sub></span><span class="den"><em>S</em></span></span></div>
+        <div class="eq-num">(15.2)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>t</em><sub>N</sub> nitride removed during the overpolish (nm) · <em>f</em> overpolish, as a fraction of the time needed to
+        clear the oxide (dimensionless) · <em>t</em><sub>clear</sub> oxide thickness the polish must clear over the nitride (nm) ·
+        <em>S</em> oxide-to-nitride selectivity (dimensionless). Assumes a constant oxide rate and that all the nitride is exposed for
+        the whole overpolish; the same reasoning as M14's overpolish self-check.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Overburden, overpolish and the nitride that survives</div>
+      <div class="ex-body">
+        <p><b>Given</b> the stack of the previous example (trench 500 nm, pad 15 nm, nitride 150 nm), 850 nm of fill (the middle of the
+        notes' 8000–9000 Å), and a polish run 20 % beyond the time needed to clear the oxide from the nitride. <b>Find</b> the nitride
+        lost with a slurry of selectivity 5.1:1 and with ceria at 250:1, with no etchback; then with 5.1:1 after an etchback that leaves 250
+        nm of oxide over the active areas.</p>
+        <p><b>Plan.</b> The fill must exceed the step it fills. Then apply (15.2): the overpolish removes oxide-equivalent thickness
+        0.20 × <em>t</em><sub>clear</sub>, which the selectivity converts to nitride.</p>
+        <p class="ex-step"><b>Margin of the fill.</b> Step from trench bottom to nitride top: 500 + 15 + 150 = 665 nm. The 850 nm fill
+        exceeds it by 185 nm, so the oxide surface over the trench ends above the nitride and the polish can bring both to one level.</p>
+        <p class="ex-step"><b>Overpolish, no etchback.</b> The oxide over the nitride is the full 850 nm, so the overpolish corresponds to
+        0.20 × 850 = 170 nm of oxide.</p>
+        <p class="ex-step"><b>Nitride lost.</b> At 5.1:1, 170/5.1 = 33.3 nm, leaving 116.7 nm of the 150 nm. With ceria, 170/250 = 0.68 nm.</p>
+        <p class="ex-step"><b>With the etchback.</b> The polish now clears 250 nm; the overpolish is 0.20 × 250 = 50 nm of oxide, and the
+        nitride loss at 5.1:1 is 50/5.1 = 9.8 nm.</p>
+        <p class="ex-answer">33.3 nm of nitride at 5.1:1 without etchback, 0.68 nm with ceria, 9.8 nm at 5.1:1 after an etchback to 250 nm.
+        Check: the nitride loss is proportional to the oxide the polish must clear, so the etchback cuts it by 250/850, a factor 3.4, and the
+        selectivity by 250/5.1 = 49. The two act differently: only the etchback shortens the polish and its overpolish, and with it the
+        time the wide trenches spend under the pad (Wolf p. 452: a shorter CMP dishes less); the selectivity leaves that time unchanged and
+        reduces only the nitride removed in it.</p>
+      </div>
+    </div>
+
+    <h3 id="s3-4">3.4 Stripping the mask, and the wells (steps 15–21)</h3>
+    <ol start="15">
+      <li><b>Nitride strip, in two wet steps.</b> The nitride is removed in hot phosphoric acid, but the thin layer converted to oxide
+        during the liner oxidation does not etch in phosphoric acid and would block it, so a short HF dip removes that layer first. The HF
+        also attacks the trench fill, which etches faster than the oxide on the nitride, so the dip must be carefully optimized; and if the
+        polish left too much oxide on the nitride, the dip may not clear it and the nitride will not strip (Wolf p. 453).</li>
+      <li><b>Backside nitride.</b> The phosphoric acid also removes the nitride from the back of the wafer. A wet strip is used because it
+        is cheap, it is selective (it attacks neither the pad oxide nor the silicon), and it removes the backside film at the same time.</li>
+      <li><b>Pad-oxide strip</b> in HF, which also etches the trench oxide.</li>
+      <li><b>Sacrificial oxide,</b> about 20 nm, grown to protect the active surface from contamination during the implants. Wolf gives a
+        second reason. If the fill was densified in an ambient containing O₂, that oxygen can react with hydrogen left in the films to form
+        water, the water can react with the nitride to form ammonia, and the ammonia nitrides the silicon surface at the active edge, as in
+        the Kooi effect of LOCOS. A gate oxide grown over such a nitrided spot is locally thinner. The sacrificial oxidation consumes the
+        nitrided silicon (Wolf p. 454).</li>
+      <li><b>Wells.</b> High-energy implants place the well dopants in the active regions and, beneath the trenches, a channel-stop layer;
+        the threshold-adjust and punch-through implants are done at the same time (notes pp. 138–139). This is the order of
+        <a href="m08-well-engineering.html#s4">M08 §4.4</a> and §7: isolation first, wells implanted through it afterwards, with no long
+        drive-in.</li>
+      <li><b>Sacrificial-oxide strip</b> in HF, which etches the trench oxide again.</li>
+      <li><b>Gate oxidation.</b></li>
+    </ol>
+    <p>
+      Three of these steps, 15, 17 and 20, are HF dips that etch the trench fill as well as their intended film. Wolf allows that they might
+      recess the trench oxide as a whole but says little thickness is lost that way; the more significant effect is on the oxide near the
+      top corner of the trench (p. 455), the subject of §6.2.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Where the trench-oxide surface ends</div>
+      <div class="ex-body">
+        <p><b>Given</b> the previous example without etchback: 116.7 nm of nitride left over a 15 nm pad oxide, the trench oxide polished
+        level with the nitride; an HDP or LPCVD TEOS fill, which etches 1.1 times as fast as thermal oxide in HF once densified (Wolf
+        Table 9-1); a 20 nm sacrificial oxide.
+        Ignore the thin converted layer on the nitride. <b>Find</b> the height of the trench-oxide surface above the active silicon just
+        before gate oxidation.</p>
+        <p><b>Plan.</b> Start from the height after CMP, subtract the fill etched by the HF strips of the pad and sacrificial oxides, and add
+        back the silicon the sacrificial oxidation consumes from the active surface, which lowers the reference.</p>
+        <p class="ex-step"><b>After CMP.</b> The oxide top is level with the nitride: 116.7 + 15 = 131.7 nm above the silicon.</p>
+        <p class="ex-step"><b>Fill removed by HF.</b> Stripping 15 nm of pad and 20 nm of sacrificial thermal oxide removes
+        1.1 × (15 + 20) = 38.5 nm of fill.</p>
+        <p class="ex-step"><b>Active surface lowered.</b> The sacrificial oxidation consumes 0.46 × 20 = 9.2 nm of silicon (15.1).</p>
+        <p class="ex-step"><b>Final height.</b> 131.7 − 38.5 + 9.2 = 102.4 nm. With a 100 nm nitride the same steps give
+        66.7 + 15 − 38.5 + 9.2 = 52.4 nm.</p>
+        <p class="ex-answer">The trench oxide ends about 100 nm above the active silicon with a 150 nm nitride, about 50 nm with a 100 nm
+        nitride. Check: the result is positive, so on average the field oxide is not recessed, consistent with Wolf; the nitride thickness is
+        the process's main lever on the final step, and any recess forms locally, at the corner (§6.2). The figures are upper estimates: the
+        HF dip of step 15 and any overetch beyond the nominal 15 and 20 nm thin the fill further, and a densified SACVD fill, at 1.3, would
+        lose 45.5 nm to the two strips instead of 38.5 nm.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>List the two roles of the nitride in the STI flow, and explain why the nitride cannot be stripped in hot phosphoric acid
+        directly after the polish.</summary>
+      <div class="answer">
+        <p>The nitride is the hard mask through which the trench is etched (steps 4–5), and the stop layer on which the CMP of the trench
+        fill ends (step 14). It cannot go straight into phosphoric acid because the liner oxidation (step 8) converted a thin layer of its
+        surface to oxide, and that oxidized layer does not etch in phosphoric acid; any oxide the polish left on the nitride blocks the strip
+        in the same way. A short HF dip removes it first, at the cost of etching some trench fill as well (step 15).</p>
+      </div>
+    </details>
+    <details class="check">
+      <summary>Why does STI form the trenches before the wells, when the LOCOS flows of M08 formed the wells first? Give two reasons from
+        the process.</summary>
+      <div class="answer">
+        <p>First, the STI wells are made by high-energy implantation, which places dopant under the trench oxide and in the active regions
+        with no long drive-in (step 19), so nothing requires the wells to exist before the isolation. Second, implanting the wells after
+        the liner oxidation keeps their boron out of that oxidation: boron near the trench wall would segregate into the liner and lower
+        the sidewall doping, which is what makes a p-well sidewall invert (§5.2; Wolf p. 443). The p-well implant also leaves channel-stop
+        boron under the trench bottom.</p>
+      </div>
+    </details>
+
+    <h2 id="s4">4 · How deep the trench must be</h2>
+    <p>
+      The baseline trenches are about 0.5 µm deep, inside Wolf's 0.3–0.5 µm range; as devices approach the 0.1 µm node the depth is
+      expected to fall to about 0.2 µm (notes p. 139: "decrease to 0.2 µm"; Wolf p. 456: "&lt; 0.2-µm, at least for some circuit
+      applications"). The sidewalls steepen at the same time, from 70–85° to as much as 88°; Wolf gives no reason, but a narrower trench
+      plausibly has no area to spare for a slope. Steep walls are etched at low pressure with high ion flux, in non-depositing chemistries
+      such as Cl₂/Ar (Wolf pp. 455–456). This section sets out the two considerations
+      that fix the depth.
+    </p>
+    <p>
+      <b>The field threshold.</b> The oxide in the trench is the field oxide. Its thickness, which is the trench depth, together with the
+      channel-stop doping under it, sets the threshold of the parasitic field transistor, and that threshold must stay high enough to
+      prevent isolation leakage (notes p. 139). This is M08's equation (8.6) with the trench depth as <em>t</em><sub>FOX</sub>.
+      <b>The capacitance.</b> The trench oxide is also the dielectric between the substrate and every polysilicon line and first-level
+      metal line that crosses the field; the shallower the trench, the higher that capacitance. Both considerations relax as supply
+      voltages scale: a lower supply tolerates a lower field threshold (Wolf p. 456), so the trench can become shallower.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Field threshold and line capacitance at two trench depths</div>
+      <div class="ex-body">
+        <p><b>Given</b> an n⁺ polysilicon line over trench oxide 0.5 µm or 0.2 µm thick; p-type silicon under the trench at
+        <em>N</em><sub>A</sub> = 10¹⁶ cm⁻³ or, with channel-stop boron, 5×10¹⁶ cm⁻³; <em>N</em><sub>i</sub> = 10¹¹ cm⁻²; the constants of
+        M08's example (ε<sub>0</sub> = 8.85×10⁻¹⁴ F/cm, <em>n</em><sub>i</sub> = 1.5×10¹⁰ cm⁻³, ε<sub>Si</sub> = 11.8, <em>kT</em>/<em>q</em> =
+        0.0259 V). <b>Find</b> the field threshold in each case and the capacitance of a line 0.18 µm wide and 20 µm long over each depth.</p>
+        <p><b>Plan.</b> Reproduce M08's 0.5 µm case first, which checks the method, then change only the thickness. In (8.6) the two charge
+        terms are divided by <em>C</em><sub>FOX</sub> = 3.9ε<sub>0</sub>/<em>t</em><sub>FOX</sub>, so they scale with the thickness;
+        φ<sub>MS</sub> and 2φ<sub>F</sub> do not change.</p>
+        <p class="ex-step"><b>0.5 µm at 10¹⁶ cm⁻³ (M08's case).</b> <em>C</em><sub>FOX</sub> = 6.90×10⁻⁹ F/cm²; φ<sub>F</sub> = 0.347 V;
+        φ<sub>MS</sub> = −(0.56 + 0.347) = −0.907 V; <em>Q</em><sub>i</sub>/<em>C</em><sub>FOX</sub> = 2.32 V;
+        <em>W</em><sub>m</sub> = 0.301 µm and |<em>Q</em><sub>d</sub>|/<em>C</em><sub>FOX</sub> = 6.98 V. <em>V</em><sub>T,field</sub> =
+        −0.907 − 2.32 + 6.98 + 0.695 = 4.45 V, M08's value.</p>
+        <p class="ex-step"><b>0.2 µm at 10¹⁶ cm⁻³.</b> <em>C</em><sub>FOX</sub> = 1.73×10⁻⁸ F/cm², 2.5 times larger, so the charge terms
+        fall to 0.93 V and 2.79 V: <em>V</em><sub>T,field</sub> = −0.907 − 0.93 + 2.79 + 0.695 = 1.65 V.</p>
+        <p class="ex-step"><b>With the channel stop, 5×10¹⁶ cm⁻³.</b> φ<sub>F</sub> = 0.389 V, φ<sub>MS</sub> = −0.949 V,
+        <em>W</em><sub>m</sub> = 0.143 µm. At 0.5 µm, |<em>Q</em><sub>d</sub>|/<em>C</em><sub>FOX</sub> = 16.52 V and
+        <em>V</em><sub>T,field</sub> = 14.03 V; at 0.2 µm, 6.61 V and <em>V</em><sub>T,field</sub> = 5.51 V.</p>
+        <p class="ex-step"><b>Capacitance.</b> Per unit area, 6.90×10⁻⁹ F/cm² = 0.0690 fF/µm² at 0.5 µm and 0.1726 fF/µm² at 0.2 µm. The
+        line covers 0.18 × 20 = 3.6 µm², so 0.249 fF and 0.621 fF (parallel-plate term only, fringing neglected).</p>
+        <p class="ex-answer">At 10¹⁶ cm⁻³ the field threshold falls from 4.45 V to 1.65 V when the trench shallows from 0.5 to 0.2 µm; with a
+        5×10¹⁶ cm⁻³ channel stop, from 14.0 V to 5.5 V. The line capacitance rises 2.5 times, from 0.25 fF to 0.62 fF. Check: both charge
+        terms scale exactly with <em>t</em><sub>FOX</sub> (2.32 × 0.4 = 0.93), and the capacitance ratio is 0.5/0.2 = 2.5.</p>
+      </div>
+    </div>
+    <figure class="compact">
+      <svg viewBox="0 0 420 240" role="img" aria-labelledby="m15f4-t">
+        <title id="m15f4-t">Field threshold against trench oxide thickness for two surface dopings</title>
+        <path d="M60,20 L60,200 L400,200" class="dg-rule"/>
+<path d="M60.0,200 L60.0,204" class="dg-rule"/><text x="60.0" y="216" class="dg-label-sm" text-anchor="middle">0.1</text>
+<path d="M128.0,200 L128.0,204" class="dg-rule"/><text x="128.0" y="216" class="dg-label-sm" text-anchor="middle">0.2</text>
+<path d="M196.0,200 L196.0,204" class="dg-rule"/><text x="196.0" y="216" class="dg-label-sm" text-anchor="middle">0.3</text>
+<path d="M264.0,200 L264.0,204" class="dg-rule"/><text x="264.0" y="216" class="dg-label-sm" text-anchor="middle">0.4</text>
+<path d="M332.0,200 L332.0,204" class="dg-rule"/><text x="332.0" y="216" class="dg-label-sm" text-anchor="middle">0.5</text>
+<path d="M400.0,200 L400.0,204" class="dg-rule"/><text x="400.0" y="216" class="dg-label-sm" text-anchor="middle">0.6</text>
+<path d="M56,200.0 L60,200.0" class="dg-rule"/><text x="52" y="204.0" class="dg-label-sm" text-anchor="end">0</text>
+<path d="M56,150.0 L60,150.0" class="dg-rule"/><text x="52" y="154.0" class="dg-label-sm" text-anchor="end">5</text>
+<path d="M56,100.0 L60,100.0" class="dg-rule"/><text x="52" y="104.0" class="dg-label-sm" text-anchor="end">10</text>
+<path d="M56,50.0 L60,50.0" class="dg-rule"/><text x="52" y="54.0" class="dg-label-sm" text-anchor="end">15</text>
+<text x="230.0" y="232" class="dg-label-sm" text-anchor="middle">trench oxide thickness (µm)</text>
+<text x="16" y="110.0" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 16 110.0)">V<tspan baseline-shift="sub" font-size="8">T,field</tspan> (V)</text>
+<path d="M60.0,192.8 L63.4,192.3 L66.8,191.9 L70.2,191.4 L73.6,190.9 L77.0,190.5 L80.4,190.0 L83.8,189.5 L87.2,189.1 L90.6,188.6 L94.0,188.1 L97.4,187.7 L100.8,187.2 L104.2,186.7 L107.6,186.3 L111.0,185.8 L114.4,185.3 L117.8,184.9 L121.2,184.4 L124.6,183.9 L128.0,183.5 L131.4,183.0 L134.8,182.5 L138.2,182.1 L141.6,181.6 L145.0,181.1 L148.4,180.7 L151.8,180.2 L155.2,179.8 L158.6,179.3 L162.0,178.8 L165.4,178.4 L168.8,177.9 L172.2,177.4 L175.6,177.0 L179.0,176.5 L182.4,176.0 L185.8,175.6 L189.2,175.1 L192.6,174.6 L196.0,174.2 L199.4,173.7 L202.8,173.2 L206.2,172.8 L209.6,172.3 L213.0,171.8 L216.4,171.4 L219.8,170.9 L223.2,170.4 L226.6,170.0 L230.0,169.5 L233.4,169.0 L236.8,168.6 L240.2,168.1 L243.6,167.6 L247.0,167.2 L250.4,166.7 L253.8,166.2 L257.2,165.8 L260.6,165.3 L264.0,164.8 L267.4,164.4 L270.8,163.9 L274.2,163.4 L277.6,163.0 L281.0,162.5 L284.4,162.0 L287.8,161.6 L291.2,161.1 L294.6,160.6 L298.0,160.2 L301.4,159.7 L304.8,159.2 L308.2,158.8 L311.6,158.3 L315.0,157.8 L318.4,157.4 L321.8,156.9 L325.2,156.4 L328.6,156.0 L332.0,155.5 L335.4,155.0 L338.8,154.6 L342.2,154.1 L345.6,153.6 L349.0,153.2 L352.4,152.7 L355.8,152.2 L359.2,151.8 L362.6,151.3 L366.0,150.8 L369.4,150.4 L372.8,149.9 L376.2,149.4 L379.6,149.0 L383.0,148.5 L386.4,148.1 L389.8,147.6 L393.2,147.1 L396.6,146.7 L400.0,146.2" class="dg-line" fill="none" stroke-width="1.8"/>
+<circle cx="128.0" cy="183.5" r="3" class="dg-ink"/><text x="135.0" y="195.5" class="dg-label-sm">1.65 V</text>
+<circle cx="332.0" cy="155.5" r="3" class="dg-ink"/><text x="326.0" y="148.5" class="dg-label-sm" text-anchor="end">4.45 V</text>
+<text x="224.0" y="161.5" class="dg-label-sm" text-anchor="end">10¹⁶ cm⁻³</text>
+<path d="M60.0,173.3 L63.4,171.9 L66.8,170.5 L70.2,169.1 L73.6,167.6 L77.0,166.2 L80.4,164.8 L83.8,163.4 L87.2,162.0 L90.6,160.5 L94.0,159.1 L97.4,157.7 L100.8,156.3 L104.2,154.9 L107.6,153.4 L111.0,152.0 L114.4,150.6 L117.8,149.2 L121.2,147.8 L124.6,146.3 L128.0,144.9 L131.4,143.5 L134.8,142.1 L138.2,140.7 L141.6,139.2 L145.0,137.8 L148.4,136.4 L151.8,135.0 L155.2,133.6 L158.6,132.1 L162.0,130.7 L165.4,129.3 L168.8,127.9 L172.2,126.5 L175.6,125.0 L179.0,123.6 L182.4,122.2 L185.8,120.8 L189.2,119.4 L192.6,117.9 L196.0,116.5 L199.4,115.1 L202.8,113.7 L206.2,112.3 L209.6,110.8 L213.0,109.4 L216.4,108.0 L219.8,106.6 L223.2,105.2 L226.6,103.7 L230.0,102.3 L233.4,100.9 L236.8,99.5 L240.2,98.1 L243.6,96.6 L247.0,95.2 L250.4,93.8 L253.8,92.4 L257.2,91.0 L260.6,89.5 L264.0,88.1 L267.4,86.7 L270.8,85.3 L274.2,83.9 L277.6,82.4 L281.0,81.0 L284.4,79.6 L287.8,78.2 L291.2,76.8 L294.6,75.3 L298.0,73.9 L301.4,72.5 L304.8,71.1 L308.2,69.7 L311.6,68.2 L315.0,66.8 L318.4,65.4 L321.8,64.0 L325.2,62.6 L328.6,61.1 L332.0,59.7 L335.4,58.3 L338.8,56.9 L342.2,55.5 L345.6,54.0 L349.0,52.6 L352.4,51.2 L355.8,49.8 L359.2,48.4 L362.6,46.9 L366.0,45.5 L369.4,44.1 L372.8,42.7 L376.2,41.3 L379.6,39.8 L383.0,38.4 L386.4,37.0 L389.8,35.6 L393.2,34.2 L396.6,32.7 L400.0,31.3" class="dg-acc" fill="none" stroke-width="1.8"/>
+<circle cx="128.0" cy="144.9" r="3" class="dg-ink"/><text x="135.0" y="156.9" class="dg-label-sm">5.51 V</text>
+<circle cx="332.0" cy="59.7" r="3" class="dg-ink"/><text x="326.0" y="52.7" class="dg-label-sm" text-anchor="end">14.03 V</text>
+<text x="224.0" y="94.3" class="dg-label-sm" text-anchor="end">5×10¹⁶ cm⁻³</text>
+<path d="M60,167.0 L400,167.0" class="dg-guide" stroke-dasharray="4 3"/><text x="398" y="164.0" class="dg-label-sm" text-anchor="end">3.3 V</text>
+<path d="M60,182.0 L400,182.0" class="dg-guide" stroke-dasharray="4 3"/><text x="398" y="179.0" class="dg-label-sm" text-anchor="end">1.8 V</text>
+      </svg>
+      <figcaption>Eq. (8.6) evaluated for an n⁺ polysilicon line, <em>N</em><sub>i</sub> = 10¹¹ cm⁻². The threshold is linear in the
+      trench depth with an offset of φ<sub>MS</sub> + 2φ<sub>F</sub>; the dots are the worked cases. With channel-stop doping a 0.2 µm
+      trench still clears a 3.3 V or 1.8 V supply (dashed); without it, it does not.</figcaption>
+    </figure>
+    <p>
+      The figure shows why the shallower trench of the 0.1 µm node is possible: the channel-stop boron that the p-well implant places
+      under the trench (§3.4) carries the threshold, and the supply it must exceed has fallen. A third limit on the depth, Wolf adds, is
+      the severity of dishing (§8); he gives no reason, but a shallow trench presumably has less oxide to lose before the field threshold
+      suffers. Metallic contamination from the etch chamber is a further concern for an
+      isolation structure; one tool maker replaced its ceramic chamber parts with quartz for that reason (Wolf p. 457).
+    </p>
+    <details class="check">
+      <summary>A process keeps a 0.35 µm trench but its field surface doping is only 10¹⁶ cm⁻³. Using the worked example's numbers, will
+        its field transistor hold off a 3.3 V line? What two changes would raise the margin, and what does each cost?</summary>
+      <div class="answer">
+        <p>The charge terms scale with thickness: at 0.35 µm, <em>Q</em><sub>i</sub>/<em>C</em><sub>FOX</sub> = 2.32 × 0.7 = 1.62 V and
+        |<em>Q</em><sub>d</sub>|/<em>C</em><sub>FOX</sub> = 6.98 × 0.7 = 4.89 V, so <em>V</em><sub>T,field</sub> = −0.907 − 1.62 + 4.89 +
+        0.695 = 3.05 V, just below 3.3 V: the line would turn the field transistor on. A deeper trench raises both charge terms in
+        proportion but costs a harder etch and fill and more oxide to polish. Heavier channel-stop doping under the trench (5×10¹⁶ cm⁻³ gives
+        9.8 V at 0.35 µm) costs junction capacitance and turn-off characteristics if the boron reaches the n⁺ regions (the LOCOS problem of
+        <a href="m08-well-engineering.html#s2-3">M08 §2.3</a>); under a trench the boron lies below the trench bottom, so the cost is smaller
+        and depends on how far the implant spreads toward the junctions at the trench wall.</p>
+      </div>
+    </details>
+
+    <h2 id="s5">5 · Parasitic devices at the trench</h2>
+    <p>
+      A trench removes the bird's beak but creates new conduction paths that LOCOS did not have (Wolf p. 440). There are two: an inversion
+      layer along the vertical sidewall of the trench, controlled by the voltage on the well across it; and the corner device at the top
+      edge of the active area, controlled by the transistor's own gate. This section takes the deep trench first, because it is where the
+      sidewall device was identified, then the sidewall, then the corner.
+    </p>
+
+    <h3 id="s5-1">5.1 Deep trench isolation for CMOS</h3>
+    <p>
+      Trench isolation was also explored for twin-well CMOS, primarily to shrink the spacing between n⁺ and p⁺ regions in opposite wells
+      (Wolf p. 439). A trench at the boundary between the n-well and the p-well stops the two wells' dopants from diffusing into each other and
+      compensating, which would lower the surface doping at the well edges; the field transistor there therefore keeps a higher threshold
+      at a smaller spacing. Trenches deeper than the wells replace the reverse-biased pn junction as the isolation at the well sidewalls
+      (notes p. 134; Wolf Fig. 9-5). Deep trench isolation for CMOS is considerably more complex to fabricate than STI, and its latch-up
+      results did not meet expectations (latch-up is the parasitic thyristor of <a href="m08-well-engineering.html#s5">M08 §5</a>), so it
+      was not widely adopted; STI became the standard at about 0.25 µm (notes p. 134; Wolf p. 440).
+    </p>
+
+    <h3 id="s5-2">5.2 The sidewall MOSFET</h3>
+    <p>
+      The notes define the new leakage path in one sentence (p. 134): the sidewall inversion is caused by a horizontal parasitic MOS device
+      in which the positively biased n-well acts as the gate electrode and the trench oxide serves as the gate oxide, its thickness equal to
+      the trench width. The n-well sits at +<em>V</em><sub>DD</sub>, and the p-type silicon on the far side of the trench is the channel
+      region of that device. If the sidewall inverts, the inversion layer can join the source and drain of an n-channel transistor placed
+      at the trench edge, independently of that transistor's own gate, and raise its off-state leakage; or, with the field surface also
+      inverted by a polysilicon line, it can join an n-channel source to the n-well (Wolf pp. 440–442, Figs. 9-6 to 9-8).
+    </p>
+    <figure class="compact">
+      <svg viewBox="0 0 420 190" role="img" aria-labelledby="m15f5-t">
+        <title id="m15f5-t">Horizontal parasitic MOSFET across a trench, with the n-well as gate</title>
+        <path d="M10,40 L180,40 L180,180 L10,180 Z" class="dg-fill"/>
+        <path d="M240,40 L410,40 L410,180 L240,180 Z" class="dg-fill"/>
+        <path d="M180,40 L240,40 L240,140 L180,140 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M180,140 L240,140 L240,180 L180,180 Z" class="dg-fill"/>
+        <text x="95" y="110" class="dg-label" text-anchor="middle">n-well</text>
+        <text x="95" y="128" class="dg-label-sm" text-anchor="middle">+V<tspan baseline-shift="sub" font-size="8">DD</tspan>: the "gate"</text>
+        <text x="325" y="110" class="dg-label" text-anchor="middle">p-well</text>
+        <text x="210" y="70" class="dg-label-sm" text-anchor="middle">trench</text>
+        <text x="210" y="84" class="dg-label-sm" text-anchor="middle">oxide</text>
+        <path d="M244,42 L244,138" class="dg-acc" stroke-width="3"/>
+        <text x="252" y="76" class="dg-label-sm">inverted</text>
+        <text x="252" y="89" class="dg-label-sm">sidewall</text>
+        <path d="M180,152 L240,152" class="dg-rule"/>
+        <path d="M180,148 L180,156 M240,148 L240,156" class="dg-rule"/>
+        <text x="210" y="168" class="dg-label-sm" text-anchor="middle">t = trench width</text>
+        <path d="M240,40 L290,40 L290,54 L240,54 Z" class="dg-soft"/>
+        <text x="265" y="34" class="dg-label-sm" text-anchor="middle">n⁺ at the wall</text>
+      </svg>
+      <figcaption>The notes' parasitic device: the n-well is the gate, the trench fill is the gate oxide with a thickness equal to the trench
+      width, and the p-type sidewall facing the n-well is the channel (accent). Once inverted, it connects n⁺ regions that abut the
+      sidewall: the source and drain of a transistor at the trench edge lie one behind the other along the wall, into the page, and the
+      inverted wall joins them. A one-dimensional picture; Wolf Fig. 9-6b shows the real two-dimensional potential. Not to scale.</figcaption>
+    </figure>
+    <p>
+      The device is the field transistor of M08 turned on its side, so equation (8.6) gives its threshold with the trench width as the
+      oxide thickness. Its gate is n-type silicon rather than polysilicon, so the work-function difference is that between n-type and p-type
+      silicon:
+    </p>
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>T,sw</sub> = φ<sub>MS</sub> − <span class="frac"><span class="num"><em>Q</em><sub>i</sub></span><span class="den"><em>C</em><sub>tr</sub></span></span> + <span class="frac"><span class="num">|<em>Q</em><sub>d</sub>|</span><span class="den"><em>C</em><sub>tr</sub></span></span> + 2φ<sub>Fp</sub>,&ensp; <em>C</em><sub>tr</sub> = <span class="frac"><span class="num">3.9ε<sub>0</sub></span><span class="den"><em>w</em><sub>tr</sub></span></span>,&ensp; φ<sub>MS</sub> = −(φ<sub>Fn</sub> + φ<sub>Fp</sub>)</div>
+        <div class="eq-num">(15.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>T,sw</sub> well voltage at which the p-type sidewall inverts (V) · <em>w</em><sub>tr</sub> trench width (cm) ·
+        <em>C</em><sub>tr</sub> capacitance per unit area across the trench (F/cm²) · φ<sub>Fn</sub> = (<em>kT</em>/<em>q</em>)ln(<em>N</em><sub>D</sub>/<em>n</em><sub>i</sub>)
+        of the n-well, φ<sub>Fp</sub> = (<em>kT</em>/<em>q</em>)ln(<em>N</em><sub>A</sub>/<em>n</em><sub>i</sub>) of the p-type sidewall (V) ·
+        <em>Q</em><sub>i</sub> as in (8.6) · |<em>Q</em><sub>d</sub>| = √(2ε<sub>Si</sub><em>qN</em><sub>A</sub>(2φ<sub>Fp</sub> +
+        <em>V</em><sub>SB</sub>)), with <em>N</em><sub>A</sub> the sidewall doping and <em>V</em><sub>SB</sub> the reverse bias of the
+        p-type body below the n⁺ regions (0 for a grounded body, when it reduces to 8.6's term). <em>V</em><sub>T,sw</sub> is referred to
+        the grounded n⁺ regions. The notes' one-dimensional model; it ignores the depletion of the n-well and the two-dimensional field at
+        the trench bottom.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Does the sidewall invert?</div>
+      <div class="ex-body">
+        <p><b>Given</b> the conditions of Wolf's simulation (Fig. 9-6 caption): sidewall doping <em>N</em><sub>A</sub> = 9×10¹⁴ cm⁻³,
+        interface charge 5×10¹⁰ cm⁻², n-well at +3 V, n⁺ regions at 0 V, substrate at −1 V, so <em>V</em><sub>SB</sub> = 1 V. Take the
+        n-well doping as 10¹⁷ cm⁻³ (an illustrative value; Wolf gives none). Trench widths 1.0 µm and 0.4 µm (Wolf gives no width for his
+        simulated structure). <b>Find</b> <em>V</em><sub>T,sw</sub> and whether 3 V inverts the sidewall.</p>
+        <p><b>Plan.</b> Evaluate (15.3) term by term at 1.0 µm; at 0.4 µm only the two charge terms change, in proportion to the width.</p>
+        <p class="ex-step"><b>Fermi potentials and φ<sub>MS</sub>.</b> φ<sub>Fp</sub> = 0.0259 ln(9×10¹⁴/1.5×10¹⁰) = 0.285 V;
+        φ<sub>Fn</sub> = 0.0259 ln(10¹⁷/1.5×10¹⁰) = 0.407 V; φ<sub>MS</sub> = −0.692 V.</p>
+        <p class="ex-step"><b>Capacitance across a 1.0 µm trench.</b> 3.9 × 8.85×10⁻¹⁴/10⁻⁴ = 3.45×10⁻⁹ F/cm².</p>
+        <p class="ex-step"><b>Charge terms.</b> <em>Q</em><sub>i</sub>/<em>C</em><sub>tr</sub> = 1.6×10⁻¹⁹ × 5×10¹⁰/3.45×10⁻⁹ = 2.32 V.
+        With the body bias the depletion layer at inversion is
+        <em>W</em><sub>d</sub> = √(2 × 11.8 × 8.85×10⁻¹⁴ × (0.570 + 1)/(1.6×10⁻¹⁹ × 9×10¹⁴)) = 1.51 µm, so
+        |<em>Q</em><sub>d</sub>|/<em>C</em><sub>tr</sub> = 1.6×10⁻¹⁹ × 9×10¹⁴ × 1.51×10⁻⁴/3.45×10⁻⁹ = 6.30 V.</p>
+        <p class="ex-step"><b>Threshold at 1.0 µm.</b> −0.692 − 2.32 + 6.30 + 0.570 = 3.86 V, above the 3 V on the well.</p>
+        <p class="ex-step"><b>At 0.4 µm.</b> The charge terms fall to 0.93 V and 2.52 V: −0.692 − 0.93 + 2.52 + 0.570 = 1.47 V, below
+        3 V.</p>
+        <p class="ex-answer"><em>V</em><sub>T,sw</sub> = 3.86 V at 1.0 µm, which holds, and 1.47 V at 0.4 µm, which inverts. The threshold
+        rises 3.98 V per micrometre of width, so the sidewall holds 3 V only above about 0.78 µm, in line with Wolf's warning that inversion
+        "can easily occur" when the trench is "narrow (e.g., &lt; 1-µm)" (p. 440). Check: a narrower trench is a thinner gate oxide, so the
+        threshold falls. The body bias matters: with the substrate grounded, |<em>Q</em><sub>d</sub>|/<em>C</em><sub>tr</sub> is 3.79 V,
+        the thresholds 1.35 V and 0.47 V, and the sidewall would need 2.1 µm. Widening the trench works, but at the cost of isolation spacing,
+        which is why trench isolation turned to sidewall doping instead.</p>
+      </div>
+    </div>
+    <figure class="compact">
+      <svg viewBox="0 0 420 240" role="img" aria-labelledby="m15f6-t">
+        <title id="m15f6-t">Sidewall threshold against trench width at Wolf's simulated doping and at half that doping</title>
+        <path d="M60,20 L60,200 L400,200" class="dg-rule"/>
+<path d="M60.0,200 L60.0,204" class="dg-rule"/><text x="60.0" y="216" class="dg-label-sm" text-anchor="middle">0.2</text>
+<path d="M116.7,200 L116.7,204" class="dg-rule"/><text x="116.7" y="216" class="dg-label-sm" text-anchor="middle">0.6</text>
+<path d="M173.3,200 L173.3,204" class="dg-rule"/><text x="173.3" y="216" class="dg-label-sm" text-anchor="middle">1</text>
+<path d="M230.0,200 L230.0,204" class="dg-rule"/><text x="230.0" y="216" class="dg-label-sm" text-anchor="middle">1.4</text>
+<path d="M286.7,200 L286.7,204" class="dg-rule"/><text x="286.7" y="216" class="dg-label-sm" text-anchor="middle">1.8</text>
+<path d="M343.3,200 L343.3,204" class="dg-rule"/><text x="343.3" y="216" class="dg-label-sm" text-anchor="middle">2.2</text>
+<path d="M400.0,200 L400.0,204" class="dg-rule"/><text x="400.0" y="216" class="dg-label-sm" text-anchor="middle">2.6</text>
+<path d="M56,200.0 L60,200.0" class="dg-rule"/><text x="52" y="204.0" class="dg-label-sm" text-anchor="end">-1</text>
+<path d="M56,182.0 L60,182.0" class="dg-rule"/><text x="52" y="186.0" class="dg-label-sm" text-anchor="end">0</text>
+<path d="M56,164.0 L60,164.0" class="dg-rule"/><text x="52" y="168.0" class="dg-label-sm" text-anchor="end">1</text>
+<path d="M56,128.0 L60,128.0" class="dg-rule"/><text x="52" y="132.0" class="dg-label-sm" text-anchor="end">3</text>
+<path d="M56,92.0 L60,92.0" class="dg-rule"/><text x="52" y="96.0" class="dg-label-sm" text-anchor="end">5</text>
+<path d="M56,56.0 L60,56.0" class="dg-rule"/><text x="52" y="60.0" class="dg-label-sm" text-anchor="end">7</text>
+<path d="M56,20.0 L60,20.0" class="dg-rule"/><text x="52" y="24.0" class="dg-label-sm" text-anchor="end">9</text>
+<text x="230.0" y="232" class="dg-label-sm" text-anchor="middle">trench width = parasitic gate-oxide thickness (µm)</text>
+<text x="16" y="110.0" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 16 110.0)">sidewall V<tspan baseline-shift="sub" font-size="8">T</tspan> (V)</text>
+<path d="M60,128.0 L400,128.0" class="dg-guide" stroke-dasharray="4 3"/><text x="400" y="140.0" class="dg-label-sm" text-anchor="end">n-well at +3 V</text>
+<path d="M60,182.0 L400,182.0" class="dg-guide"/>
+<path d="M60.0,169.9 L63.4,168.2 L66.8,166.4 L70.2,164.7 L73.6,163.0 L77.0,161.3 L80.4,159.6 L83.8,157.8 L87.2,156.1 L90.6,154.4 L94.0,152.7 L97.4,151.0 L100.8,149.3 L104.2,147.5 L107.6,145.8 L111.0,144.1 L114.4,142.4 L117.8,140.7 L121.2,138.9 L124.6,137.2 L128.0,135.5 L131.4,133.8 L134.8,132.1 L138.2,130.4 L141.6,128.6 L145.0,126.9 L148.4,125.2 L151.8,123.5 L155.2,121.8 L158.6,120.0 L162.0,118.3 L165.4,116.6 L168.8,114.9 L172.2,113.2 L175.6,111.5 L179.0,109.7 L182.4,108.0 L185.8,106.3 L189.2,104.6 L192.6,102.9 L196.0,101.1 L199.4,99.4 L202.8,97.7 L206.2,96.0 L209.6,94.3 L213.0,92.5 L216.4,90.8 L219.8,89.1 L223.2,87.4 L226.6,85.7 L230.0,84.0 L233.4,82.2 L236.8,80.5 L240.2,78.8 L243.6,77.1 L247.0,75.4 L250.4,73.6 L253.8,71.9 L257.2,70.2 L260.6,68.5 L264.0,66.8 L267.4,65.1 L270.8,63.3 L274.2,61.6 L277.6,59.9 L281.0,58.2 L284.4,56.5 L287.8,54.7 L291.2,53.0 L294.6,51.3 L298.0,49.6 L301.4,47.9 L304.8,46.2 L308.2,44.4 L311.6,42.7 L315.0,41.0 L318.4,39.3 L321.8,37.6 L325.2,35.8 L328.6,34.1 L332.0,32.4 L335.4,30.7 L338.8,29.0 L342.2,27.2 L345.6,25.5 L349.0,23.8 L352.4,22.1 L355.8,20.4 L359.2,18.7 L362.6,16.9 L366.0,15.2 L369.4,13.5 L372.8,11.8 L376.2,10.1 L379.6,8.3 L383.0,6.6 L386.4,4.9 L389.8,3.2 L393.2,1.5 L396.6,-0.2 L400.0,-2.0" class="dg-acc" fill="none" stroke-width="1.8"/>
+<text x="294.8" y="40.2" class="dg-label-sm" text-anchor="end">N<tspan baseline-shift="sub" font-size="8">A</tspan> = 9×10¹⁴ cm⁻³</text>
+<circle cx="88.3" cy="155.6" r="3" class="dg-ink"/><text x="82.3" y="148.6" class="dg-label-sm" text-anchor="end">1.47 V</text>
+<circle cx="173.3" cy="112.6" r="3" class="dg-ink"/><text x="167.3" y="105.6" class="dg-label-sm" text-anchor="end">3.86 V</text>
+<path d="M60.0,177.0 L63.4,176.1 L66.8,175.2 L70.2,174.3 L73.6,173.4 L77.0,172.5 L80.4,171.6 L83.8,170.7 L87.2,169.8 L90.6,168.9 L94.0,168.0 L97.4,167.1 L100.8,166.2 L104.2,165.3 L107.6,164.4 L111.0,163.5 L114.4,162.6 L117.8,161.7 L121.2,160.8 L124.6,159.9 L128.0,159.0 L131.4,158.1 L134.8,157.2 L138.2,156.3 L141.6,155.4 L145.0,154.5 L148.4,153.6 L151.8,152.7 L155.2,151.8 L158.6,150.9 L162.0,150.0 L165.4,149.1 L168.8,148.2 L172.2,147.3 L175.6,146.4 L179.0,145.5 L182.4,144.6 L185.8,143.7 L189.2,142.8 L192.6,141.9 L196.0,141.0 L199.4,140.1 L202.8,139.2 L206.2,138.3 L209.6,137.4 L213.0,136.5 L216.4,135.6 L219.8,134.7 L223.2,133.8 L226.6,132.9 L230.0,132.0 L233.4,131.1 L236.8,130.2 L240.2,129.3 L243.6,128.4 L247.0,127.5 L250.4,126.6 L253.8,125.7 L257.2,124.8 L260.6,123.9 L264.0,123.0 L267.4,122.1 L270.8,121.2 L274.2,120.3 L277.6,119.4 L281.0,118.5 L284.4,117.6 L287.8,116.7 L291.2,115.8 L294.6,114.9 L298.0,114.0 L301.4,113.1 L304.8,112.2 L308.2,111.3 L311.6,110.4 L315.0,109.5 L318.4,108.6 L321.8,107.7 L325.2,106.8 L328.6,105.9 L332.0,105.0 L335.4,104.1 L338.8,103.2 L342.2,102.3 L345.6,101.4 L349.0,100.5 L352.4,99.6 L355.8,98.7 L359.2,97.8 L362.6,96.9 L366.0,96.0 L369.4,95.1 L372.8,94.2 L376.2,93.3 L379.6,92.4 L383.0,91.6 L386.4,90.7 L389.8,89.8 L393.2,88.9 L396.6,88.0 L400.0,87.1" class="dg-line" fill="none" stroke-width="1.8"/>
+<text x="351.5" y="90.3" class="dg-label-sm" text-anchor="end">half the boron</text>
+<path d="M142.9,128.0 L142.9,200" class="dg-guide" stroke-dasharray="2 3"/><text x="138.9" y="194" class="dg-label-sm" text-anchor="end">0.78 µm</text>
+      </svg>
+      <figcaption>Eq. (15.3) at Wolf's simulated conditions (<em>V</em><sub>SB</sub> = 1 V), with the n-well at 10¹⁷ cm⁻³
+      (illustrative). At <em>N</em><sub>A</sub> = 9×10¹⁴ cm⁻³ (accent) the threshold rises 3.98 V per micrometre of trench width and
+      crosses the 3 V well bias at 0.78 µm; the dots are the worked cases. Halving the sidewall boron (grey), as segregation into the liner
+      can, lowers it and moves the 3 V crossing out to 1.51 µm.</figcaption>
+    </figure>
+    <p>
+      Sidewall inversion is worse in p-wells than in n-wells for two linked reasons (Wolf p. 443). The fixed and trapped charge at the
+      Si/SiO₂ interface is positive, which lowers the inversion threshold of p-type silicon (the −<em>Q</em><sub>i</sub>/<em>C</em> term).
+      Keeping that charge low needs a good thermal liner, but growing the liner draws boron from the p-type sidewall into the oxide by
+      segregation (<a href="m08-well-engineering.html#s3-2">M08 §3.2</a>), lowering the sidewall doping and the threshold further. The
+      remedies, in Wolf's order (pp. 444–446):
+    </p>
+    <ul>
+      <li>channel-stop doping between the active devices and the well edge, as in LOCOS CMOS;</li>
+      <li>moving active devices back from the trench edge, and widening the trench; both cost isolation spacing;</li>
+      <li>doping the sidewalls directly with a low-tilt boron implant, 8° from the wafer normal, repeated four times with the wafer rotated
+        90° to reach all four walls; it suits only isolation between like devices, since it dopes n-well sidewalls too;</li>
+      <li>Davari's selective process: boron diffused into the p-well sidewalls from p⁺ polysilicon or borosilicate glass that is patterned
+        off the n-well sidewall, with no extra dopant for the n-well, whose phosphorus piles up at the surface during the liner oxidation;
+        used for trenches down to 0.8 µm wide, in a 0.35 µm process;</li>
+      <li>at 0.25 µm and below, implanting the wells after the STI is complete (§3.4): the boron is not present during the liner oxidation,
+        so none segregates, the p-well implant puts channel-stop boron at the trench bottom, and the channel boron needed against DIBL is
+        heavy enough to keep the sidewalls from inverting. In a 0.18 µm process the minimum trench is about 0.4 µm wide.</li>
+    </ul>
+    <p>
+      The last remedy is the one the baseline flow uses. Its effect on the example, with the channel-stop doping of §4 taken as an
+      illustrative sidewall doping (no source gives one for wells implanted after STI): at 5×10¹⁶ cm⁻³ instead of 9×10¹⁴ cm⁻³, (15.3)
+      gives 19.0 V across a 0.4 µm trench with Wolf's 1 V of body bias, and 12.3 V with the body grounded.
+    </p>
+
+    <h3 id="s5-3">5.3 The corner device and the subthreshold hump</h3>
+    <p>
+      The second parasitic device is the corner of §2.2. Where the gate runs over the top corner of the active mesa, the field from the top
+      and from the side converge, the corner inverts at a lower gate voltage than the middle of the channel, and the corner acts as a narrow
+      transistor with a lower threshold in parallel with the main one. It shows in the transfer characteristic as a "hump" or "kink" in the
+      subthreshold region, and it raises the off-state leakage (Wolf pp. 436–437, Fig. 9-3). A thinned gate oxide at the corner lowers the
+      corner threshold further (BOX drawback 5), and a recessed field oxide lets the gate wrap the corner and makes it worse. Device
+      simulations show that a corner radius of 50 nm, with a sidewall slope of no more than 80°, removes the double hump (Wolf p. 451).
+    </p>
+    <figure class="compact">
+      <svg viewBox="0 0 420 240" role="img" aria-labelledby="m15f7-t">
+        <title id="m15f7-t">Subthreshold drain current of a main channel and a lower-threshold corner device in parallel</title>
+        <path d="M60,20 L60,200 L400,200" class="dg-rule"/>
+<path d="M60.0,200 L60.0,204" class="dg-rule"/><text x="60.0" y="216" class="dg-label-sm" text-anchor="middle">0</text>
+<path d="M116.7,200 L116.7,204" class="dg-rule"/><text x="116.7" y="216" class="dg-label-sm" text-anchor="middle">0.2</text>
+<path d="M173.3,200 L173.3,204" class="dg-rule"/><text x="173.3" y="216" class="dg-label-sm" text-anchor="middle">0.4</text>
+<path d="M230.0,200 L230.0,204" class="dg-rule"/><text x="230.0" y="216" class="dg-label-sm" text-anchor="middle">0.6</text>
+<path d="M286.7,200 L286.7,204" class="dg-rule"/><text x="286.7" y="216" class="dg-label-sm" text-anchor="middle">0.8</text>
+<path d="M343.3,200 L343.3,204" class="dg-rule"/><text x="343.3" y="216" class="dg-label-sm" text-anchor="middle">1</text>
+<path d="M400.0,200 L400.0,204" class="dg-rule"/><text x="400.0" y="216" class="dg-label-sm" text-anchor="middle">1.2</text>
+<path d="M56,200.0 L60,200.0" class="dg-rule"/><text x="52" y="204.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" font-size="8">-13</tspan></text>
+<path d="M56,164.0 L60,164.0" class="dg-rule"/><text x="52" y="168.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" font-size="8">-11</tspan></text>
+<path d="M56,128.0 L60,128.0" class="dg-rule"/><text x="52" y="132.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" font-size="8">-9</tspan></text>
+<path d="M56,92.0 L60,92.0" class="dg-rule"/><text x="52" y="96.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" font-size="8">-7</tspan></text>
+<path d="M56,56.0 L60,56.0" class="dg-rule"/><text x="52" y="60.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" font-size="8">-5</tspan></text>
+<path d="M56,20.0 L60,20.0" class="dg-rule"/><text x="52" y="24.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" font-size="8">-3</tspan></text>
+<text x="230.0" y="232" class="dg-label-sm" text-anchor="middle">gate voltage V<tspan baseline-shift="sub" font-size="8">GS</tspan> (V)</text>
+<text x="16" y="110.0" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 16 110.0)">I<tspan baseline-shift="sub" font-size="8">D</tspan> (A, log)</text>
+<path d="M60.0,186.5 L61.7,185.2 L63.4,183.8 L65.1,182.5 L66.8,181.1 L68.5,179.8 L70.2,178.4 L71.9,177.1 L73.6,175.7 L75.3,174.4 L77.0,173.0 L78.7,171.7 L80.4,170.3 L82.1,169.0 L83.8,167.6 L85.5,166.3 L87.2,164.9 L88.9,163.6 L90.6,162.2 L92.3,160.9 L94.0,159.5 L95.7,158.2 L97.4,156.8 L99.1,155.5 L100.8,154.1 L102.5,152.8 L104.2,151.5 L105.9,150.1 L107.6,148.8 L109.3,147.4 L111.0,146.1 L112.7,144.7 L114.4,143.4 L116.1,142.1 L117.8,140.7 L119.5,139.4 L121.2,138.0 L122.9,136.7 L124.6,135.4 L126.3,134.0 L128.0,132.7 L129.7,131.3 L131.4,130.0 L133.1,128.7 L134.8,127.4 L136.5,126.0 L138.2,124.7 L139.9,123.4 L141.6,122.1 L143.3,120.7 L145.0,119.4 L146.7,118.1 L148.4,116.8 L150.1,115.5 L151.8,114.2 L153.5,112.9 L155.2,111.6 L156.9,110.3 L158.6,109.0 L160.3,107.8 L162.0,106.5 L163.7,105.2 L165.4,104.0 L167.1,102.7 L168.8,101.5 L170.5,100.2 L172.2,99.0 L173.9,97.8 L175.6,96.6 L177.3,95.4 L179.0,94.2 L180.7,93.0 L182.4,91.9 L184.1,90.7 L185.8,89.6 L187.5,88.5 L189.2,87.3 L190.9,86.3 L192.6,85.2 L194.3,84.1 L196.0,83.1 L197.7,82.1 L199.4,81.0 L201.1,80.1 L202.8,79.1 L204.5,78.1 L206.2,77.2 L207.9,76.3 L209.6,75.4 L211.3,74.5 L213.0,73.7 L214.7,72.8 L216.4,72.0 L218.1,71.2 L219.8,70.4 L221.5,69.7 L223.2,68.9 L224.9,68.2 L226.6,67.5 L228.3,66.8 L230.0,66.2 L231.7,65.5 L233.4,64.9 L235.1,64.2 L236.8,63.6 L238.5,63.1 L240.2,62.5 L241.9,61.9 L243.6,61.4 L245.3,60.8 L247.0,60.3 L248.7,59.8 L250.4,59.3 L252.1,58.8 L253.8,58.4 L255.5,57.9 L257.2,57.5 L258.9,57.0 L260.6,56.6 L262.3,56.2 L264.0,55.8 L265.7,55.4 L267.4,55.0 L269.1,54.6 L270.8,54.2 L272.5,53.9 L274.2,53.5 L275.9,53.2 L277.6,52.8 L279.3,52.5 L281.0,52.1 L282.7,51.8 L284.4,51.5 L286.1,51.2 L287.8,50.9 L289.5,50.6 L291.2,50.3 L292.9,50.0 L294.6,49.7 L296.3,49.4 L298.0,49.2 L299.7,48.9 L301.4,48.6 L303.1,48.4 L304.8,48.1 L306.5,47.8 L308.2,47.6 L309.9,47.3 L311.6,47.1 L313.3,46.9 L315.0,46.6 L316.7,46.4 L318.4,46.2 L320.1,45.9 L321.8,45.7 L323.5,45.5 L325.2,45.3 L326.9,45.1 L328.6,44.9 L330.3,44.7 L332.0,44.4 L333.7,44.2 L335.4,44.0 L337.1,43.8 L338.8,43.7 L340.5,43.5 L342.2,43.3 L343.9,43.1 L345.6,42.9 L347.3,42.7 L349.0,42.5 L350.7,42.4 L352.4,42.2 L354.1,42.0 L355.8,41.8 L357.5,41.7 L359.2,41.5 L360.9,41.3 L362.6,41.2 L364.3,41.0 L366.0,40.8 L367.7,40.7 L369.4,40.5 L371.1,40.3 L372.8,40.2 L374.5,40.0 L376.2,39.9 L377.9,39.7 L379.6,39.6 L381.3,39.4 L383.0,39.3 L384.7,39.1 L386.4,39.0 L388.1,38.9 L389.8,38.7 L391.5,38.6 L393.2,38.4 L394.9,38.3 L396.6,38.2 L398.3,38.0 L400.0,37.9" class="dg-guide" stroke-dasharray="5 3"/>
+<path d="M60.0,150.0 L61.7,148.7 L63.4,147.4 L65.1,146.1 L66.8,144.8 L68.5,143.5 L70.2,142.2 L71.9,140.9 L73.6,139.6 L75.3,138.3 L77.0,137.1 L78.7,135.8 L80.4,134.5 L82.1,133.3 L83.8,132.0 L85.5,130.8 L87.2,129.6 L88.9,128.4 L90.6,127.2 L92.3,126.0 L94.0,124.8 L95.7,123.6 L97.4,122.4 L99.1,121.3 L100.8,120.2 L102.5,119.0 L104.2,117.9 L105.9,116.8 L107.6,115.8 L109.3,114.7 L111.0,113.7 L112.7,112.6 L114.4,111.6 L116.1,110.6 L117.8,109.7 L119.5,108.7 L121.2,107.8 L122.9,106.9 L124.6,106.0 L126.3,105.1 L128.0,104.2 L129.7,103.4 L131.4,102.6 L133.1,101.8 L134.8,101.0 L136.5,100.3 L138.2,99.5 L139.9,98.8 L141.6,98.1 L143.3,97.4 L145.0,96.7 L146.7,96.1 L148.4,95.4 L150.1,94.8 L151.8,94.2 L153.5,93.6 L155.2,93.1 L156.9,92.5 L158.6,92.0 L160.3,91.4 L162.0,90.9 L163.7,90.4 L165.4,89.9 L167.1,89.4 L168.8,89.0 L170.5,88.5 L172.2,88.1 L173.9,87.6 L175.6,87.2 L177.3,86.8 L179.0,86.4 L180.7,86.0 L182.4,85.6 L184.1,85.2 L185.8,84.8 L187.5,84.4 L189.2,84.1 L190.9,83.7 L192.6,83.4 L194.3,83.1 L196.0,82.7 L197.7,82.4 L199.4,82.1 L201.1,81.8 L202.8,81.5 L204.5,81.2 L206.2,80.9 L207.9,80.6 L209.6,80.3 L211.3,80.0 L213.0,79.7 L214.7,79.5 L216.4,79.2 L218.1,78.9 L219.8,78.7 L221.5,78.4 L223.2,78.2 L224.9,77.9 L226.6,77.7 L228.3,77.4 L230.0,77.2 L231.7,77.0 L233.4,76.7 L235.1,76.5 L236.8,76.3 L238.5,76.1 L240.2,75.9 L241.9,75.7 L243.6,75.4 L245.3,75.2 L247.0,75.0 L248.7,74.8 L250.4,74.6 L252.1,74.4 L253.8,74.2 L255.5,74.0 L257.2,73.9 L258.9,73.7 L260.6,73.5 L262.3,73.3 L264.0,73.1 L265.7,72.9 L267.4,72.8 L269.1,72.6 L270.8,72.4 L272.5,72.2 L274.2,72.1 L275.9,71.9 L277.6,71.7 L279.3,71.6 L281.0,71.4 L282.7,71.2 L284.4,71.1 L286.1,70.9 L287.8,70.8 L289.5,70.6 L291.2,70.5 L292.9,70.3 L294.6,70.2 L296.3,70.0 L298.0,69.9 L299.7,69.7 L301.4,69.6 L303.1,69.4 L304.8,69.3 L306.5,69.2 L308.2,69.0 L309.9,68.9 L311.6,68.7 L313.3,68.6 L315.0,68.5 L316.7,68.3 L318.4,68.2 L320.1,68.1 L321.8,67.9 L323.5,67.8 L325.2,67.7 L326.9,67.6 L328.6,67.4 L330.3,67.3 L332.0,67.2 L333.7,67.1 L335.4,66.9 L337.1,66.8 L338.8,66.7 L340.5,66.6 L342.2,66.5 L343.9,66.3 L345.6,66.2 L347.3,66.1 L349.0,66.0 L350.7,65.9 L352.4,65.8 L354.1,65.7 L355.8,65.5 L357.5,65.4 L359.2,65.3 L360.9,65.2 L362.6,65.1 L364.3,65.0 L366.0,64.9 L367.7,64.8 L369.4,64.7 L371.1,64.6 L372.8,64.5 L374.5,64.4 L376.2,64.3 L377.9,64.2 L379.6,64.1 L381.3,64.0 L383.0,63.9 L384.7,63.8 L386.4,63.7 L388.1,63.6 L389.8,63.5 L391.5,63.4 L393.2,63.3 L394.9,63.2 L396.6,63.1 L398.3,63.0 L400.0,62.9" class="dg-line" stroke-dasharray="2 3"/>
+<path d="M60.0,149.9 L61.7,148.6 L63.4,147.3 L65.1,146.0 L66.8,144.7 L68.5,143.4 L70.2,142.1 L71.9,140.8 L73.6,139.5 L75.3,138.3 L77.0,137.0 L78.7,135.7 L80.4,134.5 L82.1,133.2 L83.8,132.0 L85.5,130.7 L87.2,129.5 L88.9,128.3 L90.6,127.1 L92.3,125.9 L94.0,124.7 L95.7,123.5 L97.4,122.3 L99.1,121.2 L100.8,120.1 L102.5,118.9 L104.2,117.8 L105.9,116.7 L107.6,115.6 L109.3,114.6 L111.0,113.5 L112.7,112.5 L114.4,111.5 L116.1,110.5 L117.8,109.5 L119.5,108.6 L121.2,107.6 L122.9,106.7 L124.6,105.8 L126.3,104.9 L128.0,104.0 L129.7,103.2 L131.4,102.4 L133.1,101.5 L134.8,100.8 L136.5,100.0 L138.2,99.2 L139.9,98.5 L141.6,97.7 L143.3,97.0 L145.0,96.3 L146.7,95.6 L148.4,95.0 L150.1,94.3 L151.8,93.6 L153.5,93.0 L155.2,92.4 L156.9,91.7 L158.6,91.1 L160.3,90.5 L162.0,89.9 L163.7,89.3 L165.4,88.7 L167.1,88.1 L168.8,87.5 L170.5,86.9 L172.2,86.3 L173.9,85.7 L175.6,85.1 L177.3,84.5 L179.0,83.9 L180.7,83.3 L182.4,82.7 L184.1,82.1 L185.8,81.4 L187.5,80.8 L189.2,80.1 L190.9,79.5 L192.6,78.8 L194.3,78.2 L196.0,77.5 L197.7,76.8 L199.4,76.1 L201.1,75.4 L202.8,74.8 L204.5,74.1 L206.2,73.4 L207.9,72.7 L209.6,72.0 L211.3,71.4 L213.0,70.7 L214.7,70.0 L216.4,69.4 L218.1,68.7 L219.8,68.1 L221.5,67.5 L223.2,66.8 L224.9,66.2 L226.6,65.6 L228.3,65.0 L230.0,64.5 L231.7,63.9 L233.4,63.3 L235.1,62.8 L236.8,62.2 L238.5,61.7 L240.2,61.2 L241.9,60.7 L243.6,60.2 L245.3,59.7 L247.0,59.2 L248.7,58.8 L250.4,58.3 L252.1,57.8 L253.8,57.4 L255.5,57.0 L257.2,56.6 L258.9,56.2 L260.6,55.8 L262.3,55.4 L264.0,55.0 L265.7,54.6 L267.4,54.2 L269.1,53.9 L270.8,53.5 L272.5,53.2 L274.2,52.8 L275.9,52.5 L277.6,52.1 L279.3,51.8 L281.0,51.5 L282.7,51.2 L284.4,50.9 L286.1,50.6 L287.8,50.3 L289.5,50.0 L291.2,49.7 L292.9,49.4 L294.6,49.2 L296.3,48.9 L298.0,48.6 L299.7,48.4 L301.4,48.1 L303.1,47.8 L304.8,47.6 L306.5,47.3 L308.2,47.1 L309.9,46.9 L311.6,46.6 L313.3,46.4 L315.0,46.2 L316.7,45.9 L318.4,45.7 L320.1,45.5 L321.8,45.3 L323.5,45.1 L325.2,44.8 L326.9,44.6 L328.6,44.4 L330.3,44.2 L332.0,44.0 L333.7,43.8 L335.4,43.6 L337.1,43.4 L338.8,43.3 L340.5,43.1 L342.2,42.9 L343.9,42.7 L345.6,42.5 L347.3,42.3 L349.0,42.2 L350.7,42.0 L352.4,41.8 L354.1,41.6 L355.8,41.5 L357.5,41.3 L359.2,41.1 L360.9,41.0 L362.6,40.8 L364.3,40.6 L366.0,40.5 L367.7,40.3 L369.4,40.2 L371.1,40.0 L372.8,39.8 L374.5,39.7 L376.2,39.5 L377.9,39.4 L379.6,39.2 L381.3,39.1 L383.0,39.0 L384.7,38.8 L386.4,38.7 L388.1,38.5 L389.8,38.4 L391.5,38.2 L393.2,38.1 L394.9,38.0 L396.6,37.8 L398.3,37.7 L400.0,37.6" class="dg-acc" fill="none" stroke-width="2"/>
+<text x="136.5" y="144.5" class="dg-label-sm">main channel (dashed)</text>
+<text x="272.5" y="86.2" class="dg-label-sm">corner device (dotted)</text>
+<text x="146.7" y="86.1" class="dg-label-sm" text-anchor="end">hump</text>
+      </svg>
+      <figcaption>An illustrative model, not measured data: a main channel with <em>V</em><sub>T</sub> = 0.5 V and a corner device 2 % as
+      wide with <em>V</em><sub>T</sub> = 0.2 V, both with an 80 mV/decade subthreshold swing. Main channel: dashed; corner device: dotted;
+      their sum (accent, solid) shows the hump; at
+      <em>V</em><sub>GS</sub> = 0 the corner raises the off-state current about 110 times. Compare Wolf's measured curves, Figs. 9-3 and 9-29.</figcaption>
+    </figure>
+    <p>
+      The hump in the model follows from the exponential subthreshold law of <a href="m07-high-k-dielectrics.html">M07 §5</a>: a device with
+      a threshold 0.3 V lower carries 10<sup>0.3/0.08</sup> ≈ 5600 times more current per unit width below threshold, so even a corner
+      2 % as wide dominates the off state, while above threshold the wide main channel dominates and the corner disappears from the curve.
+    </p>
+    <details class="check">
+      <summary>Explain why sidewall inversion is a greater problem for p-wells than for n-wells, and why implanting the wells after the
+        trench is complete helps. Draw the parasitic device.</summary>
+      <div class="answer">
+        <p>The parasitic device is the trench turned on its side: the n-well at +<em>V</em><sub>DD</sub> is the gate, the trench fill is the
+        gate oxide with a thickness equal to the trench width, and the p-type sidewall facing it is the channel (figure above). Two effects
+        lower its threshold in a p-well. The interface charge of the liner is positive, which in (15.3) enters as −<em>Q</em><sub>i</sub>/<em>C</em>
+        and favours inversion of p-type silicon. And growing the liner draws boron out of the sidewall into the oxide by segregation, which
+        lowers <em>N</em><sub>A</sub> and with it the depletion term. An n-well sidewall has neither problem: the positive charge accumulates
+        it, and its phosphorus piles up at the surface during oxidation. Implanting the wells after the STI means the boron is not in the
+        silicon during the liner oxidation, so none segregates, and the p-well implant also places channel-stop boron under the trench.</p>
+      </div>
+    </details>
+
+    <h2 id="s6">6 · Corner rounding and the divot</h2>
+    <p>
+      The top corner of the active region is where STI's remaining problems concentrate: the field crowding of §5.3, the gate-oxide
+      thinning of BOX drawback 5, and a recess in the trench oxide called the divot. This section explains how the corner is rounded, how the
+      divot forms and what it does, and the RELACS process that rounds the corner without the encroachment of the baseline method.
+    </p>
+
+    <h3 id="s6-1">6.1 Rounding the corner</h3>
+    <p>
+      In the baseline flow the liner oxidation rounds the corner (§3.2), and the notes and Wolf give the conditions that work best: an RTO in
+      dry O₂ at 1050–1100 °C (notes p. 140; Wolf p. 458). The temperature matters because of how oxide grows on a shaped surface. Kao's
+      experiments, reported by Plummer (§6), found that oxidation is retarded at sharp corners, by a factor of two in oxide thickness for
+      nominally 500 nm oxides, that the retardation is much stronger at low temperature, and that at 1200 °C there is virtually no corner
+      effect. Plummer names three mechanisms: the range of crystal orientations exposed at a curved surface, two-dimensional diffusion of
+      the oxidant, and above all the compressive stress of the expanding oxide, which is concentrated at a corner and carries the
+      temperature dependence. At high temperature the oxide flows viscously and relaxes that stress, and Plummer attributes the corner
+      rounding of a high-temperature liner to "the viscoelastic flow properties of SiO₂" (§2.2.3). At low temperature the stress-retarded
+      apex is left sharp, or sharpened, because the oxide there is thinner than on the flat faces (Plummer: "The oxide is thinner on both
+      concave and convex corners than it is on flat regions"). Neither source derives the rounded shape itself; this page takes Plummer's
+      flow mechanism as given. Undercutting the pad oxide first (step 7) exposes more of the corner to the oxidant.
+    </p>
+    <p>
+      The paper that described the RTO liner also studied three other methods (notes p. 140; Wolf p. 458), and Wolf reports a fourth,
+      from other authors:
+    </p>
+    <ul>
+      <li>adding HCl to the dry-O₂ RTO;</li>
+      <li>a post-CMP oxidation in dry O₂ at 1050–1100 °C, which rounds well but reduces the active area;</li>
+      <li>a "mini-LOCOS" edge, which adds considerable process complexity (Wolf only);</li>
+      <li>reported separately as an alternative, a hydrogen anneal after the trench etch and before the fill, in which silicon surface atoms migrate toward the lowest-energy shape and
+        a sharp corner becomes a rounded one, with radii up to 60 nm. Wolf's text gives the anneal as 1100 °C; the caption of his Fig. 9-18
+        gives 950 °C, 380 Torr, 60 s for the case shown (Wolf only).</li>
+    </ul>
+
+    <h3 id="s6-2">6.2 The divot and its four effects</h3>
+    <p>
+      The HF dips of steps 17 and 20, which strip the pad oxide and the sacrificial oxide, etch the trench fill at the same time. At the top
+      corner of the trench, where the fill meets the active edge, the etch leaves a recess in the trench oxide, the divot (notes p. 144;
+      Wolf p. 469, Fig. 9-30). The notes list four effects (pp. 144–145):
+    </p>
+    <ol>
+      <li>the gate wraps around the corner, which can increase the leakage of the MOSFET in the subthreshold region (the hump of §5.3);</li>
+      <li>the wrap-around makes the transistor behave like one whose isolation is recessed below the silicon surface, which enhances the
+        reverse narrow-width effect, the fall of threshold voltage as the channel narrows, because the corner is a larger share of a narrow
+        device (Wolf p. 470, Fig. 9-31);</li>
+      <li>the threshold voltage falls as the divot deepens; together these effects produce unacceptably large threshold variations,
+        ±200 mV;</li>
+      <li>the rounded edge encroaches into the active region, under the nitride edge, which reduces the electrical width of the transistor;
+        near the 0.1 µm node that can be a large fraction of the width of a minimum-size device.</li>
+    </ol>
+    <figure class="compact">
+      <svg viewBox="0 0 420 160" role="img" aria-labelledby="m15f8-t">
+        <title id="m15f8-t">Divot in the trench oxide at the active edge, with the gate filling it</title>
+        <path d="M10,70 L200,70 Q214,70 216,84 L222,150 L10,150 Z" class="dg-fill"/>
+        <path d="M216,84 L222,150 L410,150 L410,64 L246,64 Q236,64 232,74 Q228,88 222,90 Q218,90 216,84 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M10,64 L200,64 Q218,64 220,80 Q222,92 228,90 Q234,86 236,72 Q240,58 250,58 L410,58" class="dg-acc" fill="none" stroke-width="3"/>
+        <text x="80" y="56" class="dg-label-sm">poly gate over gate oxide</text>
+        <text x="110" y="118" class="dg-label" text-anchor="middle">active silicon</text>
+        <text x="330" y="112" class="dg-label" text-anchor="middle">STI oxide</text>
+        <path d="M228,94 L268,128" class="dg-guide"/>
+        <text x="270" y="138" class="dg-label-sm">divot (recess)</text>
+        <path d="M206,72 L176,32" class="dg-guide"/>
+        <text x="130" y="26" class="dg-label-sm">active edge, rounded</text>
+      </svg>
+      <figcaption>After notes p. 144 and Wolf Fig. 9-30. The HF dips recess the trench oxide at the active edge; the gate polysilicon fills
+      the recess and wraps the corner, adding the corner device of §5.3. Gate oxide not drawn separately; not to scale.</figcaption>
+    </figure>
+    <p>
+      The notes and Wolf give no number for the fourth effect. A lower-bound estimate can be made with the liner example of §3.2: the 45 nm
+      liner consumes 20.7 nm of silicon under each nitride edge, and that encroachment is fixed while the width shrinks. The estimate
+      leaves out the rounding itself, which takes about one corner radius of flat top surface per edge (Wolf's target radius is 50 nm,
+      p. 451), and it treats every receded nanometre as lost, although the poly that wraps a rounded corner still gates part of it.
+    </p>
+    <div class="example">
+      <div class="ex-head">Electrical width lost to the baseline corner rounding</div>
+      <div class="ex-body">
+        <p><b>Given</b> the 41.4 nm total encroachment of §3.2 (20.7 nm per edge, 45 nm liner) and minimum transistor widths of 250, 150 and
+        100 nm drawn by the nitride. <b>Find</b> the fraction of each width taken by the liner's planar consumption alone.</p>
+        <p><b>Plan.</b> The encroachment is set by the liner thickness, not by the width, so the fractional loss is 41.4 nm divided by the
+        width.</p>
+        <p class="ex-step"><b>250 nm.</b> 41.4/250 = 16.6 %.</p>
+        <p class="ex-step"><b>150 nm.</b> 41.4/150 = 27.6 %.</p>
+        <p class="ex-step"><b>100 nm.</b> 41.4/100 = 41.4 %.</p>
+        <p class="ex-answer">16.6 %, 27.6 % and 41.4 %, as estimates of the silicon width lost, not measured electrical widths. Check: the
+        loss doubles for a halving of the width (250 → ~125 nm would give 33 %), which is the notes' point that the reduction becomes "a high
+        percentage" of a minimum-size device near 0.1 µm.</p>
+      </div>
+    </div>
+
+    <h3 id="s6-3">6.3 RELACS: rounding during the etch</h3>
+    <p>
+      The solution the notes give is to round the corner during the trench etch instead of afterwards, after the nitride hard mask is opened
+      but before the silicon trench is etched (p. 145; Wolf pp. 470–472). It uses a resist-shrink technique that Wolf calls "a new
+      lithographic technique from Clariant-AZ termed RELACS":
+    </p>
+    <ol>
+      <li>The resist is exposed and developed as usual (KrF resist in the notes' figure).</li>
+      <li>A RELACS agent is coated over the resist pattern.</li>
+      <li>A bake crosslinks the agent where it touches the resist, through acid from the resist sidewalls (the notes' figure marks "acid").</li>
+      <li>A water rinse removes the agent that did not crosslink. A thin layer remains attached to the resist sidewalls, so every opening is
+        slightly narrower than printed.</li>
+      <li>The nitride is opened through the narrowed openings, so the trench opening in the nitride is slightly smaller.</li>
+      <li>A short etch of the silicon undercuts the nitride edge and leaves a rounded top corner on the silicon (Wolf p. 470).</li>
+      <li>The rest of the trench is etched anisotropically.</li>
+    </ol>
+    <p>
+      Wolf's claim is that "the encroachment under the nitride edge by the rounded corner produced in the baseline-STI sequence is
+      eliminated" (p. 472); he does not spell out the geometry. A consistent reading, which is this page's inference: the RELACS layer makes
+      the nitride opening narrower than the printed trench, and the short etch then rounds the corner under that overhanging nitride, inside
+      the margin the shrink created, so the rounding takes nothing from the active width as printed. The poly wrap-around is also less
+      severe; and the threshold voltage varies less from wafer to wafer. Wolf's figure
+      shows a top-corner radius of about 15 nm on trenches 180 nm and 100 nm wide (Fig. 9-32). The reverse narrow-channel effect becomes more
+      severe if the trench oxide encroaches beneath the nitride edge, which this process avoids (notes p. 146).
+    </p>
+    <figure class="compact">
+      <svg viewBox="0 0 420 150" role="img" aria-labelledby="m15f9-t">
+        <title id="m15f9-t">RELACS narrows the resist opening; a short undercut etch rounds the corner inside it</title>
+        <text x="70" y="14" class="dg-label-sm" text-anchor="middle">resist + RELACS layer</text>
+        <path d="M10,60 L130,60 L130,140 L10,140 Z" class="dg-fill"/>
+        <path d="M10,48 L130,48 L130,60 L10,60 Z" class="dg-acc-f"/>
+        <path d="M10,24 L52,24 L52,48 L10,48 Z M88,24 L130,24 L130,48 L88,48 Z" class="dg-acc-f" fill-opacity="0.3"/>
+        <path d="M52,24 L58,24 L58,48 L52,48 Z M82,24 L88,24 L88,48 L82,48 Z" class="dg-soft"/>
+        <text x="215" y="14" class="dg-label-sm" text-anchor="middle">nitride opened, short undercut</text>
+        <path d="M155,60 L196,60 Q200,60 201,66 Q204,74 215,74 Q226,74 229,66 Q230,60 234,60 L275,60 L275,140 L155,140 Z" class="dg-fill"/>
+        <path d="M155,48 L198,48 L198,60 L155,60 Z M232,48 L275,48 L275,60 L232,60 Z" class="dg-acc-f"/>
+        <path d="M192,40 L192,84 M238,40 L238,84" class="dg-guide" stroke-dasharray="2 2"/>
+        <text x="350" y="14" class="dg-label-sm" text-anchor="middle">anisotropic trench</text>
+        <path d="M300,60 L336,60 Q340,60 341,66 L343,126 Q344,132 350,132 L360,132 Q366,132 367,126 L369,66 Q370,60 374,60 L410,60 L410,140 L300,140 Z" class="dg-fill"/>
+        <path d="M300,48 L338,48 L338,60 L300,60 Z M372,48 L410,48 L410,60 L372,60 Z" class="dg-acc-f"/>
+        <path d="M336,60 Q340,60 341,66" class="dg-acc" fill="none" stroke-width="2.5"/>
+        <path d="M374,60 Q370,60 369,66" class="dg-acc" fill="none" stroke-width="2.5"/>
+      </svg>
+      <figcaption>After notes pp. 145–146 and Wolf Fig. 9-32a. Left: the crosslinked RELACS layer (solid grey) narrows the opening in the resist (pale accent).
+      Centre: the nitride (accent) is opened through it, narrower than printed, and a short silicon etch undercuts its edge and rounds the
+      corner. Right: the anisotropic trench etch completes the trench; the rounded corner (accent stroke) lies within the margin the shrink
+      created, not under the active area as printed (dotted). The geometry is this page's reading of Wolf; not to scale.</figcaption>
+    </figure>
+    <details class="check">
+      <summary>The baseline flow rounds the top corner with its liner oxidation. State what that rounding costs at small widths, why it
+        needs a high temperature, and how RELACS avoids the cost.</summary>
+      <div class="answer">
+        <p>The liner rounds the corner by consuming silicon, including silicon under the nitride edge, so the active silicon ends narrower
+        than the nitride that defined it: with a 45 nm liner, 20.7 nm per edge, 27.6 % of a 150 nm device (§6.2). The temperature matters
+        because oxidation at a sharp convex corner is retarded by the compressive stress of the expanding oxide; at 1050–1100 °C the oxide
+        flows and relaxes the stress, the apex oxidizes nearly as fast as the faces, and the corner comes out round (Kao; Plummer). RELACS
+        narrows the resist openings slightly with a crosslinked layer, so the nitride opening is smaller than printed, and a short silicon
+        etch rounds the corner inside that opening before the anisotropic trench etch; the rounding then does not encroach under the
+        nitride edge.</p>
+      </div>
+    </details>
+
+    <h2 id="s7">7 · Filling the trench without voids</h2>
+    <p>
+      The trench must be filled with no void, because a void opened by a later HF dip becomes a seam that polysilicon can fill and short
+      along (Wolf p. 459). This section gives the criteria a fill must meet, why ordinary CVD leaves a void, and how high-density-plasma CVD,
+      the technology that won, avoids one.
+    </p>
+    <h3 id="s7-1">7.1 Five criteria, four candidates</h3>
+    <p>The notes list the criteria a trench-fill dielectric must meet (p. 140; Wolf p. 459):</p>
+    <ol>
+      <li>it must be void-free, so that HF deglazing does not open seams that later fill with polysilicon filaments;</li>
+      <li>its HF etch rate relative to thermal oxide must be known, because post-deposition deglazing thins the fill and can expose silicon
+        at the trench corners;</li>
+      <li>its stress, shrinkage and composition after the densification anneal must suit the integration;</li>
+      <li>its CMP rate relative to nitride, and the uniformity of its polish, set the oxide left in the trench and so influence the "corner
+        effect" problem;</li>
+      <li>the isolation of p-channel and n-channel diodes must be tested to verify the fill electrically.</li>
+    </ol>
+    <p>
+      Nag and co-workers compared four fills against these criteria: LPCVD TEOS, HDP-CVD oxide, sub-atmospheric CVD (SACVD) ozone–TEOS and a
+      hydrogen-silsesquioxane spin-on glass. HDP-CVD oxide was the most suitable: it needed no high-temperature anneal, shrank by 0–0.8 % at
+      850 °C against 22–28 % for the spin-on glass, and etched in HF at 1.1 times the thermal-oxide rate even as deposited, against 5 for
+      SACVD and 2.1 for LPCVD TEOS before densification; once densified all four films etch at 1.1–1.3 (Wolf p. 459, Table 9-1). The study
+      filled trenches 0.5 µm deep and as narrow as 0.22 µm without voids; Wolf does not say with which film, and his table rates the gap
+      fill of SACVD, HDP and the spin-on glass alike as acceptable. A two-step SACVD BPSG process later filled trenches 0.06 µm wide
+      and 0.35 µm deep (Wolf p. 460).
+    </p>
+
+    <h3 id="s7-2">7.2 Why a void forms, and how HDP-CVD prevents it</h3>
+    <p>
+      A CVD film at first covers the trench walls and bottom as well as the field. As it thickens, an overhang grows at the top of the
+      trench, and the overhang closes the opening before the trench is full and seals a void inside (notes p. 141; Wolf p. 460). The notes
+      and Wolf give no cause; Plummer's simulations of deposition topography do: a point near the top corner sees reactant arriving from a
+      wider range of directions, its view angle, than a point on the wall or bottom, so more deposits there, and the corners build up into
+      overhangs (Plummer Ch. 9). A film whose growth were perfectly conformal would not form one. The fill is easier the smaller the aspect
+      ratio, the depth over the width: the BOX limit, 0.5 µm deep and 2 µm wide, is an aspect ratio of 0.25; the 0.5 µm by 0.22 µm trench
+      of the Table 9-1 study, 2.27; the SACVD BPSG result, 5.8.
+    </p>
+    <p>
+      HDP-CVD prevents the overhang by etching it while it deposits (notes pp. 141–142; Wolf pp. 460–462). The gases are SiH₄, O₂ and Ar
+      (or He). A high-density plasma source excites the oxygen and argon, and a bias on the wafer pulls ions out of the plasma and directs
+      them at the surface. The oxygen reacts with the silane to deposit SiO₂, while the argon ions sputter deposited material away:
+    </p>
+    <ul>
+      <li>the sputter yield is highest on surfaces that face the ions at an angle, with the maximum at about 45° to the normal;</li>
+      <li>the net deposition rate is therefore higher on flat surfaces, the field and the trench bottoms, than on the 45° facets that form
+        at the top corners of the trench;</li>
+      <li>by adjusting the deposition-to-etch ratio, the opening is kept from closing while the trench fills from the bottom up;</li>
+      <li>material sputtered from the bottom redeposits on the sidewalls and helps distribute the film.</li>
+    </ul>
+    <figure class="compact">
+      <svg viewBox="0 0 420 160" role="img" aria-labelledby="m15f10-t">
+        <title id="m15f10-t">Conformal CVD closing over a void, against HDP-CVD filling from the bottom with 45 degree facets</title>
+        <text x="100" y="14" class="dg-label-sm" text-anchor="middle">conformal CVD</text>
+        <text x="315" y="14" class="dg-label-sm" text-anchor="middle">HDP-CVD (dep + sputter)</text>
+        <path d="M10,50 L80,50 L80,140 L120,140 L120,50 L190,50 L190,150 L10,150 Z" class="dg-fill"/>
+        <path d="M10,50 L10,34 L72,34 Q90,34 96,60 L96,124 L104,124 L104,60 Q110,34 128,34 L190,34 L190,50 L120,50 L120,140 L80,140 L80,50 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M92,40 Q100,30 108,40" class="dg-acc" fill="none" stroke-width="2"/>
+        <ellipse cx="100" cy="96" rx="4" ry="26" class="dg-ink"/>
+        <text x="130" y="100" class="dg-label-sm">void</text>
+        <path d="M225,50 L295,50 L295,140 L335,140 L335,50 L405,50 L405,150 L225,150 Z" class="dg-fill"/>
+        <path d="M295,140 L295,124 L335,124 L335,140 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M225,50 L225,36 L283,36 L297,50 L295,50 Z M405,50 L405,36 L347,36 L333,50 L335,50 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M283,36 L297,50 M347,36 L333,50" class="dg-acc" stroke-width="2"/>
+        <text x="270" y="30" class="dg-label-sm" text-anchor="middle">45° facet</text>
+        <path d="M315,88 L315,116" class="dg-line"/>
+        <path d="M311,110 L315,118 L319,110" class="dg-line"/>
+        <text x="350" y="118" class="dg-label-sm">fills upward</text>
+      </svg>
+      <figcaption>Left: a conformal film grows an overhang at the trench mouth (accent) that seals a void. Right: in HDP-CVD the ion flux
+      sputters the 45° facets at the corners fastest, so the mouth stays open while the film builds up from the trench bottom. After notes
+      p. 142 and Wolf Fig. 9-20, schematic.</figcaption>
+    </figure>
+    <p>
+      The process runs below 10 mTorr, so ions cross the plasma sheath without collisions and arrive with the full energy of the sheath
+      voltage, and travel nearly perpendicular to the wafer; a high-density source is needed to keep the ion density high at so low a
+      pressure. The ion bombardment heats the wafer, so the deposition rate is limited by the highest sputter rate that can be tolerated.
+      The sputtering can also clip the corners of the nitride. Wolf gives two remedies: sputtering with helium instead of argon, and
+      "decrease the deposition-to-(sputter)-etching ratio", which "reduces the gap-filling capability", so a trade-off must be made. Taken
+      literally, less deposition per unit of sputtering would clip more, not less; the remedy makes physical sense only if the ratio is read
+      as etch to deposition, which is less sputtering (see the box below). At the end the surface carries sharp ridges and spikes, which CMP
+      removes (Wolf p. 462).
+    </p>
+    <div class="box warn">
+      <p><b>Which way up is the ratio?</b> The notes, like the caption of Wolf's Fig. 9-20, keep "the deposition-to-etch ratio… between 0.14
+      and 0.33" (p. 142). Read literally, a deposition rate of 0.14–0.33 times the etch rate would remove material 3 to 7 times faster than it
+      arrives, and no film would grow. The range makes sense as the <em>etch-to-deposition</em> ratio: on flat surfaces 67–86 % of what
+      deposits stays, and deposition outpaces sputtering 3.0–7.1 times. Wolf's clipping remedy, "decrease the deposition-to-(sputter)-etching
+      ratio" at a cost in gap fill, is consistent only with that inverted reading too. His text also says "the ratio of deposition to removal
+      rate should be no larger than 3.0" (p. 462). Taken literally, that excludes the whole 3.0–7.1 range except its end point; taken as one
+      more inverted ratio, it adds no constraint. The direction of Wolf's ratio is therefore not settled by the source. Industry usage
+      defines a deposition/sputter ratio of 3 and above, with lower values meaning more sputtering (e.g. US Patent 7,205,240), which fits
+      the E/D reading. The page keeps the notes' figures and reads them as E/D; on a test, quote the notes' wording.</p>
+    </div>
+    <details class="check">
+      <summary>Why must an HDP-CVD gap fill be run at low pressure, and what limits how fast it can deposit?</summary>
+      <div class="answer">
+        <p>Gap fill depends on directed ions: the argon ions must arrive nearly normal to the wafer with the full sheath energy, so that they
+        sputter the 45° facets at the trench mouth fastest and keep it open. At pressures below about 10 mTorr they cross the sheath without
+        collisions; at higher pressure, collisions would scatter them and remove both their energy and their direction. A high-density
+        source keeps the ion flux high at that pressure. The deposition rate is limited by the sputtering it must be matched with: faster
+        deposition needs proportionally more sputtering to keep the opening clear, and the ion bombardment heats the wafer, so the tolerable
+        sputter rate caps the deposition rate (Wolf p. 462).</p>
+      </div>
+    </details>
+
+    <h2 id="s8">8 · Dishing in the STI polish</h2>
+    <p>
+      The final CMP of the trench fill must stop on the nitride, and wide trenches lose oxide during the overpolish: they dish (notes p. 143;
+      Wolf pp. 462–468). Dishing in damascene metal was M14's subject (<a href="m14-cmp-slurries-damascene.html#s5">M14 §5</a>); here the
+      dished material is the field oxide, and a dished trench is a thinner field oxide and a less planar surface for the gate level. This
+      section gives the cause, the size, and the five remedies.
+    </p>
+    <p>
+      Dishing occurs because the pad is not perfectly rigid and because oxide is removed faster than nitride (notes p. 143). Once the
+      nitride is exposed, a perfectly rigid pad would press only on the nitride and the recessed trench oxide would see no pressure. A real
+      pad flexes into a wide opening, pressure reaches the middle of the trench, and the oxide there is polished into a concave surface. The
+      effect grows with the width of the field region: in one CMP process the field oxide thinned by more than 50 nm wherever it was wider
+      than 100 µm (notes p. 143; Wolf Fig. 9-24). The polish should therefore stop as soon as the oxide over the nitride clears, and the
+      quality of an STI polish is judged by its control of the trench-oxide and nitride thicknesses (Wolf p. 463).
+    </p>
+    <figure class="compact">
+      <svg viewBox="0 0 420 130" role="img" aria-labelledby="m15f11-t">
+        <title id="m15f11-t">Pad flexing into a wide trench and leaving it dished</title>
+        <path d="M10,70 L60,70 L60,120 L10,120 Z M160,70 L200,70 L200,120 L160,120 Z" class="dg-fill"/>
+        <path d="M60,64 L160,64 L160,120 L60,120 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M10,64 L60,64 L60,70 L10,70 Z M160,64 L200,64 L200,70 L160,70 Z" class="dg-acc-f"/>
+        <path d="M10,64 L60,64 C80,64 90,70 110,70 C130,70 140,64 160,64 L200,64" class="dg-line" stroke-width="2"/>
+        <text x="105" y="52" class="dg-label-sm" text-anchor="middle">pad flexes into the opening</text>
+        <text x="110" y="100" class="dg-label-sm" text-anchor="middle">trench oxide</text>
+        <path d="M230,70 L280,70 L280,120 L230,120 Z M380,70 L410,70 L410,120 L380,120 Z" class="dg-fill"/>
+        <path d="M280,64 C310,76 350,76 380,64 L380,120 L280,120 Z" class="dg-soft" fill-opacity="0.3"/>
+        <path d="M230,64 L280,64 L280,70 L230,70 Z M380,64 L410,64 L410,70 L380,70 Z" class="dg-acc-f"/>
+        <path d="M280,64 L380,64" class="dg-guide" stroke-dasharray="4 3"/>
+        <text x="330" y="56" class="dg-label-sm" text-anchor="middle">dished surface</text>
+      </svg>
+      <figcaption>After notes p. 143 and Wolf Fig. 9-23. Left: once the nitride (accent) is exposed, the pad still bears on the middle of a
+      wide trench. Right: the trench oxide is left concave below the nitride level (dashed). Schematic, not to scale.</figcaption>
+    </figure>
+    <p>The remedies, as the notes list them (pp. 143–144), with Wolf's explanations (pp. 464–468):</p>
+    <ol>
+      <li><b>RIE/CMP.</b> The reverse-mask etchback of §3.3 thins the oxide over the active areas first, so the polish is shorter and
+        dishes less; it also raises throughput. Its drawback is the extra complexity and cost.</li>
+      <li><b>A nitride cap.</b> A thin nitride is blanket-deposited on the trench fill before CMP, and a slurry with low oxide-to-nitride
+        selectivity is used. The cap is polished off the raised oxide over the active areas, but it survives on the recessed oxide over the
+        trenches, where it acts as a polish stop as the surfaces come level.</li>
+      <li><b>Dummy active regions.</b> Islands of unetched silicon are left inside wide trenches, which makes the trenches effectively
+        narrower. Dummies are also needed around isolated active areas, because dense regions polish more slowly than isolated ones and the
+        nitride over an isolated area would otherwise be polished through. They complicate design and masks, raise defect levels, and cannot
+        be used in analog or mixed-signal circuits, where they make the coupling capacitance over the trenches variable.</li>
+      <li><b>A patterned nitride cap.</b> As 2, but the cap is removed from the active areas with a reverse block mask, so it remains only
+        over the trenches.</li>
+      <li><b>Direct polish.</b> The fill is polished with none of the above, which puts the burden on the polish itself: a linear tool, or
+        a rotary tool with a harder pad, an efficient endpoint system and, in Wolf's account, a relatively non-selective slurry; or a
+        fixed-abrasive pad. Wolf's linear process used a ceria slurry with a nitride-inhibiting additive and held the oxide removed across a
+        die to 20 nm at most.</li>
+    </ol>
+    <p>
+      Wolf credits the reduced dishing to the whole set of linear-process conditions, the selective ceria slurry included (p. 468). Part of
+      it can be read from Preston's law, RR = <em>K</em><sub>p</sub><em>Pv</em> (<a href="m13-cmp-process.html#s6">M13 §6</a>), on this
+      page's reading: the linear tool reaches its removal rate with a high pad velocity and a low pressure, and pressure is what the flexing
+      pad transmits into the recessed trenches.
+    </p>
+    <div class="example">
+      <div class="ex-head">Linear against rotary polishing in Preston's law</div>
+      <div class="ex-body">
+        <p><b>Given</b> Wolf's figures: linear polishers at 300–500 ft/min and 3–5 psi; rotary polishers at 34 ft/min and 7 psi (p. 468).
+        <b>Find</b> the ratio of the Preston product <em>Pv</em>, linear to rotary, at the ends and middle of the linear range, and the ratio
+        of the pressures.</p>
+        <p><b>Plan.</b> At equal Preston constant, RR is proportional to <em>Pv</em>; the units cancel in the ratio.</p>
+        <p class="ex-step"><b>Rotary.</b> 7 × 34 = 238 psi·ft/min.</p>
+        <p class="ex-step"><b>Linear.</b> 3 × 300 = 900 (ratio 3.78); 4 × 400 = 1600 (6.72); 5 × 500 = 2500 (10.5).</p>
+        <p class="ex-step"><b>Pressure.</b> 3/7 = 0.43 to 5/7 = 0.71.</p>
+        <p class="ex-answer">The linear tool's <em>Pv</em> is 3.8 to 10.5 times the rotary tool's, at 0.43–0.71 of the pressure. Check: the
+        velocity multiplies the removal rate everywhere, the recessed trench oxide included, so clearing sooner does not by itself reduce
+        dishing: for the same fractional overpolish the trench oxide loses the same amount. Only the lower pressure, which is what the pad
+        transmits into the recess, works in the trenches' favour. The ratio assumes Preston's linear law, which M13 §6 showed is not
+        exact.</p>
+      </div>
+    </div>
+    <p>
+      The amount of overfill a process carries can be checked on the MIT density-and-pitch test wafer used to evaluate STI dishing: trenches
+      4800 Å deep, 150 Å of liner, 1960 Å of nitride and 8000 Å of TEOS (Wolf p. 468). The fill exceeds the 4800 + 1960 = 6760 Å step by
+      1240 Å less the pad-oxide thickness, which Wolf does not give; the notes' 8000–9000 Å over a 5000 Å trench carries a margin of the
+      same order (§3.3).
+    </p>
+    <details class="check">
+      <summary>A chip has both a 2 µm and a 200 µm wide trench. Which dishes more, and why? Which of the five remedies would you avoid on an
+        analog chip, and why?</summary>
+      <div class="answer">
+        <p>The 200 µm trench dishes more. Dishing happens because the pad flexes into an opening once the nitride is exposed, and the
+        pressure it can exert on the recessed oxide grows with the width of the opening; in Wolf's data the loss exceeds 50 nm beyond
+        100 µm. Dummy active regions should be avoided on an analog chip: they make the capacitance of lines crossing the trenches variable,
+        which disturbs analog circuits (Wolf p. 466). A nitride cap, RIE/CMP or a direct polish with a selective ceria slurry suits it
+        instead.</p>
+      </div>
+    </details>
+
+    <h2 id="s9">9 · LOCOS and STI side by side</h2>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Feature</th><th>LOCOS</th><th>STI</th></tr></thead>
+      <tbody>
+        <tr><td>Field oxide</td><td>grown thermally, semi-recessed (0.46 below, 0.54 above)</td><td>deposited (HDP-CVD) over a 40–50 nm thermal liner, fully recessed</td></tr>
+        <tr><td>Edge of the field oxide</td><td>bird's beak, a fraction of a micrometre, proportional to the oxide thickness</td><td>none; a sharp corner that must be rounded</td></tr>
+        <tr><td>Surface after isolation</td><td>a step of about half the oxide thickness</td><td>planar after CMP; trench oxide about 50–100 nm above the active surface in the §3.4 example</td></tr>
+        <tr><td>Narrow spacings</td><td>field oxide thins; narrow-channel effect raises <em>V</em><sub>T</sub></td><td>no thinning; reverse narrow-width effect if the corner is sharp or recessed</td></tr>
+        <tr><td>Pad oxide / nitride</td><td>25–40 nm / ~80 nm (Plummer: ~40 / ~80)</td><td>10–20 nm / 100–200 nm</td></tr>
+        <tr><td>Wells</td><td>usually before the field oxidation (diffused); can be implanted after</td><td>implanted after the trench (0.25 µm and below)</td></tr>
+        <tr><td>Parasitic devices</td><td>field transistor under lines</td><td>field transistor, sidewall MOSFET, corner device</td></tr>
+        <tr><td>Process</td><td>fewer steps</td><td>more steps, three of them enabling technologies (dry etch, gap fill, CMP)</td></tr>
+        <tr><td>Generations</td><td>until 0.35 µm</td><td>from 0.35–0.45 µm in production; standard from about 0.25 µm</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      Both technologies solve one problem, a field threshold above the supply between neighbouring devices, and the comparison shows where
+      the difficulty moved. LOCOS's difficulties came from growing the oxide: encroachment, topography, thinning and stress. STI's come from
+      the geometry of an etched hole: filling it, planarizing it, and the corner and sidewall where a gate or a well meets it. The trench
+      also returns in EEE 5416, where trapped charge from radiation accumulates in the trench fill and inverts the same sidewall
+      (<a href="../../EEE5416_Radiation_Effects/site/m08-tid-effects-devices-ics.html">EEE 5416 M08 §5</a>;
+      also <a href="../../EEL5385_Space_Electronics/site/m14-total-ionizing-dose.html">EEL 5385 M14 §7</a>).
+    </p>
+    <details class="check">
+      <summary>Describe LOCOS isolation, its two drawbacks that could not be overcome below 0.35 µm,
+        and how STI removes each, with a sketch of each structure.</summary>
+      <div class="answer">
+        <p>LOCOS grows the field oxide by oxidizing the silicon through openings in a nitride mask laid over a pad oxide (sketch: nitride over
+        the active areas, oxide lens between, beak under each nitride edge). The two drawbacks Wolf names are the bird's beak, oxide grown
+        under the nitride edge by lateral diffusion of the oxidant through the pad oxide, which takes active width in proportion to the
+        field-oxide thickness; and non-planarity, because the grown oxide is semi-recessed, 0.46 of it below the original surface and 0.54
+        above. STI etches a trench through a nitride hard mask, lines it with a thin thermal oxide and fills it with deposited oxide (sketch:
+        trench with liner and fill, flush with the surface). Nothing is grown under the mask except the thin liner, so there is no bird's
+        beak; and the fill is polished flat by CMP, stopping on the nitride, so the surface is planar.</p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>LOCOS limits (notes p. 131): bird's beak into the active area, non-planarity, field-oxide thinning at narrow spacing, stress-induced
+          defects. Step ≈ 0.54<em>t</em><sub>ox</sub> above the active surface (15.1). Encroachment ∝ field-oxide thickness, which isolation fixes.</li>
+        <li>BOX (1981/1983): 0.5–0.8 µm trenches, ~60° walls, 20–50 nm thermal oxide, CVD fill, resist etchback. Six drawbacks: voids (&lt; 2 µm
+          wide), sidewall inversion, varying field profile, imperfect planarization, gate-oxide thinning at the edge, 100 nm overetch.</li>
+        <li>Enablers: dry etch (slope, round bottom), gap-fill CVD (LPCVD TEOS, O₃–TEOS, HDP; stress &lt; 200 MPa), CMP. Goal: a gate flat across
+          the isolation.</li>
+        <li>Baseline flow: pad oxide 10–20 nm → LPCVD nitride 100–200 nm (hard mask + CMP stop) → mask #1 → etch nitride/pad → trench etch
+          (70–85°, HBr/Cl₂/O₂ or HBr/NF₃/He/O₂) → strip → HF pad undercut → dry liner 40–50 nm (RTO 1050–1100 °C) → CVD fill 8000–9000 Å for
+          5000 Å → densify ~900 °C → reverse mask + planarizing resist + RIE → strip (spikes) → CMP to nitride → HF + hot H₃PO₄ → pad strip →
+          sacrificial oxide 20 nm → wells, channel stop, <em>V</em><sub>T</sub>, punch-through implants → strip → gate oxide.</li>
+        <li>Depth: ~0.5 µm → ~0.2 µm near 0.1 µm, set by the field threshold (8.6) and line capacitance (∝ 1/depth).</li>
+        <li>Sidewall MOSFET: n-well = gate, trench width = oxide (15.3); at Wolf's conditions it inverts below ≈ 0.8 µm; worse in p-wells (positive <em>Q</em><sub>i</sub>, boron segregation);
+          cured by implanting wells after STI. Deep trench: complex, disappointing latch-up results.</li>
+        <li>Corner: field crowding → hump; 50 nm radius at ≤ 80° removes it. Divot from HF dips: wrap-around, reverse narrow-width effect,
+          ±200 mV <em>V</em><sub>T</sub>, width loss. RELACS rounds inside a narrowed opening (~15 nm radius).</li>
+        <li>HDP-CVD: SiH₄/O₂/Ar, &lt; 10 mTorr, sputter maximum ~45°, bottom-up fill; notes' ratio 0.14–0.33 read as E/D.</li>
+        <li>Dishing: pad flex + oxide faster than nitride; &gt; 50 nm beyond 100 µm. Remedies: RIE/CMP, nitride cap, dummy actives, patterned
+          cap, direct polish (linear 300–500 ft/min, 3–5 psi; ceria).</li>
+      </ul>
+    </div>
+
+    <h2>Where this page follows the class notes against the literature</h2>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Point</th><th>Notes or lecture</th><th>Sources</th><th>On this page</th></tr></thead>
+      <tbody>
+        <tr><td>Bird's beak and STI</td><td>Lecture 4: "whenever you do the shallow trench isolation you get these sharp corners. These are called bird's beak"</td><td>Wolf pp. 13, 433; Plummer §2.2.3: the bird's beak is LOCOS's; STI eliminates it</td><td>Flagged (§1.2); STI's corner is sharp and must be rounded (§6)</td></tr>
+        <tr><td>BOX trench etch</td><td>Notes p. 132: "isotropically etched… through orientation dependent Si-etch"</td><td>Wolf p. 435: "orientation-dependent silicon-etch", no "isotropically"; an orientation-dependent etch is anisotropic</td><td>Flagged (§2.1)</td></tr>
+        <tr><td>RELACS trench etch</td><td>Notes p. 146: the remainder of the trench "is etched with an isotropic etch"</td><td>Wolf p. 470: "with an anisotropic etch"</td><td>Anisotropic (§6.3)</td></tr>
+        <tr><td>HDP ratio</td><td>Notes p. 142: "deposition-to-etch-ratio… between 0.14 and 0.33"</td><td>Wolf Fig. 9-20 caption the same; a D/E below 1 means net etching. Wolf p. 462: deposition to removal "no larger than 3.0", which taken literally excludes the E/D reading's 3.0–7.1; the direction of Wolf's ratio is unsettled</td><td>Notes' figures kept, read as E/D, flagged (§7.2)</td></tr>
+        <tr><td>Nitride clipping in HDP-CVD</td><td>Not in the notes</td><td>Wolf p. 462: "decrease the deposition-to-(sputter)-etching ratio", at a cost in gap fill; physically, less sputtering clips less</td><td>Wolf's words quoted; read as E/D, flagged (§7.2)</td></tr>
+        <tr><td>Future trench depth</td><td>Notes p. 139: "decrease to 0.2 µm"</td><td>Wolf p. 456: "&lt; 0.2-µm, at least for some circuit applications"</td><td>Both quoted (§4)</td></tr>
+        <tr><td>Sidewall simulation conditions</td><td>Notes p. 134: the sidewall device, no numbers</td><td>Wolf Fig. 9-6 caption: N<sub>A</sub> 9×10¹⁴ cm⁻³, 5×10¹⁰ cm⁻², well 3 V, V<sub>GS</sub> 0 V, substrate −1 V</td><td>All five used (§5.2)</td></tr>
+        <tr><td>Liner temperature</td><td>Notes p. 136 attach "Temp 1050–1100 °C" to the baseline liner</td><td>Wolf p. 451: liner 40–50 nm in dry O₂; maximum rounding with an RTO at 1050–1100 °C. Plummer §2.2.3: 10–20 nm at ≈ 1100 °C</td><td>Both stated (§3.2, §6.1)</td></tr>
+        <tr><td>Hydrogen-anneal rounding</td><td>Not in the notes</td><td>Wolf p. 458 text 1100 °C; Fig. 9-18 caption 950 °C, 380 Torr, 60 s</td><td>Both given, attributed (§6.1)</td></tr>
+        <tr><td>Pad-oxide ambient</td><td>Lecture 17: the first oxidation "is done by wet oxidation"</td><td>Notes p. 135 and Wolf p. 446: "thermally grown", no ambient</td><td>No ambient stated (§3.1)</td></tr>
+        <tr><td>STI and nitride thicknesses</td><td>Notes p. 135: pad 10–20 nm, nitride 100–200 nm</td><td>Plummer §2.2.3: 10–20 nm and 50–100 nm</td><td>Notes' values; the §3.3 example shows the nitride's effect on the final step</td></tr>
+        <tr><td>Notes p. 146</td><td>The last page of Chapter 9 is filed as <code>Notes 136.pdf</code></td><td>It completes the RELACS discussion that p. 145 breaks off</td><td>Used (§6.3)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Notes p. 131; Wolf Vol. 4 (2002) pp. 13–14, 433–435, 554; Plummer, Deal &amp; Griffin (2000) §2.2, §6 (Kao's corner experiments); Lectures 4, 16</td></tr>
+      <tr><td>§2</td><td>Notes pp. 131–134; Wolf pp. 435–439, Figs. 9-2, 9-3</td></tr>
+      <tr><td>§3</td><td>Notes pp. 135–139; Wolf pp. 446–455, Fig. 9-10, Table 9-1; Plummer §2.2.3; Lectures 17, 24</td></tr>
+      <tr><td>§4</td><td>Notes p. 139; Wolf pp. 455–457; M08 eq. (8.6)</td></tr>
+      <tr><td>§5</td><td>Notes p. 134; Wolf pp. 436–446, 451, Figs. 9-5 to 9-9</td></tr>
+      <tr><td>§6</td><td>Notes pp. 140, 144–146; Wolf pp. 450–451, 457–458, 469–472, Figs. 9-13, 9-18, 9-30 to 9-32; Plummer §2.2.3, §6</td></tr>
+      <tr><td>§7</td><td>Notes pp. 140–142; Wolf pp. 459–462, Table 9-1, Fig. 9-20</td></tr>
+      <tr><td>§8</td><td>Notes pp. 143–144; Wolf pp. 462–468, Figs. 9-23 to 9-28; M13 §6 (Preston)</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m14-cmp-slurries-damascene.html"><span>Previous</span>M14 · CMP: Slurries, Damascene and Endpoint</a>
+      <a class="next" href="index.html"><span>Next</span>Course home</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

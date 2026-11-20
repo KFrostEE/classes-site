@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M14b · Radiation Effects on MEMS — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M14b · Radiation Effects on MEMS</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 14b</p>
+    <h1>Radiation Effects on MEMS</h1>
+    <p class="lede">
+      Mechanical microstructures of silicon, moved and sensed by electrostatic forces: why such
+      resonators fly, how a comb-drive resonator works, what a proton beam does to its resonance
+      frequency while the beam is on and after it stops, and how the shift is reversed.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M01, M08, M11, M12, M13, M14</span>
+      <span><b>Read time</b> ~40 min</span>
+      <span><b>Sources</b> Deck 11; Lecture 11; Deck 17 p. 39; Deck 1; Shea (2009); Bandi et al. (2013)</span>
+    </div>
+
+    <p>
+      Every device in the preceding modules has been electronic: a junction, a channel or an oxide,
+      degraded through the carriers or the charge it holds. A microelectromechanical system, MEMS,
+      is a mechanical structure — a beam, a plate, an array of interleaved fingers — micromachined,
+      most often in silicon, at the scale of micrometres and then driven and read out electrically. Its function
+      rests on two quantities that radiation can alter: the stiffness of the structure, which sets
+      how it moves, and the electrostatic forces that move it, which depend on charge. A MEMS device
+      therefore responds to the same two damage mechanisms as the electronics of
+      <a href="m11-displacement-damage.html">M11</a> and
+      <a href="m14-total-ionizing-dose.html">M14</a>, displacement and ionization, but the property
+      they act on is mechanical.
+    </p>
+    <p>
+      The course studies one device in detail: a silicon comb-drive resonator whose resonance
+      frequency was recorded every few minutes while 1.8 MeV protons struck it (Deck 11). This module
+      sets out why mechanical resonators fly and how a comb-drive resonator works (§1–2), what
+      radiation can change in a mechanical part (§3), the experiment and its arithmetic (§4), where
+      the protons deposit energy and damage (§5), the mechanism the decks assign to the temporary
+      and the permanent shifts of frequency (§6), and how a shift is reversed (§7).
+    </p>
+
+    <h2>1 · Why mechanical resonators fly</h2>
+    <p>
+      A resonator is a structure that vibrates at a natural frequency fixed by its own properties.
+      Oscillators, filters and timing references are built around one, and a mechanical resonator
+      offers both a far smaller size and a far higher quality factor (§2) than an electrical one.
+    </p>
+    <p>
+      The frequency of a resonator that supports a travelling wave is the propagation speed of the
+      wave divided by a characteristic length of the device (Deck 11 p. 27). Electrical signals
+      propagate at 40–90 % of the speed of light; mechanical, acoustic waves travel at
+      300–15,000 m/s, slower by a factor of 10⁴ to 10⁶. A mechanical device that reaches the same
+      frequency, or imposes the same signal delay, is smaller by the same factor. In a
+      surface-acoustic-wave (SAW) delay line the signal travels as an acoustic wave along the
+      surface of a crystal chip, and one such chip delays it by 113 µs, where a spool of low-loss
+      coaxial cable many times its volume delays it by 2.5 µs (Deck 11 p. 26).
+    </p>
+    <p>
+      Size and mass are scarce on a spacecraft, so micromechanical devices have flown, or been built
+      to fly, wherever a mechanical function can be made small: an experimental MEMS gyroscope tested
+      in orbit on ESA's CryoSat-2, MEMS shutters on the James Webb Space Telescope, and a MEMS
+      gyroscope on the rover that CNES and DLR built for JAXA's Martian Moons eXploration mission
+      (Deck 11 p. 28). The same argument has put several micromechanical
+      devices into every smartphone (Deck 11 pp. 19–20).
+    </p>
+    <p>
+      A resonator much smaller than the acoustic wavelength at its frequency moves as a single mass
+      on a spring, and its frequency follows from the stiffness and the moving mass.
+    </p>
+
+    <div class="eq" id="m14b-eq-res">
+      <div class="eq-body">
+        <div class="eq-math"><em>f</em> = <span class="frac"><span class="num">1</span><span class="den">2π</span></span> <span class="sqrt"><span class="rad">√</span><span class="arg"><span class="frac"><span class="num"><em>k</em></span><span class="den"><em>m</em></span></span></span></span></div>
+        <div class="eq-num">(14b.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>f</em> resonance frequency (Hz) · <em>k</em> stiffness, the restoring force per unit
+        displacement (N/m) · <em>m</em> moving mass (kg). At fixed mass a change of stiffness
+        shifts the frequency by Δ<em>f</em>/<em>f</em> = ½Δ<em>k</em>/<em>k</em>, so every
+        frequency shift in this module is read as a change of stiffness. Added here: the decks
+        state the dependence in words.
+        On the formula sheet as <a href="formula-sheet.html#eq-14b-res">(14b.1)</a>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 150" role="img" aria-labelledby="f14b-1-t">
+        <title id="f14b-1-t">A mass on a spring attached to a fixed wall, displaced by x from its rest position</title>
+        <defs>
+          <marker id="f14b-1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+        <line x1="60" y1="36" x2="60" y2="124" class="dg-line" stroke-width="2.4"/>
+        <g class="dg-rule" stroke-width="1">
+          <line x1="60" y1="44" x2="48" y2="56"/><line x1="60" y1="64" x2="48" y2="76"/><line x1="60" y1="84" x2="48" y2="96"/><line x1="60" y1="104" x2="48" y2="116"/>
+        </g>
+        <path d="M60,80 L84,80 L94,64 L110,96 L126,64 L142,96 L158,64 L174,96 L184,80 L208,80" class="dg-line" stroke-width="1.8" fill="none"/>
+        <rect x="208" y="50" width="88" height="60" class="dg-fill" stroke-width="1.6"/>
+        <rect x="208" y="50" width="88" height="60" class="dg-line" fill="none" stroke-width="1.6"/>
+        <text x="134" y="54" class="dg-label" text-anchor="middle">stiffness <tspan font-style="italic">k</tspan></text>
+        <text x="252" y="85" class="dg-label" text-anchor="middle">mass <tspan font-style="italic">m</tspan></text>
+        <line x1="306" y1="80" x2="372" y2="80" class="dg-acc" stroke-width="2" marker-end="url(#f14b-1-a)"/>
+        <text x="339" y="70" class="dg-label" text-anchor="middle">displacement <tspan font-style="italic">x</tspan></text>
+        <text x="220" y="138" class="dg-label-sm" text-anchor="middle">restoring force −<tspan font-style="italic">kx</tspan>, frequency (14b.1)</text>
+      </svg>
+      <figcaption>
+        The lumped model of a mechanical resonator. Notice that only two quantities set its
+        frequency; radiation reaches the frequency of the devices in this module through the
+        stiffness, not the mass.
+      </figcaption>
+    </figure>
+
+    <div class="box">
+      <p class="box-title">The vibratory gyroscope</p>
+      <p>
+        A MEMS gyroscope drives a proof mass into vibration along one axis. When the device rotates
+        at angular rate <b>Ω</b>, the Coriolis force 2<em>m</em><b>v</b> × <b>Ω</b>, with
+        <b>v</b> the proof mass's vibration velocity, drives a second vibration along the third
+        axis whose amplitude is proportional to the rotation rate. Sensing that motion measures
+        rotation with no spinning wheel. Of the gyroscope types the decks compare — vibratory,
+        fluid, fibre-optic and ring-laser — the vibratory ones are the smallest and also the least
+        precise (Deck 11 pp. 25, 49–53). They suffice for phones and cameras; making them precise
+        enough for navigation without satellite positioning is a research goal (Lecture 11). A
+        radiation-induced shift of the proof mass's resonance becomes an error in the measured
+        rotation rate.
+      </p>
+    </div>
+
+    <h2>2 · The comb-drive resonator</h2>
+    <p>
+      The device in the course's experiment is a comb-drive resonator: a perforated silicon plate,
+      the shuttle, suspended on flexible beams and moved sideways by the electrostatic attraction
+      between interleaved fingers. Its drive, its readout and its response to charge all follow from
+      one expression for the electrostatic force; its frequency and quality factor are mechanical,
+      the frequency modified by the electrostatic spring.
+    </p>
+    <p>
+      It is etched from a silicon-on-insulator (SOI) wafer, which carries a single-crystal silicon
+      device layer, here 5 µm thick, on a layer of silicon dioxide over a thick silicon substrate
+      (Deck 11 p. 34). The device layer is patterned into the shuttle, its suspension beams and two
+      combs of fixed fingers. The oxide beneath the moving parts is then etched away, which leaves
+      them free over a gap of a few micrometres and anchored to the substrate only where oxide
+      remains. The released structures are dried by critical-point drying, in which the rinse liquid
+      is exchanged for liquid carbon dioxide, which is taken around its critical point and vented as
+      a gas, so that no liquid–vapour meniscus forms between the parts and the substrate and surface
+      tension cannot pull the parts down onto it. A shuttle with its combs
+      spans a few hundred micrometres, and nine devices share a chip.
+    </p>
+    <p>
+      The fingers of each comb lie parallel to the shuttle's motion and interleave with fingers
+      attached to the shuttle (Deck 11 p. 34), so a displacement <em>x</em> changes their overlap
+      and with it the capacitance <em>C</em><sub>0</sub> between shuttle and comb. A voltage across
+      a capacitance that varies with position produces a force. At fixed voltage <em>V</em>, the
+      source supplies <em>V</em>² d<em>C</em><sub>0</sub> as the capacitance grows by
+      d<em>C</em><sub>0</sub>; half is stored in the field and half does work <em>F</em> d<em>x</em>
+      on the shuttle, so the force is directed so as to increase <em>C</em><sub>0</sub>.
+    </p>
+
+    <div class="eq" id="m14b-eq-force">
+      <div class="eq-body">
+        <div class="eq-math"><em>F</em> = <span class="frac"><span class="num">1</span><span class="den">2</span></span> <span class="frac"><span class="num">d<em>C</em><sub>0</sub></span><span class="den">d<em>x</em></span></span> <em>V</em>²</div>
+        <div class="eq-num">(14b.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>F</em> electrostatic force along the motion (N) · <em>C</em><sub>0</sub> capacitance
+        between the shuttle and one comb (F) · <em>x</em> shuttle displacement (m) · <em>V</em>
+        voltage between them (V). For <em>N</em> overlapping finger pairs of thickness <em>h</em>
+        separated by gaps <em>g</em> on both sides, d<em>C</em><sub>0</sub>/d<em>x</em> =
+        2<em>N</em>ε<sub>0</sub><em>h</em>/<em>g</em>, the same at every overlap, so the comb pulls
+        with a force independent of position. The force is attractive for either sign of
+        <em>V</em>. The decks' equation (Deck 11 p. 35).
+        On the formula sheet as <a href="formula-sheet.html#eq-14b-force">(14b.2)</a>.
+      </div>
+    </div>
+
+    <p>
+      The shuttle is held at a DC bias <em>V</em><sub>DC</sub>, 10 V in the experiment
+      (Deck 11 pp. 34, 36), and a small alternating drive <em>v</em><sub>ac</sub> cos ω<em>t</em> is
+      applied to the drive comb. Because the force goes as the square of the voltage between them,
+      its component at the drive frequency has amplitude
+      (d<em>C</em><sub>0</sub>/d<em>x</em>)<em>V</em><sub>DC</sub><em>v</em><sub>ac</sub>: the bias
+      turns a quadratic transducer into a linear one, and the drive force is proportional to
+      <em>V</em><sub>DC</sub>. At the sense comb the motion modulates the
+      capacitance, and with the bias applied a current
+      <em>V</em><sub>DC</sub>(d<em>C</em><sub>0</sub>/d<em>x</em>)(d<em>x</em>/d<em>t</em>) flows into
+      the readout amplifier, proportional to the shuttle's velocity.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="f14b-2-t">
+        <title id="f14b-2-t">Top view of a lateral comb-drive resonator: a shuttle suspended on flexure beams between a drive comb and a sense comb whose fingers lie parallel to the motion</title>
+        <defs>
+          <marker id="f14b-2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+        <rect x="40" y="66" width="12" height="96" class="dg-soft"/>
+        <rect x="388" y="66" width="12" height="96" class="dg-soft"/>
+        <g class="dg-soft">
+          <rect x="52" y="72" width="90" height="6"/><rect x="52" y="94" width="90" height="6"/><rect x="52" y="116" width="90" height="6"/><rect x="52" y="138" width="90" height="6"/>
+          <rect x="298" y="72" width="90" height="6"/><rect x="298" y="94" width="90" height="6"/><rect x="298" y="116" width="90" height="6"/><rect x="298" y="138" width="90" height="6"/>
+        </g>
+        <rect x="170" y="76" width="100" height="76" class="dg-fill"/>
+        <rect x="170" y="76" width="100" height="76" class="dg-line" fill="none" stroke-width="1.4"/>
+        <g class="dg-acc-f">
+          <rect x="98" y="83" width="72" height="6"/><rect x="98" y="105" width="72" height="6"/><rect x="98" y="127" width="72" height="6"/>
+          <rect x="270" y="83" width="72" height="6"/><rect x="270" y="105" width="72" height="6"/><rect x="270" y="127" width="72" height="6"/>
+        </g>
+        <g class="dg-line" stroke-width="1.6">
+          <line x1="186" y1="76" x2="186" y2="34"/><line x1="254" y1="76" x2="254" y2="34"/>
+          <line x1="186" y1="152" x2="186" y2="194"/><line x1="254" y1="152" x2="254" y2="194"/>
+        </g>
+        <rect x="174" y="24" width="92" height="10" class="dg-soft"/>
+        <rect x="174" y="194" width="92" height="10" class="dg-soft"/>
+        <text x="220" y="118" class="dg-label" text-anchor="middle">shuttle</text>
+        <text x="272" y="31" class="dg-label-sm">flexure beams (stiffness <tspan font-style="italic">k</tspan>)</text>
+        <text x="46" y="180" class="dg-label-sm">drive comb</text>
+        <text x="394" y="180" class="dg-label-sm" text-anchor="end">sense comb</text>
+        <line x1="190" y1="218" x2="250" y2="218" class="dg-acc" stroke-width="2" marker-start="url(#f14b-2-a)" marker-end="url(#f14b-2-a)"/>
+        <text x="262" y="222" class="dg-label-sm">motion <tspan font-style="italic">x</tspan></text>
+      </svg>
+      <figcaption>
+        A lateral comb-drive resonator, schematic and not to scale; fixed parts are grey, parts that
+        move with the shuttle are coloured. Notice that the fingers slide along their length, so the
+        overlap and the capacitance change in proportion to <em>x</em>.
+        The device of Deck 11 p. 34 arranges the same elements differently, with its comb banks
+        above and below the shuttle.
+      </figcaption>
+    </figure>
+
+    <p>
+      Seen from its terminals, the moving structure behaves as a series resonant circuit, the
+      motional branch (Deck 11 p. 35). With identical drive and sense combs and
+      η = <em>V</em><sub>DC</sub> d<em>C</em><sub>0</sub>/d<em>x</em> the coupling of each, an
+      inductance <em>L</em><sub>m</sub> = <em>m</em>/η² stands for the moving mass, a capacitance
+      <em>C</em><sub>m</sub> = η²/<em>k</em> for the compliance of the suspension, and a resistance
+      <em>R</em><sub>m</sub> = <em>b</em>/η² for the mechanical damping coefficient <em>b</em>. The
+      coupling cancels in the resonance condition, so the branch resonates at (14b.1), while the
+      motional current, and with it the height of the measured peak, grows as
+      <em>V</em><sub>DC</sub>². In parallel with the branch lie the parasitic capacitances and
+      resistances of the pads, the oxide and the substrate, through which part of the drive signal
+      reaches the output without any motion. The measured transmission, the ratio of the signal at
+      the sense comb to the drive, in decibels, therefore shows a peak where the motional branch
+      resonates and a dip just above it, where the motional and parasitic currents cancel.
+    </p>
+    <p>
+      The sharpness of the peak is measured by the quality factor <em>Q</em>, the resonance frequency
+      divided by the width of the peak at half power; <em>Q</em> is also 2π times the energy stored
+      in the vibration divided by the energy dissipated per cycle. The experiment's resonator has
+      <em>f</em> ≈ 29.485 kHz and <em>Q</em> ≈ 23,000 (Deck 11 p. 41), so its peak is about 1.3 Hz
+      wide, and a shift of a fraction of a hertz can be resolved. That resolution is what makes the
+      device a sensitive detector of anything that alters its stiffness.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 300 170" role="img" aria-labelledby="f14b-3a-t">
+          <title id="f14b-3a-t">Equivalent circuit: a series motional branch of capacitance, resistance and inductance between input and output, in parallel with a feedthrough capacitance</title>
+          <line x1="20" y1="60" x2="60" y2="60" class="dg-line" stroke-width="1.4"/>
+          <line x1="240" y1="60" x2="280" y2="60" class="dg-line" stroke-width="1.4"/>
+          <line x1="60" y1="60" x2="60" y2="120" class="dg-line" stroke-width="1.4"/>
+          <line x1="240" y1="60" x2="240" y2="120" class="dg-line" stroke-width="1.4"/>
+          <line x1="60" y1="60" x2="84" y2="60" class="dg-line" stroke-width="1.4"/>
+          <line x1="84" y1="48" x2="84" y2="72" class="dg-line" stroke-width="1.8"/>
+          <line x1="92" y1="48" x2="92" y2="72" class="dg-line" stroke-width="1.8"/>
+          <path d="M92,60 L110,60 L114,52 L120,68 L126,52 L132,68 L138,52 L144,68 L148,60 L166,60" class="dg-line" stroke-width="1.4" fill="none"/>
+          <path d="M166,60 C170,48 178,48 180,60 C182,48 190,48 192,60 C194,48 202,48 204,60 C206,48 214,48 216,60 L240,60" class="dg-line" stroke-width="1.4" fill="none"/>
+          <line x1="60" y1="120" x2="146" y2="120" class="dg-line" stroke-width="1.4"/>
+          <line x1="146" y1="108" x2="146" y2="132" class="dg-line" stroke-width="1.8"/>
+          <line x1="154" y1="108" x2="154" y2="132" class="dg-line" stroke-width="1.8"/>
+          <line x1="154" y1="120" x2="240" y2="120" class="dg-line" stroke-width="1.4"/>
+          <text x="88" y="40" class="dg-label-sm" text-anchor="middle"><tspan font-style="italic">C</tspan><tspan baseline-shift="sub" style="font-size:75%">m</tspan></text>
+          <text x="129" y="40" class="dg-label-sm" text-anchor="middle"><tspan font-style="italic">R</tspan><tspan baseline-shift="sub" style="font-size:75%">m</tspan></text>
+          <text x="191" y="40" class="dg-label-sm" text-anchor="middle"><tspan font-style="italic">L</tspan><tspan baseline-shift="sub" style="font-size:75%">m</tspan></text>
+          <text x="150" y="150" class="dg-label-sm" text-anchor="middle">parasitic feedthrough</text>
+          <text x="20" y="52" class="dg-label-sm">in</text>
+          <text x="280" y="52" class="dg-label-sm" text-anchor="end">out</text>
+          <text x="150" y="24" class="dg-label-sm" text-anchor="middle">motional branch: the mechanics</text>
+        </svg>
+        <figcaption>
+          The motional branch stands for mass (<em>L</em><sub>m</sub>), compliance
+          (<em>C</em><sub>m</sub>) and damping (<em>R</em><sub>m</sub>); the parasitic path carries
+          signal with no motion. Simplified from Deck 11 p. 35.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 300 170" role="img" aria-labelledby="f14b-3b-t">
+          <title id="f14b-3b-t">Transmission against frequency: a sharp peak at the resonance followed immediately by a dip</title>
+          <line x1="40" y1="140" x2="284" y2="140" class="dg-rule" stroke-width="1.2"/>
+          <line x1="40" y1="140" x2="40" y2="20" class="dg-rule" stroke-width="1.2"/>
+          <path d="M40,86 C90,84 120,80 140,70 C150,64 154,40 158,34 C161,40 163,80 166,126 C168,132 170,128 174,104 C182,86 210,80 284,78" class="dg-acc" stroke-width="1.8" fill="none"/>
+          <line x1="158" y1="34" x2="158" y2="140" class="dg-guide" stroke-dasharray="3 3"/>
+          <text x="162" y="30" class="dg-label-sm"><tspan font-style="italic">f</tspan> ≈ 29.485 kHz</text>
+          <text x="174" y="128" class="dg-label-sm">dip: currents cancel</text>
+          <text x="162" y="158" class="dg-label-sm" text-anchor="middle">frequency</text>
+          <text x="16" y="84" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 16 84)">transmission (dB)</text>
+        </svg>
+        <figcaption>
+          The measured resonance, schematic. With <em>Q</em> ≈ 23,000 the peak is about 1.3 Hz
+          wide, <em>f</em>/<em>Q</em>. After Deck 11 pp. 35, 41.
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      At larger drive the shuttle's travel reaches a fixed stop, and the response flattens, with
+      different curves for upward and downward frequency sweeps: the shuttle strikes the stop once
+      per cycle. This tapping regime turns the resonator into a resonant switch, proposed for
+      mechanical logic, charge pumps and amplifiers (Deck 11 pp. 39–41). The radiation measurements
+      of §4 were made in the linear regime, at a drive power of −49 dBm, decibels relative to 1 mW,
+      about 13 nW (Deck 11 p. 42).
+    </p>
+
+    <h3>Electrostatic softening</h3>
+    <p>
+      A voltage does more than drive the resonator: it also changes its stiffness. Where the force
+      of (14b.2) varies with position, a displacement changes the force, and that change acts as an
+      additional spring. Across a gap that closes as the shuttle moves, the capacitance rises faster
+      than linearly, the electrostatic force grows with displacement, and it opposes the mechanical
+      restoring force, so the effective stiffness falls.
+    </p>
+
+    <div class="eq" id="m14b-eq-soft">
+      <div class="eq-body">
+        <div class="eq-math"><em>f</em> = <span class="frac"><span class="num">1</span><span class="den">2π</span></span> <span class="sqrt"><span class="rad">√</span><span class="arg"><span class="frac"><span class="num"><em>k</em><sub>m</sub> − <em>k</em><sub>el</sub></span><span class="den"><em>m</em></span></span></span></span>,&nbsp;&nbsp; <em>k</em><sub>el</sub> = <span class="frac"><span class="num">1</span><span class="den">2</span></span> <em>V</em>² <span class="frac"><span class="num">d²<em>C</em></span><span class="den">d<em>x</em>²</span></span></div>
+        <div class="eq-num">(14b.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>k</em><sub>m</sub> mechanical stiffness of the suspension, the <em>k</em> of (14b.1)
+        (N/m) · <em>k</em><sub>el</sub>
+        electrostatic spring constant, positive when it softens (N/m) · <em>C</em> capacitance across
+        a gap whose width changes with <em>x</em> (F) · <em>V</em> voltage across that gap (V) ·
+        <em>m</em> moving mass (kg). For parallel plates of area <em>A</em> at gap <em>g</em>,
+        <em>C</em> = ε<sub>0</sub><em>A</em>/(<em>g</em> − <em>x</em>) and
+        <em>k</em><sub>el</sub> = ε<sub>0</sub><em>A</em><em>V</em>²/<em>g</em>³. For ideal comb
+        fingers <em>C</em> is linear in <em>x</em> and <em>k</em><sub>el</sub> = 0; a real comb
+        drive softens through fringing fields and the closing gaps at its finger tips and at the
+        ends of the shuttle. Added here: the decks name the effect (Deck 11 p. 46) without a
+        formula.
+        On the formula sheet as <a href="formula-sheet.html#eq-14b-soft">(14b.3)</a>.
+      </div>
+    </div>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 300 150" role="img" aria-labelledby="f14b-4a-t">
+          <title id="f14b-4a-t">Two interleaved comb fingers sliding along their length: the capacitance grows in proportion to the overlap</title>
+          <defs>
+            <marker id="f14b-4-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+            </marker>
+          </defs>
+          <rect x="20" y="40" width="12" height="70" class="dg-soft"/>
+          <rect x="32" y="52" width="150" height="10" class="dg-soft"/>
+          <rect x="32" y="88" width="150" height="10" class="dg-soft"/>
+          <rect x="268" y="40" width="12" height="70" class="dg-acc-f"/>
+          <rect x="110" y="70" width="158" height="10" class="dg-acc-f"/>
+          <line x1="110" y1="124" x2="182" y2="124" class="dg-rule" stroke-width="1"/>
+          <line x1="110" y1="118" x2="110" y2="130" class="dg-rule" stroke-width="1"/>
+          <line x1="182" y1="118" x2="182" y2="130" class="dg-rule" stroke-width="1"/>
+          <text x="146" y="142" class="dg-label-sm" text-anchor="middle">overlap: <tspan font-style="italic">C</tspan> ∝ <tspan font-style="italic">x</tspan></text>
+          <line x1="200" y1="28" x2="240" y2="28" class="dg-acc" stroke-width="1.8" marker-end="url(#f14b-4-a)"/>
+          <text x="196" y="32" class="dg-label-sm" text-anchor="end">motion</text>
+        </svg>
+        <figcaption>
+          Comb fingers: d<em>C</em>/d<em>x</em> is constant and d²<em>C</em>/d<em>x</em>² = 0, so
+          the force does not change with position and adds no spring.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 300 150" role="img" aria-labelledby="f14b-4b-t">
+          <title id="f14b-4b-t">Two parallel plates whose gap closes as the moving plate advances: the capacitance rises faster than linearly</title>
+          <defs>
+            <marker id="f14b-4-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+            </marker>
+          </defs>
+          <rect x="60" y="30" width="12" height="90" class="dg-soft"/>
+          <rect x="150" y="30" width="12" height="90" class="dg-acc-f"/>
+          <line x1="72" y1="132" x2="150" y2="132" class="dg-rule" stroke-width="1"/>
+          <line x1="72" y1="126" x2="72" y2="138" class="dg-rule" stroke-width="1"/>
+          <line x1="150" y1="126" x2="150" y2="138" class="dg-rule" stroke-width="1"/>
+          <text x="111" y="148" class="dg-label-sm" text-anchor="middle"><tspan font-style="italic">g</tspan> − <tspan font-style="italic">x</tspan></text>
+          <line x1="150" y1="20" x2="110" y2="20" class="dg-acc" stroke-width="1.8" marker-end="url(#f14b-4-b)"/>
+          <text x="176" y="24" class="dg-label-sm">motion closes the gap</text>
+          <text x="176" y="70" class="dg-label-sm"><tspan font-style="italic">C</tspan> ∝ 1/(<tspan font-style="italic">g</tspan> − <tspan font-style="italic">x</tspan>)</text>
+          <text x="176" y="88" class="dg-label-sm"><tspan font-style="italic">k</tspan><tspan baseline-shift="sub" style="font-size:75%">el</tspan> = ε<tspan baseline-shift="sub" style="font-size:75%">0</tspan><tspan font-style="italic">AV</tspan>²/<tspan font-style="italic">g</tspan>³</text>
+        </svg>
+        <figcaption>
+          A closing gap: the force grows as the gap narrows, opposing the suspension, and the
+          electrostatic spring <em>k</em><sub>el</sub> lowers the frequency.
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      Electrostatic softening makes the frequency depend on every voltage that acts across such a
+      gap. An extra potential on an electrode, or charge sitting on a surface near the moving parts,
+      changes the effective voltage, and with it <em>k</em><sub>el</sub> and <em>f</em>. That
+      dependence is the route by which ionization reaches the resonance frequency (§6).
+    </p>
+
+    <h2>3 · What radiation can change in a mechanical part</h2>
+    <p>
+      A transistor degrades because radiation alters the carriers in its channel or the charge in its
+      oxide. A MEMS structure has no channel, and many have no p–n junction at all: only conductors
+      whose potentials must be defined, and the dielectric films between them (Shea 2009). Radiation
+      acts on such a structure along a chain of four links (Deck 11 p. 33).
+    </p>
+    <p>
+      The incident radiation interacts with the material by ionization, by displacing atoms, by
+      implanting the incident particle, and by heating. Each interaction leaves a material effect:
+      charge trapped in insulators and on surfaces, broken bonds and displaced atoms in the lattice,
+      and implanted atoms. A material effect changes a property, electrical or mechanical. The
+      electrical properties the deck lists are carrier density, capacitance and time delay; for an
+      electrostatic MEMS the electrical change that matters is the charge near its electrodes, which
+      alters the electrostatic force (Deck 11 p. 46). The mechanical properties are the elastic
+      constants, the internal stress and the hardness. Among the elastic constants the one that sets a resonator's frequency is Young's
+      modulus <em>E</em><sub>Y</sub>, the ratio of tensile stress to tensile strain in the elastic
+      range: the stiffness of a beam is proportional to it, with a factor fixed by the beam's
+      dimensions, so <em>k</em><sub>m</sub> ∝ <em>E</em><sub>Y</sub> and, by (14b.1),
+      <em>f</em> ∝ √<em>E</em><sub>Y</sub>. A changed property, finally, changes the device's
+      performance, which for a resonator means its resonance frequency and its quality factor.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 196" role="img" aria-labelledby="f14b-5-t">
+        <title id="f14b-5-t">Chain from radiation interaction to material effect, property and resonator performance</title>
+        <defs>
+          <marker id="f14b-5-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+        <g class="dg-label" text-anchor="middle">
+          <text x="58" y="22">interaction</text><text x="166" y="22">material effect</text><text x="274" y="22">property</text><text x="382" y="22">performance</text>
+        </g>
+        <g class="dg-fill">
+          <rect x="10" y="34" width="96" height="150" rx="4"/><rect x="118" y="34" width="96" height="150" rx="4"/>
+          <rect x="226" y="34" width="96" height="150" rx="4"/><rect x="334" y="34" width="96" height="150" rx="4"/>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="58" y="62">ionization</text><text x="58" y="92">displacement</text><text x="58" y="122">implantation</text><text x="58" y="152">heating</text>
+          <text x="166" y="62">trapped charge</text><text x="166" y="92">lattice damage</text><text x="166" y="122">implanted atoms</text>
+          <text x="274" y="56">charge,</text><text x="274" y="70">capacitance</text><text x="274" y="100">Young's modulus</text><text x="274" y="130">stress, hardness</text>
+          <text x="382" y="56">resonance</text><text x="382" y="70">frequency</text><text x="382" y="100">quality</text><text x="382" y="114">factor</text>
+        </g>
+        <g class="dg-soft" stroke-width="1.6">
+          <line x1="106" y1="108" x2="116" y2="108" marker-end="url(#f14b-5-a)"/>
+          <line x1="214" y1="108" x2="224" y2="108" marker-end="url(#f14b-5-a)"/>
+          <line x1="322" y1="108" x2="332" y2="108" marker-end="url(#f14b-5-a)"/>
+        </g>
+      </svg>
+      <figcaption>
+        How radiation reaches a resonator's frequency. Notice that two routes run in parallel: one
+        through charge and the electrostatic force, one through the lattice and the elastic
+        constants. Simplified from Deck 11 p. 33, which joins every material effect to every
+        property, with the charge route of p. 46.
+      </figcaption>
+    </figure>
+
+    <p>
+      The literature on MEMS in radiation environments ranks these routes clearly. As a purely
+      structural material, silicon has shown no mechanical degradation after doses above 100 Mrad,
+      whereas complete MEMS devices, excluding their electronics, have failed at doses as low as
+      20 krad and others work beyond 10 Mrad; the difference lies in the actuation principle, the
+      design and the materials, and is linked primarily to charge trapped in dielectrics
+      (Shea 2009). Shea qualified the statement about silicon: it holds at the level of parts per
+      thousand, and resonators sensitive to changes of parts per million in Young's modulus had not
+      then been tested. Electrostatic devices are the most sensitive, above all those with dielectric
+      between or beneath their moving parts, because trapped charge applies a quasi-constant
+      electrostatic force that first shifts the device's calibration and can finally hold it
+      actuated even at zero applied voltage.
+    </p>
+
+    <h2>4 · The in-situ proton experiment</h2>
+    <p>
+      The course's experiment exposed the comb-drive resonator of §2 to 1.8 MeV protons from a
+      Pelletron, an electrostatic accelerator at Vanderbilt University, while its resonance was
+      recorded (Deck 11 pp. 36–37). A measurement made only before and after an exposure cannot
+      separate effects that last while the beam is on from those that remain; an in-situ
+      measurement, made during the exposure, can.
+    </p>
+    <p>
+      A shutter starts and stops the exposure. The shuttle is biased at <em>V</em><sub>DC</sub> =
+      10 V, a network analyzer supplies the drive, and the sense current passes through a low-noise
+      amplifier back to the analyzer, which sweeps its drive frequency across the resonance and
+      records the transmitted signal (Deck 11 p. 36). The beam is specified by its flux φ, the number
+      of protons crossing unit area per unit time, and the accumulated exposure by its fluence Φ
+      (<a href="m05-sun-particle-populations.html">M05 §9</a>; for a test beam,
+      <a href="m14a-estimating-tid-effects.html">M14a §6</a>).
+    </p>
+
+    <div class="eq" id="m14b-eq-fluence">
+      <div class="eq-body">
+        <div class="eq-math">Φ = φ <em>t</em></div>
+        <div class="eq-num">(14b.4)</div>
+      </div>
+      <div class="eq-says">
+        Φ fluence (cm⁻²) · φ flux, constant over the exposure (cm⁻² s⁻¹) · <em>t</em> exposure time
+        (s). Low-flux run: 2.78×10⁸ cm⁻² s⁻¹ × 1080 s = 3.00×10¹¹ cm⁻²; high-flux run:
+        9.14×10⁸ cm⁻² s⁻¹ × 1358 s = 1.24×10¹² cm⁻² (Deck 11 pp. 42–43).
+        On the formula sheet as <a href="formula-sheet.html#eq-14b-fluence">(14b.4)</a>.
+      </div>
+    </div>
+
+    <p>
+      In the low-flux run the frequency fell steadily while the beam was on, by about 0.7 Hz over the
+      18 minutes of exposure, recovered a little when the shutter closed, and then stayed low
+      (Deck 11 pp. 42, 44). In the high-flux run it had dropped by 5.5 Hz at the first reading after
+      the beam came on, fell a further 3.3 Hz during the exposure, and had risen by 5.6 Hz at the
+      first reading after the beam stopped, which left it 3.2 Hz below the reading taken just before
+      exposure; over the following half hour it crept slowly upward (Deck 11 p. 44). The deck gives
+      the in-beam downshift of this run as 8.41 Hz (p. 43), measured from the first reading of the
+      record; measured from the reading just before the beam came on it is 5.5 + 3.3 = 8.8 Hz, the
+      difference being an upward drift of the frequency before exposure. A flux 3.3 times higher, applied for longer, produced a far larger shift, and
+      the deck's conclusion is that a large flux has a dramatically larger effect.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 300 200" role="img" aria-labelledby="f14b-6a-t">
+          <title id="f14b-6a-t">Low-flux run: frequency shift against time, falling linearly during the exposure and staying low afterwards</title>
+          <rect x="112.3" y="20" width="61.8" height="144" class="dg-fill"/>
+          <line x1="44" y1="164" x2="288" y2="164" class="dg-rule" stroke-width="1.2"/>
+          <line x1="44" y1="164" x2="44" y2="20" class="dg-rule" stroke-width="1.2"/>
+          <line x1="44" y1="47.3" x2="288" y2="47.3" class="dg-guide" stroke-dasharray="3 3"/>
+          <g class="dg-label-sm" text-anchor="end">
+            <text x="38" y="51">0</text><text x="38" y="109">−0.5</text><text x="38" y="168">−1.0</text>
+          </g>
+          <g class="dg-label-sm" text-anchor="middle">
+            <text x="44" y="178">0</text><text x="109.1" y="178">20</text><text x="174.1" y="178">40</text><text x="239.2" y="178">60</text>
+          </g>
+          <path d="M44,47.3 L112.3,47.3 L174.1,145.3 L180.6,125.5 L288,125.5" class="dg-acc" stroke-width="2" fill="none"/>
+          <text x="143" y="34" class="dg-label-sm" text-anchor="middle">beam on</text>
+          <text x="196" y="110" class="dg-label-sm">offset stays</text>
+          <text x="166" y="194" class="dg-label-sm" text-anchor="middle">time (min)</text>
+          <text x="12" y="92" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 12 92)">Δ<tspan font-style="italic">f</tspan> (Hz)</text>
+        </svg>
+        <figcaption>
+          (a) 2.78×10⁸ cm⁻² s⁻¹ for 18 min: a steady fall of about 0.7 Hz, a small partial
+          recovery when the beam stopped, then no further change.
+        </figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 300 200" role="img" aria-labelledby="f14b-6b-t">
+          <title id="f14b-6b-t">High-flux run: an abrupt drop at beam-on, a gradual fall during the exposure, an abrupt partial recovery at beam-off and a persistent offset</title>
+          <rect x="159.3" y="20" width="51.1" height="144" class="dg-fill"/>
+          <line x1="44" y1="164" x2="288" y2="164" class="dg-rule" stroke-width="1.2"/>
+          <line x1="44" y1="164" x2="44" y2="20" class="dg-rule" stroke-width="1.2"/>
+          <line x1="44" y1="36.7" x2="288" y2="36.7" class="dg-guide" stroke-dasharray="3 3"/>
+          <g class="dg-label-sm" text-anchor="end">
+            <text x="38" y="40">0</text><text x="38" y="104">−5</text><text x="38" y="168">−10</text>
+          </g>
+          <g class="dg-label-sm" text-anchor="middle">
+            <text x="44" y="178">0</text><text x="154.9" y="178">50</text><text x="265.8" y="178">100</text>
+          </g>
+          <path d="M44,36.7 L159.3,36.7 L159.3,106.7 L210.4,148.7 L210.4,77.5 L288,67.3" class="dg-acc" stroke-width="2" fill="none"/>
+          <text x="154" y="76" class="dg-label-sm" text-anchor="end">−5.5 Hz</text>
+          <text x="154" y="134" class="dg-label-sm" text-anchor="end">−3.3 Hz</text>
+          <text x="216" y="118" class="dg-label-sm">+5.6 Hz</text>
+          <text x="226" y="62" class="dg-label-sm">3.2 Hz left</text>
+          <text x="185" y="30" class="dg-label-sm" text-anchor="middle">beam on</text>
+          <text x="166" y="194" class="dg-label-sm" text-anchor="middle">time (min)</text>
+          <text x="12" y="92" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 12 92)">Δ<tspan font-style="italic">f</tspan> (Hz)</text>
+        </svg>
+        <figcaption>
+          (b) 9.14×10⁸ cm⁻² s⁻¹ for 23 min: steps of −5.5 and +5.6 Hz at the shutter, a gradual
+          −3.3 Hz between them, then a slow upward drift.
+        </figcaption>
+      </figure>
+    </div>
+    <p class="src">Both traced from Deck 11 p. 44, as shifts from the frequency before exposure: 29.4854 kHz, and 29.4841 kHz just before the high-flux beam came on. The slow upward drift of the high-flux baseline before exposure is omitted.</p>
+
+    <div class="box warn">
+      <p class="box-title">The low-flux permanent shift printed in Deck 11</p>
+      <p>
+        Deck 11 p. 42 gives the permanent downshift of the low-flux run as about 0.2 Hz. The deck's
+        own plots show the frequency settling, once the beam stopped, about 0.7 Hz below its
+        pre-exposure value on p. 44 and 0.5 Hz below it in the spectra of p. 42; about 0.2 Hz is the
+        part that recovered from the lowest in-beam value. Per unit fluence, a 0.5–0.7 Hz offset
+        matches the 3.2 Hz offset that the high-flux run showed just after its beam stopped (about
+        2.4 Hz by the end of the record) at four times the fluence, and 0.2 Hz does not. The course's
+        figure is 0.2 Hz, as printed.
+      </p>
+    </div>
+
+    <p>
+      The resonator is also a detector. The deck quotes its frequency noise without beam as
+      δ<em>f</em> ≈ 0.05 Hz, and the 0.7 Hz shift of the low-flux run as fourteen times that noise
+      (Deck 11 p. 42). The deck defines sensitivity as the smallest input
+      that gives a signal-to-noise ratio of 1 (Deck 11 p. 30).
+    </p>
+
+    <div class="eq" id="m14b-eq-snr">
+      <div class="eq-body">
+        <div class="eq-math">S/N = <span class="frac"><span class="num">Δ<em>f</em></span><span class="den">δ<em>f</em></span></span>,&nbsp;&nbsp; φ<sub>min</sub> = <span class="frac"><span class="num">φ</span><span class="den">S/N</span></span></div>
+        <div class="eq-num">(14b.5)</div>
+      </div>
+      <div class="eq-says">
+        S/N signal-to-noise ratio (dimensionless) · Δ<em>f</em> frequency shift produced by the beam
+        (Hz) · δ<em>f</em> frequency noise without beam (Hz) · φ the flux that produced
+        Δ<em>f</em> (cm⁻² s⁻¹) · φ<sub>min</sub> minimum detectable flux, at S/N = 1
+        (cm⁻² s⁻¹). With 0.7 Hz, 0.05 Hz and 2.78×10⁸ cm⁻² s⁻¹: S/N ≈ 14 and
+        φ<sub>min</sub> ≈ 2×10⁷ cm⁻² s⁻¹ (Deck 11 p. 42). The second relation assumes the shift is
+        proportional to the flux for the same 1080 s exposure; since the low-flux shift accumulated
+        through the exposure, the run's sensitivity is equally a fluence, 3.00×10¹¹/14 ≈
+        2×10¹⁰ cm⁻².
+        On the formula sheet as <a href="formula-sheet.html#eq-14b-snr">(14b.5)</a>.
+      </div>
+    </div>
+
+    <p>
+      The two runs do not bear out that proportionality. Between them the flux rose 3.3-fold and the
+      fluence 4.1-fold, while the in-beam fall of frequency rose more than tenfold, from 0.7 Hz to
+      8.41 Hz in the deck's figures (pp. 42–43). The minimum detectable flux obtained by scaling from one run is therefore an
+      estimate whose accuracy depends on how the shift scales at low flux.
+    </p>
+
+    <h2>5 · Where the protons deposit energy and damage</h2>
+    <p>
+      The resonator's layers are thin compared with the range of a 1.8 MeV proton, so each proton
+      crosses the device and the gap and stops deep in the substrate. A TRIM calculation
+      (<a href="m13-srim-trim.html">M13</a>) shows how the deposited energy and the displacement
+      damage divide between those layers (Deck 11 p. 45).
+    </p>
+    <p>
+      The simulation stacks the 5 µm silicon device layer, the gap of about 4 µm left where the oxide
+      was removed, and the silicon substrate. Every proton stops in the substrate, at a depth of
+      about 45 µm, nearly all between 44 and 47 µm. Its electronic energy loss is about 28 eV/nm in the device layer, where the proton is
+      fastest, and it rises to a peak of about 95 eV/nm just before the proton stops
+      (<a href="m12-stopping-power-range.html">M12</a>): the device layer is crossed at the low end
+      of the stopping-power curve. Each proton leaves about 140 keV in the 5 µm device layer, 8 % of
+      its energy.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 210" role="img" aria-labelledby="f14b-7-t">
+        <title id="f14b-7-t">Electronic energy loss of 1.8 MeV protons against depth through a 5 micrometre silicon device layer, a gap and a silicon substrate, peaking near 44 micrometres</title>
+        <rect x="50" y="30" width="37" height="140" class="dg-fill"/>
+        <line x1="50" y1="170" x2="420" y2="170" class="dg-rule" stroke-width="1.2"/>
+        <line x1="50" y1="170" x2="50" y2="26" class="dg-rule" stroke-width="1.2"/>
+        <line x1="119.6" y1="30" x2="119.6" y2="170" class="dg-guide" stroke-dasharray="3 3"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="44" y="174">0</text><text x="44" y="104">50</text><text x="44" y="34">100</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="50" y="184">0</text><text x="124" y="184">10</text><text x="198" y="184">20</text><text x="272" y="184">30</text><text x="346" y="184">40</text><text x="420" y="184">50</text>
+        </g>
+        <path d="M50,130.1 L87,130.1" class="dg-acc" stroke-width="2" fill="none"/>
+        <path d="M119.6,128.8 L161,125.9 L198,122.4 L235,116.8 L272,110.5 L309,102 L331.2,94.4 L346,83.2 L360.8,67.8 L368.2,52.4 L375.6,37 L380,39.8 L384.5,102.8 L388.9,137.8 L393.4,158.8 L397.8,167.8 L400.8,170" class="dg-acc" stroke-width="2" fill="none"/>
+        <text x="68" y="44" class="dg-label-sm" text-anchor="middle">device</text>
+        <text x="103" y="44" class="dg-label-sm" text-anchor="middle">gap</text>
+        <text x="150" y="44" class="dg-label-sm">substrate</text>
+        <text x="68" y="122" class="dg-label-sm" text-anchor="middle">28</text>
+        <text x="370" y="30" class="dg-label-sm" text-anchor="end">peak ≈ 95 eV/nm at 44 µm; protons stop near 45 µm</text>
+        <text x="235" y="200" class="dg-label-sm" text-anchor="middle">depth (µm)</text>
+        <text x="14" y="100" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 14 100)">energy loss (eV/nm)</text>
+      </svg>
+      <figcaption>
+        Where a 1.8 MeV proton deposits energy. Notice that the moving structure sits in the
+        shallow, flat part of the curve and that the stopping point, where the vacancies
+        concentrate, lies 40 µm below it in the substrate. Traced from the TRIM calculation of
+        Deck 11 p. 45.
+      </figcaption>
+    </figure>
+
+    <p>
+      Displacement damage is concentrated where the proton slows down, as
+      <a href="m11-displacement-damage.html">M11 §5</a> established for any particle that stops.
+      TRIM counts about 2×10⁻⁴ vacancies per nanometre per proton in the device layer, a third of them
+      from the proton's own collisions and the rest from the recoils it sets moving: about one
+      vacancy per proton across the 5 µm thickness, against about 7×10⁻³ per nanometre at the end of
+      the range (Deck 11 p. 45, panels (e) and (f)). Most of the lattice damage the beam produces therefore lies in the
+      substrate, beneath the moving structure rather than in it. Ionization, by contrast, is spread
+      through every layer: electron–hole pairs are created in the device layer, in the substrate
+      under the gap, and in the oxide that still anchors the structure.
+    </p>
+    <p>
+      Equation (13.9) converts these figures into the dose the device layer received. At 140 keV
+      per proton in 5 µm of silicon (2.33 g/cm³) each proton per square centimetre deposits
+      1.20×10⁸ eV/g, so the high-flux fluence of 1.24×10¹² cm⁻² delivered 1.5×10²⁰ eV/g, or
+      2.4 Mrad(Si), and the low-flux run 0.58 Mrad(Si)
+      (<a href="formula-sheet.html#eq-trim-dose">13.9</a>). The high fluence leaves 2–4×10¹⁵
+      vacancies per cubic centimetre in the device layer, 4–8×10⁻⁸ of its 5.0×10²² atoms/cm³.
+      TRIM's vacancy count is itself an upper bound on the defects that survive: most Frenkel pairs
+      recombine, promptly inside a dense cascade and, for the isolated pairs a proton makes, as the
+      mobile vacancies and interstitials migrate at room temperature, and the survivors form stable
+      complexes (<a href="m11-displacement-damage.html">M11 §8</a>).
+    </p>
+
+    <h2>6 · The mechanism of the frequency shift</h2>
+    <p>
+      The decks read the two components of the measured shift as the effects of the two damage
+      mechanisms, each acting through its own chain (Deck 11 p. 46, repeated as Deck 17 p. 39).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 150" role="img" aria-labelledby="f14b-8-t">
+        <title id="f14b-8-t">Two chains: ionization leads to charge, electrostatic softening and a temporary fall of frequency; displacement leads to lattice damage, a lower Young's modulus and a permanent fall of frequency</title>
+        <defs>
+          <marker id="f14b-8-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-soft"/>
+          </marker>
+        </defs>
+        <rect x="6" y="40" width="70" height="70" rx="4" class="dg-fill"/>
+        <rect x="6" y="40" width="70" height="70" rx="4" class="dg-line" fill="none" stroke-width="1.4"/>
+        <text x="41" y="72" class="dg-label-sm" text-anchor="middle">1.8 MeV</text>
+        <text x="41" y="86" class="dg-label-sm" text-anchor="middle">protons</text>
+        <g class="dg-fill">
+          <rect x="96" y="20" width="76" height="44" rx="4"/><rect x="182" y="20" width="76" height="44" rx="4"/><rect x="268" y="20" width="76" height="44" rx="4"/>
+          <rect x="96" y="86" width="76" height="44" rx="4"/><rect x="182" y="86" width="76" height="44" rx="4"/><rect x="268" y="86" width="76" height="44" rx="4"/>
+        </g>
+        <rect x="354" y="20" width="80" height="44" rx="4" class="dg-fill"/>
+        <rect x="354" y="86" width="80" height="44" rx="4" class="dg-fill"/>
+        <rect x="354" y="20" width="80" height="44" rx="4" class="dg-acc" fill="none" stroke-width="1.8"/>
+        <rect x="354" y="86" width="80" height="44" rx="4" class="dg-acc" fill="none" stroke-width="1.8"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="134" y="46">ionization</text>
+          <text x="220" y="40">charge</text><text x="220" y="53">generation</text>
+          <text x="306" y="40">electrostatic</text><text x="306" y="53">softening</text>
+          <text x="134" y="105">displacement</text><text x="134" y="118">damage</text>
+          <text x="220" y="105">lattice</text><text x="220" y="118">damage</text>
+          <text x="306" y="105">Young's</text><text x="306" y="118">modulus ↓</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="394" y="40">temporary</text><text x="394" y="53"><tspan font-style="italic">f</tspan> ↓</text>
+          <text x="394" y="105">permanent</text><text x="394" y="118"><tspan font-style="italic">f</tspan> ↓</text>
+        </g>
+        <g class="dg-soft" stroke-width="1.6">
+          <line x1="76" y1="62" x2="94" y2="46" marker-end="url(#f14b-8-a)"/><line x1="76" y1="88" x2="94" y2="104" marker-end="url(#f14b-8-a)"/>
+          <line x1="172" y1="42" x2="180" y2="42" marker-end="url(#f14b-8-a)"/><line x1="258" y1="42" x2="266" y2="42" marker-end="url(#f14b-8-a)"/><line x1="344" y1="42" x2="352" y2="42" marker-end="url(#f14b-8-a)"/>
+          <line x1="172" y1="108" x2="180" y2="108" marker-end="url(#f14b-8-a)"/><line x1="258" y1="108" x2="266" y2="108" marker-end="url(#f14b-8-a)"/><line x1="344" y1="108" x2="352" y2="108" marker-end="url(#f14b-8-a)"/>
+        </g>
+      </svg>
+      <figcaption>
+        The decks' two chains. Notice that they start from the same beam and end on the same
+        quantity, the frequency, but differ in what survives once the beam stops.
+        Redrawn from Deck 11 p. 46.
+      </figcaption>
+    </figure>
+
+    <h3>The temporary shift: charge and electrostatic softening</h3>
+    <p>
+      Ionization generates electron–hole pairs throughout the structure for as long as the beam is
+      on. The generated charge alters the electrostatic field between the moving and the fixed parts,
+      and with it the effective voltage across their gaps; by (14b.3) the electrostatic spring
+      constant changes, the structure becomes electrically softer, and the frequency falls
+      (Lecture 11). When the beam stops, generation stops, and the charge in the silicon, which is
+      connected to the bias supply and the amplifier, flows back into the external circuit, so the
+      electrostatic part of the shift disappears (Lecture 11). The step of 5.5 Hz at beam-on and the
+      step back of 5.6 Hz at beam-off in the high-flux run, each completed between two readings, are
+      this component; their near-equality identifies them as one effect that lasts only while charge
+      is being generated.
+    </p>
+    <p>
+      The sign of an electrostatic shift is not fixed. Charge that adds a potential
+      <em>V</em><sub>q</sub> to an electrode changes the electrostatic spring constant to a value
+      proportional to (<em>V</em><sub>DC</sub> + <em>V</em><sub>q</sub>)², so charge that adds to the
+      bias across a closing gap softens the structure and charge that opposes it stiffens the
+      structure. Where the charge sits relative to the electrodes therefore decides the direction of
+      the shift, and the sign depends on the device's structure (Lecture 17).
+    </p>
+
+    <h3>The permanent shift: lattice damage and Young's modulus</h3>
+    <p>
+      Displacement damage knocks atoms from their lattice sites and leaves vacancies, interstitials
+      and defect complexes (<a href="m11-displacement-damage.html">M11</a>). The decks take this
+      lattice damage to lower the Young's modulus of the silicon. The mechanical stiffness
+      <em>k</em><sub>m</sub> falls with it, and because the defects remain after the exposure, the
+      frequency stays lower: the permanent shift, which grows with fluence (Deck 11 pp. 46, 48;
+      Lecture 11). The gradual fall during the high-flux exposure and the 3.2 Hz that remained
+      afterwards are this component.
+    </p>
+
+    <div class="eq" id="m14b-eq-young">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num">Δ<em>f</em></span><span class="den"><em>f</em></span></span> = <span class="frac"><span class="num">1</span><span class="den">2</span></span> <span class="frac"><span class="num">Δ<em>k</em><sub>eff</sub></span><span class="den"><em>k</em><sub>eff</sub></span></span>,&nbsp;&nbsp; <em>k</em><sub>eff</sub> = <em>k</em><sub>m</sub> − <em>k</em><sub>el</sub></div>
+        <div class="eq-num">(14b.6)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>f</em> frequency shift (Hz) · <em>f</em> resonance frequency (Hz) ·
+        <em>k</em><sub>eff</sub> effective stiffness (N/m), from (14b.3). A change of the material
+        enters through <em>k</em><sub>m</sub> ∝ <em>E</em><sub>Y</sub>, so with
+        <em>k</em><sub>el</sub> ≪ <em>k</em><sub>m</sub>, Δ<em>f</em>/<em>f</em> ≈
+        ½Δ<em>E</em><sub>Y</sub>/<em>E</em><sub>Y</sub>; a change of charge enters through
+        <em>k</em><sub>el</sub>, with the opposite sign. The persistent 3.2 Hz on 29,485 Hz is
+        Δ<em>f</em>/<em>f</em> = −1.1×10⁻⁴, which the decks' chain reads as
+        Δ<em>E</em><sub>Y</sub>/<em>E</em><sub>Y</sub> ≈ −2.2×10⁻⁴. Follows from (14b.1).
+        On the formula sheet as <a href="formula-sheet.html#eq-14b-young">(14b.6)</a>.
+      </div>
+    </div>
+
+    <p>
+      The two components carry different information. The temporary shift rises with the flux
+      while the beam is on, steeply in these two runs, from about 0.1–0.2 Hz at 2.8×10⁸ to 5.5 Hz at
+      9.1×10⁸ cm⁻² s⁻¹, and the permanent shift records the fluence accumulated, so one resonator
+      could serve, once calibrated, both as a flux monitor and as a record of past exposure
+      (Lecture 11).
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">What the literature says about the permanent shift</p>
+      <p>
+        The decks attribute the persistent shift to displacement damage lowering Young's modulus,
+        and that is the course's account. Published measurements point elsewhere. Silicon resonators
+        exposed to 10 MeV protons showed no change of elasticity up to 10¹³ cm⁻² (Bandi et al.
+        2013): eight times the course's high fluence, and, because a 10 MeV proton displaces several
+        times fewer atoms per unit path than a 1.8 MeV one, a displacement damage dose about twice
+        the course's, with a total ionizing dose above 5.5 Mrad. Single-crystal silicon micromirrors
+        exposed to 1–4 MeV protons at about 100 Mrad(Si) showed Young's modulus <em>rising</em>, by
+        up to 0.05 % (Gomes and Shea 2011). In the course's device the displacement damage is
+        small: fewer than one atom in 10⁷ displaced (§5), against a relative stiffness change of
+        2×10⁻⁴.
+      </p>
+      <p>
+        The mechanism the review literature identifies as dominant in electrostatic MEMS is charge
+        trapped in dielectric layers, which persists for hours to days (Shea 2009). Charge trapped in
+        the oxide that anchors the structure, or in the native oxide on its surfaces — the
+        nanometre or two of SiO₂ that forms on any silicon surface exposed to air — is ionization
+        damage that does not drain through the electronics, and its slow decay would match the
+        gradual recovery after the beam stopped. The decks' summary that MEMS typically degrade less
+        than electronic devices (Deck 11 p. 48) holds for silicon as a structural material, not for
+        an electrostatic device's sensitivity to trapped charge.
+      </p>
+    </div>
+
+    <h2>7 · Reversing the shift</h2>
+    <p>
+      Neither component of the shift has to be final. The temporary one reverses by itself; the
+      persistent one can be reduced by annealing, compensated electrically, or prevented by design.
+    </p>
+    <p>
+      The electrostatic shift that lasts only while charge is generated reverses as fast as the
+      external circuit removes the charge, which in the experiment was faster than the interval
+      between measurements (Lecture 11; Deck 11 p. 44).
+    </p>
+    <p>
+      Annealing reverses radiation damage by giving defects and trapped charge the energy to return
+      to a lower-energy state. Displacement damage in silicon partly anneals at room temperature over
+      minutes to hours as vacancies and interstitials migrate and recombine, and heating accelerates
+      the process (<a href="m11-displacement-damage.html">M11 §8</a>). Charge trapped in an oxide is
+      neutralized by tunnelling from the silicon and by thermal emission; both recover linearly in
+      the logarithm of time, and thermal emission rises steeply with temperature, as
+      exp(−<em>E</em><sub>t</sub>/<em>kT</em>) with <em>E</em><sub>t</sub> the depth of the trap
+      (<a href="m14-total-ionizing-dose.html">M14 §6</a>). The slow upward drift of frequency after
+      the high-flux exposure (§4), beyond the drift the frequency already showed before the beam, is
+      consistent with room-temperature recovery of one or both kinds.
+    </p>
+    <p>
+      A MEMS structure can carry its own heater. A released structure is thermally isolated from the
+      substrate by its suspension, so a current through a resistive element on it raises its
+      temperature with little power. The course's research slides show MEMS devices ovenized to
+      about 1000 °C (Deck 1 p. 18), and a micro-heater that anneals a radiation-damaged
+      superconducting nanowire detector of single photons in place, at 1000 °C for 2 mW
+      (Deck 1 p. 21); the same principle would let a resonator anneal itself.
+    </p>
+    <p>
+      A shift can also be compensated rather than repaired. In a device with a significant
+      electrostatic spring, the frequency depends on the bias through (14b.3), so changing
+      <em>V</em><sub>DC</sub> changes <em>k</em><sub>el</sub> and returns the frequency to its target,
+      by the same dependence through which a drift of the effective voltage produced the shift.
+    </p>
+    <p>
+      Design prevents most of the persistent sensitivity of electrostatic devices (Shea 2009). It
+      removes dielectric from between and beneath moving surfaces, or minimizes the dielectric area
+      left exposed; covers exposed dielectric with a conductor held at a defined potential; chooses
+      dielectrics with fewer traps, or adds a charge-dissipation layer, a weakly conducting film over
+      the dielectric that bleeds trapped charge to a defined potential; stiffens the restoring
+      springs, which reduces the displacement a given charge produces; and holds every conductor at
+      a defined potential rather than letting it float. Accelerometers with a conducting polysilicon
+      shield over the dielectric beneath their proof mass showed no degradation up to 3 Mrad, while
+      unshielded versions degraded near 50 krad (Shea 2009).
+    </p>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>
+          MEMS are micromachined mechanical structures, most often of silicon, driven and sensed
+          electrically. Mechanical waves are
+          10⁴–10⁶ times slower than electrical ones, so a mechanical resonator is that much smaller;
+          a lumped resonator has <em>f</em> = (1/2π)√(<em>k</em>/<em>m</em>).
+        </li>
+        <li>
+          Comb drive: <em>F</em> = ½(d<em>C</em><sub>0</sub>/d<em>x</em>)<em>V</em>²; the bias
+          <em>V</em><sub>DC</sub> makes the drive linear; the motional branch
+          <em>R</em><sub>m</sub><em>L</em><sub>m</sub><em>C</em><sub>m</sub> models the mechanics.
+          The course's device: 5 µm SOI, 29.485 kHz, <em>Q</em> ≈ 23,000.
+        </li>
+        <li>
+          Electrostatic softening: <em>k</em><sub>eff</sub> = <em>k</em><sub>m</sub> −
+          <em>k</em><sub>el</sub>, <em>k</em><sub>el</sub> = ½<em>V</em>² d²<em>C</em>/d<em>x</em>²
+          (ε<sub>0</sub><em>AV</em>²/<em>g</em>³ for parallel plates, zero for ideal comb fingers).
+          Charge near the electrodes changes the effective voltage and therefore <em>f</em>.
+        </li>
+        <li>
+          1.8 MeV protons, Φ = φ<em>t</em>: 3.00×10¹¹ and 1.24×10¹² cm⁻². High flux: −5.5 Hz at
+          beam-on, −3.3 Hz during, +5.6 Hz at beam-off, 3.2 Hz persistent. Noise 0.05 Hz, S/N ≈ 14,
+          φ<sub>min</sub> ≈ 2×10⁷ cm⁻² s⁻¹ if the shift scales with flux.
+        </li>
+        <li>
+          TRIM: the protons stop near 45 µm in the substrate; the device layer sees ≈ 28 eV/nm and
+          about one vacancy per proton; 2.4 Mrad(Si) at the high fluence.
+        </li>
+        <li>
+          The course's mechanism: ionization → charge → electrostatic softening → temporary
+          <em>f</em>↓, removed as the charge drains; displacement → lattice damage → Young's
+          modulus ↓ → permanent <em>f</em>↓. Δ<em>f</em>/<em>f</em> = ½Δ<em>k</em><sub>eff</sub>/<em>k</em><sub>eff</sub>.
+          The literature finds silicon's modulus unchanged at space doses and trapped dielectric
+          charge the dominant persistent effect in electrostatic MEMS.
+        </li>
+        <li>
+          Recovery: charge drains when the beam stops; annealing at room temperature or by heating,
+          which a released structure can do with an on-chip heater; compensation by retuning
+          <em>V</em><sub>DC</sub>. Prevention: no dielectric near moving parts, shields, dissipation
+          layers and defined potentials.
+        </li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 11 pp. 19–20, 25–28, 49–53; Lecture 11. Spring–mass relation (14b.1), standard; the speed ratio computed from the figures of p. 27</td></tr>
+      <tr><td>§2</td><td>Deck 11 pp. 34–36, 39–42; Lecture 11. The comb capacitance, the DC-bias linearization, the motional current and electrostatic softening (14b.3) derived from (14b.2)</td></tr>
+      <tr><td>§3</td><td>Deck 11 p. 33; H. R. Shea, <em>J. Micro/Nanolith. MEMS MOEMS</em> <b>8</b>, 031303 (2009), abstract and §§4–5</td></tr>
+      <tr><td>§4</td><td>Deck 11 pp. 30, 36–37, 42–44; Lecture 11. The published account of the experiment: <em>IEEE Trans. Nucl. Sci.</em> <b>70</b>, 462–468 (2023), doi:10.1109/TNS.2022.3233525</td></tr>
+      <tr><td>§5</td><td>Deck 11 p. 45 (energy loss and vacancies read from the TRIM panels); dose from (13.9) and the displaced fraction computed from those readings; silicon atomic density 5.00×10²² cm⁻³</td></tr>
+      <tr><td>§6</td><td>Deck 11 pp. 46, 48; Deck 17 p. 39; Lectures 11 and 17. T. Bandi et al., <em>J. Microelectromech. Syst.</em> <b>22</b>, 1395 (2013), and <em>Proc. SPIE</em> <b>8614</b>, 86140M (2013) for the 5.5 Mrad; J. Gomes and H. R. Shea, <em>Proc. SPIE</em> <b>7928</b>, 79280G (2011); proton displacement falling roughly as the inverse of energy below a few MeV, IEEE NSREC 2024 Short Course; Shea (2009) §5.4.1 for trapped charge in dielectrics. The effect of a surface potential on <em>k</em><sub>el</sub> follows from (14b.3)</td></tr>
+      <tr><td>§7</td><td>Lecture 11 and Deck 11 p. 44 (recovery after the beam); M11 §8 and M14 §6 (annealing); Deck 1 p. 18 (ovenized MEMS) and p. 21 (in-situ anneal of a superconducting nanowire detector); Shea (2009) §5.4.1 and §6 (shielded accelerometers, design measures). Bias retuning follows from (14b.3)</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m14a-estimating-tid-effects.html"><span>Previous</span>M14a · Estimating TID Effects</a>
+      <a class="next" href="index.html"><span>Next</span>M15 · Single-Event Effects — not yet built</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

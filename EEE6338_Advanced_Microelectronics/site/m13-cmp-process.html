@@ -1,0 +1,1492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M13 · Chemical Mechanical Polishing: The Process — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M13 · Chemical Mechanical Polishing: The Process</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 13</p>
+    <h1>Chemical Mechanical Polishing: The Process</h1>
+    <p class="lede">
+      Why a chip with several levels of wiring must be made flat between levels; the four degrees of planarization and the planarization
+      factor that measures them; the older planarization methods and why they stop working beyond three metal levels; the polishing tool;
+      the metrics by which a CMP process is judged; Preston's law and the hydration-and-plowing mechanism by which oxide is removed; and
+      why polishing removes the high regions of a surface faster than the low ones.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m04-wafer-preparation.html">M04</a>, <a href="m11-lithography-resists.html">M11</a></span>
+      <span><b>Read time</b> ~45 min</span>
+      <span><b>Sources</b> Class notes pp. 106–120 (Chapter 8); Lectures 20–24; Wolf Vol. 4 Ch. 8</span>
+    </div>
+
+    <p>
+      A finished CMOS chip carries its transistors in the top micrometre of the silicon and its wiring above them, in several levels of
+      metal lines separated by layers of deposited oxide. Each level is deposited over the patterned level beneath it, so every line and
+      every gate leaves a step in the surface above it, and the steps add up level by level. Lithography cannot print on a surface that is
+      rougher than its depth of focus, the tolerance in height over which the image stays sharp (M11 §3). Chemical mechanical polishing
+      (CMP) removes the steps. It is the process that <a href="m04-wafer-preparation.html#s6-4">M04 §6.4</a> used to give the bare wafer
+      its mirror finish, applied now to the deposited oxide and metal layers of a half-built chip. This module, the first half of Chapter 8
+      of the notes, covers why planarization is needed (§1), how its degree is classified and measured (§2), what preceded CMP (§3), the
+      tool (§4), the metrics of a CMP process (§5), how polishing removes oxide (§6) and why it removes the high regions faster than the
+      low ones (§7). <a href="m14-cmp-slurries-damascene.html">M14</a> takes up the slurries, metal polishing, the copper damascene process, endpoint detection and low-k dielectrics;
+      <a href="m15-shallow-trench-isolation.html">M15</a> applies CMP to shallow trench isolation.
+    </p>
+
+
+    <h2 id="s1">1 · Why multilevel interconnect needs planarization</h2>
+
+    <p>
+      Interconnect is the network of conductors that joins the transistors into a circuit. A modern logic chip needs more wiring than one
+      level can carry, so the conductors are stacked: metal-1 is patterned, an insulator is deposited over it, metal-2 is patterned on that
+      insulator, and so on, with vertical plugs (vias) joining the levels. The insulator between the polysilicon gate level and metal-1 is
+      the pre-metal dielectric (PMD); the insulator between two metal levels is the intermetal dielectric (IMD); both are usually silicon
+      dioxide deposited by chemical vapour deposition (CVD), sometimes doped with phosphorus or boron (§3.1). The notes put the requirement
+      at the start of Chapter 8: multilevel interconnection schemes require planarization, and global planarization of ULSI circuits
+      requires CMP. This section shows why.
+    </p>
+
+    <h3 id="s1-1">1.1 Steps accumulate</h3>
+
+    <p>
+      A CVD film is close to conformal: it follows the surface it is deposited on, with roughly the same thickness on the tops of features
+      and in the spaces between them. A conformal film therefore reproduces every step beneath it, and a feature patterned on top of the
+      film adds its own thickness to the step. The notes illustrate this with a two-level-metal, single-polysilicon process (p. 108, from
+      Wolf §8.1.2). The field oxide that separates the transistors stands 0.3 µm above the active regions; on it run a 0.4 µm polysilicon
+      line, a 0.5 µm metal-1 line and a 1.0 µm metal-2 line, each above the last. After each layer the largest step on the wafer surface is
+      the sum of all the thicknesses below it.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 230" role="img" aria-labelledby="m13f1-t">
+      <title id="m13f1-t">Cumulative step heights of a field-oxide, polysilicon, metal-1, metal-2 stack drawn to scale</title>
+      <line x1="20" y1="200" x2="400" y2="200" class="dg-rule" stroke-width="1.2"/>
+      <rect x="150" y="179" width="150" height="21" class="dg-fill"/>
+      <rect x="165" y="151" width="120" height="28" class="dg-fill"/>
+      <rect x="180" y="116" width="90" height="35" class="dg-fill"/>
+      <rect x="195" y="46" width="60" height="70" class="dg-fill"/>
+      <text x="225" y="193" class="dg-label-sm" text-anchor="middle">field oxide 0.3</text>
+      <text x="225" y="169" class="dg-label-sm" text-anchor="middle">poly 0.4</text>
+      <text x="225" y="138" class="dg-label-sm" text-anchor="middle">metal-1 0.5</text>
+      <text x="225" y="86" class="dg-label-sm" text-anchor="middle">metal-2</text>
+      <text x="225" y="100" class="dg-label-sm" text-anchor="middle">1.0</text>
+      <line x1="300" y1="179" x2="372" y2="179" class="dg-guide" stroke-dasharray="3 3"/>
+      <line x1="285" y1="151" x2="372" y2="151" class="dg-guide" stroke-dasharray="3 3"/>
+      <line x1="270" y1="116" x2="372" y2="116" class="dg-guide" stroke-dasharray="3 3"/>
+      <line x1="255" y1="46" x2="372" y2="46" class="dg-guide" stroke-dasharray="3 3"/>
+      <text x="376" y="183" class="dg-label-sm">0.3</text>
+      <text x="376" y="155" class="dg-label-sm">0.7</text>
+      <text x="376" y="120" class="dg-label-sm">1.2</text>
+      <text x="376" y="50" class="dg-label-sm">2.2 µm</text>
+      <line x1="60" y1="200" x2="60" y2="165" class="dg-acc" stroke-width="2.4"/>
+      <line x1="52" y1="200" x2="68" y2="200" class="dg-acc" stroke-width="1.6"/>
+      <line x1="52" y1="165" x2="68" y2="165" class="dg-acc" stroke-width="1.6"/>
+      <text x="74" y="180" class="dg-label-sm">0.5 µm</text>
+      <text x="74" y="193" class="dg-label-sm">step limit</text>
+      <text x="20" y="220" class="dg-label-sm">vertical scale: 70 px per µm; widths schematic</text>
+      </svg>
+      <figcaption>The notes' stack (p. 108) with heights to scale. The dashed lines are the cumulative steps t¹ to t⁴ = 0.3, 0.7, 1.2 and
+      2.2 µm; the bar at left is 0.5 µm, the largest step that the ±0.5 µm planarity of submicron lithography allows. Metal-1 is already patterned over a 0.7 µm step.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">The cumulative steps of the notes' stack, against the depth of focus</div>
+      <div class="ex-body">
+        <p><b>Given</b> a field-oxide step of 0.3 µm and conformal layers of polysilicon 0.4 µm, metal-1 0.5 µm and metal-2 1.0 µm, each
+        patterned over the one below; a lithography tool that needs the surface planar within ±0.5 µm (notes p. 108). <b>Find</b> the
+        largest step after each layer, the step under each metal level when it is patterned, and the comparison with a KrF tool's depth of
+        focus.</p>
+        <p><b>Plan.</b> With conformal films and no planarization each thickness adds to the step, so the step after layer <em>k</em> is the
+        running sum. A metal level is patterned on the dielectric deposited over the level before it, so it sees the step that existed
+        before it was deposited.</p>
+        <p class="ex-step"><b>Running sum.</b> t¹ = 0.3 µm; t² = 0.3 + 0.4 = 0.7 µm; t³ = 0.7 + 0.5 = 1.2 µm; t⁴ = 1.2 + 1.0 = 2.2 µm.</p>
+        <p class="ex-step"><b>Step under each metal level.</b> Metal-1 is patterned on the PMD over the polysilicon: step t² = 0.7 µm.
+        Metal-2 is patterned on the IMD over metal-1: step t³ = 1.2 µm, 2.4 times the 0.5 µm allowance.</p>
+        <p class="ex-step"><b>Depth of focus for comparison.</b> By M11 eq. (<a href="m11-lithography-resists.html#eq11-2">11.2</a>) a KrF
+        tool, <em>λ</em> = 0.248 µm, at NA = 0.6 has DOF = 0.6 × 0.248/0.6² = 0.413 µm, for a feature size <em>F</em> = 0.5 × 0.248/0.6 =
+        0.207 µm. The 0.7 µm step under metal-1 is 1.7 times that whole focus range.</p>
+        <p class="ex-answer">0.3, 0.7, 1.2 and 2.2 µm; metal-1 is printed over 0.7 µm and metal-2 over 1.2 µm of topography, both beyond
+        ±0.5 µm. Check: the last step equals the sum of all four thicknesses, 2.2 µm, as it must when no level is planarized.</p>
+      </div>
+    </div>
+
+    <p>
+      Lecture 21 drew the same stack and stated the conclusion in terms of focus: with 2.2 µm of topography the tool focuses on one level and
+      not on the other. Every further metal level adds its own thickness, so without planarization the topography grows without limit as
+      levels are added.
+    </p>
+
+    <h3 id="s1-2">1.2 Three ways a rough surface fails</h3>
+
+    <p>
+      The notes list three conditions by which a non-planar surface prevents reliable connections between levels (p. 108).
+    </p>
+
+    <ol>
+      <li><b>Poor step coverage.</b> A metal film deposited over a high, steep step is thinner on the step than on the flat. Wolf defines
+      the step coverage as the ratio of the minimum thickness on the step, <em>t</em><sub>s</sub>, to the nominal thickness on horizontal
+      regions, <em>t</em><sub>n</sub>, eq. (13.1). Coverage worsens as the step height and the aspect ratio (the height-to-spacing ratio
+      of two adjacent steps) increase, and improves as the step's contour is smoothed and its slope made less vertical. The thinned metal
+      on the step carries the full line current through a smaller cross-section, so it has a higher resistance and a higher current
+      density there.</li>
+      <li><b>Metal stringers.</b> A stringer is a strip of metal left along the foot of a step after the metal is patterned. Metal lines
+      are etched anisotropically, that is vertically downward with almost no sideways etching. A film of thickness <em>h</em><sub>2</sub>
+      deposited conformally over a step of height <em>h</em><sub>1</sub> is <em>h</em><sub>1</sub> + <em>h</em><sub>2</sub> thick when
+      measured vertically against the step's sidewall (Figure 2). An etch timed to clear <em>h</em><sub>2</sub> on the flat leaves the
+      excess as a stringer, which can short two lines that cross the same step. Clearing it needs an overetch, during which the resist is
+      also eroded, thinnest over the upper corners of the steps (Wolf §8.1.2).</li>
+      <li><b>Depth of focus.</b> Submicron lithography needs the surface planar within ±0.5 µm. If the dielectric surface carries steps
+      larger than 0.5 µm, metal-1 cannot be patterned to the full resolution of the stepper (notes p. 108). This condition is the one that
+      makes planarization mandatory: the first two can be eased by smoother step profiles, but the focus limit tightens as the numerical
+      aperture rises and the features shrink (M11 eq. 11.2, §3.3).</li>
+    </ol>
+
+    <div class="eq" id="eq13-1">
+      <div class="eq-body">
+        <div class="eq-math">step coverage = <span class="frac"><span class="num"><em>t</em><sub>s</sub></span><span class="den"><em>t</em><sub>n</sub></span></span> × 100 %</div>
+        <div class="eq-num">(13.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>s</sub> minimum thickness of the film where it crosses a step · <em>t</em><sub>n</sub> nominal thickness on
+        horizontal regions (same length unit). 100 % is ideal for a conductor. Wolf eq. 8.2; not in the notes, which name the condition only.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 170" role="img" aria-labelledby="m13f2-t">
+      <title id="m13f2-t">A conformal film over a step is h1 plus h2 thick vertically at the foot; an anisotropic etch leaves a stringer there</title>
+      <defs>
+        <marker id="m13f2-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+        </marker>
+      </defs>
+      <line x1="10" y1="130" x2="200" y2="130" class="dg-rule" stroke-width="1.2"/>
+      <rect x="10" y="90" width="70" height="40" class="dg-fill"/>
+      <text x="45" y="114" class="dg-label-sm" text-anchor="middle">step</text>
+      <path d="M10,70 L92,70 Q100,70 100,80 L100,110 L200,110 L200,130 L80,130 L80,90 L10,90 Z" class="dg-line" stroke-width="1.4"/>
+      <text x="150" y="104" class="dg-label-sm" text-anchor="middle">film</text>
+      <line x1="90" y1="130" x2="90" y2="70" class="dg-acc" stroke-width="1.8" marker-start="url(#m13f2-ar)" marker-end="url(#m13f2-ar)"/>
+      <text x="62" y="62" class="dg-label-sm">h<tspan baseline-shift="sub" style="font-size:75%">1</tspan> + h<tspan baseline-shift="sub" style="font-size:75%">2</tspan></text>
+      <line x1="190" y1="130" x2="190" y2="110" class="dg-line" stroke-width="1.2" marker-start="url(#m13f2-ar)" marker-end="url(#m13f2-ar)"/>
+      <text x="178" y="104" class="dg-label-sm" text-anchor="end">h<tspan baseline-shift="sub" style="font-size:75%">2</tspan></text>
+      <text x="105" y="150" class="dg-label-sm" text-anchor="middle">before etch</text>
+      <line x1="220" y1="130" x2="410" y2="130" class="dg-rule" stroke-width="1.2"/>
+      <rect x="220" y="90" width="70" height="40" class="dg-fill"/>
+      <text x="255" y="114" class="dg-label-sm" text-anchor="middle">step</text>
+      <rect x="290" y="90" width="11" height="40" class="dg-acc-f"/>
+      <text x="312" y="86" class="dg-label-sm">stringer</text>
+      <line x1="310" y1="88" x2="300" y2="96" class="dg-line" stroke-width="1"/>
+      <text x="320" y="150" class="dg-label-sm" text-anchor="middle">after an etch timed for h<tspan baseline-shift="sub" style="font-size:75%">2</tspan></text>
+      </svg>
+      <figcaption>The notes' sketch (p. 108), redrawn. Anisotropic etching removes a fixed vertical thickness everywhere; beside the step the
+      film is <em>h</em><sub>1</sub> + <em>h</em><sub>2</sub> thick vertically, so the strip against the sidewall survives an etch that
+      clears the flat.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Overetch needed to clear a stringer</div>
+      <div class="ex-body">
+        <p><b>Given</b> a 0.5 µm metal film deposited conformally over a 0.4 µm step and etched anisotropically. <b>Find</b> the vertical
+        thickness at the foot of the step and the overetch, as a percentage of the nominal etch time, that clears it.</p>
+        <p><b>Plan.</b> An anisotropic etch removes the same vertical thickness per unit time everywhere, so the time to clear any point is
+        proportional to the vertical thickness there.</p>
+        <p class="ex-step"><b>Vertical thickness at the foot.</b> <em>h</em><sub>1</sub> + <em>h</em><sub>2</sub> = 0.4 + 0.5 = 0.9 µm.</p>
+        <p class="ex-step"><b>Overetch.</b> The nominal etch clears 0.5 µm; the extra 0.4 µm takes 0.4/0.5 = 0.80 of the nominal time.</p>
+        <p class="ex-answer">0.9 µm, needing an 80 % overetch. Check: with no step (<em>h</em><sub>1</sub> = 0) the overetch is zero, and it
+        grows in proportion to the step height, which is why planarizing the surface under the metal removes the problem. The Lecture 21
+        captions render the board expression as "2H1 plus h two"; the notes' sketch (p. 108) and the geometry give <em>h</em><sub>1</sub> +
+        <em>h</em><sub>2</sub>, and the caption is probably a mishearing.</p>
+      </div>
+    </div>
+
+    <h3 id="s1-3">1.3 Design rules set by the dielectric</h3>
+
+    <p>
+      Before planarization was routine, the shape of the deposited dielectric constrained the layout. Design rules are the minimum
+      dimensions a layout must respect. The notes (p. 109) list three that the intermediate dielectric forces in a process with polysilicon
+      and two metal levels: (1) a minimum polysilicon-to-metal-1 spacing, where the metal does not overlap the polysilicon; (2) a minimum
+      distance between coincident edges, where metal-1 overlaps polysilicon; and (3) a minimum metal-1-to-metal-1 spacing.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 220" role="img" aria-labelledby="m13f3-t">
+      <title id="m13f3-t">Four failure cases of a deposited dielectric over closely spaced polysilicon and metal-1: void, crevice, coincident edges, coincident-step crevice</title>
+      <g>
+        <line x1="10" y1="90" x2="200" y2="90" class="dg-rule" stroke-width="1.1"/>
+        <rect x="40" y="76" width="40" height="14" class="dg-fill"/><text x="60" y="87" class="dg-label-sm" text-anchor="middle">poly</text>
+        <rect x="96" y="62" width="50" height="14" class="dg-fill"/><text x="121" y="73" class="dg-label-sm" text-anchor="middle">M1</text>
+        <path d="M10,72 L36,72 Q40,62 50,62 L86,62 Q92,48 102,48 L150,48 Q160,48 162,62 L200,62" class="dg-line" stroke-width="1.3"/>
+        <ellipse cx="89" cy="74" rx="3" ry="8" class="dg-acc-f"/>
+        <text x="10" y="108" class="dg-label-sm">(a) void between poly and M1</text>
+      </g>
+      <g>
+        <line x1="220" y1="90" x2="410" y2="90" class="dg-rule" stroke-width="1.1"/>
+        <rect x="250" y="76" width="40" height="14" class="dg-fill"/><text x="270" y="87" class="dg-label-sm" text-anchor="middle">poly</text>
+        <rect x="306" y="62" width="50" height="14" class="dg-fill"/><text x="331" y="73" class="dg-label-sm" text-anchor="middle">M1</text>
+        <path d="M220,72 L246,72 Q250,62 260,62 L292,62 L298,84 L302,48 L360,48 Q370,48 372,62 L410,62" class="dg-line" stroke-width="1.3"/>
+        <path d="M292,62 L298,84 L302,48" class="dg-acc" stroke-width="2"/>
+        <text x="220" y="108" class="dg-label-sm">(b) narrow crevice</text>
+      </g>
+      <g>
+        <line x1="10" y1="195" x2="200" y2="195" class="dg-rule" stroke-width="1.1"/>
+        <rect x="60" y="181" width="60" height="14" class="dg-fill"/><text x="90" y="192" class="dg-label-sm" text-anchor="middle">poly</text>
+        <rect x="60" y="153" width="60" height="14" class="dg-fill"/><text x="90" y="164" class="dg-label-sm" text-anchor="middle">M1</text>
+        <path d="M10,177 L52,177 L56,140 L124,140 L128,177 L200,177" class="dg-line" stroke-width="1.3"/>
+        <line x1="150" y1="140" x2="150" y2="177" class="dg-acc" stroke-width="1.8"/>
+        <text x="154" y="162" class="dg-label-sm">tall step</text>
+        <text x="10" y="213" class="dg-label-sm">(c) coincident edges</text>
+      </g>
+      <g>
+        <line x1="220" y1="195" x2="410" y2="195" class="dg-rule" stroke-width="1.1"/>
+        <rect x="250" y="181" width="45" height="14" class="dg-fill"/><rect x="250" y="153" width="45" height="14" class="dg-fill"/>
+        <rect x="311" y="181" width="45" height="14" class="dg-fill"/><rect x="311" y="153" width="45" height="14" class="dg-fill"/>
+        <text x="272" y="164" class="dg-label-sm" text-anchor="middle">M1</text><text x="333" y="164" class="dg-label-sm" text-anchor="middle">M1</text>
+        <path d="M220,177 L244,177 L247,140 L297,140 L303,180 L309,140 L359,140 L362,177 L410,177" class="dg-line" stroke-width="1.3"/>
+        <path d="M297,140 L303,180 L309,140" class="dg-acc" stroke-width="2"/>
+        <text x="220" y="213" class="dg-label-sm">(d) coincident step + crevice</text>
+      </g>
+      </svg>
+      <figcaption>The four cases of notes p. 109 (Wolf Fig. 8-4), schematic; the PMD beneath metal-1 is not drawn. Too narrow a gap gives a void (a) or a crevice the next metal
+      cannot cover (b); stacked edges give a step too tall for metal-2 to cover (c); both together are worse than either (d).</figcaption>
+    </figure>
+
+    <p>
+      Each case follows from conformal deposition. If polysilicon and metal-1 come too close, the gap between them either closes over and
+      leaves a void in the CVD oxide (a) or remains as a deep, narrow crevice that the next metal cannot cover (b). If their edges coincide,
+      the two thicknesses stack into one step that may be too high for metal-2 to cover (c), and a crevice at such a step combines both
+      problems (d). Adjacent metal-1 lines must be spaced widely enough that the dielectric deposited between them forms neither a void nor
+      a crevice (notes p. 110). Spacing everything generously enough to avoid all four cases is impractical, because it enlarges the chip;
+      the purpose of planarization processes is to remove these rules altogether (Wolf §8.1.3).
+    </p>
+
+    <details class="check">
+      <summary>A process has a 0.25 µm field-oxide step, 0.35 µm polysilicon, 0.6 µm metal-1 and 0.8 µm metal-2, all conformal and
+        unplanarized. Over what step is metal-2 patterned, and does it meet a ±0.5 µm planarity requirement? The 0.6 µm metal-1 film is
+        deposited over the full step beneath it: what overetch clears its stringers?</summary>
+      <div class="answer"><p>The running sum gives 0.25, 0.6, 1.2 and 2.0 µm. Metal-2 is patterned on the IMD over metal-1, where the step
+        is 1.2 µm, more than twice the 0.5 µm allowance, so it fails. The step under metal-1 is t² = 0.6 µm; the 0.6 µm metal-1 film over it is
+        0.6 + 0.6 = 1.2 µm thick vertically at the foot, so clearing it takes 0.6/0.6 = 1.0 times the nominal etch time beyond the
+        nominal etch, a 100 % overetch. Both numbers grow with every unplanarized level, which is the case for planarizing each dielectric
+        before the metal above it is patterned.</p></div>
+    </details>
+
+
+    <h2 id="s2">2 · Degrees of planarization and the planarization factor</h2>
+
+    <p>
+      "Planarized" is used loosely, so the notes (pp. 106–107, from Wolf §8.1.1) classify it, for the case of an IMD deposited over
+      patterned metal-1. The classification separates two properties of a step that different processes improve to different extents: its
+      slope and its height. A process can round a step without lowering it, or lower it everywhere except over the widest features.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m13f4-t">
+      <title id="m13f4-t">Dielectric surface profiles over three metal lines for no planarization, smoothing, partial, complete local and complete global planarization</title>
+      <g class="dg-label-sm">
+        <text x="300" y="34">none</text>
+        <text x="300" y="80">1 · smoothing</text>
+        <text x="300" y="126">2 · partial</text>
+        <text x="300" y="172">3 · complete local</text>
+        <text x="300" y="218">4 · complete global</text>
+      </g>
+      <g>
+        <line x1="10" y1="45" x2="290" y2="45" class="dg-rule"/>
+        <rect x="40" y="35" width="30" height="10" class="dg-fill"/><rect x="120" y="35" width="30" height="10" class="dg-fill"/><rect x="200" y="35" width="70" height="10" class="dg-fill"/>
+        <path d="M10,38 L36,38 L36,28 L74,28 L74,38 L116,38 L116,28 L154,28 L154,38 L196,38 L196,28 L274,28 L274,38 L290,38" class="dg-line" stroke-width="1.4"/>
+      </g>
+      <g>
+        <line x1="10" y1="91" x2="290" y2="91" class="dg-rule"/>
+        <rect x="40" y="81" width="30" height="10" class="dg-fill"/><rect x="120" y="81" width="30" height="10" class="dg-fill"/><rect x="200" y="81" width="70" height="10" class="dg-fill"/>
+        <path d="M10,84 C30,84 30,68 46,68 L64,68 C80,68 80,84 96,84 L104,84 C120,84 110,68 126,68 L144,68 C160,68 150,84 170,84 L180,84 C200,84 190,68 206,68 L264,68 C280,68 280,84 290,84" class="dg-line" stroke-width="1.4"/>
+      </g>
+      <g>
+        <line x1="10" y1="137" x2="290" y2="137" class="dg-rule"/>
+        <rect x="40" y="127" width="30" height="10" class="dg-fill"/><rect x="120" y="127" width="30" height="10" class="dg-fill"/><rect x="200" y="127" width="70" height="10" class="dg-fill"/>
+        <path d="M10,124 C30,124 30,116 46,116 L64,116 C80,116 80,124 96,124 L104,124 C120,124 110,116 126,116 L144,116 C160,116 150,124 170,124 L180,124 C200,124 190,116 206,116 L264,116 C280,116 280,124 290,124" class="dg-line" stroke-width="1.4"/>
+      </g>
+      <g>
+        <line x1="10" y1="183" x2="290" y2="183" class="dg-rule"/>
+        <rect x="40" y="173" width="30" height="10" class="dg-fill"/><rect x="120" y="173" width="30" height="10" class="dg-fill"/><rect x="200" y="173" width="70" height="10" class="dg-fill"/>
+        <path d="M10,168 L24,168 C34,168 32,159 42,159 L268,159 C280,159 278,168 290,168" class="dg-line" stroke-width="1.4"/>
+      </g>
+      <g>
+        <line x1="10" y1="229" x2="290" y2="229" class="dg-rule"/>
+        <rect x="40" y="219" width="30" height="10" class="dg-fill"/><rect x="120" y="219" width="30" height="10" class="dg-fill"/><rect x="200" y="219" width="70" height="10" class="dg-fill"/>
+        <line x1="10" y1="206" x2="290" y2="206" class="dg-acc" stroke-width="1.8"/>
+      </g>
+      </svg>
+      <figcaption>Notes p. 107 (Wolf Fig. 8-1), schematic. Smoothing rounds the steps without lowering them; partial planarization lowers
+      them; complete local planarization removes them between closely spaced features and leaves a step only at the outer edges of the
+      group or of a wide, isolated feature;
+      complete global planarization leaves one flat surface over any topography.</figcaption>
+    </figure>
+
+    <ol>
+      <li><b>First degree, smoothing.</b> The slopes of the steps at the IMD surface are lessened; the step height is not significantly
+      reduced.</li>
+      <li><b>Second degree, partial (semi-) planarization.</b> The step height is reduced and the slopes are smoothed.</li>
+      <li><b>Third degree, complete local planarization.</b> The steps are eliminated where the features beneath are close together, which
+      Wolf gives as less than about 10 µm apart; wide, isolated features still show a step.</li>
+      <li><b>Fourth degree, complete global planarization.</b> The surface is planar over arbitrary topography.</li>
+    </ol>
+
+    <p>
+      The quantitative measure is the planarization factor, the fractional reduction of the step height, eq. (13.2). With no change in step
+      height, as in no planarization or smoothing only, <em>t</em><sup>f</sup><sub>step</sub> = <em>t</em><sup>i</sup><sub>step</sub> and
+      <em>β</em> = 0; with the step removed, <em>t</em><sup>f</sup><sub>step</sub> = 0 and <em>β</em> = 1. Lecture 21 made the same two
+      limits the point of the definition, and added that a process in the third stage reaches about 0.9 rather than 1. CMP achieves
+      <em>β</em> = 0.90–0.95 (notes p. 112), a 90–95 % step-height reduction, and does so over distances of several millimetres; the
+      techniques of §3 planarize only over distances below about 10 µm (Wolf §8.2).
+    </p>
+
+    <div class="eq" id="eq13-2">
+      <div class="eq-body">
+        <div class="eq-math"><em>β</em> = 1 − <span class="frac"><span class="num"><em>t</em><sup>f</sup><sub>step</sub></span><span class="den"><em>t</em><sup>i</sup><sub>step</sub></span></span></div>
+        <div class="eq-num">(13.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>β</em> planarization factor, dimensionless, 0 to 1 · <em>t</em><sup>f</sup><sub>step</sub> final step height ·
+        <em>t</em><sup>i</sup><sub>step</sub> initial step height (same length unit). <em>β</em> = 0: no planarization or smoothing only;
+        <em>β</em> = 1: complete planarization. Notes p. 107. This <em>β</em> is unrelated to the constant <em>β</em> (0.37–0.9) of the
+        spreading resistance in <a href="m10-source-drain-engineering.html#s3-4">M10 §3.4</a> and to the velocity exponent of §6.2.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Planarization factor, and what it leaves of the notes' stack</div>
+      <div class="ex-body">
+        <p><b>Given</b> an IMD whose step over metal-1 falls from 0.80 µm to 0.06 µm during polishing; the 1.2 µm step t³ of §1.1; CMP with
+        <em>β</em> = 0.90–0.95; a resist etchback taken, for illustration, as <em>β</em> = 0.70 (Wolf gives no <em>β</em> for a finished etchback; he says only
+        that the spun-on resist surface itself can exceed 70 % planarization for features under about 10 µm, §3.2). <b>Find</b> <em>β</em> for the first case, and the step each process leaves of 1.2 µm.</p>
+        <p><b>Plan.</b> Eq. (13.2) directly; rearranged, the residual step is <em>t</em><sup>f</sup> = (1 − <em>β</em>)<em>t</em><sup>i</sup>.</p>
+        <p class="ex-step"><b>Planarization factor.</b> <em>β</em> = 1 − 0.06/0.80 = 1 − 0.075 = 0.925.</p>
+        <p class="ex-step"><b>Residual steps from 1.2 µm.</b> CMP: (1 − 0.90) × 1.2 = 0.12 µm and (1 − 0.95) × 1.2 = 0.06 µm. Etchback:
+        (1 − 0.70) × 1.2 = 0.36 µm.</p>
+        <p class="ex-answer"><em>β</em> = 0.925, inside the CMP range; CMP leaves 0.06–0.12 µm and the etchback 0.36 µm of the 1.2 µm step,
+        all within ±0.5 µm. Check: <em>β</em> lies between 0 and 1, and a larger <em>β</em> leaves a smaller step. The etchback figure is an assumed value, and even that
+        holds only for features under about 10 µm; across a wide feature it does far less, which is the difference between local and global
+        planarization.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A dielectric step of 1.0 µm is polished with <em>β</em> = 0.92. What step remains? A second process rounds a 0.6 µm step
+        into a smooth bump of the same 0.6 µm height: what is its <em>β</em>, and which degree of planarization is it?</summary>
+      <div class="answer"><p>By eq. (13.2), <em>t</em><sup>f</sup> = (1 − 0.92) × 1.0 = 0.08 µm. The second process leaves
+        <em>t</em><sup>f</sup> = <em>t</em><sup>i</sup> = 0.6 µm, so <em>β</em> = 1 − 0.6/0.6 = 0: it changes only the slope, which is the
+        first degree, smoothing. The planarization factor measures height alone, so it cannot distinguish smoothing from no planarization at
+        all; the degree classification exists because the slope also matters for step coverage (§1.2).</p></div>
+    </details>
+
+
+    <h2 id="s3">3 · Planarization before CMP</h2>
+
+    <p>
+      CMP spread through the industry in the early 1990s (Lecture 21; Wolf calls it the fastest-growing IC process technology of the
+      1990s). It was developed at IBM from 1983, exclusively there until 1988, and first described in public, for oxide films, in an IBM
+      paper of 1989 (Wolf §8.4). Two- and three-level-metal processes before it used other methods, and the notes name
+      three: thermal flow of oxide layers, sacrificial resist etchback and spin-on glass (p. 112). They are worth knowing because each
+      reached only local planarization, and the reason why defines what CMP had to do instead.
+    </p>
+
+    <h3 id="s3-1">3.1 Doped glass and reflow</h3>
+
+    <p>
+      Silicon dioxide doped with boron is borosilicate glass (BSG), with phosphorus phosphosilicate glass (PSG), and with both
+      borophosphosilicate glass (BPSG); in the doped forms the B₂O₃ and P₂O₅ enter the SiO₂ network. Pure SiO₂ needs a far higher
+      temperature: the lectures put it at about 1700 °C and called it a melting point (Lectures 22, 23; the notes and Wolf give no value). Doping lowers the temperature at which the glass softens and flows to the range the wafer
+      can tolerate: Lecture 23 gave 800–900 °C and an anneal at 850–900 °C, and Wolf mentions a 900 °C glass-reflow step and reflow of doped glasses
+      above 800 °C. A glass has no single
+      melting point, so the lectures' "melting point" here means the temperature at which the doped oxide flows. Heating the wafer to that
+      temperature lets surface tension round the sharp corners of the deposited film. This is reflow. Lecture 23 gave an example of its use:
+      rounding the sharp top corners of a trench etched in doped oxide so that a barrier film later sputtered into it is continuous over the
+      corners; undoped oxide cannot be reflowed at a temperature the wafer survives.
+    </p>
+
+    <p>
+      Reflow smooths a surface and partly planarizes it over short distances. Wolf lists it as the planarization method for the PMD (§8.11.1)
+      and classes it with the methods that give only local planarization. It is also limited to the dielectric under the first metal: once metal is on the wafer, later steps
+      stay far below reflow temperatures, about 450–500 °C in Wolf (tungsten plugs are never exposed above about 500 °C, and the final
+      hydrogen anneal is at about 450 °C). The same doping that lowers the flow temperature makes the oxide softer, which matters
+      again in §6.4: doped oxides polish faster.
+    </p>
+
+    <h3 id="s3-2">3.2 Sacrificial-layer etchback</h3>
+
+    <p>
+      The etchback method uses a liquid to make the surface flat and a plasma etch to transfer that flatness into the oxide (notes pp. 110–111;
+      Wolf §8.1.5). It was used for two-level-metal processes down to 1 µm technology, and it planarizes well between steps 2–10 µm apart. The
+      sequence:
+    </p>
+
+    <ol>
+      <li>Deposit the CVD dielectric over the metal lines.</li>
+      <li>Coat it with a sacrificial layer, spin-on glass (SOG, a silicate dissolved in a solvent) or photoresist, applied as a liquid. The
+      liquid fills the low regions more than the high ones, and on baking becomes a solid film whose surface is nearly flat. With most
+      photoresists the degree of planarization exceeds 70 % for features smaller than about 10 µm (Wolf).</li>
+      <li>Etch in an O₂ or O₂ + CF₄ plasma. Wolf describes a fast first etch of the sacrificial layer until the tops of the dielectric are
+      exposed; the chemistry is then adjusted so that the sacrificial layer and the dielectric etch at about the same rate.</li>
+      <li>Continue until the sacrificial layer is gone. Because the two materials etch equally fast, the flat profile of the sacrificial
+      layer is transferred into the dielectric, which is left fairly flat. A further CVD oxide is usually deposited to restore the minimum
+      thickness over the metal.</li>
+    </ol>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m13f5-t">
+      <title id="m13f5-t">Sacrificial-layer etchback in three stages: resist over conformal oxide, etch at equal rates, flat oxide</title>
+      <g>
+        <rect x="10" y="150" width="120" height="14" class="dg-fill"/>
+        <path d="M10,128 L24,128 L24,112 L61,112 L61,128 L74,128 L74,112 L111,112 L111,128 L130,128 L130,150 L10,150 Z" class="dg-fill"/>
+        <path d="M10,100 L130,100 L130,128 L111,128 L111,112 L74,112 L74,128 L61,128 L61,112 L24,112 L24,128 L10,128 Z" class="dg-guide" stroke-dasharray="3 2"/>
+        <rect x="30" y="134" width="25" height="16" class="dg-ink"/><rect x="80" y="134" width="25" height="16" class="dg-ink"/>
+        <text x="70" y="96" class="dg-label-sm" text-anchor="middle">resist (flat top)</text>
+        <text x="70" y="182" class="dg-label-sm" text-anchor="middle">1 · coat and bake</text>
+      </g>
+      <g>
+        <rect x="150" y="150" width="120" height="14" class="dg-fill"/>
+        <path d="M150,128 L164,128 L164,120 L201,120 L201,128 L214,128 L214,120 L251,120 L251,128 L270,128 L270,150 L150,150 Z" class="dg-fill"/>
+        <path d="M150,120 L164,120 L164,128 L150,128 Z M201,120 L214,120 L214,128 L201,128 Z M251,120 L270,120 L270,128 L251,128 Z" class="dg-guide" stroke-dasharray="3 2"/>
+        <rect x="170" y="134" width="25" height="16" class="dg-ink"/><rect x="220" y="134" width="25" height="16" class="dg-ink"/>
+        <line x1="150" y1="120" x2="270" y2="120" class="dg-acc" stroke-width="1.6"/>
+        <text x="210" y="112" class="dg-label-sm" text-anchor="middle">equal-rate etch front</text>
+        <text x="210" y="182" class="dg-label-sm" text-anchor="middle">2 · O₂/CF₄ plasma</text>
+      </g>
+      <g>
+        <rect x="290" y="150" width="120" height="14" class="dg-fill"/>
+        <rect x="290" y="128" width="120" height="22" class="dg-fill"/>
+        <rect x="310" y="134" width="25" height="16" class="dg-ink"/><rect x="360" y="134" width="25" height="16" class="dg-ink"/>
+        <path d="M290,128 L410,128" class="dg-line" stroke-width="1.4"/>
+        <text x="350" y="118" class="dg-label-sm" text-anchor="middle">oxide flat</text>
+        <text x="350" y="182" class="dg-label-sm" text-anchor="middle">3 · resist gone</text>
+      </g>
+      </svg>
+      <figcaption>Notes p. 111, redrawn and simplified (metal lines solid, oxide outlined fill, resist dashed). Because resist and oxide etch
+      at the same rate, the flat top of the resist moves down as a flat etch front and ends in the oxide, leaving a thin oxide over the lines (Wolf: sometimes none, the etch running until the lines
+      are exposed), on which a further oxide is deposited.</figcaption>
+    </figure>
+
+    <p>
+      The method fails as the metal spacing shrinks. If the aspect ratio of the gap between adjacent metal-1 lines with vertical sidewalls
+      exceeds 0.4, most CVD oxides close over the gap and leave a void (notes p. 111). Voids trap resist and moisture, which escape if the
+      etchback opens them, and an opened void fills with metal during the metal-2 deposition, leaving a metal stringer after metal-2 is
+      patterned. The notes conclude that the process is not feasible for metal-1 spacings below 1.25 µm unless the oxide can be deposited
+      at low temperature without voids; Wolf names PECVD TEOS, O₃–TEOS and high-density-plasma CVD oxides as such processes.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The void criterion against the 1.25 µm spacing limit</div>
+      <div class="ex-body">
+        <p><b>Given</b> metal-1 0.5 µm thick with vertical sidewalls (the notes' stack, §1.1); voids form when the gap's aspect ratio, height
+        over spacing, exceeds 0.4. <b>Find</b> the aspect ratio at spacings of 2.0, 1.25 and 1.0 µm, and the smallest void-free spacing.</p>
+        <p><b>Plan.</b> Aspect ratio = <em>h</em>/<em>s</em> with <em>h</em> the line thickness; set it equal to 0.4 for the limit.</p>
+        <p class="ex-step"><b>Aspect ratios.</b> 0.5/2.0 = 0.25; 0.5/1.25 = 0.40; 0.5/1.0 = 0.50.</p>
+        <p class="ex-step"><b>Limit.</b> <em>s</em><sub>min</sub> = <em>h</em>/0.4 = 0.5/0.4 = 1.25 µm.</p>
+        <p class="ex-answer"><em>s</em><sub>min</sub> = 1.25 µm; at 1.0 µm the gap (0.50) voids. Check: the result coincides with the notes'
+        1.25 µm feasibility limit, so for 0.5 µm metal-1 the two statements on p. 111 are the same statement; a thicker metal moves the limit
+        out in proportion.</p>
+      </div>
+    </div>
+
+    <h3 id="s3-3">3.3 Why only local planarization</h3>
+
+    <p>
+      Reflow, etchback and spin-on glass all rely on a liquid, or a glass softened by heat, levelling itself. Such a film levels a narrow
+      gap but follows the topography across a wide one: Wolf's data for spun-on polymers show their degree of planarization falling as the
+      feature size grows (Fig. 8-6), and he limits all three methods to smoothing and local planarization over distances below about
+      10 µm. They reach the third degree of planarization at best (§2). The notes record the result:
+      with more than three metal layers these techniques are inadequate, since they cannot provide global planarization (p. 112). CMP
+      removes material from the highest points of a surface first and planarizes over distances of up to several millimetres (§2, §7), so
+      it planarizes globally.
+    </p>
+
+    <details class="check">
+      <summary>A process uses 0.7 µm thick metal-1 with vertical sidewalls. What is the smallest metal-1 spacing at which a CVD oxide
+        deposited for resist etchback stays free of voids? If the design needs 1.25 µm spacing, what happens, and what two remedies does
+        the material of this section offer?</summary>
+      <div class="answer"><p>The void criterion is <em>h</em>/<em>s</em> ≤ 0.4, so <em>s</em><sub>min</sub> = 0.7/0.4 = 1.75 µm. At
+        1.25 µm the aspect ratio is 0.7/1.25 = 0.56 &gt; 0.4: the oxide closes over the gap and leaves a void, which the etchback may open
+        and metal-2 then fill, leaving a stringer. The remedies are a void-free low-temperature deposition (PECVD TEOS, O₃–TEOS or HDP CVD
+        oxide), which removes the void, or a different planarization altogether: the etchback still gives only local planarization, so
+        beyond three metal levels the answer is CMP.</p></div>
+    </details>
+
+
+
+    <h2 id="s4">4 · The CMP process</h2>
+
+    <p>
+      CMP combines a chemical reaction that softens or converts the surface with mechanical abrasion that removes the product. The notes
+      (p. 112) describe it as mechanical polishing assisted by chemical action, which produces selective material removal. The equipment
+      is the polishing machine of the wafer shop (<a href="m04-wafer-preparation.html#s6-4">M04 §6.4</a>), but the job is different:
+      wafer polishing removes on the order of 10 ± 0.1 µm of silicon, while an oxide CMP step removes on the order of 0.5 ± 0.01 µm, about
+      5 % of what wafer polishing removes, with ten times tighter absolute control (Wolf §8.5.1).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 210" role="img" aria-labelledby="m13f6-t">
+      <title id="m13f6-t">Side view of a rotary CMP tool: wafer face down in a carrier under downforce, pad on a rotating platen, slurry dispensed onto the pad</title>
+      <defs>
+        <marker id="m13f6-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+        </marker>
+        <marker id="m13f6-aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+        </marker>
+      </defs>
+      <rect x="30" y="150" width="360" height="22" rx="3" class="dg-fill"/>
+      <text x="210" y="165" class="dg-label-sm" text-anchor="middle">platen (rotates)</text>
+      <rect x="30" y="140" width="360" height="10" class="dg-fill"/>
+      <text x="380" y="135" class="dg-label-sm" text-anchor="end">pad</text>
+      <line x1="210" y1="172" x2="210" y2="200" class="dg-rule" stroke-width="3"/>
+      <rect x="110" y="106" width="110" height="26" rx="3" class="dg-fill"/>
+      <text x="165" y="123" class="dg-label-sm" text-anchor="middle">carrier (rotates)</text>
+      <rect x="120" y="132" width="90" height="7" class="dg-acc-f"/>
+      <text x="96" y="139" class="dg-label-sm" text-anchor="end">wafer, face down</text>
+      <line x1="165" y1="40" x2="165" y2="106" class="dg-rule" stroke-width="3"/>
+      <line x1="185" y1="50" x2="185" y2="96" class="dg-acc" stroke-width="2" marker-end="url(#m13f6-aa)"/>
+      <text x="192" y="70" class="dg-label-sm">downforce</text>
+      <text x="192" y="84" class="dg-label-sm">(pressure P)</text>
+      <path d="M300,50 L300,96 L290,104" class="dg-line" stroke-width="2"/>
+      <circle cx="288" cy="114" r="2.5" class="dg-soft"/><circle cx="286" cy="124" r="2.5" class="dg-soft"/><circle cx="290" cy="132" r="2.5" class="dg-soft"/>
+      <text x="306" y="62" class="dg-label-sm">slurry: abrasive</text>
+      <text x="306" y="76" class="dg-label-sm">particles in an</text>
+      <text x="306" y="90" class="dg-label-sm">aqueous solution</text>
+      <path d="M250,190 Q300,200 350,186" class="dg-line" stroke-width="1.4" marker-end="url(#m13f6-ar)"/>
+      </svg>
+      <figcaption>The arrangement of notes p. 112. The carrier presses the wafer face down onto the pad and turns it; the platen turns the pad
+      beneath; the slurry spreads over the pad and soaks it. The removal rate at a point depends on the pressure and on the speed of the pad
+      relative to the wafer there (§6).</figcaption>
+    </figure>
+
+    <p>
+      The wafer is mounted face down on the wafer carrier, which presses it against a polishing pad with a controlled downforce and rotates
+      it. The pad covers a rotating platen. An aqueous slurry containing abrasive particles is dripped onto the pad and spread across it,
+      forming a thin colloidal layer that saturates the pad. A colloid is a suspension of particles small enough, here 10–100 nm (notes
+      p. 124), to stay dispersed in the liquid. The mechanical action and the chemical reactions together remove material from the wafer
+      surface (notes p. 112). The pad, its conditioning and the slurry chemistries for each material are the subject of M14.
+    </p>
+
+    <p>
+      The carrier and the platen both turn, about axes that are offset. The local removal rate depends on the speed at which the pad passes
+      each point of the wafer, so the two rotations set how uniform the removal is. <a href="m04-wafer-preparation.html#s6-4">M04 §6.4</a>
+      derives the result: when carrier and platen turn in the same sense at the same angular velocity <em>ω</em>, the pad moves past every
+      point of the wafer with the same velocity, of magnitude <em>ωd</em> for axes a distance <em>d</em> apart, and the removal is uniform;
+      turned in opposite senses, the relative speed varies across the wafer. Lecture 5 described opposite senses, and M04 flags the
+      difference. Wolf §8.5.1.1 describes the same-sense, equal-frequency case differently, with zero relative speed at the outer edge of
+      the wafer and the greatest at the inner edge. That instantaneous description is wrong; his conclusion, uniform removal on time
+      average, agrees with the exact result (<a href="m04-wafer-preparation.html#s6-4">M04 §6.4</a>). Exact synchronization usually
+      excites the worst vibration, so the carrier is usually driven at a constant difference from the platen frequency, found by
+      experiment (Wolf §8.5.1.1).
+    </p>
+
+    <p>
+      Lecture 21 dictated one operational fact: the slurry is not recycled. Slurry dripped onto the pad is collected and discarded, and every
+      wafer is polished with fresh slurry, because used slurry carries particles picked up from the mechanical action. Re-use has been studied, a KOH-based silica slurry giving roughly
+      equal removal rates when re-used up to six times after pH and solids were restored, but Wolf (2002) describes slurry re-use as still in its
+      infancy.
+    </p>
+
+    <p>
+      In a CMOS process CMP is applied to the oxide of shallow trench isolation (<a href="m15-shallow-trench-isolation.html#s3-3">M15</a>), to the PMD and IMD oxides, to tungsten plugs and to
+      copper lines, and to the titanium nitride and tantalum barrier layers beneath the metals (Lectures 20, 22, 23). Wolf adds three reasons
+      it is worth its complexity. It allows logic with many metal levels, eight in his account, without metal thinning over steps; it gives
+      memories a larger depth-of-focus budget even with two metal levels, so smaller features and smaller chips; and it can reduce the defect density rather than increase it, one reason being a final light buff that removes residual slurry
+      particles and the small scratches of the main polish. By 2000 a stacked-capacitor DRAM
+      used upwards of nine polishing steps and a microprocessor up to sixteen.
+    </p>
+
+    <details class="check">
+      <summary>A wafer is polished with the carrier held stationary (not rotating) at a distance <em>R</em> from the platen axis, the platen
+        turning at <em>ω</em>. How does the pad speed differ between the wafer edges nearest to and farthest from the platen axis, and what
+        does that do to the removal? Why does a CMP step on a finished interconnect level need tighter control than the final polish of a
+        bare wafer?</summary>
+      <div class="answer"><p>The pad moves at <em>ωr</em>, with <em>r</em> the distance from the platen axis, so across a wafer of radius
+        <em>a</em> the speed runs from <em>ω</em>(<em>R</em> − <em>a</em>) at the near edge to <em>ω</em>(<em>R</em> + <em>a</em>) at the
+        far edge. Removal follows the pad speed (§6), so the far edge is polished faster and the film is left wedge-shaped across the wafer,
+        a within-wafer non-uniformity (§5.3); rotating the carrier in the same sense at the same rate makes the relative velocity uniform
+        (M04 §6.4). The interconnect step removes about 0.5 µm and must stop within about ±0.01 µm, because the oxide left over the metal
+        is part of the circuit (§5.4), whereas wafer polishing removes about 10 µm to ±0.1 µm; the absolute tolerance is ten times
+        tighter.</p></div>
+    </details>
+
+
+    <h2 id="s5">5 · Measuring a CMP process</h2>
+
+    <p>
+      A CMP process is judged by how fast it removes material, how completely it removes steps, how uniform the result is at three scales
+      (within a die, across a wafer, from wafer to wafer) and how much oxide it wastes between features. The notes define a metric for each
+      (pp. 113–117, following Wolf §8.3). Wolf states the corresponding goals: a high degree of planarization; less than 150 nm between the
+      highest and lowest points of a die; film thickness uniform within the wafer to ±2–5 % (1σ); removal rates of 100–140 nm/min; uniform
+      removal from wafer to wafer; good selectivity or endpoint detection; few added defects; and low cost per polished wafer.
+    </p>
+
+    <h3 id="s5-1">5.1 Removal rate</h3>
+
+    <p>
+      The removal rate (RR) is the thickness removed per unit time from a non-patterned wafer, eq. (13.3). It is measured by polishing a
+      blanket film for a set time and measuring its thickness before and after. A blanket film is measured because on a patterned wafer the
+      local rate depends on the pattern (§7), whereas the blanket rate characterizes the process itself. A high RR gives a high throughput;
+      Wolf notes that it is most often expressed in Å/min.
+    </p>
+
+    <div class="eq" id="eq13-3">
+      <div class="eq-body">
+        <div class="eq-math">RR = <span class="frac"><span class="num">Δ<em>T</em></span><span class="den"><em>t</em></span></span>,&ensp;Δ<em>T</em> = <em>T</em><sub>pre</sub> − <em>T</em><sub>post</sub></div>
+        <div class="eq-num">(13.3)</div>
+      </div>
+      <div class="eq-says">
+        RR removal rate (Å/min or nm/min) · Δ<em>T</em> thickness removed · <em>T</em><sub>pre</sub>, <em>T</em><sub>post</sub> film
+        thickness before and after polishing · <em>t</em> polishing time (min). Measured on an unpatterned wafer. Notes p. 113; Wolf eq. 8.3.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Removal rate from a blanket-wafer test</div>
+      <div class="ex-body">
+        <p><b>Given</b> a blanket oxide 1250 nm thick before and 820 nm after 3.5 min of polishing. <b>Find</b> RR in nm/min and Å/min, compare
+        it with Wolf's 100–140 nm/min goal, and estimate the time to remove 600 nm.</p>
+        <p><b>Plan.</b> Eq. (13.3); then time = thickness/RR, valid only as a first estimate for a patterned wafer.</p>
+        <p class="ex-step"><b>Thickness removed.</b> Δ<em>T</em> = 1250 − 820 = 430 nm.</p>
+        <p class="ex-step"><b>Rate.</b> RR = 430/3.5 = 122.9 nm/min = 1229 Å/min (1 nm = 10 Å).</p>
+        <p class="ex-step"><b>Time for 600 nm.</b> 600/122.9 = 4.88 min.</p>
+        <p class="ex-answer">RR = 123 nm/min (1230 Å/min), inside the 100–140 nm/min range; 600 nm takes about 4.9 min. Check: 123 nm/min ×
+        3.5 min = 430 nm, the thickness removed. On a patterned wafer the up-areas polish faster and the down-areas slower than the blanket
+        rate (§7), so the blanket rate is a starting point, not the endpoint.</p>
+      </div>
+    </div>
+
+    <h3 id="s5-2">5.2 Degree of planarization</h3>
+
+    <p>
+      The degree of planarization (DOP) is the percentage by which the height of a feature above its surroundings is reduced, eq. (13.4).
+      <em>H</em><sub>d</sub><sup>i</sup> is the height of the feature, for example the oxide bump over a metal line, before polishing and
+      <em>H</em><sub>d</sub><sup>f</sup> its height after; DOP = 100 % means the feature is completely planarized (Lecture 22 made the same
+      point with <em>H</em><sub>d</sub><sup>f</sup> = 0). When the feature height is the step height, the DOP is the planarization factor of
+      eq. (13.2) expressed as a percentage: DOP = 100<em>β</em>.
+    </p>
+
+    <div class="eq" id="eq13-4">
+      <div class="eq-body">
+        <div class="eq-math">DOP = <span class="frac"><span class="num"><em>H</em><sub>d</sub><sup>i</sup> − <em>H</em><sub>d</sub><sup>f</sup></span><span class="den"><em>H</em><sub>d</sub><sup>i</sup></span></span> × 100 %</div>
+        <div class="eq-num">(13.4)</div>
+      </div>
+      <div class="eq-says">
+        DOP degree of planarization (%) · <em>H</em><sub>d</sub><sup>i</sup> height of the feature before CMP ·
+        <em>H</em><sub>d</sub><sup>f</sup> height of the feature after CMP (same length unit). Notes p. 113; Wolf eq. 8.4.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 150" role="img" aria-labelledby="m13f7-t">
+      <title id="m13f7-t">Definitions of removal rate on a blanket film and of degree of planarization over a feature</title>
+      <defs>
+        <marker id="m13f7-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+        </marker>
+      </defs>
+      <rect x="20" y="100" width="150" height="20" class="dg-fill"/>
+      <rect x="20" y="60" width="150" height="40" class="dg-fill"/>
+      <line x1="20" y1="40" x2="170" y2="40" class="dg-guide" stroke-dasharray="4 3"/>
+      <line x1="180" y1="40" x2="180" y2="60" class="dg-acc" stroke-width="1.8" marker-start="url(#m13f7-ar)" marker-end="url(#m13f7-ar)"/>
+      <text x="184" y="54" class="dg-label-sm">ΔT</text>
+      <line x1="12" y1="40" x2="12" y2="100" class="dg-line" stroke-width="1.1" marker-start="url(#m13f7-ar)" marker-end="url(#m13f7-ar)"/>
+      <text x="60" y="34" class="dg-label-sm">T<tspan baseline-shift="sub" style="font-size:75%">pre</tspan> (dashed)</text>
+      <text x="95" y="84" class="dg-label-sm" text-anchor="middle">T<tspan baseline-shift="sub" style="font-size:75%">post</tspan></text>
+      <text x="95" y="140" class="dg-label-sm" text-anchor="middle">RR = ΔT/t (blanket)</text>
+      <rect x="225" y="100" width="180" height="20" class="dg-fill"/>
+      <rect x="225" y="70" width="180" height="30" class="dg-fill"/>
+      <rect x="295" y="86" width="40" height="14" class="dg-ink"/>
+      <path d="M270,70 Q282,48 296,48 L334,48 Q348,48 360,70" class="dg-guide" stroke-dasharray="4 3"/>
+      <path d="M282,70 Q294,62 304,62 L326,62 Q336,62 348,70" class="dg-line" stroke-width="1.5"/>
+      <line x1="372" y1="48" x2="372" y2="70" class="dg-line" stroke-width="1.1" marker-start="url(#m13f7-ar)" marker-end="url(#m13f7-ar)"/>
+      <text x="377" y="62" class="dg-label-sm">H<tspan baseline-shift="super" style="font-size:75%">i</tspan></text>
+      <line x1="250" y1="62" x2="250" y2="70" class="dg-acc" stroke-width="1.8"/>
+      <text x="246" y="60" class="dg-label-sm" text-anchor="end">H<tspan baseline-shift="super" style="font-size:75%">f</tspan></text>
+      <line x1="250" y1="62" x2="304" y2="62" class="dg-guide" stroke-dasharray="2 2"/>
+      <text x="315" y="140" class="dg-label-sm" text-anchor="middle">DOP over a feature</text>
+      </svg>
+      <figcaption>Notes p. 113. Left: the removal rate is measured on an unpatterned film. Right: the degree of planarization compares the
+      height of the bump over a buried feature (solid) before (dashed, <em>H</em><sup>i</sup>) and after (<em>H</em><sup>f</sup>) polishing.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Degree of planarization</div>
+      <div class="ex-body">
+        <p><b>Given</b> an oxide bump 0.80 µm high over a metal line before polishing and 0.12 µm high after. <b>Find</b> the DOP and the
+        equivalent planarization factor.</p>
+        <p><b>Plan.</b> Eq. (13.4); then <em>β</em> = DOP/100 %.</p>
+        <p class="ex-step"><b>DOP.</b> (0.80 − 0.12)/0.80 × 100 % = 0.68/0.80 × 100 % = 85 %.</p>
+        <p class="ex-answer">DOP = 85 %, <em>β</em> = 0.85, just short of the 0.90–0.95 that CMP can reach. Check: the remaining bump,
+        0.12 µm, is 15 % of the original 0.80 µm.</p>
+      </div>
+    </div>
+
+    <h3 id="s5-3">5.3 Non-uniformity: within a die, within a wafer, wafer to wafer</h3>
+
+    <p>
+      The notes define three non-uniformities in the same form: the standard deviation of <em>n</em> thickness measurements divided by their
+      mean, eq. (13.5). They differ in where the measurements are taken. Within-die non-uniformity (WIDNU) uses <em>n</em> points within one
+      die; within-wafer non-uniformity (WIWNU) uses <em>n</em> points across one wafer; wafer-to-wafer non-uniformity (WTWNU) uses
+      measurements on each of <em>n</em> wafers. Which thickness is measured depends on the non-uniformity being specified, for example the
+      oxide thickness in the field between metal lines, or the distance from the polished oxide surface to the planarized substrate beneath
+      (Wolf). The standard deviation is the sample form, with <em>n</em> − 1 in the denominator, because the mean is estimated from the same
+      measurements.
+    </p>
+
+    <div class="eq" id="eq13-5">
+      <div class="eq-body">
+        <div class="eq-math">NU = <span class="frac"><span class="num"><em>σ</em></span><span class="den"><em>x̄</em></span></span>,&ensp;<em>σ</em> = <span class="sqrt"><span class="frac"><span class="num">(<em>x</em><sub>1</sub> − <em>x̄</em>)² + … + (<em>x</em><sub><em>n</em></sub> − <em>x̄</em>)²</span><span class="den"><em>n</em> − 1</span></span></span></div>
+        <div class="eq-num">(13.5)</div>
+      </div>
+      <div class="eq-says">
+        NU = WIDNU, WIWNU or WTWNU (dimensionless; often given in %) · <em>x</em><sub>1</sub> … <em>x</em><sub><em>n</em></sub> thickness
+        measurements within one die (WID), across one wafer (WIW) or one per wafer over <em>n</em> wafers (WTW) · <em>x̄</em> their mean ·
+        <em>σ</em> their sample standard deviation (same unit as <em>x</em>). Notes pp. 113–116; Wolf eqs. 8.5–8.10.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Within-wafer non-uniformity from five sites</div>
+      <div class="ex-body">
+        <p><b>Given</b> post-CMP oxide thicknesses at five sites on one wafer: 512, 498, 505, 489 and 521 nm (illustrative values).
+        <b>Find</b> the WIWNU, and compare it with Wolf's ±2–5 % (1σ) goal.</p>
+        <p><b>Plan.</b> Mean, deviations, sum of squares, divide by <em>n</em> − 1 = 4, square root, divide by the mean.</p>
+        <p class="ex-step"><b>Mean.</b> (512 + 498 + 505 + 489 + 521)/5 = 2525/5 = 505 nm.</p>
+        <p class="ex-step"><b>Deviations and squares.</b> +7, −7, 0, −16, +16 nm; squares 49, 49, 0, 256, 256 nm²; sum 610 nm².</p>
+        <p class="ex-step"><b>Standard deviation.</b> <em>σ</em> = √(610/4) = √152.5 = 12.35 nm. Dividing by <em>n</em> = 5 instead would
+        give 11.05 nm, 11 % smaller; the notes' form uses <em>n</em> − 1.</p>
+        <p class="ex-step"><b>Non-uniformity.</b> WIWNU = 12.35/505 = 0.0245 = 2.45 %.</p>
+        <p class="ex-answer">WIWNU = 2.4 % (1σ), within the 2–5 % range. Check: the readings span 489–521 nm, ±3.2 % about the mean, and a
+        standard deviation of 2.4 % of the mean is of the size that spread implies.</p>
+      </div>
+    </div>
+
+    <p>
+      Each scale has its own causes. <b>Within a die</b>, the polishing rate depends on the pattern: narrow, isolated features are planarized
+      to a greater degree than wide, isolated features or narrow, densely spaced ones, a pattern-dependent planarization treated in §7. A
+      second within-die effect is <b>dishing</b>. When a metal film is deposited into trenches in a planar dielectric and polished back,
+      the ideal result is metal flush with the dielectric surface; the real result has the metal recessed below it, especially in wide
+      trenches (notes p. 114). Wolf (§8.3.3) also calls dishing the case where the steps are
+      planarized but film has been eroded between them until the oxide surface is not planar across the die, so the oxide thickness over
+      the substrate varies within the die. The notes (p. 115) give that sentence with "metal film" where Wolf has "some film"; the
+      surface that ends up non-planar is the oxide in both.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 140" role="img" aria-labelledby="m13f8-t">
+      <title id="m13f8-t">Metal in dielectric trenches before CMP, ideally after CMP, and as really polished with the metal dished in the wide trench</title>
+      <g>
+        <rect x="10" y="90" width="120" height="20" class="dg-fill"/>
+        <path d="M10,90 L10,60 L22,60 L22,90 L34,90 L34,60 L54,60 L54,90 L94,90 L94,60 L130,60 L130,90 Z" class="dg-fill"/>
+        <path d="M10,46 L130,46 L130,60 L94,60 L94,90 L54,90 L54,60 L34,60 L34,90 L22,90 L22,60 L10,60 Z" class="dg-soft"/>
+        <text x="70" y="40" class="dg-label-sm" text-anchor="middle">metal over trenches</text>
+        <text x="70" y="128" class="dg-label-sm" text-anchor="middle">pre-CMP</text>
+      </g>
+      <g>
+        <rect x="150" y="90" width="120" height="20" class="dg-fill"/>
+        <path d="M150,90 L150,60 L162,60 L162,90 L174,90 L174,60 L194,60 L194,90 L234,90 L234,60 L270,60 L270,90 Z" class="dg-fill"/>
+        <rect x="162" y="60" width="12" height="30" class="dg-soft"/><rect x="194" y="60" width="40" height="30" class="dg-soft"/>
+        <text x="210" y="128" class="dg-label-sm" text-anchor="middle">ideal post-CMP</text>
+      </g>
+      <g>
+        <rect x="290" y="90" width="120" height="20" class="dg-fill"/>
+        <path d="M290,90 L290,60 L302,60 L302,90 L314,90 L314,60 L334,60 L334,90 L374,90 L374,60 L410,60 L410,90 Z" class="dg-fill"/>
+        <path d="M302,62 L314,62 L314,90 L302,90 Z" class="dg-soft"/>
+        <path d="M334,60 Q354,76 374,60 L374,90 L334,90 Z" class="dg-soft"/>
+        <path d="M334,60 Q354,76 374,60" class="dg-acc" stroke-width="1.8"/>
+        <text x="354" y="52" class="dg-label-sm" text-anchor="middle">dishing</text>
+        <text x="350" y="128" class="dg-label-sm" text-anchor="middle">real post-CMP</text>
+      </g>
+      </svg>
+      <figcaption>Notes p. 114 (Wolf Fig. 8-12), schematic. Polishing continues past the point where the metal is cleared from the
+      dielectric surface, and the metal in the wide trench is removed further than in the narrow one. <a href="m14-cmp-slurries-damascene.html#s5-3">M14</a> treats dishing in copper
+      damascene, where it raises the line resistance.</figcaption>
+    </figure>
+
+    <p>
+      <b>Across a wafer</b>, Wolf names three causes: a wafer whose own thickness varies, polished with a completely rigid pad; the relation
+      between the carrier and platen rotation rates (§4); and an edge bead, a rim of thicker film left because removal is slower near the
+      wafer edge. <b>From wafer to wafer</b>, the causes he names are pad ageing and batch-to-batch variation of the slurry.
+    </p>
+
+    <h3 id="s5-4">5.4 Efficiency of planarization</h3>
+
+    <p>
+      When oxide is deposited over metal lines and polished flat, enough oxide must remain over the lines to limit the electrical cross-talk
+      and parasitic capacitance between metal levels (notes p. 117). The capacitance between lines, together with their resistance, sets the
+      RC delay of a signal along them, which is why Lecture 22 led from this point to low-dielectric-constant insulators (<a href="m14-cmp-slurries-damascene.html#s8">M14</a>). The designer
+      specifies the oxide thickness to be left over the metal; the process engineer must deposit enough oxide that polishing leaves at least
+      that much. The efficiency of planarization (%EOP) measures how much of the polishing goes into flattening rather than thinning,
+      eq. (13.6). <em>T</em><sub>r</sub> is the oxide thickness removed from the top of a feature and <em>T</em><sub>d</sub> the oxide
+      thickness lost at the centre of a wide space between metal lines. An ideal process, %EOP ≈ 100 %, planarizes completely without
+      eroding any oxide in the wide spaces.
+    </p>
+
+    <div class="eq" id="eq13-6">
+      <div class="eq-body">
+        <div class="eq-math">%EOP = <span class="frac"><span class="num"><em>T</em><sub>r</sub> − <em>T</em><sub>d</sub></span><span class="den"><em>T</em><sub>r</sub></span></span> × 100</div>
+        <div class="eq-num">(13.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em><sub>r</sub> dielectric thickness removed by CMP on top of a feature (e.g. a metal line) · <em>T</em><sub>d</sub> oxide
+        thickness lost at the centre of a wide space between metal lines (same length unit). 100 %: planar with no loss in the spaces.
+        Notes p. 117; Wolf eq. 8.11a.
+      </div>
+    </div>
+
+    <p>
+      Wolf rewrites the efficiency for planning the deposition, eq. (13.7). If the final surface is planar, the oxide over a line is
+      <em>T</em><sub>cov</sub> and the oxide in a wide space is <em>H</em><sub>metal</sub> + <em>T</em><sub>cov</sub>, with
+      <em>H</em><sub>metal</sub> the line height. A conformal deposit <em>T</em><sub>total</sub> thick then loses
+      <em>T</em><sub>r</sub> = <em>T</em><sub>total</sub> − <em>T</em><sub>cov</sub> over the line and
+      <em>T</em><sub>d</sub> = <em>T</em><sub>total</sub> − <em>H</em><sub>metal</sub> − <em>T</em><sub>cov</sub> in the space, so
+      <em>T</em><sub>r</sub> − <em>T</em><sub>d</sub> = <em>H</em><sub>metal</sub> and eq. (13.6) becomes
+      EOP = <em>H</em><sub>metal</sub>/(<em>T</em><sub>total</sub> − <em>T</em><sub>cov</sub>).
+    </p>
+
+    <div class="eq" id="eq13-7">
+      <div class="eq-body">
+        <div class="eq-math"><em>T</em><sub>total</sub> = <span class="frac"><span class="num"><em>H</em><sub>metal</sub></span><span class="den">EOP</span></span> + <em>T</em><sub>cov</sub></div>
+        <div class="eq-num">(13.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em><sub>total</sub> oxide thickness to deposit before CMP · <em>H</em><sub>metal</sub> height of the metal lines ·
+        <em>T</em><sub>cov</sub> oxide thickness to remain over the lines (designer's target) · EOP efficiency as a fraction (%EOP/100).
+        Assumes a conformal deposit and a planar final surface. Wolf eqs. 8.11b and 8.12; not in the notes.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 170" role="img" aria-labelledby="m13f9-t">
+      <title id="m13f9-t">Oxide deposited over a metal line before CMP and the planar surface after, with the thickness removed over the line and lost in a wide space</title>
+      <defs>
+        <marker id="m13f9-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+        </marker>
+      </defs>
+      <rect x="20" y="140" width="380" height="16" class="dg-fill"/>
+      <rect x="20" y="62" width="380" height="78" class="dg-fill"/>
+      <rect x="150" y="110" width="60" height="30" class="dg-ink"/>
+      <text x="216" y="134" class="dg-label-sm">metal line, height H<tspan baseline-shift="sub" style="font-size:75%">metal</tspan></text>
+      <path d="M20,62 L130,62 Q140,32 156,32 L204,32 Q220,32 230,62 L400,62" class="dg-guide" stroke-dasharray="4 3"/>
+      <line x1="20" y1="80" x2="400" y2="80" class="dg-acc" stroke-width="1.8"/>
+      <text x="398" y="76" class="dg-label-sm" text-anchor="end">surface after CMP</text>
+      <text x="300" y="56" class="dg-label-sm">as deposited (dashed)</text>
+      <line x1="166" y1="32" x2="166" y2="80" class="dg-line" stroke-width="1.1" marker-start="url(#m13f9-ar)" marker-end="url(#m13f9-ar)"/>
+      <text x="160" y="58" class="dg-label-sm" text-anchor="end">T<tspan baseline-shift="sub" style="font-size:75%">r</tspan></text>
+      <line x1="60" y1="62" x2="60" y2="80" class="dg-line" stroke-width="1.1" marker-start="url(#m13f9-ar)" marker-end="url(#m13f9-ar)"/>
+      <text x="66" y="75" class="dg-label-sm">T<tspan baseline-shift="sub" style="font-size:75%">d</tspan></text>
+      <line x1="196" y1="80" x2="196" y2="110" class="dg-line" stroke-width="1.1" marker-start="url(#m13f9-ar)" marker-end="url(#m13f9-ar)"/>
+      <text x="202" y="99" class="dg-label-sm">T<tspan baseline-shift="sub" style="font-size:75%">cov</tspan></text>
+      </svg>
+      <figcaption>Notes p. 117 and Wolf Fig. 8-17, schematic. Over the line the polish removes <em>T</em><sub>r</sub>; in the wide space it
+      removes <em>T</em><sub>d</sub>, oxide that did nothing for flatness. On a planar result their difference is the line height.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Oxide to deposit for a given efficiency (Wolf's example)</div>
+      <div class="ex-body">
+        <p><b>Given</b> metal lines <em>H</em><sub>metal</sub> = 0.5 µm high; the designer requires <em>T</em><sub>cov</sub> = 0.5 µm of oxide
+        over them; the CMP process has %EOP = 50 %. <b>Find</b> the oxide to deposit, <em>T</em><sub>r</sub> and <em>T</em><sub>d</sub>, and
+        the saving if %EOP were raised to 80 %.</p>
+        <p><b>Plan.</b> Eq. (13.7) with EOP as a fraction; then <em>T</em><sub>r</sub> = <em>T</em><sub>total</sub> − <em>T</em><sub>cov</sub>
+        and <em>T</em><sub>d</sub> = <em>T</em><sub>r</sub> − <em>H</em><sub>metal</sub>, and confirm with eq. (13.6).</p>
+        <p class="ex-step"><b>Deposit at 50 %.</b> <em>T</em><sub>total</sub> = 0.5/0.50 + 0.5 = 1.0 + 0.5 = 1.5 µm.</p>
+        <p class="ex-step"><b>Removals.</b> <em>T</em><sub>r</sub> = 1.5 − 0.5 = 1.0 µm; <em>T</em><sub>d</sub> = 1.0 − 0.5 = 0.5 µm. By
+        eq. (13.6), (1.0 − 0.5)/1.0 × 100 = 50 %, as assumed.</p>
+        <p class="ex-step"><b>Deposit at 80 %.</b> <em>T</em><sub>total</sub> = 0.5/0.80 + 0.5 = 0.625 + 0.5 = 1.125 µm (Wolf rounds to
+        1.1 µm), with <em>T</em><sub>r</sub> = 0.625 µm and <em>T</em><sub>d</sub> = 0.125 µm.</p>
+        <p class="ex-answer">1.5 µm at 50 %; 1.125 µm at 80 %, a saving of 0.375 µm of deposition and as much polishing. Check: at 100 %
+        the deposit falls to <em>H</em><sub>metal</sub> + <em>T</em><sub>cov</sub> = 1.0 µm and <em>T</em><sub>d</sub> = 0, the ideal case of
+        the notes.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>Three wafers polished in sequence come out with mean oxide thicknesses of 600, 612 and 594 nm. What is the WTWNU? A second
+        process is to leave 0.4 µm of oxide over 0.6 µm high lines at %EOP = 60 %: how much oxide is deposited, and how much is lost in the
+        wide spaces?</summary>
+      <div class="answer"><p>Mean (600 + 612 + 594)/3 = 602 nm; deviations −2, +10, −8 nm; squares 4, 100, 64, sum 168 nm²; <em>σ</em> =
+        √(168/2) = 9.17 nm; WTWNU = 9.17/602 = 1.5 %. For the deposit, eq. (13.7): <em>T</em><sub>total</sub> = 0.6/0.60 + 0.4 = 1.4 µm;
+        <em>T</em><sub>r</sub> = 1.4 − 0.4 = 1.0 µm, <em>T</em><sub>d</sub> = 1.0 − 0.6 = 0.4 µm, and (1.0 − 0.4)/1.0 = 60 % confirms it.
+        Every 0.4 µm lost in the spaces had to be deposited and then polished away, which is why a higher efficiency lowers cost.</p></div>
+    </details>
+
+
+
+    <h2 id="s6">6 · How CMP removes oxide</h2>
+
+    <p>
+      The metrics of §5 describe what a process does; this section describes why the removal rate depends on pressure, speed and the
+      material. The notes give two levels of description (pp. 117–120): an empirical law relating the rate to the pressure and the speed of
+      the pad, and a mechanism that explains it. Both come from optical-glass polishing, because the silicon oxides of a chip are glasses
+      (Wolf §8.5.1).
+    </p>
+
+    <h3 id="s6-1">6.1 Preston's law</h3>
+
+    <p>
+      Preston's law, a model developed for polishing glass, states that the removal rate of a flat region is proportional to the applied
+      pressure and to the linear velocity at which the polishing pad moves relative to the glass, eq. (13.8) (notes pp. 117–118; F. W.
+      Preston, 1927). Preston's constant <em>K</em><sub>p</sub> is independent of pressure and velocity. Everything else that affects the
+      rate is collected into it: the hardness and Young's modulus of the glass, the slurry, and the composition and hardness of the pad
+      (Wolf). The same law describes the CMP of oxide. It was found empirically, not derived from a physical model, and it describes only
+      the mechanical variables; §6.3 supplies the mechanism behind it.
+    </p>
+
+    <div class="eq" id="eq13-8">
+      <div class="eq-body">
+        <div class="eq-math">RR = <em>K</em><sub>p</sub>&thinsp;<em>P</em>&thinsp;<em>v</em></div>
+        <div class="eq-num">(13.8)</div>
+      </div>
+      <div class="eq-says">
+        RR removal rate (m/s in SI) · <em>P</em> applied pressure (Pa = N/m²) · <em>v</em> linear velocity of the pad relative to the wafer
+        (m/s) · <em>K</em><sub>p</sub> Preston's constant, independent of <em>P</em> and <em>v</em>; with these units it is in Pa⁻¹ (m²/N).
+        Process data come in psi and ft/min: 1 psi = 6894.76 Pa, 1 ft/min = 5.08×10⁻³ m/s. Notes p. 118; Wolf eq. 8.13.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Preston's constant from a process point, and a prediction</div>
+      <div class="ex-body">
+        <p><b>Given</b> an oxide polished at <em>P</em> = 7 psi and <em>v</em> = 35 ft/min, within the typical values Wolf quotes (7 psi,
+        30–40 ft/min), with RR = 120 nm/min. <b>Find</b> <em>K</em><sub>p</sub>, and the rate at 5 psi and 40 ft/min.</p>
+        <p><b>Plan.</b> Convert everything to SI so that <em>K</em><sub>p</sub> comes out in Pa⁻¹; for the prediction only the ratio of the
+        products <em>Pv</em> matters, since <em>K</em><sub>p</sub> is constant.</p>
+        <p class="ex-step"><b>Pressure.</b> 7 × 6894.76 = 4.826×10⁴ Pa.</p>
+        <p class="ex-step"><b>Velocity.</b> 35 × 0.3048 m / 60 s = 0.1778 m/s.</p>
+        <p class="ex-step"><b>Rate.</b> 120 nm/min = 120×10⁻⁹ m / 60 s = 2.00×10⁻⁹ m/s.</p>
+        <p class="ex-step"><b>Preston's constant.</b> <em>K</em><sub>p</sub> = RR/(<em>Pv</em>) = 2.00×10⁻⁹/(4.826×10⁴ × 0.1778) =
+        2.33×10⁻¹³ Pa⁻¹. Units: (m/s)/(N/m² · m/s) = m²/N = Pa⁻¹.</p>
+        <p class="ex-step"><b>New conditions.</b> RR scales with <em>Pv</em>: (5 × 40)/(7 × 35) = 200/245 = 0.816, so RR = 0.816 × 120 =
+        98.0 nm/min.</p>
+        <p class="ex-answer"><em>K</em><sub>p</sub> = 2.3×10⁻¹³ Pa⁻¹; 98 nm/min at 5 psi and 40 ft/min. Check: the pressure fell by 29 % and
+        the speed rose by 14 %, so a net fall of about 18 % is the expected direction and size.</p>
+      </div>
+    </div>
+
+    <h3 id="s6-2">6.2 Beyond the linear law</h3>
+
+    <p>
+      Later work found that the dependence of the oxide removal rate on pressure and velocity is not simply linear (notes p. 118). The
+      general fitted form, eq. (13.9), raises each to an exponent determined by experiment for the system being polished. Zhao and Shi
+      (1999), in what Wolf calls the first model to include the hardness of the pad and the wafer, derived a sub-linear dependence on
+      pressure, eq. (13.10), which experiments on oxide follow (Wolf Fig. 8-19). Shi and Zhao had derived the non-linear pressure
+      dependence for polishing with soft pads (1998); Wolf gives no physical reason for the exponent 2/3. The same model adds a threshold.
+      A particle that rolls against the surface removes little, while a particle held firmly by the pad slides against the wafer and removes
+      material, and sliding needs a minimum local pressure. Below that threshold pressure <em>P</em><sub>th</sub> nothing is removed, eq. (13.11), and
+      Wolf reports that the planarization efficiency improves as <em>P</em><sub>th</sub> rises. §7.1 shows why.
+    </p>
+
+    <div class="eq" id="eq13-9">
+      <div class="eq-body">
+        <div class="eq-math">RR = <em>K</em><sub>p</sub>&thinsp;<em>P</em><sup><em>α</em></sup><em>v</em><sup><em>β</em></sup></div>
+        <div class="eq-num">(13.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>α</em>, <em>β</em> adjustable exponents, determined experimentally for the system polished; other symbols as in (13.8), with
+        the units of <em>K</em><sub>p</sub> now depending on <em>α</em> and <em>β</em>. This <em>β</em> is the notes' symbol for the velocity
+        exponent and is unrelated to the planarization factor <em>β</em> of eq. (13.2). Notes p. 118; Wolf eq. 8.14.
+      </div>
+    </div>
+
+    <div class="eq" id="eq13-10">
+      <div class="eq-body">
+        <div class="eq-math">RR = <em>K</em><sub>p</sub>&thinsp;<em>v</em>&thinsp;<em>P</em><sup>2/3</sup></div>
+        <div class="eq-num">(13.10)</div>
+      </div>
+      <div class="eq-says">
+        Zhao and Shi's oxide removal rate: linear in velocity, sub-linear in pressure. <em>K</em><sub>p</sub> here has different units from
+        (13.8). Notes p. 118; Wolf eq. 8.15; B. Zhao and F. G. Shi, <i>Electrochem. Solid-State Lett.</i> <b>2</b>, 145 (1999).
+      </div>
+    </div>
+
+    <div class="eq" id="eq13-11">
+      <div class="eq-body">
+        <div class="eq-math">RR = <em>K</em><sub>p</sub>&thinsp;<em>v</em>&thinsp;(<em>P</em><sup>2/3</sup> − <em>P</em><sub>th</sub><sup>2/3</sup>) for <em>P</em> &gt; <em>P</em><sub>th</sub>;&ensp;RR = 0 for <em>P</em> &lt; <em>P</em><sub>th</sub></div>
+        <div class="eq-num">(13.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>P</em><sub>th</sub> threshold pressure below which abrasive particles do not slide against the surface. Wolf eqs. 8.16–8.17,
+        after Zhao and Shi; not in the notes.
+      </div>
+    </div>
+
+    <p>
+      The difference matters when the pressure changes. Doubling the pressure doubles the rate by Preston's law but multiplies it by
+      2<sup>2/3</sup> = 1.59 by eq. (13.10). Raising the downforce is therefore a less efficient way to speed up oxide removal than the linear
+      law suggests, while within eq. (13.10) the rate stays proportional to the pad speed. That too is a property of the model rather than
+      a general finding: Tseng and Wang (1997, Wolf ref. 13) derived a sub-linear dependence on speed as well, which is why the fitted
+      form (13.9) leaves both exponents free.
+    </p>
+
+    <h3 id="s6-3">6.3 The removal mechanism: hydration and plowing</h3>
+
+    <p>
+      The mechanism differs from the polishing of bare silicon in <a href="m04-wafer-preparation.html#s6-4">M04 §6.4</a>. There the slurry
+      oxidizes the silicon surface, and abrasive particles harder than the oxidized layer but softer than silicon remove the oxidized layer;
+      fresh silicon is exposed and the cycle repeats. An oxide film is already oxidized, so that sequence cannot operate (Wolf §8.5.1). The
+      slurry for oxide CMP is silica particles in an aqueous alkaline solution, KOH or NH₄OH in deionized water, and silica particles have
+      about the same hardness as the oxide; rubbed against unreacted SiO₂ they neither remove nor damage it appreciably (Wolf §8.5.3).
+      Water is what makes removal possible. The polishing rate is extremely low without water, and a silica slurry in a non-aqueous liquid
+      such as oil polishes substantially more slowly than one in water (Wolf §8.5.3). Izumitani and Harada (1971) proposed that glass
+      polishing proceeds through a hydrated layer: glass that reacts with water forms a surface layer with a much lower hardness and
+      strength than the SiO₂ beneath, and that layer is what is removed.
+    </p>
+
+    <p>
+      The notes (p. 120) give the oxide sequence. Each step depends on the one before.
+    </p>
+
+    <ol>
+      <li><b>Plastic deformation.</b> An abrasive particle held by the pad is pressed onto the oxide and deforms its surface plastically.
+      The degree of deformation increases with the pressure of the particles on the surface and with frictional heating.</li>
+      <li><b>Hydration.</b> Oxide deformed plastically by a diamond indenter is known to take up water readily, and Wolf infers the same for
+      oxide deformed by the abrasive particles. The hydrated layer is softer than the oxide beneath it.</li>
+      <li><b>Plowing.</b> The particles, sliding across the surface with the pad, cut the soft hydrated layer away. This plowing action
+      increases with the linear velocity of the pad.</li>
+      <li><b>Repeat</b> (implied, not stated in the notes). Fresh oxide is exposed and the cycle continues.</li>
+    </ol>
+
+    <p>
+      Lecture 24 returned to the word "plowing" with a general definition the lecturer had looked up: mechanical plowing is one of the
+      primary removal modes in CMP, alongside chemical bonding; the high points of the pad surface, its asperities, are pressed into the
+      wafer by the down-force and cut it, removing material as small chips or debris; and the lecture added that the pad, "not only the
+      particle", takes part. A student offered a description heard elsewhere, plowing as rough sanding and the chemical action as smooth
+      sanding, and the lecturer agreed. That definition is a general one, said in the lecture to dominate for hard, ductile materials. For
+      oxide the notes and Wolf give the pad a different part: it grips the abrasive particles and transmits the pressure, and the particles
+      plow the hydrated layer (notes p. 120; Wolf §8.5.2.1, §8.5.3). This page keeps that mechanism.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m13f10-t">
+      <title id="m13f10-t">An abrasive particle held in the pad, pressed into the oxide and sliding: deformed and hydrated oxide beneath and ahead of it, a plowed groove behind it</title>
+      <defs>
+        <marker id="m13f10-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+        </marker>
+        <marker id="m13f10-aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+        </marker>
+      </defs>
+      <rect x="20" y="30" width="380" height="52" class="dg-fill"/>
+      <text x="380" y="60" class="dg-label-sm" text-anchor="end">pad</text>
+      <path d="M20,178 L20,118 L100,118 Q108,118 112,123 L212,123 L212,118 L400,118 L400,178 Z" class="dg-fill"/>
+      <text x="380" y="168" class="dg-label-sm" text-anchor="end">SiO₂</text>
+      <path d="M210,118 L268,118 L268,125 Q240,133 210,127 Z" class="dg-soft"/>
+      <circle cx="232" cy="101" r="22" class="dg-ink"/>
+      <path d="M214,118 Q232,130 250,118" class="dg-acc" stroke-width="2"/>
+            <line x1="300" y1="86" x2="300" y2="114" class="dg-acc" stroke-width="2" marker-end="url(#m13f10-aa)"/>
+      <text x="306" y="98" class="dg-label-sm">pressure P:</text>
+      <text x="306" y="111" class="dg-label-sm">deforms → water enters</text>
+      <line x1="150" y1="96" x2="200" y2="96" class="dg-line" stroke-width="1.6" marker-end="url(#m13f10-ar)"/>
+      <text x="40" y="98" class="dg-label-sm">particle slides at v:</text>
+      <text x="40" y="111" class="dg-label-sm">plows the soft layer</text>
+      <text x="234" y="146" class="dg-label-sm">hydrated, softened</text>
+      <text x="114" y="142" class="dg-label-sm">groove left behind</text>
+      </svg>
+      <figcaption>The sequence of notes p. 120 (Wolf §8.5.3), schematic and not to scale. Under the particle the pressure deforms the oxide
+      and water enters it (shaded, softened); the sliding particle cuts the softened oxide away, leaving a shallow groove. Pressure drives
+      the first stage and speed the second, so the rate grows with both.</figcaption>
+    </figure>
+
+    <p>
+      The mechanism accounts for Preston's law (Wolf). Pressure sets how much oxide each contact deforms and so makes ready for removal;
+      velocity sets how often and how far the particles slide across it to plow it off. The rate therefore rises with both, as the product
+      <em>Pv</em> in eq. (13.8) says. The pad has a part in both stages: Wolf judges that it probably has to be soft enough to grip the
+      particles, so that they slide rather than roll (§6.2), and hard enough to transmit the pressure to the oxide. A chemical process is a co-factor: the notes name
+      dissolution of the SiO₂, and the higher removal rate of higher-pH slurries is often cited as evidence of it (Wolf).
+    </p>
+
+    <div class="box">
+      <p>
+        <b>One contact, two actions.</b> In Lecture 23 the class found it hard to see how the same particles can both cause the hydration
+        and remove the hydrated layer. The sources give the two actions different drivers. The deformation that lets water in increases with
+        the pressure of the particles on the surface and with frictional heating (notes p. 120); the plowing that removes the hydrated
+        layer increases with the linear velocity of the pad. One way to picture it, this page's reading rather than the sources': the load
+        pressing a particle into the surface prepares the oxide, its motion along the surface removes oxide that is already hydrated, and
+        both happen at once wherever particles slide over the wafer, rather than one after the other in time.
+      </p>
+    </div>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th></th><th>Bare silicon wafer (M04 §6.4; Wolf §8.5.1)</th><th>Oxide film (this section)</th></tr></thead>
+      <tbody>
+        <tr><td>Surface polished</td><td>Silicon</td><td>SiO₂ (already oxidized)</td></tr>
+        <tr><td>Chemical step</td><td>Slurry (NaOH) oxidizes the silicon surface</td><td>Water hydrates oxide that the particles have deformed; SiO₂ dissolution as a co-factor</td></tr>
+        <tr><td>Abrasive against the surface</td><td>Colloidal silica: harder than the oxidized layer, softer than silicon</td><td>Silica: about as hard as the oxide, so it removes only the hydrated layer</td></tr>
+        <tr><td>Slurry</td><td>Colloidal silica in NaOH</td><td>Silica in KOH or NH₄OH, pH alkaline</td></tr>
+        <tr><td>Removed per step</td><td>On the order of 10 ± 0.1 µm (Wolf); M04's sequence polishes 750 → 725 µm</td><td>On the order of 0.5 ± 0.01 µm (Wolf)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Cook proposed a complementary model in which the surface charges of particle and oxide control how often a particle reaches the
+      surface: silica on silica repel, while a particle of a different oxide whose surface charge attracts the SiO₂ contacts it more often
+      and polishes faster. He suggested ceria (CeO₂) particles on that basis (Wolf §8.5.2.1). The slurries of M14 include ceria for this use.
+    </p>
+
+    <h3 id="s6-4">6.4 Hardness and doping</h3>
+
+    <p>
+      Dielectrics range in hardness from silicon nitride, very hard and inelastic, to the softer doped oxides and spin-on dielectrics, and
+      their removal rate rises as their hardness falls (notes p. 118). The trend appears within a single material family. In fluorinated
+      silicate glass (FSG) the hardness falls as more fluorine is incorporated, and the removal rate rises with it (Wolf Fig. 8-22). In PSG
+      and BPSG the removal rate rises with the phosphorus and boron content (Wolf Fig. 8-23). The doping correlates with hardness because
+      phosphorus and boron oxides incorporated into the SiO₂ network soften the oxide. Higher doping therefore gives a higher removal rate,
+      and PSG and BPSG pre-metal dielectrics polish faster than undoped oxide (Wolf §8.11.1). The softening of §3.1, which lowers the flow
+      temperature of the glass, and the faster polishing are two consequences of the same change in the network (Lecture 23). The notes
+      (p. 118) write the oxides as "P₂O₃ and B₂O₅", as does Wolf (p. 342). The oxides that enter phosphosilicate and borosilicate glass are
+      P₂O₅ and B₂O₃.
+    </p>
+
+    <p>
+      The hardness contrast also has a use. A hard layer under a soft one polishes more slowly, so it can serve as a polish stop, as the
+      silicon nitride layer does in shallow trench isolation (<a href="m15-shallow-trench-isolation.html#s3-3">M15</a>; Wolf §8.12.1). How sharply it stops the polish also depends on the slurry
+      chemistry, the subject of M14.
+    </p>
+
+    <details class="check">
+      <summary>An oxide CMP process runs at 6 psi and 50 ft/min. If the pressure is raised to 9 psi, by what factor does the removal rate
+        change under Preston's law and under Zhao and Shi's law? Which would you raise to increase the rate without losing the selectivity
+        of §7, and why? Why does a silica slurry in oil barely polish an oxide?</summary>
+      <div class="answer"><p>The pressure ratio is 9/6 = 1.5. Preston: RR ∝ <em>P</em>, factor 1.50. Zhao and Shi: RR ∝
+        <em>P</em><sup>2/3</sup>, factor 1.5<sup>2/3</sup> = 1.31. Both laws are linear in <em>v</em>, so raising the pad speed increases
+        the rate in proportion everywhere on the wafer, while raising the pressure raises the pressure on the down-areas too. Under Preston's
+        law, or Zhao and Shi's, a uniform rise leaves the up/down ratio of §7.1 unchanged; under the threshold law it lowers the
+        selectivity the threshold adds, because the threshold becomes a smaller fraction of the down-area pressure (8.81 falls to 4.15 if
+        the §7.1 pressures are all raised by 1.5 times). In oil there is no water to hydrate the oxide: the silica particles, about as
+        hard as the oxide, deform it but cannot cut away unreacted SiO₂, so almost nothing is removed. The water is the chemical half of
+        chemical mechanical polishing for an oxide.</p></div>
+    </details>
+
+
+    <h2 id="s7">7 · How CMP planarizes</h2>
+
+    <p>
+      A removal rate that was the same everywhere would lower the surface without flattening it. To planarize a film with topography, the
+      surfaces of elevated features, the up-areas, must be eroded faster than those at lower elevations, the down-areas (notes p. 119). The
+      selectivity is observed to depend on the feature dimensions, the structure and surface condition of the pad, and the height of the step
+      being removed (notes p. 119; Lecture 23 listed the same factors). This section explains the selectivity and why it depends on the
+      pattern.
+    </p>
+
+    <h3 id="s7-1">7.1 Up-areas and down-areas</h3>
+
+    <p>
+      The selectivity comes in large part from the compliance of the pad (Wolf §8.5.3.1). The pad is pressed onto the wafer, and the wafer's
+      raised features compress it more than the recessed regions do. The pad presses on the surface through the slurry, so the local pressure
+      is highest where it is most compressed: on the up-areas, and most of all at the upper corner of the leading edge of a feature, the edge
+      that the motion drives into the pad. By Preston's law the local removal rate follows the local pressure. The up-areas are therefore
+      removed faster, and the leading corners fastest. As the step erodes, the pad reaches further into the down-areas, their pressure and
+      removal rate rise toward those of the up-areas, and the rate at which the step height falls declines toward zero. In the last stage of
+      polishing the selectivity is so small that a small residual step remains, which in practice continued polishing cannot remove
+      (Wolf). That is consistent with CMP reaching <em>β</em> = 0.90–0.95 rather than 1 (§2), though Wolf states the two facts
+      separately.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 180" role="img" aria-labelledby="m13f11-t">
+      <title id="m13f11-t">A compliant pad pressed onto an oxide surface with steps: compressed most over the up-areas, with pressure largest at the leading corner</title>
+      <defs>
+        <marker id="m13f11-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+        </marker>
+        <marker id="m13f11-aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+        </marker>
+      </defs>
+      <path d="M20,150 L20,110 L70,110 L70,90 L170,90 L170,110 L240,110 L240,90 L340,90 L340,110 L400,110 L400,150 Z" class="dg-fill"/>
+      <text x="40" y="140" class="dg-label-sm">oxide</text>
+      <path d="M20,30 L400,30 L400,108 L346,108 Q340,88 334,88 L246,88 Q240,108 234,108 L176,108 Q170,88 164,88 L76,88 Q70,108 64,108 L20,108 Z" class="dg-guide"/>
+      <text x="110" y="45" class="dg-label-sm" text-anchor="middle">pad (compliant), moving left</text>
+      <line x1="300" y1="22" x2="240" y2="22" class="dg-line" stroke-width="1.4" marker-end="url(#m13f11-ar)"/>
+      <g class="dg-acc" stroke-width="1.6">
+        <line x1="162" y1="58" x2="162" y2="86" marker-end="url(#m13f11-aa)"/>
+        <line x1="332" y1="58" x2="332" y2="86" marker-end="url(#m13f11-aa)"/>
+      </g>
+      <g class="dg-line" stroke-width="1.3">
+        <line x1="120" y1="70" x2="120" y2="86" marker-end="url(#m13f11-ar)"/>
+        <line x1="290" y1="70" x2="290" y2="86" marker-end="url(#m13f11-ar)"/>
+        <line x1="205" y1="94" x2="205" y2="106" marker-end="url(#m13f11-ar)"/>
+        <line x1="370" y1="94" x2="370" y2="106" marker-end="url(#m13f11-ar)"/>
+      </g>
+      <text x="74" y="166" class="dg-label-sm">up-area</text>
+      <text x="180" y="166" class="dg-label-sm">down-area</text>
+      <text x="326" y="56" class="dg-label-sm" text-anchor="end">leading corner</text>
+      </svg>
+      <figcaption>After Wolf Figs. 8-24 and 8-26, schematic. Long arrows: largest pressure, at the leading corners of the up-areas (the pad
+      moves left, so the corners facing it lead); medium arrows on the rest of the up-areas; short arrows on the down-areas, where the
+      pad is compressed least.</figcaption>
+    </figure>
+
+    <p>
+      The sub-linear and threshold laws of §6.2 change how much a given pressure difference buys. The example below uses an assumed split
+      of the pressure between up- and down-areas, chosen only to compare the three laws.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Up-area to down-area selectivity under the three removal laws (illustrative)</div>
+      <div class="ex-body">
+        <p><b>Given</b> local pressures of 1.5 times the mean on the up-areas and 0.5 times on the down-areas (assumed for illustration);
+        the same pad speed everywhere; for eq. (13.11), <em>P</em><sub>th</sub> = 0.4 times the mean. <b>Find</b> the ratio of up-area to
+        down-area removal rate, the selectivity, under eqs. (13.8), (13.10) and (13.11).</p>
+        <p><b>Plan.</b> The velocity and <em>K</em><sub>p</sub> cancel in each ratio, so pressures relative to the mean suffice.</p>
+        <p class="ex-step"><b>Preston.</b> 1.5/0.5 = 3.00.</p>
+        <p class="ex-step"><b>Zhao and Shi.</b> 1.5<sup>2/3</sup>/0.5<sup>2/3</sup> = 1.310/0.630 = 2.08 (equivalently 3<sup>2/3</sup>).</p>
+        <p class="ex-step"><b>With threshold.</b> (1.3104 − 0.5429)/(0.6300 − 0.5429) = 0.7675/0.0871 = 8.81, using 0.4<sup>2/3</sup> = 0.5429.</p>
+        <p class="ex-answer">Selectivities 3.0, 2.1 and 8.8. Check: the threshold law gives the highest selectivity because it subtracts
+        the same amount from both rates, a large fraction of the small down-area rate and a small fraction of the large up-area rate. This is
+        why Wolf reports that a higher threshold pressure improves the planarization efficiency.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m13f12-t">
+      <title id="m13f12-t">Removal rate against local pressure for Preston's law, Zhao and Shi's law and the threshold law, normalised at the mean pressure</title>
+      <line x1="60" y1="205" x2="400" y2="205" class="dg-rule" stroke-width="1.2"/>
+      <line x1="60" y1="205" x2="60" y2="25" class="dg-rule" stroke-width="1.2"/>
+      <g class="dg-label-sm" text-anchor="middle">
+        <text x="60" y="221">0</text><text x="145" y="221">0.5</text><text x="230" y="221">1.0</text><text x="315" y="221">1.5</text><text x="400" y="221">2.0</text>
+      </g>
+      <g class="dg-label-sm" text-anchor="end">
+        <text x="52" y="209">0</text><text x="52" y="171.5">0.5</text><text x="52" y="134">1.0</text><text x="52" y="96.5">1.5</text><text x="52" y="59">2.0</text>
+      </g>
+      <line x1="145" y1="205" x2="145" y2="25" class="dg-guide" stroke-dasharray="3 3"/>
+      <line x1="315" y1="205" x2="315" y2="25" class="dg-guide" stroke-dasharray="3 3"/>
+      <text x="149" y="36" class="dg-label-sm">down-area</text>
+      <text x="319" y="36" class="dg-label-sm">up-area</text>
+      <path d="M60.0,205.0 L64.2,203.1 L68.5,201.2 L72.8,199.4 L77.0,197.5 L81.2,195.6 L85.5,193.8 L89.8,191.9 L94.0,190.0 L98.2,188.1 L102.5,186.2 L106.8,184.4 L111.0,182.5 L115.2,180.6 L119.5,178.8 L123.8,176.9 L128.0,175.0 L132.2,173.1 L136.5,171.2 L140.8,169.4 L145.0,167.5 L149.2,165.6 L153.5,163.8 L157.8,161.9 L162.0,160.0 L166.2,158.1 L170.5,156.2 L174.8,154.4 L179.0,152.5 L183.2,150.6 L187.5,148.8 L191.8,146.9 L196.0,145.0 L200.2,143.1 L204.5,141.2 L208.8,139.4 L213.0,137.5 L217.2,135.6 L221.5,133.8 L225.8,131.9 L230.0,130.0 L234.2,128.1 L238.5,126.2 L242.8,124.4 L247.0,122.5 L251.2,120.6 L255.5,118.8 L259.8,116.9 L264.0,115.0 L268.2,113.1 L272.5,111.2 L276.8,109.4 L281.0,107.5 L285.2,105.6 L289.5,103.7 L293.8,101.9 L298.0,100.0 L302.2,98.1 L306.5,96.2 L310.8,94.4 L315.0,92.5 L319.2,90.6 L323.5,88.8 L327.8,86.9 L332.0,85.0 L336.2,83.1 L340.5,81.2 L344.8,79.4 L349.0,77.5 L353.2,75.6 L357.5,73.8 L361.8,71.9 L366.0,70.0 L370.2,68.1 L374.5,66.2 L378.8,64.4 L383.0,62.5 L387.2,60.6 L391.5,58.8 L395.8,56.9 L400.0,55.0" class="dg-line" stroke-width="1.6"/>
+      <path d="M60.0,205.0 L64.2,198.6 L68.5,194.8 L72.8,191.7 L77.0,188.8 L81.2,186.2 L85.5,183.8 L89.8,181.5 L94.0,179.4 L98.2,177.3 L102.5,175.2 L106.8,173.3 L111.0,171.4 L115.2,169.5 L119.5,167.8 L123.8,166.0 L128.0,164.3 L132.2,162.6 L136.5,161.0 L140.8,159.3 L145.0,157.8 L149.2,156.2 L153.5,154.7 L157.8,153.1 L162.0,151.6 L166.2,150.2 L170.5,148.7 L174.8,147.3 L179.0,145.9 L183.2,144.5 L187.5,143.1 L191.8,141.7 L196.0,140.4 L200.2,139.0 L204.5,137.7 L208.8,136.4 L213.0,135.1 L217.2,133.8 L221.5,132.5 L225.8,131.3 L230.0,130.0 L234.2,128.8 L238.5,127.5 L242.8,126.3 L247.0,125.1 L251.2,123.9 L255.5,122.7 L259.8,121.5 L264.0,120.3 L268.2,119.1 L272.5,118.0 L276.8,116.8 L281.0,115.7 L285.2,114.5 L289.5,113.4 L293.8,112.3 L298.0,111.1 L302.2,110.0 L306.5,108.9 L310.8,107.8 L315.0,106.7 L319.2,105.6 L323.5,104.6 L327.8,103.5 L332.0,102.4 L336.2,101.3 L340.5,100.3 L344.8,99.2 L349.0,98.2 L353.2,97.1 L357.5,96.1 L361.8,95.1 L366.0,94.0 L370.2,93.0 L374.5,92.0 L378.8,91.0 L383.0,89.9 L387.2,88.9 L391.5,87.9 L395.8,86.9 L400.0,85.9" class="dg-line" stroke-width="1.6" stroke-dasharray="6 4"/>
+      <path d="M60.0,205.0 L64.2,205.0 L68.5,205.0 L72.8,205.0 L77.0,205.0 L81.2,205.0 L85.5,205.0 L89.8,205.0 L94.0,205.0 L98.2,205.0 L102.5,205.0 L106.8,205.0 L111.0,205.0 L115.2,205.0 L119.5,205.0 L123.8,205.0 L128.0,205.0 L132.2,201.3 L136.5,197.7 L140.8,194.2 L145.0,190.7 L149.2,187.3 L153.5,183.9 L157.8,180.6 L162.0,177.4 L166.2,174.1 L170.5,171.0 L174.8,167.8 L179.0,164.7 L183.2,161.7 L187.5,158.6 L191.8,155.6 L196.0,152.7 L200.2,149.7 L204.5,146.8 L208.8,144.0 L213.0,141.1 L217.2,138.3 L221.5,135.5 L225.8,132.7 L230.0,130.0 L234.2,127.3 L238.5,124.6 L242.8,121.9 L247.0,119.2 L251.2,116.6 L255.5,114.0 L259.8,111.4 L264.0,108.8 L268.2,106.2 L272.5,103.7 L276.8,101.2 L281.0,98.6 L285.2,96.1 L289.5,93.7 L293.8,91.2 L298.0,88.7 L302.2,86.3 L306.5,83.9 L310.8,81.5 L315.0,79.1 L319.2,76.7 L323.5,74.3 L327.8,72.0 L332.0,69.6 L336.2,67.3 L340.5,65.0 L344.8,62.7 L349.0,60.4 L353.2,58.1 L357.5,55.8 L361.8,53.5 L366.0,51.3 L370.2,49.0 L374.5,46.8 L378.8,44.6 L383.0,42.4 L387.2,40.2 L391.5,38.0 L395.8,35.8 L400.0,33.6" class="dg-acc" stroke-width="2.2"/>
+      <line x1="160" y1="52" x2="184" y2="52" class="dg-line" stroke-width="1.6"/><text x="190" y="56" class="dg-label-sm">Preston, P</text>
+      <line x1="160" y1="70" x2="184" y2="70" class="dg-line" stroke-width="1.6" stroke-dasharray="6 4"/><text x="190" y="74" class="dg-label-sm">Zhao–Shi, P<tspan baseline-shift="super" style="font-size:75%">2/3</tspan></text>
+      <line x1="160" y1="88" x2="184" y2="88" class="dg-acc" stroke-width="2.2"/><text x="190" y="92" class="dg-label-sm">threshold, P<tspan baseline-shift="sub" style="font-size:75%">th</tspan> = 0.4</text>
+      <text x="230" y="244" class="dg-label" text-anchor="middle">local pressure / mean pressure</text>
+      <text x="18" y="115" class="dg-label" text-anchor="middle" transform="rotate(-90 18 115)">RR / RR at mean</text>
+      </svg>
+      <figcaption>Eqs. (13.8), (13.10) and (13.11), each scaled to 1 at the mean pressure. At the down-area pressure (0.5) the threshold
+      law gives 0.19 against 0.63 for the <em>P</em><sup>2/3</sup> law, while at the up-area pressure (1.5) it gives 28 % more, 1.68
+      against 1.31; the ratio of the two points on each curve is the selectivity of the example.</figcaption>
+    </figure>
+
+    <h3 id="s7-2">7.2 Pattern dependence</h3>
+
+    <p>
+      The degree of planarization depends on the size of the features and on their density within a region of the die, and this dependence
+      is one cause of within-die non-uniformity (notes p. 120). Narrow, isolated features are planarized to a greater degree than wide,
+      isolated features or narrow, densely spaced ones (notes p. 115). Wolf (§8.5.3.2) gives the reasons.
+    </p>
+
+    <ul>
+      <li><b>Narrow against wide.</b> The leading edge of a feature is removed fastest, and because the carrier rotates the wafer, every top
+      edge of a feature becomes the leading edge in turn. A narrow feature is all edge and is planarized quickly. A wide feature loses its
+      edges, but its centre is polished more slowly than its edges, so wide features planarize more slowly.</li>
+      <li><b>Isolated against dense.</b> The time to planarize an up-area depends on the width of the up-area, the width of the down-areas
+      beside it, and the ability of the pad to span the distance between up-areas rigidly (Burke). A stiffer pad spans the gaps, removes
+      less from the down-areas and planarizes better; a softer pad sags into the gaps, removes more from the down-areas and planarizes
+      worse.  When features are farther apart than the levelling distance of the pad, the pad follows the surface and there is no
+      selectivity at all.</li>
+    </ul>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 170" role="img" aria-labelledby="m13f13-t">
+      <title id="m13f13-t">Successive surface profiles over a narrow and a wide oxide feature during polishing: the narrow feature flattens first, the wide one keeps a central plateau</title>
+      <rect x="10" y="130" width="400" height="20" class="dg-fill"/>
+      <rect x="70" y="112" width="30" height="18" class="dg-ink"/>
+      <rect x="230" y="112" width="140" height="18" class="dg-ink"/>
+      <path d="M10,100 L60,100 L62,70 L108,70 L110,100 L220,100 L222,70 L378,70 L380,100 L410,100" class="dg-guide" stroke-dasharray="4 3"/>
+      <path d="M10,100 L58,100 Q72,86 85,86 Q98,86 112,100 L218,100 Q230,80 250,78 L350,78 Q370,80 382,100 L410,100" class="dg-line" stroke-width="1.3"/>
+      <path d="M10,102 L56,102 Q85,96 114,102 L216,102 Q232,90 262,88 L338,88 Q368,90 384,102 L410,102" class="dg-acc" stroke-width="1.8"/>
+      <text x="85" y="160" class="dg-label-sm" text-anchor="middle">narrow: nearly flat</text>
+      <text x="300" y="160" class="dg-label-sm" text-anchor="middle">wide: plateau remains</text>
+      <text x="300" y="64" class="dg-label-sm" text-anchor="middle">initial (dashed)</text>
+      </svg>
+      <figcaption>After Wolf Fig. 8-28, schematic: initial surface (dashed), an intermediate profile and a later one (accent). Rotation makes
+      every edge a leading edge, so the narrow feature is rounded off and removed while the wide feature keeps a raised centre.</figcaption>
+    </figure>
+
+    <p>
+      Planarization is therefore slowest over the largest or densest interconnect structures next to wide open field areas, scribe lines and
+      the wafer edge, and fastest over small arrays and narrow, isolated features (Wolf). The pad's stiffness cannot simply be raised to fix
+      this: a pad with a large levelling distance also responds to the non-flatness of the wafer itself (thickness variation and bow), which
+      creates within-wafer non-uniformity. The standard pad for oxide CMP is a compromise between the two, a hard cast-polyurethane top pad
+      (IC-1000) for planarization over a soft felt underpad (Suba-IV) for uniformity, at some cost in planarization (Wolf §8.11.1). An acceptable
+      degree of planarization also has to be specified, because late in the polish material is removed nearly as fast from the down-areas as
+      from the up-areas and the step no longer falls appreciably (Wolf §8.5.3.2).
+    </p>
+
+    <h3 id="s7-3">7.3 Two kinds of polishing job</h3>
+
+    <p>
+      The notes divide CMP processes into two categories (p. 119), and they end differently.
+    </p>
+
+    <ol type="a">
+      <li><b>Planarizing a homogeneous film</b>, such as an ILD oxide, and stopping while a layer of the film remains everywhere. The
+      polished surface is all oxide, and everything in §§6–7.2 applies: the selectivity between up- and down-areas does the work. (The
+      notes' wording, "stopping while the removal of the surface film is complete", reverses Wolf's "incomplete"; the film is not removed.)</li>
+      <li><b>Removing a deposited film from the high regions entirely</b>, so that it remains only in recesses below the surface, as in
+      copper damascene, where copper over a tantalum barrier is polished until it is left only in trenches. The film starts roughly planar,
+      so the removal is essentially non-selective until the field is cleared. If polishing continues, material in the trenches keeps being
+      removed, more in wide trenches than in narrow ones: this is dishing (notes p. 120).</li>
+    </ol>
+
+    <p>
+      The second kind, with the slurries, endpoint detection and the dishing of copper lines, is the subject of <a href="m14-cmp-slurries-damascene.html#s4">M14</a>.
+    </p>
+
+    <details class="check">
+      <summary>A die has an isolated 1 µm wide metal line, an isolated 200 µm wide metal pad and a dense array of 1 µm lines at 1 µm spacing,
+        all under the same oxide. Which is planarized fastest, and why? What do the sources say about the order of the other two? What does a
+        much softer pad do?</summary>
+      <div class="answer"><p>Fastest: the isolated narrow line, which is all leading edge and carries a high local pressure (notes p. 115).
+        The notes and Wolf put both the wide isolated pad and the narrow dense array below it, but do not order those two against each
+        other. The 200 µm pad loses its edges first while its centre polishes slowly, so a plateau remains; the array's planarization time
+        depends on the widths of its up- and down-areas and on the pad's ability to span them (Burke). Wolf's summary puts the slowest
+        planarization over the largest or densest structures next to wide open areas. A softer pad has a shorter levelling distance: it
+        sags into the down-areas, removes more from the low regions and planarizes less selectively, while the within-wafer uniformity may
+        improve.</p></div>
+    </details>
+
+
+    <h2 id="s8">8 · The board problems, collected</h2>
+
+    <p>
+      Lectures 21 and 22 defined most of the quantities at the board without working numbers (Lecture 21 did total the stack of p. 108); the notes give the stack of p. 108 and the limits of
+      each definition. Each is worked on this page.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Problem</th><th>Method</th><th>Board or notes values</th><th>Result</th><th>Worked in</th></tr></thead>
+      <tbody>
+        <tr><td>Cumulative step heights</td><td>Running sum of conformal thicknesses</td><td>0.3, 0.4, 0.5, 1.0 µm (notes p. 108; Lecture 21)</td><td>0.3, 0.7, 1.2, 2.2 µm; against ±0.5 µm</td><td><a href="#s1-1">§1.1</a></td></tr>
+        <tr><td>Stringer height</td><td><em>h</em><sub>1</sub> + <em>h</em><sub>2</sub> vertical at the foot</td><td>Sketch only (notes p. 108)</td><td>0.9 µm, 80 % overetch for 0.4 + 0.5 µm</td><td><a href="#s1-2">§1.2</a></td></tr>
+        <tr><td>Planarization factor</td><td><em>β</em> = 1 − <em>t</em><sup>f</sup>/<em>t</em><sup>i</sup> (13.2)</td><td>Limits <em>β</em> = 0 and 1; "0.9 or something" (Lecture 21); CMP 0.90–0.95</td><td>0.925 for 0.80 → 0.06 µm</td><td><a href="#s2">§2</a></td></tr>
+        <tr><td>Void limit for etchback</td><td><em>h</em>/<em>s</em> ≤ 0.4</td><td>0.4 and 1.25 µm (notes p. 111)</td><td>1.25 µm for 0.5 µm metal</td><td><a href="#s3-2">§3.2</a></td></tr>
+        <tr><td>Removal rate</td><td>RR = Δ<em>T</em>/<em>t</em> (13.3)</td><td>Definition (Lecture 22)</td><td>123 nm/min for 430 nm in 3.5 min</td><td><a href="#s5-1">§5.1</a></td></tr>
+        <tr><td>Degree of planarization</td><td>(<em>H</em><sup>i</sup> − <em>H</em><sup>f</sup>)/<em>H</em><sup>i</sup> × 100 % (13.4)</td><td>DOP = 100 % when <em>H</em><sup>f</sup> = 0 (Lecture 22)</td><td>85 % for 0.80 → 0.12 µm</td><td><a href="#s5-2">§5.2</a></td></tr>
+        <tr><td>Non-uniformity</td><td><em>σ</em>/<em>x̄</em>, <em>n</em> − 1 (13.5)</td><td>Definitions (notes pp. 113–116)</td><td>WIWNU 2.4 % from five sites</td><td><a href="#s5-3">§5.3</a></td></tr>
+        <tr><td>Efficiency of planarization</td><td>(<em>T</em><sub>r</sub> − <em>T</em><sub>d</sub>)/<em>T</em><sub>r</sub> × 100 (13.6); deposit (13.7)</td><td>100 % when <em>T</em><sub>d</sub> = 0 (Lecture 22)</td><td>1.5 µm at 50 %, 1.125 µm at 80 %</td><td><a href="#s5-4">§5.4</a></td></tr>
+        <tr><td>Preston's law</td><td>RR = <em>K</em><sub>p</sub><em>Pv</em> (13.8)</td><td>Definition (Lecture 22)</td><td><em>K</em><sub>p</sub> = 2.3×10⁻¹³ Pa⁻¹; 98 nm/min at 5 psi, 40 ft/min</td><td><a href="#s6-1">§6.1</a></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <details class="check">
+      <summary>An oxide over metal-1 has a 0.9 µm step. After 4.0 min of polishing a blanket monitor wafer has lost 900 nm, and the step on the
+        product wafer is 0.07 µm. Give the blanket removal rate, the planarization factor and the DOP. The same tool is run at 4 psi and
+        60 ft/min instead of 7 psi and 35 ft/min: what blanket rate does Preston's law predict?</summary>
+      <div class="answer"><p>RR = 900/4.0 = 225 nm/min. <em>β</em> = 1 − 0.07/0.9 = 1 − 0.0778 = 0.922, and DOP = 92.2 %, the same number as a
+        percentage. Under Preston's law the rate scales with <em>Pv</em>: (4 × 60)/(7 × 35) = 240/245 = 0.980, so 0.980 × 225 = 220 nm/min,
+        almost unchanged, because the lower pressure is nearly offset by the higher speed. Under Zhao and Shi's law the pressure factor would be
+        (4/7)<sup>2/3</sup> = 0.689 rather than 0.571, so the rate would rise instead, by 18 %: 0.689 × (60/35) = 1.18, or 266 nm/min.</p></div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Conformal films stack the steps: 0.3, 0.7, 1.2, 2.2 µm for field oxide 0.3, poly 0.4, M1 0.5, M2 1.0 µm. Three failures: step
+        coverage (<em>t</em><sub>s</sub>/<em>t</em><sub>n</sub>), stringers (vertical thickness <em>h</em><sub>1</sub> + <em>h</em><sub>2</sub>
+        at the foot), depth of focus (planar within ±0.5 µm). Dielectric design rules: poly–M1 spacing, coincident edges, M1–M1 spacing.</li>
+        <li>Degrees: smoothing, partial, complete local (gaps &lt; ≈ 10 µm), complete global. <em>β</em> = 1 − <em>t</em><sup>f</sup>/<em>t</em><sup>i</sup>:
+        0 for none or smoothing, 1 for complete; CMP 0.90–0.95, over several mm.</li>
+        <li>Before CMP: doped-glass reflow (Wolf: above 800 °C, a 900 °C step; lecture 850–900 °C; pure SiO₂ ≈ 1700 °C per the lectures); sacrificial etchback (SOG or resist,
+        O₂/CF₄, equal rates; two-level metal to 1 µm; steps 2–10 µm apart; voids above aspect ratio 0.4, so not below 1.25 µm M1 spacing).
+        All local only; inadequate beyond three metal levels.</li>
+        <li>Tool: wafer face down on a rotating carrier, downforce, pad on a rotating platen, colloidal slurry (10–100 nm abrasive). Same-sense
+        equal rotation gives uniform relative velocity (M04). Slurry is not recycled. Oxide CMP removes ≈ 0.5 ± 0.01 µm.</li>
+        <li>Metrics: RR = Δ<em>T</em>/<em>t</em> on a blanket wafer (goal 100–140 nm/min); DOP = (<em>H</em><sup>i</sup> − <em>H</em><sup>f</sup>)/<em>H</em><sup>i</sup>
+        × 100 % = 100<em>β</em>; WIDNU, WIWNU, WTWNU = <em>σ</em>/<em>x̄</em> with <em>n</em> − 1 (goal ±2–5 % within wafer); dishing;
+        %EOP = (<em>T</em><sub>r</sub> − <em>T</em><sub>d</sub>)/<em>T</em><sub>r</sub> × 100, deposit <em>T</em><sub>total</sub> =
+        <em>H</em><sub>metal</sub>/EOP + <em>T</em><sub>cov</sub>.</li>
+        <li>Preston (1927): RR = <em>K</em><sub>p</sub><em>Pv</em>, empirical; general <em>K</em><sub>p</sub><em>P</em><sup>α</sup><em>v</em><sup>β</sup>;
+        Zhao and Shi <em>K</em><sub>p</sub><em>vP</em><sup>2/3</sup>, with a threshold pressure. Typical 7 psi, 30–40 ft/min.</li>
+        <li>Oxide removal: particle pressure deforms the oxide plastically (and frictional heat helps) → water enters (hydration) → the soft
+        layer is plowed off by sliding particles → repeat. Pressure feeds the first step, speed the third. SiO₂ dissolution a co-factor (higher
+        pH faster). Silica slurry in KOH/NH₄OH. Softer dielectrics polish faster: Si₃N₄ slowest; doping with P₂O₅, B₂O₃ or F softens SiO₂.</li>
+        <li>Planarization: pad compliance puts more pressure on up-areas and leading corners; selectivity falls as the step falls, leaving a
+        small residue. Narrow isolated features planarize fastest; wide isolated and narrow dense ones slower; beyond the pad's levelling
+        distance, none. Stiff pad: better planarization, worse WIWNU; IC-1000 on Suba-IV. Two jobs: planarize a homogeneous film (ILD), or
+        clear the field and leave the film in recesses (damascene; dishing) — M14.</li>
+      </ul>
+    </div>
+
+    <h2>Where this page follows the class notes against the literature</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Point</th><th>Notes or lecture</th><th>Sources</th><th>On this page</th></tr></thead>
+      <tbody>
+        <tr><td>Date of Preston's law</td><td>Lecture 22: 1938. Notes: no date</td><td>F. W. Preston, <i>J. Soc. Glass Technol.</i> 11, 214 (1927), Wolf ref. 9</td><td>1927 (§6.1)</td></tr>
+        <tr><td>Oxides that soften SiO₂</td><td>Notes p. 118: "P₂O₃ and B₂O₅" (as in Wolf p. 342)</td><td>The network oxides of PSG and BSG are P₂O₅ and B₂O₃</td><td>P₂O₅ and B₂O₃, notes' form quoted (§6.4)</td></tr>
+        <tr><td>Category (a) of removal</td><td>Notes p. 119: stopping while removal of the surface film is "complete"</td><td>Wolf Fig. 8-25: "incomplete"; the film remains everywhere</td><td>Wolf's reading, flagged (§7.3)</td></tr>
+        <tr><td>Which film dishes in the oxide case</td><td>Notes p. 115: "metal film has been eroded" between the steps</td><td>Wolf p. 328: the oxide is eroded between steps so its surface is not planar</td><td>Both kinds of dishing stated (§5.3)</td></tr>
+        <tr><td>Stringer height</td><td>Lecture 21 captions: "2H1 plus h two"</td><td>Notes p. 108 sketch; geometry: <em>h</em><sub>1</sub> + <em>h</em><sub>2</sub></td><td><em>h</em><sub>1</sub> + <em>h</em><sub>2</sub> (§1.2)</td></tr>
+        <tr><td>Carrier and platen rotation</td><td>Lecture 5: opposite senses</td><td>Rigid-body kinematics (M04 §6.4); Wolf §8.5.1.1 describes the synchronous case wrongly and supports only the frequency offset</td><td>Same sense, as in M04 §6.4 (§4)</td></tr>
+        <tr><td>What plows the oxide</td><td>Lecture 24: pad asperities cut the surface, removing chips or debris (a general definition read in class)</td><td>Notes p. 120, Wolf §8.5.2.1, §8.5.3: the abrasive particles plow the hydrated layer; the pad grips them and transmits the pressure</td><td>Notes' and Wolf's mechanism; lecture's definition attributed (§6.3)</td></tr>
+        <tr><td>"Melting point" of doped glass</td><td>Lectures 22–23: 800–900 °C, reflow 850–900 °C</td><td>Glass softens and flows; Wolf: doped-glass reflow above 800 °C, a 900 °C reflow step</td><td>Flow temperature; both ranges (§3.1)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Class notes pp. 106–110. Lecture 21. S. Wolf, <i>Silicon Processing for the VLSI Era</i>, Vol. 4 (Lattice Press, 2002),
+        §8.1.1–8.1.3, pp. 313–320, eq. 8.2, Figs. 8-2 to 8-4. M11 eq. (11.2)</td></tr>
+      <tr><td>§2</td><td>Class notes pp. 106–107, 112. Lecture 21. Wolf §8.1.1, eq. 8.1, Fig. 8-1; §8.2, p. 323</td></tr>
+      <tr><td>§3</td><td>Class notes pp. 110–112. Lectures 21–23. Wolf §8.1.4–8.2, pp. 320–323, Figs. 8-5 to 8-7; §8.4 (history); §8.11.1;
+        doped-glass reflow and post-metal temperatures in Wolf Ch. 13 (silicides, plugs) and §3.2.2.1 (final hydrogen anneal)</td></tr>
+      <tr><td>§4</td><td>Class notes p. 112, p. 124 (particle size). Lectures 20–23 (polished materials; slurry not recycled, Lecture 21).
+        Wolf §8.2, pp. 323–324; §8.5.1, p. 336; §8.5.1.1, pp. 339–340; pp. 374–375 (slurry re-use). M04 §6.4</td></tr>
+      <tr><td>§5</td><td>Class notes pp. 113–117. Lecture 22. Wolf §8.3, pp. 325–333, eqs. 8.3–8.12, Figs. 8-9 to 8-17</td></tr>
+      <tr><td>§6</td><td>Class notes pp. 117–118, 120. Lectures 22–24. Wolf §8.5.1–8.5.3, pp. 335–344, eqs. 8.13–8.17, Figs. 8-19 to 8-24;
+        §8.11.1. F. W. Preston, <i>J. Soc. Glass Technol.</i> <b>11</b>, 214 (1927). B. Zhao and F. G. Shi, <i>Electrochem. Solid-State
+        Lett.</i> <b>2</b>, 145 (1999). F. G. Shi and B. Zhao, <i>Appl. Phys. A</i> <b>67</b>, 249 (1998). W.-T. Tseng and Y.-L. Wang,
+        <i>J. Electrochem. Soc.</i> <b>144</b>, L15 (1997), Wolf ref. 13. T. Izumitani and S. Harada, <i>Glass Technol.</i> <b>12</b>, 131 (1971). L. M. Cook, "Chemical processes in glass polishing," <i>J. Non-Cryst.
+        Solids</i> (1990), Wolf ref. 17</td></tr>
+      <tr><td>§7</td><td>Class notes pp. 115, 119–120. Lecture 23. Wolf §8.5.3.1–8.5.3.2, pp. 344–349, Figs. 8-24 to 8-28; §8.11.1 (pads);
+        P. A. Burke, Proc. VMIC 1991, p. 379, as cited by Wolf</td></tr>
+      <tr><td>§8</td><td>This page</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m12-lithography-sources.html"><span>Previous</span>M12 · Advanced Lithography II: Sources and Tricks</a>
+      <a class="next" href="m14-cmp-slurries-damascene.html"><span>Next</span>M14 · CMP: Slurries, Damascene and Endpoint</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

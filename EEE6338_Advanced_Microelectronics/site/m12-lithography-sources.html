@@ -1,0 +1,1312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M12 · Advanced Lithography II: Sources and Tricks — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M12 · Advanced Lithography II: Sources and Tricks</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 12</p>
+    <h1>Advanced Lithography II: Sources and Tricks</h1>
+    <p class="lede">
+      The hardware that prints below the wavelength: the KrF, ArF and F₂ excimer lasers and what their pulsed, narrow-line output demands
+      of the exposure tool; the lens materials that survive deep-ultraviolet light; the resolution-enhancement techniques — off-axis
+      illumination, optical proximity correction and phase-shift masks — that lowered <em>k</em><sub>1</sub>; the limits of optical
+      lithography and the water immersion that moved them; and the non-optical candidates the notes list: X-ray proximity printing,
+      extreme-ultraviolet reflective projection, electron-beam direct writing and electron-beam projection (SCALPEL).
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m11-lithography-resists.html">M11</a></span>
+      <span><b>Read time</b> ~50 min</span>
+      <span><b>Sources</b> Class notes pp. 96–105 (Chapter 7); Lectures 19–20; Wolf Vol. 4 Ch. 7; Plummer, Deal &amp; Griffin §5.2.4, §5.6</span>
+    </div>
+
+    <p>
+      M11 set the two limits every projection tool works against: the feature size <em>F</em> = 0.5<em>λ</em>/NA and the depth of
+      focus DOF = 0.6<em>λ</em>/NA² of eq. (<a href="m11-lithography-resists.html#eq11-2">11.2</a>), with <em>λ</em> the exposure
+      wavelength and NA the numerical aperture, the sine of the half-angle of the cone of light the lens delivers to the wafer. M11 also
+      introduced the general form, <em>R</em> = <em>k</em><sub>1</sub><em>λ</em>/NA, in which the factor <em>k</em><sub>1</sub> collects
+      everything other than wavelength and aperture: the resist, the illumination and the mask. That form leaves three levers on the
+      resolution <em>R</em>, and this module, Chapter 7 of the notes (pp. 96–105), takes them in turn. The wavelength is set by the source,
+      so §1 describes the excimer lasers that produce 248, 193 and 157 nm light, and §2 the lens materials that transmit it. The factor
+      <em>k</em><sub>1</sub> is lowered by tricks of illumination and mask design, §§3–4, of which the notes treat the phase-shift mask in
+      detail. The aperture is limited by geometry, which §5 shows was the limit that water immersion moved. When all three are exhausted,
+      the remaining routes leave light behind: X-rays, extreme ultraviolet and electrons, §§6–9. Lecture 20 covered X-ray proximity
+      printing, electron-beam writing and ion beams from outside the notes, and §10 collects the two calculations of these lectures.
+    </p>
+
+    <h2 id="s1">1 · Excimer lasers: the deep-UV source</h2>
+
+    <p>
+      A mercury arc lamp, the source of the g-line (436 nm) and i-line (365 nm), emits only weakly in the deep ultraviolet (DUV) and radiates
+      in all directions. A laser emits a collimated beam, so it delivers far more usable power into the narrow cone an illuminator accepts:
+      Wolf puts its radiance several orders of magnitude above the arc lamp's (p. 261). The lasers that emit at 248, 193 and 157 nm are
+      excimer lasers, and the notes open Chapter 7 with them (p. 96).
+    </p>
+
+    <h3 id="s1-1">1.1 What an excimer is, and why it lases</h3>
+
+    <p>
+      An <b>excimer</b> ("excited dimer") is a molecule of one noble-gas atom and one halogen atom, krypton and fluorine in KrF, that is bound
+      only while one of its atoms is electronically excited (Wolf pp. 259–260). Ground-state Kr and F do not react. In the laser, a capacitor
+      charged to about 12 kV discharges in about 75 ns through a high-pressure mixture of the gases; the discharge produces excited and ionized
+      atoms, which combine into KrF* (the asterisk marks the excited state). KrF* returns to the ground state by emitting a 248 nm photon, and
+      the ground-state molecule, being unbound, dissociates at once into Kr and F. The lower level of the laser transition therefore never
+      accumulates molecules. Wolf's reason for the ease of the population inversion a laser needs, more molecules in the upper state than in the
+      lower, is the other half of the picture: the excimer's spontaneous lifetime is relatively long, nanoseconds to microseconds, so the
+      discharge can build up the excited population (p. 260). A photon emitted by one KrF* stimulates the decay of others; mirrors at the ends of the cavity return the light through
+      the gas, and the stimulated emission builds until almost all the excimers have decayed. The result is a short pulse, after which the
+      capacitor must recharge before the next. Replacing krypton by argon gives ArF* and 193 nm; the F₂ laser emits at 157 nm. Wolf notes that
+      a KrF laser becomes an ArF laser by changing only the gas and the cavity mirrors (p. 259).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 230" role="img" aria-labelledby="m12f1-t">
+        <title id="m12f1-t">Energy against internuclear distance for KrF: a bound excited state over an unbound ground state</title>
+        <line x1="50" y1="200" x2="400" y2="200" class="dg-rule" stroke-width="1.2"/>
+        <line x1="50" y1="200" x2="50" y2="20" class="dg-rule" stroke-width="1.2"/>
+        <text x="225" y="222" class="dg-label" text-anchor="middle">Kr–F separation</text>
+        <text x="20" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 20 110)">energy</text>
+        <path d="M95,30 C110,95 130,105 170,106 C215,107 260,85 380,62" class="dg-acc" fill="none" stroke-width="2"/>
+        <text x="300" y="62" class="dg-label">KrF* (bound)</text>
+        <path d="M80,150 C110,175 150,182 200,184 C260,186 320,186 380,186" class="dg-line" fill="none" stroke-width="1.8"/>
+        <text x="280" y="178" class="dg-label">Kr + F (unbound)</text>
+        <line x1="170" y1="108" x2="170" y2="181" class="dg-acc" stroke-width="1.8"/>
+        <path d="M165,170 L170,181 L175,170" class="dg-acc" fill="none" stroke-width="1.8"/>
+        <text x="178" y="145" class="dg-label-sm">248 nm photon</text>
+        <path d="M150,30 L160,96" class="dg-guide" stroke-dasharray="3 3"/>
+        <text x="146" y="26" class="dg-label-sm" text-anchor="middle">discharge pumps</text>
+      </svg>
+      <figcaption>The KrF excimer. The excited molecule has an energy minimum and so is bound; the ground state has none at that separation and
+        the atoms fly apart after emission, so the lower laser level stays empty. Schematic after Wolf Fig. 7-1, not to scale.</figcaption>
+    </figure>
+
+    <p>
+      The notes assign each laser to its technology generations: KrF to 0.35, 0.25 and 0.18 µm CMOS, ArF to 0.13 and 0.1 µm, and F₂ to below
+      0.1 µm (p. 96, where "0.13, 0.1 nm" and "below 0.1 nm" are slips for micrometres). Wolf gives the KrF nodes in micrometres and, in 2001, forecast
+      ArF between 130 and 100 nm and F₂ below 100 nm (p. 259).
+    </p>
+
+    <h3 id="s1-2">1.2 Pulsed output: power, dose and servicing</h3>
+
+    <p>
+      A lithographic KrF laser delivers 2–20 W of average power as pulses at 200–2500 Hz, each 5–20 ns long (notes p. 96) and carrying about
+      10 mJ (Wolf p. 261). Because the energy arrives in short pulses separated by long gaps, the power within a pulse is far above the
+      average, and that peak power can damage optical coatings and materials where the beam is concentrated, as in the stepper lens (Wolf
+      p. 261). The exposure dose is controlled by counting energy: the tool integrates the measured pulse energies and stops the laser when the
+      required dose is reached (Wolf p. 263). The rule in the notes and Wolf is that at least about 100 pulses are needed for 1 % dose control
+      (p. 96; Wolf p. 263). One reading of it: a dose assembled from <em>N</em> pulses can overshoot by up to one pulse, a relative error of
+      1/<em>N</em>, which is 1 % at <em>N</em> = 100. Wolf also ties dose control to the uniformity of the pulse energies (pp. 261, 265).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Average power, peak power and exposure time of a KrF laser</div>
+      <div class="ex-body">
+        <p><b>Given</b> pulses of 10 mJ, 10 ns long, at 2000 Hz (within Wolf's 5–20 ns and 200–2500 Hz); 100 pulses per exposure field.
+        <b>Find</b> the average power, the peak power, the time to expose one field, and the same time at the 1000 Hz of early lasers and
+        the 4000 Hz of the 2002 models.</p>
+        <p><b>Plan.</b> Average power is energy per pulse times pulses per second; peak power is energy per pulse divided by its duration;
+        exposure time is the number of pulses divided by the repetition rate.</p>
+        <p class="ex-step"><b>Average power.</b> 10 × 10⁻³ J × 2000 s⁻¹ = 20 W, the top of the notes' 2–20 W.</p>
+        <p class="ex-step"><b>Peak power.</b> 10 × 10⁻³ J / 10 × 10⁻⁹ s = 1.0 × 10⁶ W = 1.0 MW. The laser emits for 2000 × 10 ns = 2 × 10⁻⁵ of
+        each second, so the peak is 5 × 10⁴ times the average.</p>
+        <p class="ex-step"><b>Exposure time.</b> 100 pulses / 2000 s⁻¹ = 0.050 s = 50 ms per field. At 1000 Hz: 100 ms; at 4000 Hz: 25 ms.</p>
+        <p class="ex-answer">20 W average, 1.0 MW peak, 50 ms per field at 2000 Hz (100 ms at 1000 Hz, 25 ms at 4000 Hz). Doubling the
+        repetition rate halves the exposure time, as Wolf records for the step from 1000 to 2000 Hz (p. 263). Check: a 5 ns pulse doubles
+        the peak to 2.0 MW and a 20 ns pulse halves it to 0.50 MW, which is why lengthening the pulse is the ArF designer's remedy for
+        optical damage (§1.4).</p>
+      </div>
+    </div>
+
+    <p>
+      The gas is costly and toxic, and the discharge cavity is not sealed, so it is refilled about every 5 days (notes p. 96; Wolf pp. 263–264).
+      The pulses also sputter material onto the cavity's mirrors and windows. Wolf's 1998 figures, which the notes repeat, are cleaning after
+      10⁹ pulses and cavity replacement after 2.5 × 10⁹, the largest cost of operating the laser. In production a laser fires about 2 × 10⁹
+      pulses a year (Wolf p. 264).
+    </p>
+
+    <details class="check">
+      <summary>How often is a production KrF laser cleaned, and how often is its cavity replaced, by Wolf's 1998 figures? At 2000 Hz, for what
+        fraction of the year is the laser actually firing?</summary>
+      <div class="answer"><p>Cleaning: 10⁹ pulses / (2 × 10⁹ pulses per year) = 0.5 year, every 6 months. Replacement: 2.5 × 10⁹ / 2 × 10⁹ =
+        1.25 years, about 15 months; Wolf rounds to "about once a year". Firing time: 2 × 10⁹ / 2000 s⁻¹ = 1.0 × 10⁶ s = 11.6 days, 3.2 % of a
+        year. The laser spends most of its life waiting for wafers to move, align and step, so the service interval is set by pulse count,
+        not calendar time.</p></div>
+    </details>
+
+    <h3 id="s1-3">1.3 Line narrowing: why the bandwidth must be below a picometre</h3>
+
+    <p>
+      A refractive lens bends each wavelength by a different amount, because the refractive index of its material changes with wavelength
+      (dispersion), and the change is large in the DUV. A lens made of one material cannot correct for it, and a lens whose focal length
+      depends on wavelength focuses a broad-band source at a range of depths: <b>chromatic aberration</b>. The free-running 248 nm laser has a
+      spectral width of about 300 pm (0.3 nm), and the uncorrected DUV stepper lens requires less than 1 pm (Wolf pp. 261–262). Prisms and
+      gratings inside the cavity narrow the line, at some cost in power and stability, and a feedback loop holds the centre wavelength to a
+      similar accuracy, because for each 1 pm the wavelength drifts, the focus of the lens moves by about 0.15 µm (Wolf p. 262).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">What a picometre of bandwidth costs in focus</div>
+      <div class="ex-body">
+        <p><b>Given</b> a focus shift of 0.15 µm per pm of wavelength (Wolf p. 262); a KrF stepper with NA = 0.6. <b>Find</b> the spread of
+        focus for a 300 pm free-running line, a 1 pm line and the 0.5 pm line of a 2000 laser, and compare each with the course's depth of
+        focus.</p>
+        <p><b>Plan.</b> The spread of focal positions is the bandwidth times 0.15 µm/pm; the depth of focus is eq. (11.2).</p>
+        <p class="ex-step"><b>Depth of focus.</b> NA² = 0.36; DOF = 0.6 × 0.248 µm / 0.36 = 0.413 µm, that is ±0.207 µm.</p>
+        <p class="ex-step"><b>Free-running line.</b> 300 pm × 0.15 µm/pm = 45 µm, a hundred times the depth of focus.</p>
+        <p class="ex-step"><b>Narrowed lines.</b> 1 pm → 0.15 µm, 36 % of the depth of focus; 0.5 pm → 0.075 µm.</p>
+        <p class="ex-answer">Without narrowing, the image would be smeared over 45 µm of depth; at 1 pm the bandwidth alone consumes about a
+        third of the focus budget, which is why Wolf records a move to below 0.5 pm, and below 0.4 pm for the generation after 180 nm (p. 262).</p>
+      </div>
+    </div>
+
+    <h3 id="s1-4">1.4 ArF and F₂ lasers</h3>
+
+    <p>
+      The ArF laser must deliver more power at a higher repetition rate with a narrower line; the notes give 20 W average at 4 kHz (p. 97),
+      the figures of Cymer's 2002 Nanolith-7000 (Wolf p. 265). That is 20 W / 4000 s⁻¹ = 5 mJ per pulse. Optical materials degrade faster under
+      193 nm light, and the degradation is smaller when the peak power is lower, so the pulse is lengthened to spread the same energy over a
+      longer time (notes p. 97; Wolf p. 265).
+    </p>
+    <p>
+      The F₂ laser emits two lines, at 157.63 nm and 157.52 nm, with 87 % of the energy in the longer one (notes p. 97; Wolf p. 265). Lecture 19
+      gave the split the other way round; the notes' version is used here. The two lines are 0.11 nm = 110 pm apart, 550 times the 0.2 pm
+      bandwidth Wolf expects a 157 nm lens to need, so a refractive tool cannot accept both: the 1999 prototype Wolf describes was run on the
+      157.63 nm line alone, the line that carries 87 % of the energy (p. 265).
+    </p>
+
+    <details class="check">
+      <summary>An ArF laser delivers 20 W at 4 kHz. What is the energy per pulse? If the pulse is stretched from 10 ns to 20 ns, what
+        happens to the peak power and to the average power, and why does the designer want the first change?</summary>
+      <div class="answer"><p>20 W / 4000 s⁻¹ = 5.0 mJ per pulse. Peak power: 5 mJ / 10 ns = 0.50 MW, and 5 mJ / 20 ns = 0.25 MW, halved.
+        The average power is unchanged at 20 W, because the energy per pulse and the pulse rate are unchanged, so the exposure time is
+        unchanged. The lens degrades less at the lower peak power (notes p. 97; Wolf p. 265), so the stretched pulse buys lens lifetime at no
+        cost in throughput.</p></div>
+    </details>
+
+    <h2 id="s2">2 · Lens and mask materials for the deep UV</h2>
+
+    <p>
+      A refractive element must transmit the exposure light, keep its shape and index under intense pulses, and refract the same amount in
+      every direction. Ordinary optical glass fails the first below about 350 nm, where it begins to absorb (Lecture 19; Wolf Fig. 7-8).
+      Fused silica, amorphous SiO₂ of high purity, transmits through 248 nm and 193 nm, and the notes call it the "quartz optics" of 248 and
+      193 nm tools (p. 97). Crystalline quartz is not used for lenses: a crystal's refractive index can depend on the direction of
+      propagation and polarization, <b>birefringence</b>, and quartz has it, while the amorphous fused silica has very little (Wolf p. 271).
+    </p>
+
+    <p>
+      Two problems appear at shorter wavelengths. Under intense excimer light fused silica <b>compacts</b>, becoming denser and more absorbing,
+      which degrades the image and the light reaching the wafer; at 193 nm the compaction is severe enough that 193 nm lenses use at least some
+      calcium fluoride (CaF₂) elements, placed where the intensity is highest (Wolf p. 270). And at 157 nm fused silica absorbs too strongly
+      for lenses, and CaF₂ is "virtually the only" transmissive material (Wolf p. 270; notes p. 97). CaF₂ is a single crystal, which does not
+      compact, but it must be extremely pure and homogeneous to resist laser damage, and it is hygroscopic, soft and prone to chipping, so a
+      CaF₂ element takes 50–100 % longer to make than a glass one (notes p. 97; Wolf p. 271). In May 2001 crystalline CaF₂ was found to have an
+      intrinsic birefringence at 157 nm, a further burden on lens design (Wolf p. 271). Lecture 19 added other fluorides used as DUV optics:
+      MgF₂, AlF₃, LaF₃ and LiF. At 157 nm the whole optical path is purged with nitrogen (notes p. 97; Wolf p. 269); the notes give the reason in the resist
+      chapter, that at 157 nm even a monolayer of oxygen or water on the lens changes its transmission (p. 93; M11 §6). A 157 nm scanner was
+      estimated at $12–20 M (notes p. 97; Wolf p. 269). Its optics were expected to be <b>catadioptric</b>, combining mirrors with lenses,
+      because such designs are about a third the size and weight of an all-refractive one and need fewer and smaller elements (Wolf p. 269);
+      at 193 nm, SVG's catadioptric scanners needed 1.7 kg of CaF₂ where a refractive system needed 48 kg for its chromatic correction
+      (Wolf p. 268).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 150" role="img" aria-labelledby="m12f2-t">
+        <title id="m12f2-t">Which transmissive optical material each exposure wavelength uses</title>
+        <line x1="30" y1="70" x2="400" y2="70" class="dg-rule" stroke-width="1.2"/>
+        <circle cx="64" cy="70" r="4.5" class="dg-ink"/><text x="64" y="56" class="dg-label-sm" text-anchor="middle">436</text>
+        <circle cx="137" cy="70" r="4.5" class="dg-ink"/><text x="137" y="56" class="dg-label-sm" text-anchor="middle">365</text>
+        <circle cx="258" cy="70" r="4.5" class="dg-acc-f"/><text x="258" y="56" class="dg-label-sm" text-anchor="middle">248</text>
+        <circle cx="315" cy="70" r="4.5" class="dg-acc-f"/><text x="315" y="56" class="dg-label-sm" text-anchor="middle">193</text>
+        <circle cx="352" cy="70" r="4.5" class="dg-acc-f"/><text x="352" y="56" class="dg-label-sm" text-anchor="middle">157 nm</text>
+        <rect x="40" y="86" width="130" height="16" class="dg-fill"/><text x="105" y="98" class="dg-label-sm" text-anchor="middle">optical glass</text>
+        <rect x="40" y="106" width="300" height="16" class="dg-fill"/><text x="190" y="118" class="dg-label-sm" text-anchor="middle">fused silica (compacts at 193)</text>
+        <rect x="290" y="126" width="100" height="16" class="dg-fill"/><text x="340" y="138" class="dg-label-sm" text-anchor="middle">CaF₂</text>
+        <text x="215" y="24" class="dg-label-sm" text-anchor="middle">shorter wavelength →</text>
+      </svg>
+      <figcaption>Lens materials by wavelength (Lecture 19; notes p. 97; Wolf pp. 268–271). Fused silica serves at 248 nm; at 193 nm it is
+        used with CaF₂ elements where the light is most intense; at 157 nm CaF₂ carries the lens. Bars show use, not measured transmission
+        edges; positions on the axis are to scale in wavelength.</figcaption>
+    </figure>
+
+    <p>
+      Masks have their own constraint. The reticle is written by an electron beam that heats it, and a pattern placed on a substrate that
+      expands with temperature is placed in the wrong position. Fused silica expands 0.5 ppm/K and CaF₂ 19 ppm/K, which is one reason Wolf
+      concluded that 157 nm would be the shortest optical wavelength: below it fused silica stops transmitting and a CaF₂ reticle would be needed
+      (pp. 298–299). At 157 nm itself the reticle can still be fused silica, made with little OH and some fluorine to raise its transmission to
+      82 % (Wolf p. 272).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Placement error from heating a reticle by 0.1 K</div>
+      <div class="ex-body">
+        <p><b>Given</b> a temperature rise Δ<em>T</em> = 0.1 K across a reticle; the distance <em>L</em> = 100 mm; expansion coefficients
+        <em>α</em> = 0.5 × 10⁻⁶ K⁻¹ (fused silica) and 19 × 10⁻⁶ K⁻¹ (CaF₂) (Wolf p. 298). <b>Find</b> the change in length over 100 mm for each.</p>
+        <p><b>Plan.</b> Linear expansion: Δ<em>L</em> = <em>α L</em> Δ<em>T</em>.</p>
+        <p class="ex-step"><b>Fused silica.</b> 0.5 × 10⁻⁶ × 100 mm × 0.1 = 5 × 10⁻⁶ mm = 5 nm.</p>
+        <p class="ex-step"><b>CaF₂.</b> 19 × 10⁻⁶ × 100 mm × 0.1 = 1.9 × 10⁻⁴ mm = 190 nm.</p>
+        <p class="ex-answer">5 nm for fused silica, which an overlay budget can absorb, and 190 nm for CaF₂, which it cannot. Wolf states the CaF₂
+        figure as 100 nm (p. 299); his own coefficients give 190 nm, so the conclusion is stronger than his number. Check: the ratio of the two
+        errors equals the ratio of the coefficients, 19/0.5 = 38.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A 193 nm projection lens built entirely of fused silica performs well when new and degrades over months of use. Name the
+        mechanism, say which elements suffer first, and give the material change that addresses it. Why can the same remedy not be applied
+        to the reticle at 126 nm?</summary>
+      <div class="answer"><p>Compaction: under intense excimer pulses fused silica densifies, which changes its index and raises its
+        absorption, so the image degrades and less light reaches the wafer. The elements where the intensity is highest suffer first, the
+        illuminator and parts of the projection optics, and those are made of single-crystal CaF₂, which does not compact (Wolf p. 270).
+        At 126 nm the reticle itself must be CaF₂, because fused silica stops transmitting a few nanometres below 157 nm, and a CaF₂ reticle
+        expands 38 times more than fused silica when the mask writer heats it, so its patterns are misplaced (Wolf pp. 298–299).</p></div>
+    </details>
+
+    <h2 id="s3">3 · Lowering <em>k</em><sub>1</sub>: off-axis illumination and proximity correction</h2>
+
+    <p>
+      In <em>R</em> = <em>k</em><sub>1</sub><em>λ</em>/NA (Wolf eq. 7.1), <em>k</em><sub>1</sub> is the measure of how aggressive a process is.
+      Without help, a production process needed <em>k</em><sub>1</sub> above about 0.75, because the image degraded unacceptably below it; the
+      <b>resolution-enhancement techniques</b> (RETs) — anti-reflective coatings and top-surface imaging (M11), off-axis illumination, optical
+      proximity correction and phase-shift masks — brought it toward 0.35, halving the printable feature at the same wavelength and aperture
+      (Wolf pp. 274–275). The notes treat only the phase-shift mask (§4); the other two are taken from Wolf, who presents the three together as the
+      resolution-enhancement techniques of the period.
+    </p>
+
+    <h3 id="s3-1">3.1 Off-axis illumination</h3>
+
+    <p>
+      A grating of lines and spaces with pitch <em>p</em> (one line plus one space) diffracts the light passing through it into discrete beams,
+      the diffraction orders. The undiffracted zero order continues along the direction of the illumination, and the first orders, <em>m</em> =
+      ±1, leave at angles given by sin <em>θ</em><sub>1</sub> = <em>λ</em>/<em>p</em> (Wolf p. 276). The zero order alone carries no
+      information about the pattern, only its average brightness; an image of the lines forms only if the lens also collects at least one
+      first order, which interferes with the zero order to recreate the periodic intensity. With the illumination along the axis, the zero order
+      enters the centre of the lens pupil and the two first orders lie at ±<em>λ</em>/<em>p</em> in units of sin <em>θ</em>; both fall inside
+      the pupil, whose radius is NA, only if <em>λ</em>/<em>p</em> ≤ NA. The smallest pitch is <em>λ</em>/NA, a half-pitch of 0.5<em>λ</em>/NA:
+      the course's feature size, <em>k</em><sub>1</sub> = 0.5 (Wolf p. 276).
+    </p>
+    <p>
+      <b>Off-axis illumination</b> (OAI) tilts the illuminating beam so that the zero order enters the pupil near one edge. Then one first order
+      can enter near the opposite edge while the other falls outside, and two-beam imaging forms the pattern from a pitch at which on-axis
+      illumination collects neither first order. In the limit the zero and first orders sit at opposite edges of the pupil, 2NA apart, and the
+      smallest pitch halves to <em>λ</em>/(2NA) (Wolf pp. 276–277). The method was introduced to lithography by Mack and by Fehrs in 1989 and
+      built into Canon and Nikon steppers in 1992 (Wolf p. 275).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 170" role="img" aria-labelledby="m12fd-t">
+      <title id="m12fd-t">Diffraction orders of a 300 nm pitch grating at 248 nm relative to a pupil of NA 0.6, with on-axis and off-axis illumination</title>
+      <circle cx="110" cy="80" r="60" class="dg-fill" opacity="0.5"/>
+      <circle cx="110" cy="80" r="60" class="dg-line" fill="none"/>
+      <line x1="10" y1="80" x2="210" y2="80" class="dg-guide" stroke-dasharray="3 3"/>
+      <circle cx="27.3" cy="80" r="6" class="dg-ink"/>
+      <text x="27.3" y="68" class="dg-label-sm" text-anchor="middle">-1</text>
+      <circle cx="110.0" cy="80" r="6" class="dg-acc-f"/>
+      <text x="110.0" y="68" class="dg-label-sm" text-anchor="middle">0</text>
+      <circle cx="192.7" cy="80" r="6" class="dg-ink"/>
+      <text x="192.7" y="68" class="dg-label-sm" text-anchor="middle">+1</text>
+      <text x="110" y="162" class="dg-label" text-anchor="middle">on-axis</text>
+      <circle cx="330" cy="80" r="60" class="dg-fill" opacity="0.5"/>
+      <circle cx="330" cy="80" r="60" class="dg-line" fill="none"/>
+      <line x1="230" y1="80" x2="430" y2="80" class="dg-guide" stroke-dasharray="3 3"/>
+      <circle cx="288.7" cy="80" r="6" class="dg-acc-f"/>
+      <text x="288.7" y="68" class="dg-label-sm" text-anchor="middle">0</text>
+      <circle cx="371.3" cy="80" r="6" class="dg-acc-f"/>
+      <text x="371.3" y="68" class="dg-label-sm" text-anchor="middle">+1</text>
+      <text x="330" y="162" class="dg-label" text-anchor="middle">off-axis (tilted)</text>
+      <text x="220" y="14" class="dg-label-sm" text-anchor="middle">pupil radius = NA = 0.6; orders spaced λ/p = 0.827</text>
+      </svg>
+      <figcaption>Diffraction orders of a 300 nm grating at 248 nm, in units of sin <em>θ</em>, against a pupil of NA 0.6 (circle). On axis, the first orders at ±0.827 miss the pupil and no image forms; tilting the illumination puts the zero order at −0.413 and the +1 order at +0.413, both collected, equidistant from the centre. Computed.</figcaption>
+    </figure>
+
+
+    <div class="example">
+      <div class="ex-head">Which gratings a 248 nm, NA 0.6 lens can image, on axis and off axis</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>λ</em> = 248 nm, NA = 0.6; a grating of pitch 300 nm. <b>Find</b> the smallest pitch imaged with on-axis
+        illumination and in the off-axis limit; whether the 300 nm grating images on axis; and the tilt that puts its zero and first orders
+        symmetrically about the pupil centre.</p>
+        <p><b>Plan.</b> Work in units of sin <em>θ</em>, in which the pupil is a circle of radius NA and the orders are spaced <em>λ</em>/<em>p</em>.</p>
+        <p class="ex-step"><b>On-axis limit.</b> <em>p</em><sub>min</sub> = <em>λ</em>/NA = 248/0.6 = 413 nm; half-pitch 207 nm, <em>k</em><sub>1</sub>
+        = 207 × 0.6/248 = 0.50.</p>
+        <p class="ex-step"><b>Off-axis limit.</b> <em>p</em><sub>min</sub> = <em>λ</em>/(2NA) = 207 nm; half-pitch 103 nm, <em>k</em><sub>1</sub> = 0.25.</p>
+        <p class="ex-step"><b>The 300 nm grating on axis.</b> sin <em>θ</em><sub>1</sub> = 248/300 = 0.827 &gt; 0.6: both first orders miss the
+        pupil and only the uniform zero order arrives. No image.</p>
+        <p class="ex-step"><b>Tilt.</b> Place the zero order at −0.827/2 = −0.413; the +1 order is then at −0.413 + 0.827 = +0.413. Both lie inside
+        ±0.6. On the wafer side the tilt is sin⁻¹ 0.413 = 24.4°; at a 4× reticle the sines are four times smaller, sin⁻¹ (0.413/4) = 5.9°.</p>
+        <p class="ex-answer">On axis the lens images pitches down to 413 nm (<em>k</em><sub>1</sub> = 0.5); off axis, down to 207 nm in the
+        limit (<em>k</em><sub>1</sub> = 0.25). The 300 nm grating, invisible on axis, images with the tilted illumination. Check: the two orders at ±0.413
+        are the same distance from the pupil centre, which is the condition for the depth-of-focus gain described next.</p>
+      </div>
+    </div>
+
+    <p>
+      The larger benefit is in depth of focus. Defocus delays each diffraction order by a phase that grows with the square of its distance
+      from the pupil centre, and the image degrades because the orders arrive out of step. When the zero and first orders are equidistant from
+      the centre, as in the example, they acquire the same phase error, their relative phase is unchanged, and the image survives a larger
+      defocus (Wolf pp. 277–278). The gains come with conditions. A setting is tuned to one pitch; an isolated line produces a continuous
+      spread of diffracted light rather than discrete orders, so it gains little, and a field with both dense and isolated lines prints them
+      with different widths; one first order is discarded, so exposure takes longer; and a single tilted beam images asymmetrically, so real
+      illuminators use symmetric apertures — two poles (dipole) for lines in one direction, four (quadrupole) for horizontal and vertical lines,
+      or a ring (annular) for all orientations with smaller gains (Wolf pp. 278–279).
+    </p>
+
+    <h3 id="s3-2">3.2 Optical proximity correction</h3>
+
+    <p>
+      When features approach the wavelength, they no longer image independently: light diffracted from one feature adds to or subtracts from
+      the intensity at its neighbours, so the printed size and shape of a feature depend on what surrounds it, the <b>optical proximity
+      effect</b> (Wolf pp. 279–281). Three consequences are common. An isolated line prints at a different width from the same line in a dense
+      group — with positive resist, 0.35 µm isolated lines printed 0.09 µm wider than closely spaced ones (Wolf p. 281). The ends of lines pull
+      back (line shortening). Corners round, so a square contact hole near the resolution limit prints as a circle (Wolf p. 282).
+    </p>
+    <p>
+      <b>Optical proximity correction</b> (OPC) pre-distorts the mask so the printed feature comes out as designed. Line widths are biased
+      individually according to their surroundings; small squares called <b>serifs</b> are added at corners and line ends to put back the light
+      that the lens rounds off; <b>line jogs</b> change a line's width along its run; and <b>scattering bars</b>, lines too narrow to print,
+      are placed beside an isolated line at the pitch of the dense lines, so the lens images the isolated line as if it were in a dense group
+      (Wolf pp. 280–283). The corrections are chosen by look-up rules (fast, minutes to hours per mask level) or by simulating the image of
+      every feature in its surroundings (model-based, hours to days). OPC has costs: the extra features multiply the mask data and writing
+      time; serifs are smaller than the mask's minimum feature, which strains mask inspection; and they cannot be added where features are
+      already at minimum spacing. It corrects distortion and does not improve the resolution itself (Wolf pp. 283–284).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 180" role="img" aria-labelledby="m12f3-t">
+        <title id="m12f3-t">Optical proximity correction: serifs on a line end and corners, and scattering bars beside an isolated line</title>
+        <text x="100" y="16" class="dg-label" text-anchor="middle">mask with serifs</text>
+        <rect x="40" y="60" width="120" height="26" class="dg-fill"/>
+        <rect x="34" y="54" width="12" height="12" class="dg-acc-f"/>
+        <rect x="34" y="80" width="12" height="12" class="dg-acc-f"/>
+        <rect x="154" y="54" width="12" height="12" class="dg-acc-f"/>
+        <rect x="154" y="80" width="12" height="12" class="dg-acc-f"/>
+        <path d="M52,112 C40,112 40,138 52,138 L148,138 C160,138 160,112 148,112 Z" class="dg-line" fill="none" stroke-dasharray="4 3"/>
+        <text x="100" y="160" class="dg-label-sm" text-anchor="middle">printed without serifs: short, rounded</text>
+        <text x="320" y="16" class="dg-label" text-anchor="middle">scattering bars</text>
+        <rect x="312" y="30" width="16" height="110" class="dg-fill"/>
+        <rect x="282" y="30" width="5" height="110" class="dg-acc-f"/>
+        <rect x="353" y="30" width="5" height="110" class="dg-acc-f"/>
+        <text x="320" y="160" class="dg-label-sm" text-anchor="middle">isolated line, bars too narrow to print</text>
+      </svg>
+      <figcaption>Two OPC features (after Wolf Figs. 7-14 and 7-15). Left: serifs (accent) at the corners of a short line restore the light the
+        lens removes; without them the line prints shortened and rounded (dashed). Right: sub-resolution scattering bars at the dense pitch
+        make an isolated line image as if it were in a grating.</figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>A 248 nm, NA 0.6 tool must print a memory array of 120 nm lines and spaces and, in the periphery, isolated 120 nm lines. Can
+        on-axis illumination print the array? What illumination would you choose, and what must be added to the mask for the isolated
+        lines, and why?</summary>
+      <div class="answer"><p>The array's pitch is 240 nm; on axis the first orders lie at ±<em>λ</em>/<em>p</em> = ±248/240 = ±1.03 in pupil units, outside the
+        pupil radius 0.6, so the array does not image. Off-axis illumination can, because 240 nm exceeds the off-axis limit
+        <em>λ</em>/(2NA) = 207 nm: with the zero order at −0.517 the first order lands at +0.517, inside 0.6. Because the lines run in one
+        direction, a dipole oriented across them gives the largest gain. The isolated lines produce no discrete orders and gain little from
+        the tilt, and they will print at a different width from the array lines (iso-dense bias); scattering bars at the 240 nm pitch beside
+        them make them image like dense lines, and a per-line width bias removes the remaining difference (Wolf pp. 278, 281–283).</p></div>
+    </details>
+
+    <h2 id="s4">4 · Phase-shift masks</h2>
+
+    <p>
+      Every mask so far is <b>binary</b>: chromium blocks the light and clear glass passes it, so the field just below the mask has amplitude 0
+      or 1. The notes take up a different idea, credited to Levenson and co-workers in 1982 (p. 99; M. D. Levenson, N. S. Viswanathan and
+      R. A. Simpson, <i>IEEE Trans. Electron Devices</i> ED-29, 1828 (1982)): control the <i>phase</i> of the light leaving each opening as well
+      as whether it is transmitted. Lecture 19 attributed the work to Swedish scientists; Levenson's group was at IBM.
+    </p>
+
+    <h3 id="s4-1">4.1 How a 180° shift sharpens the image</h3>
+
+    <p>
+      The lens transmits only the low spatial frequencies of the mask, so the field at the wafer below each opening is a broadened version of
+      the opening, spreading into the chromium-covered regions beside it. For two openings close to the resolution limit, the spread fields
+      overlap under the chromium between them. With a binary mask both fields have the same sign, they add there, and the resist, which responds
+      to the intensity, the square of the field, receives a bump of light where it should be dark: the two lines are barely resolved (notes
+      p. 99). If the light through one opening is shifted by 180°, its field has the opposite sign. The two fields then cancel midway between the
+      openings, the field passes through zero, and so does the intensity, however much the fields overlap. The dark gap between the lines is
+      restored by destructive interference (notes p. 101; Wolf p. 287).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 300" role="img" aria-labelledby="m12fa-t">
+      <title id="m12fa-t">Computed field amplitude and intensity at the wafer for two openings, without and with a 180 degree phase shifter</title>
+      <text x="115" y="16" class="dg-label" text-anchor="middle">binary mask</text>
+      <rect x="20" y="26" width="190" height="4" class="dg-fill"/>
+      <rect x="20.0" y="30" width="49.4" height="5" class="dg-ink"/>
+      <rect x="99.8" y="30" width="30.4" height="5" class="dg-ink"/>
+      <rect x="160.6" y="30" width="49.4" height="5" class="dg-ink"/>
+      <line x1="20" y1="92" x2="210" y2="92" class="dg-guide"/>
+      <path d="M20.0,92.0 L20.5,92.0 L21.0,92.0 L21.4,92.0 L21.9,92.0 L22.4,92.0 L22.8,92.0 L23.3,92.0 L23.8,92.0 L24.3,92.0 L24.8,92.0 L25.2,92.0 L25.7,92.0 L26.2,92.0 L26.7,92.0 L27.1,92.0 L27.6,92.0 L28.1,92.0 L28.5,92.0 L29.0,92.0 L29.5,92.0 L30.0,92.0 L30.5,92.0 L30.9,92.0 L31.4,92.0 L31.9,92.0 L32.3,92.0 L32.8,92.0 L33.3,92.0 L33.8,92.0 L34.2,92.0 L34.7,92.0 L35.2,92.0 L35.7,92.0 L36.2,92.0 L36.6,92.0 L37.1,92.0 L37.6,92.0 L38.0,92.0 L38.5,92.0 L39.0,92.0 L39.5,92.0 L40.0,92.0 L40.4,92.0 L40.9,92.0 L41.4,92.0 L41.8,92.0 L42.3,92.0 L42.8,92.0 L43.3,92.0 L43.8,92.0 L44.2,92.0 L44.7,92.0 L45.2,92.0 L45.7,92.0 L46.1,92.0 L46.6,92.0 L47.1,92.0 L47.5,92.0 L48.0,92.0 L48.5,92.0 L49.0,92.0 L49.5,92.0 L49.9,92.0 L50.4,92.0 L50.9,92.0 L51.4,92.0 L51.8,92.0 L52.3,92.0 L52.8,92.0 L53.2,92.0 L53.7,92.0 L54.2,92.0 L54.7,92.0 L55.1,92.0 L55.6,92.0 L56.1,92.0 L56.6,92.0 L57.0,92.0 L57.5,92.0 L58.0,92.0 L58.5,92.0 L59.0,92.0 L59.4,92.0 L59.9,92.0 L60.4,92.0 L60.9,92.0 L61.3,92.0 L61.8,92.0 L62.3,92.0 L62.8,92.0 L63.2,92.0 L63.7,92.0 L64.2,92.0 L64.7,92.0 L65.1,92.0 L65.6,92.0 L66.1,92.0 L66.5,92.0 L67.0,92.0 L67.5,92.0 L68.0,92.0 L68.5,92.0 L68.9,92.0 L69.4,74.0 L69.9,74.0 L70.3,74.0 L70.8,74.0 L71.3,74.0 L71.8,74.0 L72.2,74.0 L72.7,74.0 L73.2,74.0 L73.7,74.0 L74.2,74.0 L74.6,74.0 L75.1,74.0 L75.6,74.0 L76.0,74.0 L76.5,74.0 L77.0,74.0 L77.5,74.0 L78.0,74.0 L78.4,74.0 L78.9,74.0 L79.4,74.0 L79.8,74.0 L80.3,74.0 L80.8,74.0 L81.3,74.0 L81.8,74.0 L82.2,74.0 L82.7,74.0 L83.2,74.0 L83.7,74.0 L84.1,74.0 L84.6,74.0 L85.1,74.0 L85.5,74.0 L86.0,74.0 L86.5,74.0 L87.0,74.0 L87.5,74.0 L87.9,74.0 L88.4,74.0 L88.9,74.0 L89.3,74.0 L89.8,74.0 L90.3,74.0 L90.8,74.0 L91.2,74.0 L91.7,74.0 L92.2,74.0 L92.7,74.0 L93.2,74.0 L93.6,74.0 L94.1,74.0 L94.6,74.0 L95.0,74.0 L95.5,74.0 L96.0,74.0 L96.5,74.0 L97.0,74.0 L97.4,74.0 L97.9,74.0 L98.4,74.0 L98.8,74.0 L99.3,74.0 L99.8,74.0 L100.3,92.0 L100.8,92.0 L101.2,92.0 L101.7,92.0 L102.2,92.0 L102.7,92.0 L103.1,92.0 L103.6,92.0 L104.1,92.0 L104.5,92.0 L105.0,92.0 L105.5,92.0 L106.0,92.0 L106.5,92.0 L106.9,92.0 L107.4,92.0 L107.9,92.0 L108.3,92.0 L108.8,92.0 L109.3,92.0 L109.8,92.0 L110.2,92.0 L110.7,92.0 L111.2,92.0 L111.7,92.0 L112.2,92.0 L112.6,92.0 L113.1,92.0 L113.6,92.0 L114.0,92.0 L114.5,92.0 L115.0,92.0 L115.5,92.0 L116.0,92.0 L116.4,92.0 L116.9,92.0 L117.4,92.0 L117.8,92.0 L118.3,92.0 L118.8,92.0 L119.3,92.0 L119.8,92.0 L120.2,92.0 L120.7,92.0 L121.2,92.0 L121.7,92.0 L122.1,92.0 L122.6,92.0 L123.1,92.0 L123.5,92.0 L124.0,92.0 L124.5,92.0 L125.0,92.0 L125.5,92.0 L125.9,92.0 L126.4,92.0 L126.9,92.0 L127.3,92.0 L127.8,92.0 L128.3,92.0 L128.8,92.0 L129.2,92.0 L129.7,92.0 L130.2,74.0 L130.7,74.0 L131.2,74.0 L131.6,74.0 L132.1,74.0 L132.6,74.0 L133.1,74.0 L133.5,74.0 L134.0,74.0 L134.5,74.0 L134.9,74.0 L135.4,74.0 L135.9,74.0 L136.4,74.0 L136.8,74.0 L137.3,74.0 L137.8,74.0 L138.3,74.0 L138.8,74.0 L139.2,74.0 L139.7,74.0 L140.2,74.0 L140.7,74.0 L141.1,74.0 L141.6,74.0 L142.1,74.0 L142.6,74.0 L143.0,74.0 L143.5,74.0 L144.0,74.0 L144.4,74.0 L144.9,74.0 L145.4,74.0 L145.9,74.0 L146.3,74.0 L146.8,74.0 L147.3,74.0 L147.8,74.0 L148.2,74.0 L148.7,74.0 L149.2,74.0 L149.7,74.0 L150.2,74.0 L150.6,74.0 L151.1,74.0 L151.6,74.0 L152.1,74.0 L152.5,74.0 L153.0,74.0 L153.5,74.0 L153.9,74.0 L154.4,74.0 L154.9,74.0 L155.4,74.0 L155.8,74.0 L156.3,74.0 L156.8,74.0 L157.3,74.0 L157.8,74.0 L158.2,74.0 L158.7,74.0 L159.2,74.0 L159.7,74.0 L160.1,74.0 L160.6,74.0 L161.1,92.0 L161.6,92.0 L162.0,92.0 L162.5,92.0 L163.0,92.0 L163.4,92.0 L163.9,92.0 L164.4,92.0 L164.9,92.0 L165.3,92.0 L165.8,92.0 L166.3,92.0 L166.8,92.0 L167.2,92.0 L167.7,92.0 L168.2,92.0 L168.7,92.0 L169.2,92.0 L169.6,92.0 L170.1,92.0 L170.6,92.0 L171.1,92.0 L171.5,92.0 L172.0,92.0 L172.5,92.0 L172.9,92.0 L173.4,92.0 L173.9,92.0 L174.4,92.0 L174.8,92.0 L175.3,92.0 L175.8,92.0 L176.3,92.0 L176.8,92.0 L177.2,92.0 L177.7,92.0 L178.2,92.0 L178.7,92.0 L179.1,92.0 L179.6,92.0 L180.1,92.0 L180.6,92.0 L181.0,92.0 L181.5,92.0 L182.0,92.0 L182.4,92.0 L182.9,92.0 L183.4,92.0 L183.9,92.0 L184.3,92.0 L184.8,92.0 L185.3,92.0 L185.8,92.0 L186.2,92.0 L186.7,92.0 L187.2,92.0 L187.7,92.0 L188.2,92.0 L188.6,92.0 L189.1,92.0 L189.6,92.0 L190.1,92.0 L190.5,92.0 L191.0,92.0 L191.5,92.0 L191.9,92.0 L192.4,92.0 L192.9,92.0 L193.4,92.0 L193.8,92.0 L194.3,92.0 L194.8,92.0 L195.3,92.0 L195.8,92.0 L196.2,92.0 L196.7,92.0 L197.2,92.0 L197.7,92.0 L198.1,92.0 L198.6,92.0 L199.1,92.0 L199.6,92.0 L200.0,92.0 L200.5,92.0 L201.0,92.0 L201.4,92.0 L201.9,92.0 L202.4,92.0 L202.9,92.0 L203.3,92.0 L203.8,92.0 L204.3,92.0 L204.8,92.0 L205.2,92.0 L205.7,92.0 L206.2,92.0 L206.7,92.0 L207.2,92.0 L207.6,92.0 L208.1,92.0 L208.6,92.0 L209.1,92.0 L209.5,92.0 L210.0,92.0" class="dg-line" fill="none" stroke-width="1.5"/>
+      <line x1="20" y1="162" x2="210" y2="162" class="dg-guide"/>
+      <path d="M20.0,168.2 L21.5,168.3 L23.0,168.2 L24.6,168.1 L26.1,167.8 L27.6,167.5 L29.1,167.1 L30.6,166.5 L32.2,165.9 L33.7,165.2 L35.2,164.4 L36.7,163.5 L38.2,162.5 L39.8,161.5 L41.3,160.4 L42.8,159.2 L44.3,158.0 L45.8,156.7 L47.4,155.4 L48.9,154.1 L50.4,152.7 L51.9,151.4 L53.4,150.0 L55.0,148.7 L56.5,147.4 L58.0,146.2 L59.5,144.9 L61.0,143.8 L62.6,142.7 L64.1,141.6 L65.6,140.7 L67.1,139.8 L68.6,139.0 L70.2,138.3 L71.7,137.7 L73.2,137.2 L74.7,136.8 L76.2,136.4 L77.8,136.2 L79.3,136.1 L80.8,136.0 L82.3,136.0 L83.8,136.1 L85.4,136.3 L86.9,136.5 L88.4,136.8 L89.9,137.2 L91.4,137.5 L93.0,137.9 L94.5,138.4 L96.0,138.8 L97.5,139.3 L99.0,139.7 L100.6,140.2 L102.1,140.6 L103.6,141.0 L105.1,141.4 L106.6,141.7 L108.2,142.0 L109.7,142.2 L111.2,142.4 L112.7,142.5 L114.2,142.6 L115.8,142.6 L117.3,142.5 L118.8,142.4 L120.3,142.2 L121.8,142.0 L123.4,141.7 L124.9,141.4 L126.4,141.0 L127.9,140.6 L129.4,140.2 L131.0,139.7 L132.5,139.3 L134.0,138.8 L135.5,138.4 L137.0,137.9 L138.6,137.5 L140.1,137.2 L141.6,136.8 L143.1,136.5 L144.6,136.3 L146.2,136.1 L147.7,136.0 L149.2,136.0 L150.7,136.1 L152.2,136.2 L153.8,136.4 L155.3,136.8 L156.8,137.2 L158.3,137.7 L159.8,138.3 L161.4,139.0 L162.9,139.8 L164.4,140.7 L165.9,141.6 L167.4,142.7 L169.0,143.8 L170.5,144.9 L172.0,146.2 L173.5,147.4 L175.0,148.7 L176.6,150.0 L178.1,151.4 L179.6,152.7 L181.1,154.1 L182.6,155.4 L184.2,156.7 L185.7,158.0 L187.2,159.2 L188.7,160.4 L190.2,161.5 L191.8,162.5 L193.3,163.5 L194.8,164.4 L196.3,165.2 L197.8,165.9 L199.4,166.5 L200.9,167.1 L202.4,167.5 L203.9,167.8 L205.4,168.1 L207.0,168.2 L208.5,168.3 L210.0,168.2" class="dg-line" fill="none" stroke-width="1.6"/>
+      <line x1="20" y1="268" x2="210" y2="268" class="dg-guide"/>
+      <text x="325" y="16" class="dg-label" text-anchor="middle">alternating PSM</text>
+      <rect x="230" y="26" width="190" height="4" class="dg-fill"/>
+      <rect x="230.0" y="30" width="49.4" height="5" class="dg-ink"/>
+      <rect x="309.8" y="30" width="30.4" height="5" class="dg-ink"/>
+      <rect x="370.6" y="30" width="49.4" height="5" class="dg-ink"/>
+      <rect x="340.2" y="19" width="30.4" height="7" class="dg-acc-f" opacity="0.7"/>
+      <line x1="230" y1="92" x2="420" y2="92" class="dg-guide"/>
+      <path d="M230.0,92.0 L230.5,92.0 L230.9,92.0 L231.4,92.0 L231.9,92.0 L232.4,92.0 L232.8,92.0 L233.3,92.0 L233.8,92.0 L234.3,92.0 L234.8,92.0 L235.2,92.0 L235.7,92.0 L236.2,92.0 L236.7,92.0 L237.1,92.0 L237.6,92.0 L238.1,92.0 L238.6,92.0 L239.0,92.0 L239.5,92.0 L240.0,92.0 L240.4,92.0 L240.9,92.0 L241.4,92.0 L241.9,92.0 L242.3,92.0 L242.8,92.0 L243.3,92.0 L243.8,92.0 L244.2,92.0 L244.7,92.0 L245.2,92.0 L245.7,92.0 L246.2,92.0 L246.6,92.0 L247.1,92.0 L247.6,92.0 L248.1,92.0 L248.5,92.0 L249.0,92.0 L249.5,92.0 L249.9,92.0 L250.4,92.0 L250.9,92.0 L251.4,92.0 L251.8,92.0 L252.3,92.0 L252.8,92.0 L253.3,92.0 L253.8,92.0 L254.2,92.0 L254.7,92.0 L255.2,92.0 L255.7,92.0 L256.1,92.0 L256.6,92.0 L257.1,92.0 L257.6,92.0 L258.0,92.0 L258.5,92.0 L259.0,92.0 L259.4,92.0 L259.9,92.0 L260.4,92.0 L260.9,92.0 L261.4,92.0 L261.8,92.0 L262.3,92.0 L262.8,92.0 L263.2,92.0 L263.7,92.0 L264.2,92.0 L264.7,92.0 L265.1,92.0 L265.6,92.0 L266.1,92.0 L266.6,92.0 L267.1,92.0 L267.5,92.0 L268.0,92.0 L268.5,92.0 L268.9,92.0 L269.4,92.0 L269.9,92.0 L270.4,92.0 L270.9,92.0 L271.3,92.0 L271.8,92.0 L272.3,92.0 L272.8,92.0 L273.2,92.0 L273.7,92.0 L274.2,92.0 L274.6,92.0 L275.1,92.0 L275.6,92.0 L276.1,92.0 L276.6,92.0 L277.0,92.0 L277.5,92.0 L278.0,92.0 L278.4,92.0 L278.9,92.0 L279.4,74.0 L279.9,74.0 L280.4,74.0 L280.8,74.0 L281.3,74.0 L281.8,74.0 L282.2,74.0 L282.7,74.0 L283.2,74.0 L283.7,74.0 L284.1,74.0 L284.6,74.0 L285.1,74.0 L285.6,74.0 L286.1,74.0 L286.5,74.0 L287.0,74.0 L287.5,74.0 L287.9,74.0 L288.4,74.0 L288.9,74.0 L289.4,74.0 L289.9,74.0 L290.3,74.0 L290.8,74.0 L291.3,74.0 L291.8,74.0 L292.2,74.0 L292.7,74.0 L293.2,74.0 L293.6,74.0 L294.1,74.0 L294.6,74.0 L295.1,74.0 L295.6,74.0 L296.0,74.0 L296.5,74.0 L297.0,74.0 L297.4,74.0 L297.9,74.0 L298.4,74.0 L298.9,74.0 L299.4,74.0 L299.8,74.0 L300.3,74.0 L300.8,74.0 L301.2,74.0 L301.7,74.0 L302.2,74.0 L302.7,74.0 L303.1,74.0 L303.6,74.0 L304.1,74.0 L304.6,74.0 L305.1,74.0 L305.5,74.0 L306.0,74.0 L306.5,74.0 L306.9,74.0 L307.4,74.0 L307.9,74.0 L308.4,74.0 L308.9,74.0 L309.3,74.0 L309.8,74.0 L310.3,92.0 L310.8,92.0 L311.2,92.0 L311.7,92.0 L312.2,92.0 L312.6,92.0 L313.1,92.0 L313.6,92.0 L314.1,92.0 L314.6,92.0 L315.0,92.0 L315.5,92.0 L316.0,92.0 L316.4,92.0 L316.9,92.0 L317.4,92.0 L317.9,92.0 L318.4,92.0 L318.8,92.0 L319.3,92.0 L319.8,92.0 L320.2,92.0 L320.7,92.0 L321.2,92.0 L321.7,92.0 L322.1,92.0 L322.6,92.0 L323.1,92.0 L323.6,92.0 L324.1,92.0 L324.5,92.0 L325.0,92.0 L325.5,92.0 L325.9,92.0 L326.4,92.0 L326.9,92.0 L327.4,92.0 L327.9,92.0 L328.3,92.0 L328.8,92.0 L329.3,92.0 L329.8,92.0 L330.2,92.0 L330.7,92.0 L331.2,92.0 L331.6,92.0 L332.1,92.0 L332.6,92.0 L333.1,92.0 L333.6,92.0 L334.0,92.0 L334.5,92.0 L335.0,92.0 L335.4,92.0 L335.9,92.0 L336.4,92.0 L336.9,92.0 L337.4,92.0 L337.8,92.0 L338.3,92.0 L338.8,92.0 L339.2,92.0 L339.7,92.0 L340.2,110.0 L340.7,110.0 L341.1,110.0 L341.6,110.0 L342.1,110.0 L342.6,110.0 L343.1,110.0 L343.5,110.0 L344.0,110.0 L344.5,110.0 L344.9,110.0 L345.4,110.0 L345.9,110.0 L346.4,110.0 L346.9,110.0 L347.3,110.0 L347.8,110.0 L348.3,110.0 L348.8,110.0 L349.2,110.0 L349.7,110.0 L350.2,110.0 L350.6,110.0 L351.1,110.0 L351.6,110.0 L352.1,110.0 L352.6,110.0 L353.0,110.0 L353.5,110.0 L354.0,110.0 L354.4,110.0 L354.9,110.0 L355.4,110.0 L355.9,110.0 L356.4,110.0 L356.8,110.0 L357.3,110.0 L357.8,110.0 L358.2,110.0 L358.7,110.0 L359.2,110.0 L359.7,110.0 L360.1,110.0 L360.6,110.0 L361.1,110.0 L361.6,110.0 L362.1,110.0 L362.5,110.0 L363.0,110.0 L363.5,110.0 L363.9,110.0 L364.4,110.0 L364.9,110.0 L365.4,110.0 L365.9,110.0 L366.3,110.0 L366.8,110.0 L367.3,110.0 L367.8,110.0 L368.2,110.0 L368.7,110.0 L369.2,110.0 L369.6,110.0 L370.1,110.0 L370.6,110.0 L371.1,92.0 L371.6,92.0 L372.0,92.0 L372.5,92.0 L373.0,92.0 L373.4,92.0 L373.9,92.0 L374.4,92.0 L374.9,92.0 L375.4,92.0 L375.8,92.0 L376.3,92.0 L376.8,92.0 L377.2,92.0 L377.7,92.0 L378.2,92.0 L378.7,92.0 L379.1,92.0 L379.6,92.0 L380.1,92.0 L380.6,92.0 L381.1,92.0 L381.5,92.0 L382.0,92.0 L382.5,92.0 L382.9,92.0 L383.4,92.0 L383.9,92.0 L384.4,92.0 L384.9,92.0 L385.3,92.0 L385.8,92.0 L386.3,92.0 L386.8,92.0 L387.2,92.0 L387.7,92.0 L388.2,92.0 L388.6,92.0 L389.1,92.0 L389.6,92.0 L390.1,92.0 L390.6,92.0 L391.0,92.0 L391.5,92.0 L392.0,92.0 L392.4,92.0 L392.9,92.0 L393.4,92.0 L393.9,92.0 L394.4,92.0 L394.8,92.0 L395.3,92.0 L395.8,92.0 L396.2,92.0 L396.7,92.0 L397.2,92.0 L397.7,92.0 L398.1,92.0 L398.6,92.0 L399.1,92.0 L399.6,92.0 L400.1,92.0 L400.5,92.0 L401.0,92.0 L401.5,92.0 L401.9,92.0 L402.4,92.0 L402.9,92.0 L403.4,92.0 L403.9,92.0 L404.3,92.0 L404.8,92.0 L405.3,92.0 L405.8,92.0 L406.2,92.0 L406.7,92.0 L407.2,92.0 L407.6,92.0 L408.1,92.0 L408.6,92.0 L409.1,92.0 L409.6,92.0 L410.0,92.0 L410.5,92.0 L411.0,92.0 L411.4,92.0 L411.9,92.0 L412.4,92.0 L412.9,92.0 L413.4,92.0 L413.8,92.0 L414.3,92.0 L414.8,92.0 L415.2,92.0 L415.7,92.0 L416.2,92.0 L416.7,92.0 L417.1,92.0 L417.6,92.0 L418.1,92.0 L418.6,92.0 L419.1,92.0 L419.5,92.0 L420.0,92.0" class="dg-line" fill="none" stroke-width="1.5"/>
+      <line x1="230" y1="162" x2="420" y2="162" class="dg-guide"/>
+      <path d="M230.0,164.4 L231.5,164.9 L233.0,165.2 L234.6,165.6 L236.1,165.9 L237.6,166.1 L239.1,166.3 L240.6,166.4 L242.2,166.4 L243.7,166.4 L245.2,166.3 L246.7,166.1 L248.2,165.8 L249.8,165.4 L251.3,164.9 L252.8,164.3 L254.3,163.7 L255.8,162.9 L257.4,162.1 L258.9,161.1 L260.4,160.1 L261.9,159.0 L263.4,157.8 L265.0,156.6 L266.5,155.3 L268.0,154.0 L269.5,152.6 L271.0,151.2 L272.6,149.8 L274.1,148.4 L275.6,147.1 L277.1,145.7 L278.6,144.4 L280.2,143.1 L281.7,141.9 L283.2,140.8 L284.7,139.8 L286.2,138.9 L287.8,138.1 L289.3,137.4 L290.8,136.8 L292.3,136.4 L293.8,136.1 L295.4,136.0 L296.9,136.0 L298.4,136.2 L299.9,136.6 L301.4,137.1 L303.0,137.8 L304.5,138.7 L306.0,139.7 L307.5,140.8 L309.0,142.1 L310.6,143.6 L312.1,145.1 L313.6,146.8 L315.1,148.6 L316.6,150.5 L318.2,152.5 L319.7,154.5 L321.2,156.6 L322.7,158.8 L324.2,160.9 L325.8,163.1 L327.3,165.2 L328.8,167.4 L330.3,169.5 L331.8,171.5 L333.4,173.5 L334.9,175.4 L336.4,177.2 L337.9,178.9 L339.4,180.4 L341.0,181.9 L342.5,183.2 L344.0,184.3 L345.5,185.3 L347.0,186.2 L348.6,186.9 L350.1,187.4 L351.6,187.8 L353.1,188.0 L354.6,188.0 L356.2,187.9 L357.7,187.6 L359.2,187.2 L360.7,186.6 L362.2,185.9 L363.8,185.1 L365.3,184.2 L366.8,183.2 L368.3,182.1 L369.8,180.9 L371.4,179.6 L372.9,178.3 L374.4,176.9 L375.9,175.6 L377.4,174.2 L379.0,172.8 L380.5,171.4 L382.0,170.0 L383.5,168.7 L385.0,167.4 L386.6,166.2 L388.1,165.0 L389.6,163.9 L391.1,162.9 L392.6,161.9 L394.2,161.1 L395.7,160.3 L397.2,159.7 L398.7,159.1 L400.2,158.6 L401.8,158.2 L403.3,157.9 L404.8,157.7 L406.3,157.6 L407.8,157.6 L409.4,157.6 L410.9,157.7 L412.4,157.9 L413.9,158.1 L415.4,158.4 L417.0,158.8 L418.5,159.1 L420.0,159.6" class="dg-line" fill="none" stroke-width="1.6"/>
+      <line x1="230" y1="268" x2="420" y2="268" class="dg-guide"/>
+      <path d="M20.0,266.7 L21.5,266.7 L23.0,266.7 L24.6,266.7 L26.1,266.8 L27.6,267.0 L29.1,267.1 L30.6,267.3 L32.2,267.5 L33.7,267.7 L35.2,267.8 L36.7,267.9 L38.2,268.0 L39.8,268.0 L41.3,267.9 L42.8,267.7 L44.3,267.4 L45.8,267.0 L47.4,266.5 L48.9,265.9 L50.4,265.1 L51.9,264.2 L53.4,263.1 L55.0,262.0 L56.5,260.8 L58.0,259.5 L59.5,258.1 L61.0,256.8 L62.6,255.4 L64.1,254.0 L65.6,252.6 L67.1,251.3 L68.6,250.1 L70.2,249.0 L71.7,248.0 L73.2,247.2 L74.7,246.4 L76.2,245.9 L77.8,245.5 L79.3,245.2 L80.8,245.1 L82.3,245.1 L83.8,245.3 L85.4,245.6 L86.9,246.0 L88.4,246.5 L89.9,247.1 L91.4,247.7 L93.0,248.4 L94.5,249.1 L96.0,249.8 L97.5,250.5 L99.0,251.2 L100.6,251.9 L102.1,252.5 L103.6,253.1 L105.1,253.6 L106.6,254.0 L108.2,254.4 L109.7,254.7 L111.2,255.0 L112.7,255.1 L114.2,255.2 L115.8,255.2 L117.3,255.1 L118.8,255.0 L120.3,254.7 L121.8,254.4 L123.4,254.0 L124.9,253.6 L126.4,253.1 L127.9,252.5 L129.4,251.9 L131.0,251.2 L132.5,250.5 L134.0,249.8 L135.5,249.1 L137.0,248.4 L138.6,247.7 L140.1,247.1 L141.6,246.5 L143.1,246.0 L144.6,245.6 L146.2,245.3 L147.7,245.1 L149.2,245.1 L150.7,245.2 L152.2,245.5 L153.8,245.9 L155.3,246.4 L156.8,247.2 L158.3,248.0 L159.8,249.0 L161.4,250.1 L162.9,251.3 L164.4,252.6 L165.9,254.0 L167.4,255.4 L169.0,256.8 L170.5,258.1 L172.0,259.5 L173.5,260.8 L175.0,262.0 L176.6,263.1 L178.1,264.2 L179.6,265.1 L181.1,265.9 L182.6,266.5 L184.2,267.0 L185.7,267.4 L187.2,267.7 L188.7,267.9 L190.2,268.0 L191.8,268.0 L193.3,267.9 L194.8,267.8 L196.3,267.7 L197.8,267.5 L199.4,267.3 L200.9,267.1 L202.4,267.0 L203.9,266.8 L205.4,266.7 L207.0,266.7 L208.5,266.7 L210.0,266.7" class="dg-acc" fill="none" stroke-width="2"/>
+      <path d="M230.0,267.6 L231.5,267.4 L233.0,267.3 L234.6,267.1 L236.1,267.0 L237.6,266.9 L239.1,266.8 L240.6,266.7 L242.2,266.7 L243.7,266.7 L245.2,266.7 L246.7,266.9 L248.2,267.0 L249.8,267.2 L251.3,267.4 L252.8,267.6 L254.3,267.8 L255.8,267.9 L257.4,268.0 L258.9,267.9 L260.4,267.8 L261.9,267.4 L263.4,266.8 L265.0,266.0 L266.5,264.9 L268.0,263.6 L269.5,262.0 L271.0,260.1 L272.6,257.9 L274.1,255.5 L275.6,252.8 L277.1,249.9 L278.6,246.9 L280.2,243.8 L281.7,240.6 L283.2,237.5 L284.7,234.5 L286.2,231.6 L287.8,229.0 L289.3,226.7 L290.8,224.8 L292.3,223.4 L293.8,222.4 L295.4,222.0 L296.9,222.2 L298.4,222.9 L299.9,224.1 L301.4,225.9 L303.0,228.2 L304.5,230.9 L306.0,234.1 L307.5,237.5 L309.0,241.1 L310.6,244.9 L312.1,248.7 L313.6,252.3 L315.1,255.8 L316.6,259.0 L318.2,261.8 L319.7,264.2 L321.2,266.0 L322.7,267.3 L324.2,267.9 L325.8,267.9 L327.3,267.3 L328.8,266.0 L330.3,264.2 L331.8,261.8 L333.4,259.0 L334.9,255.8 L336.4,252.3 L337.9,248.7 L339.4,244.9 L341.0,241.1 L342.5,237.5 L344.0,234.1 L345.5,230.9 L347.0,228.2 L348.6,225.9 L350.1,224.1 L351.6,222.9 L353.1,222.2 L354.6,222.0 L356.2,222.4 L357.7,223.4 L359.2,224.8 L360.7,226.7 L362.2,229.0 L363.8,231.6 L365.3,234.5 L366.8,237.5 L368.3,240.6 L369.8,243.8 L371.4,246.9 L372.9,249.9 L374.4,252.8 L375.9,255.5 L377.4,257.9 L379.0,260.1 L380.5,262.0 L382.0,263.6 L383.5,264.9 L385.0,266.0 L386.6,266.8 L388.1,267.4 L389.6,267.8 L391.1,267.9 L392.6,268.0 L394.2,267.9 L395.7,267.8 L397.2,267.6 L398.7,267.4 L400.2,267.2 L401.8,267.0 L403.3,266.9 L404.8,266.7 L406.3,266.7 L407.8,266.7 L409.4,266.7 L410.9,266.8 L412.4,266.9 L413.9,267.0 L415.4,267.1 L417.0,267.3 L418.5,267.4 L420.0,267.6" class="dg-acc" fill="none" stroke-width="2"/>
+      <text x="220" y="52" class="dg-label-sm" text-anchor="middle">mask</text>
+      <text x="220" y="82" class="dg-label-sm" text-anchor="middle">amplitude at mask</text>
+      <text x="220" y="126" class="dg-label-sm" text-anchor="middle">amplitude at wafer</text>
+      <text x="220" y="206" class="dg-label-sm" text-anchor="middle">intensity at wafer</text>
+      <text x="355" y="50" class="dg-label-sm" text-anchor="middle">180°</text>
+      </svg>
+      <figcaption>Computed aerial image of two 160 nm openings, 320 nm centre to centre, imaged at 248 nm by an ideal lens of NA 0.6 under coherent illumination (this page's model; the notes' p. 100 figure shows the same comparison). Left, binary mask: the two fields have the same sign and add between the openings, and the intensity there is 56 % of the peak, so the lines are barely resolved. Right, a 180° shifter over one opening: the fields have opposite signs, the field passes through zero midway, and so does the intensity. Intensities share one scale.</figcaption>
+    </figure>
+
+
+    <p>
+      For a periodic grating the effect can be stated through the period. A phase shifter on every other opening makes the field alternate
+      +1, −1, +1, −1, so the field pattern repeats only every two periods of the grating; its fundamental spatial frequency halves, and a lens
+      that could not collect the first order of the binary grating can collect this one. The intensity, the square of the field, still repeats
+      with the grating's own period. </p>
+
+    <div class="box warn">
+      <p class="box-title">The notes' "half the period" is the inverse</p>
+      <p>The notes (p. 101), copying Plummer §5.2.4, and Lecture 20 say that "the period of this added pattern is half the period of the
+      original grating." A shifter on every other opening repeats every two openings, so the shifter pattern and the field it produces have
+      twice the grating's period; it is their spatial frequency that is halved, which is why the lens can collect it. Read the sentence as
+      "half the spatial frequency".</p>
+    </div>
+
+    <h3 id="s4-2">4.2 The shifter thickness</h3>
+
+    <p>
+      The 180° shift is made by an extra transparent layer of refractive index <em>n</em> and thickness <em>d</em> over alternate openings.
+      Light crossing the layer travels the optical path <em>nd</em>, against <em>d</em> through air beside it, so it is delayed by an optical
+      path difference (<em>n</em> − 1)<em>d</em>. A 180° phase shift is a delay of half a wavelength, (<em>n</em> − 1)<em>d</em> = <em>λ</em>/2,
+      which gives the notes' equation (p. 99; Plummer eq. 5.16; Wolf p. 285):
+    </p>
+
+    <div class="eq" id="eq12-1">
+      <div class="eq-body">
+        <div class="eq-math"><em>d</em> = <span class="frac"><span class="num"><em>λ</em></span><span class="den">2(<em>n</em> − 1)</span></span></div>
+        <div class="eq-num">(12.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>d</em> thickness of the phase-shifting layer (same unit as <em>λ</em>) · <em>λ</em> exposure wavelength in vacuum · <em>n</em>
+        refractive index of the shifting material at <em>λ</em> (dimensionless). Gives a 180° shift relative to an equal path in air. The same
+        <em>d</em> applies to a recess etched into the fused-silica plate, which removes glass instead of adding it (Wolf p. 286).
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Shifter thickness for 248 nm and for 193 nm (the formula of Lecture 20)</div>
+      <div class="ex-body">
+        <p><b>Given</b> a fused-silica shifter; its index is 1.50855 at 248.00 nm and 1.56014 at 193.40 nm (Heraeus Spectrosil data, 20 °C).
+        Lecture 20 wrote eq. (12.1) but computed no thickness, so these indices are supplied here. <b>Find</b> <em>d</em> at each wavelength;
+        the phase error if the layer is 2 % too thick; and the phase the 248 nm shifter gives at 193.40 nm.</p>
+        <p><b>Plan.</b> Eq. (12.1). The phase is 360° × (<em>n</em> − 1)<em>d</em>/<em>λ</em>, linear in <em>d</em>.</p>
+        <p class="ex-step"><b>248 nm.</b> <em>n</em> − 1 = 0.50855; <em>d</em> = 248.00/(2 × 0.50855) = 243.8 nm.</p>
+        <p class="ex-step"><b>193.40 nm.</b> <em>n</em> − 1 = 0.56014; <em>d</em> = 193.40/(2 × 0.56014) = 172.6 nm.</p>
+        <p class="ex-step"><b>Thickness error.</b> The phase scales with <em>d</em>, so a 2 % excess gives 180° × 1.02 = 183.6°, an error of
+        3.6°, at either wavelength.</p>
+        <p class="ex-step"><b>Wrong wavelength.</b> At 193.40 nm the 243.8 nm layer delays the light by 0.56014 × 243.8 nm = 136.6 nm, a phase
+        of 360° × 136.6/193.40 = 254°, not 180°.</p>
+        <p class="ex-answer"><em>d</em> = 243.8 nm at 248 nm and 172.6 nm at 193.40 nm. A shifter is made for one wavelength. Check: (<em>n</em>
+        − 1)<em>d</em> = 0.50855 × 243.8 = 124.0 nm = 248/2, and 0.56014 × 172.6 = 96.7 nm = 193.40/2. Rounding <em>n</em> to 1.5 at 248 nm would
+        give 248 nm, 2 % thick.</p>
+      </div>
+    </div>
+
+    <h3 id="s4-3">4.3 The notes' example: 0.3 µm to 0.18 µm</h3>
+
+    <p>
+      The notes, Lecture 20 and Wolf give the same case: a process that resolves 0.3 µm with 248 nm KrF light at NA 0.6 can resolve 0.18 µm with
+      a phase-shift mask (notes p. 101; Wolf p. 285). Plummer, whose sentence the notes copy (notes p. 101), gives the gain two uses: a better aerial
+      image, or a longer depth of focus at constant resolution, obtained by printing the same feature with a lower-NA system, which by
+      eq. (11.2) gains depth of focus as 1/NA² (Plummer §5.2.4).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The PSM example as a change of <em>k</em><sub>1</sub></div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>λ</em> = 0.248 µm, NA = 0.6; resolution 0.3 µm with a binary mask and 0.18 µm with a phase-shift mask (notes
+        p. 101). <b>Find</b> <em>k</em><sub>1</sub> before and after, and the fractional improvement.</p>
+        <p><b>Plan.</b> Invert <em>R</em> = <em>k</em><sub>1</sub><em>λ</em>/NA: <em>k</em><sub>1</sub> = <em>R</em> NA/<em>λ</em>.</p>
+        <p class="ex-step"><b>Binary.</b> <em>k</em><sub>1</sub> = 0.3 × 0.6/0.248 = 0.726.</p>
+        <p class="ex-step"><b>Phase-shift.</b> <em>k</em><sub>1</sub> = 0.18 × 0.6/0.248 = 0.435.</p>
+        <p class="ex-step"><b>Improvement.</b> 0.18/0.3 = 0.60, a feature 40 % smaller.</p>
+        <p class="ex-answer"><em>k</em><sub>1</sub> falls from 0.726, close to Wolf's 0.75 for unaided processes, to 0.435. The 40 % is Wolf's
+        figure for the most a strong (alternating) PSM gives (p. 288), so the notes' example is the best case.</p>
+      </div>
+    </div>
+
+    <h3 id="s4-4">4.4 Kinds of phase-shift mask, and their limits</h3>
+
+    <p>
+      The mask of §4.1, with shifters on alternate openings, is the <b>alternating PSM</b> (ALT-PSM, or Levenson PSM). It gives the largest gain,
+      but only where every opening can be given the opposite phase to all its neighbours (Wolf pp. 286–288). That fails for a pattern of offset
+      rows, like bricks in a wall, where each opening has neighbours in two rows that cannot all differ from it; isolated features, which have no
+      neighbour to interfere with, gain nothing; and where a shifted clear region meets an unshifted clear region the two phases cancel along the
+      boundary and print an unwanted dark line, which needs an intermediate 90° step or a negative resist to suppress (Wolf pp. 287–290). These
+      are the "arbitrary mask shapes" whose complexity the notes cite as the method's cost (p. 101).
+    </p>
+    <p>
+      Two weaker forms trade resolution for applicability (Wolf pp. 288–291). The <b>attenuated</b> (halftone) PSM replaces the opaque chromium
+      with a film that transmits about 10 % of the light, shifted by 180°, too weak to expose the resist but enough to cancel the light spreading
+      from the openings at the feature edges; for i-line, films of chromium oxynitride or molybdenum silicon oxynitride are used. It works for
+      any layout, including isolated contacts, is made and repaired like a binary mask, and was the first PSM in commercial production. The
+      <b>rim-shift</b> PSM shifts only a rim around each opening. Wolf groups them by what they deliver: strong PSMs (alternating) give up to
+      40 % in resolution and less in depth of focus; weak PSMs (attenuated, rim) give less resolution and more depth of focus. By 2000,
+      attenuated PSMs were used on 0.18 µm contact levels and alternating PSMs on gates, interconnect and memory arrays; in 1997 only about
+      1 % of masks carried any phase shift. Wolf singles out attenuated PSMs combined with off-axis illumination as especially effective,
+      because each alone removes the zero-order light only partly (pp. 291–292).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 150" role="img" aria-labelledby="m12f4-t">
+        <title id="m12f4-t">Cross-sections of a binary mask, an alternating PSM and an attenuated PSM</title>
+        <text x="70" y="16" class="dg-label" text-anchor="middle">binary</text>
+        <rect x="10" y="40" width="120" height="14" class="dg-soft"/>
+        <rect x="10" y="54" width="25" height="6" class="dg-ink"/><rect x="55" y="54" width="30" height="6" class="dg-ink"/><rect x="105" y="54" width="25" height="6" class="dg-ink"/>
+        <text x="45" y="80" class="dg-label-sm" text-anchor="middle">+1</text><text x="95" y="80" class="dg-label-sm" text-anchor="middle">+1</text>
+        <text x="210" y="16" class="dg-label" text-anchor="middle">alternating</text>
+        <rect x="150" y="40" width="120" height="14" class="dg-soft"/>
+        <rect x="150" y="54" width="25" height="6" class="dg-ink"/><rect x="195" y="54" width="30" height="6" class="dg-ink"/><rect x="245" y="54" width="25" height="6" class="dg-ink"/>
+        <rect x="225" y="54" width="20" height="14" class="dg-acc-f" opacity="0.7"/>
+        <text x="185" y="80" class="dg-label-sm" text-anchor="middle">+1</text><text x="235" y="84" class="dg-label-sm" text-anchor="middle">−1</text>
+        <text x="235" y="100" class="dg-label-sm" text-anchor="middle">shifter, d</text>
+        <text x="350" y="16" class="dg-label" text-anchor="middle">attenuated</text>
+        <rect x="290" y="40" width="120" height="14" class="dg-soft"/>
+        <rect x="290" y="54" width="25" height="6" class="dg-acc-f" opacity="0.5"/><rect x="335" y="54" width="30" height="6" class="dg-acc-f" opacity="0.5"/><rect x="385" y="54" width="25" height="6" class="dg-acc-f" opacity="0.5"/>
+        <text x="325" y="80" class="dg-label-sm" text-anchor="middle">+1</text><text x="350" y="96" class="dg-label-sm" text-anchor="middle">≈ −0.3 field</text>
+        <text x="350" y="110" class="dg-label-sm" text-anchor="middle">(≈ 10 % intensity)</text>
+        <text x="210" y="136" class="dg-label-sm" text-anchor="middle">light enters from the top; numbers are the field amplitude below each region</text>
+      </svg>
+      <figcaption>Three masks over the same two openings (after Wolf Figs. 7-17 and 7-22). The alternating PSM adds a shifter of eq. (12.1) to
+        one opening; the attenuated PSM replaces chromium by a film that passes a weak, phase-reversed field. A 10 % intensity corresponds to a
+        field amplitude of √0.10 ≈ 0.32.</figcaption>
+    </figure>
+
+    <h3 id="s4-5">4.5 Mask errors near the resolution limit</h3>
+
+    <p>
+      A 4× reduction stepper prints a 4 µm mask line as 1 µm, and should print a mask width error four times smaller too. That holds only for
+      printed features larger than about 150 % of the wavelength; nearer the resolution limit, mask errors transfer more strongly (Wolf
+      pp. 292–293). The <b>mask error factor</b> measures the excess (Wolf eq. 7.2):
+    </p>
+
+    <div class="eq" id="eq12-2">
+      <div class="eq-body">
+        <div class="eq-math">MEF = <em>M</em> <span class="frac"><span class="num">Δ<em>CD</em><sub>printed</sub></span><span class="den">Δ<em>CD</em><sub>mask</sub></span></span></div>
+        <div class="eq-num">(12.2)</div>
+      </div>
+      <div class="eq-says">
+        MEF mask error factor, also MEEF (dimensionless; 1 when the lens simply demagnifies) · <em>M</em> reduction ratio of the lens (4 for a
+        4× stepper) · Δ<em>CD</em><sub>printed</sub> change in printed critical dimension on the wafer · Δ<em>CD</em><sub>mask</sub> change in the
+        corresponding dimension on the mask (same unit).
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">A 20 nm mask error on a 4× reticle</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>M</em> = 4; a mask line 20 nm too wide (Wolf p. 293). <b>Find</b> the printed error for MEF = 1, 2 and 4.</p>
+        <p><b>Plan.</b> Rearrange eq. (12.2): Δ<em>CD</em><sub>printed</sub> = MEF × Δ<em>CD</em><sub>mask</sub>/<em>M</em>.</p>
+        <p class="ex-step"><b>MEF = 1.</b> 1 × 20/4 = 5 nm.</p>
+        <p class="ex-step"><b>MEF = 2.</b> 2 × 20/4 = 10 nm.</p>
+        <p class="ex-step"><b>MEF = 4.</b> 4 × 20/4 = 20 nm.</p>
+        <p class="ex-answer">5, 10 and 20 nm. At MEF = 4 the mask error reaches the wafer undiminished and the 4× reduction no longer protects
+        the wafer from mask errors. Wolf reports MEF above 4 for features at 0.35<em>λ</em>/NA, which is 125 nm at 248 nm and NA 0.7 (p. 294),
+        so near the limit the mask must be made to wafer tolerances.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A phase-shift mask is to be made for 193 nm by etching recesses into the fused-silica plate (<em>n</em> = 1.56014). How deep is
+        the recess? The same layout is then needed for a contact level of isolated holes. Would you keep the alternating PSM, and if not, what
+        would you use?</summary>
+      <div class="answer"><p>Eq. (12.1) applies to a recess as to a layer, because the path difference between the etched and unetched
+        regions is again (<em>n</em> − 1)<em>d</em>: <em>d</em> = 193.40/(2 × 0.56014) = 172.6 nm. For isolated contact holes the alternating
+        PSM gives no gain, because a hole has no neighbour whose field its own can cancel; the attenuated PSM, whose weak phase-reversed
+        background works on any layout and suppresses the light spreading from each hole's edges, is the choice Wolf records for 0.18 µm contact
+        levels (pp. 287, 291–292).</p></div>
+    </details>
+
+    <h2 id="s5">5 · Extending optical lithography</h2>
+
+    <p>
+      In the late 1970s optical lithography was expected to end near 1 µm (Wolf p. 296). Wolf lists why it outlived that forecast (p. 297): lenses
+      became diffraction limited and reached NA 0.8 by 2001; the wavelength fell from 436 nm to 193 nm; resists lowered <em>k</em><sub>1</sub>
+      from about 0.8 in 1980 to below 0.5; chemical-mechanical polishing (<a href="m13-cmp-process.html">M13</a>) flattened the wafer, so the depth of focus needed fell to about
+      ±0.2 µm; and the RETs of §§3–4 were developed. The notes (pp. 101–102) take two items from Wolf's list of what remains: reaching 70 nm
+      needs shorter wavelengths, 157 nm (F₂) or 126 nm (the argon excimer Ar₂*), with CaF₂ single crystals for the mask (§2); and CMP improves
+      the depth of focus to ±0.2 µm. They conclude that the lower limit of optical lithography is around 70–50 nm (p. 102). Wolf adds two
+      limits the notes do not copy: CMP cannot flatten the wafer further, and NA cannot exceed 1 (pp. 297–299).
+    </p>
+
+    <h3 id="s5-1">5.1 Immersion: the limit that moved</h3>
+
+    <p>
+      Wolf's argument on aperture rested on an assumption: "it is unlikely that lithography will be carried out in a medium other than a vacuum or
+      gas", which "limits the NA of a lens to &lt; 1" (p. 299). The numerical aperture is in general NA = <em>n</em> sin <em>θ</em> (M11 §3.1), where on the
+      wafer side <em>n</em> is the refractive index of the medium between the last lens element and the resist. Filling that gap
+      with water, whose index at 193 nm is about 1.44 (J. H. Burnett and S. G. Kaplan, <i>J. Microlith. Microfab. Microsyst.</i> 3, 68 (2004)),
+      raises the ceiling on NA from 1 to 1.44. Equivalently, the light travels through the water with wavelength <em>λ</em>/<em>n</em> = 193/1.44 =
+      134 nm. Lecture 19 raised immersion with ArF lasers, as a means of better resolution and as a project topic; it is not in the notes. In 2004
+      Lin argued for water immersion at 193 nm as the successor to dry 193 nm in place of the 157 nm generation for which §§1–2's CaF₂ optics
+      were being developed (B. J. Lin, <i>J. Microlith. Microfab. Microsyst.</i> 3, 377 (2004)). ArF immersion scanners now use NA 1.35 and
+      print 38–40 nm in production (ASML, TWINSCAN NXT:1980Di product data), well below the 70 nm the notes give as the limit.
+    </p>
+
+    <div class="eq" id="eq12-3">
+      <div class="eq-body">
+        <div class="eq-math">NA = <em>n</em> sin&thinsp;<em>θ</em></div>
+        <div class="eq-num">(12.3)</div>
+      </div>
+      <div class="eq-says">
+        NA numerical aperture · <em>n</em> refractive index of the medium between the last lens element and the resist (1 for air, ≈ 1.44 for
+        water at 193 nm) · <em>θ</em> half-angle of the cone of rays converging on the image. The general definition of NA; the course's eq. (11.2)
+        is the case <em>n</em> = 1.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">What water buys at 193 nm</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>λ</em> = 193 nm; a dry lens of NA 0.8 (Wolf's 2001 maximum, p. 299); a water-immersion lens of NA 1.35 (ASML NXT:1980Di) with
+        <em>n</em> = 1.44. <b>Find</b> the half-angle the immersion lens needs, and <em>F</em> and DOF for both lenses by the course's forms.</p>
+        <p><b>Plan.</b> Eq. (12.3) for <em>θ</em>; eq. (11.2) for <em>F</em> and DOF, applied to the effective NA.</p>
+        <p class="ex-step"><b>Half-angle.</b> sin <em>θ</em> = 1.35/1.44 = 0.9375; <em>θ</em> = 69.6°. In air the same NA would need sin
+        <em>θ</em> = 1.35, which is impossible.</p>
+        <p class="ex-step"><b>Dry, NA 0.8.</b> <em>F</em> = 0.5 × 193/0.8 = 120.6 nm; DOF = 0.6 × 193/0.64 = 180.9 nm.</p>
+        <p class="ex-step"><b>Immersion, NA 1.35.</b> <em>F</em> = 0.5 × 193/1.35 = 71.5 nm; NA² = 1.8225; DOF = 0.6 × 193/1.8225 = 63.5 nm.</p>
+        <p class="ex-answer">The immersion lens needs a 69.6° half-angle and prints 71.5 nm against 120.6 nm dry, at a depth of focus of 63.5 nm
+        against 180.9 nm. Check: <em>F</em> scales by 0.8/1.35 = 0.59 and DOF by 0.59² = 0.35, as eq. (11.2) predicts. The course's simple DOF
+        form treats the higher NA like any other; the depth-of-focus behaviour of real immersion systems is more favourable than this and is
+        beyond the notes.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>Using the course's <em>F</em> = 0.5<em>λ</em>/NA with a dry NA of 0.8, what feature can 157 nm and 126 nm light reach? What
+        <em>k</em><sub>1</sub> would each need for the notes' 70 nm? Of the limits Wolf gives — wavelength, NA &lt; 1 and wafer flatness — which
+        did immersion remove, and which did it leave?</summary>
+      <div class="answer"><p><em>F</em> = 0.5 × 157/0.8 = 98.1 nm and 0.5 × 126/0.8 = 78.8 nm. For 70 nm, <em>k</em><sub>1</sub> = 70 × 0.8/157
+        = 0.357 and 70 × 0.8/126 = 0.444, both below 0.5, so both wavelengths need RETs. Immersion removed the ceiling of NA &lt; 1 by putting a
+        liquid of index 1.44 in the gap. It did not shorten the wavelength or relax the flatness the wafer needs: the higher NA shortens the
+        depth of focus further, so planarity (<a href="m13-cmp-process.html#s1-2">M13</a>) matters more, not less.</p></div>
+    </details>
+
+    <h2 id="s6">6 · Beyond light: the non-optical candidates</h2>
+
+    <p>
+      Below the optical limit the notes list four approaches (p. 102): extreme-ultraviolet (EUV) reflective projection, electron-beam projection,
+      X-ray proximity printing and electron-beam direct writing. Lecture 20 took them in a different order — X-ray, EUV, electron beam, ion beam —
+      and added ion beams, which the notes do not mention. Each replaces the photon of a few electronvolts by radiation of far shorter
+      wavelength: X-rays of order 1 nm, EUV of 10–15 nm, and electrons whose wavelength is a small fraction of an ångström (§9). For X-rays and electrons
+      diffraction then hardly limits the resolution; EUV remains a diffraction-limited projection system, at a wavelength 14 times shorter than
+      ArF's. In all of them the problems move to the source, the mask and the optics. The notes and Wolf name two common to the mask-based
+      methods (notes p. 102; Wolf p. 301). Masks are expensive: the notes give $5000–100,000 per mask, and Wolf's printed figure,
+      "$50,00–$100,000", is itself misprinted, so the lower bound is uncertain. And no <b>pellicle</b>, the thin transparent film stretched
+      over an optical mask to hold particles out of focus, can be mounted, which leaves the masks far more vulnerable to particles; for EUV,
+      Wolf gives the reason, that no material transmits the radiation (pp. 303–304). By 2001, Wolf records, EUV had become the leading candidate,
+      X-ray proximity printing and direct-write electron beams had been abandoned as production methods, and electron-beam projection was in
+      decline (p. 301).
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Method</th><th>Radiation and wavelength</th><th>Optics</th><th>Mask</th><th>Status in the sources</th></tr></thead>
+      <tbody>
+        <tr><td>X-ray proximity (§7)</td><td>Photons, 4–20 Å (Lecture 20); ≈ 1 nm, 1–10 keV (Plummer)</td><td>None; 1:1 shadow printing</td><td>Thin membrane with Au, Pt or W absorber</td><td>Abandoned by 2001 (Wolf)</td></tr>
+        <tr><td>EUV (§8)</td><td>Photons, 10–15 nm; 13.5 nm in practice</td><td>Multilayer mirrors; 4–5× reduction</td><td>Reflective multilayer with absorber</td><td>Leading candidate in 2001; now in production</td></tr>
+        <tr><td>E-beam direct write (§9)</td><td>Electrons, ≈ 0.1 Å at 10 kV</td><td>Electrostatic and magnetic deflection</td><td>None; pattern from data</td><td>Masks and research; too slow for wafers</td></tr>
+        <tr><td>E-beam projection, SCALPEL (§9.4)</td><td>Electrons, 100 keV (Plummer)</td><td>Electron lenses; 4:1 reduction</td><td>SiN membrane with W or Au scatterers</td><td>In decline by 2001 (Wolf)</td></tr>
+        <tr><td>Ion beam (§9.5)</td><td>Ga⁺ ions (Lecture 20)</td><td>Electrostatic focusing</td><td>None (focused beam)</td><td>"Maybe one day" (Lecture 20)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2 id="s7">7 · X-ray proximity lithography</h2>
+
+    <p>
+      Lecture 20 opened the non-optical methods with X-rays, from outside the notes. Lecture 20 gave wavelengths of 4–20 Å, photon energies of 0.6–3.1 keV;
+      Plummer gives energies of 1–10 keV and wavelengths of order 1 nm (§5.6.2). No lens or ordinary mirror focuses them,
+      because every material has a refractive index within a small fraction of 1 at these wavelengths, so the systems print by proximity: the
+      mask is held a small gap above the wafer and its shadow is printed at 1:1, as in the shadow printing of M11 §2 (Lecture 20; Plummer).
+      Because the wavelength is some 400 times shorter than the g-line's, the diffraction blur of eq. (<a href="m11-lithography-resists.html#s2">11.1</a>)
+      is small even across a gap of micrometres.
+    </p>
+    <p>
+      The mask must stop X-rays where the pattern is dark and pass them elsewhere, and no material passes them easily. The clear areas are
+      therefore a membrane a few micrometres thick of a light material — silicon or silicon nitride (Lecture 20), or Si, Si₃N₄, SiC or BN
+      (Plummer) — and the absorber is a heavy metal, gold or platinum (Lecture 20), with tungsten preferred where gold contamination of the fab is
+      a concern (Plummer). The membrane is fragile and its stresses distort the pattern, and because the mask is 1:1, its features are as small
+      as the wafer's, written by an electron beam (Plummer). The resist named in Lecture 20 was PMMA (poly(methyl methacrylate)), which the
+      lecture called a negative resist; At the doses used for patterning, PMMA under X-ray and electron exposure is a positive resist, its chains cut by the radiation
+      so that the exposed areas dissolve (at much higher doses it cross-links and turns negative). Weak sources, such as medical X-ray tubes, need impractically long exposures; the intense source is a
+      <b>synchrotron</b>, a storage ring in which electrons circulating at high energy emit X-rays at every bending magnet, so one ring can feed
+      several aligners, at a very high cost (Plummer §5.6.2); Lecture 20 named the synchrotrons at Berkeley, Brookhaven and Argonne. That cost is the reason Lecture 20 gave for the move to EUV.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="-30 0 470 170" role="img" aria-labelledby="m12f5-t">
+        <title id="m12f5-t">X-ray proximity printing: a membrane mask with heavy-metal absorber held a gap above the resist</title>
+        <line x1="60" y1="14" x2="60" y2="54" class="dg-acc"/><line x1="130" y1="14" x2="130" y2="54" class="dg-acc"/>
+        <line x1="200" y1="14" x2="200" y2="54" class="dg-acc"/><line x1="270" y1="14" x2="270" y2="54" class="dg-acc"/>
+        <line x1="340" y1="14" x2="340" y2="54" class="dg-acc"/>
+        <text x="370" y="30" class="dg-label-sm">X-rays</text>
+        <rect x="30" y="60" width="350" height="6" class="dg-soft"/>
+        <text x="385" y="66" class="dg-label-sm">membrane</text>
+        <rect x="95" y="54" width="50" height="6" class="dg-ink"/><rect x="215" y="54" width="50" height="6" class="dg-ink"/>
+        <text x="120" y="88" class="dg-label-sm" text-anchor="middle">absorber: Au, Pt or W</text>
+        <line x1="22" y1="66" x2="22" y2="104" class="dg-guide"/><text x="18" y="88" class="dg-label-sm" text-anchor="end">gap s</text>
+        <rect x="30" y="104" width="350" height="16" class="dg-fill"/>
+        <text x="385" y="116" class="dg-label-sm">resist</text>
+        <rect x="95" y="104" width="50" height="16" class="dg-faint"/><rect x="215" y="104" width="50" height="16" class="dg-faint"/>
+        <rect x="30" y="120" width="350" height="22" class="dg-soft"/>
+        <text x="385" y="135" class="dg-label-sm">wafer</text>
+        <text x="205" y="162" class="dg-label-sm" text-anchor="middle">shadow at 1:1; no lens</text>
+      </svg>
+      <figcaption>X-ray proximity printing (Lecture 20; Plummer §5.6.2). The absorber casts a 1:1 shadow across the gap; the light membrane
+        passes the X-rays elsewhere. Not to scale: the membrane is a few micrometres thick (Plummer).</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">How much the short wavelength buys in proximity printing</div>
+      <div class="ex-body">
+        <p><b>Given</b> X-rays of <em>λ</em> = 1 nm = 0.001 µm; a gap <em>s</em> = 10 µm and a 1 µm resist, the gap and thickness of M11's
+        g-line example; the lecture's shadow-printing formula 2<em>b</em><sub>min</sub> = 3√(<em>λ</em>(<em>s</em> + <em>d</em>/2)) (eq. 11.1).
+        <b>Find</b> the photon energy at 1 nm and at the lecture's 4 Å and 20 Å, and the minimum period at 1 nm.</p>
+        <p><b>Plan.</b> <em>E</em> = <em>hc</em>/<em>λ</em> with <em>hc</em> = 1239.84 eV nm (M11 §4); eq. (11.1) in micrometres.</p>
+        <p class="ex-step"><b>Photon energies.</b> 1239.84/1 nm = 1.24 keV; 4 Å = 0.4 nm → 3.10 keV; 20 Å = 2 nm → 0.62 keV.</p>
+        <p class="ex-step"><b>Inside the root.</b> 0.001 × (10 + 0.5) = 0.0105 µm²; √ = 0.1025 µm.</p>
+        <p class="ex-step"><b>Period.</b> 2<em>b</em><sub>min</sub> = 3 × 0.1025 = 0.307 µm, a line of about 0.15 µm.</p>
+        <p class="ex-answer">At 1 nm, 1.24 keV, and a 0.31 µm minimum period across a 10 µm gap, against 6.42 µm for the g-line at the same
+        gap (M11 §2.1). Check: the ratio is √(436/1) = 20.9, since everything except <em>λ</em> is the same. Plummer's simpler estimate √(<em>λg</em>)
+        gives 0.10 µm, consistent with the &lt; 0.1 µm features he reports from research X-ray systems.</p>
+      </div>
+    </div>
+
+    <h2 id="s8">8 · Extreme-ultraviolet reflective projection lithography</h2>
+
+    <p>
+      EUV uses photons of 10–15 nm, the soft-X-ray end of the spectrum (notes p. 102), with energies near 100 eV (Wolf p. 301); Lecture 20 gave
+      13.5 nm as the wavelength used. Its advantage, the notes say, is that it "needs few changes in manufacturing from the current methods":
+      it is still a projection system that reduces a larger mask onto the wafer, which makes the mask easier to make than a 1:1 X-ray mask
+      (notes p. 102; Wolf p. 302). The difference is that nothing transmits EUV, so every element, the mask included, is a mirror, and the
+      whole beam path is in vacuum (Wolf pp. 303–304).
+    </p>
+
+    <h3 id="s8-1">8.1 The multilayer mirror</h3>
+
+    <p>
+      A single surface reflects EUV poorly, because below about 50 nm all materials have refractive indices close to 1 and an interface between
+      two of them reflects very little (Wolf p. 304). The mirror is therefore built from many interfaces: about 40 pairs of alternating layers,
+      each tens of ångströms thick, of a high-atomic-number (high-<em>Z</em>) and a low-<em>Z</em> material, molybdenum and silicon (notes
+      p. 103; Wolf p. 304). The small index step at each Mo/Si interface reflects a little of the wave. If the period <em>d</em> of the stack
+      satisfies the Bragg condition, the waves reflected from successive interfaces leave in phase and add; with enough pairs the sum reaches
+      the notes' "as high as 70 %" (p. 103). Plummer describes the same structure as a scatterer (the heavy layer) and a spacer (the light one)
+      (§5.6.2). Both layers must absorb weakly so the light reaches the deeper pairs, and each must be deposited to better than an ångström
+      (Wolf p. 305). The Bragg condition, as Wolf writes it (p. 304):
+    </p>
+
+    <div class="eq" id="eq12-4">
+      <div class="eq-body">
+        <div class="eq-math"><em>d</em> = <span class="frac"><span class="num"><em>λ</em></span><span class="den">2 sin&thinsp;<em>θ</em></span></span></div>
+        <div class="eq-num">(12.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>d</em> period of the multilayer, the thickness of one Mo/Si pair (same unit as <em>λ</em>) · <em>λ</em> EUV wavelength ·
+        <em>θ</em> glancing angle between the incident ray and the layers (90° at normal incidence). Neglects refraction in the layers, whose
+        index is close to 1.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 450 170" role="img" aria-labelledby="m12f6-t">
+        <title id="m12f6-t">Multilayer mirror: reflections from successive Mo/Si interfaces add in phase when the period meets the Bragg condition</title>
+        <rect x="120" y="60" width="240" height="8" class="dg-ink"/><rect x="120" y="68" width="240" height="12" class="dg-soft"/>
+        <rect x="120" y="80" width="240" height="8" class="dg-ink"/><rect x="120" y="88" width="240" height="12" class="dg-soft"/>
+        <rect x="120" y="100" width="240" height="8" class="dg-ink"/><rect x="120" y="108" width="240" height="12" class="dg-soft"/>
+        <rect x="120" y="120" width="240" height="8" class="dg-ink"/><rect x="120" y="128" width="240" height="12" class="dg-soft"/>
+        <text x="368" y="63" class="dg-label-sm">Mo (high Z)</text>
+        <text x="368" y="84" class="dg-label-sm">Si (low Z)</text>
+        <line x1="112" y1="60" x2="112" y2="80" class="dg-acc" stroke-width="1.8"/>
+        <text x="106" y="74" class="dg-label" text-anchor="end">d</text>
+        <line x1="150" y1="14" x2="200" y2="60" class="dg-acc" stroke-width="1.8"/>
+        <line x1="200" y1="60" x2="250" y2="14" class="dg-acc" stroke-width="1.8"/>
+        <line x1="172" y1="14" x2="243.7" y2="80" class="dg-line"/>
+        <line x1="243.7" y1="80" x2="315.4" y2="14" class="dg-line"/>
+        <line x1="194" y1="14" x2="287.5" y2="100" class="dg-guide"/>
+        <line x1="287.5" y1="100" x2="381" y2="14" class="dg-guide"/>
+        <text x="140" y="12" class="dg-label-sm" text-anchor="end">incident EUV</text>
+        <text x="322" y="12" class="dg-label-sm" text-anchor="end">reflections in phase</text>
+        <text x="240" y="160" class="dg-label-sm" text-anchor="middle">≈ 40 pairs on a polished substrate</text>
+      </svg>
+      <figcaption>The Mo/Si multilayer (notes p. 103; Wolf Fig. 7-29). Each interface reflects weakly; at the Bragg period the reflected waves
+        add, and the stack reflects up to about 70 %. Rays are drawn at a slant for clarity; the mirrors are used near normal incidence, and the
+        layers are not to scale.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">The period of a 13.5 nm mirror</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>λ</em> = 13.5 nm; 40 pairs (notes p. 103). <b>Find</b> the period at normal incidence, the total stack thickness,
+        and the period for a ray 6° off normal (glancing angle 84°).</p>
+        <p><b>Plan.</b> Eq. (12.4) with <em>θ</em> = 90° and 84°.</p>
+        <p class="ex-step"><b>Normal incidence.</b> sin 90° = 1; <em>d</em> = 13.5/2 = 6.75 nm per Mo/Si pair, that is 67.5 Å, consistent with
+        layers "tens of ångströms" thick.</p>
+        <p class="ex-step"><b>Stack.</b> 40 × 6.75 nm = 270 nm.</p>
+        <p class="ex-step"><b>Off normal.</b> sin 84° = 0.9945; <em>d</em> = 13.5/(2 × 0.9945) = 6.79 nm.</p>
+        <p class="ex-answer">6.75 nm per pair and a 270 nm stack, by eq. (12.4), which neglects refraction in the layers; real Mo/Si periods differ
+        from it by a few per cent. A ray 6° off normal needs a period 0.04 nm, 0.6 %, larger, so on a curved mirror, where the angle varies
+        across the surface, the period must be graded to that precision. The notes call deposition on curved surfaces difficult "because of the
+        extremely tight tolerance" (p. 103); Wolf puts that tolerance, better than 2 nm, on the figure of the aspheric mirror substrates
+        (p. 305).</p>
+      </div>
+    </div>
+
+    <h3 id="s8-2">8.2 Nine reflections</h3>
+
+    <p>
+      Wolf's EUV system had two mirrors in the illuminator, the reflective mask and six mirrors in the projection optics: nine reflections
+      between source and wafer (p. 304). The power reaching the wafer is the product of the nine reflectances, so a small gain per mirror is a
+      large gain overall. The notes give 70 % (p. 103); Wolf reports 68 % achieved at 13.4 nm and more than 70 % needed (pp. 304–305); Lecture 20
+      said 80 %.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 240" role="img" aria-labelledby="m12fc-t">
+      <title id="m12fc-t">Fraction of EUV power remaining after successive reflections for mirror reflectances of 0.68, 0.70 and 0.80</title>
+      <line x1="60" y1="195" x2="400" y2="195" class="dg-rule" stroke-width="1.2"/>
+      <line x1="60" y1="195" x2="60" y2="25" class="dg-rule" stroke-width="1.2"/>
+      <text x="60" y="211" class="dg-label-sm" text-anchor="middle">0</text>
+      <text x="98" y="211" class="dg-label-sm" text-anchor="middle">1</text>
+      <text x="136" y="211" class="dg-label-sm" text-anchor="middle">2</text>
+      <text x="173" y="211" class="dg-label-sm" text-anchor="middle">3</text>
+      <text x="211" y="211" class="dg-label-sm" text-anchor="middle">4</text>
+      <text x="249" y="211" class="dg-label-sm" text-anchor="middle">5</text>
+      <text x="287" y="211" class="dg-label-sm" text-anchor="middle">6</text>
+      <text x="324" y="211" class="dg-label-sm" text-anchor="middle">7</text>
+      <text x="362" y="211" class="dg-label-sm" text-anchor="middle">8</text>
+      <text x="400" y="211" class="dg-label-sm" text-anchor="middle">9</text>
+      <text x="52" y="199" class="dg-label-sm" text-anchor="end">0.00</text>
+      <text x="52" y="156" class="dg-label-sm" text-anchor="end">0.25</text>
+      <line x1="60" y1="152.5" x2="400" y2="152.5" class="dg-guide" stroke-dasharray="2 4"/>
+      <text x="52" y="114" class="dg-label-sm" text-anchor="end">0.50</text>
+      <line x1="60" y1="110.0" x2="400" y2="110.0" class="dg-guide" stroke-dasharray="2 4"/>
+      <text x="52" y="72" class="dg-label-sm" text-anchor="end">0.75</text>
+      <line x1="60" y1="67.5" x2="400" y2="67.5" class="dg-guide" stroke-dasharray="2 4"/>
+      <text x="52" y="29" class="dg-label-sm" text-anchor="end">1.00</text>
+      <line x1="60" y1="25.0" x2="400" y2="25.0" class="dg-guide" stroke-dasharray="2 4"/>
+      <text x="230" y="236" class="dg-label" text-anchor="middle">number of reflections k</text>
+      <text x="18" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 18 110)">fraction left, R^k</text>
+      <path d="M60.0,25.0 L97.8,59.0 L135.6,86.2 L173.3,108.0 L211.1,125.4 L248.9,139.3 L286.7,150.4 L324.4,159.3 L362.2,166.5 L400.0,172.2" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="6 4"/>
+      <circle cx="400.0" cy="172.2" r="3" class="dg-acc-f"/>
+      <path d="M60.0,25.0 L97.8,76.0 L135.6,111.7 L173.3,136.7 L211.1,154.2 L248.9,166.4 L286.7,175.0 L324.4,181.0 L362.2,185.2 L400.0,188.1" class="dg-acc" fill="none" stroke-width="2"/>
+      <circle cx="400.0" cy="188.1" r="3" class="dg-acc-f"/>
+      <path d="M60.0,25.0 L97.8,79.4 L135.6,116.4 L173.3,141.5 L211.1,158.7 L248.9,170.3 L286.7,178.2 L324.4,183.6 L362.2,187.2 L400.0,189.7" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="2 3"/>
+      <circle cx="400.0" cy="189.7" r="3" class="dg-acc-f"/>
+      <line x1="250" y1="40" x2="280" y2="40" class="dg-line" stroke-width="1.6" stroke-dasharray="6 4"/>
+      <text x="286" y="44" class="dg-label-sm">R = 0.80: 0.134 after 9</text>
+      <line x1="250" y1="58" x2="280" y2="58" class="dg-acc" stroke-width="2"/>
+      <text x="286" y="62" class="dg-label-sm">R = 0.70: 0.040 after 9</text>
+      <line x1="250" y1="76" x2="280" y2="76" class="dg-line" stroke-width="1.6" stroke-dasharray="2 3"/>
+      <text x="286" y="80" class="dg-label-sm">R = 0.68: 0.031 after 9</text>
+      </svg>
+      <figcaption>Fraction of EUV power left after <em>k</em> reflections, <em>R</em><sup><em>k</em></sup>, for Wolf's achieved 68 %, the notes' 70 % and Lecture 20's 80 % per mirror. Nine reflections (two illuminator mirrors, the mask, six projection mirrors) pass 3.1 %, 4.0 % and 13.4 %. Computed.</figcaption>
+    </figure>
+
+
+    <div class="example">
+      <div class="ex-head">What a two-point gain in reflectance is worth</div>
+      <div class="ex-body">
+        <p><b>Given</b> nine reflections; reflectance <em>R</em> = 0.68 or 0.70 per mirror (Wolf p. 304); a 10 W EUV beam from a 1500 W laser
+        plasma source (notes pp. 103–104; Wolf p. 306). <b>Find</b> the fraction transmitted for each reflectance and their ratio, the power at
+        the wafer if the 10 W enters the first mirror, and the conversion efficiency of the source.</p>
+        <p><b>Plan.</b> Transmitted fraction <em>R</em><sup>9</sup>; ratio (0.70/0.68)<sup>9</sup>.</p>
+        <p class="ex-step"><b>Fractions.</b> 0.68<sup>9</sup> = 0.0311; 0.70<sup>9</sup> = 0.0404.</p>
+        <p class="ex-step"><b>Ratio.</b> (0.70/0.68)<sup>9</sup> = 1.029<sup>9</sup> = 1.298.</p>
+        <p class="ex-step"><b>At the wafer.</b> 10 W × 0.0404 = 0.40 W at 70 %; 10 W × 0.0311 = 0.31 W at 68 %.</p>
+        <p class="ex-step"><b>Source efficiency.</b> 10 W / 1500 W = 0.67 %.</p>
+        <p class="ex-answer">Raising each mirror from 68 % to 70 % delivers 30 % more light to the wafer, Wolf's "nearly 30%" (p. 304); still,
+        only about 4 % of the EUV that enters the optics arrives, and the source turns 0.67 % of its laser power into usable EUV. Wolf estimated
+        that production would need more than 50 W, five times the 2001 source (p. 306).</p>
+      </div>
+    </div>
+
+    <h3 id="s8-3">8.3 The mask and the source</h3>
+
+    <p>
+      The EUV mask is a mirror carrying the pattern: the Mo/Si multilayer is deposited on a flat substrate and an absorber is deposited and
+      patterned on top. The notes and Wolf name Cr, TiN and TaN as absorbers (notes p. 103; Wolf pp. 305–306); Lecture 20 added gold and
+      platinum and said the mask stack uses fewer pairs than the mirrors. Mo and Si begin to intermix above 150 °C, which lowers the
+      reflectivity, so every step that deposits or etches the absorber must stay below that temperature (notes p. 103; Wolf p. 306). Because
+      nearly every material absorbs EUV, the resist must also be thin, below 200 nm (Wolf p. 306).
+    </p>
+    <p>
+      The notes' source is a laser-produced plasma: pulses from a Nd:YAG laser, wavelength 1.06 µm (Lecture 20), strike a supersonic jet of
+      xenon, and the hot plasma emits broad-band radiation with a significant EUV component (notes pp. 102–103; Wolf p. 303). Xenon was the most
+      common target because it emits relatively strong EUV and, being inert, does not directly generate debris that would contaminate the optics
+      (Wolf p. 303). The 2001 prototype converted 1500 W of laser power into a 10 W EUV
+      beam (notes pp. 103–104). EUV has since entered high-volume manufacturing at 13.5 nm, the wavelength Lecture 20 gave — TSMC reported volume shipments
+      from its N7+ process in 2019 — with a different source from the notes': a CO₂ laser strikes droplets of tin. In 2017 such a source
+      delivered 210 W of dose-controlled EUV, against the more than 200 W production needs (I. Fomenkov et al., <i>Adv. Opt. Technol.</i> 6, 173
+      (2017)). Lecture 20 mentioned tin as another group's approach.
+    </p>
+
+    <h3 id="s8-4">8.4 Resolution and depth of focus</h3>
+
+    <p>
+      Wolf applies the Rayleigh form to a 13.4 nm system with NA 0.25 and <em>k</em><sub>1</sub> = 0.6, predicting 32 nm, and adds that EUV
+      offers "a DOF of greater than 1-micron" at that resolution (p. 303). The first figure follows from the equation; the second does not
+      follow from the course's DOF form, as the self-check shows.
+    </p>
+
+    <details class="check">
+      <summary>For <em>λ</em> = 13.4 nm and NA = 0.25, compute the resolution with Wolf's <em>k</em><sub>1</sub> = 0.6, the course's
+        <em>F</em> = 0.5<em>λ</em>/NA, and the course's DOF = 0.6<em>λ</em>/NA². Is a depth of focus "greater than 1 micron" consistent with
+        eq. (11.2)? Compare with the immersion example of §5.1.</summary>
+      <div class="answer"><p><em>R</em> = 0.6 × 13.4/0.25 = 32.2 nm, Wolf's 32 nm; the course's <em>F</em> = 0.5 × 13.4/0.25 = 26.8 nm.
+        DOF = 0.6 × 13.4/0.0625 = 128.6 nm = 0.13 µm. Eq. (11.2) gives about an eighth of Wolf's "greater than 1 micron"; the course's form does
+        not support his figure, and this page uses the formula. Even so, 0.13 µm at a 27 nm feature is twice the 63.5 nm depth of focus of the
+        71.5 nm immersion feature, because the short wavelength lets a small NA reach the small feature: at fixed <em>F</em>, DOF =
+        2.4<em>F</em>²/<em>λ</em> (M11 §3.1).</p></div>
+    </details>
+
+    <h2 id="s9">9 · Electron beams</h2>
+
+    <p>
+      Lecture 20 distinguished two kinds of electron-beam lithography: projection through a mask (the notes' SCALPEL, §9.4) and the beam writer,
+      which draws the pattern directly with a focused beam and is "the one mostly used for making masks". Plummer adds that the beam writer has
+      long been the tool of advanced device research for its resolution (§5.6.1).
+    </p>
+
+    <h3 id="s9-1">9.1 The electron wavelength</h3>
+
+    <p>
+      An electron accelerated from rest through a potential difference <em>V</em> acquires kinetic energy <em>qV</em> and momentum
+      <em>p</em> = √(2<em>m</em><sub>0</sub><em>qV</em>), with <em>m</em><sub>0</sub> the electron rest mass and <em>q</em> its charge. Its de
+      Broglie wavelength is <em>λ</em> = <em>h</em>/<em>p</em>, with <em>h</em> Planck's constant. Substituting the constants gives
+      <em>λ</em> = 12.26/√<em>V</em> Å with <em>V</em> in volts, and since √150 = 12.25, Lecture 20's form:
+    </p>
+
+    <div class="eq" id="eq12-5">
+      <div class="eq-body">
+        <div class="eq-math"><em>λ</em> = <span class="sqrt"><span class="frac"><span class="num">150</span><span class="den"><em>V</em></span></span></span>&ensp;Å</div>
+        <div class="eq-num">(12.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>λ</em> electron wavelength in ångströms (1 Å = 0.1 nm) · <em>V</em> accelerating voltage in volts. From <em>λ</em> = <em>h</em>/√(2<em>m</em><sub>0</sub><em>qV</em>),
+        non-relativistic. The relativistic form, <em>λ</em> = <em>h</em>/√(2<em>m</em><sub>0</sub><em>qV</em>(1 + <em>qV</em>/2<em>m</em><sub>0</sub><em>c</em>²)),
+        is shorter than √(150/<em>V</em>) by 0.35 % at 10 kV, 2.2 % at 50 kV and 4.4 % at 100 kV. Lecture 20; not in the notes.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Electron wavelength at 10 kV and 50 kV (the exercise of Lecture 20)</div>
+      <div class="ex-body">
+        <p><b>Given</b> accelerating voltages of 10 kV and 50 kV. <b>Find</b> <em>λ</em> by eq. (12.5), the relativistic correction, and the ratio
+        of the ArF wavelength to the 10 kV electron wavelength.</p>
+        <p><b>Plan.</b> Put <em>V</em> in volts into eq. (12.5); compare with the relativistic form.</p>
+        <p class="ex-step"><b>10 kV.</b> 150/10 000 = 0.0150; √0.0150 = 0.1225 Å.</p>
+        <p class="ex-step"><b>50 kV.</b> 150/50 000 = 0.00300; √0.00300 = 0.0548 Å.</p>
+        <p class="ex-step"><b>Relativistic check.</b> <em>qV</em>/(2<em>m</em><sub>0</sub><em>c</em>²) = 0.0098 at 10 kV and 0.0489 at 50 kV;
+        the exact wavelengths are 0.1220 Å and 0.0536 Å.</p>
+        <p class="ex-step"><b>Against light.</b> 193 nm = 1930 Å; 1930/0.1225 = 1.58 × 10⁴.</p>
+        <p class="ex-answer">0.122 Å at 10 kV and 0.055 Å at 50 kV, Lecture 20's values; the relativistic values are 0.35 % and 2.2 % shorter,
+        which the course's form neglects. The electron wavelength is some 16 000 times shorter than ArF light, so diffraction plays no part in the
+        resolution, as the lecture concluded and Plummer states (§5.6.1).</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m12fb-t">
+      <title id="m12fb-t">Electron wavelength against accelerating voltage: the course formula and the relativistic value</title>
+      <line x1="60" y1="205" x2="400" y2="205" class="dg-rule" stroke-width="1.2"/>
+      <line x1="60" y1="205" x2="60" y2="25" class="dg-rule" stroke-width="1.2"/>
+      <text x="60" y="221" class="dg-label-sm" text-anchor="middle">0</text>
+      <text x="128" y="221" class="dg-label-sm" text-anchor="middle">20</text>
+      <text x="196" y="221" class="dg-label-sm" text-anchor="middle">40</text>
+      <text x="264" y="221" class="dg-label-sm" text-anchor="middle">60</text>
+      <text x="332" y="221" class="dg-label-sm" text-anchor="middle">80</text>
+      <text x="400" y="221" class="dg-label-sm" text-anchor="middle">100</text>
+      <text x="52" y="209" class="dg-label-sm" text-anchor="end">0.0</text>
+      <text x="52" y="164" class="dg-label-sm" text-anchor="end">0.1</text>
+      <line x1="60" y1="160.0" x2="400" y2="160.0" class="dg-guide" stroke-dasharray="2 4"/>
+      <text x="52" y="119" class="dg-label-sm" text-anchor="end">0.2</text>
+      <line x1="60" y1="115.0" x2="400" y2="115.0" class="dg-guide" stroke-dasharray="2 4"/>
+      <text x="52" y="74" class="dg-label-sm" text-anchor="end">0.3</text>
+      <line x1="60" y1="70.0" x2="400" y2="70.0" class="dg-guide" stroke-dasharray="2 4"/>
+      <text x="52" y="29" class="dg-label-sm" text-anchor="end">0.4</text>
+      <line x1="60" y1="25.0" x2="400" y2="25.0" class="dg-guide" stroke-dasharray="2 4"/>
+      <text x="230" y="244" class="dg-label" text-anchor="middle">accelerating voltage V (kV)</text>
+      <text x="18" y="115" class="dg-label" text-anchor="middle" transform="rotate(-90 18 115)">λ (Å)</text>
+      <path d="M63.4,30.7 L65.1,62.7 L66.8,81.8 L68.5,94.8 L70.2,104.4 L71.9,111.8 L73.6,117.9 L75.3,122.8 L77.0,127.1 L78.7,130.7 L80.4,133.8 L82.1,136.6 L83.8,139.1 L85.5,141.4 L87.2,143.4 L88.9,145.2 L90.6,146.9 L92.3,148.5 L94.0,149.9 L95.7,151.2 L97.4,152.5 L99.1,153.6 L100.8,154.7 L102.5,155.7 L104.2,156.7 L105.9,157.6 L107.6,158.4 L109.3,159.2 L111.0,160.0 L112.7,160.7 L114.4,161.4 L116.1,162.1 L117.8,162.7 L119.5,163.3 L121.2,163.9 L122.9,164.5 L124.6,165.0 L126.3,165.5 L128.0,166.0 L129.7,166.5 L131.4,167.0 L133.1,167.4 L134.8,167.8 L136.5,168.3 L138.2,168.7 L139.9,169.0 L141.6,169.4 L143.3,169.8 L145.0,170.1 L146.7,170.5 L148.4,170.8 L150.1,171.1 L151.8,171.5 L153.5,171.8 L155.2,172.1 L156.9,172.4 L158.6,172.6 L160.3,172.9 L162.0,173.2 L163.7,173.4 L165.4,173.7 L167.1,173.9 L168.8,174.2 L170.5,174.4 L172.2,174.7 L173.9,174.9 L175.6,175.1 L177.3,175.3 L179.0,175.5 L180.7,175.7 L182.4,176.0 L184.1,176.2 L185.8,176.3 L187.5,176.5 L189.2,176.7 L190.9,176.9 L192.6,177.1 L194.3,177.3 L196.0,177.4 L197.7,177.6 L199.4,177.8 L201.1,177.9 L202.8,178.1 L204.5,178.3 L206.2,178.4 L207.9,178.6 L209.6,178.7 L211.3,178.9 L213.0,179.0 L214.7,179.2 L216.4,179.3 L218.1,179.4 L219.8,179.6 L221.5,179.7 L223.2,179.8 L224.9,180.0 L226.6,180.1 L228.3,180.2 L230.0,180.4 L231.7,180.5 L233.4,180.6 L235.1,180.7 L236.8,180.8 L238.5,180.9 L240.2,181.1 L241.9,181.2 L243.6,181.3 L245.3,181.4 L247.0,181.5 L248.7,181.6 L250.4,181.7 L252.1,181.8 L253.8,181.9 L255.5,182.0 L257.2,182.1 L258.9,182.2 L260.6,182.3 L262.3,182.4 L264.0,182.5 L265.7,182.6 L267.4,182.7 L269.1,182.8 L270.8,182.9 L272.5,183.0 L274.2,183.0 L275.9,183.1 L277.6,183.2 L279.3,183.3 L281.0,183.4 L282.7,183.5 L284.4,183.5 L286.1,183.6 L287.8,183.7 L289.5,183.8 L291.2,183.9 L292.9,183.9 L294.6,184.0 L296.3,184.1 L298.0,184.2 L299.7,184.2 L301.4,184.3 L303.1,184.4 L304.8,184.5 L306.5,184.5 L308.2,184.6 L309.9,184.7 L311.6,184.7 L313.3,184.8 L315.0,184.9 L316.7,184.9 L318.4,185.0 L320.1,185.1 L321.8,185.1 L323.5,185.2 L325.2,185.3 L326.9,185.3 L328.6,185.4 L330.3,185.5 L332.0,185.5 L333.7,185.6 L335.4,185.6 L337.1,185.7 L338.8,185.8 L340.5,185.8 L342.2,185.9 L343.9,185.9 L345.6,186.0 L347.3,186.0 L349.0,186.1 L350.7,186.2 L352.4,186.2 L354.1,186.3 L355.8,186.3 L357.5,186.4 L359.2,186.4 L360.9,186.5 L362.6,186.5 L364.3,186.6 L366.0,186.6 L367.7,186.7 L369.4,186.7 L371.1,186.8 L372.8,186.8 L374.5,186.9 L376.2,186.9 L377.9,187.0 L379.6,187.0 L381.3,187.1 L383.0,187.1 L384.7,187.2 L386.4,187.2 L388.1,187.3 L389.8,187.3 L391.5,187.3 L393.2,187.4 L394.9,187.4 L396.6,187.5 L398.3,187.5 L400.0,187.6" class="dg-acc" fill="none" stroke-width="2"/>
+      <path d="M63.4,30.6 L65.1,62.6 L66.8,81.7 L68.5,94.8 L70.2,104.4 L71.9,111.9 L73.6,117.9 L75.3,122.9 L77.0,127.1 L78.7,130.8 L80.4,134.0 L82.1,136.8 L83.8,139.3 L85.5,141.5 L87.2,143.5 L88.9,145.4 L90.6,147.1 L92.3,148.6 L94.0,150.1 L95.7,151.4 L97.4,152.7 L99.1,153.8 L100.8,154.9 L102.5,155.9 L104.2,156.9 L105.9,157.8 L107.6,158.7 L109.3,159.5 L111.0,160.3 L112.7,161.0 L114.4,161.7 L116.1,162.4 L117.8,163.0 L119.5,163.6 L121.2,164.2 L122.9,164.8 L124.6,165.3 L126.3,165.8 L128.0,166.4 L129.7,166.8 L131.4,167.3 L133.1,167.8 L134.8,168.2 L136.5,168.6 L138.2,169.0 L139.9,169.4 L141.6,169.8 L143.3,170.2 L145.0,170.5 L146.7,170.9 L148.4,171.2 L150.1,171.5 L151.8,171.8 L153.5,172.2 L155.2,172.5 L156.9,172.8 L158.6,173.0 L160.3,173.3 L162.0,173.6 L163.7,173.9 L165.4,174.1 L167.1,174.4 L168.8,174.6 L170.5,174.9 L172.2,175.1 L173.9,175.3 L175.6,175.6 L177.3,175.8 L179.0,176.0 L180.7,176.2 L182.4,176.4 L184.1,176.6 L185.8,176.8 L187.5,177.0 L189.2,177.2 L190.9,177.4 L192.6,177.6 L194.3,177.8 L196.0,177.9 L197.7,178.1 L199.4,178.3 L201.1,178.4 L202.8,178.6 L204.5,178.8 L206.2,178.9 L207.9,179.1 L209.6,179.2 L211.3,179.4 L213.0,179.5 L214.7,179.7 L216.4,179.8 L218.1,180.0 L219.8,180.1 L221.5,180.2 L223.2,180.4 L224.9,180.5 L226.6,180.6 L228.3,180.8 L230.0,180.9 L231.7,181.0 L233.4,181.1 L235.1,181.3 L236.8,181.4 L238.5,181.5 L240.2,181.6 L241.9,181.7 L243.6,181.9 L245.3,182.0 L247.0,182.1 L248.7,182.2 L250.4,182.3 L252.1,182.4 L253.8,182.5 L255.5,182.6 L257.2,182.7 L258.9,182.8 L260.6,182.9 L262.3,183.0 L264.0,183.1 L265.7,183.2 L267.4,183.3 L269.1,183.4 L270.8,183.5 L272.5,183.6 L274.2,183.7 L275.9,183.7 L277.6,183.8 L279.3,183.9 L281.0,184.0 L282.7,184.1 L284.4,184.2 L286.1,184.3 L287.8,184.3 L289.5,184.4 L291.2,184.5 L292.9,184.6 L294.6,184.7 L296.3,184.7 L298.0,184.8 L299.7,184.9 L301.4,185.0 L303.1,185.0 L304.8,185.1 L306.5,185.2 L308.2,185.3 L309.9,185.3 L311.6,185.4 L313.3,185.5 L315.0,185.5 L316.7,185.6 L318.4,185.7 L320.1,185.8 L321.8,185.8 L323.5,185.9 L325.2,186.0 L326.9,186.0 L328.6,186.1 L330.3,186.1 L332.0,186.2 L333.7,186.3 L335.4,186.3 L337.1,186.4 L338.8,186.5 L340.5,186.5 L342.2,186.6 L343.9,186.6 L345.6,186.7 L347.3,186.8 L349.0,186.8 L350.7,186.9 L352.4,186.9 L354.1,187.0 L355.8,187.0 L357.5,187.1 L359.2,187.1 L360.9,187.2 L362.6,187.3 L364.3,187.3 L366.0,187.4 L367.7,187.4 L369.4,187.5 L371.1,187.5 L372.8,187.6 L374.5,187.6 L376.2,187.7 L377.9,187.7 L379.6,187.8 L381.3,187.8 L383.0,187.9 L384.7,187.9 L386.4,188.0 L388.1,188.0 L389.8,188.1 L391.5,188.1 L393.2,188.2 L394.9,188.2 L396.6,188.3 L398.3,188.3 L400.0,188.3" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <circle cx="94.0" cy="149.9" r="3.2" class="dg-acc-f"/>
+      <circle cx="230.0" cy="180.4" r="3.2" class="dg-acc-f"/>
+      <text x="102" y="144" class="dg-label-sm">0.122 Å at 10 kV</text>
+      <text x="234" y="168" class="dg-label-sm">0.055 Å at 50 kV</text>
+      <text x="271" y="92" class="dg-label-sm">solid: √(150/V) Å</text>
+      <text x="271" y="108" class="dg-label-sm">dashed: relativistic</text>
+      </svg>
+      <figcaption>Electron wavelength against accelerating voltage: Lecture 20's √(150/<em>V</em>) Å (solid) and the relativistic value (dashed), which is 0.35 % shorter at 10 kV and 2.2 % at 50 kV, so the two curves nearly coincide on this scale. Computed.</figcaption>
+    </figure>
+
+
+    <h3 id="s9-2">9.2 What limits the beam writer</h3>
+
+    <p>
+      If diffraction does not limit the electron beam, scattering does. Lecture 20 described the beam broadening as it scatters in the resist.
+      Plummer gives the scale: electrons of 10–20 keV travel more than a micrometre in the resist and substrate before stopping, scattering off
+      nuclei and losing energy to the electrons of the solid (the same stopping processes as in ion implantation), so regions beside the
+      intended pattern are also exposed, the <b>proximity effect</b> (§5.6.1). Because the mask pattern is known, the dose can be adjusted point by
+      point to compensate. The second limit is speed. A beam writer exposes the pattern one point at a time, where an optical stepper exposes a
+      whole field at once, and each point needs a minimum number of electrons set by the resist's sensitivity; Plummer quotes about one wafer
+      per hour against more than 50 for an optical stepper. That is why, as Lecture 20 put it, the beam writer is used to make masks and not
+      wafers: a mask is written once and printed many thousands of times. Plummer adds research devices and small runs of special chips, for
+      which skipping the mask saves time. Ionizing radiation in the resist also reaches the device below; electron-beam and X-ray exposure
+      are among the process steps that charge the gate oxide (EEE 5416 <a href="../../EEE5416_Radiation_Effects/site/m10-gate-oxide-processing.html">M10 §1</a>).
+    </p>
+
+    <h3 id="s9-3">9.3 Raster and vector scanning</h3>
+
+    <p>
+      A beam writer can visit the pattern in two ways (Lecture 20). In <b>raster scanning</b> the beam sweeps every row of the field in turn,
+      like the electron beam of a cathode-ray television tube, and is switched off (blanked) wherever there is no pattern. In <b>vector
+      scanning</b> the beam is deflected directly from one pattern element to the next and writes only those, skipping the empty areas. The time
+      a raster scan takes is set by the area of the field, whatever the pattern; the time a vector scan takes is set by the area of the pattern
+      plus a settling time for each jump. Raster scanning therefore suits dense patterns, and vector scanning sparse ones. Lecture 20 gave the
+      raster case as effective when about 80 % of the field is to be written and "a waste of time" when the pattern density is low, and vector
+      scanning as more efficient when the pattern is sparse; one later sentence of the captions reverses this and is taken to be garbled.
+      Vector writing's advantage at low density and raster writing's at high density are the standard description of beam writers.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 170" role="img" aria-labelledby="m12f7-t">
+        <title id="m12f7-t">Raster scanning sweeps every row and blanks off the pattern; vector scanning jumps from element to element</title>
+        <text x="100" y="14" class="dg-label" text-anchor="middle">raster</text>
+        <rect x="20" y="22" width="160" height="120" class="dg-guide" fill="none"/>
+        <rect x="40" y="40" width="40" height="30" class="dg-fill"/><rect x="120" y="96" width="40" height="30" class="dg-fill"/>
+        <path d="M24,30 H176 M24,46 H176 M24,62 H176 M24,78 H176 M24,94 H176 M24,110 H176 M24,126 H176" class="dg-line" fill="none" stroke-width="0.9"/>
+        <path d="M176,30 L24,46 M176,46 L24,62 M176,62 L24,78 M176,78 L24,94 M176,94 L24,110 M176,110 L24,126" class="dg-guide" fill="none" stroke-dasharray="2 3"/>
+        <text x="100" y="160" class="dg-label-sm" text-anchor="middle">every row; retrace (dashed) blanked</text>
+        <text x="320" y="14" class="dg-label" text-anchor="middle">vector</text>
+        <rect x="240" y="22" width="160" height="120" class="dg-guide" fill="none"/>
+        <rect x="260" y="40" width="40" height="30" class="dg-fill"/><rect x="340" y="96" width="40" height="30" class="dg-fill"/>
+        <path d="M262,44 H298 M298,50 H262 M262,56 H298 M298,62 H262 M262,66 H298" class="dg-acc" fill="none" stroke-width="1.2"/>
+        <path d="M342,100 H378 M378,106 H342 M342,112 H378 M378,118 H342 M342,122 H378" class="dg-acc" fill="none" stroke-width="1.2"/>
+        <path d="M298,66 L342,100" class="dg-line" fill="none" stroke-dasharray="4 3"/>
+        <text x="320" y="160" class="dg-label-sm" text-anchor="middle">jump (blanked) between elements</text>
+      </svg>
+      <figcaption>The two scan strategies (Lecture 20). Raster time scales with the field area; vector time with the pattern area plus one
+        settling time per jump. Schematic.</figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>Ignoring settling time and taking the same dwell per written point, how much longer does a raster scan take than a vector scan
+        when the pattern covers 80 % of the field? When it covers 5 %? Which effect, left out here, narrows the second ratio in practice?</summary>
+      <div class="answer"><p>The raster visits every point of the field, the vector only the pattern's, so the ratio of times is
+        1/(pattern fraction): 1/0.8 = 1.25 at 80 %, so raster is nearly as fast and the simpler choice, and 1/0.05 = 20 at 5 %, where raster
+        wastes 95 % of its time on blanked points. The vector beam must settle after every jump between elements, and a pattern of many small
+        elements adds many such settling times, so the real advantage of vector scanning at low density is less than 20.</p></div>
+    </details>
+
+    <h3 id="s9-4">9.4 Electron-beam projection: SCALPEL</h3>
+
+    <p>
+      SCALPEL (Scattering with Angular Limitation in Projection Electron-beam Lithography), invented at Bell Laboratories in 1989 (Plummer), was
+      the notes' answer to the beam writer's slowness: it projects a whole mask pattern at once, with 4:1 reduction (notes pp. 104–105; Wolf
+      pp. 306–308). Its mask is a thin silicon nitride membrane, 100–150 nm, carrying the pattern in 25–50 nm of tungsten or gold. Both regions
+      transmit the electrons — Plummer gives a 100 keV beam — but they scatter them differently. The light SiN scatters them weakly, through
+      small angles; the heavy metal scatters them strongly, through large angles. A lens focuses the beam, and an aperture in its back focal
+      plane passes the weakly scattered electrons and blocks most of the strongly scattered ones, so the wafer receives a high-contrast,
+      4:1-reduced image in which the metal regions are dark (notes pp. 104–105).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 210" role="img" aria-labelledby="m12f8-t">
+        <title id="m12f8-t">SCALPEL: electrons scattered strongly by the metal pattern are stopped by the back-focal-plane aperture</title>
+        <line x1="180" y1="10" x2="180" y2="40" class="dg-acc"/><line x1="210" y1="10" x2="210" y2="40" class="dg-acc"/><line x1="240" y1="10" x2="240" y2="40" class="dg-acc"/>
+        <text x="250" y="22" class="dg-label-sm">electron beam</text>
+        <rect x="140" y="40" width="140" height="4" class="dg-soft"/>
+        <rect x="174" y="36" width="12" height="4" class="dg-ink"/>
+        <text x="290" y="46" class="dg-label-sm">SiN membrane, W/Au scatterer</text>
+        <path d="M180,44 L130,110" class="dg-line"/><path d="M180,44 L150,110" class="dg-line"/>
+        <path d="M210,44 L212,110" class="dg-acc"/><path d="M240,44 L236,110" class="dg-acc"/>
+        <rect x="120" y="100" width="180" height="16" class="dg-fill" opacity="0.6"/>
+        <text x="306" y="112" class="dg-label-sm">lens</text>
+        <rect x="120" y="148" width="85" height="4" class="dg-ink"/><rect x="230" y="148" width="70" height="4" class="dg-ink"/>
+        <text x="306" y="154" class="dg-label-sm">back-focal-plane aperture</text>
+        <path d="M130,110 L150,150" class="dg-line"/><path d="M150,110 L170,150" class="dg-line"/>
+        <path d="M212,116 L217,190" class="dg-acc"/><path d="M236,116 L220,190" class="dg-acc"/>
+        <line x1="170" y1="190" x2="270" y2="190" class="dg-rule"/>
+        <text x="276" y="194" class="dg-label-sm">wafer: 4:1 reduced image</text>
+      </svg>
+      <figcaption>The SCALPEL principle (notes p. 104; Wolf Fig. 7-31; Plummer Fig. 5-53). Strongly scattered electrons from the metal pattern
+        strike the aperture plate; weakly scattered electrons from the bare membrane pass and form the image. Not to scale.</figcaption>
+    </figure>
+
+    <p>
+      Scattering rather than absorbing is the point: an absorbing stencil mask would heat and distort under the beam, while the thin scattering
+      mask absorbs little (Plummer). The notes list four advantages (p. 105): no synchrotron is needed; a tool can be added one stepper at a time;
+      the scanned beam heats the thin SiN little, so the pattern distorts little; and the depth of focus is 50 times that of 0.25 µm optical
+      lithography. And five limitations, the traditional ones of electron beams: low throughput, proximity effects, radiation damage, charging
+      and the lack of a good resist. By 2001 the effort was losing support to EUV; Lucent's successor Agere had cancelled its programme, and the
+      Nikon–IBM projection approach, PREVAIL, carried electron projection forward (Wolf pp. 301, 309).
+    </p>
+
+    <h3 id="s9-5">9.5 Ion beams</h3>
+
+    <p>
+      Lecture 20 closed with ion-beam lithography, from outside the notes: a beam of gallium ions, focused, like electrons, by electric fields — "if you apply negative … then you can focus", in contrast with X-rays, which cannot be focused.
+      The lecture's argument for it was that the ions are much heavier than electrons, which it said reduces the exposure time; it gave no
+      mechanism. It described the
+      method as talked about but not in use: "maybe one day". This page records the lecture's account; neither the notes nor the course texts
+      treat ion-beam lithography.
+    </p>
+
+    <details class="check">
+      <summary>A SCALPEL tool is to print 0.13 µm lines. What width are they on the mask, and of what? An engineer proposes replacing the 25–50 nm
+        metal by a 1 µm absorber so that the dark regions stop the electrons outright. What does the design lose?</summary>
+      <div class="answer"><p>With 4:1 reduction, 4 × 0.13 = 0.52 µm on the mask, written in 25–50 nm of W or Au on a 100–150 nm SiN membrane
+        (notes p. 104). A thick absorber would stop the electrons by absorbing their energy in the mask, which heats it and distorts the
+        pattern — the problem of the stencil masks SCALPEL was designed to avoid (Plummer). The thin scatterer deflects the electrons instead of
+        absorbing them, and the aperture, not the mask, removes them, so the mask stays cool: the third advantage in the notes (p. 105).</p></div>
+    </details>
+
+    <h2 id="s10">10 · The board problems, collected</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Problem</th><th>Method</th><th>Board values</th><th>Result</th><th>Worked in</th></tr></thead>
+      <tbody>
+        <tr><td>Phase-shifter thickness</td><td><em>d</em> = <em>λ</em>/(2(<em>n</em> − 1)) (12.1)</td><td>Formula only in Lecture 20; example 0.3 → 0.18 µm at 248 nm, NA 0.6</td><td>243.8 nm at 248 nm, 172.6 nm at 193.4 nm (fused silica); <em>k</em><sub>1</sub> 0.726 → 0.435</td><td><a href="#s4-2">§4.2</a>, <a href="#s4-3">§4.3</a></td></tr>
+        <tr><td>Electron wavelength</td><td><em>λ</em> = √(150/<em>V</em>) Å (12.5)</td><td>10 kV, 50 kV</td><td>0.122 Å, 0.055 Å</td><td><a href="#s9-1">§9.1</a></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <details class="check">
+      <summary>A shifter material has <em>n</em> = 1.6 at 248 nm. How thick is the 180° layer? An electron writer runs at 20 kV: what is the
+        electron wavelength by the course's formula, and by how much does relativity change it? The writer must pattern a mask in which 30 %
+        of the area is written: raster or vector, and why?</summary>
+      <div class="answer"><p><em>d</em> = 248/(2 × 0.6) = 206.7 nm. <em>λ</em> = √(150/20 000) = √0.0075 = 0.0866 Å; the relativistic factor
+        <em>qV</em>/(2<em>m</em><sub>0</sub><em>c</em>²) = 0.0196, and the relativistic value is 0.0859 Å, 0.8 % shorter. At 30 % coverage a raster scan visits
+        1/0.3 = 3.3 times as many points as it writes; vector scanning writes only the pattern and is faster unless the pattern consists of so
+        many small elements that the settling time per jump dominates.</p></div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Excimer = excited dimer (KrF*, ArF*), bound only when excited; ground state unbound, so inversion is easy. KrF 248 nm (0.35–0.18 µm),
+        ArF 193 nm (0.13, 0.1 µm), F₂ 157 nm (&lt; 0.1 µm).</li>
+        <li>KrF: 200–2500 Hz, 2–20 W, 5–20 ns, ≈ 10 mJ/pulse → MW peaks. ≈ 100 pulses per exposure for 1 % dose. Gas
+        refill ≈ 5 days; clean at 10⁹ pulses, replace cavity at 2.5 × 10⁹. Line narrowed to &lt; 1 pm: 1 pm ≈ 0.15 µm of focus.</li>
+        <li>ArF: 20 W at 4 kHz; longer pulses lower peak power and lens damage. F₂: 157.63 and 157.52 nm, 87 % in the longer line.</li>
+        <li>Optics: glass absorbs below ≈ 350 nm; fused silica to 193 nm but compacts under ArF light; CaF₂ at 157 nm (hygroscopic, soft, chips,
+        birefringent); N₂ purge at 157 nm; 157 nm scanner $12–20 M. CaF₂ reticle expands 38× more than fused silica.</li>
+        <li><em>R</em> = <em>k</em><sub>1</sub><em>λ</em>/NA; RETs take <em>k</em><sub>1</sub> from ≈ 0.75 toward 0.35. Off-axis illumination:
+        zero and one first order at opposite pupil edges, minimum pitch <em>λ</em>/NA → <em>λ</em>/(2NA); more DOF; dense patterns only. OPC:
+        bias, serifs, jogs, scattering bars; corrects distortion, not resolution.</li>
+        <li>PSM (Levenson et al. 1982): 180° shift makes neighbouring fields cancel between features. <em>d</em> = <em>λ</em>/(2(<em>n</em> − 1))
+        (12.1): 243.8 nm at 248 nm, 172.6 nm at 193 nm in fused silica. 0.3 → 0.18 µm at 248 nm, NA 0.6 (<em>k</em><sub>1</sub> 0.73 → 0.44).
+        Alternating: strongest, dense lines only, phase-edge and brick-wall problems. Attenuated (≈ 10 %): any layout, contacts. MEF = <em>M</em>
+        Δ<em>CD</em><sub>printed</sub>/Δ<em>CD</em><sub>mask</sub>.</li>
+        <li>Notes: 157/126 nm, CMP to ±0.2 µm, optical floor 70–50 nm; Wolf adds NA &lt; 1 and no further flattening. Immersion (lecture, not notes): NA = <em>n</em> sin <em>θ</em>,
+        water <em>n</em> ≈ 1.44 at 193 nm, NA 1.35 → 71.5 nm by the course's form (38–40 nm in production with RETs).</li>
+        <li>Non-optical: masks $5000–100,000 (notes), no pellicle. X-ray: 4–20 Å, 1:1 proximity, membrane mask with Au/Pt/W, synchrotron; PMMA is
+        positive.</li>
+        <li>EUV: 10–15 nm (13.5 nm), all-reflective, 4–5× reduction, vacuum. Mirrors: ≈ 40 Mo/Si pairs, Bragg <em>d</em> = <em>λ</em>/(2 sin
+        <em>θ</em>) = 6.75 nm at normal incidence, ≈ 70 % each; nine reflections pass ≈ 4 %. Mask absorber Cr/TiN/TaN; Mo/Si intermix above
+        150 °C. Nd:YAG on Xe jet, 1500 W → 10 W (notes); production uses a CO₂ laser on tin (210 W in 2017).</li>
+        <li>E-beam: <em>λ</em> = √(150/<em>V</em>) Å (12.5): 0.122 Å at 10 kV, 0.055 Å at 50 kV; limited by scattering (proximity effect) and
+        serial writing (≈ 1 wafer/h), so used for masks. Raster for dense patterns, vector for sparse. SCALPEL: SiN 100–150 nm with 25–50 nm W/Au,
+        back-focal-plane aperture, 4:1; DOF 50× that of 0.25 µm optics; low throughput, proximity, damage, charging, resist. Ion beam (Ga⁺): lecture
+        only.</li>
+      </ul>
+    </div>
+
+    <h2>Where this page follows the class notes against the literature</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Point</th><th>Notes or lecture</th><th>Sources</th><th>On this page</th></tr></thead>
+      <tbody>
+        <tr><td>ArF and F₂ generations</td><td>Notes p. 96: "0.13, 0.1 nm" and "Below 0.1 nm"</td><td>Wolf p. 259: KrF nodes in µm; ArF forecast 130–100 nm, F₂ below 100 nm</td><td>Micrometres (§1.1)</td></tr>
+        <tr><td>"Half the period"</td><td>Notes p. 101 (from Plummer §5.2.4) and Lecture 20: the added pattern's period is half the grating's</td><td>The shifter pattern and the field repeat every two openings: twice the period, half the spatial frequency</td><td>Flagged (§4.1)</td></tr>
+        <tr><td>Uses of the phase shift</td><td>Notes p. 101: three uses (an extra "or")</td><td>Plummer §5.2.4: two — a better image, or more DOF at constant resolution by a lower NA</td><td>Plummer's two (§4.3)</td></tr>
+        <tr><td>F₂ line split</td><td>Lecture 19: 13 % at 157.63 nm</td><td>Notes p. 97 and Wolf p. 265: 87 % at 157.63 nm</td><td>87 % at 157.63 nm (§1.4)</td></tr>
+        <tr><td>PSM inventor</td><td>Lecture 19: "Swedish scientists"</td><td>Notes p. 99, Wolf p. 285: Levenson, Viswanathan and Simpson, 1982 (IBM)</td><td>Levenson et al. (§4)</td></tr>
+        <tr><td>CaF₂ reticle error</td><td>—</td><td>Wolf p. 299: 100 nm over 100 mm for 0.1 K; his coefficients give 190 nm</td><td>190 nm, with Wolf's figure noted (§2)</td></tr>
+        <tr><td>NA below 1 and the optical floor</td><td>Notes p. 102: limit 70–50 nm</td><td>Wolf p. 299: no liquid medium, so NA &lt; 1. Water immersion at 193 nm (Burnett and Kaplan 2004; Lin 2004), NA 1.35 and 38–40 nm in production (ASML), went below both</td><td>Notes' limit as the pre-immersion view; Wolf's NA and flatness limits attributed to him; immersion added from Lecture 19 (§5.1)</td></tr>
+        <tr><td>Non-optical mask cost</td><td>Notes p. 102: $5000–100,000</td><td>Wolf p. 301 prints "$50,00–$100,000", a misprint</td><td>Notes' range; lower bound uncertain (§6)</td></tr>
+        <tr><td>PMMA tone</td><td>Lecture 20: "negative photoresist"</td><td>At patterning doses PMMA is a positive resist under X-ray and electron exposure (chain scission); it cross-links only at much higher doses</td><td>Positive (§7)</td></tr>
+        <tr><td>Mo/Si reflectance</td><td>Notes p. 103: up to 70 %. Lecture 20: 80 %</td><td>Wolf pp. 304–305: 68 % achieved at 13.4 nm, &gt; 70 % needed; Plummer: above 60 %</td><td>Notes' 70 % (§8.2)</td></tr>
+        <tr><td>EUV absorbers</td><td>Notes p. 103: Cr, TiN, TaN. Lecture 20: also Au, Pt</td><td>Wolf p. 306: Cr, TiN, TaN</td><td>Notes' list, lecture's additions stated (§8.3)</td></tr>
+        <tr><td>EUV source</td><td>Notes pp. 102–104: Nd:YAG on Xe, 1500 W → 10 W</td><td>Production: CO₂ laser on Sn droplets; 210 W demonstrated in 2017 (Fomenkov et al.)</td><td>Notes' source, with the production source (§8.3)</td></tr>
+        <tr><td>"Extremely tight tolerance"</td><td>Notes p. 103: attached to multilayer deposition on curved surfaces</td><td>Wolf p. 305: the tolerance, better than 2 nm, is on the figure of the aspheric substrates</td><td>Both stated (§8.1)</td></tr>
+        <tr><td>EUV depth of focus</td><td>—</td><td>Wolf p. 303: "greater than 1-micron" at 32 nm, NA 0.25; eq. (11.2) gives 0.13 µm</td><td>Course formula; Wolf's figure flagged (§8.4)</td></tr>
+        <tr><td>Raster versus vector</td><td>Lecture 20: raster for ≈ 80 % written; one garbled sentence prefers vector at high density</td><td>Standard: raster for dense, vector for sparse</td><td>Standard reading (§9.3)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Class notes pp. 96–97, 93. Lecture 19. S. Wolf, <i>Silicon Processing for the VLSI Era</i>, Vol. 4 (Lattice Press, 2002), §7.1,
+        pp. 259–265, Fig. 7-1</td></tr>
+      <tr><td>§2</td><td>Class notes p. 97. Lecture 19 (glass and quartz, other fluorides). Wolf §7.2.3–7.2.4, pp. 268–272, Fig. 7-8; pp. 298–299</td></tr>
+      <tr><td>§3</td><td>Wolf §7.3.1–7.3.2, pp. 274–285, Figs. 7-9 to 7-15. Class notes p. 101</td></tr>
+      <tr><td>§4</td><td>Class notes pp. 99–101. Lectures 19–20. Wolf §7.3.3–7.4, pp. 285–295. J. D. Plummer, M. D. Deal and P. B. Griffin,
+        <i>Silicon VLSI Technology</i> (Prentice Hall, 2000), §5.2.4, eq. 5.16, Fig. 5-26. M. D. Levenson, N. S. Viswanathan and R. A. Simpson,
+        <i>IEEE Trans. Electron Devices</i> ED-29, 1828 (1982). Heraeus, Spectrosil fused silica data sheet (refractive indices)</td></tr>
+      <tr><td>§5</td><td>Class notes pp. 101–102. Lecture 19. Wolf §7.5, pp. 296–301. J. H. Burnett and S. G. Kaplan,
+        <i>J. Microlith. Microfab. Microsyst.</i> 3, 68 (2004). B. J. Lin, <i>J. Microlith. Microfab. Microsyst.</i> 3, 377 (2004). ASML, TWINSCAN NXT:1980Di product data</td></tr>
+      <tr><td>§6–§7</td><td>Class notes p. 102. Lecture 20. Wolf pp. 301, 303–304, 309. Plummer §5.6.1–5.6.2. M11 eq. (11.1); Plummer eq. 5.12</td></tr>
+      <tr><td>§8</td><td>Class notes pp. 102–104. Lecture 20. Wolf §7.6.1, pp. 301–306, Figs. 7-28, 7-29. Plummer §5.6.2, Fig. 5-55. I. Fomenkov et al.,
+        "Light sources for high-volume manufacturing EUV lithography," <i>Adv. Opt. Technol.</i> 6, 173 (2017). TSMC press release, 7 Oct. 2019 (N7+ in volume)</td></tr>
+      <tr><td>§9</td><td>Class notes pp. 104–105. Lecture 20 (wavelength, raster and vector scanning, ion beams). Wolf §7.6.2, pp. 306–309, Fig. 7-31.
+        Plummer §5.6.1, Fig. 5-53. CODATA values of <em>h</em>, <em>m</em><sub>0</sub>, <em>q</em>, <em>c</em></td></tr>
+      <tr><td>§10</td><td>This page</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m11-lithography-resists.html"><span>Previous</span>M11 · Advanced Lithography I: Resists</a>
+      <a class="next" href="m13-cmp-process.html"><span>Next</span>M13 · Chemical Mechanical Polishing: The Process</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

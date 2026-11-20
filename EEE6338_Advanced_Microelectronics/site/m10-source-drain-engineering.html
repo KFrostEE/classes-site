@@ -1,0 +1,1551 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M10 · Source–Drain Engineering — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M10 · Source–Drain Engineering</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 10</p>
+    <h1>Source–Drain Engineering</h1>
+    <p class="lede">
+      The resistance between the metal contact and the end of the channel, term by term, measured against the
+      resistance of the channel itself; the silicide contact and the silicon it consumes; the elevated source/drain;
+      and the implant and anneal that make a junction a few tens of nanometres deep, with the dopant they lose and
+      the position of the extension edge under the gate.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m02-deep-submicron-roadmap.html">M02</a>, <a href="m09-channel-engineering.html">M09</a></span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Class notes pp. 77–88 (Chapter 5); Lectures 17–18 and the recorded class of 23 Oct; Wolf Vol. 4 §5.3; Taur &amp; Ning 3/E §2.3, §8.3; Plummer, Deal &amp; Griffin Table 11-5</span>
+    </div>
+
+    <p>
+      The <b>source</b> and <b>drain</b> are the two heavily doped regions at the ends of the channel through which
+      current enters and leaves the transistor (<a href="m01-mosfet-and-how-one-is-made.html">M01</a>). M02 §6 traced
+      how the drain was rebuilt twice: a lightly doped drain was added near 2 µm (the notes; Wolf: below 1.5 µm) to lower the peak field and with it
+      hot-carrier injection, and at 0.18 µm that region was redoped far more heavily, to within a few times the contact's doping, and made shallow, as the
+      source/drain extension. M09 shaped the doping of the channel between them. This module takes the rest of
+      Chapter 5 of the notes (pp. 77–88), which asks what the source and drain cost the transistor and how that cost is
+      held down as the gate shrinks. The cost is resistance. Every ampere of drain current passes through a metal-to-silicon
+      contact, through the heavily doped region, around the corner into a layer a few nanometres thick at the
+      surface, and only then into the channel; each stage adds a resistance in series, and the channel resistance it is
+      compared with falls at every generation. The module builds the sheet-resistance arithmetic first, because every
+      later term is expressed with it; then the four series terms and the yardstick they are measured against; then the
+      silicide contact, the elevated source/drain, and the process that makes an ultra-shallow junction — the low-energy
+      implant, the spike anneal and the dopant lost on the way. It closes on how far the extension should reach under the
+      gate. <b>Transient enhanced diffusion</b> and <b>channelling</b>, developed on <a href="m09-channel-engineering.html#s3">M09 §3–4</a>,
+      are applied here to the source and drain rather than explained again.
+    </p>
+
+    <details class="recap">
+      <summary>Assumes: the drain structures and the salicide process (M02 §3.3, §6)</summary>
+      <p>The <b>lightly doped drain</b> (LDD) placed a region of about 10¹⁷ cm⁻³ between the channel and the
+      10²⁰ cm⁻³ drain, so that the drain voltage dropped over a wider depletion layer and the peak field fell. It is made
+      by implanting after the gate is patterned, depositing a conformal oxide, etching it anisotropically with no mask so
+      that a <b>sidewall spacer</b> remains against the gate, and implanting the heavy dose with the spacer as the mask
+      (<a href="m02-deep-submicron-roadmap.html#s6-1">M02 §6.1</a>). At 0.18 µm the supply fell to about 2 V, hot-carrier
+      control by an LDD was no longer needed, and the near region was redoped at 5–10×10¹⁴ cm⁻², which the notes' Chapter 1
+      describes as as heavily as the contact, but shallower: the <b>source/drain extension</b> (SDE, <a href="m02-deep-submicron-roadmap.html#s6-2">M02
+      §6.2</a>). A <b>salicide</b> (self-aligned silicide) is formed by sputtering a metal over the wafer and annealing it,
+      so that it reacts only where it touches silicon, then stripping the unreacted metal
+      (<a href="m02-deep-submicron-roadmap.html#s3-3">M02 §3.3</a>).</p>
+    </details>
+
+    <h2 id="s1">1 · The two-region source/drain</h2>
+
+    <p>
+      A deep-submicron source or drain is two junctions in series along the surface, each with a different job. This
+      section defines them as the notes do, states what each one must achieve, and shows the geometric link between
+      them that drives most of the rest of the module: the depth of the second region sets the length of the first.
+    </p>
+
+    <h3 id="s1-1">1.1 Extension and contact</h3>
+
+    <p>
+      The notes (p. 77, following Wolf §5.3) describe the source/drain contact structure as two regions: a shallow
+      <b>source/drain extension</b> with junction depth <em>X</em><sub>j</sub>, which reaches from the channel out under
+      the sidewall spacer, and a deeper <b>contact region</b> with junction depth <em>X</em><sub>jc</sub>, beyond the
+      spacer, which carries the silicide and the metal contact. The extension is the part the channel sees. Its depth
+      decides how far the drain's field and depletion region reach toward the source, so in a deep-submicron device the
+      notes give it the role of reducing <b>short-channel effects</b>, the fall in threshold voltage and the loss of gate
+      control that follow when the drain influences the channel.
+      The contact region exists for two reasons the notes name: it must be thick enough to hold the salicide layer,
+      which consumes silicon as it forms (§4.3), and deep enough that the junction under the silicide does not leak.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 430 210" role="img" aria-labelledby="m10h1-t">
+        <title id="m10h1-t">Cross-section of one side of a deep-submicron MOSFET showing the shallow extension under the spacer and the deeper contact region under the silicide</title>
+        <line x1="10" y1="80" x2="420" y2="80" class="dg-rule" stroke-width="1.2"/>
+        <rect x="20" y="30" width="120" height="44" class="dg-fill" stroke-width="1.2"/>
+        <rect x="20" y="74" width="120" height="6" class="dg-soft"/>
+        <text x="80" y="57" class="dg-label" text-anchor="middle">gate</text>
+        <path d="M140,30 L140,80 L196,80 A56,50 0 0 0 140,30 Z" class="dg-soft" stroke-width="1"/>
+        <text x="160" y="70" class="dg-label-sm" text-anchor="middle">spacer</text>
+        <rect x="196" y="72" width="214" height="16" class="dg-acc-f" stroke-width="1"/>
+        <text x="300" y="68" class="dg-label-sm" text-anchor="middle">silicide</text>
+        <path d="M126,80 Q126,104 146,104 L198,104 Q206,104 206,118 L206,168 Q206,176 216,176 L420,176" class="dg-line" fill="none" stroke-width="1.8"/>
+        <text x="168" y="98" class="dg-label-sm" text-anchor="middle">SDE</text>
+        <text x="310" y="140" class="dg-label" text-anchor="middle">contact region (n⁺)</text>
+        <line x1="112" y1="80" x2="112" y2="104" class="dg-ink" stroke-width="1"/>
+        <text x="108" y="97" class="dg-label-sm" text-anchor="end">X<tspan baseline-shift="sub" style="font-size:75%">j</tspan></text>
+        <line x1="400" y1="80" x2="400" y2="176" class="dg-ink" stroke-width="1"/>
+        <text x="396" y="164" class="dg-label-sm" text-anchor="end">X<tspan baseline-shift="sub" style="font-size:75%">jc</tspan></text>
+        <line x1="126" y1="196" x2="206" y2="196" class="dg-ink" stroke-width="1"/>
+        <line x1="126" y1="190" x2="126" y2="202" class="dg-ink"/><line x1="206" y1="190" x2="206" y2="202" class="dg-ink"/>
+        <text x="166" y="192" class="dg-label-sm" text-anchor="middle">ℓ<tspan baseline-shift="sub" style="font-size:75%">SDE</tspan></text>
+        <text x="40" y="150" class="dg-label-sm">p-type body</text>
+      </svg>
+      <figcaption><b>Figure 1.</b> One side of the transistor, after the notes' p. 77 and p. 79 sketches (not to scale).
+      The extension runs from just under the gate edge to the outer foot of the spacer; its length
+      ℓ<sub>SDE</sub> is set by the spacer width. The contact junction steps down beyond the spacer to make room for the
+      silicide.</figcaption>
+    </figure>
+
+    <p>
+      The two depths are not independent. The contact region is implanted after the spacer is formed, with the spacer as
+      the mask, and its ions scatter sideways as they slow down; this <b>lateral straggle</b> grows with the implant's
+      projected range (Wolf p. 204; lateral straggle values on <a href="m09-channel-engineering.html#s6-2">M09 §6.2</a>). A deeper contact junction therefore needs a
+      higher-energy implant, whose dopant reaches further sideways, and so needs a wider spacer to keep that dopant away
+      from the gate edge. A wider spacer makes the extension longer, and a longer extension has more resistance. The notes
+      state the chain directly: the greater the contact junction depth, the wider the spacer must be, and the longer SDE
+      region "increases the parasitic SDE resistance <em>R</em><sub>SDE</sub>" (p. 77). Hence their rule that
+      <em>X</em><sub>jc</sub> "should not be larger than that needed" to hold the salicide and keep leakage low, and their
+      design goal: minimise both the parasitic series resistance and the silicide–silicon contact resistance.
+    </p>
+
+    <p>
+      Wolf quotes the depths that the 1999 and 2001 editions of the International Technology Roadmap for Semiconductors
+      (ITRS) set against the lithographically drawn gate length <em>L</em><sub>L</sub>: the contact junction at
+      0.8 <em>L</em><sub>L</sub> in 1999, relaxed to 1.1 <em>L</em><sub>L</sub> in 2001, and the extension at
+      0.4 <em>L</em><sub>L</sub>, relaxed to 0.55 <em>L</em><sub>L</sub>. At a 50 nm gate the extension is therefore 20–28 nm
+      deep and the contact junction 40–55 nm. The notes use the 0.55 <em>L</em><sub>L</sub> extension rule in §3.5.
+    </p>
+
+    <h3 id="s1-2">1.2 What the extension is no longer for</h3>
+
+    <p>
+      Lecture 17 listed three advantages of the extension: lower parasitic capacitance, a lower field in the extension,
+      and suppressed hot-electron injection. The second and third describe the lightly doped drain from which the extension
+      descends. Wolf gives the history the notes compress into "First region had a lighter doping than the second region":
+      the LDD was added as gate lengths went below 1.5 µm (the notes, M02 §6.1, put the hot-carrier problem at 2 µm) to reduce the peak field and hot-electron injection; as gate lengths entered the deep
+      submicron the supply voltage fell, the peak field near the drain fell with it, and the LDD "was no longer needed to
+      suppress hot-carrier-injection effects". The extension that replaced it is doped heavily, so it spreads the field far
+      less than the LDD did. The hot-carrier mechanism, and the fact that its damage is concentrated near the drain, so that
+      the threshold shift is smaller than a uniform charge sheet would give and larger with source and drain exchanged, are
+      on <a href="m02-deep-submicron-roadmap.html#s6-1">M02 §6.1</a> and <a href="m05b-interface-defects-and-charge.html">M05b</a>.
+      The resistance the light doping caused is the subject of this module.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Extension doping: "10¹⁷" in Lecture 17, 5.5×10¹⁹ cm⁻³ in the notes</p>
+      <p>Lecture 17 gave the extension doping as "may be 10¹⁷" with the contact at 10¹⁹–10²⁰ cm⁻³. That is the level
+      M02 §6.1 gives for the lightly doped drain (<a href="m02-deep-submicron-roadmap.html#s6-1">M02 §6.1</a>), not the extension's. The notes
+      require the extension to reach 5.5×10¹⁹ cm⁻³ at the 50 nm node to keep its sheet resistance (p. 82, §3.5 below),
+      Lecture 18 used the same 5.5×10¹⁹ cm⁻³ and said the structure was no longer an LDD, and Wolf states that the peak extension doping must
+      exceed 10¹⁹ cm⁻³. This page uses the notes' value.</p>
+    </div>
+
+    <details class="check">
+      <summary>A designer proposes to make the contact junction twice as deep "for margin" against silicide spiking. Using
+      the chain of §1.1, state what happens to the extension resistance, and why.</summary>
+      <div class="answer"><p>It rises. A deeper contact junction needs a higher-energy contact implant; its lateral straggle
+      grows with the projected range, so the dopant reaches further sideways under the spacer toward the gate. To keep it
+      from reaching the gate edge the spacer must be widened. The extension runs under the whole spacer, so its length
+      ℓ<sub>SDE</sub> grows with the spacer width, and <em>R</em><sub>SDE</sub> is proportional to ℓ<sub>SDE</sub>
+      (eq. (10.5)). That is why the notes say <em>X</em><sub>jc</sub> should be no deeper than the silicide and the leakage
+      require. The elevated source/drain of §5 removes the conflict by putting the extra thickness above the surface.</p></div>
+    </details>
+
+    <h2 id="s2">2 · Sheet resistance and counting squares</h2>
+
+    <p>
+      Every resistance in the source/drain is the resistance of a thin conducting layer: a diffused or implanted region a
+      few tens of nanometres deep, a silicide film, an accumulation layer. For such layers the thickness is fixed by the
+      process and only the outline is drawn, so resistance is expressed per unit of outline. Lecture 17 ended on this
+      arithmetic and worked it at the board; the notes use it without defining it (p. 82, "650 Ω/sq").
+    </p>
+
+    <h3 id="s2-1">2.1 Ohms per square</h3>
+
+    <p>
+      A bar of resistivity <em>ρ</em>, length <em>L</em> in the direction of current, width <em>W</em> and thickness
+      <em>t</em> has resistance <em>R</em> = <em>ρL</em>/(<em>Wt</em>), because the current crosses a face of area
+      <em>Wt</em>. When the layer is thin compared with its length and width — the thin-film case Lecture 17 described —
+      <em>ρ</em> and <em>t</em> are properties of the process, and the drawn outline supplies only <em>L</em>/<em>W</em>.
+      Grouping the first two defines the <b>sheet resistance</b>.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>ρ</em><sub>s</sub> = <span class="frac"><span class="num"><em>ρ</em></span><span class="den"><em>t</em></span></span>&emsp;&emsp;<em>R</em> = <em>ρ</em><sub>s</sub>&thinsp;<span class="frac"><span class="num"><em>L</em></span><span class="den"><em>W</em></span></span></div>
+        <div class="eq-num">(10.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>ρ</em><sub>s</sub> sheet resistance (Ω/□, read "ohms per square") · <em>ρ</em> resistivity of the layer (Ω·cm) ·
+        <em>t</em> layer thickness, for a junction its depth <em>X</em><sub>j</sub> (cm) · <em>R</em> resistance (Ω) ·
+        <em>L</em> length along the current and <em>W</em> width across it (any one unit, since only the ratio enters).
+        Uniform layer, current parallel to the surface, <em>t</em> ≪ <em>L</em>, <em>W</em>. Taur &amp; Ning write
+        <em>ρ</em><sub>sh</sub>; the notes write "Ω/sq".
+      </div>
+    </div>
+
+    <p>
+      The ratio <em>L</em>/<em>W</em> is the number of squares of side <em>W</em> that fit along the strip. Every square has
+      the same resistance, <em>ρ</em><sub>s</sub>, whatever its size: enlarging a square lengthens the current path and widens
+      the face it crosses by the same factor, and the two cancel. The unit is dimensionally the ohm — Ω·cm divided by cm —
+      and "per square" records only that the number is to be multiplied by a count of squares (Taur &amp; Ning §2.3.1; Lecture
+      17's "square gets cancelled"). For a layer whose doping varies with depth, as every implanted junction does,
+      <em>ρ</em>/<em>t</em> is replaced by the reciprocal of the conductance per square summed over the depth, but the
+      counting of squares is unchanged. <em>ρ</em><sub>s</sub> is measured directly with a <b>four-point probe</b>: a current
+      is passed between the outer two of four collinear probes and the voltage read between the inner two; on a large thin
+      film <em>V</em>/<em>I</em> = <em>ρ</em><sub>s</sub> ln 2/π ≈ 0.22 <em>ρ</em><sub>s</sub> (Taur &amp; Ning eq. (2.41) and
+      text).
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 300 120" role="img" aria-labelledby="m10h2a-t">
+          <title id="m10h2a-t">A strip four squares long, with current along its length</title>
+          <rect x="20" y="40" width="240" height="60" class="dg-acc-f" stroke-width="1.2"/>
+          <rect x="20" y="40" width="240" height="60" class="dg-acc" fill="none" stroke-width="1.4"/>
+          <line x1="80" y1="40" x2="80" y2="100" class="dg-guide" stroke-dasharray="3 3"/>
+          <line x1="140" y1="40" x2="140" y2="100" class="dg-guide" stroke-dasharray="3 3"/>
+          <line x1="200" y1="40" x2="200" y2="100" class="dg-guide" stroke-dasharray="3 3"/>
+          <text x="50" y="75" class="dg-label" text-anchor="middle">1</text>
+          <text x="110" y="75" class="dg-label" text-anchor="middle">2</text>
+          <text x="170" y="75" class="dg-label" text-anchor="middle">3</text>
+          <text x="230" y="75" class="dg-label" text-anchor="middle">4</text>
+          <line x1="20" y1="28" x2="260" y2="28" class="dg-ink"/>
+          <text x="140" y="22" class="dg-label-sm" text-anchor="middle">L = 4W</text>
+          <line x1="272" y1="40" x2="272" y2="100" class="dg-ink"/>
+          <text x="280" y="74" class="dg-label-sm">W</text>
+          <text x="140" y="116" class="dg-label-sm" text-anchor="middle">current →</text>
+        </svg>
+        <figcaption>Four squares in series: <em>R</em> = 4<em>ρ</em><sub>s</sub>.</figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 300 120" role="img" aria-labelledby="m10h2b-t">
+          <title id="m10h2b-t">A large square and a small square of the same layer have the same resistance</title>
+          <rect x="30" y="20" width="90" height="90" class="dg-acc-f" stroke-width="1.2"/>
+          <rect x="30" y="20" width="90" height="90" class="dg-acc" fill="none" stroke-width="1.4"/>
+          <rect x="190" y="70" width="30" height="30" class="dg-acc-f" stroke-width="1.2"/>
+          <rect x="190" y="70" width="30" height="30" class="dg-acc" fill="none" stroke-width="1.4"/>
+          <text x="75" y="70" class="dg-label" text-anchor="middle">ρ<tspan baseline-shift="sub" style="font-size:75%">s</tspan></text>
+          <text x="205" y="62" class="dg-label" text-anchor="middle">ρ<tspan baseline-shift="sub" style="font-size:75%">s</tspan></text>
+          <text x="160" y="60" class="dg-label-sm" text-anchor="middle">=</text>
+          <text x="150" y="116" class="dg-label-sm" text-anchor="middle">current left to right in both</text>
+        </svg>
+        <figcaption>Three times the side, three times the path and three times the face: the same resistance.</figcaption>
+      </figure>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Resistors by counting squares: Lecture 17's board values</div>
+      <div class="ex-body">
+        <p><b>Given</b> a layer of <em>ρ</em><sub>s</sub> = 100 Ω/□ patterned as strips 1 µm wide and 10, 100 and 20 µm long;
+        the same layer as rectangles 2 cm × 1 cm, 2 mm × 1 mm and 2 µm × 1 µm, current along the long side; and a strip of
+        four squares in a 650 Ω/□ layer. <b>Find</b> each resistance.</p>
+        <p><b>Plan.</b> Eq. (10.1): count squares as <em>L</em>/<em>W</em>, with both in the same unit, and multiply by
+        <em>ρ</em><sub>s</sub>. No thickness is needed; it is already inside <em>ρ</em><sub>s</sub>.</p>
+        <p class="ex-step"><b>Squares in the 1 µm strips.</b> 10 µm/1 µm = 10; 100/1 = 100; 20/1 = 20.</p>
+        <p class="ex-step"><b>Resistances of the strips.</b> 10 × 100 Ω = 1000 Ω = 1 kΩ; 100 × 100 Ω = 10 kΩ; 20 × 100 Ω = 2 kΩ.
+        Lecture 17 made the point that resistors in an integrated circuit are designed this way: the width is fixed and
+        the length chosen for the number of squares.</p>
+        <p class="ex-step"><b>The three rectangles.</b> 2 cm/1 cm = 2 mm/1 mm = 2 µm/1 µm = 2 squares, so each is
+        2 × 100 Ω = 200 Ω. The ten-thousand-fold change of size between the first and the last changes nothing, which is why
+        resistors are drawn small.</p>
+        <p class="ex-step"><b>Four squares at 650 Ω/□.</b> 4 × 650 Ω = 2600 Ω.</p>
+        <p class="ex-answer">1 kΩ, 10 kΩ and 2 kΩ; 200 Ω for all three rectangles; 2.6 kΩ. Check: the unit of each product is
+        Ω/□ × □ = Ω, and resistance scales with the count of squares, never with area.</p>
+      </div>
+    </div>
+
+    <p>
+      Sheet resistance also connects a junction's depth and doping to the resistance it presents, which is how the notes
+      state their requirement for the extension (§3.5). The next example uses the one resistivity that Taur &amp; Ning quote
+      for heavily doped silicon.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Sheet resistance of a 35 nm heavily doped layer</div>
+      <div class="ex-body">
+        <p><b>Given</b> a uniformly doped layer 35 nm deep with resistivity 1×10⁻³ Ω·cm, the value Taur &amp; Ning give for
+        10²⁰ cm⁻³ doping. <b>Find</b> its sheet resistance; the number of squares, and the length of a 1 µm wide strip, for
+        a 10 kΩ resistor; and compare with the 35 nm, 350 Ω/□ boron junction that Wolf gives as the limit of a 0.5 keV implant
+        with a spike anneal.</p>
+        <p><b>Plan.</b> Eq. (10.1) with <em>t</em> = <em>X</em><sub>j</sub>, converted to cm because <em>ρ</em> is in Ω·cm.</p>
+        <p class="ex-step"><b>Depth in cm.</b> 35 nm = 35×10⁻⁷ cm = 3.5×10⁻⁶ cm.</p>
+        <p class="ex-step"><b>Sheet resistance.</b> <em>ρ</em><sub>s</sub> = 1×10⁻³ Ω·cm / 3.5×10⁻⁶ cm = 286 Ω/□.</p>
+        <p class="ex-step"><b>Squares for 10 kΩ.</b> 10 000 Ω / 285.7 Ω/□ = 35.0 squares, so a strip 1 µm wide is 35.0 µm
+        long.</p>
+        <p class="ex-step"><b>Against the measured junction.</b> 350/285.7 = 1.22. The measured boron junction is 22 % more
+        resistive than this uniform estimate. Two things push it that way: p-type silicon is more resistive than n-type at the
+        same doping, because holes are less mobile than electrons, and an implanted junction is heavily doped only near its
+        peak, with a tail that adds depth without adding much conductance.</p>
+        <p class="ex-answer"><em>ρ</em><sub>s</sub> ≈ 286 Ω/□; 35.0 squares, a 35.0 µm × 1 µm strip. Check: a layer ten times
+        thinner at the same resistivity would be ten times more resistive per square, which is the whole difficulty of the
+        ultra-shallow junction (§6).</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A 250 Ω/□ layer is patterned as a strip 40 µm long and 2 µm wide. What is its resistance? What strip,
+      2 µm wide, gives 1 kΩ? And a 0.4 µm × 0.1 µm strip of the same layer?</summary>
+      <div class="answer"><p>The strip is 40/2 = 20 squares, so <em>R</em> = 20 × 250 Ω = 5 kΩ. 1 kΩ needs 1000/250 = 4
+      squares, so a strip 8 µm long and 2 µm wide. The 0.4 µm × 0.1 µm strip is also 4 squares and also 1 kΩ: sheet
+      resistance counts squares, not area, so the same resistor can be drawn at any scale the lithography allows.</p></div>
+    </details>
+
+    <h2 id="s3">3 · The series resistance and its yardstick</h2>
+
+    <p>
+      This section follows the current from the metal contact to the end of the channel, names the four resistances it meets
+      (notes pp. 78–81), and sets them against the resistance of the channel itself, which is the only measure of whether a
+      given source/drain resistance is acceptable. The arithmetic is the notes' own, and the two board formulas of
+      Lectures 17 and 18, <em>R</em><sub>sp</sub> and <em>R</em><sub>SDE</sub>, are worked with the notes' numbers.
+    </p>
+
+    <h3 id="s3-1">3.1 Where the current goes</h3>
+
+    <p>
+      Current from the metal interconnect enters the silicon perpendicular to the wafer surface at the contact, then turns and
+      travels parallel to the surface to the channel (Wolf p. 197). Along that path it meets four resistances in series, which
+      the notes list for a single-region drain (p. 78) and then for a drain with an extension (p. 79):
+    </p>
+    <ul>
+      <li><b><em>R</em><sub>co</sub></b>, the <b>contact resistance</b> between the metal (or silicide) and the
+      source/drain silicon (§4.1);</li>
+      <li><b><em>R</em><sub>sh</sub></b>, the resistance of the body of the source/drain region, computed from its sheet
+      resistance and its length in squares; with an extension this is <b><em>R</em><sub>SDE</sub></b>, the resistance of the
+      extension (§3.5);</li>
+      <li><b><em>R</em><sub>sp</sub></b>, the <b>spreading resistance</b> of the current lines crowding into the thin surface
+      layer at the channel end (§3.4);</li>
+      <li><b><em>R</em><sub>ac</sub></b>, the resistance of the <b>accumulation layer</b> where the source/drain doping
+      reaches under the gate (§3.3).</li>
+    </ul>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>s</sub> = <em>R</em><sub>co</sub> + <em>R</em><sub>SDE</sub> + <em>R</em><sub>sp</sub> + <em>R</em><sub>ac</sub></div>
+        <div class="eq-num">(10.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em><sub>s</sub> total series resistance of one source or one drain (Ω) · terms as listed above (Ω). Without an
+        extension, <em>R</em><sub>SDE</sub> is replaced by <em>R</em><sub>sh</sub> (notes p. 78; Wolf eqs. 5.1–5.2). The source
+        and the drain each contribute one <em>R</em><sub>s</sub>. Each term varies as 1/<em>W</em>, so the products
+        <em>R</em>·<em>W</em> (Ω·cm or Ω·µm) are the quantities compared.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 430 220" role="img" aria-labelledby="m10h3-t">
+        <title id="m10h3-t">Current lines from the channel end spreading through the source or drain to the contact, with the four series resistances drawn beneath</title>
+        <line x1="10" y1="70" x2="420" y2="70" class="dg-rule" stroke-width="1.2"/>
+        <rect x="40" y="38" width="70" height="28" class="dg-acc-f" stroke-width="1"/>
+        <text x="75" y="56" class="dg-label-sm" text-anchor="middle">contact</text>
+        <rect x="300" y="30" width="110" height="34" class="dg-fill" stroke-width="1"/>
+        <rect x="300" y="64" width="110" height="6" class="dg-soft"/>
+        <text x="355" y="52" class="dg-label" text-anchor="middle">gate</text>
+        <path d="M20,70 L20,130 L300,130 Q318,130 318,110 L318,70" class="dg-line" fill="none" stroke-width="1.6"/>
+        <text x="190" y="146" class="dg-label-sm" text-anchor="middle">source or drain, depth X<tspan baseline-shift="sub" style="font-size:75%">j</tspan></text>
+        <path d="M330,73 L318,73 Q290,74 240,96 L110,100 Q90,100 80,72" class="dg-acc" fill="none" stroke-width="1.3"/>
+        <path d="M330,73 L318,73 Q300,76 240,112 L110,116 Q70,116 60,72" class="dg-acc" fill="none" stroke-width="1.3"/>
+        <path d="M330,73 L318,73 Q300,74 240,82 L120,84 Q100,84 95,72" class="dg-acc" fill="none" stroke-width="1.3"/>
+        <text x="372" y="84" class="dg-label-sm" text-anchor="middle">channel</text>
+        <line x1="20" y1="185" x2="44" y2="185" class="dg-ink"/>
+        <path d="M44,185 l5,-7 l8,14 l8,-14 l8,14 l8,-14 l8,14 l5,-7" class="dg-ink" fill="none" stroke-width="1.3"/>
+        <text x="69" y="208" class="dg-label-sm" text-anchor="middle">R<tspan baseline-shift="sub" style="font-size:75%">co</tspan></text>
+        <line x1="94" y1="185" x2="150" y2="185" class="dg-ink"/>
+        <path d="M150,185 l5,-7 l8,14 l8,-14 l8,14 l8,-14 l8,14 l5,-7" class="dg-ink" fill="none" stroke-width="1.3"/>
+        <text x="175" y="208" class="dg-label-sm" text-anchor="middle">R<tspan baseline-shift="sub" style="font-size:75%">sh</tspan> or R<tspan baseline-shift="sub" style="font-size:75%">SDE</tspan></text>
+        <line x1="200" y1="185" x2="236" y2="185" class="dg-ink"/>
+        <path d="M236,185 l5,-7 l8,14 l8,-14 l8,14 l8,-14 l8,14 l5,-7" class="dg-ink" fill="none" stroke-width="1.3"/>
+        <text x="261" y="208" class="dg-label-sm" text-anchor="middle">R<tspan baseline-shift="sub" style="font-size:75%">sp</tspan></text>
+        <line x1="286" y1="185" x2="306" y2="185" class="dg-ink"/>
+        <path d="M306,185 l5,-7 l8,14 l8,-14 l8,14 l8,-14 l8,14 l5,-7" class="dg-ink" fill="none" stroke-width="1.3"/>
+        <text x="331" y="208" class="dg-label-sm" text-anchor="middle">R<tspan baseline-shift="sub" style="font-size:75%">ac</tspan></text>
+        <line x1="356" y1="185" x2="410" y2="185" class="dg-ink"/>
+        <text x="410" y="178" class="dg-label-sm" text-anchor="end">to channel</text>
+      </svg>
+      <figcaption><b>Figure 2.</b> After the notes' p. 78 sketch (Wolf Fig. 5-13, after a 1987 IEEE paper). The current
+      leaves the surface layer at the channel end, spreads through the depth of the source or drain, and turns up into the
+      contact. The four resistances are in series; a silicide (§4) shunts the region under the contact.</figcaption>
+    </figure>
+
+    <h3 id="s3-2">3.2 The yardstick: the channel's own resistance</h3>
+
+    <p>
+      A source/drain resistance is large or small only relative to the resistance of the channel when the transistor is on.
+      The notes define that resistance as <em>R</em><sub>sat</sub> = <em>V</em><sub>DD</sub>/<em>I</em><sub>Dsat</sub>, the
+      supply voltage divided by the saturated drain current (p. 79), and set the design goal: the series resistance of the
+      source and drain may reduce <em>I</em><sub>Dsat</sub> by no more than 10 %. Wolf adds the relation that turns this into a
+      budget: an external source-plus-drain resistance of about 10 % of <em>R</em><sub>sat</sub> reduces <em>I</em><sub>Dsat</sub>
+      by about 8 %. The two halves do not cost the same. Taur &amp; Ning write the intrinsic transistor's
+      voltages as <em>V</em>′<sub>gs</sub> = <em>V</em><sub>gs</sub> − <em>R</em><sub>s</sub><em>I</em><sub>ds</sub> and
+      <em>V</em>′<sub>ds</sub> = <em>V</em><sub>ds</sub> − (<em>R</em><sub>s</sub> + <em>R</em><sub>d</sub>)<em>I</em><sub>ds</sub>
+      (their eqs. (8.13)–(8.14)): the drop across the source resistance is subtracted from the gate drive as well as from the drain
+      voltage, and they call resistance on the source side "particularly troublesome", "as it degrades the gate drive as well".
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>sat</sub><em>W</em> = <span class="frac"><span class="num"><em>V</em><sub>DD</sub>&thinsp;<em>t</em><sub>ox</sub></span><span class="den">0.47&thinsp;<em>v</em><sub>sat</sub>&thinsp;<em>ε</em><sub>ox</sub>&thinsp;(<em>V</em><sub>DD</sub> − <em>V</em><sub>T</sub>)</span></span> ≈ <span class="frac"><span class="num"><em>t</em><sub>ox</sub></span><span class="den">0.376&thinsp;<em>v</em><sub>sat</sub>&thinsp;<em>ε</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(10.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em><sub>sat</sub><em>W</em> channel on-resistance times width (Ω·cm) · <em>V</em><sub>DD</sub> supply voltage (V) ·
+        <em>t</em><sub>ox</sub> gate oxide thickness (cm) · <em>v</em><sub>sat</sub> saturation velocity, ≈ 10⁷ cm/s ·
+        <em>ε</em><sub>ox</sub> = 3.9<em>ε</em><sub>0</sub> = 3.45×10⁻¹³ F/cm · <em>V</em><sub>T</sub> threshold voltage (V).
+        Notes p. 79, Wolf eq. 5.4. The approximate form is the exact one with <em>V</em><sub>T</sub> = 0.2 <em>V</em><sub>DD</sub>,
+        since 0.47 × 0.8 = 0.376; neither source states that assumption. Velocity-saturated drain current.
+      </div>
+    </div>
+
+    <p>
+      The first form is <em>V</em><sub>DD</sub> divided by a saturated drain current per unit width of
+      0.47 <em>v</em><sub>sat</sub><em>C</em><sub>ox</sub>(<em>V</em><sub>DD</sub> − <em>V</em><sub>T</sub>), the saturated drain
+      current Wolf's model assumes; it is about half of the full velocity-saturation limit, <em>v</em><sub>sat</sub><em>C</em><sub>ox</sub>(<em>V</em><sub>gs</sub> − <em>V</em><sub>T</sub>) per unit width (Taur &amp; Ning eq. (6.51)); the gate capacitance per unit area <em>C</em><sub>ox</sub> =
+      <em>ε</em><sub>ox</sub>/<em>t</em><sub>ox</sub> is where <em>t</em><sub>ox</sub> enters. The consequence is the one the
+      notes draw: since <em>t</em><sub>ox</sub> falls at every generation, <em>R</em><sub>sat</sub><em>W</em> falls with it,
+      and the source/drain resistance <em>R</em><sub>s</sub><em>W</em> must fall at every node just to hold its share.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The resistance budget of a 0.25 µm transistor</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>t</em><sub>ox</sub> = 4.5 nm and <em>V</em><sub>DD</sub> = 1.8 V, the reference set in the figure legend
+        of the 0.25 µm n-channel study Wolf reports in §5.3.4 (with <em>L</em><sub>E</sub> = 0.12 µm); <em>v</em><sub>sat</sub> = 10⁷ cm/s; <em>ε</em><sub>ox</sub> = 3.9 ×
+        8.854×10⁻¹⁴ F/cm. <b>Find</b> <em>R</em><sub>sat</sub><em>W</em>, the drain current per micrometre it implies, and the
+        source-plus-drain resistance at Wolf's working criterion, 10 % of <em>R</em><sub>sat</sub>.</p>
+        <p><b>Plan.</b> Eq. (10.3), approximate form, with <em>t</em><sub>ox</sub> in cm. Then check it against the first form,
+        which also yields the current. Budget: 10 % of <em>R</em><sub>sat</sub><em>W</em> for the source and drain together, the
+        criterion Wolf computes with; by his 8 % relation it costs about 8 % of <em>I</em><sub>Dsat</sub>, inside the 10 % goal.</p>
+        <p class="ex-step"><b>Oxide permittivity and thickness.</b> <em>ε</em><sub>ox</sub> = 3.9 × 8.854×10⁻¹⁴ =
+        3.453×10⁻¹³ F/cm; <em>t</em><sub>ox</sub> = 4.5×10⁻⁷ cm.</p>
+        <p class="ex-step"><b>Denominator.</b> 0.376 × 10⁷ cm/s × 3.453×10⁻¹³ F/cm = 1.298×10⁻⁶ F/s. The units check: F/s
+        is A/V, a conductance, so <em>t</em><sub>ox</sub> (cm) divided by it gives Ω·cm.</p>
+        <p class="ex-step"><b>Channel resistance times width.</b> <em>R</em><sub>sat</sub><em>W</em> = 4.5×10⁻⁷ / 1.298×10⁻⁶ =
+        0.347 Ω·cm = 3470 Ω·µm (1 Ω·cm = 10⁴ Ω·µm).</p>
+        <p class="ex-step"><b>The current it implies.</b> With <em>V</em><sub>T</sub> = 0.2 × 1.8 = 0.36 V and
+        <em>C</em><sub>ox</sub> = 3.453×10⁻¹³/4.5×10⁻⁷ = 7.674×10⁻⁷ F/cm², <em>I</em><sub>Dsat</sub>/<em>W</em> = 0.47 × 10⁷ ×
+        7.674×10⁻⁷ × (1.8 − 0.36) = 5.19 A/cm = 519 µA/µm, and 1.8 V / 5.19 A/cm = 0.347 Ω·cm, the same value. This is why the
+        approximation needs <em>V</em><sub>T</sub> = 0.2 <em>V</em><sub>DD</sub>.</p>
+        <p class="ex-step"><b>Budget.</b> 10 % of 3470 Ω·µm is 347 Ω·µm for the source and drain together, or 173 Ω·µm for
+        each side. Wolf expresses the same allowance by comparing 20 × (one side's resistance) × <em>W</em> with
+        <em>R</em><sub>sat</sub><em>W</em>: twenty times one side equals the whole channel exactly when two sides equal 10 % of it.</p>
+        <p class="ex-answer"><em>R</em><sub>sat</sub><em>W</em> ≈ 0.347 Ω·cm (3470 Ω·µm); 519 µA/µm; ≈ 347 Ω·µm of series resistance for
+        source and drain together at the 10 %-of-<em>R</em><sub>sat</sub> criterion. Check: Taur &amp; Ning give 100–200 Ω·µm as the best total
+        <em>R</em><sub>sd</sub><em>W</em> made in practice, inside this budget at 0.25 µm, and the budget shrinks in proportion to
+        <em>t</em><sub>ox</sub> at later nodes.</p>
+      </div>
+    </div>
+
+    <h3 id="s3-3">3.3 The accumulation layer, R<sub>ac</sub></h3>
+
+    <p>
+      The notes (p. 80) define the end of the channel as the point at the surface where the source/drain doping equals the body
+      doping, <em>N</em><sub>D</sub> ≈ <em>N</em><sub>A</sub>: the metallurgical junction. Beyond that point, toward the source or
+      drain, the silicon under the gate edge is n-type. The positive gate voltage that inverts the p-type channel acts on this
+      n-type silicon too, because the gate is a single equipotential; on n-type silicon it attracts more of the majority carriers
+      to the surface, and the result is an <b>accumulation layer</b> rather than an inversion layer. The accumulation layer ends,
+      toward the source or drain, where the carrier concentration it induces equals the local doping: Wolf gives about
+      10¹⁹ cm⁻³ induced against a source/drain peak doping of 10²⁰–10²¹ cm⁻³, so the layer matters only in the graded edge of the
+      junction nearest the channel. Its resistance <em>R</em><sub>ac</sub> is in series with the channel. In a deep-submicron
+      transistor the overlap, and with it the accumulation layer, is short, and the notes conclude that <em>R</em><sub>ac</sub>
+      "does not play a significant role" as the device is scaled. The accumulation and inversion layers have about the same
+      thickness, <em>X</em><sub>c</sub> (Wolf), and that thickness is the starting width of the spreading problem.
+    </p>
+
+    <h3 id="s3-4">3.4 Spreading from the surface layer, R<sub>sp</sub></h3>
+
+    <p>
+      Leaving the accumulation layer, the current is confined to a sheet of thickness <em>X</em><sub>c</sub> at the surface; a
+      little further on it occupies the full depth <em>X</em><sub>j</sub> of the extension. Between the two the current lines
+      fan out, and the crowding near the narrow end adds resistance beyond what the same length of uniformly filled extension
+      would have. That excess is the <b>spreading resistance</b> (notes p. 81; Wolf eq. 5.5). Taur &amp; Ning attribute the analytical
+      expression to Baccarani and Sai-Halasz (1983).
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>sp</sub> ≈ <span class="frac"><span class="num">2<em>ρ</em></span><span class="den">π<em>W</em></span></span>&thinsp;ln&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>β</em>&thinsp;<em>X</em><sub>j</sub></span><span class="den"><em>X</em><sub>c</sub></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(10.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em><sub>sp</sub> spreading resistance (Ω) · <em>ρ</em> resistivity of the extension (Ω·cm) · <em>W</em> device width
+        (cm) · <em>X</em><sub>j</sub> extension junction depth · <em>X</em><sub>c</sub> inversion/accumulation layer thickness (same
+        unit as <em>X</em><sub>j</sub>) · <em>β</em> constant, 0.37–0.9 depending on the derivation (notes; Wolf uses 0.58, Taur &amp;
+        Ning's eq. (8.16) has 0.75). Uniformly doped extension with an abrupt edge; it ignores the lateral doping gradient (§7.3).
+      </div>
+    </div>
+
+    <p>
+      Two features of eq. (10.4) carry its physics. The resistance depends on the geometry only through the ratio
+      <em>X</em><sub>j</sub>/<em>X</em><sub>c</sub>, the factor by which the current must spread; and it depends on that ratio
+      logarithmically, as the resistance of any radially spreading current does, so halving the junction depth removes a fixed
+      amount, not a fixed fraction, of <em>R</em><sub>sp</sub>. The same logarithm makes the uncertain constant <em>β</em>
+      matter little.
+    </p>
+
+    <div class="box">
+      <p class="box-title">Which ratio is inside the logarithm</p>
+      <p>The argument is <em>βX</em><sub>j</sub>/<em>X</em><sub>c</sub>, junction depth over layer thickness, in the notes
+      (p. 81), in Wolf and in Taur &amp; Ning, and Lecture 18 dictated it the same way. Since <em>X</em><sub>j</sub> ≫
+      <em>X</em><sub>c</sub>, the logarithm is positive; with the ratio inverted it would be negative, and so would the
+      resistance.</p>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Spreading resistance of a heavily doped source/drain</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>ρ</em> = 1×10⁻³ Ω·cm (10²⁰ cm⁻³) and <em>X</em><sub>j</sub>/<em>X</em><sub>c</sub> = 40, the
+        typical case Taur &amp; Ning evaluate. <b>Find</b> <em>R</em><sub>sp</sub><em>W</em> for <em>β</em> = 0.37, 0.58, 0.75
+        and 0.9.</p>
+        <p><b>Plan.</b> Multiply eq. (10.4) by <em>W</em>, which removes the width: <em>R</em><sub>sp</sub><em>W</em> =
+        (2<em>ρ</em>/π) ln(<em>β</em> × 40). Convert Ω·cm to Ω·µm at the end.</p>
+        <p class="ex-step"><b>Prefactor.</b> 2<em>ρ</em>/π = 2 × 10⁻³ / 3.1416 = 6.366×10⁻⁴ Ω·cm.</p>
+        <p class="ex-step"><b>Logarithms.</b> ln(0.37 × 40) = ln 14.8 = 2.695; ln 23.2 = 3.144; ln 30 = 3.401; ln 36 = 3.584.</p>
+        <p class="ex-step"><b>Products.</b> <em>R</em><sub>sp</sub><em>W</em> = 6.366×10⁻⁴ × (2.695, 3.144, 3.401, 3.584) =
+        (1.72, 2.00, 2.17, 2.28)×10⁻³ Ω·cm = 17.2, 20.0, 21.7 and 22.8 Ω·µm.</p>
+        <p class="ex-answer"><em>R</em><sub>sp</sub><em>W</em> ≈ 17–23 Ω·µm; 21.7 Ω·µm with Taur &amp; Ning's <em>β</em> =
+        0.75, matching their ≈ 20 Ω·µm. Check: <em>β</em> varies by a factor of 2.43 over its range, the result by only 1.33,
+        the logarithm at work. Against the 173 Ω·µm per side of the 0.25 µm budget this term is small for a heavily doped
+        abrupt junction; it grows when the extension is lighter or its edge graded.</p>
+      </div>
+    </div>
+
+    <h3 id="s3-5">3.5 The extension itself, R<sub>SDE</sub>, and the sum</h3>
+
+    <p>
+      Beyond the spreading region the current fills the extension uniformly, and the extension is a resistor of length
+      ℓ<sub>SDE</sub>, width <em>W</em> and depth <em>X</em><sub>j</sub>: <em>R</em> = <em>ρl</em>/<em>A</em> (notes p. 81; Wolf
+      eq. 5.6).
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>SDE</sub> ≈ <span class="frac"><span class="num"><em>ρ</em>&thinsp;ℓ<sub>SDE</sub></span><span class="den"><em>W</em>&thinsp;<em>X</em><sub>j</sub></span></span> = <em>ρ</em><sub>s</sub>&thinsp;<span class="frac"><span class="num">ℓ<sub>SDE</sub></span><span class="den"><em>W</em></span></span></div>
+        <div class="eq-num">(10.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em><sub>SDE</sub> extension resistance (Ω) · ℓ<sub>SDE</sub> extension length, ≈ <em>L</em><sub>L</sub>/2 (notes
+        p. 81) · <em>X</em><sub>j</sub> extension depth, ≈ 0.55 <em>L</em><sub>L</sub> · <em>ρ</em><sub>s</sub> =
+        <em>ρ</em>/<em>X</em><sub>j</sub> the extension's sheet resistance (Ω/□), eq. (10.1). The second form is ℓ<sub>SDE</sub>/<em>W</em>
+        squares of the extension's sheet resistance.
+      </div>
+    </div>
+
+    <p>
+      Adding eqs. (10.4) and (10.5) and multiplying by <em>W</em> gives the notes' expression for the parasitic resistance of
+      the extension region, with <em>R</em><sub>SDE</sub> factored out (p. 81; Wolf eq. 5.7):
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">(<em>R</em><sub>sp</sub> + <em>R</em><sub>SDE</sub>)&thinsp;<em>W</em> ≈ <em>ρ</em>&thinsp;<span class="frac"><span class="num">ℓ<sub>SDE</sub></span><span class="den"><em>X</em><sub>j</sub></span></span>&thinsp;<span class="dl">[</span>1 + <span class="frac"><span class="num">2<em>X</em><sub>j</sub></span><span class="den">π&thinsp;ℓ<sub>SDE</sub></span></span>&thinsp;ln&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>β</em>&thinsp;<em>X</em><sub>j</sub></span><span class="den"><em>X</em><sub>c</sub></span></span><span class="dl">)</span><span class="dl">]</span></div>
+        <div class="eq-num">(10.6)</div>
+      </div>
+      <div class="eq-says">
+        Symbols as in eqs. (10.4)–(10.5); the left side in Ω·cm. <em>ρ</em>ℓ<sub>SDE</sub>/<em>X</em><sub>j</sub> =
+        <em>ρ</em><sub>s</sub>ℓ<sub>SDE</sub> is <em>R</em><sub>SDE</sub><em>W</em>, and the bracket is the factor by which spreading
+        multiplies it. Wolf evaluates the bracket at 2.09 for the 250 nm generation and about 1.48 for 50 nm.
+      </div>
+    </div>
+
+    <p>
+      The bracket says how much of the extension's parasitic resistance is spreading. At 2.09, spreading is (2.09 − 1)/2.09 =
+      52 % of the sum; at 1.48 it is 32 %. That is the basis of the notes' statement that <em>R</em><sub>sp</sub> "plays a
+      significant role". The bracket falls with scaling because <em>X</em><sub>j</sub> shrinks toward <em>X</em><sub>c</sub>,
+      which cannot shrink with it: the inversion layer stays a few nanometres thick (notes p. 76 put it under 7 nm), so there is
+      less depth for the current to spread into. Figure 3 plots the bracket against <em>X</em><sub>j</sub>/<em>X</em><sub>c</sub>.
+    </p>
+
+    <figure class="compact">
+<!--FIG fbracket-->
+<svg viewBox="0 0 430 260" role="img" aria-labelledby="m10fb-t">
+<title id="m10fb-t">The factor by which spreading resistance multiplies the extension resistance, against the ratio of junction depth to inversion-layer thickness, for two ratios of extension length to junction depth</title>
+<line x1="62" y1="216" x2="414" y2="216" class="dg-rule" stroke-width="1.2"/>
+<line x1="62" y1="16" x2="62" y2="216" class="dg-rule" stroke-width="1.2"/>
+<line x1="62.0" y1="216" x2="62.0" y2="220" class="dg-rule"/>
+<text x="62.0" y="232" class="dg-label-sm" text-anchor="middle">2</text>
+<line x1="144.4" y1="216" x2="144.4" y2="220" class="dg-rule"/>
+<text x="144.4" y="232" class="dg-label-sm" text-anchor="middle">5</text>
+<line x1="206.8" y1="216" x2="206.8" y2="220" class="dg-rule"/>
+<text x="206.8" y="232" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="269.2" y1="216" x2="269.2" y2="220" class="dg-rule"/>
+<text x="269.2" y="232" class="dg-label-sm" text-anchor="middle">20</text>
+<line x1="351.6" y1="216" x2="351.6" y2="220" class="dg-rule"/>
+<text x="351.6" y="232" class="dg-label-sm" text-anchor="middle">50</text>
+<line x1="414.0" y1="216" x2="414.0" y2="220" class="dg-rule"/>
+<text x="414.0" y="232" class="dg-label-sm" text-anchor="middle">100</text>
+<line x1="58" y1="216.0" x2="62" y2="216.0" class="dg-rule"/>
+<text x="55" y="219.5" class="dg-label-sm" text-anchor="end">1.0</text>
+<line x1="58" y1="182.7" x2="62" y2="182.7" class="dg-rule"/>
+<text x="55" y="186.2" class="dg-label-sm" text-anchor="end">1.5</text>
+<line x1="58" y1="149.3" x2="62" y2="149.3" class="dg-rule"/>
+<text x="55" y="152.8" class="dg-label-sm" text-anchor="end">2.0</text>
+<line x1="58" y1="116.0" x2="62" y2="116.0" class="dg-rule"/>
+<text x="55" y="119.5" class="dg-label-sm" text-anchor="end">2.5</text>
+<line x1="58" y1="82.7" x2="62" y2="82.7" class="dg-rule"/>
+<text x="55" y="86.2" class="dg-label-sm" text-anchor="end">3.0</text>
+<line x1="58" y1="49.3" x2="62" y2="49.3" class="dg-rule"/>
+<text x="55" y="52.8" class="dg-label-sm" text-anchor="end">3.5</text>
+<line x1="58" y1="16.0" x2="62" y2="16.0" class="dg-rule"/>
+<text x="55" y="19.5" class="dg-label-sm" text-anchor="end">4.0</text>
+<text x="238.0" y="252" class="dg-label" text-anchor="middle">x<tspan baseline-shift="sub" style="font-size:75%">j</tspan> / x<tspan baseline-shift="sub" style="font-size:75%">c</tspan></text>
+<text x="14" y="116.0" class="dg-label" text-anchor="middle" transform="rotate(-90 14 116.0)">(R<tspan baseline-shift="sub" style="font-size:75%">sp</tspan> + R<tspan baseline-shift="sub" style="font-size:75%">SDE</tspan>) / R<tspan baseline-shift="sub" style="font-size:75%">SDE</tspan></text>
+<path d="M62.0,210.8 L64.9,209.6 L67.9,208.4 L70.8,207.3 L73.7,206.1 L76.7,205.0 L79.6,203.8 L82.5,202.7 L85.5,201.5 L88.4,200.4 L91.3,199.2 L94.3,198.1 L97.2,196.9 L100.1,195.8 L103.1,194.6 L106.0,193.5 L108.9,192.3 L111.9,191.1 L114.8,190.0 L117.7,188.8 L120.7,187.7 L123.6,186.5 L126.5,185.4 L129.5,184.2 L132.4,183.1 L135.3,181.9 L138.3,180.8 L141.2,179.6 L144.1,178.5 L147.1,177.3 L150.0,176.2 L152.9,175.0 L155.9,173.9 L158.8,172.7 L161.7,171.5 L164.7,170.4 L167.6,169.2 L170.5,168.1 L173.5,166.9 L176.4,165.8 L179.3,164.6 L182.3,163.5 L185.2,162.3 L188.1,161.2 L191.1,160.0 L194.0,158.9 L196.9,157.7 L199.9,156.6 L202.8,155.4 L205.7,154.3 L208.7,153.1 L211.6,151.9 L214.5,150.8 L217.5,149.6 L220.4,148.5 L223.3,147.3 L226.3,146.2 L229.2,145.0 L232.1,143.9 L235.1,142.7 L238.0,141.6 L240.9,140.4 L243.9,139.3 L246.8,138.1 L249.7,137.0 L252.7,135.8 L255.6,134.7 L258.5,133.5 L261.5,132.3 L264.4,131.2 L267.3,130.0 L270.3,128.9 L273.2,127.7 L276.1,126.6 L279.1,125.4 L282.0,124.3 L284.9,123.1 L287.9,122.0 L290.8,120.8 L293.7,119.7 L296.7,118.5 L299.6,117.4 L302.5,116.2 L305.5,115.1 L308.4,113.9 L311.3,112.7 L314.3,111.6 L317.2,110.4 L320.1,109.3 L323.1,108.1 L326.0,107.0 L328.9,105.8 L331.9,104.7 L334.8,103.5 L337.7,102.4 L340.7,101.2 L343.6,100.1 L346.5,98.9 L349.5,97.8 L352.4,96.6 L355.3,95.5 L358.3,94.3 L361.2,93.1 L364.1,92.0 L367.1,90.8 L370.0,89.7 L372.9,88.5 L375.9,87.4 L378.8,86.2 L381.7,85.1 L384.7,83.9 L387.6,82.8 L390.5,81.6 L393.5,80.5 L396.4,79.3 L399.3,78.2 L402.3,77.0 L405.2,75.9 L408.1,74.7 L411.1,73.5 L414.0,72.4" class="dg-acc" fill="none" stroke-width="2.0"/>
+<path d="M62.0,209.1 L64.9,207.5 L67.9,206.0 L70.8,204.5 L73.7,203.0 L76.7,201.5 L79.6,199.9 L82.5,198.4 L85.5,196.9 L88.4,195.4 L91.3,193.9 L94.3,192.3 L97.2,190.8 L100.1,189.3 L103.1,187.8 L106.0,186.2 L108.9,184.7 L111.9,183.2 L114.8,181.7 L117.7,180.2 L120.7,178.6 L123.6,177.1 L126.5,175.6 L129.5,174.1 L132.4,172.5 L135.3,171.0 L138.3,169.5 L141.2,168.0 L144.1,166.5 L147.1,164.9 L150.0,163.4 L152.9,161.9 L155.9,160.4 L158.8,158.8 L161.7,157.3 L164.7,155.8 L167.6,154.3 L170.5,152.8 L173.5,151.2 L176.4,149.7 L179.3,148.2 L182.3,146.7 L185.2,145.1 L188.1,143.6 L191.1,142.1 L194.0,140.6 L196.9,139.1 L199.9,137.5 L202.8,136.0 L205.7,134.5 L208.7,133.0 L211.6,131.5 L214.5,129.9 L217.5,128.4 L220.4,126.9 L223.3,125.4 L226.3,123.8 L229.2,122.3 L232.1,120.8 L235.1,119.3 L238.0,117.8 L240.9,116.2 L243.9,114.7 L246.8,113.2 L249.7,111.7 L252.7,110.1 L255.6,108.6 L258.5,107.1 L261.5,105.6 L264.4,104.1 L267.3,102.5 L270.3,101.0 L273.2,99.5 L276.1,98.0 L279.1,96.4 L282.0,94.9 L284.9,93.4 L287.9,91.9 L290.8,90.4 L293.7,88.8 L296.7,87.3 L299.6,85.8 L302.5,84.3 L305.5,82.7 L308.4,81.2 L311.3,79.7 L314.3,78.2 L317.2,76.7 L320.1,75.1 L323.1,73.6 L326.0,72.1 L328.9,70.6 L331.9,69.1 L334.8,67.5 L337.7,66.0 L340.7,64.5 L343.6,63.0 L346.5,61.4 L349.5,59.9 L352.4,58.4 L355.3,56.9 L358.3,55.4 L361.2,53.8 L364.1,52.3 L367.1,50.8 L370.0,49.3 L372.9,47.7 L375.9,46.2 L378.8,44.7 L381.7,43.2 L384.7,41.7 L387.6,40.1 L390.5,38.6 L393.5,37.1 L396.4,35.6 L399.3,34.0 L402.3,32.5 L405.2,31.0 L408.1,29.5 L411.1,28.0 L414.0,26.4" class="dg-line" fill="none" stroke-width="2.0" stroke-dasharray="5 3"/>
+<text x="331.6" y="126.1" class="dg-label-sm" text-anchor="start">ℓ/x<tspan baseline-shift="sub" style="font-size:75%">j</tspan> = 1.2 (notes)</text>
+<text x="237.1" y="103.6" class="dg-label-sm" text-anchor="end">ℓ/x<tspan baseline-shift="sub" style="font-size:75%">j</tspan> = 0.91 (dashed)</text>
+<path d="M62.0,143.3 L414.0,143.3" class="dg-guide" fill="none" stroke-width="1.0" stroke-dasharray="2 3"/>
+<text x="412.2" y="154.7" class="dg-label-sm" text-anchor="end">2.09 (Wolf, 250 nm)</text>
+<path d="M62.0,184.0 L414.0,184.0" class="dg-guide" fill="none" stroke-width="1.0" stroke-dasharray="2 3"/>
+<text x="412.2" y="195.3" class="dg-label-sm" text-anchor="end">1.48 (Wolf, 50 nm)</text>
+<circle cx="233.5" cy="143.3" r="3.2" class="dg-ink"/>
+<text x="243.7" y="156.7" class="dg-label-sm" text-anchor="start">13.5</text>
+<circle cx="130.1" cy="184.0" r="3.2" class="dg-ink"/>
+<text x="140.3" y="197.3" class="dg-label-sm" text-anchor="start">4.3</text>
+</svg>
+<!--/FIG fbracket-->
+      <figcaption><b>Figure 3.</b> The bracket of eq. (10.6) with <em>β</em> = 0.58, for the notes' ℓ<sub>SDE</sub>/<em>X</em><sub>j</sub>
+      = 1.2 and for the 0.91 that the notes' own two rules give (box below). On the notes' curve, Wolf's 2.09 and 1.48 correspond to
+      <em>X</em><sub>j</sub>/<em>X</em><sub>c</sub> ≈ 13.5 and 4.3. Neither source states the <em>X</em><sub>c</sub> it assumed, so these
+      ratios are inferred from the equation, not quoted.</figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p class="box-title">ℓ<sub>SDE</sub>/<em>X</em><sub>j</sub> ≈ 1.2 does not follow from the two rules beside it</p>
+      <p>The notes (p. 81) take ℓ<sub>SDE</sub> ≈ <em>L</em><sub>L</sub>/2 and <em>X</em><sub>j</sub> ≈ 0.55 <em>L</em><sub>L</sub> and
+      write ℓ<sub>SDE</sub>/<em>X</em><sub>j</sub> ≈ 1.2. The two rules give 0.5/0.55 = 0.91. The 1.2 is copied from Wolf, whose sentence
+      is the same; it matches the earlier ITRS rule <em>X</em><sub>j</sub> = 0.4 <em>L</em><sub>L</sub> (0.5/0.4 = 1.25), which the 2001
+      roadmap relaxed to 0.55 <em>L</em><sub>L</sub> (§1.1). Use the notes' 1.2 where a problem gives it; the ratio from the stated rules is
+      0.91.</p>
+    </div>
+
+    <p>
+      The notes then state the requirement this sets (p. 82): the sheet resistance of the extension must be about 650 Ω/□ at the
+      250 nm node, and because the extension gets shallower at every node, its doping must rise to 5.5×10¹⁹ cm⁻³ at 50 nm to hold
+      that value. Wolf's figure behind the statement compares 20 (<em>R</em><sub>sp</sub> + <em>R</em><sub>SDE</sub>)<em>W</em> with
+      <em>R</em><sub>sat</sub><em>W</em>, for n-channel devices (p-channel values are about 20 % higher), and reads the allowed sheet
+      resistance as about 650 Ω/□ at 250 nm and about 900 Ω/□ at 50 nm; the notes keep only the first and say "maintain". The
+      example checks the 250 nm figure from the equations of this section.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Does a 650 Ω/□ extension meet the budget at 250 nm?</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>L</em><sub>L</sub> = 250 nm; ℓ<sub>SDE</sub> = <em>L</em><sub>L</sub>/2; extension sheet resistance
+        650 Ω/□ (notes p. 82); Wolf's bracket 2.09 at 250 nm; <em>R</em><sub>sat</sub><em>W</em> = 0.347 Ω·cm from the 0.25 µm example
+        of §3.2. <b>Find</b> (<em>R</em><sub>sp</sub> + <em>R</em><sub>SDE</sub>)<em>W</em>, its share of the channel resistance for
+        source and drain together, and the sheet resistance at which the 10 %-of-<em>R</em><sub>sat</sub> criterion is reached.</p>
+        <p><b>Plan.</b> Use eq. (10.6) in the sheet-resistance form: <em>ρ</em>ℓ<sub>SDE</sub>/<em>X</em><sub>j</sub> =
+        <em>ρ</em><sub>s</sub>ℓ<sub>SDE</sub>, so neither <em>ρ</em> nor <em>X</em><sub>j</sub> is needed separately. Compare 20 times
+        the result with <em>R</em><sub>sat</sub><em>W</em> (§3.2).</p>
+        <p class="ex-step"><b>Extension length.</b> ℓ<sub>SDE</sub> = 250/2 = 125 nm = 1.25×10⁻⁵ cm.</p>
+        <p class="ex-step"><b>Extension alone.</b> <em>R</em><sub>SDE</sub><em>W</em> = 650 Ω × 1.25×10⁻⁵ cm = 8.13×10⁻³ Ω·cm.</p>
+        <p class="ex-step"><b>With spreading.</b> × 2.09 = 1.70×10⁻² Ω·cm = 170 Ω·µm per side.</p>
+        <p class="ex-step"><b>Against the channel.</b> 20 × 1.70×10⁻² = 0.340 Ω·cm, against <em>R</em><sub>sat</sub><em>W</em> =
+        0.347 Ω·cm: a ratio of 0.98, so the source and drain extensions together cost 9.8 % of <em>R</em><sub>sat</sub>.</p>
+        <p class="ex-step"><b>Sheet resistance at the criterion.</b> Setting 20 × <em>ρ</em><sub>s</sub> × 1.25×10⁻⁵ × 2.09 = 0.347
+        gives <em>ρ</em><sub>s</sub> = 663 Ω/□.</p>
+        <p class="ex-answer">170 Ω·µm per side; 9.8 % of <em>R</em><sub>sat</sub> for both; the criterion is reached at ≈ 663 Ω/□, so the
+        notes' 650 Ω/□ just meets it. Check: the extension alone uses the whole 10 % allowance at 250 nm, which leaves nothing for
+        <em>R</em><sub>co</sub>; Wolf's figure counts each component against its own 10 %, so the contact is budgeted separately
+        (§4.1).</p>
+      </div>
+    </div>
+
+    <p>
+      At 50 nm the arithmetic turns against the extension: <em>X</em><sub>j</sub> shrinks to 20–28 nm (§1.1), so holding
+      <em>ρ</em><sub>s</sub> = <em>ρ</em>/<em>X</em><sub>j</sub> needs a lower <em>ρ</em>, and that means more active dopant in a
+      shallower layer. The notes call this "difficult" and turn to the other factor in eq. (10.5), the length: shorten
+      ℓ<sub>SDE</sub> by narrowing the spacer (p. 82). In a conventional structure that fails for the reason of §1.1 — the
+      deep contact implant, needed to hold the silicide, straggles under the gate edge when the spacer is narrow — and the notes
+      point to the elevated source/drain (§5).
+    </p>
+
+    <details class="check">
+      <summary>At the 50 nm node Wolf reads an allowed extension sheet resistance of about 900 Ω/□ with a bracket of 1.48. Taking
+      ℓ<sub>SDE</sub> = <em>L</em><sub>L</sub>/2, how thin must the gate oxide be for eq. (10.3) to make 900 Ω/□ just sufficient?
+      And with 650 Ω/□?</summary>
+      <div class="answer"><p>ℓ<sub>SDE</sub> = 25 nm = 2.5×10⁻⁶ cm, so (<em>R</em><sub>sp</sub> + <em>R</em><sub>SDE</sub>)<em>W</em> =
+      900 × 2.5×10⁻⁶ × 1.48 = 3.33×10⁻³ Ω·cm = 33.3 Ω·µm per side. The 10 % condition is 20 × 3.33×10⁻³ = 0.0666 Ω·cm ≤
+      <em>R</em><sub>sat</sub><em>W</em> = <em>t</em><sub>ox</sub>/(0.376<em>v</em><sub>sat</sub><em>ε</em><sub>ox</sub>), so
+      <em>t</em><sub>ox</sub> ≥ 0.0666 × 1.298×10⁻⁶ = 8.65×10⁻⁸ cm ≈ 0.87 nm. With 650 Ω/□ the same steps give 0.63 nm. The larger
+      allowed sheet resistance at 50 nm does not mean the requirement relaxed: the extension is five times shorter, which helps,
+      but the oxide, and with it <em>R</em><sub>sat</sub><em>W</em>, is several times thinner, and the junction is far shallower,
+      so 900 Ω/□ is harder to reach at 20–28 nm than 650 Ω/□ was at 100–140 nm.</p></div>
+    </details>
+
+    <h2 id="s4">4 · The contact region and its silicide</h2>
+
+    <p>
+      The deep contact region contributes the fourth resistance, <em>R</em><sub>co</sub>, at the interface between the silicide
+      and the silicon (notes p. 83). This section quantifies it, gives the silicides' own resistivities against aluminium's, and
+      works out how much silicon the silicide consumes, which is what fixes the depth of the contact junction.
+    </p>
+
+    <h3 id="s4-1">4.1 Contact resistance, R<sub>co</sub></h3>
+
+    <p>
+      The quality of a metal–silicon contact is stated as its <b>specific contact resistivity</b> <em>ρ</em><sub>c</sub>
+      (Ω·cm²): the resistance of a unit area of interface. A contact of area <em>A</em> with current spread evenly over it has
+      resistance <em>ρ</em><sub>c</sub>/<em>A</em>. For heavily doped silicon the current crosses the metal–semiconductor barrier
+      by tunnelling, and Taur &amp; Ning give the dependence (their eq. (8.21)):
+      <em>ρ</em><sub>c</sub> ∝ exp[(4π<em>φ</em><sub>B</sub>/<em>h</em>)(<em>m</em>*<em>ε</em><sub>Si</sub>/<em>N</em><sub>d</sub>)<sup>1/2</sup>],
+      with <em>φ</em><sub>B</sub> the barrier height and <em>N</em><sub>d</sub> the surface doping. The doping enters through an
+      exponent, so a modest fall in surface doping raises <em>ρ</em><sub>c</sub> by a large factor. The notes' model for the
+      contact term is a bound:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>co</sub><em>W</em> ≥ <span class="frac"><span class="num"><em>ρ</em><sub>c</sub></span><span class="den">2&thinsp;<em>L</em><sub>L</sub></span></span></div>
+        <div class="eq-num">(10.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em><sub>co</sub><em>W</em> contact resistance times width (Ω·cm) · <em>ρ</em><sub>c</sub> specific contact resistivity of
+        the silicide–silicon interface (Ω·cm²) · <em>L</em><sub>L</sub> drawn gate length (cm). Notes p. 83; Wolf eq. 5.8, printed
+        "ρ<sub>c</sub>/2 L<sub>L</sub>", read as the notes' fraction, the only dimensionally consistent reading. It has the form of Taur
+        &amp; Ning's short-contact limit <em>R</em><sub>co</sub> = <em>ρ</em><sub>c</sub>/(<em>W l</em><sub>c</sub>) with a contact
+        length <em>l</em><sub>c</sub> = 2<em>L</em><sub>L</sub>; they place a silicided contact in the long-contact limit instead,
+        <em>R</em><sub>co</sub><em>W</em> = (<em>ρ</em><sub>sd</sub><em>ρ</em><sub>c</sub>)<sup>1/2</sup>, which gives larger values.
+      </div>
+    </div>
+
+    <p>
+      The notes give the targets: <em>ρ</em><sub>c</sub> = 10⁻⁷ Ω·cm² at the 0.25 µm node and 4×10⁻⁸ Ω·cm² at 50 nm. Wolf
+      states them as what is needed for the contact resistance of source and drain together to stay at or below 10 % of
+      <em>R</em><sub>sat</sub>, and adds that, for a barrier of about 0.5 eV, reaching them requires silicon doped above
+      10²⁰ cm⁻³ at the interface. Equation (10.7) makes the scaling plain: at fixed <em>ρ</em><sub>c</sub>,
+      <em>R</em><sub>co</sub><em>W</em> rises five-fold from 250 to 50 nm, while <em>R</em><sub>sat</sub><em>W</em> falls.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The contact term at 0.25 µm</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>ρ</em><sub>c</sub> = 1×10⁻⁷ Ω·cm², <em>L</em><sub>L</sub> = 250 nm, and <em>R</em><sub>sat</sub><em>W</em> =
+        0.347 Ω·cm (§3.2). <b>Find</b> <em>R</em><sub>co</sub><em>W</em>, the share of <em>R</em><sub>sat</sub> taken by the contacts of
+        source and drain together, and the <em>ρ</em><sub>c</sub> at which that share reaches 10 %.</p>
+        <p><b>Plan.</b> Eq. (10.7) at equality, the lower bound; lengths in cm.</p>
+        <p class="ex-step"><b>Contact resistance times width.</b> <em>R</em><sub>co</sub><em>W</em> = 10⁻⁷ / (2 × 2.5×10⁻⁵) =
+        2.0×10⁻³ Ω·cm = 20 Ω·µm.</p>
+        <p class="ex-step"><b>Share for source and drain.</b> 2 × 2.0×10⁻³ / 0.347 = 1.15 %.</p>
+        <p class="ex-step"><b>The 10 % point.</b> 20 × <em>ρ</em><sub>c</sub>/(2 × 2.5×10⁻⁵) = 0.347 gives <em>ρ</em><sub>c</sub> =
+        8.7×10⁻⁷ Ω·cm².</p>
+        <p class="ex-answer"><em>R</em><sub>co</sub><em>W</em> ≥ 20 Ω·µm; 1.15 % of <em>R</em><sub>sat</sub> for both contacts; by eq. (10.7)
+        the 10 % share is not reached until <em>ρ</em><sub>c</sub> ≈ 8.7×10⁻⁷ Ω·cm². Check: at fixed <em>ρ</em><sub>c</sub>,
+        <em>R</em><sub>co</sub><em>W</em> rises five-fold from 250 to 50 nm while <em>R</em><sub>sat</sub><em>W</em> falls, which is why the
+        target falls to 4×10⁻⁸ Ω·cm². The bound is optimistic: Taur &amp; Ning take measured <em>ρ</em><sub>c</sub> of 10⁻⁶–10⁻⁷ Ω·cm²
+        between TiSi₂ and n⁺ or p⁺ silicon and, from the long-contact limit, estimate 50–200 Ω·µm per side for a silicided diffusion,
+        2.5 to 10 times this 20 Ω·µm.</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">Wolf's 0.25 µm target and his own figure</p>
+      <p>Wolf's text says that for a contact contribution of 10 % or less, "ρ<sub>c</sub> must be in the range of 10⁻⁷ Ω·cm² for
+      0.25-µm MOSFETs". His eq. 5.8, with the <em>R</em><sub>sat</sub><em>W</em> of a 0.25 µm device, reaches that 10 % only near
+      8.7×10⁻⁷ Ω·cm² (the example above), and his Fig. 5-18 likewise draws <em>R</em><sub>sat</sub><em>W</em> at 250 nm above the line for
+      20 <em>R</em><sub>co</sub><em>W</em> at 4×10⁻⁷ Ω·cm², the highest <em>ρ</em><sub>c</sub> it shows. At 50 nm the text and the equation
+      roughly agree: 4×10⁻⁸ Ω·cm² lies close to the criterion. The notes' 10⁻⁷ Ω·cm² at 0.25 µm is the course's value; read it as the order of
+      magnitude the text gives, met with room to spare, not as the point where the 10 % is reached.</p>
+    </div>
+
+    <h3 id="s4-2">4.2 The silicide</h3>
+
+    <p>
+      The contact region is covered with a silicide, TiSi₂ or CoSi₂ in the notes (p. 83), formed by sputtering titanium or cobalt
+      and annealing so that the metal reacts with the silicon; the self-aligned process and its two anneals are on
+      <a href="m02-deep-submicron-roadmap.html#s3-3">M02 §3.3</a>. The silicide does two things for the series resistance. Its sheet
+      resistance, about 2–10 Ω/□ (Taur &amp; Ning), is one to two orders of magnitude below that of the source/drain silicon, so it
+      shunts the whole contact region and leaves only the unsilicided strip under the spacer as <em>R</em><sub>sh</sub>; and the
+      contact area becomes the whole silicided surface instead of a contact window. Taur &amp; Ning add that a silicide with a work
+      function near the middle of the gap, such as TiSi₂, CoSi₂ or NiSi, is needed in CMOS so that the barriers to n⁺ and to p⁺
+      silicon are about equal.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <caption>Table 1. Silicides against aluminium (Plummer, Deal &amp; Griffin Table 11-5 and Table 11-2; Lecture 18)</caption>
+      <thead><tr><th>Film</th><th>Resistivity (µΩ·cm)</th><th>Formation (°C)</th><th>nm Si consumed per nm metal</th><th>nm silicide per nm metal</th><th>Lecture 18</th></tr></thead>
+      <tbody>
+        <tr><td>TiSi₂ (C54, low-resistivity phase)</td><td>13–16</td><td>700–900</td><td>2.27</td><td>2.51</td><td>"10 to 12"</td></tr>
+        <tr><td>TiSi₂ (C49, first-anneal phase)</td><td>60–70</td><td>500–700</td><td>2.27</td><td>2.51</td><td>—</td></tr>
+        <tr><td>CoSi₂</td><td>14–20</td><td>600–800</td><td>3.64</td><td>3.52</td><td>about 20</td></tr>
+        <tr><td>NiSi</td><td>14–20</td><td>400–600</td><td>1.83</td><td>2.34</td><td>named</td></tr>
+        <tr><td>Al (thin film)</td><td>2.7–3.0</td><td>—</td><td>—</td><td>—</td><td>"around 2.4"</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      The low-resistivity silicides are four to seven times as resistive as aluminium: 13–16 µΩ·cm for TiSi₂ against 2.7–3.0 µΩ·cm
+      for an aluminium film is a ratio of 4.3–5.9, and CoSi₂ 4.7–7.4. They are not used because they conduct as well as a metal
+      line; they are used because a 30 nm film of 13–16 µΩ·cm has a sheet resistance of 4.3–5.3 Ω/□, against hundreds of ohms per
+      square for the silicon under it, and because they form in place on the silicon with a clean interface. Lecture 18's values,
+      10–12 µΩ·cm for TiSi₂ and 2.4 µΩ·cm for aluminium, sit below the table's ranges; the table's are used here.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">One anneal "at 900–1000 °C in argon" (Lecture 18), or two</p>
+      <p>Lecture 18 described the silicide as formed in a single rapid thermal anneal at 900–1000 °C in argon, as Lecture 3 had.
+      The production titanium and cobalt processes use two anneals with the strip of unreacted metal between them: the first forms
+      a high-resistivity phase (C49 TiSi₂ in Table 1, 500–700 °C), the second converts it to the low-resistivity phase (C54, about
+      800 °C for titanium in Plummer), and the two-step sequence prevents silicide bridging over the spacer from the gate to the
+      source and drain. The details, and the lecture's single anneal, are on <a href="m02-deep-submicron-roadmap.html#s3-3">M02
+      §3.3</a>.</p>
+    </div>
+
+    <h3 id="s4-3">4.3 The silicon a silicide consumes</h3>
+
+    <p>
+      A silicide forms by reaction with the silicon beneath the metal, so its lower interface lies below the original silicon
+      surface. The notes (p. 83) state the consequence: "During silicide formation nearly 75% of Si is consumed. For this deep
+      contact region is required." Wolf, whom the notes follow, says that for TiSi₂ "the silicon consumed is about 75% of that of
+      the thickness of the final silicide film", and for CoSi₂ about equal to it. Plummer's table gives the ratio for TiSi₂ as
+      2.27/2.51 = 0.90, and for CoSi₂ 3.64/3.52 = 1.03 (Table 1). Wolf gives two consequences:
+    </p>
+    <ul>
+      <li>The contact junction must be deep enough that the silicide does not consume it, or reach so close to it that the junction
+      leaks. That forces the wide spacer and long extension of §1.1.</li>
+      <li>The silicon consumed is the top layer, where an implanted profile is most heavily doped. The silicide–silicon interface
+      therefore sits in silicon of lower doping, which raises <em>ρ</em><sub>c</sub> through the exponential of §4.1; and boron in
+      particular segregates into the silicide, depleting the interface further.</li>
+    </ul>
+
+    <div class="box warn">
+      <p class="box-title">"75 % of the silicon": the notes' sentence, Wolf's ratio and Plummer's table</p>
+      <p>The notes' "nearly 75% of Si is consumed", and Lecture 18's "consumes some 75% of the silicon", compared there with the
+      0.46 of oxidation, read as if three-quarters of some silicon layer disappears. Wolf's statement is a thickness ratio: silicon
+      consumed against silicide formed, 0.75 for TiSi₂. Plummer's Table 11-5 gives 0.90 for the same ratio. This page uses the ratio
+      reading, gives the notes' 0.75 where a problem uses it, and computes with Plummer's table otherwise.</p>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">How deep 30 nm of silicide reaches</div>
+      <div class="ex-body">
+        <p><b>Given</b> a 30 nm silicide film; Plummer's Table 11-5 ratios (Table 1); the ITRS contact-junction rules 0.8 and
+        1.1 <em>L</em><sub>L</sub> (§1.1). <b>Find</b> the metal to deposit, the silicon consumed and where the silicide's top lies
+        relative to the original surface, for TiSi₂, CoSi₂ and NiSi; then the fraction of the contact junction depth that TiSi₂
+        consumes at <em>L</em><sub>L</sub> = 250 nm and 50 nm.</p>
+        <p><b>Plan.</b> Table 11-5 is per nanometre of metal, so first find the metal thickness from the silicide wanted, then
+        scale. The silicide extends from the bottom of the consumed silicon up to (silicide − consumed) above the original surface.</p>
+        <p class="ex-step"><b>Metal needed.</b> TiSi₂: 30/2.51 = 11.95 nm Ti. CoSi₂: 30/3.52 = 8.52 nm Co. NiSi: 30/2.34 = 12.82 nm Ni.</p>
+        <p class="ex-step"><b>Silicon consumed.</b> TiSi₂: 2.27 × 11.95 = 27.1 nm. CoSi₂: 3.64 × 8.52 = 31.0 nm. NiSi: 1.83 × 12.82 =
+        23.5 nm. With Wolf's 0.75, TiSi₂ would consume 22.5 nm.</p>
+        <p class="ex-step"><b>Position of the film.</b> TiSi₂ runs from 27.1 nm below the original surface to 30 − 27.1 = 2.9 nm above
+        it. CoSi₂ consumes more silicon than the silicide it forms, so its top lies 1.0 nm <em>below</em> the original surface.
+        NiSi rises 6.5 nm above.</p>
+        <p class="ex-step"><b>Against the contact junction.</b> At <em>L</em><sub>L</sub> = 250 nm, <em>X</em><sub>jc</sub> = 200–275 nm
+        and 27.1 nm is 9.9–13.6 % of it. At 50 nm, <em>X</em><sub>jc</sub> = 40–55 nm and the same film consumes 49–68 % of the junction
+        depth.</p>
+        <p class="ex-answer">TiSi₂ 27.1 nm, CoSi₂ 31.0 nm, NiSi 23.5 nm of silicon for 30 nm of silicide; at 50 nm a 30 nm TiSi₂ film
+        uses half to two-thirds of the contact junction's depth. Check: CoSi₂ ≥ TiSi₂ ≥ NiSi in consumption per nm of silicide, as
+        Wolf's "even more silicon" for CoSi₂ says, and a silicide that cannot be thinned in proportion is what drives the elevated
+        source/drain.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<!--FIG fsil-->
+<svg viewBox="0 0 430 260" role="img" aria-labelledby="m10fsi-t">
+<title id="m10fsi-t">Position of a 30 nanometre silicide layer relative to the original silicon surface for titanium disilicide, cobalt disilicide and nickel monosilicide, from Plummer Table 11-5, with a 40 nanometre contact junction marked</title>
+<line x1="62" y1="216" x2="414" y2="216" class="dg-rule" stroke-width="1.2"/>
+<line x1="62" y1="16" x2="62" y2="216" class="dg-rule" stroke-width="1.2"/>
+<line x1="58" y1="198.5" x2="62" y2="198.5" class="dg-rule"/>
+<text x="55" y="202.0" class="dg-label-sm" text-anchor="end">−40</text>
+<line x1="58" y1="163.4" x2="62" y2="163.4" class="dg-rule"/>
+<text x="55" y="166.9" class="dg-label-sm" text-anchor="end">−30</text>
+<line x1="58" y1="128.3" x2="62" y2="128.3" class="dg-rule"/>
+<text x="55" y="131.8" class="dg-label-sm" text-anchor="end">−20</text>
+<line x1="58" y1="93.2" x2="62" y2="93.2" class="dg-rule"/>
+<text x="55" y="96.7" class="dg-label-sm" text-anchor="end">−10</text>
+<line x1="58" y1="58.1" x2="62" y2="58.1" class="dg-rule"/>
+<text x="55" y="61.6" class="dg-label-sm" text-anchor="end">0</text>
+<line x1="58" y1="23.0" x2="62" y2="23.0" class="dg-rule"/>
+<text x="55" y="26.5" class="dg-label-sm" text-anchor="end">10</text>
+<text x="238.0" y="252" class="dg-label" text-anchor="middle"></text>
+<text x="14" y="116.0" class="dg-label" text-anchor="middle" transform="rotate(-90 14 116.0)">position relative to the original surface (nm)</text>
+<line x1="62" y1="58.1" x2="414" y2="58.1" class="dg-rule" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="179.3" y="42.1" class="dg-label-sm" text-anchor="middle">original</text>
+<text x="179.3" y="53.1" class="dg-label-sm" text-anchor="middle">surface</text>
+<line x1="62" y1="198.5" x2="414" y2="198.5" class="dg-guide" stroke-width="1.2" stroke-dasharray="2 3"/>
+<text x="412.0" y="194.5" class="dg-label-sm" text-anchor="end">x<tspan baseline-shift="sub" style="font-size:75%">jc</tspan> = 40 nm (0.8 L<tspan baseline-shift="sub" style="font-size:75%">L</tspan>, L<tspan baseline-shift="sub" style="font-size:75%">L</tspan> = 50 nm)</text>
+<rect x="97.7" y="48.0" width="46" height="105.3" class="dg-acc-f" stroke-width="1.2"/>
+<rect x="97.7" y="48.0" width="46" height="105.3" class="dg-acc" fill="none" stroke-width="1.2"/>
+<text x="120.7" y="43.0" class="dg-label-sm" text-anchor="middle">+2.9</text>
+<text x="120.7" y="166.3" class="dg-label-sm" text-anchor="middle">−27.1</text>
+<text x="120.7" y="238.0" class="dg-label" text-anchor="middle">TiSi₂</text>
+<rect x="215.0" y="61.7" width="46" height="105.3" class="dg-acc-f" stroke-width="1.2"/>
+<rect x="215.0" y="61.7" width="46" height="105.3" class="dg-acc" fill="none" stroke-width="1.2"/>
+<text x="238.0" y="56.7" class="dg-label-sm" text-anchor="middle">−1.0</text>
+<text x="238.0" y="180.0" class="dg-label-sm" text-anchor="middle">−31.0</text>
+<text x="238.0" y="238.0" class="dg-label" text-anchor="middle">CoSi₂</text>
+<rect x="332.3" y="35.2" width="46" height="105.3" class="dg-acc-f" stroke-width="1.2"/>
+<rect x="332.3" y="35.2" width="46" height="105.3" class="dg-acc" fill="none" stroke-width="1.2"/>
+<text x="355.3" y="30.2" class="dg-label-sm" text-anchor="middle">+6.5</text>
+<text x="355.3" y="153.4" class="dg-label-sm" text-anchor="middle">−23.5</text>
+<text x="355.3" y="238.0" class="dg-label" text-anchor="middle">NiSi</text>
+<line x1="86.7" y1="137.1" x2="154.7" y2="137.1" class="dg-ink" stroke-width="1.6" stroke-dasharray="3 2"/>
+<text x="156.7" y="141.1" class="dg-label-sm" text-anchor="start">Wolf 0.75</text>
+</svg>
+<!--/FIG fsil-->
+      <figcaption><b>Figure 4.</b> 30 nm of each silicide, placed against the original silicon surface (dashed) from Plummer's
+      Table 11-5. Numbers give the top and bottom of each film in nm; the short dashed bar is where TiSi₂ would end with Wolf's
+      0.75. The dotted line is a 40 nm contact junction, 0.8 <em>L</em><sub>L</sub> at <em>L</em><sub>L</sub> = 50 nm.</figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>Which way does each of these changes move <em>R</em><sub>co</sub>, and why? (a) The same silicide on a shallower
+      contact implant of the same dose. (b) Replacing TiSi₂ by NiSi at the same silicide thickness. (c) A p⁺ contact instead of n⁺.</summary>
+      <div class="answer"><p>(a) Up. A shallower implant puts its peak nearer the surface, inside the silicon the silicide consumes,
+      so the silicide–silicon interface sits further down the profile's tail, in less heavily doped silicon; <em>ρ</em><sub>c</sub>
+      depends exponentially on the interface doping (§4.1). (b) Down, other things equal: NiSi consumes 23.5 nm of silicon for 30 nm
+      of film against 27.1 nm for TiSi₂, so the interface lies 3.7 nm higher, in more heavily doped silicon, and the junction keeps more
+      margin. (c) Up, by Wolf's account: boron segregates into the silicide, depleting the interface doping beyond what consumption
+      alone removes.</p></div>
+    </details>
+
+    <h2 id="s5">5 · The elevated source/drain</h2>
+
+    <p>
+      Sections 3 and 4 reached a deadlock. The extension resistance falls if the spacer is narrowed, but the contact implant then
+      straggles under the gate; the contact junction must be deep to hold the silicide, and a deep implant straggles further. The
+      elevated source/drain removes the deadlock by moving the extra thickness the silicide needs above the original surface
+      (notes pp. 83–84; Wolf §5.3.2).
+    </p>
+
+    <p>
+      In an <b>elevated</b> (or raised) source/drain, the heavily doped contact layer is grown on top of the source and drain by
+      <b>selective epitaxy</b>: single-crystal silicon, or perhaps silicon–germanium, deposited so that it continues the crystal
+      lattice of the silicon beneath, and grown only on the exposed silicon of the source and drain, not on the oxide of the
+      spacers and the isolation. The silicide is then formed in the grown layer. The notes list three advantages:
+    </p>
+    <ol>
+      <li><b>The spacer can be made much narrower.</b> The contact region no longer needs a deep implant, so the lateral-straggle
+      argument of §1.1 no longer sets the spacer width; a narrower spacer shortens ℓ<sub>SDE</sub>, and <em>R</em><sub>SDE</sub>
+      falls in proportion (eq. (10.5)).</li>
+      <li><b>The contact layer can be thick enough to contain the silicide without junction leakage.</b> The silicon the silicide
+      consumes (§4.3) now comes from the grown layer, above the junction.</li>
+      <li><b>The grown layer can be heavily doped</b> during growth, which lowers <em>ρ</em><sub>c</sub> through the exponential
+      dependence of §4.1.</li>
+    </ol>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 300 170" role="img" aria-labelledby="m10h5a-t">
+          <title id="m10h5a-t">Conventional source/drain with a wide spacer and a deep contact junction under the silicide</title>
+          <line x1="5" y1="70" x2="295" y2="70" class="dg-rule" stroke-width="1.2"/>
+          <rect x="10" y="22" width="90" height="42" class="dg-fill" stroke-width="1"/>
+          <rect x="10" y="64" width="90" height="6" class="dg-soft"/>
+          <text x="55" y="47" class="dg-label-sm" text-anchor="middle">gate</text>
+          <path d="M100,22 L100,70 L150,70 A50,48 0 0 0 100,22 Z" class="dg-soft" stroke-width="1"/>
+          <rect x="150" y="62" width="140" height="18" class="dg-acc-f"/>
+          <text x="222" y="58" class="dg-label-sm" text-anchor="middle">silicide</text>
+          <path d="M88,70 Q88,88 104,88 L150,88 Q160,88 160,104 L160,140 Q160,148 170,148 L290,148" class="dg-line" fill="none" stroke-width="1.6"/>
+          <text x="225" y="125" class="dg-label-sm" text-anchor="middle">deep n⁺ contact</text>
+          <line x1="88" y1="160" x2="152" y2="160" class="dg-ink"/>
+          <text x="120" y="156" class="dg-label-sm" text-anchor="middle">long ℓ<tspan baseline-shift="sub" style="font-size:75%">SDE</tspan></text>
+        </svg>
+        <figcaption>(a) Conventional: wide spacer, long extension, deep contact.</figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 300 170" role="img" aria-labelledby="m10h5b-t">
+          <title id="m10h5b-t">Elevated source/drain with a narrow spacer, a selectively grown heavily doped layer above the surface, and silicide on top of it</title>
+          <line x1="5" y1="90" x2="295" y2="90" class="dg-rule" stroke-width="1.2"/>
+          <rect x="10" y="40" width="90" height="44" class="dg-fill" stroke-width="1"/>
+          <rect x="10" y="84" width="90" height="6" class="dg-soft"/>
+          <text x="55" y="66" class="dg-label-sm" text-anchor="middle">gate</text>
+          <path d="M100,40 L100,90 L118,90 A18,50 0 0 0 100,40 Z" class="dg-soft" stroke-width="1"/>
+          <path d="M118,90 L124,62 L290,62 L290,90 Z" class="dg-acc-f" stroke-width="1"/>
+          <text x="210" y="80" class="dg-label-sm" text-anchor="middle">n⁺ selective epitaxy</text>
+          <rect x="130" y="46" width="160" height="16" class="dg-soft"/>
+          <text x="210" y="58" class="dg-label-sm" text-anchor="middle">silicide</text>
+          <path d="M90,90 Q90,106 104,106 L290,106" class="dg-line" fill="none" stroke-width="1.6"/>
+          <text x="210" y="122" class="dg-label-sm" text-anchor="middle">shallow n⁺, below the original surface</text>
+          <line x1="90" y1="150" x2="120" y2="150" class="dg-ink"/>
+          <text x="105" y="146" class="dg-label-sm" text-anchor="middle">short</text>
+        </svg>
+        <figcaption>(b) Elevated: narrow spacer, short extension; the silicide sits in the grown layer.</figcaption>
+      </figure>
+    </div>
+    <p class="note">Figure 5. After the notes' p. 84 sketch (Wolf Fig. 5-19); not to scale.</p>
+
+    <p>
+      Two constraints come with it. Because n-channel and p-channel transistors need n⁺ and p⁺ layers, two separate selective
+      epitaxy processes are needed (notes p. 84); Lecture 18 tied the word "selective" to growing the two types separately, while the elevated
+      structure Wolf describes needs the growth confined to the exposed silicon of the source and drain. And the growth comes after the extension implant, so its thermal
+      budget acts on the extension: the notes require both growths below 850 °C "to prevent the SDE implant from diffusing too far
+      under the gate edge" (Wolf: "probably below 850°C"). The extension must already sit where §7 wants it, and the epitaxy must
+      not move it.
+    </p>
+
+    <details class="check">
+      <summary>Explain, as a chain of three causes, why the elevated source/drain lowers <em>R</em><sub>SDE</sub> even though no
+      part of it touches the extension.</summary>
+      <div class="answer"><p>(1) The silicide is formed in the grown layer above the original surface, so the contact region no longer
+      needs a deep junction to hold it. (2) Without a deep contact implant there is no high-energy implant whose lateral straggle must be
+      kept away from the gate edge, so the spacer that masks it can be made narrow. (3) The extension runs under the spacer, so its length
+      ℓ<sub>SDE</sub> shrinks with the spacer, and <em>R</em><sub>SDE</sub> = <em>ρ</em><sub>s</sub>ℓ<sub>SDE</sub>/<em>W</em> falls in
+      proportion. The extension's depth and doping are unchanged; only its length is.</p></div>
+    </details>
+
+    <h2 id="s6">6 · Making an ultra-shallow junction</h2>
+
+    <p>
+      The extension must be a few tens of nanometres deep, doped above 10¹⁹ cm⁻³, with its edge in a precise place. This section
+      follows the notes (pp. 84–88) and the recorded class of 23 October through the three steps that decide whether that is achieved:
+      the implant energy, the anneal, and the dopant lost between implanting and finishing. The physics of channelling and of transient
+      enhanced diffusion is on <a href="m09-channel-engineering.html#s3">M09 §3–4</a>; here it is applied.
+    </p>
+
+    <h3 id="s6-1">6.1 Lower energy, shallower junction</h3>
+
+    <p>
+      The main lever on junction depth is the implant energy. Wolf expects single-digit-keV implants for the contact regions and
+      sub-keV implants for the extensions at the 0.13 and 0.1 µm nodes; Lecture 18 and the 23 October class spoke of 0.2–0.3 keV for
+      the extension. The notes give three reasons a lower energy gives a shallower junction (pp. 84–85):
+    </p>
+    <ol>
+      <li><b>The projected range <em>R</em><sub>p</sub> becomes smaller</b>, so the as-implanted peak is nearer the surface.</li>
+      <li><b>The straggle and the channelling tail scale with <em>R</em><sub>p</sub></b> (Wolf adds: "especially important for B
+      implants"), so the whole profile contracts with it.</li>
+      <li><b>Transient enhanced diffusion is reduced.</b> The excess interstitials sit near <em>R</em><sub>p</sub>, and a shallow
+      population reaches the surface, where it is annihilated, sooner; Wolf's eq. 5.9 makes the extra depth grow as the square root of
+      <em>R</em><sub>p</sub> (<a href="m09-channel-engineering.html#s4-3">M09 §4.3</a>). The notes word this as TED "occuring during
+      implantation"; it occurs during the anneal that follows, as M09 §4.3 records.</li>
+    </ol>
+    <p>
+      At sub-keV energies the balance between the last two shifts. Wolf states that for sub-keV boron, channelling becomes unimportant
+      next to the broadening TED causes during the anneal, so pre-amorphising the surface to suppress channelling, which Wolf calls an
+      "elaborate" measure, is not expected to be used for gate lengths of 0.1 µm and below.
+    </p>
+
+    <h3 id="s6-2">6.2 The cost: beam current</h3>
+
+    <p>
+      A low-energy implant is slow. The notes (p. 85) give the comparison: above 10 keV, an implanter delivering 10–25 mA can implant
+      230 wafers per hour at a dose of 4×10¹⁵ cm⁻²; at sub-keV energies the beam current is 1–2 mA. Wolf dates the 1–2 mA as the
+      maximum available on commercial implanters in the mid-1990s, and gives the cause, which the notes omit: <b>Child's law</b>,
+      the space-charge limit on the ion current that can be extracted from an ion source.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>max</sub> ∝ <em>V</em><sup>3/2</sup></div>
+        <div class="eq-num">(10.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>max</sub> largest ion current extractable from the source (A) · <em>V</em> extraction voltage (V). Wolf p. 206.
+        For a singly charged ion extracted at the implant energy, <em>V</em> in volts equals the energy in eV. The ions' own charge
+        repels the ions behind them; the slower the beam, the denser that charge at a given current.
+      </div>
+    </div>
+
+    <p>
+      Implanters work around the limit by extracting at a higher voltage and decelerating the beam to the final energy ("decel").
+      The cost is <b>energy contamination</b>: an ion neutralised in the beamline before or inside the decelerating field is not counted
+      in the measured dose and is not decelerated, or not fully, so it arrives at a higher energy than intended, which puts dopant deeper
+      and defeats the purpose of the low-energy implant (Wolf).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Beam time for an extension implant</div>
+      <div class="ex-body">
+        <p><b>Given</b> an extension dose of 1×10¹⁵ cm⁻², the low end of Wolf's 1–2×10¹⁵ cm⁻² for nodes beyond 0.18 µm; a 200 mm
+        wafer (an assumption for this example; the sources give no diameter); singly charged ions; beam currents of 20, 2, 1 and 4 mA.
+        <b>Find</b> the beam-on time per wafer at each current, and the current Child's law predicts at 0.5 and 0.2 kV relative to 10 kV
+        if the beam is extracted at the implant energy.</p>
+        <p><b>Plan.</b> The charge delivered is the number of ions times <em>q</em>; time is charge over current. Then eq. (10.8) as a
+        ratio.</p>
+        <p class="ex-step"><b>Wafer area.</b> π × (10 cm)² = 314.2 cm².</p>
+        <p class="ex-step"><b>Charge.</b> 10¹⁵ cm⁻² × 314.2 cm² × 1.602×10⁻¹⁹ C = 5.03×10⁻² C.</p>
+        <p class="ex-step"><b>Time.</b> 0.0503 C / 0.020 A = 2.5 s; at 2 mA, 25 s; at 1 mA, 50 s; at 4 mA, the "4 mA at 0.2 keV"
+        implanters of the notes, 12.6 s.</p>
+        <p class="ex-step"><b>The high-energy reference.</b> The notes' 4×10¹⁵ cm⁻² takes 8.1 s at 25 mA and 20 s at 10 mA, against
+        3600/230 = 15.7 s per wafer for 230 wafers per hour: at 25 mA the beam is on for about half of each wafer's time, and at 10 mA the
+        beam time alone would exceed it.</p>
+        <p class="ex-step"><b>Child's law.</b> (0.5/10)<sup>3/2</sup> = 0.011; (0.2/10)<sup>3/2</sup> = 0.0028.</p>
+        <p class="ex-answer">2.5 s at 20 mA against 25–50 s at 1–2 mA for the same dose. Check: the times scale as 1/<em>I</em>, so a twenty-fold fall in current is
+        a twenty-fold rise in beam time. Child's law alone would cut the current to about 1 % for extraction at 0.5 kV instead of 10 kV; the
+        sources do not tie the 10–25 mA and 1–2 mA to stated extraction voltages, so the two ratios are not directly comparable.</p>
+      </div>
+    </div>
+
+    <p>
+      Two implanter configurations serve this market (notes p. 85; Wolf p. 207). A <b>batch</b> implanter holds many wafers on a spinning
+      disk that carries them through a fixed beam; a <b>single-wafer</b> implanter scans the beam, or a ribbon beam, across one wafer at a
+      time. The notes give the single-wafer machine's advantages: the implant angle relative to the wafer is controlled more accurately,
+      and there is no sputtering of metal from the spinning disk, the largest source of contamination in batch implanters. Wolf gives the
+      batch side's case as well: a fixed beam tunes faster, so fewer machines are needed (3–4 batch against 5–9 single-wafer implanters for
+      a fab starting 5000 wafers a week on a 0.18 µm process). The notes' "Recently implanters are available that can provide 4 mA at
+      0.2 keV" is, in Wolf, "by 2000"; with them, extensions meeting 0.1 µm requirements were demonstrated.
+    </p>
+
+    <h3 id="s6-3">6.3 The anneal: hot and short</h3>
+
+    <p>
+      An implanted layer must be annealed to place the dopant on lattice sites, where it is electrically active, and to repair the
+      implant damage. Every second at temperature also diffuses the dopant and deepens the junction. The notes (p. 86) state why the
+      source/drain anneal is done by rapid thermal annealing (RTA) rather than in a furnace: in the ideal case the as-implanted dose would
+      spend "zero" time at the temperature that activates the dopant, and a short exposure to a high temperature favours activation over
+      diffusion because the activation energy for dopant activation is higher than that for diffusion. Wolf gives the values for boron,
+      5.4 eV for activation and 3.4 eV for diffusion.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Why a higher peak temperature favours activation</div>
+      <div class="ex-body">
+        <p><b>Given</b> activation energies of 5.4 eV (activation) and 3.4 eV (diffusion) for boron; anneal temperatures 900 °C and
+        1050 °C; <em>k</em> = 8.617×10⁻⁵ eV/K. <b>Find</b> by what factor each rate rises from 900 to 1050 °C, and how much less diffusion
+        accompanies a given amount of activation at the higher temperature.</p>
+        <p><b>Plan.</b> Each rate goes as exp(−<em>E</em><sub>a</sub>/<em>kT</em>), so the ratio of rates at two temperatures is
+        exp[(<em>E</em><sub>a</sub>/<em>k</em>)(1/<em>T</em><sub>1</sub> − 1/<em>T</em><sub>2</sub>)]. Temperatures in kelvin.</p>
+        <p class="ex-step"><b>Temperatures.</b> <em>T</em><sub>1</sub> = 1173.15 K, <em>T</em><sub>2</sub> = 1323.15 K;
+        1/<em>T</em><sub>1</sub> − 1/<em>T</em><sub>2</sub> = 9.663×10⁻⁵ K⁻¹.</p>
+        <p class="ex-step"><b>Activation.</b> (5.4/8.617×10⁻⁵) × 9.663×10⁻⁵ = 6.056; e<sup>6.056</sup> = 427.</p>
+        <p class="ex-step"><b>Diffusion.</b> (3.4/8.617×10⁻⁵) × 9.663×10⁻⁵ = 3.813; e<sup>3.813</sup> = 45.3.</p>
+        <p class="ex-step"><b>Diffusion per unit of activation.</b> 427/45.3 = 9.42, the same as exp[(2.0 eV/<em>k</em>)(1/<em>T</em><sub>1</sub>
+        − 1/<em>T</em><sub>2</sub>)], since only the difference of the two activation energies matters.</p>
+        <p class="ex-answer">Activation speeds up about 427-fold and diffusion about 45-fold, so the same activation is bought with about 9.4 times less
+        <em>Dt</em> at 1050 °C than at 900 °C, and a diffusion length (∝ (<em>Dt</em>)<sup>1/2</sup>) about 3.1 times shorter. Check: the factor exceeds 1 because 5.4 eV &gt; 3.4 eV; were the energies equal, temperature
+        would buy nothing.</p>
+      </div>
+    </div>
+
+    <p>
+      A second reason for RTA comes from transient enhanced diffusion. TED has a negative effective activation energy (Wolf eq. 5.9, M09
+      §4.3): the interstitial supersaturation that drives it is larger at lower temperature, so defects annealed out slowly at a low
+      temperature leave a deeper junction than the same defects annealed out quickly at a high one. A furnace ramps at a few degrees per
+      minute and spends minutes in exactly that low-temperature range; an RTA chamber passes through it in seconds. The notes compress
+      this to "Less time is spent during annealing"; Wolf's point is less time during the ramp-up, at the low temperatures where the
+      enhancement is largest.
+    </p>
+
+    <p>
+      The limit of the idea is the <b>spike anneal</b>: ramp up fast, ramp down fast, and spend zero time at the peak. The notes give
+      100–200 °C/s up and 50–80 °C/s down; the 23 October class gave the same. Wolf separates them: ramp-up rates of about 200 °C/s are
+      achievable (his experiments go to 200–400 °C/s), but going beyond a moderately fast 100 °C/s gains little, because TED is already minimised at 100 °C/s and the part of the
+      thermal budget that cannot be cut, the finite time near the peak and the slower ramp-down, dominates. He also gives the better
+      figure of merit: about 90 % of dopant activation occurs within roughly 50 °C of the peak, so the time spent in that band specifies a
+      spike anneal better than the ramp rate does.
+    </p>
+
+    <figure class="compact">
+<!--FIG fspike-->
+<svg viewBox="0 0 430 260" role="img" aria-labelledby="m10fs-t">
+<title id="m10fs-t">Temperature against time near the peak of a spike anneal at 1050 degrees Celsius for the fastest and slowest ramp rates the notes give, with the band within 50 degrees of the peak shaded</title>
+<line x1="62" y1="216" x2="414" y2="216" class="dg-rule" stroke-width="1.2"/>
+<line x1="62" y1="16" x2="62" y2="216" class="dg-rule" stroke-width="1.2"/>
+<line x1="69.5" y1="216" x2="69.5" y2="220" class="dg-rule"/>
+<text x="69.5" y="232" class="dg-label-sm" text-anchor="middle">−3</text>
+<line x1="106.9" y1="216" x2="106.9" y2="220" class="dg-rule"/>
+<text x="106.9" y="232" class="dg-label-sm" text-anchor="middle">−2</text>
+<line x1="144.4" y1="216" x2="144.4" y2="220" class="dg-rule"/>
+<text x="144.4" y="232" class="dg-label-sm" text-anchor="middle">−1</text>
+<line x1="181.8" y1="216" x2="181.8" y2="220" class="dg-rule"/>
+<text x="181.8" y="232" class="dg-label-sm" text-anchor="middle">0</text>
+<line x1="219.3" y1="216" x2="219.3" y2="220" class="dg-rule"/>
+<text x="219.3" y="232" class="dg-label-sm" text-anchor="middle">1</text>
+<line x1="256.7" y1="216" x2="256.7" y2="220" class="dg-rule"/>
+<text x="256.7" y="232" class="dg-label-sm" text-anchor="middle">2</text>
+<line x1="294.2" y1="216" x2="294.2" y2="220" class="dg-rule"/>
+<text x="294.2" y="232" class="dg-label-sm" text-anchor="middle">3</text>
+<line x1="331.6" y1="216" x2="331.6" y2="220" class="dg-rule"/>
+<text x="331.6" y="232" class="dg-label-sm" text-anchor="middle">4</text>
+<line x1="369.1" y1="216" x2="369.1" y2="220" class="dg-rule"/>
+<text x="369.1" y="232" class="dg-label-sm" text-anchor="middle">5</text>
+<line x1="406.5" y1="216" x2="406.5" y2="220" class="dg-rule"/>
+<text x="406.5" y="232" class="dg-label-sm" text-anchor="middle">6</text>
+<line x1="58" y1="216.0" x2="62" y2="216.0" class="dg-rule"/>
+<text x="55" y="219.5" class="dg-label-sm" text-anchor="end">750</text>
+<line x1="58" y1="155.4" x2="62" y2="155.4" class="dg-rule"/>
+<text x="55" y="158.9" class="dg-label-sm" text-anchor="end">850</text>
+<line x1="58" y1="94.8" x2="62" y2="94.8" class="dg-rule"/>
+<text x="55" y="98.3" class="dg-label-sm" text-anchor="end">950</text>
+<line x1="58" y1="64.5" x2="62" y2="64.5" class="dg-rule"/>
+<text x="55" y="68.0" class="dg-label-sm" text-anchor="end">1000</text>
+<line x1="58" y1="34.2" x2="62" y2="34.2" class="dg-rule"/>
+<text x="55" y="37.7" class="dg-label-sm" text-anchor="end">1050</text>
+<text x="238.0" y="252" class="dg-label" text-anchor="middle">time from the peak (s)</text>
+<text x="14" y="116.0" class="dg-label" text-anchor="middle" transform="rotate(-90 14 116.0)">temperature (°C)</text>
+<rect x="62" y="34.2" width="352" height="30.3" class="dg-acc-f" opacity="0.35"/>
+<text x="410.3" y="60.5" class="dg-label-sm" text-anchor="end">within 50 °C of the peak</text>
+<path d="M125.7,216.0 L181.8,34.2 L322.3,216.0" class="dg-acc" fill="none" stroke-width="2.0"/>
+<line x1="172.5" y1="64.5" x2="172.5" y2="216.0" class="dg-guide" stroke-width="0.8" stroke-dasharray="2 3"/>
+<line x1="205.2" y1="64.5" x2="205.2" y2="216.0" class="dg-guide" stroke-width="0.8" stroke-dasharray="2 3"/>
+<path d="M69.5,216.0 L181.8,34.2 L406.5,216.0" class="dg-line" fill="none" stroke-width="2.0" stroke-dasharray="5 3"/>
+<line x1="163.1" y1="64.5" x2="163.1" y2="216.0" class="dg-guide" stroke-width="0.8" stroke-dasharray="2 3"/>
+<line x1="219.3" y1="64.5" x2="219.3" y2="216.0" class="dg-guide" stroke-width="0.8" stroke-dasharray="2 3"/>
+<text x="410.3" y="91.8" class="dg-label-sm" text-anchor="end">solid: band 0.875 s</text>
+<text x="410.3" y="109.9" class="dg-label-sm" text-anchor="end">dashed: band 1.5 s</text>
+</svg>
+<!--/FIG fspike-->
+      <figcaption><b>Figure 6.</b> Temperature near the peak of a spike anneal to 1050 °C, the spike Wolf's text gives for the experiments
+      of his Fig. 5-20 (the figure's own legend reads 1000 °C/10 s to 1100 °C spike), at the fastest (solid: 200 °C/s up, 80 °C/s down) and slowest (dashed: 100 °C/s up, 50 °C/s down) ramp rates of the notes. The shaded band is within 50 °C of the peak:
+      50/200 + 50/80 = 0.875 s, or 50/100 + 50/50 = 1.5 s. In both, the ramp-down supplies most of the time in the band. Profiles are
+      straight-line ramps; the curve below 750 °C is not drawn.</figcaption>
+    </figure>
+
+    <p>
+      The notes list five kinds of RTA tool (p. 86, Wolf p. 212): linear lamps heating both sides of the wafer, axisymmetric lamps heating
+      one side, an arc lamp, a hot plate, and a hot-wall RTP chamber; the 23 October class described four. Three further routes raise the
+      fraction of the dopant that is electrically active in a shallow junction (notes p. 87): laser annealing; <b>strain-compensation
+      implants</b>, in which germanium, larger than silicon, offsets the lattice strain caused by the smaller boron atoms, which raises
+      boron's solubility (Wolf); and RTP tools whose lamps respond quickly, which raises the ramp-down rate and so shortens the slowest leg
+      of the spike.
+    </p>
+
+    <p>
+      Wolf reports where these methods stood in 2001. A 0.5 keV boron implant with a spike anneal gave a junction about 35 nm deep with a
+      sheet resistance of about 350 Ω/□ (the junction the second example of §2 compares with), and that appeared to be the practical limit: reducing
+      either quantity required increasing the other, and implants below 0.5 keV were less productive with no better result. The 50 nm
+      node needs extension junctions of about 20–25 nm, and Wolf judged it unclear whether ion implantation and conventional RTA could
+      meet that.
+    </p>
+
+    <h3 id="s6-4">6.4 Dopant that never reaches the junction</h3>
+
+    <p>
+      At sub-keV energies part of the implanted dose is lost. The notes (pp. 87–88) name three mechanisms, and Wolf quantifies them for
+      boron:
+    </p>
+    <ul>
+      <li><b>Self-sputtering.</b> Every ion that strikes a surface knocks some surface atoms out of it, and the number sputtered per ion
+      rises as the ion energy falls. At 0.5 keV about one silicon atom is sputtered for every four boron atoms implanted. Because a
+      low-energy ion also comes to rest near the surface, the surface layer becomes progressively richer in boron as the dose builds, and
+      more of what is sputtered is the boron already implanted; the loss therefore depends on how much has been implanted. For a nominal
+      1×10¹⁵ cm⁻², the retained dose is about 10 % low at 0.5 keV and 20 % low at 0.2 keV; at 2 keV essentially all of it is retained.</li>
+      <li><b>Out-diffusion.</b> During the anneal, dopant near the surface diffuses out of the silicon, and a smaller <em>R</em><sub>p</sub>
+      puts more of it near the surface. After a 1000 °C, 15 s anneal the retained dose falls by about 10 % at 0.5 keV and 15 % at 0.2 keV.</li>
+      <li><b>The protective oxide.</b> Implants are normally made through a thin oxide that protects the surface from metal
+      contamination, and the oxide is stripped afterwards. At sub-keV energy a large fraction of the dose stops in it: Wolf gives about 25 % of a
+      0.5 keV boron implant lost with a 15 nm oxide, and more than 40 % at 0.2 keV. Some ultra-low-energy implants are therefore made
+      without the oxide. The thickness is printed as 15 nm, but sub-keV boron stops within a few nanometres (M09 Table 1 gives
+      <em>R</em><sub>p</sub> = 9.7 nm at 2 keV), so an oxide that thick would hold nearly the whole dose; the percentages are kept as Wolf
+      gives them and the oxide was probably much thinner.</li>
+    </ul>
+    <p>
+      Wolf's summary is that, for the doses an extension needs at 0.2 keV, self-sputtering, out-diffusion and the removal of the native
+      oxide together can remove as much as 40 % of the boron; his summary names the native oxide, not a deliberately grown one.
+      Because each loss depends on energy and dose, the notes add that a correction for the retained dose is needed before junctions made
+      with different implants are compared (p. 87). Wolf's example is BF₂⁺ against B⁺, below.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Boron's energy inside a BF₂⁺ ion</div>
+      <div class="ex-body">
+        <p><b>Given</b> mass numbers B = 11 and F = 19; Wolf's comparison of a 0.5 keV B⁺ implant with a 2.2 keV BF₂⁺ implant.
+        <b>Find</b> the energy the boron atom carries in the 2.2 keV BF₂⁺ ion, and the BF₂⁺ energy that gives the boron 0.2 keV.</p>
+        <p><b>Plan.</b> On striking the surface the molecular ion breaks up, and each atom continues with the molecule's velocity, so it
+        carries the share of the kinetic energy equal to its share of the mass.</p>
+        <p class="ex-step"><b>Mass share.</b> BF₂ = 11 + 2 × 19 = 49; boron's share is 11/49 = 0.2245.</p>
+        <p class="ex-step"><b>Boron energy at 2.2 keV.</b> 2.2 × 0.2245 = 0.494 keV.</p>
+        <p class="ex-step"><b>BF₂⁺ energy for 0.2 keV boron.</b> 0.2 / 0.2245 = 0.891 keV.</p>
+        <p class="ex-answer">0.49 keV, so Wolf's 2.2 keV BF₂⁺ is the 0.5 keV boron implant made with the molecule; 0.89 keV for 0.2 keV boron.
+        Check: at equal boron energy, Wolf reports the retained dose about 20 % low with BF₂⁺ against 10 % with B⁺, because each retained
+        boron atom arrives with two fluorine atoms that also sputter: three sputtering atoms instead of one.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>An engineer moves an extension implant from 0.5 keV to 0.2 keV boron to make the junction shallower. List the three dose
+      losses, the direction each one moves, and the reason in one line each. What must change in the implant to keep the retained dose?</summary>
+      <div class="answer"><p>Self-sputtering rises (about 10 % → 20 % at 10¹⁵ cm⁻²), because the sputtering yield per ion rises as ion
+      energy falls and the shallower boron is itself sputtered. Out-diffusion rises (about 10 % → 15 % after 1000 °C, 15 s), because a
+      smaller <em>R</em><sub>p</sub> puts more boron near the surface. Loss in the protective oxide rises (about 25 % → more than 40 % with
+      15 nm), because more of the shallower profile lies inside the oxide that is stripped. Together, up to about 40 % of the dose can go
+      (Wolf). To keep the retained dose the nominal dose must rise, or the oxide must be omitted; a larger dose at a lower beam current
+      (§6.2) costs further throughput, and a larger dose raises the sputtering loss again, since that loss grows with dose.</p></div>
+    </details>
+
+    <h2 id="s7">7 · Where the extension ends under the gate</h2>
+
+    <p>
+      The extension is implanted with the gate as its mask, and then the anneal and every later thermal step move its edge sideways
+      under the gate. The final position of that edge relative to the gate edge is the <b>overlap</b>, and the notes (pp. 88–89) and Wolf
+      (§5.3.4) treat it as critical on two sides. This section states both, quantifies the overlap capacitance, and works the experiment by
+      which the right overlap is found.
+    </p>
+
+    <h3 id="s7-1">7.1 Too much and too little</h3>
+
+    <ul>
+      <li><b>Too much overlap.</b> The two extensions reach further under the gate, so the electrical channel length is shorter than the
+      gate, and short-channel effects grow: the device suffers <b>excessive leakage</b>, meaning an off-state current above its design
+      maximum, of the order of 1 nA/µm (Wolf). The <b>gate-to-source and gate-to-drain overlap capacitance</b> also grows, and that slows
+      switching.</li>
+      <li><b>Too little overlap.</b> The end of the channel and the extension are "not electrically well coupled" (notes), which the
+      notes call "causing excessive resistance", and <em>I</em><sub>Dsat</sub> falls; Wolf's study shows the fall setting in below about 20 nm of
+      overlap, with no further mechanism given. Taur &amp; Ning add a reliability reason for keeping some overlap: with less than about two
+      to three oxide thicknesses the extension risks ending outside the gate, and that ungated region is exposed to hot-carrier injection,
+      the drain-end damage of
+      <a href="m02-deep-submicron-roadmap.html#s6-1">M02 §6.1</a>.</li>
+    </ul>
+
+    <p>
+      The overlap capacitance has a direct part, the parallel plate formed by the gate over the overlapped extension, and two fringing parts,
+      from the side of the gate to the source/drain outside it and from the gate to the inner edge of the junction below it. Taur &amp; Ning
+      evaluate the fringing parts for typical shapes and combine all three:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em><sub>ov</sub> ≈ <em>ε</em><sub>ox</sub><em>W</em>&thinsp;<span class="dl">(</span><span class="frac"><span class="num"><em>l</em><sub>ov</sub></span><span class="den"><em>t</em><sub>ox</sub></span></span> + 7<span class="dl">)</span></div>
+        <div class="eq-num">(10.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>ov</sub> overlap capacitance of one side at <em>V</em><sub>gs</sub> = 0 (F) · <em>ε</em><sub>ox</sub> = 3.45×10⁻¹³ F/cm ·
+        <em>W</em> width (cm) · <em>l</em><sub>ov</sub> overlap length (cm) · <em>t</em><sub>ox</sub> oxide thickness (cm). The first term is the
+        direct overlap <em>ε</em><sub>ox</sub><em>W l</em><sub>ov</sub>/<em>t</em><sub>ox</sub>; the 7 is the two fringing terms for a gate about
+        40 <em>t</em><sub>ox</sub> tall (outer fringe, ≈ 2.3) and a junction about 20 <em>t</em><sub>ox</sub> deep (inner fringe, ≈ 4.6, eq. (8.25)).
+        The inner fringe exists only below threshold: with the channel inverted, <em>C</em><sub>ov</sub> ≈ <em>ε</em><sub>ox</sub><em>W</em>(<em>l</em><sub>ov</sub>/<em>t</em><sub>ox</sub> + 2.3).
+        For other junction depths evaluate the fringes from Taur &amp; Ning eqs. (8.24)–(8.25). Square corners, perfectly conducting source and drain.
+      </div>
+    </div>
+
+    <h3 id="s7-2">7.2 Finding the right overlap</h3>
+
+    <p>
+      Wolf describes how the overlap is set in practice. The implant and anneal for the extension and contact are fixed first. Then an
+      <b>offset spacer</b>, a thin spacer formed on the gate after the polysilicon is etched and before the extension implant, is varied in
+      width from zero up to some limit (50 nm in his example). The offset spacer moves the extension implant away from the gate edge by its
+      own width, so each width gives a different overlap; the width that gives the best combination of off-current and
+      <em>I</em><sub>Dsat</sub> is kept. In the study he reports, on 0.25 µm n-channel transistors with arsenic extensions 50 nm deep, the
+      lateral diffusion under the gate edge was estimated at 0.6–0.7 times the junction depth, and <em>I</em><sub>Dsat</sub> fell rapidly once
+      the overlap was below 20 nm: a minimum overlap of about 20 nm was recommended.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 430 190" role="img" aria-labelledby="m10h7-t">
+        <title id="m10h7-t">The extension edge under the gate: lateral diffusion from the implant edge, reduced by the offset spacer width, gives the overlap</title>
+        <line x1="10" y1="80" x2="420" y2="80" class="dg-rule" stroke-width="1.2"/>
+        <rect x="20" y="30" width="230" height="44" class="dg-fill" stroke-width="1"/>
+        <rect x="20" y="74" width="230" height="6" class="dg-soft"/>
+        <text x="130" y="57" class="dg-label" text-anchor="middle">gate</text>
+        <rect x="250" y="30" width="18" height="50" class="dg-soft" stroke-width="1"/>
+        <text x="259" y="22" class="dg-label-sm" text-anchor="middle">offset spacer</text>
+        <line x1="268" y1="80" x2="268" y2="140" class="dg-guide" stroke-dasharray="3 3"/>
+        <text x="272" y="152" class="dg-label-sm">implant edge</text>
+        <path d="M190,80 Q190,130 240,130 L420,130" class="dg-acc" fill="none" stroke-width="1.8"/>
+        <text x="350" y="122" class="dg-label-sm" text-anchor="middle">extension, depth X<tspan baseline-shift="sub" style="font-size:75%">j</tspan></text>
+        <line x1="190" y1="168" x2="268" y2="168" class="dg-ink"/>
+        <text x="229" y="182" class="dg-label-sm" text-anchor="middle">lateral diffusion 0.6–0.7 X<tspan baseline-shift="sub" style="font-size:75%">j</tspan></text>
+        <line x1="190" y1="94" x2="250" y2="94" class="dg-ink" stroke-width="1.4"/>
+        <line x1="190" y1="89" x2="190" y2="99" class="dg-ink"/><line x1="250" y1="89" x2="250" y2="99" class="dg-ink"/>
+        <text x="184" y="112" class="dg-label-sm" text-anchor="end">overlap l<tspan baseline-shift="sub" style="font-size:75%">ov</tspan></text>
+        <text x="60" y="150" class="dg-label-sm">channel</text>
+      </svg>
+      <figcaption><b>Figure 7.</b> The overlap is the lateral diffusion measured from the implant edge minus the offset spacer width,
+      the arithmetic of Wolf's study. Not to scale.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Overlap and overlap capacitance in the 0.25 µm study</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>X</em><sub>j</sub> = 50 nm; lateral diffusion 0.6–0.7 <em>X</em><sub>j</sub>; minimum overlap 20 nm;
+        <em>t</em><sub>ox</sub> = 4.5 nm and effective channel length 0.12 µm (the study's figure legend); <em>ε</em><sub>ox</sub> =
+        3.453×10⁻¹³ F/cm. <b>Find</b> the overlap with no offset spacer, the widest offset spacer that keeps 20 nm, and the overlap capacitance
+        per micrometre at 20 nm compared with the intrinsic gate capacitance <em>C</em><sub>ox</sub><em>L</em>.</p>
+        <p><b>Plan.</b> Overlap = lateral diffusion − offset (Figure 7). Then the three parts of eq. (10.9) per unit width, with the inner
+        fringe evaluated for this junction (<em>X</em><sub>j</sub>/<em>t</em><sub>ox</sub> = 11, not the 20 behind the "7") from Taur &amp; Ning
+        eq. (8.25), <em>C</em><sub>if</sub>/<em>W</em> = (2<em>ε</em><sub>Si</sub>/π) ln(1 + <em>X</em><sub>j</sub>/2<em>t</em><sub>ox</sub>), and the outer
+        fringe at their typical gate height, 2.36 <em>ε</em><sub>ox</sub>. F/cm × 10⁻⁴ cm/µm = F/µm.</p>
+        <p class="ex-step"><b>Lateral diffusion.</b> 0.6 × 50 = 30 nm to 0.7 × 50 = 35 nm, the overlap with no offset spacer.</p>
+        <p class="ex-step"><b>Widest offset spacer.</b> 30 − 20 = 10 nm to 35 − 20 = 15 nm.</p>
+        <p class="ex-step"><b>Direct part at 20 nm.</b> <em>l</em><sub>ov</sub>/<em>t</em><sub>ox</sub> = 20/4.5 = 4.44; 3.453×10⁻¹³ × 4.44 =
+        1.53×10⁻¹² F/cm = 0.153 fF/µm.</p>
+        <p class="ex-step"><b>Fringes.</b> Outer: 2.36 × 3.453×10⁻¹³ = 0.082 fF/µm. Inner: (2 × 1.044×10⁻¹²/π) × ln(1 + 50/9) =
+        6.65×10⁻¹³ × 1.880 = 1.25×10⁻¹² F/cm = 0.125 fF/µm, present only below threshold.</p>
+        <p class="ex-step"><b>Per side.</b> At <em>V</em><sub>gs</sub> = 0: 0.153 + 0.082 + 0.125 = 0.36 fF/µm. With the channel on: 0.153 + 0.082 =
+        0.235 fF/µm. Without an offset spacer (30–35 nm) the same sums give 0.44–0.48 and 0.31–0.35 fF/µm.</p>
+        <p class="ex-step"><b>Against the gate.</b> <em>C</em><sub>ox</sub> = 3.453×10⁻¹³/4.5×10⁻⁷ = 7.67×10⁻⁷ F/cm²; times
+        <em>L</em> = 1.2×10⁻⁵ cm gives 9.21×10⁻¹² F/cm = 0.921 fF/µm. The two overlaps with the channel on, 0.47 fF/µm, are 51 % of it.</p>
+        <p class="ex-answer">30–35 nm without an offset spacer; at most 10–15 nm of offset spacer; 0.36 fF/µm per side at <em>V</em><sub>gs</sub>
+        = 0 and 0.235 fF/µm with the channel on, at 20 nm. Check: Taur &amp; Ning's generation-independent estimate at the minimum reliable
+        overlap is 10<em>ε</em><sub>ox</sub> ≈ 0.3 fF/µm (0.345 with this page's <em>ε</em><sub>ox</sub>), the same order. At this gate length the
+        overlaps add about half again to the capacitance the gate drives, which is why too much overlap costs speed.</p>
+      </div>
+    </div>
+
+    <h3 id="s7-3">7.3 The steepness of the extension's edge</h3>
+
+    <div class="box">
+      <p class="box-title">Beyond the notes: lateral abruptness (Wolf §5.3.5)</p>
+      <p>The notes skip Wolf's §5.3.5, which adds a fourth requirement to depth, doping and position: the extension's doping must fall off
+      steeply along the surface where it meets the channel. An abrupt lateral edge limits how far the extension's depletion region
+      encroaches on the channel and, more importantly, minimises <em>R</em><sub>sp</sub>, which eq. (10.4) treats as if the edge were abrupt
+      and which, below 100 nm, becomes dominated by the edge's gradient. The design rule Wolf quotes is a fall of at least one decade in
+      concentration within about 3 % of the gate length, for a spreading resistance under 5 % of <em>R</em><sub>sat</sub>: about 3 nm per
+      decade at 100 nm, roughly the slope of as-implanted 0.2 keV boron, so the final profile must be as steep as the implant before any
+      anneal. A 0° implant gives the most abrupt edge, because any tilt shadows the region beside the gate (the trade-off against channelling
+      of <a href="m09-channel-engineering.html#s3">M09 §3</a>); a parallel-beam single-wafer implanter holds the angle, while the conical disk
+      of a batch implanter can vary it by up to 1.5° across a wafer.</p>
+    </div>
+
+    <details class="check">
+      <summary>A process change makes the arsenic extension 40 nm deep instead of 50 nm, with the same lateral-diffusion ratio. With no
+      offset spacer, does the overlap still meet the 20 nm minimum? With a 10 nm offset spacer? What happens to <em>I</em><sub>Dsat</sub>
+      and to the overlap capacitance in each case?</summary>
+      <div class="answer"><p>Lateral diffusion is 0.6–0.7 × 40 = 24–28 nm. With no offset spacer the overlap is 24–28 nm, above 20 nm, so
+      <em>I</em><sub>Dsat</sub> holds, and the direct overlap capacitance (<em>ε</em><sub>ox</sub><em>l</em><sub>ov</sub>/<em>t</em><sub>ox</sub>
+      per unit width) is 20–40 % above the 20 nm value. With a 10 nm offset spacer the overlap is 14–18 nm, below 20 nm: the extension and
+      the channel end are poorly coupled, and by the study's result <em>I</em><sub>Dsat</sub> falls rapidly. The capacitance falls further, in
+      proportion to the overlap, but that gain does not compensate the lost drive current. The shallower
+      junction therefore needs a narrower offset spacer, at most 4–8 nm.</p></div>
+    </details>
+
+    <h2 id="s8">8 · The source/drain, assembled</h2>
+
+    <p>
+      Table 2 collects the four series terms and the processes of §5–7 that act on each, with the direction each moves as the gate length
+      shrinks. It is the source/drain counterpart of <a href="m09-channel-engineering.html#s7">M09's table of channel implants</a>.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <caption>Table 2. The source/drain series resistance, term by term</caption>
+      <thead><tr><th>Term</th><th>Physical origin</th><th>Set by</th><th>Under scaling</th><th>What is done about it</th><th>§</th></tr></thead>
+      <tbody>
+        <tr><td><em>R</em><sub>ac</sub></td><td>accumulation layer where the extension reaches under the gate</td><td>overlap length, accumulated carrier density (≈ 10¹⁹ cm⁻³)</td><td>overlap short; not significant</td><td>overlap kept at its minimum (≈ 20 nm at 0.25 µm)</td><td>3.3, 7</td></tr>
+        <tr><td><em>R</em><sub>sp</sub></td><td>current spreading from a layer <em>X</em><sub>c</sub> thick into depth <em>X</em><sub>j</sub></td><td><em>ρ</em>, ln(<em>βX</em><sub>j</sub>/<em>X</em><sub>c</sub>), lateral abruptness</td><td>share of the extension term 52 % (250 nm) → 32 % (50 nm), but the edge gradient takes over below 100 nm</td><td>heavier, more abrupt extension; 0° parallel-beam implant</td><td>3.4, 7.3</td></tr>
+        <tr><td><em>R</em><sub>SDE</sub></td><td>the extension as a resistor</td><td>sheet resistance × ℓ<sub>SDE</sub>/<em>W</em></td><td><em>X</em><sub>j</sub> falls, so doping must rise (5.5×10¹⁹ cm⁻³ at 50 nm)</td><td>sub-keV implant, spike anneal; shorter ℓ<sub>SDE</sub> by a narrow spacer, made possible by the elevated source/drain</td><td>3.5, 5, 6</td></tr>
+        <tr><td><em>R</em><sub>co</sub></td><td>the silicide–silicon interface</td><td><em>ρ</em><sub>c</sub> (exponential in barrier and interface doping), contact length</td><td>rises as 1/<em>L</em><sub>L</sub> at fixed <em>ρ</em><sub>c</sub>; target 10⁻⁷ → 4×10⁻⁸ Ω·cm²</td><td>doping above 10²⁰ cm⁻³ at the interface; heavily doped epitaxy; silicide that consumes less silicon</td><td>4, 5</td></tr>
+        <tr><td><em>R</em><sub>sat</sub> (yardstick)</td><td>the channel when on</td><td><em>t</em><sub>ox</sub>/(0.376 <em>v</em><sub>sat</sub><em>ε</em><sub>ox</sub>)</td><td>falls with <em>t</em><sub>ox</sub></td><td>series terms held to ≤ 10 % of it for source and drain together</td><td>3.2</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Read down the table, the principle is that every term of the series resistance has to fall at least as fast as the channel
+      resistance it is measured against, and each falls by a different lever: <em>R</em><sub>SDE</sub> by doping and length, <em>R</em><sub>co</sub>
+      by interface doping, <em>R</em><sub>sp</sub> by abruptness. The levers interfere. The doping that lowers <em>R</em><sub>SDE</sub> must sit in a
+      shallower layer, which the implant-and-anneal limit of §6 caps; the length that lowers <em>R</em><sub>SDE</sub> needs a narrower spacer,
+      which the contact junction depth forbids unless the contact is elevated; and the overlap that lowers <em>R</em><sub>ac</sub> costs leakage
+      and capacitance. The elevated source/drain is the one structural change that relieves two of these conflicts at once.
+    </p>
+
+    <details class="check">
+      <summary>Write the half-page answer: "the four series resistances of a deep-submicron source/drain — what each is — which one the
+      notes call insignificant and why — what the 10 % criterion is measured against — why the extension's sheet resistance gets harder to meet
+      at each node — the structure that helps". Give one number at each stage.</summary>
+      <div class="answer"><p>The current from the contact meets <em>R</em><sub>co</sub>, the silicide–silicon contact resistance, set by
+      <em>ρ</em><sub>c</sub> (10⁻⁷ Ω·cm² at 0.25 µm, 4×10⁻⁸ at 50 nm, needing interface doping above 10²⁰ cm⁻³); <em>R</em><sub>SDE</sub>, the
+      extension as a resistor, <em>ρ</em><sub>s</sub>ℓ<sub>SDE</sub>/<em>W</em>; <em>R</em><sub>sp</sub>, the spreading from the
+      inversion/accumulation layer into the extension's depth, (2<em>ρ</em>/π<em>W</em>) ln(<em>βX</em><sub>j</sub>/<em>X</em><sub>c</sub>),
+      which makes the sum 2.09 × <em>R</em><sub>SDE</sub> at 250 nm; and <em>R</em><sub>ac</sub>, the accumulation layer under the gate edge,
+      which the notes call insignificant in deep-submicron devices because the overlap is short. The yardstick is
+      <em>R</em><sub>sat</sub> = <em>V</em><sub>DD</sub>/<em>I</em><sub>Dsat</sub>, with <em>R</em><sub>sat</sub><em>W</em> ≈
+      <em>t</em><sub>ox</sub>/(0.376<em>v</em><sub>sat</sub><em>ε</em><sub>ox</sub>) = 0.347 Ω·cm at 4.5 nm; the series resistance may cut
+      <em>I</em><sub>Dsat</sub> by no more than 10 %. Since <em>t</em><sub>ox</sub> falls at every node, so does the allowance, while the
+      extension gets shallower: at 250 nm the 10 %-of-<em>R</em><sub>sat</sub> criterion is reached at 663 Ω/□, which the notes' 650 Ω/□ just meets, and holding the
+      sheet resistance at 50 nm needs 5.5×10¹⁹ cm⁻³ in a 20–28 nm layer, shallower than the 35 nm (at ≈ 350 Ω/□) that a 0.5 keV implant
+      and spike anneal reached in 2001; Wolf judged it unclear whether that could be done. The structure that helps is the
+      elevated source/drain: the silicide sits in a selectively grown, heavily doped layer, so the contact junction need not be deep, the spacer
+      can be narrow, ℓ<sub>SDE</sub> shrinks, and the heavy epitaxial doping lowers <em>ρ</em><sub>c</sub>.</p></div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Two regions: a shallow extension (depth <em>X</em><sub>j</sub>, ≈ 0.4–0.55 <em>L</em><sub>L</sub>) for short-channel control, and a
+        deeper contact (<em>X</em><sub>jc</sub>, ≈ 0.8–1.1 <em>L</em><sub>L</sub>) to hold the silicide without leakage. Deeper contact → wider
+        spacer → longer extension → more <em>R</em><sub>SDE</sub>.</li>
+        <li>Sheet resistance <em>ρ</em><sub>s</sub> = <em>ρ</em>/<em>t</em> (Ω/□); <em>R</em> = <em>ρ</em><sub>s</sub><em>L</em>/<em>W</em>, by
+        counting squares, independent of size (eq. (10.1)).</li>
+        <li><em>R</em><sub>s</sub> = <em>R</em><sub>co</sub> + <em>R</em><sub>SDE</sub> + <em>R</em><sub>sp</sub> + <em>R</em><sub>ac</sub>, measured
+        against <em>R</em><sub>sat</sub><em>W</em> ≈ <em>t</em><sub>ox</sub>/(0.376<em>v</em><sub>sat</sub><em>ε</em><sub>ox</sub>); source and drain
+        together may cut <em>I</em><sub>Dsat</sub> by ≤ 10 % (≈ 10 % of <em>R</em><sub>sat</sub> costs ≈ 8 % of current).</li>
+        <li><em>R</em><sub>sp</sub> = (2<em>ρ</em>/π<em>W</em>) ln(<em>βX</em><sub>j</sub>/<em>X</em><sub>c</sub>), <em>β</em> 0.37–0.9;
+        <em>R</em><sub>SDE</sub> = <em>ρ</em>ℓ<sub>SDE</sub>/(<em>WX</em><sub>j</sub>); their sum is <em>R</em><sub>SDE</sub> times a bracket of
+        2.09 (250 nm) to 1.48 (50 nm). Extension sheet resistance ≈ 650 Ω/□ at 250 nm; 5.5×10¹⁹ cm⁻³ at 50 nm.</li>
+        <li><em>R</em><sub>co</sub><em>W</em> ≥ <em>ρ</em><sub>c</sub>/(2<em>L</em><sub>L</sub>); <em>ρ</em><sub>c</sub> = 10⁻⁷ (0.25 µm) → 4×10⁻⁸ Ω·cm²
+        (50 nm), interface doping &gt; 10²⁰ cm⁻³ for a 0.5 eV barrier.</li>
+        <li>Silicides: TiSi₂ 13–16, CoSi₂ and NiSi 14–20 µΩ·cm, 4–7 × aluminium's 2.7–3.0. Silicon consumed per nm of silicide: 0.90 TiSi₂,
+        1.03 CoSi₂, 0.78 NiSi (Plummer); the notes' "75 %" is Wolf's TiSi₂ ratio.</li>
+        <li>Elevated source/drain: selective n⁺/p⁺ epitaxy below 850 °C; narrow spacer, short ℓ<sub>SDE</sub>, silicide above the junction,
+        heavy doping for low <em>ρ</em><sub>c</sub>.</li>
+        <li>Ultra-shallow junctions: sub-keV implants (smaller <em>R</em><sub>p</sub>, straggle and channelling; less TED), limited by Child's
+        law, <em>I</em> ∝ <em>V</em><sup>3/2</sup> (1–2 mA against 10–25 mA); spike RTA, 100–200 °C/s up, 50–80 °C/s down, because activation
+        (5.4 eV) outruns diffusion (3.4 eV) at high temperature and TED is worst at low; limit ≈ 35 nm and 350 Ω/□ with 0.5 keV boron.</li>
+        <li>Dose loss below 1 keV: self-sputtering, out-diffusion and the stripped protective oxide, up to ≈ 40 % at 0.2 keV.</li>
+        <li>Overlap: too much → leakage and overlap capacitance (<em>C</em><sub>ov</sub> ≈ <em>ε</em><sub>ox</sub><em>W</em>(<em>l</em><sub>ov</sub>/<em>t</em><sub>ox</sub> + 7));
+        too little → <em>I</em><sub>Dsat</sub> falls. ≈ 20 nm minimum at 0.25 µm, set with an offset spacer; lateral diffusion 0.6–0.7 <em>X</em><sub>j</sub>.</li>
+      </ul>
+    </div>
+
+    <h2>Where this page follows the class notes against the literature</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Point</th><th>Notes or lecture</th><th>Sources</th><th>On this page</th></tr></thead>
+      <tbody>
+        <tr><td>Extension doping</td><td>Lecture 17: "may be 10¹⁷"</td><td>Notes p. 82 and Lecture 18: 5.5×10¹⁹ cm⁻³ at 50 nm; Wolf p. 202: peak above 10¹⁹ cm⁻³</td><td>Notes' value; flagged (§1.2)</td></tr>
+        <tr><td>ℓ<sub>SDE</sub>/<em>X</em><sub>j</sub></td><td>Notes p. 81: ≈ 1.2 from <em>L</em><sub>L</sub>/2 and 0.55 <em>L</em><sub>L</sub></td><td>Those rules give 0.91; 1.2 fits Wolf's earlier 0.4 <em>L</em><sub>L</sub> rule; Wolf p. 201 has the same sentence</td><td>Both given; flagged (§3.5)</td></tr>
+        <tr><td>Allowed extension sheet resistance</td><td>Notes p. 82: ≈ 650 Ω/□ at 250 nm, "maintain" it at 50 nm</td><td>Wolf p. 202: ≈ 650 Ω/□ at 250 nm, ≈ 900 Ω/□ at 50 nm</td><td>Both (§3.5)</td></tr>
+        <tr><td>The 0.376 form of <em>R</em><sub>sat</sub><em>W</em></td><td>Notes p. 79: "≈"</td><td>Equal to the first form only when <em>V</em><sub>T</sub> = 0.2 <em>V</em><sub>DD</sub>; neither notes nor Wolf say so</td><td>Stated (§3.2)</td></tr>
+        <tr><td>Silicon consumed by silicide</td><td>Notes p. 83 "nearly 75% of Si is consumed"; Lecture 18 "75% of the silicon"</td><td>Wolf p. 204: Si consumed ≈ 0.75 × TiSi₂ thickness; Plummer Table 11-5: 0.90 (TiSi₂), 1.03 (CoSi₂)</td><td>Ratio reading; Plummer for computation; flagged (§4.3)</td></tr>
+        <tr><td>Silicide anneal</td><td>Lecture 18: one RTA at 900–1000 °C in argon</td><td>Two anneals with a strip between (Plummer; M02 §3.3)</td><td>Flagged (§4.2)</td></tr>
+        <tr><td>Resistivities</td><td>Lecture 18: TiSi₂ 10–12, CoSi₂ ≈ 20, Al ≈ 2.4 µΩ·cm</td><td>Plummer Tables 11-5, 11-2: TiSi₂ 13–16, CoSi₂ 14–20, Al films 2.7–3.0</td><td>Plummer's (§4.2)</td></tr>
+        <tr><td>When TED happens</td><td>Notes p. 85: "occuring during implantation"</td><td>Wolf p. 206: during the implant anneal</td><td>Corrected, as on M09 §4.3 (§6.1)</td></tr>
+        <tr><td>Why RTA</td><td>Notes p. 86: "Less time is spent during annealing"</td><td>Wolf p. 210: less time during the ramp-up at low temperature, where TED is largest</td><td>Wolf's reading (§6.3)</td></tr>
+        <tr><td>Ramp rates</td><td>Notes p. 86: up 100–200 °C/s</td><td>Wolf p. 211: up to ≈ 200 possible; little gain above ≈ 100</td><td>Both (§6.3)</td></tr>
+        <tr><td>Beam currents</td><td>Notes p. 85: sub-keV current "will be" 1–2 mA; "Recently" 4 mA at 0.2 keV</td><td>Wolf p. 206–207: mid-1990s maximum; available by 2000</td><td>Wolf's dates (§6.2)</td></tr>
+        <tr><td>"Selective" epitaxy</td><td>Lecture 18: tied to growing n⁺ and p⁺ separately</td><td>Wolf p. 205: a selectively grown layer on the source and drain; two growths needed (notes p. 84)</td><td>Both stated (§5)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Class notes p. 77; S. Wolf, <i>Silicon Processing for the VLSI Era</i>, Vol. 4 (Lattice Press, 2002), §5.3, pp. 195–196. Lectures 17 (extension advantages, "10¹⁷") and 18 (5.5×10¹⁹). M02 §6, M05b, M09 §2</td></tr>
+      <tr><td>§2</td><td>Y. Taur and T. H. Ning, <i>Fundamentals of Modern VLSI Devices</i>, 3rd ed. (Cambridge, 2022), §2.3.1, eqs. (2.40)–(2.41), p. 25; §8.3.1.2, p. 319 (resistivity at 10²⁰ cm⁻³). Lecture 17 board examples. Wolf p. 209 (35 nm, 350 Ω/□)</td></tr>
+      <tr><td>§3</td><td>Class notes pp. 78–82; Wolf §5.3.1, pp. 197–203, eqs. 5.1–5.7, Figs. 5-13 to 5-17. Taur &amp; Ning §8.3.1, eqs. (8.13)–(8.16), pp. 317–319, and p. 25 (<em>v</em><sub>sat</sub>). Wolf p. 217, Fig. 5-26 legend (<em>t</em><sub>ox</sub> and <em>V</em><sub>DD</sub> of the 0.25 µm study). Lectures 17–18 for the board formulas</td></tr>
+      <tr><td>§4</td><td>Class notes p. 83; Wolf §5.3.1.3, pp. 203–204, eq. 5.8, Fig. 5-18. Taur &amp; Ning §8.3.1.2–8.3.1.3, eqs. (8.18)–(8.21), pp. 320–321. J. D. Plummer, M. D. Deal and P. B. Griffin, <i>Silicon VLSI Technology</i> (Prentice Hall, 2000), Table 11-5, p. 700, and Table 11-2. Lecture 18. M02 §3.3</td></tr>
+      <tr><td>§5</td><td>Class notes pp. 83–84; Wolf §5.3.2, p. 205, Fig. 5-19. Lecture 18</td></tr>
+      <tr><td>§6</td><td>Class notes pp. 84–88; Wolf §5.3.3, pp. 206–216, eq. 5.9, Figs. 5-20 to 5-24. Lecture 18 and the recorded class of 23 October for emphasis and the energies spoken. M09 §3–4</td></tr>
+      <tr><td>§7</td><td>Class notes pp. 88–89; Wolf §5.3.4–5.3.5, pp. 216–219, Figs. 5-25, 5-26. Taur &amp; Ning §8.3.2.2, eqs. (8.23)–(8.26), pp. 322–323</td></tr>
+      <tr><td>§8</td><td>This page; M09 §7</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m09-channel-engineering.html"><span>Previous</span>M09 · Channel Engineering</a>
+      <a class="next" href="m11-lithography-resists.html"><span>Next</span>M11 · Advanced Lithography I: Resists</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

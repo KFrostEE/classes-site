@@ -1,0 +1,1349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M19a · Failure Analysis — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M19a · Failure Analysis</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 19a</p>
+    <h1>Failure Analysis</h1>
+    <p class="lede">
+      How a failed part is made to show where and why it failed: the loop from electrical signature to physical
+      mechanism, the non-destructive techniques that locate a defect without disturbing it (X-ray computed
+      tomography and thermal imaging), a NASA screening study that uses the same thermal physics to find resistor
+      defects before they fail, and the focused ion beam that cuts a cross-section through the exact site.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m10-photon-interaction.html">M10</a> §3, §7, <a href="m12-stopping-power-range.html">M12</a> §3, <a href="m18-chip-bonding-packaging.html">M18</a> §6–§8, <a href="m19-reliability-qualification.html">M19</a> §1, §5</span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Deck 19 pp. 22–30, 34, 36, 38–39; Deck 20; Lectures 20 and 21; NEPP resistor-screening report (2019)</span>
+    </div>
+
+    <p>
+      Qualification (<a href="m19-reliability-qualification.html">M19</a>) produces failures on purpose: a vibration
+      test cracks a joint, a thermal-cycling chamber opens a bump, a heavy-ion beam burns out a transistor. A failure
+      is useful only once its cause is known, because only then can the design, the material or the process be
+      changed and the part tested again. Failure analysis (FA) is the discipline that finds the cause. Deck 20 states
+      its attitude in one line: to a failure analyst, a part is a collection of failure mechanisms waiting to happen.
+      Lecture 20 gave the reason it matters more each year: integration in two and three dimensions
+      (<a href="m18-chip-bonding-packaging.html">M18 §7–§8</a>) multiplies the interconnects, the interconnects are
+      the weak points, and so integrated parts need more failure analysis, starting with the simple methods, X-ray
+      imaging and thermal imaging. Section 1 sets out the loop every analysis follows. Sections 2 and 3 treat the two
+      non-destructive methods and the physics that gives each its contrast. Section 4 follows one NASA study from a
+      resistor's construction to a fractured defect. Sections 5 to 7 treat the focused ion beam: the instrument, what
+      it can and cannot do to a sample, and the cross-sections it produced of radiation damage in silicon carbide
+      power transistors.
+    </p>
+
+    <h2>1 · The failure-analysis loop</h2>
+
+    <p>
+      Every analysis moves from what the part does wrong electrically to what is physically wrong inside it, and it
+      moves from techniques that leave the part unchanged to techniques that destroy it. Deck 19 lays out its first case under six headings that name the stages (background, failure mode, interim
+      findings, isolation, deprocessing, mechanism), and the same stages organise every case on this page.
+    </p>
+
+    <ul>
+      <li><b>Failure background:</b> the circumstances of the failure, what was being done to the part and what was
+        observed.</li>
+      <li><b>Failure mode:</b> the electrical signature of the failure, measured at the terminals: an open, a short,
+        a leakage, a drift. A failure mode says <em>what</em> is wrong.</li>
+      <li><b>Isolation:</b> locating the site of the fault inside the part, first without opening or altering it
+        (X-ray imaging, thermal imaging), then by removing material.</li>
+      <li><b>Failure mechanism:</b> the physical process that produced the fault at that site, such as electrical
+        overstress, fatigue cracking or a void in a joint. A failure mechanism says <em>why</em>.</li>
+    </ul>
+
+    <p>
+      The order matters because each destructive step can create the evidence it is looking for. Lecture 20 gave the
+      argument for 3D-stacked parts: removing the dies of a stack one layer at a time may itself crack or short
+      something, and then the analyst cannot tell whether the part failed from an internal defect or from the
+      delayering. A technique that sees inside the intact part removes that doubt, so it comes first. Destructive
+      physical analysis (DPA, the term NASA's parts programme uses) follows only once the site is known, and then
+      removes as little as possible around it. Lecture 21 closed the loop at the other end: once the mechanism is
+      known, the part or the process is improved and tested again, and the test is repeated until it passes
+      (Figure 1).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f19a-loop-t">
+  <title id="f19a-loop-t">The failure-analysis loop as a cycle of six boxes: test, failure mode at the terminals, non-destructive isolation, destructive analysis at the site, mechanism, and improvement, which leads back to test</title>
+  <rect x="160" y="8" width="120" height="30" rx="4" class="dg-fill"/>
+  <text x="220" y="27" class="dg-label" text-anchor="middle">test (M19)</text>
+  <rect x="300" y="52" width="130" height="30" rx="4" class="dg-fill"/>
+  <text x="365" y="71" class="dg-label-sm" text-anchor="middle">failure mode: terminals</text>
+  <rect x="300" y="118" width="130" height="30" rx="4" class="dg-fill"/>
+  <text x="365" y="137" class="dg-label-sm" text-anchor="middle">isolate: X-ray, thermal</text>
+  <rect x="160" y="162" width="120" height="30" rx="4" class="dg-fill"/>
+  <text x="220" y="181" class="dg-label-sm" text-anchor="middle">deprocess, FIB section</text>
+  <rect x="10" y="118" width="130" height="30" rx="4" class="dg-fill"/>
+  <text x="75" y="137" class="dg-label-sm" text-anchor="middle">mechanism: why</text>
+  <rect x="10" y="52" width="130" height="30" rx="4" class="dg-fill"/>
+  <text x="75" y="71" class="dg-label-sm" text-anchor="middle">improve design, process</text>
+  <path d="M280,26 Q350,26 362,50" class="dg-line" fill="none" marker-end="url(#f19a-ar)"/>
+  <path d="M365,84 L365,116" class="dg-line" fill="none" marker-end="url(#f19a-ar)"/>
+  <path d="M362,150 Q350,177 282,177" class="dg-line" fill="none" marker-end="url(#f19a-ar)"/>
+  <path d="M158,177 Q90,177 78,150" class="dg-line" fill="none" marker-end="url(#f19a-ar)"/>
+  <path d="M75,116 L75,84" class="dg-line" fill="none" marker-end="url(#f19a-ar)"/>
+  <path d="M78,50 Q90,26 158,26" class="dg-line" fill="none" marker-end="url(#f19a-ar)"/>
+  <text x="220" y="104" class="dg-label-sm" text-anchor="middle">non-destructive before destructive</text>
+  <defs><marker id="f19a-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+</svg>
+      <figcaption><b>Figure 1.</b> The loop that Lectures 20 and 21 described. The right half moves from terminals to site, the left half from site to cause and back to the test; every step down the right side removes more of the part than the one above it.</figcaption>
+    </figure>
+
+    <p>
+      <b>The failure mode of Deck 19's first case.</b> During power-up of a board assembly, an event drew a high
+      current through one output of a demultiplexer, a circuit that routes one input to one of several outputs. At the
+      terminals, the failure mode was a short of 3.8 Ω between one of the eight outputs and ground. The measurement
+      that shows a short is the curve tracer, an instrument that sweeps the voltage between two pins and plots the
+      current against it: a resistance draws a straight line through the origin whose slope is its conductance, so a
+      short draws a line that is almost vertical. The deck's screen is scaled at 200 µA per vertical division and
+      500 mV per horizontal division, and its trace between output Y7 and V<sub>SS</sub> is vertical. The lid of the
+      package was then removed, and the die showed no visible damage, so the site had to be found by other means
+      (§3).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">E1 · What the curve-tracer screen can and cannot measure</div>
+      <div class="ex-body">
+        <p><b>Given</b> the screen of Deck 19 p. 34: 200 µA per division vertically (current), 500 mV per division
+          horizontally (voltage); the reported short, 3.8 Ω. <b>Find</b> the resistance that draws a 45° line, the
+          horizontal movement of the 3.8 Ω trace, and the smallest resistance whose trace a reader could tell from
+          vertical.</p>
+        <p><b>Plan.</b> On a curve tracer the trace of a resistance <em>R</em> satisfies <em>V</em> = <em>IR</em>, so
+          its horizontal movement in divisions per vertical division is <em>R</em> times the current per division
+          divided by the voltage per division. The hinge is that the screen's scales, not the part, decide what is
+          resolvable.</p>
+        <p class="ex-step"><b>The 45° resistance.</b> A 45° line moves one horizontal division for each vertical
+          division: <em>R</em> = (0.5 V)/(200×10⁻⁶ A) = 2,500 Ω. Any resistance far below 2.5 kΩ is drawn steeper than
+          45°.</p>
+        <p class="ex-step"><b>The 3.8 Ω trace.</b> Over one vertical division the current changes by 200 µA, so the
+          voltage changes by (200×10⁻⁶ A)(3.8 Ω) = 0.76 mV, which is 0.76/500 = 0.00152 of a horizontal division, or
+          1/658. Over the screen's ten vertical divisions (2.0 mA) the trace moves 7.6 mV, 0.0152 of a division.</p>
+        <p class="ex-step"><b>The smallest resistance visible as a tilt.</b> Suppose a tilt of 0.1 division across the ten divisions of height is just visible. Then <em>R</em> = (0.1 × 0.5 V)/(10 × 200×10⁻⁶ A) = 25 Ω. A
+          short of 3.8 Ω tilts the trace about 6.6 times less than that.</p>
+        <p class="ex-answer">The 45° resistance is 2.5 kΩ; the 3.8 Ω trace moves 0.0152 division over the ten
+          divisions, indistinguishable from vertical; anything below about 25 Ω looks the same. Check: the slide's
+          trace is vertical, consistent with a short but not a measurement of it. The 3.8 Ω value must come from another
+          measurement, a curve-tracer setting at a few millivolts per division or a resistance meter; the slide does not
+          say which.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 410 270" role="img" aria-labelledby="f19a-ct-t">
+<title id="f19a-ct-t">Curve-tracer screen at 200 microamperes and 500 millivolts per division, origin at the centre. A 3.8 ohm path draws a line indistinguishable from vertical; a 25 ohm path tilts it by a tenth of a division over the height of the screen; a 2.5 kilohm resistor draws a 45 degree line</title>
+<line x1="60" y1="20" x2="60" y2="220" class="dg-faint"/>
+<line x1="80" y1="20" x2="80" y2="220" class="dg-faint"/>
+<line x1="100" y1="20" x2="100" y2="220" class="dg-faint"/>
+<line x1="120" y1="20" x2="120" y2="220" class="dg-faint"/>
+<line x1="140" y1="20" x2="140" y2="220" class="dg-faint"/>
+<line x1="160" y1="20" x2="160" y2="220" class="dg-faint"/>
+<line x1="180" y1="20" x2="180" y2="220" class="dg-faint"/>
+<line x1="200" y1="20" x2="200" y2="220" class="dg-faint"/>
+<line x1="220" y1="20" x2="220" y2="220" class="dg-faint"/>
+<line x1="240" y1="20" x2="240" y2="220" class="dg-faint"/>
+<line x1="260" y1="20" x2="260" y2="220" class="dg-faint"/>
+<line x1="60" y1="20" x2="260" y2="20" class="dg-faint"/>
+<line x1="60" y1="40" x2="260" y2="40" class="dg-faint"/>
+<line x1="60" y1="60" x2="260" y2="60" class="dg-faint"/>
+<line x1="60" y1="80" x2="260" y2="80" class="dg-faint"/>
+<line x1="60" y1="100" x2="260" y2="100" class="dg-faint"/>
+<line x1="60" y1="120" x2="260" y2="120" class="dg-faint"/>
+<line x1="60" y1="140" x2="260" y2="140" class="dg-faint"/>
+<line x1="60" y1="160" x2="260" y2="160" class="dg-faint"/>
+<line x1="60" y1="180" x2="260" y2="180" class="dg-faint"/>
+<line x1="60" y1="200" x2="260" y2="200" class="dg-faint"/>
+<line x1="60" y1="220" x2="260" y2="220" class="dg-faint"/>
+<line x1="160.0" y1="20" x2="160.0" y2="220" class="dg-rule"/>
+<line x1="60" y1="120.0" x2="260" y2="120.0" class="dg-rule"/>
+<line x1="159.8" y1="220.0" x2="160.2" y2="20.0" class="dg-acc" style="stroke-width:2"/>
+<text x="166.0" y="34" class="dg-label-sm">3.8 Ω</text>
+<line x1="159.0" y1="220.0" x2="161.0" y2="20.0" class="dg-line" style="stroke-width:2"/>
+<text x="184.0" y="54" class="dg-label-sm">25 Ω</text>
+<line x1="60.0" y1="220.0" x2="260.0" y2="20.0" class="dg-line" style="stroke-width:2"/>
+<text x="200.0" y="114.0" class="dg-label-sm">2.5 kΩ (45°)</text>
+<text x="160.0" y="238" class="dg-label-sm" text-anchor="middle">voltage, 500 mV/div</text>
+<text x="30" y="120.0" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 30 120.0)">current, 200 µA/div</text>
+<text x="270" y="60" class="dg-label-sm">Over 10 div of current:</text>
+<text x="270" y="76" class="dg-label-sm">3.8 Ω moves 0.015 div</text>
+<text x="270" y="92" class="dg-label-sm">25 Ω moves 0.1 div</text>
+<text x="270" y="108" class="dg-label-sm">2.5 kΩ moves 10 div</text>
+</svg>
+      <figcaption><b>Figure 2.</b> The 10 × 10-division screen of Deck 19 p. 34 at its scales, with three resistances drawn from <em>V</em> = <em>IR</em>. A 3.8 Ω short and a 25 Ω path both look vertical; only near the 2.5 kΩ of a 45° line does the trace measure a resistance.</figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>The same short is re-measured with the tracer set to 1 mA per division vertically and 50 mV per division horizontally. What resistance now draws a 45° line, and how far does the 3.8 Ω trace move horizontally per vertical division? Has the change made the short measurable?</summary>
+      <div class="answer">
+        <p>The 45° resistance is the voltage per division over the current per division, (0.05 V)/(1×10⁻³ A) =
+          50 Ω. The 3.8 Ω trace moves (1×10⁻³ A)(3.8 Ω)/(0.05 V) = 0.076 division per vertical division, so over the ten divisions of the screen it moves 0.76 division: now a visible tilt, from which the resistance can be read to roughly one
+          significant figure. Both scale changes help: a larger current per division raises the voltage across the
+          short, and a smaller voltage per division magnifies it. A four-terminal resistance measurement would still
+          be needed for a value as precise as 3.8 Ω.</p>
+      </div>
+    </details>
+
+    <h2>2 · X-ray imaging and computed tomography</h2>
+
+    <p>
+      An X-ray image of a part records how much of a beam each path through it absorbs. Because absorption depends
+      steeply on atomic number, the metal of a package (copper traces, solder, bond wires, bumps) stands out against
+      the silicon, the glass fibre and the polymer around it, and a void, which absorbs nothing, shows as a gap in the
+      metal. The part is not opened, so nothing is disturbed. This section explains where the contrast comes from,
+      how computed tomography turns many projections into a three-dimensional map, what limits the smallest visible
+      defect, and the two cases of Deck 19: a flight telecom board and the micro-bumps of a high-bandwidth memory
+      stack.
+    </p>
+
+    <p>
+      <b>Where the contrast comes from.</b> <a href="m10-photon-interaction.html">M10 §7</a> derived the attenuation
+      law: a beam of photons of one energy crossing a thickness <em>x</em> of a material keeps the fraction
+      exp(−(µ/ρ)ρ<em>x</em>), where µ/ρ is the mass attenuation coefficient and ρ the density. At the energies of a
+      laboratory X-ray tube (<a href="m09-bremsstrahlung-xrays.html">M09 §5</a>), photoelectric absorption dominates
+      µ/ρ in heavy elements, and its cross-section grows as <em>Z</em>⁴ to <em>Z</em>⁵ and falls as
+      <em>E</em><sup>−3</sup> (<a href="m10-photon-interaction.html">M10 §3</a>). Copper (<em>Z</em> = 29) and tin
+      (<em>Z</em> = 50) therefore absorb far more than silicon (<em>Z</em> = 14) per gram, and more again
+      per centimetre because they are denser. Lecture 20 made the same point by recalling the course's homework on
+      silicon against lead: heavy elements block X-rays most.
+    </p>
+
+    <div class="eq" id="eq-19a-1">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num"><em>T</em><sub>void</sub></span><span class="den"><em>T</em><sub>full</sub></span></span> = exp&thinsp;[(µ/ρ)ρ<em>d</em>]</div>
+        <div class="eq-num">(19a.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>T</em><sub>full</sub> fraction transmitted along a path through solid metal (dimensionless) ·
+        <em>T</em><sub>void</sub> fraction transmitted along a parallel path that crosses a void of length <em>d</em>
+        in the same metal · µ/ρ mass attenuation coefficient of the metal at the photon energy (cm²/g, from the NIST
+        tables) · ρ density (g/cm³) · <em>d</em> length of the void along the ray (cm). Follows from
+        (10.8) applied to both paths: the void removes a length <em>d</em> of metal from the exponent. Holds for one
+        photon energy; a tube's spectrum gives an average that weights the low energies most where they survive.
+      </div>
+    </div>
+
+    <p>
+      Equation (19a.1) shows the trade-off that sets the X-ray energy. A void shows as a brightening of the
+      transmitted beam by the factor exp[(µ/ρ)ρ<em>d</em>], which is large only if µ/ρ is large, that is at low
+      energy. But the beam must also cross everything else in the path, millimetres of silicon, board and package,
+      and at low energy those absorb most of it. Figure 3 plots the transmission of 20 µm, the size of a memory
+      micro-bump, of each material against energy.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 240" role="img" aria-labelledby="f19a-tr-t">
+<title id="f19a-tr-t">Fraction of X-rays transmitted through 20 micrometres of copper, tin and silicon against photon energy from 10 to 100 keV, from NIST attenuation coefficients. Silicon transmits almost everything above 20 keV; copper and tin absorb strongly at low energy; tin jumps from 0.89 to 0.53 at its K edge at 29.2 keV</title>
+<rect x="60" y="20" width="340" height="180" class="dg-rule" fill="none"/>
+<line x1="60" y1="200.0" x2="400" y2="200.0" class="dg-faint"/>
+<text x="54" y="204.0" class="dg-label-sm" text-anchor="end">0</text>
+<line x1="60" y1="155.0" x2="400" y2="155.0" class="dg-faint"/>
+<text x="54" y="159.0" class="dg-label-sm" text-anchor="end">0.25</text>
+<line x1="60" y1="110.0" x2="400" y2="110.0" class="dg-faint"/>
+<text x="54" y="114.0" class="dg-label-sm" text-anchor="end">0.5</text>
+<line x1="60" y1="65.0" x2="400" y2="65.0" class="dg-faint"/>
+<text x="54" y="69.0" class="dg-label-sm" text-anchor="end">0.75</text>
+<line x1="60" y1="20.0" x2="400" y2="20.0" class="dg-faint"/>
+<text x="54" y="24.0" class="dg-label-sm" text-anchor="end">1</text>
+<line x1="60.0" y1="200" x2="60.0" y2="204" class="dg-rule"/>
+<text x="60.0" y="216" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="162.4" y1="200" x2="162.4" y2="204" class="dg-rule"/>
+<text x="162.4" y="216" class="dg-label-sm" text-anchor="middle">20</text>
+<line x1="222.2" y1="200" x2="222.2" y2="204" class="dg-rule"/>
+<text x="222.2" y="216" class="dg-label-sm" text-anchor="middle">30</text>
+<line x1="297.6" y1="200" x2="297.6" y2="204" class="dg-rule"/>
+<text x="297.6" y="216" class="dg-label-sm" text-anchor="middle">50</text>
+<line x1="400.0" y1="200" x2="400.0" y2="204" class="dg-rule"/>
+<text x="400.0" y="216" class="dg-label-sm" text-anchor="middle">100</text>
+<text x="230.0" y="232" class="dg-label-sm" text-anchor="middle">photon energy (keV), log scale</text>
+<text x="18" y="110.0" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 18 110.0)">transmitted fraction, 20 µm</text>
+<path d="M60.0,196.2 L63.0,195.4 L66.0,194.4 L69.0,193.3 L72.0,192.1 L75.0,190.7 L78.0,189.1 L81.0,187.4 L83.9,185.5 L86.9,183.5 L89.9,181.3 L92.9,179.0 L95.9,176.5 L98.9,173.9 L101.9,171.1 L104.9,168.2 L107.9,165.2 L110.9,162.1 L113.9,158.9 L116.9,155.6 L119.9,152.2 L119.9,152.2 L122.0,149.7 L124.1,147.2 L126.2,144.7 L128.4,142.1 L130.5,139.5 L132.6,136.9 L134.7,134.3 L136.9,131.7 L139.0,129.1 L141.1,126.6 L143.2,124.0 L145.4,121.4 L147.5,118.9 L149.6,116.3 L151.7,113.8 L153.9,111.4 L156.0,108.9 L158.1,106.5 L160.2,104.1 L162.4,101.8 L162.4,101.8 L165.3,98.4 L168.3,95.2 L171.3,92.0 L174.3,89.0 L177.3,86.0 L180.3,83.1 L183.3,80.3 L186.3,77.6 L189.3,74.9 L192.3,72.4 L195.3,70.0 L198.3,67.6 L201.3,65.4 L204.3,63.2 L207.3,61.1 L210.2,59.2 L213.2,57.2 L216.2,55.4 L219.2,53.7 L222.2,52.0 L222.2,52.0 L224.3,50.8 L226.5,49.7 L228.6,48.6 L230.7,47.6 L232.8,46.6 L235.0,45.6 L237.1,44.7 L239.2,43.8 L241.3,42.9 L243.5,42.0 L245.6,41.2 L247.7,40.4 L249.8,39.7 L252.0,38.9 L254.1,38.2 L256.2,37.5 L258.3,36.9 L260.5,36.2 L262.6,35.6 L264.7,35.0 L264.7,35.0 L266.3,34.6 L268.0,34.2 L269.6,33.7 L271.3,33.3 L272.9,32.9 L274.6,32.6 L276.2,32.2 L277.9,31.8 L279.5,31.5 L281.2,31.1 L282.8,30.8 L284.5,30.5 L286.1,30.2 L287.8,29.9 L289.4,29.6 L291.1,29.3 L292.7,29.0 L294.4,28.7 L296.0,28.5 L297.6,28.2 L297.6,28.2 L299.0,28.0 L300.3,27.8 L301.7,27.7 L303.0,27.5 L304.4,27.3 L305.7,27.1 L307.1,27.0 L308.4,26.8 L309.8,26.6 L311.1,26.5 L312.5,26.3 L313.8,26.2 L315.1,26.0 L316.5,25.9 L317.8,25.7 L319.2,25.6 L320.5,25.5 L321.9,25.3 L323.2,25.2 L324.6,25.1 L324.6,25.1 L326.7,24.9 L328.8,24.7 L330.9,24.5 L333.1,24.4 L335.2,24.2 L337.3,24.1 L339.4,23.9 L341.6,23.8 L343.7,23.7 L345.8,23.5 L347.9,23.4 L350.1,23.3 L352.2,23.2 L354.3,23.0 L356.4,22.9 L358.6,22.8 L360.7,22.7 L362.8,22.6 L364.9,22.5 L367.1,22.4 L367.1,22.4 L368.7,22.4 L370.3,22.3 L372.0,22.3 L373.6,22.2 L375.3,22.2 L376.9,22.1 L378.6,22.0 L380.2,22.0 L381.9,21.9 L383.5,21.9 L385.2,21.9 L386.8,21.8 L388.5,21.8 L390.1,21.7 L391.8,21.7 L393.4,21.6 L395.1,21.6 L396.7,21.5 L398.4,21.5 L400.0,21.5" class="dg-acc" fill="none" style="stroke-width:2"/>
+<path d="M60.0,176.2 L63.0,173.5 L66.0,170.7 L69.0,167.7 L72.0,164.7 L75.0,161.5 L78.0,158.2 L81.0,154.8 L83.9,151.4 L86.9,147.9 L89.9,144.4 L92.9,140.8 L95.9,137.2 L98.9,133.6 L101.9,130.0 L104.9,126.4 L107.9,122.9 L110.9,119.3 L113.9,115.8 L116.9,112.4 L119.9,109.0 L119.9,109.0 L122.0,106.6 L124.1,104.2 L126.2,101.9 L128.4,99.6 L130.5,97.3 L132.6,95.1 L134.7,92.9 L136.9,90.8 L139.0,88.7 L141.1,86.7 L143.2,84.6 L145.4,82.7 L147.5,80.7 L149.6,78.9 L151.7,77.0 L153.9,75.2 L156.0,73.5 L158.1,71.8 L160.2,70.1 L162.4,68.5 L162.4,68.5 L165.1,66.4 L167.9,64.4 L170.7,62.5 L173.5,60.7 L176.3,58.9 L179.1,57.2 L181.9,55.5 L184.7,53.9 L187.5,52.4 L190.3,50.9 L193.1,49.5 L195.9,48.2 L198.7,46.9 L201.5,45.7 L204.3,44.5 L207.1,43.4 L209.8,42.3 L212.6,41.2 L215.4,40.3 L218.2,39.3 L218.2,104.8 L218.2,104.8 L218.4,104.7 L218.6,104.5 L218.8,104.3 L219.0,104.2 L219.2,104.0 L219.4,103.8 L219.6,103.7 L219.8,103.5 L220.0,103.3 L220.2,103.1 L220.4,103.0 L220.6,102.8 L220.8,102.6 L221.0,102.5 L221.2,102.3 L221.4,102.1 L221.6,102.0 L221.8,101.8 L222.0,101.6 L222.2,101.5 L222.2,101.5 L224.3,99.2 L226.5,97.1 L228.6,94.9 L230.7,92.8 L232.8,90.7 L235.0,88.7 L237.1,86.7 L239.2,84.8 L241.3,82.8 L243.5,81.0 L245.6,79.1 L247.7,77.3 L249.8,75.6 L252.0,73.9 L254.1,72.2 L256.2,70.6 L258.3,69.0 L260.5,67.5 L262.6,66.0 L264.7,64.5 L264.7,64.5 L266.3,63.4 L268.0,62.2 L269.6,61.2 L271.3,60.1 L272.9,59.1 L274.6,58.0 L276.2,57.0 L277.9,56.1 L279.5,55.1 L281.2,54.2 L282.8,53.3 L284.5,52.4 L286.1,51.6 L287.8,50.7 L289.4,49.9 L291.1,49.1 L292.7,48.3 L294.4,47.5 L296.0,46.8 L297.6,46.1 L297.6,46.1 L299.0,45.5 L300.3,44.9 L301.7,44.4 L303.0,43.8 L304.4,43.3 L305.7,42.7 L307.1,42.2 L308.4,41.7 L309.8,41.2 L311.1,40.8 L312.5,40.3 L313.8,39.8 L315.1,39.4 L316.5,38.9 L317.8,38.5 L319.2,38.1 L320.5,37.7 L321.9,37.3 L323.2,36.9 L324.6,36.5 L324.6,36.5 L326.7,35.9 L328.8,35.3 L330.9,34.7 L333.1,34.2 L335.2,33.7 L337.3,33.2 L339.4,32.7 L341.6,32.2 L343.7,31.8 L345.8,31.4 L347.9,30.9 L350.1,30.5 L352.2,30.2 L354.3,29.8 L356.4,29.4 L358.6,29.1 L360.7,28.7 L362.8,28.4 L364.9,28.1 L367.1,27.8 L367.1,27.8 L368.7,27.6 L370.3,27.4 L372.0,27.1 L373.6,26.9 L375.3,26.7 L376.9,26.6 L378.6,26.4 L380.2,26.2 L381.9,26.0 L383.5,25.8 L385.2,25.7 L386.8,25.5 L388.5,25.3 L390.1,25.2 L391.8,25.0 L393.4,24.9 L395.1,24.8 L396.7,24.6 L398.4,24.5 L400.0,24.4" class="dg-ink" fill="none" style="fill:none;stroke:var(--ink);stroke-width:2"/>
+<path d="M60.0,46.3 L63.0,44.9 L66.0,43.6 L69.0,42.3 L72.0,41.1 L75.0,39.9 L78.0,38.8 L81.0,37.8 L83.9,36.8 L86.9,35.9 L89.9,35.0 L92.9,34.2 L95.9,33.4 L98.9,32.7 L101.9,32.0 L104.9,31.3 L107.9,30.7 L110.9,30.1 L113.9,29.5 L116.9,29.0 L119.9,28.5 L119.9,28.5 L122.0,28.1 L124.1,27.8 L126.2,27.5 L128.4,27.2 L130.5,26.9 L132.6,26.6 L134.7,26.3 L136.9,26.1 L139.0,25.8 L141.1,25.6 L143.2,25.4 L145.4,25.2 L147.5,25.0 L149.6,24.8 L151.7,24.6 L153.9,24.4 L156.0,24.2 L158.1,24.0 L160.2,23.9 L162.4,23.7 L162.4,23.7 L165.3,23.5 L168.3,23.3 L171.3,23.1 L174.3,23.0 L177.3,22.8 L180.3,22.6 L183.3,22.5 L186.3,22.4 L189.3,22.2 L192.3,22.1 L195.3,22.0 L198.3,21.9 L201.3,21.8 L204.3,21.7 L207.3,21.6 L210.2,21.5 L213.2,21.4 L216.2,21.3 L219.2,21.3 L222.2,21.2 L222.2,21.2 L224.3,21.2 L226.5,21.1 L228.6,21.1 L230.7,21.0 L232.8,21.0 L235.0,21.0 L237.1,20.9 L239.2,20.9 L241.3,20.9 L243.5,20.8 L245.6,20.8 L247.7,20.8 L249.8,20.8 L252.0,20.7 L254.1,20.7 L256.2,20.7 L258.3,20.7 L260.5,20.6 L262.6,20.6 L264.7,20.6 L264.7,20.6 L266.3,20.6 L268.0,20.6 L269.6,20.5 L271.3,20.5 L272.9,20.5 L274.6,20.5 L276.2,20.5 L277.9,20.5 L279.5,20.5 L281.2,20.5 L282.8,20.5 L284.5,20.4 L286.1,20.4 L287.8,20.4 L289.4,20.4 L291.1,20.4 L292.7,20.4 L294.4,20.4 L296.0,20.4 L297.6,20.4 L297.6,20.4 L299.0,20.4 L300.3,20.4 L301.7,20.4 L303.0,20.3 L304.4,20.3 L305.7,20.3 L307.1,20.3 L308.4,20.3 L309.8,20.3 L311.1,20.3 L312.5,20.3 L313.8,20.3 L315.1,20.3 L316.5,20.3 L317.8,20.3 L319.2,20.3 L320.5,20.3 L321.9,20.3 L323.2,20.3 L324.6,20.3 L324.6,20.3 L326.7,20.3 L328.8,20.3 L330.9,20.3 L333.1,20.2 L335.2,20.2 L337.3,20.2 L339.4,20.2 L341.6,20.2 L343.7,20.2 L345.8,20.2 L347.9,20.2 L350.1,20.2 L352.2,20.2 L354.3,20.2 L356.4,20.2 L358.6,20.2 L360.7,20.2 L362.8,20.2 L364.9,20.2 L367.1,20.2 L367.1,20.2 L368.7,20.2 L370.3,20.2 L372.0,20.2 L373.6,20.2 L375.3,20.2 L376.9,20.2 L378.6,20.2 L380.2,20.2 L381.9,20.2 L383.5,20.2 L385.2,20.2 L386.8,20.2 L388.5,20.2 L390.1,20.2 L391.8,20.2 L393.4,20.2 L395.1,20.2 L396.7,20.2 L398.4,20.2 L400.0,20.2" class="dg-line" fill="none" style="stroke-width:2"/>
+<text x="98.7" y="32.6" class="dg-label-sm">silicon</text>
+<text x="114.9" y="169.4" class="dg-label-sm">copper</text>
+<text x="236.3" y="124.4" class="dg-label-sm">tin (K edge 29.2 keV)</text>
+</svg>
+      <figcaption><b>Figure 3.</b> Transmission through 20 µm of silicon, copper and tin, computed from the NIST mass attenuation coefficients with log–log interpolation between tabulated energies. Silicon is nearly transparent above 20 keV; tin becomes more opaque than copper above its K edge at 29.2 keV.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E2 · How visible is a void in a copper bump?</div>
+      <div class="ex-body">
+        <p><b>Given</b> a copper path 20 µm long through a bump, and a parallel path through the same bump that
+          crosses a 5 µm void; copper ρ = 8.960 g/cm³, µ/ρ = 10.92 cm²/g at 30 keV and 1.593 cm²/g at 60 keV;
+          silicon ρ = 2.330 g/cm³, µ/ρ = 1.436 cm²/g at 30 keV and 0.3207 cm²/g at 60 keV (NIST).
+          <b>Find</b> the two transmitted fractions and the brightening due to the void at each energy, and the
+          transmission of 1 mm of silicon, the order of a die or interposer stack, at each.</p>
+        <p><b>Plan.</b> Apply (10.8) to each path and form the ratio (19a.1). The hinge is that the contrast of the
+          void depends on µ for copper, while the dose of photons that reaches the detector depends on everything else
+          in the path.</p>
+        <p class="ex-step"><b>Linear attenuation coefficients.</b> µ = (µ/ρ)ρ. Copper at 30 keV: (10.92)(8.960) =
+          97.8 cm⁻¹; at 60 keV: (1.593)(8.960) = 14.3 cm⁻¹. Silicon at 30 keV: 3.35 cm⁻¹; at 60 keV: 0.747 cm⁻¹.
+          Copper attenuates 29 times more strongly than silicon per centimetre at 30 keV and 19 times at 60 keV.</p>
+        <p class="ex-step"><b>The solid path.</b> 20 µm = 2.0×10⁻³ cm. At 30 keV, <em>T</em><sub>full</sub> =
+          exp(−97.8 × 0.0020) = 0.822. At 60 keV, exp(−14.3 × 0.0020) = 0.972.</p>
+        <p class="ex-step"><b>The path through the void.</b> 15 µm of copper remains. At 30 keV, <em>T</em><sub>void</sub>
+          = exp(−97.8 × 0.0015) = 0.863; at 60 keV, 0.979.</p>
+        <p class="ex-step"><b>The contrast.</b> At 30 keV the void brightens the ray by 0.863/0.822 = 1.050, a 5.0 %
+          change; (19a.1) gives the same, exp(97.8 × 5×10⁻⁴) = 1.050. At 60 keV the change is 0.72 %, seven times
+          smaller.</p>
+        <p class="ex-step"><b>The rest of the path.</b> 1 mm of silicon transmits exp(−3.35 × 0.1) = 0.716 at 30 keV and
+          0.928 at 60 keV. Why this matters: the void's contrast is a fraction of the signal that arrives, and the
+          noise of a photon-counting detector grows as the square root of the count, so absorption elsewhere in the
+          path lengthens the scan needed to see the same contrast.</p>
+        <p class="ex-answer">A 5 µm void in a 20 µm copper bump changes the transmitted beam by 5.0 % at 30 keV and by
+          0.72 % at 60 keV. Check: the logarithm of the contrast is µ<em>d</em>, linear in both, so a 1 µm void at
+          30 keV gives 0.98 %, a fifth of the 5 µm value.</p>
+      </div>
+    </div>
+
+    <p>
+      Tin brings one complication that Figure 3 shows: its K absorption edge at 29.2 keV. Just above the edge a photon
+      can eject a K-shell electron, and µ/ρ jumps by a factor of 5.62, from 7.760 to 43.60 cm²/g. Through 20 µm of
+      tin the transmission falls from 0.893 just below the edge to 0.529 just above it, so near 30 keV a tin-rich
+      solder is far more opaque than copper. Absorption edges were introduced in <a href="m10-photon-interaction.html">M10 §3</a> with silicon's, at 1.839 keV.
+    </p>
+
+    <p>
+      <b>From projections to tomography.</b> A single radiograph superimposes everything along each ray, so a void
+      above a trace and a void below it look the same, and dense parts hide what lies behind them. Computed
+      tomography (CT) records many radiographs while the sample rotates through a full turn, with source and detector
+      fixed. Each radiograph gives the line integral of µ along every ray at that angle; a reconstruction algorithm
+      solves for the value of µ in each small cube of the volume, the voxel, that is consistent with all the line
+      integrals at once. The result is a three-dimensional map of attenuation. Slices through it in any plane show the
+      interior of an intact part, and a threshold on µ that removes the low-density materials leaves the metal alone,
+      which is how Deck 19 p. 23 shows the wires and solder pads of a board with the lighter densities removed.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 190" role="img" aria-labelledby="f19a-geo-t">
+  <title id="f19a-geo-t">Cone-beam CT geometry: an X-ray source at left emits a cone of rays through a sample on a rotation stage close to it; the rays diverge to a detector far to the right, so the projected image is magnified by the ratio of the source-to-detector distance to the source-to-object distance</title>
+  <circle cx="30" cy="95" r="8" class="dg-acc-f"/>
+  <text x="30" y="122" class="dg-label-sm" text-anchor="middle">source</text>
+  <line x1="30" y1="95" x2="400" y2="20" class="dg-guide"/>
+  <line x1="30" y1="95" x2="400" y2="170" class="dg-guide"/>
+  <line x1="30" y1="95" x2="400" y2="95" class="dg-line"/>
+  <rect x="96" y="84" width="10" height="22" class="dg-ink" style="opacity:.75"/>
+  <ellipse cx="101" cy="112" rx="14" ry="4" class="dg-line" fill="none"/>
+  <text x="101" y="140" class="dg-label-sm" text-anchor="middle">sample, rotating</text>
+  <line x1="400" y1="16" x2="400" y2="174" class="dg-ink" style="stroke:var(--ink);stroke-width:5"/>
+  <text x="392" y="186" class="dg-label-sm" text-anchor="end">detector, pixel pitch p</text>
+  <line x1="30" y1="60" x2="101" y2="60" class="dg-rule"/>
+  <text x="65" y="54" class="dg-label-sm" text-anchor="middle">SOD</text>
+  <line x1="30" y1="40" x2="398" y2="40" class="dg-rule" style="opacity:.6"/>
+  <text x="250" y="34" class="dg-label-sm" text-anchor="middle">SDD</text>
+</svg>
+      <figcaption><b>Figure 4.</b> In a laboratory CT the rays diverge from a small source, so a sample placed close to the source projects onto the detector magnified by SDD/SOD. Not to scale.</figcaption>
+    </figure>
+
+    <p>
+      <b>Magnification, voxel size and resolution.</b> A laboratory CT uses a small source whose rays diverge in a
+      cone (Figure 4). A sample at a source-to-object distance SOD projects onto a detector at a source-to-detector
+      distance SDD with a geometric magnification <em>M</em> = SDD/SOD, by similar triangles. The voxel size is the
+      detector pixel pitch divided by that magnification. A voxel size is a sampling interval, not a resolution: two
+      features are told apart only if a lower value of µ lies between them, which needs at least one voxel between
+      two others, so the smallest resolvable spacing is at least two voxels (the sampling theorem's limit). The focal
+      spot of the source, the blur of the detector and the stability of the rotation make the real resolution
+      coarser still.
+    </p>
+
+    <div class="eq" id="eq-19a-2">
+      <div class="eq-body">
+        <div class="eq-math"><em>M</em> = <span class="frac"><span class="num">SDD</span><span class="den">SOD</span></span>, &emsp; <em>a</em><sub>vox</sub> = <span class="frac"><span class="num"><em>p</em></span><span class="den"><em>M</em></span></span>, &emsp; δ ≥ 2<em>a</em><sub>vox</sub></div>
+        <div class="eq-num">(19a.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>M</em> geometric magnification (dimensionless) · SDD source-to-detector distance, SOD source-to-object
+        distance (same unit, mm) · <em>p</em> detector pixel pitch (µm) · <em>a</em><sub>vox</sub> voxel size, the
+        edge of one reconstructed cube referred to the sample (µm) · δ smallest resolvable spacing (µm). The bound on δ
+        is a sampling limit only; source spot size and detector blur add to it. Cone-beam geometry with a point source.
+      </div>
+    </div>
+
+    <p>
+      Deck 19's first X-ray case applied CT to a whole flight-model telecom board (pp. 23–25). Rendering the volume
+      with the light materials removed showed the wires and pads; a clipping plane through the volume exposed rows of
+      pads inside a hybrid communications device mounted on the board; and slices showed the multilayer board, its
+      subcomponents and the attachment of the hybrid. A slice through the upper contacts of the hybrid showed what the
+      slide calls apparent solder bridging between pads, at several places: solder joining two pads that should be
+      separate, which shorts them. The slide says apparent; Lecture 20 presented the bridging as the cause of the
+      failure. A CT slice shows a continuous path of dense material, and an electrical check of the two pads, or a
+      cross-section, confirms that it conducts.
+    </p>
+
+    <p>
+      <b>Nano-CT of a memory stack.</b> A high-bandwidth memory (HBM) stack is a set of DRAM dies joined by dense
+      arrays of micro-bumps and through-silicon vias (<a href="m18-chip-bonding-packaging.html">M18 §7</a>). Its
+      bumps are too small and too deeply buried for a board-level CT. Deck 19 pp. 26–30 follow a 2025 study in
+      <em>Microelectronics Reliability</em> that imaged one with an X-ray nano-CT, a CT whose source spot and
+      magnification bring the voxel below a micrometre. The instrument on p. 26 has the source, the sample on a
+      rotation stage, and a flat-panel detector drawn 48° off the axis of the source, receiving the rays that leave the source at that
+      angle, in straight lines. The study also imaged by laminography, a tilted-geometry relative of CT, and the drawing
+      may show that set-up rather than the cone-beam CT of Figure 4 (the paper was not available to settle it). The reconstructed slice on p. 27
+      shows three kinds of joint in one image, labelled 20 µm micro-bumps between the DRAM dies, 25 µm interposer
+      bumps and 100 µm C4 copper bumps below, reconstructed with a voxel size of 600 nm.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">Three statements to read with care</p>
+      <p>
+        <b>The detector geometry.</b> Lecture 20 described the nano-CT detector as sitting deeper than the beam and the
+        X-rays as deflected onto it. The figure on Deck 19 p. 26 shows neither: the beam travels in a straight line
+        from source to sample, and the flat panel is mounted 48° off the source axis and receives the rays emitted in that direction.
+        X-rays are not bent by any element of a CT; the image is a straight-line projection. <b>Voxel and resolution.</b> Deck 19 p. 27 gives a voxel
+        size of 600 nm and p. 28 a resolution of 600 nm for the same scan. By (19a.2) the resolvable spacing is at least
+        twice the voxel, 1.2 µm; read the 600 nm as the voxel. <b>How many bumps have voids.</b> Lecture 20 said that
+        almost all the bumps had defects. The counts on p. 30 (below) do not show that by themselves: 1,680 voids in 1,275 bumps is an
+        average of 1.32 per bump, consistent with voids in most bumps or with several voids in fewer bumps. The slide's
+        horizontal slice beside the counts does show a dark interior spot in most of the bumps in that plane, which
+        supports the statement qualitatively, for one plane.
+      </p>
+    </div>
+
+    <p>
+      <b>Fast overview, then long scan.</b> Deck 19 p. 28 compares two scans of the same stack: a 30 s scan that
+      resolves the three bump levels and the stack's layout at coarse resolution, and a 75 min scan, 150 times longer,
+      that resolves the bumps individually. Lecture 20 stressed the workflow this implies: a fast overview first, to
+      find the region that matters, and a long high-resolution scan only of that region. The trade-off is set by the
+      detector. For a detector of a fixed number of pixels, a smaller voxel means a smaller field of view (1,000
+      voxels of 600 nm cover 0.6 mm), and each smaller voxel receives fewer photons, so the count statistics that
+      decide whether a 5 % contrast (E2) is visible require a longer exposure.
+    </p>
+
+    <p>
+      <b>Defects, and their populations.</b> In the long scan the slices show horizontal and vertical cracks, voids
+      below a micrometre and larger voids, and the geometry of each bump and its alignment with its pad (p. 29). A
+      crack that runs across a bump separates its upper and lower halves, and Lecture 20 called it a complete failure
+      of the joint; a void reduces the conducting cross-section and concentrates current and strain around it. The
+      study did not stop at example images. Segmenting the volume (p. 30), it identified 1,275 micro-bumps and 1,680
+      voids in the selected volume, found that 92.5 % of the voids were smaller than 50 µm³, and that 65 % had a
+      sphericity above 0.8 (the slide states both as fractions of the voids, but its histograms are plotted as volume
+      fraction, so they may be weighted by void volume; the paper was not available to settle it). Sphericity compares a shape's surface area with that of a sphere of the same volume and
+      equals 1 for a sphere, so most of the voids are nearly round, while a crack, flat and wide, has a low
+      sphericity. Counting populations is what turns imaging into a reliability measurement: a void fraction or a
+      crack count can be compared before and after thermal cycling (<a href="m19-reliability-qualification.html">M19 §5</a>).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 240" role="img" aria-labelledby="f19a-vx-t">
+<title id="f19a-vx-t">To scale: a grid of 600 nanometre voxels with three spherical voids drawn by their equivalent diameters. A 1 cubic micrometre void, 1.24 micrometres across, spans two voxels; a 0.1 cubic micrometre void, 0.58 micrometres across, is smaller than one voxel; part of a 50 cubic micrometre void, 4.57 micrometres across, spans more than seven</title>
+<defs><clipPath id="f19a-vx-c"><rect x="20" y="20" width="201.60000000000002" height="192"/></clipPath></defs>
+<line x1="20.0" y1="20" x2="20.0" y2="212" class="dg-faint"/>
+<line x1="34.4" y1="20" x2="34.4" y2="212" class="dg-faint"/>
+<line x1="48.8" y1="20" x2="48.8" y2="212" class="dg-faint"/>
+<line x1="63.2" y1="20" x2="63.2" y2="212" class="dg-faint"/>
+<line x1="77.6" y1="20" x2="77.6" y2="212" class="dg-faint"/>
+<line x1="92.0" y1="20" x2="92.0" y2="212" class="dg-faint"/>
+<line x1="106.4" y1="20" x2="106.4" y2="212" class="dg-faint"/>
+<line x1="120.8" y1="20" x2="120.8" y2="212" class="dg-faint"/>
+<line x1="135.2" y1="20" x2="135.2" y2="212" class="dg-faint"/>
+<line x1="149.6" y1="20" x2="149.6" y2="212" class="dg-faint"/>
+<line x1="164.0" y1="20" x2="164.0" y2="212" class="dg-faint"/>
+<line x1="178.4" y1="20" x2="178.4" y2="212" class="dg-faint"/>
+<line x1="192.8" y1="20" x2="192.8" y2="212" class="dg-faint"/>
+<line x1="207.2" y1="20" x2="207.2" y2="212" class="dg-faint"/>
+<line x1="221.6" y1="20" x2="221.6" y2="212" class="dg-faint"/>
+<line x1="20" y1="20.0" x2="221.6" y2="20.0" class="dg-faint"/>
+<line x1="20" y1="34.4" x2="221.6" y2="34.4" class="dg-faint"/>
+<line x1="20" y1="48.8" x2="221.6" y2="48.8" class="dg-faint"/>
+<line x1="20" y1="63.2" x2="221.6" y2="63.2" class="dg-faint"/>
+<line x1="20" y1="77.6" x2="221.6" y2="77.6" class="dg-faint"/>
+<line x1="20" y1="92.0" x2="221.6" y2="92.0" class="dg-faint"/>
+<line x1="20" y1="106.4" x2="221.6" y2="106.4" class="dg-faint"/>
+<line x1="20" y1="120.8" x2="221.6" y2="120.8" class="dg-faint"/>
+<line x1="20" y1="135.2" x2="221.6" y2="135.2" class="dg-faint"/>
+<line x1="20" y1="149.6" x2="221.6" y2="149.6" class="dg-faint"/>
+<line x1="20" y1="164.0" x2="221.6" y2="164.0" class="dg-faint"/>
+<line x1="20" y1="178.4" x2="221.6" y2="178.4" class="dg-faint"/>
+<line x1="20" y1="192.8" x2="221.6" y2="192.8" class="dg-faint"/>
+<line x1="20" y1="207.2" x2="221.6" y2="207.2" class="dg-faint"/>
+<circle cx="72.8" cy="68.0" r="6.9" class="dg-acc" fill="none" style="stroke-width:2" clip-path="url(#f19a-vx-c)"/>
+<circle cx="140.0" cy="72.8" r="14.9" class="dg-acc" fill="none" style="stroke-width:2" clip-path="url(#f19a-vx-c)"/>
+<circle cx="178.4" cy="207.2" r="54.8" class="dg-acc" fill="none" style="stroke-width:2" clip-path="url(#f19a-vx-c)"/>
+<text x="236" y="56" class="dg-label-sm">0.1 µm³: 0.58 µm,</text>
+<text x="236" y="70" class="dg-label-sm">under one voxel</text>
+<text x="236" y="100" class="dg-label-sm">1 µm³: 1.24 µm,</text>
+<text x="236" y="114" class="dg-label-sm">two voxels</text>
+<text x="236" y="170" class="dg-label-sm">50 µm³: 4.57 µm,</text>
+<text x="236" y="184" class="dg-label-sm">7.6 voxels</text>
+<line x1="20" y1="226" x2="34.4" y2="226" class="dg-ink" style="stroke:var(--ink);stroke-width:2"/>
+<text x="40.4" y="230" class="dg-label-sm">one voxel, 600 nm</text>
+</svg>
+      <figcaption><b>Figure 5.</b> A 600 nm voxel grid with spheres of 0.1, 1 and 50 µm³ drawn to scale by their equivalent diameters (the largest only in part). Two voxels across is the least that can resolve a void; below one voxel a void can at most lower the value of the voxel that contains it.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E3 · Which voids can a 600 nm voxel resolve?</div>
+      <div class="ex-body">
+        <p><b>Given</b> the voxel size of Deck 19 p. 27, 600 nm, and the void volumes of p. 30: the 50 µm³ threshold
+          below which 92.5 % of the voids lie, and two smaller volumes, 1 µm³ and 0.1 µm³. <b>Find</b> the diameter of
+          a sphere of each volume, its size in voxels, and whether it is resolved.</p>
+        <p><b>Plan.</b> Convert each volume to the diameter of a sphere of equal volume, <em>d</em> =
+          (6<em>V</em>/π)<sup>1/3</sup>, divide by the voxel size, and compare with the two-voxel limit of (19a.2).
+          The hinge is that detection and resolution differ: a void smaller than two voxels can still lower the mean µ
+          of the voxel it occupies, so it may be detected without its shape being measured.</p>
+        <p class="ex-step"><b>The 50 µm³ void.</b> <em>d</em> = (6 × 50/π)<sup>1/3</sup> = 4.57 µm = 7.62 voxels. It
+          is resolved, and its shape can be measured: it occupies about 231 voxels, since one voxel is
+          (0.600 µm)³ = 0.216 µm³.</p>
+        <p class="ex-step"><b>The 1 µm³ void.</b> <em>d</em> = 1.24 µm = 2.07 voxels, at the two-voxel limit: present,
+          but its sphericity cannot be measured reliably.</p>
+        <p class="ex-step"><b>The 0.1 µm³ void.</b> <em>d</em> = 0.576 µm = 0.96 voxel: smaller than one voxel. Why it
+          may still show: the reconstruction assigns the voxel the average µ of copper and void inside it, so it reads
+          darker than its neighbours (the partial-volume effect), but the void's size and shape are lost.</p>
+        <p class="ex-answer">Voids of 50 µm³ span about 7.6 voxels and are fully resolved; 1 µm³ voids sit at the
+          two-voxel limit; 0.1 µm³ voids are below one voxel and can at most be detected. Check: halving the voxel to
+          300 nm doubles each count in voxels, so the 1 µm³ void would span 4.1.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A solder bump of tin, 25 µm along the ray, contains a 5 µm void, and the scan is run at 40 keV. Using µ/ρ(Sn) = 19.42 cm²/g, ρ = 7.310 g/cm³, and for copper µ/ρ = 4.862 cm²/g, ρ = 8.960 g/cm³, how much does the void brighten the ray in a tin bump and in a copper bump of the same size? Which bump shows the void more clearly, and why?</summary>
+      <div class="answer">
+        <p>By (19a.1) the brightening is exp(µ<em>d</em>) with <em>d</em> = 5×10⁻⁴ cm. Tin: µ = (19.42)(7.310) =
+          142 cm⁻¹, so exp(142 × 5×10⁻⁴) = 1.07, a 7 % brightening; the transmissions are 0.701 through the full 25 µm
+          and 0.753 through the path with the void. Copper: µ = (4.862)(8.960) = 43.6 cm⁻¹, giving 1.02, a 2 %
+          brightening (0.897 and 0.917). The tin bump shows the void 3.3 times more strongly in logarithmic contrast (142/43.6), because at 40 keV tin lies above its K edge (29.2 keV) and its µ is more than three
+          times copper's; the void's contrast is proportional to the µ of the material it displaces.</p>
+      </div>
+    </details>
+
+    <details class="check">
+      <summary>An analyst reports that "every void in the stack is under 50 µm³ except about a hundred". From the counts on Deck 19 p. 30, how many voids are 50 µm³ or larger, and do the counts show what fraction of the bumps contain a void?</summary>
+      <div class="answer">
+        <p>If the 7.5 % is a fraction by number, 7.5 % of 1,680 is 126 voids at or above 50 µm³, so "about a hundred"
+          is close; if it is a fraction of void volume, as the slide's histogram axes suggest, the count cannot be found
+          from the slide. Either way the counts do not fix how many bumps hold a void: 1.32 voids per bump on average is
+          consistent with a void in nearly every bump and with several voids in each of fewer bumps. To state the
+          fraction of bumps affected, the study would have to report voids per bump, which the slide does not. What
+          supports "almost all the bumps" is the image, not the numbers: the slide's horizontal slice shows a dark
+          interior spot in most of the bumps visible in that one plane.</p>
+      </div>
+    </details>
+
+    <h2>3 · Thermal imaging and an electrical-overstress case</h2>
+
+    <p>
+      X-ray imaging finds a defect in the structure. Thermal imaging finds where the part dissipates power, which is
+      where current flows that should not. A short between an output and ground, for example, carries its current
+      through one small region, and the Joule heat released there raises the local temperature above its
+      surroundings. A camera that images the infrared emission of the die therefore shows the site of the short as a
+      hot spot, even when nothing is visible under an optical microscope. This section explains what the camera
+      detects and why the image is taken as a difference of two frames, then completes Deck 19's demultiplexer case.
+    </p>
+
+    <p>
+      <b>What the camera detects.</b> Every surface emits thermal radiation with a spectrum close to that of a black
+      body at its temperature, scaled by its emissivity, the fraction of black-body emission a surface achieves at
+      each wavelength (between 0 and 1). Wien's displacement law places the peak of the black-body spectrum at
+      λ<sub>max</sub> = <em>b</em>/<em>T</em>, with <em>b</em> = 2.898×10⁻³ m·K: 9.72 µm at 25 °C and 7.77 µm at
+      100 °C. The camera of the NASA study in §4, an indium antimonide (InSb) detector, works in the band from
+      3 to 5 µm, on the short-wavelength side of that peak. On that side the emission rises much faster with
+      temperature than the total does, which makes the band sensitive to small temperature rises (E4). Thermal imaging
+      of a die is complicated by emissivity: polished metal has a low emissivity and an oxide a high one, so an image of
+      a die at uniform temperature still shows its layout as a pattern of bright and dark.
+    </p>
+
+    <p>
+      <b>Why the image is a difference.</b> Deck 19 p. 39 gives the procedure: the part is biased with an external
+      supply, the thermal camera records the emission, and an unpowered frame is subtracted from the result. Both
+      frames carry the same pattern of emissivity and the same background, so the difference removes them and leaves
+      only the change in emission caused by the power the bias dissipates. A hot spot too faint to see against the
+      emissivity pattern in a single frame stands out in the difference (Figure 6).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 150" role="img" aria-labelledby="f19a-sub-t">
+  <title id="f19a-sub-t">Three panels: a powered infrared frame showing the layout of a die as bright and dark stripes with a faint spot; an unpowered frame with the same stripes; their difference, in which the stripes cancel and only the hot spot remains</title>
+  <rect x="10" y="20" width="110" height="100" class="dg-fill"/>
+  <rect x="22" y="30" width="14" height="80" class="dg-soft"/><rect x="50" y="30" width="14" height="80" class="dg-soft"/><rect x="78" y="30" width="14" height="80" class="dg-soft"/>
+  <circle cx="57" cy="62" r="7" class="dg-acc-f" style="opacity:.45"/>
+  <text x="65" y="138" class="dg-label-sm" text-anchor="middle">biased</text>
+  <text x="137" y="74" class="dg-label" text-anchor="middle">−</text>
+  <rect x="155" y="20" width="110" height="100" class="dg-fill"/>
+  <rect x="167" y="30" width="14" height="80" class="dg-soft"/><rect x="195" y="30" width="14" height="80" class="dg-soft"/><rect x="223" y="30" width="14" height="80" class="dg-soft"/>
+  <text x="210" y="138" class="dg-label-sm" text-anchor="middle">unpowered</text>
+  <text x="282" y="74" class="dg-label" text-anchor="middle">=</text>
+  <rect x="300" y="20" width="110" height="100" class="dg-rule" fill="none"/>
+  <circle cx="347" cy="62" r="7" class="dg-acc-f"/>
+  <text x="355" y="138" class="dg-label-sm" text-anchor="middle">hot spot only</text>
+</svg>
+      <figcaption><b>Figure 6.</b> Frame subtraction, schematic. The emissivity pattern of the layout is the same with and without bias, so it cancels; the emission added by the dissipated power does not.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E4 · Why the 3–5 µm band suits a die near room temperature</div>
+      <div class="ex-body">
+        <p><b>Given</b> Wien's constant <em>b</em> = 2.898×10⁻³ m·K; Planck's law for the spectral exitance of a
+          black body; a die at 25 °C, and a hot spot at 35 °C. <b>Find</b> the peak wavelengths, the fraction of the
+          total emission that falls in the 3–5 µm band, and how much the emission in that band rises between 25 and
+          35 °C compared with the total.</p>
+        <p><b>Plan.</b> Wien's law gives the peaks; the in-band fraction is the integral of Planck's law from 3 to
+          5 µm divided by the Stefan–Boltzmann total σ<em>T</em>⁴, computed numerically. The hinge is that the band
+          lies on the steep short-wavelength flank of the spectrum.</p>
+        <p class="ex-step"><b>Peaks.</b> 25 °C = 298.15 K: λ<sub>max</sub> = 2.898×10⁻³/298.15 = 9.72 µm. At 50 °C,
+          8.97 µm; at 100 °C, 7.77 µm. Only at about 350 °C does the peak reach 4.65 µm, inside the band.</p>
+        <p class="ex-step"><b>Fraction in band.</b> The integral gives 1.22 % of the total emission between 3 and
+          5 µm at 25 °C, and 1.53 % at 35 °C.</p>
+        <p class="ex-step"><b>Sensitivity.</b> The total emission rises as <em>T</em>⁴: (308.15/298.15)⁴ = 1.141, a
+          14.1 % rise for 10 K. The in-band emission rises by 42.7 %, three times as much, because the 3–5 µm band
+          lies where the exponential factor of Planck's law dominates.</p>
+        <p class="ex-answer">The peak lies near 10 µm, so the band holds only about 1.2 % of the emission, but that
+          emission changes three times faster with temperature than the total. Check: the band's fraction increases
+          with temperature (1.22 % to 1.53 %), as it must when the peak moves toward shorter wavelengths.</p>
+      </div>
+    </div>
+
+    <p>
+      <b>The demultiplexer, completed.</b> In Deck 19's first case (§1), delidding showed nothing. Thermal imaging,
+      with the part biased by an external supply, showed a hot spot adjacent to the failing output's bond pad, and
+      overlaying the optical image of the die placed it precisely (p. 39). The die was then deprocessed, its upper
+      layers removed by the methods the slide lists, plasma etching, planar polishing and chemical etching, until the
+      circuitry at the site was exposed (p. 38). Optical micrographs at increasing magnification followed the output's
+      metal from the pad to its output driver, the transistors that drive the pin, and a scanning electron microscope
+      image showed the damage at one point of the driver. The mechanism identified was electrical overstress (EOS)
+      damage to the output driver circuitry.
+    </p>
+
+    <p>
+      Electrical overstress is an overstress mechanism in the sense of <a href="m19-reliability-qualification.html">M19 §1</a>:
+      a voltage or current beyond the part's rating, applied once, here plausibly during the power-up event of the
+      failure background. The excess current heats a conductor or junction locally, and the damage it leaves can
+      join nodes that should be separate, which is a short. Lecture 20 described it as a sudden current that damaged
+      the dielectric and left the chip dead. The sequence of this case is the loop of Figure 1 in full: background (a
+      power-up event), mode (a 3.8 Ω short), isolation (thermal imaging, after optical inspection found nothing),
+      deprocessing (plasma, polishing, chemical etching), mechanism (EOS at the driver).
+    </p>
+
+    <div class="box">
+      <p class="box-title">Another way to find a current path</p>
+      <p>
+        Thermal emission is one of several signals that mark where current flows. <a href="m17b-transistors-high-temperature.html">M17b §3</a>
+        met a second in Lecture 15's case of a cracked dielectric between gate and source metal: optical beam-induced resistance change (OBIRCH), in which a
+        scanned laser heats each point of the die in turn and the change of current through the part marks the points
+        on the current path. The two are complementary: thermal imaging reads the heat the fault produces, OBIRCH
+        perturbs the circuit with heat and reads the electrical response.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>A part shows a bright region in a single powered infrared frame, at the position of a wide aluminium bus line. The difference with an unpowered frame shows nothing there. What explains the first image, and what does the second say about the bus?</summary>
+      <div class="answer">
+        <p>The bright region in the single frame need not be hot. A powered frame contains the emissivity pattern of
+          the die as well as any temperature change, and a region whose emissivity differs from its surroundings, here
+          the bus against the dielectric around it, appears brighter or darker at uniform temperature (a polished metal
+          can also reflect the emission of warmer surroundings into the camera). Subtracting the unpowered frame
+          removes that pattern, because it is the same with and without bias. A null difference means the bias adds no
+          detectable emission at the bus: the fault lies elsewhere, or dissipates too little at that bias to be seen.</p>
+      </div>
+    </details>
+
+    <h2>4 · The resistor case: constriction defects, Joule hot spots and fatigue</h2>
+
+    <p>
+      Deck 19 ended by announcing that the next failure analysis would use a NASA report, and Lecture 20 added that it
+      would begin with a resistor, the simplest of components, and its electrical stress. The report posted with the course as an optional reading
+      on reliability and parts screening is a study of exactly that kind: J. Brusse (SSAI at NASA Goddard
+      Space Flight Center) and L. Panashchenko (NASA Goddard), presented at the 2019 NASA Electronic Parts and Packaging (NEPP) Electronics Technology
+      Workshop. It shows how a defect too small for the standard screens heats under current, how that heat fatigues
+      and fractures it during operation, and how the same heating, imaged in the infrared, finds the defect before the
+      part is used. Deck 20 p. 23 frames the question with the same component: a designer sees a resistor, a parts
+      engineer sees a line in a bill of materials ("Resistor Film 1206 100 Ohm 1% 0.25W"), and a failure analyst sees
+      its failure mechanisms.
+    </p>
+
+    <p>
+      <b>What a foil resistor is.</b> The parts in the study are surface-mount (SMT) foil resistors, chosen where a
+      resistance must be precise and stable: the report lists a tolerance of ±0.01 % (±100 ppm), a temperature
+      coefficient of resistance below ±1 ppm/°C from −55 to +125 °C, and a drift of at most ±0.03 % (±300 ppm) after a
+      2,000-hour life test at rated power and 70 °C. The resistive element is a foil of a nickel–chromium (NiCr) alloy,
+      about 2–5 µm thick, bonded with an adhesive (about 5 µm) to an alumina substrate (the ceramic of
+      <a href="m18-chip-bonding-packaging.html">M18 §2</a>) and protected by a polymer coating (about 10 µm) and an
+      epoxy coating (about 10–20 µm) (Figure 7). Photolithography and electrochemical etching cut the foil into a
+      meander of gridlines, and the value is trimmed by laser or mechanical cutting of trim tabs, combinations of
+      pattern segments connected in parallel.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 150" role="img" aria-labelledby="f19a-foil-t">
+  <title id="f19a-foil-t">Layer stack of a surface-mount foil resistor from top to bottom: epoxy coating about 10 to 20 micrometres, polymer coating about 10, etched nickel-chromium foil 2 to 5, adhesive about 5, alumina substrate. Not to scale</title>
+  <rect x="40" y="14" width="250" height="26" class="dg-soft"/>
+  <text x="300" y="31" class="dg-label-sm">epoxy coating, ~10–20 µm</text>
+  <rect x="40" y="40" width="250" height="16" class="dg-fill"/>
+  <text x="300" y="52" class="dg-label-sm">polymer coating, ~10 µm</text>
+  <rect x="52" y="56" width="30" height="8" class="dg-acc-f"/><rect x="96" y="56" width="30" height="8" class="dg-acc-f"/><rect x="140" y="56" width="30" height="8" class="dg-acc-f"/><rect x="184" y="56" width="30" height="8" class="dg-acc-f"/><rect x="228" y="56" width="30" height="8" class="dg-acc-f"/>
+  <text x="300" y="63" class="dg-label-sm">NiCr foil gridlines, ~2–5 µm</text>
+  <rect x="40" y="64" width="250" height="10" class="dg-soft"/>
+  <text x="300" y="73" class="dg-label-sm">adhesive, ~5 µm</text>
+  <rect x="40" y="74" width="250" height="50" class="dg-ink" style="opacity:.25"/>
+  <text x="300" y="104" class="dg-label-sm">alumina substrate</text>
+  <text x="165" y="142" class="dg-label-sm" text-anchor="middle">thicknesses from the NEPP report; not to scale</text>
+</svg>
+      <figcaption><b>Figure 7.</b> Construction of an SMT foil resistor, after the NEPP report's conceptual cross-section. The coatings are transparent in the 3–5 µm infrared band, which is what allows the screen below to see the foil without removing them.</figcaption>
+    </figure>
+
+    <div class="eq" id="eq-19a-3">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em> = <span class="frac"><span class="num">ρ<em>L</em></span><span class="den"><em>wt</em></span></span>, &emsp; <em>j</em> = <span class="frac"><span class="num"><em>I</em></span><span class="den"><em>wt</em></span></span>, &emsp; <em>p</em><sub>v</sub> = ρ<em>j</em>²</div>
+        <div class="eq-num">(19a.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em> resistance (Ω) · ρ resistivity of the foil (Ω·cm) · <em>L</em> length of the conducting path (cm) ·
+        <em>w</em> gridline width and <em>t</em> foil thickness (cm), so <em>wt</em> is the cross-sectional area that
+        the report writes as <em>A</em> · <em>j</em> current density (A/cm²) · <em>I</em> current (A) ·
+        <em>p</em><sub>v</sub> Joule power dissipated per unit volume (W/cm³). Uniform current in a straight gridline;
+        at a constriction <em>w</em> is the local width, and the current spreads back to the full width within a few
+        widths of it.
+      </div>
+    </div>
+
+    <p>
+      Equation (19a.3) is the report's own starting point: low values use wide, thick, short gridlines (about 10 µm or
+      more wide, about 5 µm thick), high values narrow, thin, long ones (under about 10 µm wide, about 2 µm thick).
+      Its second and third forms carry the failure mechanism. A <b>constriction defect</b> is a local narrowing of the
+      current path, of three kinds the report shows in electron micrographs: a <b>notch</b>, a bite out of the edge of
+      a gridline; a <b>bridge</b>, a thin strip of foil left by the etch between two gridlines that should be
+      separate; and an <b>embedded particle</b>, such as an aluminium nitride grain in the foil, at which the gridline
+      narrows. At a constriction the same current crosses a smaller area, so <em>j</em> rises as 1/<em>w</em> and the
+      power dissipated per unit volume as 1/<em>w</em>².
+    </p>
+
+    <p>
+      <b>The mechanism.</b> The report states the chain in four links. Constrictions carry a higher current density and
+      develop localized hot spots by Joule heating. The hot spots expand the NiCr foil locally more than the rest of
+      the pattern. Constrictions are therefore at risk of thermomechanical fatigue fracture, especially during power
+      cycling, because each on–off cycle strains and relaxes them: the mechanism of
+      <a href="m19-reliability-qualification.html">M19 §5</a>, driven here by the part's own dissipation instead of
+      the environment. When a constriction fractures, the resistance shifts upward, as far as an open circuit. The
+      direction of the shift follows from the geometry. A fractured notch cuts a gridline that is in series, which
+      opens the path. A bridge is a parallel path that bypassed part of the meander, and the report notes that it
+      contributes directly to the final resistance value: it was present when the resistor was trimmed, so when it
+      breaks, the bypassed section returns in series and the resistance rises (Figure 8).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 170" role="img" aria-labelledby="f19a-con-t">
+  <title id="f19a-con-t">Two schematic defects. Left, a notch narrows one gridline and the current lines crowd through the remaining width, where the power density is highest. Right, a thin bridge joins two neighbouring gridlines and carries current across, bypassing the turn of the meander; if it breaks, the bypassed length is added back in series</title>
+  <text x="105" y="14" class="dg-label-sm" text-anchor="middle">notch</text>
+  <rect x="20" y="30" width="170" height="26" class="dg-fill"/>
+  <path d="M90,56 Q105,36 120,56 Z" class="dg-soft"/>
+  <path d="M22,38 L88,38 Q105,32 122,38 L188,38" class="dg-acc" fill="none"/>
+  <path d="M22,46 L90,46 Q105,38 120,46 L188,46" class="dg-acc" fill="none"/>
+  <text x="105" y="74" class="dg-label-sm" text-anchor="middle">current crowds: j ∝ 1/w, p ∝ 1/w²</text>
+  <rect x="20" y="96" width="170" height="14" class="dg-fill"/>
+  <text x="105" y="128" class="dg-label-sm" text-anchor="middle">unaltered gridline</text>
+  <text x="330" y="14" class="dg-label-sm" text-anchor="middle">bridge</text>
+  <rect x="240" y="30" width="180" height="16" class="dg-fill"/>
+  <rect x="240" y="86" width="180" height="16" class="dg-fill"/>
+  <rect x="404" y="30" width="16" height="72" class="dg-fill"/>
+  <rect x="318" y="46" width="4" height="40" class="dg-acc-f"/>
+  <text x="312" y="70" class="dg-label-sm" text-anchor="end">bridge</text>
+  <path d="M250,38 L320,38 L320,94 L250,94" class="dg-acc" fill="none" style="stroke-dasharray:4 3"/>
+  <text x="330" y="124" class="dg-label-sm" text-anchor="middle">bypasses the turn: a parallel path;</text>
+  <text x="330" y="138" class="dg-label-sm" text-anchor="middle">when it breaks, R rises</text>
+</svg>
+      <figcaption><b>Figure 8.</b> The two constriction defects that failed or were found most often in the NEPP study, schematic. Both are narrow, so both concentrate Joule power; a bridge also lowers the resistance the part was trimmed with, so its fracture shifts R upward.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E5 · Current density at a notch</div>
+      <div class="ex-body">
+        <p><b>Given</b> one lot of the study: 0805 size, 5.1 kΩ, rated 100 mW, foil 2.3 µm thick, gridline 6.6 µm wide.
+          The screening pulse is 6.25 times rated power. The visual screen rejects notches that remove more than 75 % of
+          the line width. <b>Find</b> the current and current density at rated power, the same at 6.25× rated power, and
+          the factor by which a notch at the visual reject limit raises the local current density and power density.</p>
+        <p><b>Plan.</b> Rated power and resistance fix the current through <em>P</em> = <em>I</em>²<em>R</em>; the
+          cross-section fixes <em>j</em> by (19a.3). The hinge is that power scales as current squared, so a 6.25-fold
+          power is a 2.5-fold current, and a constriction multiplies power density by the square of its narrowing.</p>
+        <p class="ex-step"><b>Cross-section.</b> <em>A</em> = <em>wt</em> = (6.6 µm)(2.3 µm) = 15.2 µm² = 1.52×10⁻⁷ cm².</p>
+        <p class="ex-step"><b>Current at rated power.</b> <em>I</em> = √(<em>P</em>/<em>R</em>) = √(0.100 W / 5,100 Ω) =
+          4.43 mA, at <em>V</em> = <em>IR</em> = 22.6 V.</p>
+        <p class="ex-step"><b>Current density.</b> <em>j</em> = 4.43×10⁻³ A / 1.52×10⁻⁷ cm² = 2.92×10⁴ A/cm².</p>
+        <p class="ex-step"><b>At 6.25× rated power.</b> <em>I</em> scales as √<em>P</em>, so it rises by √6.25 = 2.5, to
+          11.1 mA, and <em>j</em> to 7.29×10⁴ A/cm².</p>
+        <p class="ex-step"><b>At a notch leaving 25 % of the width.</b> The same current crosses a quarter of the area:
+          <em>j</em> rises 4-fold, to 2.92×10⁵ A/cm² under the screening pulse, and <em>p</em><sub>v</sub> = ρ<em>j</em>²
+          16-fold, since ρ is that of the same foil. A notch leaving half the width raises <em>p</em><sub>v</sub> 4-fold.</p>
+        <p class="ex-answer">At rated power 4.43 mA and 2.92×10⁴ A/cm²; under the screening pulse 11.1 mA and
+          7.29×10⁴ A/cm²; a notch at the 75 % reject limit multiplies the local power density by 16. Check: 6.25 = 2.5²
+          matches the factor on the current, and the units A/cm² follow from amperes over square centimetres.</p>
+      </div>
+    </div>
+
+    <p>
+      <b>Why the standard screens miss them.</b> The report lists the screens such a resistor normally passes (its
+      p. 7): optical inspection at 30× to 60× before the coating is applied, rejecting notches that remove more than
+      75 % of the line width and bridges narrower than 10 % of the smallest line width; a short-time overload (STOL) of
+      6.25× rated power for 5 seconds, rejecting a shift above 0.02 %; and power conditioning at 1 to 1.5× rated power
+      at maximum operating temperature for 100 hours, rejecting a shift above 0.03 % (the report's own p. 27 gives this
+      conditioning instead as 1.5× rated power for 100 hours at 70 °C). Each screen leaves a gap. A notch
+      that removes 70 % passes the visual limit and still raises the local power density 11-fold by (19a.3). A bridge
+      wider than 10 % of the line passes by the criterion. And a constriction that survives 5 seconds of overload, or
+      100 hours of conditioning, has not yet accumulated the cycles that fracture it. The report adds that for foil
+      resistors the overload is applied to a sample of 10 pieces of a high-reliability lot. Its conclusion: resistors
+      with significant constriction defects are still occasionally received despite the screens.
+    </p>
+
+    <p>
+      <b>The pulsed-power infrared screen.</b> The new method applies the same 6.25× rated power as the overload, but
+      in pulses of 50 ms at a 10 % duty cycle (p. 8; the demonstration on p. 9 ran 50 ms on and 150 ms off, a 25 % duty
+      cycle), one or more of them, while a high-resolution infrared camera images the
+      resistor. The report states that these conditions confine the heating to the localized constrictions, which
+      then appear as hot spots; a resistor with a hot spot is rejected. The protective coatings are transparent from 3
+      to 5 µm, so the foil is imaged through them, and the screen is non-destructive: it can be applied by the
+      manufacturer before coating or by the user after purchase. Resolution decides what it finds. The camera used (an
+      InSb detector, 3–5 µm) images about 5 µm per pixel, close to the width of a gridline (4.1 to 6.6 µm in the
+      study's lots); on a resistor with two constriction defects, a camera at about 25 µm per pixel left it in doubt
+      whether even one hot spot was detected.
+    </p>
+
+    <p>
+      <b>The test of the screen.</b> The study screened 280 foil resistors, 40 from each of seven lots of three
+      manufacturing types, and reported constriction defects in about 10 to 25 % of the resistors in each lot (its headline; the lot counts reach
+      11 of 40, 27.5 %, in one lot unless some resistors carry both defects): 30 with
+      notch defects and 28 with bridge defects in all. Every resistor then ran a 10,000-hour life test at rated power
+      and 70 °C, switched 1.5 hours on and 0.5 hours off, so each saw 5,000 power cycles. Three failed, each by an
+      abrupt positive shift of resistance (Figure 9), and the failure analysis of each closed the loop of §1:
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Resistor</th><th>Infrared screen before life test</th><th>Shift</th><th>After life test</th><th>SEM finding</th></tr></thead>
+        <tbody>
+          <tr><td>0805, 5.1 kΩ (S/N 12)</td><td>4 hot spots</td><td>≈ 11,000 ppm in total, in two steps</td><td>2 hot spots disrupted (images after 250 and 2,000 h)</td><td>Two fractured bridges</td></tr>
+          <tr><td>1206, 20 kΩ (S/N 28)</td><td>1 hot spot</td><td>≈ 19,400 ppm</td><td>Hot spot disrupted (after 4,000 h)</td><td>One fractured bridge</td></tr>
+          <tr><td>2010, 50 kΩ (S/N 48)</td><td>1 hot spot</td><td>≈ 4,200 ppm</td><td>Hot spot disrupted (after 4,000 h)</td><td>One fractured bridge</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      In every failure, a hot spot seen before the life test was a bridge, the bridge fractured during the life test,
+      and its hot spot was disrupted in the infrared image afterwards, since a fractured bridge no longer carries the
+      current that heated it. The infrared screen had therefore flagged each failing resistor before it failed. The
+      report concludes that the screen suits both an in-process inspection before encapsulation and a non-destructive
+      screen after procurement. The study also closes the logic of the resistor lecture the deck announced: a defect
+      located by its response to electrical stress, imaged by its heat, confirmed by electron microscopy and traced to
+      a fatigue mechanism, with a new screen as the improvement.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 180" role="img" aria-labelledby="f19a-life-t">
+  <title id="f19a-life-t">Resistance shift in parts per million against life-test hours, schematic: three resistors stay near zero, far below the 300 ppm reject limit, until a bridge fractures, when each jumps abruptly, to about 11,000, 19,400 and 4,200 ppm, and stays there</title>
+  <line x1="50" y1="150" x2="420" y2="150" class="dg-rule"/>
+  <line x1="50" y1="150" x2="50" y2="16" class="dg-rule"/>
+  <text x="235" y="172" class="dg-label-sm" text-anchor="middle">life-test hours, 0 to 10,000 (step times schematic)</text>
+  <text x="16" y="84" class="dg-label-sm" text-anchor="middle" transform="rotate(-90 16 84)">ΔR (ppm)</text>
+  <line x1="50" y1="147.8" x2="420" y2="147.8" class="dg-guide" stroke-dasharray="3 3"/>
+  <text x="418" y="143" class="dg-label-sm" text-anchor="end">300 ppm reject limit</text>
+  <polyline points="50,150 62,150 62,73 420,73" class="dg-acc" fill="none" style="stroke-width:2"/>
+  <text x="70" y="67" class="dg-label-sm">0805, 5.1 kΩ: ≈ 11,000</text>
+  <polyline points="50,150 198,150 198,13 420,13" class="dg-ink" fill="none" style="fill:none;stroke:var(--ink);stroke-width:2"/>
+  <text x="206" y="30" class="dg-label-sm">1206, 20 kΩ: ≈ 19,400</text>
+  <polyline points="50,149 198,149 198,121 420,121" class="dg-line" fill="none" style="stroke-width:2"/>
+  <text x="206" y="115" class="dg-label-sm">2010, 50 kΩ: ≈ 4,200</text>
+</svg>
+      <figcaption><b>Figure 9.</b> The three life-test failures of the NEPP study, schematic. The vertical scale is linear, 0 to 20,000 ppm, so the 300 ppm limit is the dashed line just above zero; the final shifts are the report's, and the step times only indicate early (0805) and late (the other two). The 0805 part's shift came in two steps that the drawing merges.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E6 · How large a section of meander did a bridge bypass?</div>
+      <div class="ex-body">
+        <p><b>Given</b> the 2010-size, 50 kΩ resistor whose single bridge fractured with a shift of ≈ 4,200 ppm, and
+          the 1206-size, 20 kΩ resistor whose shift was ≈ 19,400 ppm; the 300 ppm life-test limit. <b>Find</b> each
+          shift as a percentage and as a multiple of the limit, the resistance added, and the share of the meander the
+          bridge had bypassed, in a model in which the bridge's own resistance is negligible.</p>
+        <p><b>Plan.</b> Let the full meander be <em>R</em><sub>0</sub> and the bypassed section <em>R</em><sub>s</sub>.
+          With the bridge, <em>R</em> = <em>R</em><sub>0</sub> − <em>R</em><sub>s</sub>, the trimmed value; after
+          fracture, <em>R</em><sub>0</sub>. Then Δ<em>R</em>/<em>R</em> = <em>R</em><sub>s</sub>/(<em>R</em><sub>0</sub>
+          − <em>R</em><sub>s</sub>), which rearranges to <em>R</em><sub>s</sub>/<em>R</em><sub>0</sub> =
+          <em>x</em>/(1 + <em>x</em>) with <em>x</em> = Δ<em>R</em>/<em>R</em>.</p>
+        <p class="ex-step"><b>Convert the shifts.</b> 1 ppm = 10⁻⁶ = 10⁻⁴ %. So 4,200 ppm = 0.42 %, 14 times the
+          300 ppm limit; 19,400 ppm = 1.94 %, 65 times.</p>
+        <p class="ex-step"><b>Resistance added.</b> Δ<em>R</em> = <em>xR</em>: (4.2×10⁻³)(50 kΩ) = 210 Ω, and
+          (1.94×10⁻²)(20 kΩ) = 388 Ω.</p>
+        <p class="ex-step"><b>Share of the meander.</b> <em>R</em><sub>s</sub>/<em>R</em><sub>0</sub> = 0.0042/1.0042 =
+          0.418 %, and 0.0194/1.0194 = 1.90 %. Why the model gives a lower bound: a real bridge has resistance of its
+          own and carries only part of the current around the section, so the section it bypassed must be larger than
+          this to produce the same shift.</p>
+        <p class="ex-answer">0.42 % (14× the limit; 210 Ω; at least 0.42 % of the meander) and 1.94 % (65× the limit;
+          388 Ω; at least 1.9 %). Check: both shifts are positive, as the fracture of a parallel path requires, and for
+          small shifts <em>x</em> ≈ <em>R</em><sub>s</sub>/<em>R</em><sub>0</sub>.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A 50 kΩ foil resistor rated 300 mW has gridlines 4.8 µm wide in a 2.5 µm foil. What current density does a 6.25× rated-power pulse drive through a gridline, and by what factor does a notch that leaves 40 % of the width raise the local power density? Would the visual screen reject that notch?</summary>
+      <div class="answer">
+        <p>Rated current √(0.300/50,000) = 2.45 mA; through (4.8 µm)(2.5 µm) = 12.0 µm² = 1.20×10⁻⁷ cm², that is
+          2.04×10⁴ A/cm². The pulse multiplies the current by √6.25 = 2.5, giving 5.10×10⁴ A/cm². A notch leaving 40 % of
+          the width raises <em>j</em> by 1/0.4 = 2.5 and the power density by 2.5² = 6.25. Under the pulse the notch
+          therefore dissipates per unit volume 6.25 × 6.25 = 39 times what the line does at rated power. It removes 60 %
+          of the width, short of the 75 % visual reject limit, so the visual screen passes it; the infrared screen
+          would show it as a hot spot.</p>
+      </div>
+    </details>
+
+    <h2>5 · The focused ion beam</h2>
+
+    <p>
+      Once a site is located, it must be seen in section: a crack under a bump, a burned region under a gate, a void
+      at a depth below the surface. The focused ion beam (FIB) cuts that section at a chosen point with sub-micrometre
+      precision. It is a column, much like that of a scanning electron microscope (SEM), that focuses a beam of
+      gallium ions instead of electrons; the ions are heavy enough to knock atoms out of the surface, so the beam
+      mills where it is scanned. Deck 20 calls it a maskless etching process: the pattern is written by the beam
+      itself, with no photomask. This section explains the ion source, why a FIB focuses with electric rather than
+      magnetic fields, and how a FIB and a SEM are combined in one instrument.
+    </p>
+
+    <p>
+      <b>The liquid-metal ion source.</b> The source (Deck 20 p. 4) is a tungsten needle with a tip radius of 1 to
+      3 µm, mounted below a small reservoir of gallium and heated by a coil until the gallium melts and wets the
+      needle. An extractor electrode facing the tip is held at 6 to 10 kV relative to it. The electric field at the tip
+      pulls on the liquid film, and the surface tension of the liquid opposes it; where the electrostatic force, which
+      grows as the square of the field, balances the surface tension, the liquid is drawn into a sharp cone, the Taylor cone, drawn with an angle of about 50° on the deck's figure. The field at the apex of the cone, a few nanometres
+      across, exceeds 10⁸ V/cm, high enough to ionise gallium atoms at the surface and pull them off as Ga⁺ ions
+      (field evaporation), at an emission current of 1 to 10 µA. The ions are then accelerated, typically to an
+      energy between 1 and 50 keV, and focused onto the sample. The deck's slide calls the extracting field
+      "electromagnetic"; it is an electrostatic field, set by the extractor voltage.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 190" role="img" aria-labelledby="f19a-lmis-t">
+  <title id="f19a-lmis-t">Liquid-metal ion source: a gallium reservoir above a tungsten needle; the molten gallium film is drawn into a Taylor cone at the tip by the field from an extractor electrode at 6 to 10 kilovolts; gallium ions leave the apex through the extractor aperture</title>
+  <rect x="70" y="14" width="90" height="34" rx="6" class="dg-fill"/>
+  <text x="115" y="35" class="dg-label-sm" text-anchor="middle">Ga reservoir</text>
+  <path d="M108,48 L122,48 L118,130 L112,130 Z" class="dg-ink" style="opacity:.6"/>
+  <text x="128" y="96" class="dg-label-sm">W needle, tip r 1–3 µm</text>
+  <path d="M106,118 L124,118 L115,140 Z" class="dg-acc-f" style="opacity:.8"/>
+  <text x="128" y="134" class="dg-label-sm">Taylor cone (molten Ga)</text>
+  <line x1="40" y1="158" x2="100" y2="158" class="dg-ink" style="stroke:var(--ink);stroke-width:4"/>
+  <line x1="130" y1="158" x2="190" y2="158" class="dg-ink" style="stroke:var(--ink);stroke-width:4"/>
+  <text x="200" y="162" class="dg-label-sm">extractor, 6–10 kV</text>
+  <path d="M115,142 L108,186 M115,142 L122,186 M115,142 L115,186" class="dg-acc" style="stroke-width:1.4"/>
+  <text x="130" y="182" class="dg-label-sm">Ga⁺, 1–10 µA</text>
+  <text x="300" y="40" class="dg-label-sm">surface tension</text>
+  <text x="300" y="54" class="dg-label-sm">balances the</text>
+  <text x="300" y="68" class="dg-label-sm">electrostatic pull, F ∝ E²;</text>
+  <text x="300" y="82" class="dg-label-sm">apex field > 10⁸ V/cm</text>
+</svg>
+      <figcaption><b>Figure 10.</b> The liquid-metal ion source of Deck 20 p. 4, schematic. The needle is micrometres across, the emitting apex of the cone nanometres; the extractor field draws the cone and pulls the ions from its apex.</figcaption>
+    </figure>
+
+    <p>
+      <b>Why gallium.</b> Deck 20 p. 6 lists the reasons. Gallium is a metal with a low melting point, 302.92 K
+      (29.77 °C), so the source runs near room temperature and in high vacuum, and a very small volume in the
+      reservoir gives the gun a long life; it gives a bright, stable emission; and it sits near the middle of the
+      periodic table, so its momentum transfer to the atoms of most target metals is near optimum. Lecture 21 put the
+      last point as a balance of mass: an ion that is too heavy loses resolution and control, one that is too light
+      carries too little momentum to remove material. The physics of that transfer is the elastic-collision factor 4<em>Mm</em>/(<em>M</em> + <em>m</em>)² of
+      <a href="m11-displacement-damage.html">M11 §3</a>, the one the nuclear stopping of
+      <a href="m12-stopping-power-range.html">M12 §3</a> uses: the largest fraction of an ion's energy that can be
+      handed to a target atom, it reaches 1 when the two masses are equal. For gallium (69.7 u) it is 1.00 on copper,
+      0.82 on silicon and 0.77 on gold, so the deck's "optimum for most metals" is a kinematic argument, and a fair one.
+    </p>
+
+    <p>
+      <b>Why electrostatic lenses.</b> One row of Deck 20 p. 8 compares the lenses of the two instruments: a FIB column is equipped with electrostatic lenses, a SEM column with electromagnetic ones. The
+      reason is the mass of the ion. A magnetic field bends a charged particle on a radius <em>r</em> = <em>p</em>/(<em>qB</em>),
+      so the field needed to focus it scales with its momentum per charge, the magnetic rigidity <em>Br</em> =
+      <em>p</em>/<em>q</em>. At the same accelerating voltage the momentum grows as the square root of the mass,
+      so a gallium ion needs about 350 times the field an electron does (E7), beyond what a compact lens can produce. An
+      electrostatic lens acts through the potential alone: a particle of charge <em>q</em> accelerated through a voltage
+      <em>V</em> follows a path that depends on the ratio of the lens potentials to <em>V</em>, not on its mass, so the
+      same lens focuses any singly charged ion.
+    </p>
+
+    <div class="eq" id="eq-19a-4">
+      <div class="eq-body">
+        <div class="eq-math"><em>p</em> = √(2<em>mqV</em>), &emsp; <em>Br</em> = <span class="frac"><span class="num"><em>p</em></span><span class="den"><em>q</em></span></span>, &emsp; λ = <span class="frac"><span class="num"><em>h</em></span><span class="den"><em>p</em></span></span></div>
+        <div class="eq-num">(19a.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>p</em> momentum (kg·m/s) · <em>m</em> particle mass (kg) · <em>q</em> charge (C; <em>e</em> for Ga⁺ and the
+        electron) · <em>V</em> accelerating voltage (V) · <em>B</em> magnetic flux density (T) · <em>r</em> radius of
+        curvature (m), so <em>Br</em> is the magnetic rigidity (T·m) · λ de Broglie wavelength (m) · <em>h</em> Planck
+        constant, 6.626×10⁻³⁴ J·s. The momentum form is non-relativistic: exact enough for ions, 1.5 % low for an
+        electron at 30 kV, for which <em>p</em> = √(<em>E</em><sub>k</sub>² + 2<em>E</em><sub>k</sub><em>mc</em>²)/<em>c</em>
+        with <em>E</em><sub>k</sub> = <em>qV</em>.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">E7 · A gallium ion and an electron at 30 kV</div>
+      <div class="ex-body">
+        <p><b>Given</b> an accelerating voltage of 30 kV; Ga atomic mass 69.723 u (1 u = 1.6605×10⁻²⁷ kg); electron
+          mass 9.109×10⁻³¹ kg; <em>e</em> = 1.602×10⁻¹⁹ C; <em>h</em> = 6.626×10⁻³⁴ J·s. <b>Find</b> the momentum,
+          magnetic rigidity and de Broglie wavelength of each, and what the ratios imply for the lenses and for
+          resolution.</p>
+        <p><b>Plan.</b> Use (19a.4), relativistic for the electron. The hinge is that momentum, and so rigidity, grows as
+          √<em>m</em> at fixed energy, while wavelength falls as 1/√<em>m</em>.</p>
+        <p class="ex-step"><b>Kinetic energy.</b> <em>E</em><sub>k</sub> = <em>eV</em> = (1.602×10⁻¹⁹ C)(3.0×10⁴ V) =
+          4.81×10⁻¹⁵ J for both.</p>
+        <p class="ex-step"><b>Electron momentum.</b> Relativistic: <em>p</em> = 9.49×10⁻²³ kg·m/s (the non-relativistic
+          form gives 9.36×10⁻²³, 1.46 % low; the electron moves at 0.328<em>c</em>).</p>
+        <p class="ex-step"><b>Gallium momentum.</b> <em>m</em> = 69.723 × 1.6605×10⁻²⁷ = 1.158×10⁻²⁵ kg;
+          <em>p</em> = √(2<em>mE</em><sub>k</sub>) = 3.34×10⁻²⁰ kg·m/s, at a speed of 2.88×10⁵ m/s.</p>
+        <p class="ex-step"><b>Rigidity.</b> <em>Br</em> = <em>p</em>/<em>e</em>: electron 5.93×10⁻⁴ T·m, gallium
+          0.208 T·m, a ratio of 351 (close to √(<em>m</em><sub>Ga</sub>/<em>m</em><sub>e</sub>) = 357; the difference is
+          the electron's relativistic momentum). Why it matters: a magnetic lens's focal length scales as the square of
+          the rigidity over the integral of <em>B</em>², so the same focal length would need about 1.2×10⁵ times the
+          <em>B</em>² for gallium.</p>
+        <p class="ex-step"><b>Wavelength.</b> λ = <em>h</em>/<em>p</em>: electron 6.98 pm, gallium 0.0199 pm.</p>
+        <p class="ex-answer">Rigidity 5.93×10⁻⁴ against 0.208 T·m (351×); wavelength 6.98 against 0.0199 pm. Check: a probe's diffraction disc is about 1.22λ/α, with α the probe's half-angle. At a
+          milliradian (an illustrative value) the gallium disc is about 0.02 nm, far below the 2.5–6 nm smallest imaging
+          beam size quoted for a modern FIB, so the ion spot is not diffraction-limited. The electron's disc at a few
+          milliradians is 1–2 nm, which is one of the terms that set a SEM's probe size.</p>
+      </div>
+    </div>
+
+    <p>
+      <b>Two beams in one chamber.</b> A FIB is usually built into a SEM (Deck 20 p. 7). The electron column stands
+      vertically and the ion column is inclined to it, and the two beams are aimed at one point on the sample, so the
+      same site can be imaged with electrons and milled with ions without moving it. Two attachments make the
+      combination a workstation. A <b>gas injection system</b> (GIS) brings a fine needle close to the surface and
+      releases a precursor gas, which the beam decomposes into a solid deposit where it is scanned (§6). A
+      <b>manipulator</b>, a micro-positioned needle, lifts a cut piece out of the sample. Detectors of secondary and
+      backscattered electrons form the images, and X-ray detectors identify elements by their characteristic lines
+      (<a href="m09-bremsstrahlung-xrays.html">M09 §6</a>), energy-dispersive spectroscopy (EDS).
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Feature</th><th>FIB</th><th>SEM</th></tr></thead>
+        <tbody>
+          <tr><td>Beam current</td><td>Selected by choosing among apertures, each optimised</td><td>Selected by choosing the demagnification of the column</td></tr>
+          <tr><td>Patterning</td><td>Standard: milling is the instrument's purpose</td><td>Added mainly for electron-beam lithography</td></tr>
+          <tr><td>Detectors</td><td>Ion-beam detector</td><td>Secondary electron, backscattered electron, STEM, X-ray</td></tr>
+          <tr><td>Attachments</td><td>Flood gun or gas injection system</td><td>No GIS (the slide: because there is no charging)</td></tr>
+          <tr><td>Lenses</td><td>Electrostatic</td><td>Electromagnetic</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The table is Deck 20 p. 8. Its current row has a physical reason that Lecture 21 gave: a SEM can change its beam
+      current at the gun and through its lenses, while a liquid-metal source emits a nearly fixed current, so a FIB
+      selects its current by passing the beam through apertures of different size; a large aperture gives a large
+      current for fast milling and a wide spot, a small one a fine spot for imaging and polishing. The apertures and
+      source wear, and Lecture 21 noted that they are replaced from time to time. The attachments row is the slide's
+      version; in Lecture 21 the professor added that a SEM can carry a GIS, although it is not common. A flood gun
+      sprays low-energy electrons onto an insulating sample to neutralise the positive charge the ions leave behind.
+    </p>
+
+    <details class="check">
+      <summary>An instrument maker proposes an ion column for helium ions at 30 kV with magnetic lenses, arguing that helium is light. By what factor does the magnetic rigidity of He⁺ (4.003 u) exceed that of a 30 kV electron, and how does that compare with gallium's? Is the argument sound?</summary>
+      <div class="answer">
+        <p>For ions the non-relativistic momentum is exact enough, so the rigidity scales as √<em>m</em>:
+          gallium's rigidity is 0.208 T·m, and helium's is 0.208 × √(4.003/69.723) = 0.208 × 0.240 = 0.0499 T·m. Against
+          the electron's 5.93×10⁻⁴ T·m that is a factor of 84, against 351 for gallium. Helium is four times easier to
+          bend than gallium but still 84 times harder than an electron, and for the same focal length the field must be about 84 times larger, its square (∫<em>B</em>²d<em>z</em>)
+          about 7,000 times. The argument fails on the scaling: light for an ion is still heavy
+          for a magnetic lens built for electrons. (Lecture 21 noted that helium and neon ion microscopes exist; they use
+          a different source, not a liquid metal.)</p>
+      </div>
+    </details>
+
+    <h2>6 · Milling, deposition and their limits</h2>
+
+    <p>
+      A FIB does two opposite things with one beam: it removes material by sputtering, and, with a precursor gas, it
+      adds material by deposition. Lecture 21 called the result a microscopic CNC machine, subtractive and additive at
+      once, and Deck 20's summary calls it a maskless, site-specific milling and deposition technique. Both processes
+      leave traces in the sample, and those traces are the instrument's limitations. This section treats sputtering
+      and how long a cut takes, deposition, the cross-section and lift-out procedures of failure analysis, and the
+      damage and redeposition that limit them.
+    </p>
+
+    <p>
+      <b>Sputtering.</b> A gallium ion entering a solid loses its energy in collisions, by the nuclear stopping of
+      <a href="m12-stopping-power-range.html">M12 §3</a>. Each recoiling target atom strikes others in turn, a
+      collision cascade, and an atom near the surface that receives enough momentum directed outward leaves the solid.
+      This is physical sputtering (Deck 20 p. 11). The number of atoms removed per incident ion, the sputter yield
+      <em>Y</em>, depends on the ion, its energy and angle and the target; TRIM computes it with its surface-sputtering
+      option (<a href="m13-srim-trim.html">M13 §5</a>). Because the beam is narrow and the yield is local, a FIB most
+      often mills features of high aspect ratio, deep trenches with steep walls. The same conditions give different
+      results in different materials (Deck 20 p. 10): four trenches cut under identical conditions in zinc, copper,
+      silicon and aluminium differ in depth, wall profile and roughness, and copper's walls show heavy vertical
+      striations, curtaining, the stripes that form when the milling rate varies across the face. Lecture 21 drew the
+      conclusion that a milling recipe must be optimised for each material.
+    </p>
+
+    <div class="eq" id="eq-19a-5">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em> = <span class="frac"><span class="num"><em>n</em><em>V</em><sub>box</sub><em>e</em></span><span class="den"><em>I</em><em>Y</em></span></span></div>
+        <div class="eq-num">(19a.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em> milling time (s) · <em>n</em> atomic density of the target (cm⁻³; silicon 4.99×10²² cm⁻³ from ρ =
+        2.330 g/cm³ and <em>M</em> = 28.0855 g/mol) · <em>V</em><sub>box</sub> volume removed (cm³) · <em>e</em>
+        elementary charge (C) · <em>I</em> beam current (A), so <em>I</em>/<em>e</em> is ions per second · <em>Y</em>
+        sputter yield (atoms per ion, dimensionless). Assumes every sputtered atom leaves the box for good; redeposition
+        (below) lengthens the real time.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">E8 · How long a cross-section box takes to mill</div>
+      <div class="ex-body">
+        <p><b>Given</b> a box 10 µm × 10 µm × 5 µm deep to be removed from silicon, at beam currents of 1 nA and 10 nA
+          (a modern FIB delivers up to tens of nanoamperes); silicon ρ = 2.330 g/cm³, <em>M</em> = 28.0855 g/mol;
+          <em>N</em><sub>A</sub> = 6.022×10²³ mol⁻¹. <b>Find</b> the number of atoms to remove, the ion arrival rate, and
+          the milling time as a function of the yield <em>Y</em>.</p>
+        <p><b>Plan.</b> Count atoms, count ions per second, and divide by (19a.5). The hinge is that the time scales as
+          1/(<em>IY</em>): the yield, which this page does not tabulate, enters only as a divisor, so the answer is
+          written as <em>tY</em>.</p>
+        <p class="ex-step"><b>Atom density.</b> <em>n</em> = ρ<em>N</em><sub>A</sub>/<em>M</em> = (2.330)(6.022×10²³)/28.0855
+          = 4.99×10²² cm⁻³.</p>
+        <p class="ex-step"><b>Atoms in the box.</b> <em>V</em><sub>box</sub> = (10×10⁻⁴)(10×10⁻⁴)(5×10⁻⁴) cm³ =
+          5.0×10⁻¹⁰ cm³ = 500 µm³; <em>N</em> = <em>nV</em> = 2.50×10¹³ atoms.</p>
+        <p class="ex-step"><b>Ions per second.</b> <em>I</em>/<em>e</em> = 1×10⁻⁹/1.602×10⁻¹⁹ = 6.24×10⁹ ions/s at 1 nA,
+          6.24×10¹⁰ at 10 nA.</p>
+        <p class="ex-step"><b>Time.</b> <em>tY</em> = <em>N</em>/(<em>I</em>/<em>e</em>) = 4.00×10³ s, 66.7 min, at
+          1 nA, and 400 s, 6.67 min, at 10 nA. For a yield of a few atoms per ion the cut takes tens of minutes at 1 nA.</p>
+        <p class="ex-answer"><em>t</em> = 66.7/<em>Y</em> min at 1 nA and 6.67/<em>Y</em> min at 10 nA. Check: ten times
+          the current gives one tenth of the time; the charge delivered, <em>N</em><em>e</em>/<em>Y</em> = 4.0×10³/<em>Y</em> nC,
+          is the same at both currents. This is why a cross-section is roughed out at high current and finished at low
+          current: the high current is fast but its wide spot leaves a rough face.</p>
+      </div>
+    </div>
+
+    <p>
+      <b>Deposition.</b> With the gas injection system open, precursor molecules adsorb on the surface, and the ion beam
+      decomposes them where it is scanned, leaving a solid
+      (Deck 20 p. 12). Precursors that yield metals, tungsten, platinum, gold, aluminium and copper, are the most
+      common; tungsten hexacarbonyl, W(CO)₆, is one. Insulators can be deposited as well. Every deposited film contains
+      impurities, from incompletely decomposed precursor and from the gallium of the beam, so a FIB-deposited metal
+      conducts worse than the bulk metal. Two uses matter for failure analysis. A <b>protective strap</b> of platinum
+      deposited over a site before it is cut shields the surface from the beam's tails (Deck 20 p. 24). A <b>circuit
+      edit</b> joins two lines with a deposited conductor, or isolates one by cutting it and filling the gap with
+      insulator, so a fault can be confirmed by repairing it (Deck 20 p. 13); Lecture 21 described repairing an open line
+      with a short platinum strap.
+    </p>
+
+    <p>
+      <b>The cross-section and the lamella.</b> A failure-analysis cut follows a fixed recipe. A platinum strap is laid
+      over the site; a stepped trench is milled beside it at high current; the face of the trench nearest the site is
+      polished at decreasing currents until it passes through the defect; and the face is imaged with the electron beam,
+      tilted to look into the trench. For transmission electron microscopy (TEM), which needs a slice thin enough for
+      electrons to pass through, the site is cut free as a lamella: trenches are milled on both sides of the strap to
+      leave a thin wall; the manipulator needle is welded to the wall with deposited platinum (Lecture 21: "platinum is
+      glue"); the last anchor is cut; the lamella is lifted out, welded to a holder, released, and thinned further
+      (Deck 20 p. 9, the lift-out video of Lecture 21). Lecture 21 stressed two practical points: polish by stepping the
+      milling rate down gradually, and expect a thin lamella to break, so that a successful lift-out at the first
+      attempt is luck.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 170" role="img" aria-labelledby="f19a-xs-t">
+  <title id="f19a-xs-t">Cross-section recipe in three panels: a platinum strap over the site; a stepped trench milled beside it, deepest at the face; the polished face imaged with the electron beam tilted to look into the trench, showing a buried defect</title>
+  <rect x="10" y="60" width="130" height="80" class="dg-fill"/>
+  <rect x="50" y="52" width="50" height="8" class="dg-acc-f"/>
+  <circle cx="75" cy="100" r="6" class="dg-soft"/>
+  <text x="75" y="44" class="dg-label-sm" text-anchor="middle">1 · Pt strap</text>
+  <rect x="155" y="60" width="130" height="80" class="dg-fill"/>
+  <rect x="195" y="52" width="50" height="8" class="dg-acc-f"/>
+  <path d="M155,60 L195,60 L195,120 L185,120 L185,100 L170,100 L170,80 L155,80 Z" class="dg-soft"/>
+  <text x="220" y="44" class="dg-label-sm" text-anchor="middle">2 · stepped trench</text>
+  <rect x="300" y="60" width="130" height="80" class="dg-fill"/>
+  <rect x="340" y="52" width="50" height="8" class="dg-acc-f"/>
+  <path d="M300,60 L362,60 L362,120 L352,120 L352,100 L337,100 L337,80 L300,80 Z" class="dg-soft"/>
+  <path d="M362,96 a6,6 0 0 1 0,12" class="dg-acc" fill="none" style="stroke-width:2"/>
+  <line x1="320" y1="18" x2="356" y2="92" class="dg-line" marker-end="url(#f19a-ar)"/>
+  <text x="300" y="16" class="dg-label-sm">e⁻ beam, tilted</text>
+  <text x="365" y="44" class="dg-label-sm" text-anchor="middle">3 · polish, image face</text>
+  <text x="220" y="160" class="dg-label-sm" text-anchor="middle">the face passes through the defect; schematic, not to scale</text>
+</svg>
+      <figcaption><b>Figure 11.</b> A FIB cross-section, schematic: protect, rough out at high current, polish at low current until the face reaches the defect, then image the face with electrons.</figcaption>
+    </figure>
+
+    <p>
+      <b>What the beam does to the sample.</b> Deck 20 pp. 16 and 18 list the limitations, and Lecture 21 named
+      redeposition as the key one. In a plasma etch the products of the reaction are volatile and are pumped away; in a wet
+      etch they dissolve in the etchant. The atoms a FIB sputters do neither: they leave as solid atoms, and many land on
+      nearby surfaces, including the walls of the trench being cut, which contaminates the region and partly refills the
+      cut. Back-sputtered gallium ions deposit near the site as well. The beam also damages what it leaves behind:
+      gallium is implanted and the surface made amorphous, to a depth of about 22 nm at 30 keV, falling to about 4 nm
+      at 5 keV and 1 nm at 2 keV in one systematic study, and as a
+      physically aggressive, brute-force etch it can induce stress. In the professor's work on silicon carbide films on
+      silicon (pp. 17–18), the difference in thermal and mechanical stress between the two materials opened micro-cracks
+      along their interface after FIB processing (p. 18), and Lecture 21 explained that a later wet etch of the silicon
+      then entered the crack, removed the silicon under the structure, and left no disk at all. For failure analysis these effects set one rule: the artefacts a
+      FIB makes, curtaining, redeposited material, an amorphous skin, cracks it opened itself, must be told apart from
+      the defect it was sent to find.
+    </p>
+
+    <details class="check">
+      <summary>A trench of 20 µm × 5 µm × 10 µm deep must be cut in silicon to expose a buried void, at 3 nA. What is the milling time for a yield <em>Y</em>, and why will the real time be longer than this estimate for a narrow, deep trench in particular?</summary>
+      <div class="answer">
+        <p>Volume (20×10⁻⁴)(5×10⁻⁴)(10×10⁻⁴) = 1.0×10⁻⁹ cm³; atoms (4.99×10²²)(1.0×10⁻⁹) = 4.99×10¹³; ions per second
+          3×10⁻⁹/1.602×10⁻¹⁹ = 1.87×10¹⁰; so <em>tY</em> = 2.67×10³ s, 44.5/<em>Y</em> min. The estimate assumes every
+          sputtered atom leaves. In a narrow, deep trench many sputtered atoms strike the opposite wall and stick, so they
+          must be sputtered again: redeposition lowers the net removal per ion, and the deeper and narrower the trench,
+          the smaller the fraction of sputtered atoms that escapes through its mouth. The beam also meets the sloping
+          walls at grazing angles, which changes the local yield.</p>
+      </div>
+    </details>
+
+    <h2>7 · Cross-sections of radiation damage</h2>
+
+    <p>
+      A heavy ion that destroys a power transistor often leaves nothing to see at the surface, or a mark that does not
+      say how deep the damage goes. Deck 20 ends with case studies in which the FIB reveals the mechanism, and they
+      connect failure analysis back to the radiation half of the course: single-event effects (<a href="m08-ionization-excitation.html">M08 §8</a>) are tested by irradiating parts
+      (<a href="../../EEE5416_Radiation_Effects/site/m16-destructive-single-event-effects.html">EEE 5416 M16 §6</a>), and a part that fails in the beam is
+      brought to the FIB. Lecture 21 gave the procedure: a group of devices on one test board is irradiated, the device
+      that stops working is examined first under an optical microscope, then in a SEM, and then sectioned with the
+      FIB at the suspect point.
+    </p>
+
+    <p>
+      The three silicon carbide (SiC) power MOSFET cases show three different signatures, each from a published study
+      the deck cites:
+    </p>
+
+    <ul>
+      <li><b>A burned crater</b> (Deck 20 p. 25; "Heavy-ion induced single event effects and latent damages in SiC power
+        MOSFETs", <em>Microelectronics Reliability</em> 2021). Optical inspection shows the failure area and the SEM a
+        crater; the FIB cross-section shows a deep burned region with a void, which Lecture 21 distinguished from
+        curtaining, a milling artefact, by its shape and texture. This is single-event burnout: the heavy ion's charge
+        track triggers a current that the drain bias sustains until the device melts locally.</li>
+      <li><b>A damaged gate oxide</b> (p. 26; "SiC power MOSFETs after heavy ion irradiation", <em>Electronics</em>
+        2023). The packages are opened (decapsulated) to expose the wire-bonded chips. The slide marks a small
+        burned-out point on the die (Lecture 21 described this case as having no visible burn); a FIB cut through it
+        shows the gate oxide damaged between the polysilicon gate and the SiC, which the
+        slide links to a large gate leakage current. The gate has lost control because current flows through its
+        dielectric.</li>
+      <li><b>A burnout crater and its depth</b> (p. 27; "Radiation-induced single event burnout in SiC-based power
+        MOSFETs", <em>IET Power Electronics</em>, after irradiation with ¹⁸¹Ta ions). With the top metal stripped, the
+        optical and SEM views locate a crater about 5.7 by 7.2 µm; a FIB section beneath it shows damage reaching about
+        24 µm into the die, and a second cut through the trench-gate structure shows the melted region. As in the first
+        case, the energy that melts the material comes from the drain supply through the sustained current; the ion's
+        track only decides where it starts. Lecture 21 added a general case: a void can lie below a surface that looks
+        normal, and is then found only by cutting layer by layer and imaging after each cut.</li>
+    </ul>
+
+    <p>
+      The physics of these mechanisms, single-event burnout and gate rupture in power devices, is the subject of the
+      single-event modules: M15 of this course, which is not yet built, and, in depth,
+      <a href="../../EEE5416_Radiation_Effects/site/m16-destructive-single-event-effects.html">EEE 5416 M16</a>. What the
+      FIB adds is the discrimination. A burnout, a damaged gate oxide and a void under a normal-looking surface can all end in the same
+      electrical failure mode, a part that no longer switches, and Lecture 21 closed on the point that only a cross-section tells
+      them apart, because radiation damage is small and often invisible at the surface.
+    </p>
+
+    <p>
+      Two further cases extend the method beyond radiation. A PIN diode limiter, a microwave protection diode, damaged
+      by microwave pulses of about 5 GHz, 100 ns and 2 kW peak power (p. 28), shows voids at the edge of the diode in
+      section. Lecture 21 attributed the location to field crowding: the electric field is concentrated at an edge, as
+      at the tip of a needle, so damage starts there; knowing where it starts says which feature to redesign. And the
+      solder joint of a capacitor on a printed circuit board (p. 29), sectioned to evaluate the bonding between layers,
+      measure the thickness and uniformity of the intermetallic compound that forms between solder and copper, and
+      find voids, cracks and interface defects, brings the method back to the joints of
+      <a href="m19-reliability-qualification.html">M19 §5</a>. For a joint that size Lecture 21 advised X-ray imaging
+      first and a FIB section only where time and cost allow, since the volume is large for a FIB.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Technique</th><th>Signal</th><th>Finest detail on this page</th><th>Destructive?</th><th>Finds</th></tr></thead>
+        <tbody>
+          <tr><td>Curve tracer</td><td>Current against voltage at the pins</td><td>— (a failure mode, not a site)</td><td>No</td><td>Shorts, opens, leakage</td></tr>
+          <tr><td>X-ray CT, nano-CT</td><td>Attenuation, ∝ <em>Z</em>⁴–<em>Z</em>⁵ photoelectric</td><td>600 nm voxel, ≥ 1.2 µm resolved</td><td>No</td><td>Voids, cracks, bridging, misalignment in metal</td></tr>
+          <tr><td>Thermal imaging</td><td>Infrared emission, 3–5 µm, frame difference</td><td>≈ 5 µm per pixel</td><td>No (lid or coating may stay)</td><td>Where power is dissipated: shorts, constrictions</td></tr>
+          <tr><td>Optical, SEM</td><td>Reflected light; secondary and backscattered electrons</td><td>SEM: nanometres</td><td>Only the deprocessing that exposes the layer</td><td>Surface damage, burned metal</td></tr>
+          <tr><td>FIB cross-section</td><td>SEM image of a milled face</td><td>Milled features 10–15 nm</td><td>Yes, locally</td><td>Buried voids, oxide rupture, interfaces, intermetallics</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <details class="check">
+      <summary>Two SiC power MOSFETs fail in a heavy-ion test. Device A shows a dark spot at the surface and its drain–source path is shorted; device B looks undamaged but its gate leaks. In what order would you apply the techniques of this page to each, and what would you expect the FIB section to show?</summary>
+      <div class="answer">
+        <p>Both begin at the terminals (curve tracer: A's drain–source short, B's gate leakage) and with optical
+          inspection and SEM of the decapsulated die. For A the surface already locates the site, so the FIB section goes
+          straight through the dark spot; a burnout would show a burned, melted region extending down from the surface,
+          possibly with a void, distinct from curtaining. For B nothing locates the site at the surface. Thermal imaging
+          with the gate biased would show where the leakage current dissipates, and the FIB section through that point
+          would be expected to show the gate oxide damaged between gate and SiC. If no hot spot is found, cutting
+          successive slices under the gate and imaging each is the remaining way to find damage that lies below the
+          surface.</p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Failure analysis moves from failure background and failure mode (the terminals) through isolation of the site
+          to the failure mechanism, and from non-destructive to destructive steps, so that the analysis cannot create
+          what it finds; the loop closes with an improvement and a retest.</li>
+        <li>A curve tracer shows a short as a vertical trace; at 200 µA and 500 mV per division anything below about 25 Ω looks the same, so the value of a short needs a finer scale.</li>
+        <li>X-ray contrast comes from attenuation, steep in <em>Z</em>: a void brightens a ray by exp[(µ/ρ)ρ<em>d</em>]
+          (19a.1), 5 % for 5 µm in copper at 30 keV and 0.7 % at 60 keV. CT reconstructs µ in voxels; the voxel is
+          <em>p</em>/<em>M</em>, and resolution is at least two voxels (19a.2).</li>
+        <li>Nano-CT of an HBM stack resolved micro-bumps with 600 nm voxels after a fast overview (30 s) and a long scan
+          (75 min), and counted 1,680 voids in 1,275 bumps: a population, not an example.</li>
+        <li>Thermal imaging locates dissipation; subtracting an unpowered frame removes emissivity contrast. In the
+          demultiplexer case it found a hot spot by the failing output, and deprocessing found electrical overstress at
+          the output driver.</li>
+        <li>In foil resistors, notches, bridges and particles concentrate Joule power as 1/<em>w</em>² (19a.3), fatigue
+          under power cycling and fracture with a positive resistance shift. Pulsed-power infrared imaging found them as
+          hot spots, and each of the three life-test failures among 280 parts was a bridge it had flagged.</li>
+        <li>A FIB focuses Ga⁺ from a liquid-metal source with electrostatic lenses, because the ion's magnetic rigidity
+          is about 350 times an electron's at the same voltage (19a.4); combined with a SEM, a GIS and a manipulator, it
+          mills, deposits, cross-sections and lifts out lamellae. Milling time scales as 1/(<em>IY</em>) (19a.5).</li>
+        <li>Redeposition, gallium implantation, an amorphous surface and stress cracks are the FIB's own artefacts; a
+          cross-section is still the only way to tell burnout, gate-oxide damage and a buried void apart.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>Orienting paragraph, §1</td><td>Deck 19 pp. 22, 34, 37; Deck 20 pp. 23, 30; Lecture 20 (closing summary; why non-destructive first); Lecture 21 (closing takeaways). DPA as NASA's term: NEPP report p. 2. Curve-tracer scales read from the Deck 19 p. 34 screenshot; E1 computed in <code>_work/examples-m19a.py</code></td></tr>
+      <tr><td>§2</td><td>Deck 19 pp. 23–30; Lecture 20. The nano-CT study: <em>Microelectronics Reliability</em> (2025), doi 10.1016/j.microrel.2025.115694, quoted only as Deck 19 prints it; that it also used laminography, from the X-ray source maker Excillum's summary of the paper. Attenuation coefficients and densities: NIST X-Ray Mass Attenuation Coefficients (J. H. Hubbell and S. M. Seltzer, NIST Standard Reference Database 126). Attenuation law and <em>Z</em> dependence: M10 §3, §7. Magnification, voxel and the two-voxel limit derived from projection geometry and sampling. C113–C115 flagged</td></tr>
+      <tr><td>§3</td><td>Deck 19 pp. 34, 38–39; Lecture 20. Wien's constant from CODATA 2018; InSb camera and its 3–5 µm band, NEPP report p. 20. OBIRCH: M17b §3 (Lecture 15)</td></tr>
+      <tr><td>§4</td><td>J. Brusse and L. Panashchenko, "A Screening Method Using Pulsed-Power Combined with Infrared Imaging to Detect Pattern Defects in Bulk Metal Foil or Thin Film Resistors", NASA Electronic Parts and Packaging (NEPP) Electronics Technology Workshop, Greenbelt, MD, June 2019 (posted as an optional reading), pp. 3–17, 20–21, 24–27; Deck 19 p. 36; Deck 20 p. 23; Lecture 21</td></tr>
+      <tr><td>§5</td><td>Deck 20 pp. 3–8; Lecture 21. Gallium melting point: NIST Chemistry WebBook (T<sub>fus</sub> 302.92 K). Taylor-cone apex field and size, ion energy range, imaging beam size: Wikipedia, "Liquid metal ion source" and "Focused ion beam" (read 18 Nov 2026). Rigidity and wavelength computed from CODATA 2018 constants; diffraction disc 1.22λ/α: P. Nellist, "Seeing with electrons", <em>Physics World</em> (2005). Transfer factor 4<em>Mm</em>/(<em>M</em> + <em>m</em>)²: M11 §3</td></tr>
+      <tr><td>§6</td><td>Deck 20 pp. 9–18, 24; Lecture 21. Curtaining, W(CO)₆ precursor, beam currents: Wikipedia, "Focused ion beam". Amorphised depth against beam energy: J. Uzuhashi and T. Ohkubo, "Systematic study of FIB-induced damage for the high-quality TEM sample preparation", NIMS Materials Data Repository. Sputtering: M12 §3, M13 §5</td></tr>
+      <tr><td>§7</td><td>Deck 20 pp. 25–30 and the studies they cite (doi 10.1016/j.microrel.2021.114423; doi 10.3390/electronics12204349; doi 10.1049/pel2.12147), described only as the deck and Lecture 21 describe them; Lecture 21</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m19-reliability-qualification.html"><span>Previous</span>M19 · Reliability and Qualification</a>
+      <a class="next" href="m20-space-power.html"><span>Next</span>M20 · Space Power: Generation and Storage</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,1395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M09 · Channel Engineering — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M09 · Channel Engineering</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 09</p>
+    <h1>Channel Engineering</h1>
+    <p class="lede">
+      How the doping beneath the gate is shaped in depth and along the channel. What sets how steep an
+      implanted profile can be, how channelling and transient enhanced diffusion blur it, the super-steep
+      retrograde profile and the electrostatics that make it worth building, the limit that ends it below
+      0.1 µm, and the tilted pocket implant that puts dopant only where punch-through starts.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m02-deep-submicron-roadmap.html">M02</a>, <a href="m03-threshold-voltage.html">M03</a>, <a href="m08-well-engineering.html">M08</a></span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Class notes pp. 75–76, 85–86 and 89–90 (Chapter 5); Lectures 17–18; Wolf Vol. 4 ch. 5; Plummer, Deal &amp; Griffin ch. 7–8; Taur &amp; Ning 3/E §6.3; SRIM-2013</span>
+    </div>
+
+    <p>
+      The <b>channel</b> is the strip of silicon under the gate oxide, between the source and drain, where
+      the gate inverts the surface and the current flows (<a href="m01-mosfet-and-how-one-is-made.html">M01</a>).
+      Its doping does three jobs at once. It sets the threshold voltage through the depletion-charge term
+      (<a href="m03-threshold-voltage.html#s4">M03 §4</a>), it fixes how far the source and drain depletion
+      regions reach toward each other and so whether they merge (punch-through,
+      <a href="m02-deep-submicron-roadmap.html#s5-2">M02 §5.2</a>), and it sets the mobility of the carriers that form the
+      channel, through the transverse field its depletion charge adds and through scattering by the dopant ions
+      themselves. M02 §5 surveyed the structures that answer this: the threshold implant, super-steep retrograde
+      profiles and halo and pocket implants. M08 built the well underneath them. This module takes the part
+      of Chapter 5 that sits between the well and the drain (notes pp. 75–76 and 89–90) and goes into the
+      mechanism: what makes an implanted profile steep or broad, what destroys its steepness afterwards, why a
+      profile that is light at the surface and heavy below lowers the threshold voltage while still holding the
+      depletion layer short, and how a tilted implant places dopant at the two ends of the channel only. Two
+      effects the notes mention only in passing are developed here because the profiles depend on them:
+      <b>channelling</b>, which Lecture 18 explained, and <b>transient enhanced
+      diffusion</b>, which the notes treat under shallow source–drain junctions (pp. 85–86). M10 then applies both to
+      the source and drain.
+    </p>
+
+    <h2 id="s1">1 · What the channel doping has to do</h2>
+
+    <p>
+      Shrinking the gate length brings the source and drain closer, and the body doping has to rise to keep
+      their depletion regions apart. The same doping sits where the inversion layer forms, where it raises the
+      threshold voltage and lowers the carrier mobility. This section states the two requirements as the notes
+      give them and shows, with M02's punch-through rule, why they cannot both be met by a uniform profile below
+      about 0.13 µm.
+    </p>
+
+    <h3 id="s1-1">1.1 Two requirements on one profile</h3>
+
+    <p>
+      The notes (p. 75) give both numbers: for a 0.13 µm gate the doping between source and drain must exceed
+      5×10¹⁷ cm⁻³ to prevent punch-through, and to avoid a loss of carrier mobility the doping is kept below
+      5×10¹⁷ cm⁻³. Read alone, the two sentences contradict each other; the notes' next sentence resolves them by
+      keeping the <em>surface</em> concentration low and the <em>mean</em> concentration above the value. Wolf, whom
+      the notes follow sentence by sentence here, states the limits that way: it is the mean channel doping that must
+      exceed 5×10¹⁷ cm⁻³ for punch-through control, and the doping at the surface that must stay below
+      5×10¹⁷ cm⁻³ for the carriers to follow the universal mobility curve (Wolf p. 191). The two requirements apply at
+      different depths. The inversion layer is a few nanometres thick and sits against the oxide. Doping lowers its
+      mobility in two ways: ionised dopants in that layer scatter the carriers, which takes the mobility below the
+      universal curve at low fields, and the depletion charge adds to the transverse field that presses the carriers
+      against the interface, along which the universal curve falls
+      (<a href="m02-deep-submicron-roadmap.html#s5-2">M02 §5.2</a>; Taur &amp; Ning 3/E pp. 192–194, eq. (5.51)). A light surface layer reduces
+      the first directly and, as §5.1 shows, the depletion charge as well. Punch-through is decided by the depletion regions of the source and drain junctions, which reach tens of
+      nanometres into the body, so it is decided by the doping averaged over that depth. A profile that is light
+      at the surface and heavy below satisfies both. The notes call it a <b>vertical retrograde</b> profile, and,
+      because the change from light to heavy has to happen over a short distance, a <b>super-steep retrograde
+      (SSR)</b> profile (p. 75).
+    </p>
+
+    <p>
+      The punch-through requirement follows from the rule the professor states as L &gt; 2W (Lecture 3 and again
+      Lecture 17; <a href="m02-deep-submicron-roadmap.html#s5-2">M02 eq. (2.3)</a>), with W the depletion width
+      of one source or drain junction in the body, eq. (2.4). Setting W &lt; L/2 in eq. (2.4) and solving for the
+      doping gives the minimum body doping for a channel of length L.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>N</em><sub>A</sub> &gt; <span class="frac"><span class="num">8<em>ε</em><sub>Si</sub>(<em>V</em><sub>bi</sub> + <em>V</em><sub>R</sub>)</span><span class="den"><em>q</em><em>L</em><sup>2</sup></span></span></div>
+        <div class="eq-num">(9.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>N</em><sub>A</sub> body acceptor concentration (cm⁻³) · <em>ε</em><sub>Si</sub> = 11.8 × 8.85×10⁻¹⁴ =
+        1.044×10⁻¹² F/cm · <em>V</em><sub>bi</sub> built-in potential of the n⁺/p junction (V), M02 eq. (2.5) ·
+        <em>V</em><sub>R</sub> reverse bias on the drain junction (V) · <em>q</em> = 1.6×10⁻¹⁹ C ·
+        <em>L</em> channel length between the junctions (cm). From L &gt; 2W and the one-sided abrupt junction of
+        M02 eq. (2.4); uniform body doping. Because <em>V</em><sub>bi</sub> depends weakly on <em>N</em><sub>A</sub>,
+        solve by iteration: two passes are enough.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">The body doping a 0.13 µm channel needs</div>
+      <div class="ex-body">
+        <p><b>Given</b> L = 0.13 µm = 1.3×10⁻⁵ cm; n⁺ source and drain at 10²⁰ cm⁻³; drain reverse bias 1.2 V,
+        and, as a lower bound, 0 V; uniform p-type body. <b>Find</b> the smallest uniform body doping that keeps
+        L &gt; 2W, and compare it with the notes' 5×10¹⁷ cm⁻³.</p>
+        <p><b>Plan.</b> Eq. (9.1) at the limit 2W = L. <em>V</em><sub>bi</sub> needs <em>N</em><sub>A</sub>, so
+        guess <em>N</em><sub>A</sub>, evaluate <em>V</em><sub>bi</sub>, solve, and repeat. Lengths in cm
+        throughout, because <em>ε</em><sub>Si</sub> is in F/cm.</p>
+        <p class="ex-step"><b>First guess for the built-in potential.</b> Take <em>N</em><sub>A</sub> = 5×10¹⁷ cm⁻³:
+        <em>V</em><sub>bi</sub> = 0.0259 ln(5×10¹⁷ × 10²⁰ / (1.5×10¹⁰)²) = 0.0259 × 39.94 = 1.035 V.</p>
+        <p class="ex-step"><b>Doping at the limit, 1.2 V.</b> <em>N</em><sub>A</sub> = 8 × 1.044×10⁻¹² × (1.035 + 1.2) /
+        (1.6×10⁻¹⁹ × (1.3×10⁻⁵)²) = 1.867×10⁻¹¹ / 2.704×10⁻²⁹ = 6.90×10¹⁷ cm⁻³.</p>
+        <p class="ex-step"><b>Second pass.</b> At 6.9×10¹⁷ cm⁻³, <em>V</em><sub>bi</sub> = 1.043 V, and eq. (9.1)
+        returns 6.93×10¹⁷ cm⁻³; a third pass changes nothing at three figures. Check: W = (2 × 1.044×10⁻¹² ×
+        2.243 / (1.6×10⁻¹⁹ × 6.93×10¹⁷))<sup>1/2</sup> = 6.50×10⁻⁶ cm = 65.0 nm, half of 130 nm.</p>
+        <p class="ex-step"><b>Lower bound, 0 V.</b> The same two passes with <em>V</em><sub>R</sub> = 0 give
+        <em>V</em><sub>bi</sub> = 1.023 V and <em>N</em><sub>A</sub> = 3.16×10¹⁷ cm⁻³. This is the source side, or
+        a drain with no voltage on it; any drain bias raises the requirement.</p>
+        <p class="ex-answer"><em>N</em><sub>A</sub> ≥ 6.93×10¹⁷ cm⁻³ at 1.2 V (3.16×10¹⁷ cm⁻³ at 0 V). Check: at
+        the notes' 5×10¹⁷ cm⁻³ and 1.2 V, 2W = 153 nm, which exceeds 130 nm; so by this rule the mean doping must
+        exceed 5×10¹⁷ cm⁻³, as the notes say. A uniform doping that high would also sit at the surface, where the
+        notes' mobility limit forbids it.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<!--FIG f1-->
+<svg viewBox="0 0 430 270" role="img" aria-labelledby="m9f1-t">
+<title id="m9f1-t">Twice the drain depletion width against body doping for an n+ to p junction at 0 V and 1.2 V, with the 130 nm channel length marked</title>
+<line x1="62" y1="226" x2="410" y2="226" class="dg-rule" stroke-width="1.2"/>
+<line x1="62" y1="18" x2="62" y2="226" class="dg-rule" stroke-width="1.2"/>
+<line x1="62.0" y1="226" x2="62.0" y2="230" class="dg-rule"/>
+<text x="62.0" y="242" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">15</tspan></text>
+<line x1="162.1" y1="226" x2="162.1" y2="230" class="dg-rule"/>
+<text x="162.1" y="242" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">16</tspan></text>
+<line x1="262.2" y1="226" x2="262.2" y2="230" class="dg-rule"/>
+<text x="262.2" y="242" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">17</tspan></text>
+<line x1="362.2" y1="226" x2="362.2" y2="230" class="dg-rule"/>
+<text x="362.2" y="242" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">18</tspan></text>
+<line x1="58" y1="226.0" x2="62" y2="226.0" class="dg-rule"/>
+<text x="55" y="229.5" class="dg-label-sm" text-anchor="end">30</text>
+<line x1="58" y1="174.8" x2="62" y2="174.8" class="dg-rule"/>
+<text x="55" y="178.3" class="dg-label-sm" text-anchor="end">100</text>
+<line x1="58" y1="128.1" x2="62" y2="128.1" class="dg-rule"/>
+<text x="55" y="131.6" class="dg-label-sm" text-anchor="end">300</text>
+<line x1="58" y1="76.9" x2="62" y2="76.9" class="dg-rule"/>
+<text x="55" y="80.4" class="dg-label-sm" text-anchor="end">1000</text>
+<line x1="58" y1="30.2" x2="62" y2="30.2" class="dg-rule"/>
+<text x="55" y="33.7" class="dg-label-sm" text-anchor="end">3000</text>
+<text x="236.0" y="262" class="dg-label" text-anchor="middle">body doping N<tspan baseline-shift="sub" style="font-size:75%">A</tspan> (cm<tspan baseline-shift="super" style="font-size:75%">−3</tspan>)</text>
+<text x="14" y="122.0" class="dg-label" text-anchor="middle" transform="rotate(-90 14 122.0)">2W (nm)</text>
+<path d="M62.0,26.3 L67.0,28.7 L72.0,31.1 L77.0,33.6 L82.0,36.0 L87.0,38.4 L92.0,40.8 L97.0,43.2 L102.0,45.6 L107.0,48.1 L112.0,50.5 L117.0,52.9 L122.0,55.3 L127.1,57.7 L132.1,60.1 L137.1,62.6 L142.1,65.0 L147.1,67.4 L152.1,69.8 L157.1,72.2 L162.1,74.6 L167.1,77.1 L172.1,79.5 L177.1,81.9 L182.1,84.3 L187.1,86.7 L192.1,89.1 L197.1,91.6 L202.1,94.0 L207.1,96.4 L212.1,98.8 L217.1,101.2 L222.1,103.7 L227.1,106.1 L232.1,108.5 L237.1,110.9 L242.1,113.3 L247.2,115.7 L252.2,118.2 L257.2,120.6 L262.2,123.0 L267.2,125.4 L272.2,127.8 L277.2,130.3 L282.2,132.7 L287.2,135.1 L292.2,137.5 L297.2,139.9 L302.2,142.3 L307.2,144.8 L312.2,147.2 L317.2,149.6 L322.2,152.0 L327.2,154.4 L332.2,156.9 L337.2,159.3 L342.2,161.7 L347.2,164.1 L352.2,166.5 L357.2,169.0 L362.2,171.4 L367.3,173.8 L372.3,176.2 L377.3,178.6 L382.3,181.0 L387.3,183.5 L392.3,185.9 L397.3,188.3 L402.3,190.7 L407.3,193.1" class="dg-acc" fill="none" stroke-width="2.0"/>
+<path d="M62.0,44.7 L67.0,47.1 L72.0,49.4 L77.0,51.8 L82.0,54.2 L87.0,56.6 L92.0,58.9 L97.0,61.3 L102.0,63.7 L107.0,66.1 L112.0,68.4 L117.0,70.8 L122.0,73.2 L127.1,75.6 L132.1,77.9 L137.1,80.3 L142.1,82.7 L147.1,85.1 L152.1,87.5 L157.1,89.8 L162.1,92.2 L167.1,94.6 L172.1,97.0 L177.1,99.4 L182.1,101.7 L187.1,104.1 L192.1,106.5 L197.1,108.9 L202.1,111.3 L207.1,113.6 L212.1,116.0 L217.1,118.4 L222.1,120.8 L227.1,123.2 L232.1,125.5 L237.1,127.9 L242.1,130.3 L247.2,132.7 L252.2,135.1 L257.2,137.5 L262.2,139.8 L267.2,142.2 L272.2,144.6 L277.2,147.0 L282.2,149.4 L287.2,151.8 L292.2,154.1 L297.2,156.5 L302.2,158.9 L307.2,161.3 L312.2,163.7 L317.2,166.1 L322.2,168.5 L327.2,170.8 L332.2,173.2 L337.2,175.6 L342.2,178.0 L347.2,180.4 L352.2,182.8 L357.2,185.2 L362.2,187.5 L367.3,189.9 L372.3,192.3 L377.3,194.7 L382.3,197.1 L387.3,199.5 L392.3,201.9 L397.3,204.3 L402.3,206.6 L407.3,209.0" class="dg-line" fill="none" stroke-width="1.5" stroke-dasharray="5 3"/>
+<path d="M62.0,163.7 L410.0,163.7" class="dg-guide" fill="none" stroke-width="1.2" stroke-dasharray="3 3"/>
+<text x="69.9" y="160.5" class="dg-label-sm" text-anchor="start">L = 130 nm</text>
+<circle cx="346.3" cy="163.7" r="3.2" class="dg-ink"/>
+<text x="350.3" y="155.7" class="dg-label-sm" text-anchor="start">6.9×10¹⁷</text>
+<circle cx="312.2" cy="163.7" r="3.2" class="dg-ink"/>
+<text x="316.2" y="177.7" class="dg-label-sm" text-anchor="start">3.2×10¹⁷</text>
+<path d="M332.1,226.0 L332.1,30.2" class="dg-guide" fill="none" stroke-width="1.0" stroke-dasharray="2 3"/>
+<text x="328.1" y="43.4" class="dg-label-sm" text-anchor="end">5×10¹⁷</text>
+<text x="96.3" y="36.9" class="dg-label-sm" text-anchor="start">V<tspan baseline-shift="sub" style="font-size:75%">R</tspan> = 1.2 V</text>
+<text x="215.8" y="140.9" class="dg-label-sm" text-anchor="start">V<tspan baseline-shift="sub" style="font-size:75%">R</tspan> = 0 (dashed)</text>
+</svg>
+<!--/FIG f1-->
+      <figcaption><b>Figure 1.</b> 2W against uniform body doping for an n⁺ (10²⁰ cm⁻³)/p junction, from M02
+      eq. (2.4), at 1.2 V (solid) and 0 V (dashed). The curves cross L = 130 nm at 6.9×10¹⁷ and
+      3.2×10¹⁷ cm⁻³. The professor's board values in Lecture 17 — a body of 5×10¹⁵ cm⁻³, and 10¹⁶ against
+      10¹⁷ cm⁻³ — sit far to the left: at 1.2 V, 2W is 1486, 1055 and 338 nm.</figcaption>
+    </figure>
+
+    <p>
+      The rule L &gt; 2W is a first-order criterion. It ignores the two-dimensional field under the gate and
+      the drain's lowering of the source barrier, so it does not give the exact doping at which a real 0.13 µm
+      transistor leaks; Wolf's Fig. 5-9 is itself a set of calculated projections, for abrupt and cylindrical junctions at
+      W = L/2 and L/4, not measured data. What the example shows is the
+      scale: the doping punch-through requires is above the doping the inversion layer tolerates, and only a
+      non-uniform profile meets both.
+    </p>
+
+    <div class="box warn">
+      <p class="box-title">The super-steep retrograde layer is not the halo</p>
+      <p>
+        In Lecture 17 the professor drew the heavily doped layer beneath the channel and said that this region
+        "is called halo", formed by a deeper implantation, before turning to the source and drain. In the notes
+        (pp. 89–90, the "pocket implant"), Wolf (p. 219), Plummer (p. 458) and Taur &amp; Ning (§6.3.3.4) the halo and
+        the pocket are lateral structures; they differ among themselves only on whether "halo" also covers the tilted
+        implant (§6.1).
+        The super-steep retrograde layer (§5) varies in <em>depth</em>: it is a blanket layer under the whole
+        channel, implanted before the gate exists. The halo and pocket implants (§6) vary <em>along the
+        channel</em>: they are implanted after the gate is patterned, self-aligned to it, and put dopant only at
+        the two ends of the channel beside the source and drain. Lecture 17 also called the buried layer the
+        "punch-through implantation" and the "retrograde implantation", close to the notes' "punch through control"
+        region and "retrograde" profile (pp. 75–76). Use
+        "SSR" or "punch-through-control layer" for the vertical profile and "halo" or "pocket" for the lateral
+        one.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>A process moves from a 0.18 µm to a 0.13 µm gate at the same drain bias and the same uniform body
+      doping. In which direction do punch-through margin, threshold voltage and inversion-layer mobility move, and
+      what does the designer have to change to restore the punch-through margin without giving up the other two?</summary>
+      <div class="answer">
+        <p>Punch-through margin falls: W is set by the body doping and the bias (eq. (2.4)), neither of which
+        changed, while L fell by 28 %, so 2W is a larger fraction of L and may exceed it. The threshold voltage and
+        the mobility do not change to first order, because they depend on the doping at the surface, which did not
+        change. Restoring L &gt; 2W needs a higher doping (eq. (9.1)), which shortens W as N<sub>A</sub><sup>−1/2</sup>.
+        Put uniformly, that doping also reaches the surface, where it raises the depletion-charge term of the
+        threshold voltage and lowers the mobility. The answer is to raise the doping only below the inversion layer:
+        a retrograde profile, steep enough that the surface layer stays light — the super-steep retrograde profile —
+        or doping added only at the channel ends, the pocket implant.</p>
+      </div>
+    </details>
+
+    <h2 id="s2">2 · What sets how steep an implanted profile can be</h2>
+
+    <p>
+      A super-steep retrograde profile asks for a change of more than a decade in concentration over a few tens
+      of nanometres. Whether an implant can deliver that depends on the spread of stopping depths of the ions,
+      and that spread depends mostly on the mass of the ion relative to silicon. This section quantifies the
+      flank of an implanted profile, compares the light dopants with the heavy ones the notes substitute for them
+      (p. 75), and explains the mass dependence.
+    </p>
+
+    <details class="recap">
+      <summary>Assumes: the implanted profile, R<sub>p</sub> and ΔR<sub>p</sub> (M03 §9.2)</summary>
+      <p>An implanted ion slows down by collisions with the electrons and nuclei of the target and stops after a
+      path whose depth varies from ion to ion. The mean depth is the <b>projected range</b>
+      <em>R</em><sub>p</sub>, and the standard deviation of the depths is the <b>straggle</b>
+      Δ<em>R</em><sub>p</sub>. To first order the as-implanted profile is a Gaussian,
+      <em>C</em>(<em>x</em>) = <em>C</em><sub>p</sub> exp(−(<em>x</em> − <em>R</em><sub>p</sub>)²/(2Δ<em>R</em><sub>p</sub>²)), with
+      peak <em>C</em><sub>p</sub> = <em>Q</em>/(√(2π) Δ<em>R</em><sub>p</sub>) for a dose <em>Q</em> in cm⁻²
+      (<a href="m03-threshold-voltage.html#s9-2">M03 eq. (3.9)</a>). Both <em>R</em><sub>p</sub> and
+      Δ<em>R</em><sub>p</sub> grow with energy; the depth of the peak is chosen by choosing the energy.</p>
+    </details>
+
+    <h3 id="s2-1">2.1 The flank of a Gaussian</h3>
+
+    <p>
+      Setting <em>C</em>(<em>x</em>) = <em>C</em><sub>p</sub>/<em>r</em> in eq. (3.9) and solving for the
+      distance from the peak gives the length over which the concentration falls by a factor <em>r</em>.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">|<em>x</em> − <em>R</em><sub>p</sub>| = Δ<em>R</em><sub>p</sub>&thinsp;√(2&thinsp;ln&thinsp;<em>r</em>)</div>
+        <div class="eq-num">(9.2)</div>
+      </div>
+      <div class="eq-says">
+        |<em>x</em> − <em>R</em><sub>p</sub>| distance from the peak at which the concentration has fallen to
+        <em>C</em><sub>p</sub>/<em>r</em> (same unit as Δ<em>R</em><sub>p</sub>) · Δ<em>R</em><sub>p</sub> straggle ·
+        <em>r</em> ratio of peak to the concentration of interest (dimensionless). One decade (<em>r</em> = 10) is
+        2.15 Δ<em>R</em><sub>p</sub>; two decades, 3.03 Δ<em>R</em><sub>p</sub>. As-implanted Gaussian only: it ignores
+        skewness, channelling tails (§3) and any diffusion (§4).
+      </div>
+    </div>
+
+    <p>
+      The steepness of the flank is therefore set by Δ<em>R</em><sub>p</sub> alone. Two implants placed at the same
+      depth differ in steepness exactly as their straggles differ. Table 1 gives SRIM-2013 values for the five
+      dopants of this chapter. At a projected range near 75 nm, boron (20 keV) has a straggle of 37.9 nm and indium
+      (150 keV) 18.9 nm; phosphorus (50 keV) 27.7 nm and antimony (150 keV) 18.2 nm.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <caption>Table 1. Projected range and straggle in silicon (nm), SRIM-2013, amorphous target, 2.32 g/cm³</caption>
+      <thead><tr><th>Ion (mass, u)</th><th>2 keV</th><th>10 keV</th><th>20 keV</th><th>50 keV</th><th>100 keV</th><th>150 keV</th><th>200 keV</th></tr></thead>
+      <tbody>
+        <tr><td>B (10.8)</td><td>9.7 / 7.3</td><td>40.0 / 23.2</td><td>77.1 / 37.9</td><td>174.0 / 64.1</td><td>316.9 / 88.3</td><td>450.2 / 104.5</td><td>572.4 / 116.3</td></tr>
+        <tr><td>P (31.0)</td><td>5.3 / 3.1</td><td>16.9 / 8.3</td><td>30.0 / 13.6</td><td>69.0 / 27.7</td><td>134.2 / 47.0</td><td>197.9 / 62.6</td><td>261.2 / 76.1</td></tr>
+        <tr><td>As (74.9)</td><td>4.9 / 2.1</td><td>12.4 / 4.7</td><td>19.6 / 6.9</td><td>38.8 / 12.4</td><td>69.2 / 20.6</td><td>99.7 / 28.2</td><td>130.3 / 35.5</td></tr>
+        <tr><td>In (114.8)</td><td>5.2 / 1.9</td><td>11.9 / 3.9</td><td>18.0 / 5.6</td><td>32.9 / 9.2</td><td>54.8 / 14.3</td><td>75.8 / 18.9</td><td>96.6 / 23.3</td></tr>
+        <tr><td>Sb (121.8)</td><td>5.3 / 1.9</td><td>12.0 / 3.9</td><td>18.0 / 5.5</td><td>32.7 / 9.0</td><td>54.1 / 13.8</td><td>74.4 / 18.2</td><td>94.5 / 22.3</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="note">Each cell is <em>R</em><sub>p</sub> / Δ<em>R</em><sub>p</sub>. Crystalline silicon channels some
+    ions (§3), and real boron profiles are skewed toward the surface (Plummer pp. 459, 462); the table describes a
+    wafer tilted to look amorphous, before any anneal.</p>
+
+    <h3 id="s2-2">2.2 Why a heavy ion stops in a narrower band</h3>
+
+    <p>
+      An implanted ion loses energy in two ways: to the target's electrons, which slows it smoothly without
+      deflecting it, and in elastic collisions with target nuclei, which slow it in steps and change its direction.
+      The straggle comes mostly from the second, because each nuclear collision both removes a random amount of
+      energy and turns the path by a random angle. Two things differ between boron and indium.
+    </p>
+    <ul>
+      <li><b>Which loss dominates.</b> SRIM gives, for indium at 150 keV, nuclear stopping of 191 eV/Å against
+      electronic stopping of 23 eV/Å, so at that energy 89 % of the stopping is nuclear; for boron at 20 keV the share is
+      33 %. Integrated over the whole slowing-down from those energies, the same tables give 92 % of indium's energy
+      and 48 % of boron's lost in nuclear collisions.</li>
+      <li><b>How far one collision can turn the ion.</b> In an elastic collision a projectile heavier than the atom
+      it strikes cannot be deflected by more than arcsin(<em>M</em><sub>2</sub>/<em>M</em><sub>1</sub>), where
+      <em>M</em><sub>1</sub> is the ion's mass and <em>M</em><sub>2</sub> the target atom's. For indium on silicon
+      that is arcsin(28.09/114.82) = 14.2°, and for antimony 13.3°. Boron, lighter than silicon, can be turned
+      through any angle in one collision, including straight back.</li>
+    </ul>
+    <p>
+      An indium ion therefore loses its energy mostly in collisions none of which can turn it by more than 14°,
+      and none can send it back toward the surface; it still wanders sideways (SRIM's lateral straggle at 150 keV is
+      15.3 nm), but its stopping depths cluster more tightly about the mean. A boron ion is thrown
+      sideways and backwards by individual collisions, and its stopping depths spread widely. At equal energy the
+      heavy ion also stops at a shallower depth, because it loses more energy per unit path; the professor's
+      Lecture 3 statement that indium "penetrates deeper" has the direction reversed, as M02 §5.3 records. The
+      depth of an indium peak is chosen by giving it a higher energy, which is why the channel implants of the notes run
+      at 100–200 keV (p. 76; Wolf p. 193 names indium and arsenic).
+    </p>
+
+    <figure class="compact">
+<!--FIG f2-->
+<svg viewBox="0 0 430 270" role="img" aria-labelledby="m9f2-t">
+<title id="m9f2-t">As-implanted Gaussian profiles of boron at 20 keV and indium at 150 keV with the same peak concentration and nearly the same depth</title>
+<line x1="62" y1="226" x2="410" y2="226" class="dg-rule" stroke-width="1.2"/>
+<line x1="62" y1="18" x2="62" y2="226" class="dg-rule" stroke-width="1.2"/>
+<line x1="62.0" y1="226" x2="62.0" y2="230" class="dg-rule"/>
+<text x="62.0" y="242" class="dg-label-sm" text-anchor="middle">0</text>
+<line x1="149.0" y1="226" x2="149.0" y2="230" class="dg-rule"/>
+<text x="149.0" y="242" class="dg-label-sm" text-anchor="middle">50</text>
+<line x1="236.0" y1="226" x2="236.0" y2="230" class="dg-rule"/>
+<text x="236.0" y="242" class="dg-label-sm" text-anchor="middle">100</text>
+<line x1="323.0" y1="226" x2="323.0" y2="230" class="dg-rule"/>
+<text x="323.0" y="242" class="dg-label-sm" text-anchor="middle">150</text>
+<line x1="410.0" y1="226" x2="410.0" y2="230" class="dg-rule"/>
+<text x="410.0" y="242" class="dg-label-sm" text-anchor="middle">200</text>
+<line x1="58" y1="226.0" x2="62" y2="226.0" class="dg-rule"/>
+<text x="55" y="229.5" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">14</tspan></text>
+<line x1="58" y1="179.5" x2="62" y2="179.5" class="dg-rule"/>
+<text x="55" y="183.0" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">15</tspan></text>
+<line x1="58" y1="133.1" x2="62" y2="133.1" class="dg-rule"/>
+<text x="55" y="136.6" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">16</tspan></text>
+<line x1="58" y1="86.6" x2="62" y2="86.6" class="dg-rule"/>
+<text x="55" y="90.1" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">17</tspan></text>
+<line x1="58" y1="40.2" x2="62" y2="40.2" class="dg-rule"/>
+<text x="55" y="43.7" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">18</tspan></text>
+<text x="236.0" y="262" class="dg-label" text-anchor="middle">depth below the gate oxide (nm)</text>
+<text x="14" y="122.0" class="dg-label" text-anchor="middle" transform="rotate(-90 14 122.0)">concentration (cm<tspan baseline-shift="super" style="font-size:75%">−3</tspan>)</text>
+<path d="M62.0,81.9 L62.9,81.4 L63.7,80.8 L64.6,80.3 L65.5,79.8 L66.3,79.3 L67.2,78.7 L68.1,78.2 L69.0,77.7 L69.8,77.2 L70.7,76.7 L71.6,76.2 L72.4,75.7 L73.3,75.2 L74.2,74.7 L75.0,74.2 L75.9,73.7 L76.8,73.2 L77.7,72.7 L78.5,72.3 L79.4,71.8 L80.3,71.3 L81.1,70.9 L82.0,70.4 L82.9,69.9 L83.8,69.5 L84.6,69.0 L85.5,68.6 L86.4,68.1 L87.2,67.7 L88.1,67.3 L89.0,66.8 L89.8,66.4 L90.7,66.0 L91.6,65.5 L92.5,65.1 L93.3,64.7 L94.2,64.3 L95.1,63.9 L95.9,63.5 L96.8,63.1 L97.7,62.7 L98.5,62.3 L99.4,61.9 L100.3,61.5 L101.2,61.1 L102.0,60.7 L102.9,60.3 L103.8,60.0 L104.6,59.6 L105.5,59.2 L106.4,58.9 L107.2,58.5 L108.1,58.1 L109.0,57.8 L109.8,57.4 L110.7,57.1 L111.6,56.8 L112.5,56.4 L113.3,56.1 L114.2,55.7 L115.1,55.4 L115.9,55.1 L116.8,54.8 L117.7,54.5 L118.6,54.1 L119.4,53.8 L120.3,53.5 L121.2,53.2 L122.0,52.9 L122.9,52.6 L123.8,52.3 L124.6,52.0 L125.5,51.7 L126.4,51.5 L127.2,51.2 L128.1,50.9 L129.0,50.6 L129.9,50.4 L130.7,50.1 L131.6,49.8 L132.5,49.6 L133.3,49.3 L134.2,49.1 L135.1,48.8 L135.9,48.6 L136.8,48.3 L137.7,48.1 L138.6,47.9 L139.4,47.6 L140.3,47.4 L141.2,47.2 L142.0,47.0 L142.9,46.7 L143.8,46.5 L144.6,46.3 L145.5,46.1 L146.4,45.9 L147.3,45.7 L148.1,45.5 L149.0,45.3 L149.9,45.1 L150.7,45.0 L151.6,44.8 L152.5,44.6 L153.4,44.4 L154.2,44.2 L155.1,44.1 L156.0,43.9 L156.8,43.8 L157.7,43.6 L158.6,43.4 L159.4,43.3 L160.3,43.1 L161.2,43.0 L162.1,42.9 L162.9,42.7 L163.8,42.6 L164.7,42.5 L165.5,42.3 L166.4,42.2 L167.3,42.1 L168.1,42.0 L169.0,41.9 L169.9,41.8 L170.8,41.7 L171.6,41.6 L172.5,41.5 L173.4,41.4 L174.2,41.3 L175.1,41.2 L176.0,41.1 L176.8,41.0 L177.7,41.0 L178.6,40.9 L179.4,40.8 L180.3,40.7 L181.2,40.7 L182.1,40.6 L182.9,40.6 L183.8,40.5 L184.7,40.5 L185.5,40.4 L186.4,40.4 L187.3,40.3 L188.1,40.3 L189.0,40.3 L189.9,40.3 L190.8,40.2 L191.6,40.2 L192.5,40.2 L193.4,40.2 L194.2,40.2 L195.1,40.2 L196.0,40.2 L196.8,40.2 L197.7,40.2 L198.6,40.2 L199.5,40.2 L200.3,40.2 L201.2,40.2 L202.1,40.2 L202.9,40.3 L203.8,40.3 L204.7,40.3 L205.5,40.4 L206.4,40.4 L207.3,40.5 L208.2,40.5 L209.0,40.6 L209.9,40.6 L210.8,40.7 L211.6,40.7 L212.5,40.8 L213.4,40.9 L214.2,40.9 L215.1,41.0 L216.0,41.1 L216.9,41.2 L217.7,41.2 L218.6,41.3 L219.5,41.4 L220.3,41.5 L221.2,41.6 L222.1,41.7 L223.0,41.8 L223.8,41.9 L224.7,42.1 L225.6,42.2 L226.4,42.3 L227.3,42.4 L228.2,42.5 L229.0,42.7 L229.9,42.8 L230.8,42.9 L231.7,43.1 L232.5,43.2 L233.4,43.4 L234.3,43.5 L235.1,43.7 L236.0,43.8 L236.9,44.0 L237.7,44.2 L238.6,44.3 L239.5,44.5 L240.3,44.7 L241.2,44.9 L242.1,45.1 L243.0,45.2 L243.8,45.4 L244.7,45.6 L245.6,45.8 L246.4,46.0 L247.3,46.2 L248.2,46.4 L249.0,46.7 L249.9,46.9 L250.8,47.1 L251.7,47.3 L252.5,47.5 L253.4,47.8 L254.3,48.0 L255.1,48.2 L256.0,48.5 L256.9,48.7 L257.8,49.0 L258.6,49.2 L259.5,49.5 L260.4,49.7 L261.2,50.0 L262.1,50.3 L263.0,50.5 L263.8,50.8 L264.7,51.1 L265.6,51.3 L266.5,51.6 L267.3,51.9 L268.2,52.2 L269.1,52.5 L269.9,52.8 L270.8,53.1 L271.7,53.4 L272.5,53.7 L273.4,54.0 L274.3,54.3 L275.1,54.6 L276.0,55.0 L276.9,55.3 L277.8,55.6 L278.6,55.9 L279.5,56.3 L280.4,56.6 L281.2,57.0 L282.1,57.3 L283.0,57.7 L283.9,58.0 L284.7,58.4 L285.6,58.7 L286.5,59.1 L287.3,59.5 L288.2,59.8 L289.1,60.2 L289.9,60.6 L290.8,61.0 L291.7,61.3 L292.5,61.7 L293.4,62.1 L294.3,62.5 L295.2,62.9 L296.0,63.3 L296.9,63.7 L297.8,64.1 L298.6,64.5 L299.5,64.9 L300.4,65.4 L301.2,65.8 L302.1,66.2 L303.0,66.6 L303.9,67.1 L304.7,67.5 L305.6,68.0 L306.5,68.4 L307.3,68.8 L308.2,69.3 L309.1,69.7 L310.0,70.2 L310.8,70.7 L311.7,71.1 L312.6,71.6 L313.4,72.1 L314.3,72.5 L315.2,73.0 L316.0,73.5 L316.9,74.0 L317.8,74.5 L318.7,75.0 L319.5,75.5 L320.4,76.0 L321.3,76.5 L322.1,77.0 L323.0,77.5 L323.9,78.0 L324.7,78.5 L325.6,79.0 L326.5,79.6 L327.3,80.1 L328.2,80.6 L329.1,81.2 L330.0,81.7 L330.8,82.2 L331.7,82.8 L332.6,83.3 L333.4,83.9 L334.3,84.4 L335.2,85.0 L336.1,85.6 L336.9,86.1 L337.8,86.7 L338.7,87.3 L339.5,87.9 L340.4,88.4 L341.3,89.0 L342.1,89.6 L343.0,90.2 L343.9,90.8 L344.8,91.4 L345.6,92.0 L346.5,92.6 L347.4,93.2 L348.2,93.8 L349.1,94.4 L350.0,95.1 L350.8,95.7 L351.7,96.3 L352.6,96.9 L353.4,97.6 L354.3,98.2 L355.2,98.8 L356.1,99.5 L356.9,100.1 L357.8,100.8 L358.7,101.4 L359.5,102.1 L360.4,102.8 L361.3,103.4 L362.2,104.1 L363.0,104.8 L363.9,105.4 L364.8,106.1 L365.6,106.8 L366.5,107.5 L367.4,108.2 L368.2,108.9 L369.1,109.6 L370.0,110.3 L370.8,111.0 L371.7,111.7 L372.6,112.4 L373.5,113.1 L374.3,113.8 L375.2,114.5 L376.1,115.3 L376.9,116.0 L377.8,116.7 L378.7,117.5 L379.6,118.2 L380.4,118.9 L381.3,119.7 L382.2,120.4 L383.0,121.2 L383.9,121.9 L384.8,122.7 L385.6,123.5 L386.5,124.2 L387.4,125.0 L388.2,125.8 L389.1,126.5 L390.0,127.3 L390.9,128.1 L391.7,128.9 L392.6,129.7 L393.5,130.5 L394.3,131.3 L395.2,132.1 L396.1,132.9 L396.9,133.7 L397.8,134.5 L398.7,135.3 L399.6,136.1 L400.4,137.0 L401.3,137.8 L402.2,138.6 L403.0,139.5 L403.9,140.3 L404.8,141.1 L405.7,142.0 L406.5,142.8 L407.4,143.7 L408.3,144.5 L409.1,145.4 L410.0,146.2" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="6 3"/>
+<path d="M62.0,202.4 L62.9,200.3 L63.7,198.2 L64.6,196.1 L65.5,194.0 L66.3,191.9 L67.2,189.8 L68.1,187.8 L69.0,185.8 L69.8,183.7 L70.7,181.7 L71.6,179.7 L72.4,177.8 L73.3,175.8 L74.2,173.8 L75.0,171.9 L75.9,170.0 L76.8,168.1 L77.7,166.2 L78.5,164.3 L79.4,162.4 L80.3,160.6 L81.1,158.8 L82.0,156.9 L82.9,155.1 L83.8,153.3 L84.6,151.5 L85.5,149.8 L86.4,148.0 L87.2,146.3 L88.1,144.6 L89.0,142.9 L89.8,141.2 L90.7,139.5 L91.6,137.8 L92.5,136.2 L93.3,134.5 L94.2,132.9 L95.1,131.3 L95.9,129.7 L96.8,128.1 L97.7,126.5 L98.5,125.0 L99.4,123.4 L100.3,121.9 L101.2,120.4 L102.0,118.9 L102.9,117.4 L103.8,115.9 L104.6,114.5 L105.5,113.0 L106.4,111.6 L107.2,110.2 L108.1,108.8 L109.0,107.4 L109.8,106.1 L110.7,104.7 L111.6,103.4 L112.5,102.0 L113.3,100.7 L114.2,99.4 L115.1,98.1 L115.9,96.8 L116.8,95.6 L117.7,94.3 L118.6,93.1 L119.4,91.9 L120.3,90.7 L121.2,89.5 L122.0,88.3 L122.9,87.2 L123.8,86.0 L124.6,84.9 L125.5,83.8 L126.4,82.7 L127.2,81.6 L128.1,80.5 L129.0,79.5 L129.9,78.4 L130.7,77.4 L131.6,76.4 L132.5,75.4 L133.3,74.4 L134.2,73.4 L135.1,72.4 L135.9,71.5 L136.8,70.6 L137.7,69.6 L138.6,68.7 L139.4,67.8 L140.3,67.0 L141.2,66.1 L142.0,65.2 L142.9,64.4 L143.8,63.6 L144.6,62.8 L145.5,62.0 L146.4,61.2 L147.3,60.5 L148.1,59.7 L149.0,59.0 L149.9,58.2 L150.7,57.5 L151.6,56.8 L152.5,56.2 L153.4,55.5 L154.2,54.8 L155.1,54.2 L156.0,53.6 L156.8,53.0 L157.7,52.4 L158.6,51.8 L159.4,51.2 L160.3,50.7 L161.2,50.1 L162.1,49.6 L162.9,49.1 L163.8,48.6 L164.7,48.1 L165.5,47.7 L166.4,47.2 L167.3,46.8 L168.1,46.4 L169.0,45.9 L169.9,45.5 L170.8,45.2 L171.6,44.8 L172.5,44.4 L173.4,44.1 L174.2,43.8 L175.1,43.5 L176.0,43.2 L176.8,42.9 L177.7,42.6 L178.6,42.4 L179.4,42.1 L180.3,41.9 L181.2,41.7 L182.1,41.5 L182.9,41.3 L183.8,41.1 L184.7,41.0 L185.5,40.8 L186.4,40.7 L187.3,40.6 L188.1,40.5 L189.0,40.4 L189.9,40.3 L190.8,40.3 L191.6,40.2 L192.5,40.2 L193.4,40.2 L194.2,40.2 L195.1,40.2 L196.0,40.2 L196.8,40.2 L197.7,40.3 L198.6,40.4 L199.5,40.5 L200.3,40.6 L201.2,40.7 L202.1,40.8 L202.9,40.9 L203.8,41.1 L204.7,41.3 L205.5,41.4 L206.4,41.6 L207.3,41.8 L208.2,42.1 L209.0,42.3 L209.9,42.6 L210.8,42.8 L211.6,43.1 L212.5,43.4 L213.4,43.7 L214.2,44.0 L215.1,44.4 L216.0,44.7 L216.9,45.1 L217.7,45.5 L218.6,45.9 L219.5,46.3 L220.3,46.7 L221.2,47.1 L222.1,47.6 L223.0,48.0 L223.8,48.5 L224.7,49.0 L225.6,49.5 L226.4,50.0 L227.3,50.6 L228.2,51.1 L229.0,51.7 L229.9,52.3 L230.8,52.9 L231.7,53.5 L232.5,54.1 L233.4,54.7 L234.3,55.4 L235.1,56.0 L236.0,56.7 L236.9,57.4 L237.7,58.1 L238.6,58.8 L239.5,59.6 L240.3,60.3 L241.2,61.1 L242.1,61.8 L243.0,62.6 L243.8,63.4 L244.7,64.2 L245.6,65.1 L246.4,65.9 L247.3,66.8 L248.2,67.7 L249.0,68.5 L249.9,69.4 L250.8,70.4 L251.7,71.3 L252.5,72.2 L253.4,73.2 L254.3,74.2 L255.1,75.2 L256.0,76.2 L256.9,77.2 L257.8,78.2 L258.6,79.2 L259.5,80.3 L260.4,81.4 L261.2,82.5 L262.1,83.6 L263.0,84.7 L263.8,85.8 L264.7,86.9 L265.6,88.1 L266.5,89.3 L267.3,90.5 L268.2,91.7 L269.1,92.9 L269.9,94.1 L270.8,95.3 L271.7,96.6 L272.5,97.9 L273.4,99.1 L274.3,100.4 L275.1,101.8 L276.0,103.1 L276.9,104.4 L277.8,105.8 L278.6,107.1 L279.5,108.5 L280.4,109.9 L281.2,111.3 L282.1,112.8 L283.0,114.2 L283.9,115.7 L284.7,117.1 L285.6,118.6 L286.5,120.1 L287.3,121.6 L288.2,123.1 L289.1,124.7 L289.9,126.2 L290.8,127.8 L291.7,129.4 L292.5,131.0 L293.4,132.6 L294.3,134.2 L295.2,135.8 L296.0,137.5 L296.9,139.1 L297.8,140.8 L298.6,142.5 L299.5,144.2 L300.4,145.9 L301.2,147.7 L302.1,149.4 L303.0,151.2 L303.9,153.0 L304.7,154.8 L305.6,156.6 L306.5,158.4 L307.3,160.2 L308.2,162.1 L309.1,163.9 L310.0,165.8 L310.8,167.7 L311.7,169.6 L312.6,171.5 L313.4,173.5 L314.3,175.4 L315.2,177.4 L316.0,179.3 L316.9,181.3 L317.8,183.3 L318.7,185.4 L319.5,187.4 L320.4,189.4 L321.3,191.5 L322.1,193.6 L323.0,195.7 L323.9,197.8 L324.7,199.9 L325.6,202.0 L326.5,204.2 L327.3,206.3 L328.2,208.5 L329.1,210.7 L330.0,212.9 L330.8,215.1 L331.7,217.3 L332.6,219.6 L333.4,221.8 L334.3,224.1 L335.2,226.0 L336.1,226.0 L336.9,226.0 L337.8,226.0 L338.7,226.0 L339.5,226.0 L340.4,226.0 L341.3,226.0 L342.1,226.0 L343.0,226.0 L343.9,226.0 L344.8,226.0 L345.6,226.0 L346.5,226.0 L347.4,226.0 L348.2,226.0 L349.1,226.0 L350.0,226.0 L350.8,226.0 L351.7,226.0 L352.6,226.0 L353.4,226.0 L354.3,226.0 L355.2,226.0 L356.1,226.0 L356.9,226.0 L357.8,226.0 L358.7,226.0 L359.5,226.0 L360.4,226.0 L361.3,226.0 L362.2,226.0 L363.0,226.0 L363.9,226.0 L364.8,226.0 L365.6,226.0 L366.5,226.0 L367.4,226.0 L368.2,226.0 L369.1,226.0 L370.0,226.0 L370.8,226.0 L371.7,226.0 L372.6,226.0 L373.5,226.0 L374.3,226.0 L375.2,226.0 L376.1,226.0 L376.9,226.0 L377.8,226.0 L378.7,226.0 L379.6,226.0 L380.4,226.0 L381.3,226.0 L382.2,226.0 L383.0,226.0 L383.9,226.0 L384.8,226.0 L385.6,226.0 L386.5,226.0 L387.4,226.0 L388.2,226.0 L389.1,226.0 L390.0,226.0 L390.9,226.0 L391.7,226.0 L392.6,226.0 L393.5,226.0 L394.3,226.0 L395.2,226.0 L396.1,226.0 L396.9,226.0 L397.8,226.0 L398.7,226.0 L399.6,226.0 L400.4,226.0 L401.3,226.0 L402.2,226.0 L403.0,226.0 L403.9,226.0 L404.8,226.0 L405.7,226.0 L406.5,226.0 L407.4,226.0 L408.3,226.0 L409.1,226.0 L410.0,226.0" class="dg-acc" fill="none" stroke-width="2.2"/>
+<path d="M62.0,100.6 L410.0,100.6" class="dg-guide" fill="none" stroke-width="1.0" stroke-dasharray="3 3"/>
+<text x="403.0" y="97.3" class="dg-label-sm" text-anchor="end">5×10¹⁶</text>
+<text x="291.7" y="70.7" class="dg-label-sm" text-anchor="start">boron, 20 keV</text>
+<text x="253.4" y="177.6" class="dg-label-sm" text-anchor="start">indium, 150 keV</text>
+<circle cx="62.0" cy="82.0" r="3" class="dg-ink"/>
+<text x="69.0" y="75.9" class="dg-label-sm" text-anchor="start">1.3×10¹⁷</text>
+<circle cx="113.3" cy="100.6" r="3" class="dg-acc-f"/>
+<text x="115.9" y="112.3" class="dg-label-sm" text-anchor="start">29.5 nm</text>
+</svg>
+<!--/FIG f2-->
+      <figcaption><b>Figure 2.</b> Gaussian profiles with the same 10¹⁸ cm⁻³ peak at nearly the same depth: boron at
+      20 keV (dashed) and indium at 150 keV (solid), SRIM ranges. Indium's flank is half as wide. Its concentration
+      falls to 5×10¹⁶ cm⁻³ at 29.5 nm, leaving the surface to the well doping; boron's own tail still puts
+      1.3×10¹⁷ cm⁻³ at the oxide interface.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Surface doping left by a channel implant: boron against indium</div>
+      <div class="ex-body">
+        <p><b>Given</b> a channel implant with its peak at about 76 nm and a peak concentration of 10¹⁸ cm⁻³, the
+        values the notes give for an indium SSR implant (p. 76: about 10¹⁸ cm⁻³, 80 nm below the gate oxide).
+        Boron at 20 keV: <em>R</em><sub>p</sub> = 77.1 nm, Δ<em>R</em><sub>p</sub> = 37.9 nm. Indium at 150 keV:
+        <em>R</em><sub>p</sub> = 75.8 nm, Δ<em>R</em><sub>p</sub> = 18.9 nm (Table 1). <b>Find</b> for each, the
+        concentration the implant leaves at the oxide interface, the depth at which it falls to the notes'
+        5×10¹⁶ cm⁻³, and the dose.</p>
+        <p><b>Plan.</b> Eq. (3.9) at <em>x</em> = 0 for the surface; eq. (9.2) with <em>r</em> = 20 for the
+        5×10¹⁶ point; <em>Q</em> = √(2π) Δ<em>R</em><sub>p</sub><em>C</em><sub>p</sub> with Δ<em>R</em><sub>p</sub> in cm
+        for the dose.</p>
+        <p class="ex-step"><b>Boron at the surface.</b> <em>C</em>(0) = 10¹⁸ exp(−77.1² / (2 × 37.9²)) =
+        10¹⁸ exp(−2.069) = 1.26×10¹⁷ cm⁻³.</p>
+        <p class="ex-step"><b>Indium at the surface.</b> <em>C</em>(0) = 10¹⁸ exp(−75.8² / (2 × 18.9²)) =
+        10¹⁸ exp(−8.04) = 3.22×10¹⁴ cm⁻³.</p>
+        <p class="ex-step"><b>Where each reaches 5×10¹⁶ cm⁻³.</b> √(2 ln 20) = 2.448. Boron: 2.448 × 37.9 =
+        92.8 nm from the peak, which is beyond the surface (77.1 nm away), so boron never falls to 5×10¹⁶ cm⁻³ on
+        the surface side. Indium: 2.448 × 18.9 = 46.3 nm, so at 75.8 − 46.3 = 29.5 nm below the oxide.</p>
+        <p class="ex-step"><b>Doses.</b> Boron: √(2π) × 37.9×10⁻⁷ cm × 10¹⁸ cm⁻³ = 9.5×10¹² cm⁻². Indium:
+        √(2π) × 18.9×10⁻⁷ × 10¹⁸ = 4.74×10¹² cm⁻². Half the straggle needs half the dose for the same peak.</p>
+        <p class="ex-answer">Boron leaves 1.26×10¹⁷ cm⁻³ at the interface, 2.5 times the notes' 5×10¹⁶; indium leaves
+        3.2×10¹⁴ cm⁻³, 390 times less than boron, so with indium the surface doping is whatever the well provides.
+        Check: the straggles differ by a factor of 2.01, and the exponent at the surface goes as
+        1/Δ<em>R</em><sub>p</sub>², so a factor of 4 in the exponent (2.07 against 8.04) — which is why a factor
+        of 2 in straggle becomes a factor of 390 in concentration.</p>
+      </div>
+    </div>
+
+    <div class="box">
+      <p class="box-title">What the Gaussian leaves out</p>
+      <p>
+        Eq. (9.2) is the as-implanted, symmetric profile. Boron profiles are skewed toward the surface and need a
+        four-moment (Pearson) description beyond the peak (Plummer p. 459); channelling (§3) adds a deep tail;
+        and every anneal widens the profile (<a href="m08-well-engineering.html#s4-3">M08 eq. (8.9)</a>), faster
+        during the first moments after an implant (§4). The comparison above is therefore the best case for each
+        species. The notes' reason for choosing indium has two halves (p. 76): smaller straggle, which is this
+        section, and smaller diffusivity, which §4 qualifies.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>For the p-channel device the notes replace phosphorus with arsenic or antimony. Using Table 1,
+      compare phosphorus at 50 keV with antimony at 150 keV, which put their peaks at nearly the same depth: how
+      far below a 10¹⁸ cm⁻³ peak does each reach 5×10¹⁶ cm⁻³, and what fraction of the peak does each leave at the
+      surface?</summary>
+      <div class="answer">
+        <p>Eq. (9.2) with <em>r</em> = 20 gives 2.448 Δ<em>R</em><sub>p</sub>. Phosphorus, Δ<em>R</em><sub>p</sub> =
+        27.7 nm: 67.8 nm from the peak, so with the peak at 69.0 nm the 5×10¹⁶ point is only 1.2 nm below the
+        surface. Antimony, 18.2 nm: 44.5 nm from the peak, at 74.4 − 44.5 = 29.9 nm below the surface. At the
+        surface, eq. (3.9) gives exp(−69.0²/(2 × 27.7²)) = 0.045 of the peak for phosphorus, 4.5×10¹⁶ cm⁻³, and
+        exp(−74.4²/(2 × 18.2²)) = 2.4×10⁻⁴ for antimony, 2.4×10¹⁴ cm⁻³. Antimony (121.8 u) and indium (114.8 u)
+        behave almost identically because their masses are close.</p>
+      </div>
+    </details>
+
+    <h2 id="s3">3 · Channelling</h2>
+
+    <p>
+      Table 1 describes a target in which the atoms are randomly placed. A silicon wafer is a single crystal, and
+      along certain directions its atoms line up in rows with open space between them. An ion that enters one of
+      those open directions can travel much further than the table predicts. Lecture 18 explained what channelling
+      is and how it is prevented; it matters here because it puts a deep tail on exactly the profiles that are meant
+      to be steep.
+    </p>
+
+    <p>
+      Seen along a low-index direction, the rows of silicon atoms form open tubes, the <b>channels</b>: axial
+      channels along ⟨110⟩ and ⟨100⟩, and planar channels between {111} planes (Plummer p. 461, Fig. 8-10). An ion
+      that enters a channel at a small enough angle to its axis is steered by small-angle scattering from the atoms
+      that line the walls, so it travels a long way along the channel and loses energy mainly to the electrons. It
+      stops when the electronic drag has slowed it, or when a hard collision knocks it out of the channel (Plummer
+      p. 461). The ions that channel therefore come to rest far deeper than the random-target range, and the
+      profile acquires a tail that continues much further than expected.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 220" role="img" aria-labelledby="m9f3-t">
+        <title id="m9f3-t">Ions entering a crystal along a channel direction travel deep between atom rows; ions entering at a tilt strike atoms near the surface</title>
+        <g class="dg-ink">
+          <circle cx="40" cy="60" r="4"/><circle cx="40" cy="90" r="4"/><circle cx="40" cy="120" r="4"/><circle cx="40" cy="150" r="4"/><circle cx="40" cy="180" r="4"/>
+          <circle cx="80" cy="60" r="4"/><circle cx="80" cy="90" r="4"/><circle cx="80" cy="120" r="4"/><circle cx="80" cy="150" r="4"/><circle cx="80" cy="180" r="4"/>
+          <circle cx="120" cy="60" r="4"/><circle cx="120" cy="90" r="4"/><circle cx="120" cy="120" r="4"/><circle cx="120" cy="150" r="4"/><circle cx="120" cy="180" r="4"/>
+          <circle cx="160" cy="60" r="4"/><circle cx="160" cy="90" r="4"/><circle cx="160" cy="120" r="4"/><circle cx="160" cy="150" r="4"/><circle cx="160" cy="180" r="4"/>
+          <circle cx="260" cy="60" r="4"/><circle cx="260" cy="90" r="4"/><circle cx="260" cy="120" r="4"/><circle cx="260" cy="150" r="4"/><circle cx="260" cy="180" r="4"/>
+          <circle cx="300" cy="60" r="4"/><circle cx="300" cy="90" r="4"/><circle cx="300" cy="120" r="4"/><circle cx="300" cy="150" r="4"/><circle cx="300" cy="180" r="4"/>
+          <circle cx="340" cy="60" r="4"/><circle cx="340" cy="90" r="4"/><circle cx="340" cy="120" r="4"/><circle cx="340" cy="150" r="4"/><circle cx="340" cy="180" r="4"/>
+          <circle cx="380" cy="60" r="4"/><circle cx="380" cy="90" r="4"/><circle cx="380" cy="120" r="4"/><circle cx="380" cy="150" r="4"/><circle cx="380" cy="180" r="4"/>
+        </g>
+        <line x1="20" y1="48" x2="180" y2="48" class="dg-rule"/>
+        <line x1="240" y1="48" x2="400" y2="48" class="dg-rule"/>
+        <path d="M100,14 L100,52 L101,90 L99,128 L101,166 L100,200" class="dg-acc" fill="none" stroke-width="2"/>
+        <circle cx="100" cy="200" r="3.5" class="dg-acc-f"/>
+        <text x="100" y="10" class="dg-label-sm" text-anchor="middle">aligned beam</text>
+        <text x="108" y="212" class="dg-label-sm">deep stop</text>
+        <path d="M290,14 L300,48 L304,56 L322,76 L314,98" class="dg-line" fill="none" stroke-width="1.8"/>
+        <circle cx="314" cy="98" r="3.5" class="dg-ink"/>
+        <text x="268" y="10" class="dg-label-sm">tilted beam</text>
+        <text x="326" y="100" class="dg-label-sm">stops near</text>
+        <text x="326" y="113" class="dg-label-sm">the surface</text>
+        <text x="106" y="40" class="dg-label-sm">channel</text>
+      </svg>
+      <figcaption><b>Figure 3.</b> Schematic, not to scale. Left: an ion entering along an open row direction is
+      guided between the atom rows by many gentle deflections and stops far below the random-target range. Right: the
+      same ion entering at a tilt meets atoms almost at once, is scattered and stops at the depth Table 1
+      predicts.</figcaption>
+    </figure>
+
+    <p>
+      Plummer's simulated boron implants into ⟨100⟩ silicon at zero tilt (35 keV, Fig. 8-12) show the result: a main
+      peak and a separate channelled tail, so that two distributions are needed to fit one profile. The tail depends
+      on dose, because the first ions damage the lattice near the surface and block the channels for the ions that
+      follow; low-dose implants channel most (Plummer pp. 462–463). A threshold or super-steep retrograde implant is a
+      low-dose implant, of order 10¹² cm⁻² (§2 example; the notes' threshold implant, p. 74, is 5.5×10¹² cm⁻²), so it
+      is the kind most exposed to channelling.
+    </p>
+
+    <p>
+      Channelling is reduced in three ways, each with a cost.
+    </p>
+    <ul>
+      <li><b>Tilt and rotate the wafer</b> so that the beam meets no low-index direction. Lecture 18 gave a tilt of
+      7–10°; Plummer's end-of-chapter Problem 8.1 tilts the wafer 7° "to make it appear amorphous". A tilt cannot remove
+      channelling completely, because a scattered ion can still enter a channel below the surface (Plummer p. 461).
+      The cost is <b>shadowing</b>: a tilted beam is blocked on one side of every gate and lands asymmetrically
+      (Plummer p. 458, Fig. 8-6). Many processes therefore implant at zero tilt (Plummer p. 475).</li>
+      <li><b>Implant through a thin amorphous screen oxide</b>, which scatters the beam into random directions before
+      it reaches the crystal (Plummer p. 463). This is the textbooks' reason for the screen oxide that
+      <a href="m03-threshold-voltage.html#s9-2">M03 §9.2</a> describes beside the lecture's own reason. The cost: part
+      of the dose stops in the oxide and is lost when it is stripped, a large fraction for sub-keV implants (notes
+      p. 88).</li>
+      <li><b>Use a low energy.</b> Wolf states that channelling effects are minimal for low-energy, high-current
+      implants, and that a 0° implant gives the most abrupt lateral junction, since any tilt creates shadowed areas
+      near the gate (Wolf p. 218). Channelling, like the straggle, scales with the projected range, and for sub-keV
+      boron it becomes relatively unimportant compared with the broadening TED causes (Wolf p. 206). This is the
+      argument for zero tilt in the shallow source–drain extensions of M10. The cost is throughput: sub-keV beams carry
+      1–2 mA against 10–25 mA above 10 keV (notes p. 85). (A high dose also blocks the channels with its own damage,
+      as above, but the dose is set by the doping wanted.)</li>
+    </ul>
+
+    <div class="example">
+      <div class="ex-head">The shadow a gate casts at the channelling tilt</div>
+      <div class="ex-body">
+        <p><b>Given</b> a gate stack 150 nm high (polysilicon and any hard mask) and a beam tilted 7° from the wafer
+        normal in the plane perpendicular to the gate. <b>Find</b> the width of silicon beside the gate that the
+        beam cannot reach, and the same at 10°.</p>
+        <p><b>Plan.</b> A ray grazing the top edge of the gate reaches the silicon at a horizontal distance
+        <em>h</em> tan θ from the gate's foot; everything closer is in shadow on that side.</p>
+        <p class="ex-step"><b>At 7°.</b> 150 nm × tan 7° = 150 × 0.1228 = 18.4 nm.</p>
+        <p class="ex-step"><b>At 10°.</b> 150 nm × tan 10° = 150 × 0.1763 = 26.4 nm.</p>
+        <p class="ex-answer">18.4 nm at 7°, 26.4 nm at 10°, on the side facing away from the beam; the side facing
+        the beam receives dopant under the gate edge instead. Check: tan θ ≈ θ for small angles, so 7° = 0.122 rad
+        gives 18.3 nm. Wolf reports one study (0.25 µm n-channel devices, a 50 nm extension reaching about 30 nm under the
+        gate) in which the drive current fell off fast below about 20 nm of overlap (p. 218). If the shadowed side's
+        extension were implanted at this tilt, its overlap would shrink by up to the 18.4 nm shadow, to about 12 nm,
+        below that study's recommendation; hence the quad split of §6, or zero tilt.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>Explain in a few sentences what channelling is, why a low-dose threshold implant is more affected by
+      it than a high-dose source–drain implant, and name two ways of reducing it together with what each one
+      costs.</summary>
+      <div class="answer">
+        <p>Channelling is the deep penetration of implanted ions that enter the crystal along an open lattice
+        direction: between the aligned rows of silicon atoms the ion is steered by gentle collisions with the channel
+        walls, loses energy mainly to electrons, and travels far beyond the projected range before it stops, which
+        adds a deep tail to the profile. A high-dose implant damages the surface region with its first ions and
+        blocks the channels for the rest; a low-dose implant leaves the crystal nearly intact, so a larger fraction
+        of its ions channel. Tilting (7–10° in the lecture) and rotating the wafer makes the crystal look random to
+        the beam, at the cost of shadowing beside each gate; implanting through a thin amorphous screen oxide
+        randomises the beam's direction before it enters the silicon, at the cost of some range in the oxide and
+        of dopant left in it.</p>
+      </div>
+    </details>
+
+    <h2 id="s4">4 · Transient enhanced diffusion</h2>
+
+    <p>
+      Every implant is followed by an anneal, which repairs the lattice and moves the dopant onto lattice sites
+      where it is electrically active. During the first part of that anneal the dopant diffuses much faster than its
+      normal diffusivity predicts, and then slows to the normal rate. This burst is <b>transient enhanced diffusion
+      (TED)</b>. It is one of the reasons an implanted profile does not stay as implanted, and it bears on the
+      second half of the notes' case for the heavier species, that they "provide decreased spread during subsequent
+      thermal process" (p. 76).
+    </p>
+
+    <details class="recap">
+      <summary>Assumes: dopants diffuse by pairing with point defects (M02 §5.3)</summary>
+      <p>A substitutional dopant atom moves through silicon by pairing with a point defect: a <b>self-interstitial</b>,
+      an extra silicon atom between lattice sites, or a <b>vacancy</b>, an empty lattice site. Boron and phosphorus
+      move mainly with interstitials; antimony mainly with vacancies; arsenic by both. The diffusivity is
+      proportional to the concentration of the defect that carries the dopant, so anything that raises the
+      interstitial concentration above its equilibrium value speeds up boron and phosphorus by the same factor
+      (<a href="m02-deep-submicron-roadmap.html#s5-3">M02 §5.3</a>, and the corrections recorded there).</p>
+    </details>
+
+    <h3 id="s4-1">4.1 From implant damage to excess interstitials</h3>
+
+    <p>
+      An implanted ion displaces silicon atoms from their sites, creating vacancy–interstitial pairs. Most of them
+      recombine early in the anneal, but not all: the implanted atoms now occupy lattice sites, and the silicon atoms
+      they displaced remain as interstitials, about one per implanted atom (Wolf p. 209). This is the <b>"+1"
+      approximation</b>: the net effect of an implant is one extra interstitial for every dopant atom introduced
+      (Plummer p. 489). Plummer adds that it is better called "+<em>n</em>", with <em>n</em> of order one, because
+      sputtering and the screen oxide change the balance. The evidence for it is direct: implants placed at the same
+      depth with very different energies, and so very different primary damage, give identical TED (Plummer p. 488).
+    </p>
+
+    <p>
+      The excess interstitials do not stay single. They coalesce rapidly into extended defects: rod-like clusters
+      lying on {311} planes, visible in the electron microscope after 1 s at 600 °C, and the more stable dislocation
+      loops (Plummer p. 488; Wolf p. 209). The clusters are metastable. As the anneal continues they dissolve, and as
+      they dissolve they emit interstitials back into the lattice.
+    </p>
+
+    <h3 id="s4-2">4.2 The supersaturation, and why it ends</h3>
+
+    <p>
+      While the {311} clusters exist, they hold the free interstitial concentration above its equilibrium value — an
+      <b>interstitial supersaturation</b>. In Plummer's simulation of a 40 keV, 10¹⁴ cm⁻² boron implant annealed at
+      750 °C the supersaturation is more than 10,000-fold (Fig. 8-34). Because boron diffuses with interstitials, its
+      diffusivity is raised by the same factor, the time-averaged enhancement equalling the time-averaged
+      supersaturation (Wolf p. 209). When the clusters are gone, the excess interstitials diffuse to the surface,
+      where they are annihilated; the supersaturation and the enhancement end together. The enhancement is
+      therefore transient (Wolf p. 210).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 220" role="img" aria-labelledby="m9f4-t">
+        <title id="m9f4-t">Schematic of interstitial supersaturation against anneal time: an initial spike, a plateau while extended defects dissolve, then a fall to equilibrium</title>
+        <line x1="60" y1="180" x2="400" y2="180" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="20" x2="60" y2="180" class="dg-rule" stroke-width="1.2"/>
+        <text x="230" y="208" class="dg-label" text-anchor="middle">anneal time (log scale)</text>
+        <text x="16" y="100" class="dg-label" text-anchor="middle" transform="rotate(-90 16 100)">supersaturation (log)</text>
+        <path d="M62,28 C80,30 92,70 110,82 L270,86 C300,90 320,150 345,172 L398,174" class="dg-acc" fill="none" stroke-width="2.2"/>
+        <line x1="60" y1="174" x2="400" y2="174" class="dg-guide" stroke-dasharray="3 3"/>
+        <text x="396" y="168" class="dg-label-sm" text-anchor="end">equilibrium</text>
+        <text x="96" y="40" class="dg-label-sm">free interstitials</text>
+        <text x="96" y="53" class="dg-label-sm">cluster into {311}s</text>
+        <text x="190" y="76" class="dg-label-sm" text-anchor="middle">plateau: {311}s dissolve</text>
+        <text x="190" y="104" class="dg-label-sm" text-anchor="middle">most of the TED happens here</text>
+        <text x="292" y="132" class="dg-label-sm" text-anchor="end">defects gone: interstitials</text>
+        <text x="292" y="145" class="dg-label-sm" text-anchor="end">reach the surface</text>
+      </svg>
+      <figcaption><b>Figure 4.</b> Schematic, after Plummer's account of the TED transient (pp. 488–489); no values are plotted. The interstitials left
+      by an implant cluster within a fraction of a second, which lowers the supersaturation to a level that then holds
+      roughly constant while the clusters dissolve. Most of the dopant motion happens on that plateau, and it stops
+      when the last cluster is gone.</figcaption>
+    </figure>
+
+    <h3 id="s4-3">4.3 How much extra depth</h3>
+
+    <p>
+      Wolf gives the increase in junction depth that TED causes in terms of the two quantities that set the size and
+      duration of the transient.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>X</em><sub>j</sub><sup>2</sup> ∝ <em>N</em>&thinsp;<em>R</em><sub>p</sub>&thinsp;exp&thinsp;<span class="dl">(</span><span class="frac"><span class="num">+1.4 eV</span><span class="den"><em>kT</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(9.3)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>X</em><sub>j</sub> increase in junction depth caused by TED (cm) · <em>N</em> number of interstitials
+        initially trapped in the extended defects, ≈ the implanted dose (cm⁻²) · <em>R</em><sub>p</sub> projected range,
+        where the excess interstitials start (cm) · <em>k</em> = 8.617×10⁻⁵ eV/K · <em>T</em> anneal temperature at
+        which the defects dissolve (K). Wolf eq. 5.9, written there as exp[−(−1.4 eV)/<em>kT</em>]. A proportionality:
+        use it for ratios at fixed everything else. Low and medium doses and energies.
+      </div>
+    </div>
+
+    <p>Each factor has a physical reading (Wolf p. 210).</p>
+    <ul>
+      <li><b><em>N</em>:</b> a larger dose leaves more interstitials. Wolf reads this as a larger supersaturation and
+      a larger enhancement (p. 210); in Plummer's cluster model the plateau's level is set by the temperature and the
+      number of trapped interstitials sets how long the plateau lasts (pp. 490–495), which is the picture Figure 4
+      draws. Either way more dose gives more TED, as eq. (9.3) states.</li>
+      <li><b><em>R</em><sub>p</sub>:</b> the surface is where the interstitials are annihilated, and the nearer they
+      start to it, the sooner they reach it and the shorter the transient. This linear dependence has been
+      demonstrated experimentally, and it is the reason a low-energy implant shows less TED: the notes' "with low
+      energy implants one can minimize transient enhanced diffusion" (p. 86). Below 1 keV TED falls further, because
+      each ion does less damage.</li>
+      <li><b>The negative activation energy.</b> The supersaturation sustained by the extended defects is larger at
+      a lower temperature, so the extra depth grows as the temperature falls. Defects annealed out slowly at a low
+      temperature give a deeper junction than the same defects annealed out quickly at a high one. That is one of the
+      main reasons the source–drain anneal is done in a rapid thermal annealer, which ramps through the low
+      temperatures in seconds, rather than in a furnace that ramps at a few degrees per minute (Wolf p. 210; M10
+      develops the anneal).</li>
+    </ul>
+
+    <div class="example">
+      <div class="ex-head">How much deeper a junction ends up when its damage anneals out at 800 °C instead of 1000 °C</div>
+      <div class="ex-body">
+        <p><b>Given</b> the same implant (same <em>N</em> and <em>R</em><sub>p</sub>), with its extended defects
+        dissolving at 800 °C in one process and at 1000 °C in the other. <b>Find</b> the ratio of the TED-induced
+        junction deepening Δ<em>X</em><sub>j</sub>. Then, at a fixed temperature, the ratio for a boron implant at
+        2 keV against 5 keV of equal dose.</p>
+        <p><b>Plan.</b> Eq. (9.3) as a ratio: <em>N</em> and <em>R</em><sub>p</sub> cancel in the first part and the
+        temperature cancels in the second. Temperatures in kelvin.</p>
+        <p class="ex-step"><b>Temperatures.</b> 800 °C = 1073.15 K; 1000 °C = 1273.15 K.</p>
+        <p class="ex-step"><b>Ratio of Δ<em>X</em><sub>j</sub>².</b> exp[(1.4/8.617×10⁻⁵)(1/1073.15 − 1/1273.15)] =
+        exp[16 247 × 1.464×10⁻⁴] = exp(2.378) = 10.8.</p>
+        <p class="ex-step"><b>Ratio of Δ<em>X</em><sub>j</sub>.</b> √10.8 = 3.28.</p>
+        <p class="ex-step"><b>Energy, at fixed temperature and dose.</b> SRIM: <em>R</em><sub>p</sub> = 9.7 nm at
+        2 keV (Table 1) and 21.2 nm at 5 keV. Δ<em>X</em><sub>j</sub> ∝ <em>R</em><sub>p</sub><sup>1/2</sup>, so the ratio is
+        (9.7/21.2)<sup>1/2</sup> = 0.458<sup>1/2</sup> = 0.676.</p>
+        <p class="ex-answer">The junction deepens 3.28 times as much when the damage dissolves at 800 °C as at
+        1000 °C; and the 2 keV implant deepens 0.68 times as much as the 5 keV one. Check on direction: the
+        exponent is positive in 1/<em>T</em>, so the lower temperature gives the larger number — the counterintuitive
+        sign Wolf calls a negative activation energy. Doubling the dose instead would multiply
+        Δ<em>X</em><sub>j</sub> by √2 = 1.41.</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p class="box-title">TED happens during the anneal, not during the implant</p>
+      <p>
+        The notes' list of the advantages of low-energy implantation reads "Transient Enhanced Diffusion (TED)
+        occuring during implantation is reduced" (p. 85). Wolf, which the notes condense there, says TED "that
+        occurs during the implant-annealing step is reduced" (p. 206). The interstitials are created by the implant,
+        but the enhanced diffusion happens only when the wafer is heated afterwards, as §4.1–4.2 describe. The notes'
+        conclusion — a lower-energy implant gives less TED — is right, for the reason eq. (9.3) gives.
+      </p>
+    </div>
+
+    <h3 id="s4-4">4.4 TED in the channel: the reverse short-channel effect</h3>
+
+    <p>
+      The source and drain implants are heavy, and their damage sits on both sides of the channel. During their
+      anneal the interstitials they release flow toward the nearest sink, which for the channel region is the
+      silicon–oxide interface under the gate. That flow sets up a gradient of interstitials pointing toward the
+      surface, and boron, which moves with interstitials, is carried "uphill" toward the interface and piles up under
+      the gate (Plummer p. 436). The pile-up is a larger fraction of the channel in a short device, whose source and
+      drain damage lies closer together, so the threshold voltage <em>rises</em> as the gate length falls. This is the
+      <b>reverse short-channel effect</b>: a slight increase of threshold voltage with decreasing channel length,
+      before punch-through and charge sharing take over at the shortest lengths (Plummer p. 499; Wolf p. 221). It works
+      directly against a retrograde profile, because it moves channel dopant back toward the surface.
+    </p>
+
+    <div class="box">
+      <p class="box-title">Why indium helps here: the sources disagree on the mechanism</p>
+      <p>
+        Both books say indium channels suffer less reverse short-channel effect; they give different reasons. Wolf
+        attributes it to "the lower susceptibility of these species to TED" (p. 221), and shows SIMS profiles of indium
+        that change little for anneals up to 1000 °C (p. 193, Fig. 5-11a). Plummer states the opposite about TED:
+        indium's diffusion is "very similar to boron, including identical susceptibility to TED", and the benefit comes
+        from indium's strong segregation to the oxide interface — some indium is lost there, but no further indium
+        piles up during TED, so the profile stays retrograde (p. 499). Griffin <i>et al.</i> measured indium's
+        enhancement from implant damage as comparable to boron's (M02 §5.3). The course record is therefore: the
+        notes' reasons for indium are its smaller straggle and its lower diffusivity (p. 76); the straggle advantage
+        holds for the as-implanted profile (§2); the diffusivity advantage holds for an undamaged lattice, and whether it
+        survives TED is disputed in the sources.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>Two anneals are proposed for a shallow boron implant: a furnace that ramps to 1000 °C at a few degrees
+      per minute, and a rapid thermal anneal that ramps at 100 °C/s to the same temperature. Which gives the shallower
+      junction, and which term of eq. (9.3) decides it? Would lowering the implant energy help the furnace process,
+      and why?</summary>
+      <div class="answer">
+        <p>The rapid anneal gives the shallower junction. The extended defects begin to dissolve during the ramp, at
+        temperatures well below 1000 °C, and eq. (9.3)'s negative activation energy says that defects dissolving at
+        a lower temperature produce more extra depth (by 3.28 times in Δ<em>X</em><sub>j</sub> between 800 and
+        1000 °C). The furnace spends minutes in that range; the rapid anneal passes through it in seconds, so more of
+        the defects dissolve near the peak temperature. Lowering the energy helps either process through the
+        <em>R</em><sub>p</sub> factor: the interstitials start nearer the surface, reach it sooner, and the transient
+        is shorter (Δ<em>X</em><sub>j</sub> ∝ <em>R</em><sub>p</sub><sup>1/2</sup> at fixed dose and temperature).</p>
+      </div>
+    </details>
+
+    <h2 id="s5">5 · Super-steep retrograde profiles</h2>
+
+    <p>
+      §1 showed that the punch-through doping cannot sit at the surface, and §2–§4 what limits how sharply an
+      implant can be confined below it. This section puts the two together. It first shows, with the electrostatics
+      of a step profile, why a light surface layer over a heavy one lowers the threshold voltage while barely
+      lengthening the depletion layer; then how the profile was made by implantation from the 0.18 µm to the 0.1 µm
+      node (notes pp. 75–76); and finally why implantation probably cannot make the profile the 50 nm node needs.
+    </p>
+
+    <h3 id="s5-1">5.1 What a light surface layer does to the threshold voltage</h3>
+
+    <p>
+      Taur and Ning analyse the limiting form of a retrograde profile: a surface layer of thickness
+      <em>x</em><sub>s</sub> with negligible doping over a body of acceptor concentration <em>N</em><sub>A</sub>, with
+      the maximum depletion width reaching into the heavy region (§6.3.3.2). In the professor's form of the threshold
+      equation (<a href="m03-threshold-voltage.html#s6">M03 §6</a>), with the depletion charge of an n-channel device
+      written as a positive term, the result is:
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>T</sub> = <em>φ</em><sub>MS</sub> − <span class="frac"><span class="num"><em>Q</em><sub>i</sub></span><span class="den"><em>C</em><sub>ox</sub></span></span> + 2<em>φ</em><sub>F</sub> + <span class="frac"><span class="num"><em>qN</em><sub>A</sub>(<em>W</em><sub>dm</sub> − <em>x</em><sub>s</sub>)</span><span class="den"><em>C</em><sub>ox</sub></span></span></div>
+        <div class="eq-num">(9.4)</div>
+      </div>
+      <div class="eq-body">
+        <div class="eq-math"><em>W</em><sub>dm</sub> = <span class="dl">(</span><span class="frac"><span class="num">4<em>ε</em><sub>Si</sub><em>φ</em><sub>F</sub></span><span class="den"><em>qN</em><sub>A</sub></span></span> + <em>x</em><sub>s</sub><sup>2</sup><span class="dl">)</span><sup>1/2</sup></div>
+        <div class="eq-num">(9.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>W</em><sub>dm</sub> maximum depletion width under the gate at threshold (cm) · <em>x</em><sub>s</sub>
+        thickness of the undoped surface layer (cm) · <em>N</em><sub>A</sub> doping of the heavy layer below it
+        (cm⁻³) · <em>φ</em><sub>F</sub> = (<em>kT</em>/<em>q</em>) ln(<em>N</em><sub>A</sub>/<em>n</em><sub>i</sub>) of
+        the heavy layer (V) · <em>C</em><sub>ox</sub> = <em>ε</em><sub>ox</sub>/<em>t</em><sub>ox</sub> (F/cm²) ·
+        <em>φ</em><sub>MS</sub>, <em>Q</em><sub>i</sub>, <em>q</em>, <em>ε</em><sub>Si</sub> as in M03. Taur &amp; Ning
+        3/E eqs. (6.120)–(6.121), with <em>ψ</em><sub>B</sub> = <em>φ</em><sub>F</sub> and
+        <em>V</em><sub>fb</sub> = <em>φ</em><sub>MS</sub> − <em>Q</em><sub>i</sub>/<em>C</em><sub>ox</sub>. Ideal step
+        (surface doping set to zero); it assumes the depletion layer reaches the heavy layer at threshold, and
+        <em>φ</em><sub>MS</sub> is then taken against the heavy layer (Taur &amp; Ning p. 250). With
+        <em>x</em><sub>s</sub> = 0 both reduce to the uniform case, <em>W</em><sub>dm</sub> = <em>W</em><sub>m</sub> of
+        <a href="m03-threshold-voltage.html#s4">M03 §4</a>.
+      </div>
+    </div>
+
+    <p>
+      The two equations say opposite things about the two quantities a designer cares about. The depletion width
+      grows only as the square root of a sum, so a surface layer thinner than the uniform depletion width adds little
+      to it. The depletion-charge term of <em>V</em><sub>T</sub> loses the charge that would have been in the surface layer,
+      <em>qN</em><sub>A</sub><em>x</em><sub>s</sub>/<em>C</em><sub>ox</sub>, less the extra charge in the slightly deeper depletion layer; for
+      <em>x</em><sub>s</sub> much smaller than the uniform depletion width the second part is negligible and the whole of
+      <em>qN</em><sub>A</sub><em>x</em><sub>s</sub>/<em>C</em><sub>ox</sub> is removed (Taur &amp; Ning p. 250). Taur and Ning summarise it: the threshold
+      voltage is reduced and the depletion width increased, the opposite of a high–low profile (p. 249). Figure 5 shows
+      the mechanism through the field. The band bending at threshold is 2<em>φ</em><sub>F</sub> in both cases, which is
+      the area under the field–depth line; in the undoped layer the field is constant, so the same area is reached with
+      a lower surface field, and the surface field is what the oxide must support, <em>ε</em><sub>Si</sub><em>E</em><sub>s</sub> =
+      <em>C</em><sub>ox</sub> × (the depletion term).
+    </p>
+
+    <figure class="compact">
+<!--FIG f6-->
+<svg viewBox="0 0 430 240" role="img" aria-labelledby="m9f6-t">
+<title id="m9f6-t">Electric field against depth at threshold for a uniformly doped 1e19 channel and for the notes' step profile; equal areas, lower surface field for the step</title>
+<line x1="62" y1="196" x2="410" y2="196" class="dg-rule" stroke-width="1.2"/>
+<line x1="62" y1="18" x2="62" y2="196" class="dg-rule" stroke-width="1.2"/>
+<line x1="62.0" y1="196" x2="62.0" y2="200" class="dg-rule"/>
+<text x="62.0" y="212" class="dg-label-sm" text-anchor="middle">0</text>
+<line x1="149.0" y1="196" x2="149.0" y2="200" class="dg-rule"/>
+<text x="149.0" y="212" class="dg-label-sm" text-anchor="middle">4</text>
+<line x1="214.2" y1="196" x2="214.2" y2="200" class="dg-rule"/>
+<text x="214.2" y="212" class="dg-label-sm" text-anchor="middle">7</text>
+<line x1="236.0" y1="196" x2="236.0" y2="200" class="dg-rule"/>
+<text x="236.0" y="212" class="dg-label-sm" text-anchor="middle">8</text>
+<line x1="323.0" y1="196" x2="323.0" y2="200" class="dg-rule"/>
+<text x="323.0" y="212" class="dg-label-sm" text-anchor="middle">12</text>
+<line x1="410.0" y1="196" x2="410.0" y2="200" class="dg-rule"/>
+<text x="410.0" y="212" class="dg-label-sm" text-anchor="middle">16</text>
+<line x1="58" y1="196.0" x2="62" y2="196.0" class="dg-rule"/>
+<text x="55" y="199.5" class="dg-label-sm" text-anchor="end">0</text>
+<line x1="58" y1="151.5" x2="62" y2="151.5" class="dg-rule"/>
+<text x="55" y="155.0" class="dg-label-sm" text-anchor="end">0.5</text>
+<line x1="58" y1="107.0" x2="62" y2="107.0" class="dg-rule"/>
+<text x="55" y="110.5" class="dg-label-sm" text-anchor="end">1.0</text>
+<line x1="58" y1="62.5" x2="62" y2="62.5" class="dg-rule"/>
+<text x="55" y="66.0" class="dg-label-sm" text-anchor="end">1.5</text>
+<line x1="58" y1="18.0" x2="62" y2="18.0" class="dg-rule"/>
+<text x="55" y="21.5" class="dg-label-sm" text-anchor="end">2.0</text>
+<text x="236.0" y="232" class="dg-label" text-anchor="middle">depth (nm)</text>
+<text x="14" y="107.0" class="dg-label" text-anchor="middle" transform="rotate(-90 14 107.0)">field E (MV/cm)</text>
+<path d="M62.0,36.2 L316.9,196.0" class="dg-line" fill="none" stroke-width="1.6" stroke-dasharray="6 3"/>
+<path d="M62.0,105.3 L214.2,105.3 L358.9,196.0" class="dg-acc" fill="none" stroke-width="2.2"/>
+<text x="70.7" y="30.8" class="dg-label-sm" text-anchor="start">uniform: E<tspan baseline-shift="sub" style="font-size:75%">s</tspan> = 1.80 MV/cm</text>
+<text x="70.7" y="116.9" class="dg-label-sm" text-anchor="start">step: E<tspan baseline-shift="sub" style="font-size:75%">s</tspan> = 1.02 MV/cm</text>
+<text x="312.6" y="188.9" class="dg-label-sm" text-anchor="end">11.7</text>
+<text x="363.3" y="188.9" class="dg-label-sm" text-anchor="start">13.7</text>
+</svg>
+<!--/FIG f6-->
+      <figcaption><b>Figure 5.</b> Field against depth at threshold, computed for a 10¹⁹ cm⁻³ body: uniform doping
+      (dashed) and the notes' 50 nm step with a 7 nm undoped surface layer (solid). The two areas are equal
+      (2<em>φ</em><sub>F</sub> = 1.05 V). The step reaches only 2 nm deeper, but its surface field is 0.57 of the
+      uniform one, and the depletion term of <em>V</em><sub>T</sub> falls in the same ratio.</figcaption>
+    </figure>
+
+    <p>
+      In the limit of a very heavy layer, <em>x</em><sub>s</sub> ≫ (4<em>ε</em><sub>Si</sub><em>φ</em><sub>F</sub>/<em>qN</em><sub>A</sub>)<sup>1/2</sup>,
+      the depletion charge becomes a thin sheet at depth <em>x</em><sub>s</sub>, <em>W</em><sub>dm</sub> ≈ <em>x</em><sub>s</sub>,
+      and the depletion term tends to <em>ε</em><sub>Si</sub>(2<em>φ</em><sub>F</sub>/<em>x</em><sub>s</sub>)/<em>C</em><sub>ox</sub>:
+      half the value of a uniformly doped channel with the same depletion width. Taur and Ning call this the extreme
+      retrograde profile, and the device a <b>ground-plane MOSFET</b>; its threshold voltage, subthreshold slope and
+      short-channel behaviour are then set by the depth of the undoped layer rather than by the doping (§6.3.3.3). They
+      add that the heavy layer should not extend under the source and drain, where it would raise the junction
+      capacitance, so the ideal profile is low–high–low: a narrow heavy layer used only to confine the gate depletion.
+      That remark is where the pocket implants of §6 begin.
+    </p>
+
+    <h3 id="s5-2">5.2 Making it by implantation, 0.18 to 0.1 µm</h3>
+
+    <p>
+      From the 0.18 µm node to about 0.1 µm the SSR profile was made by ion implantation, in place of the conventional
+      threshold-adjust implant (Wolf p. 193) — the 30 keV, 5.5×10¹² cm⁻² boron step at the end of M08's chained recipe
+      (notes p. 74; <a href="m08-well-engineering.html#s6-3">M08 §6.3</a>). The notes (p. 75) give the substitution:
+      indium replaces boron for the n-channel device, and arsenic or antimony replaces phosphorus for the p-channel
+      device. Their reasons (p. 76) are the two of §2 and §4: a steeper as-implanted profile from the smaller straggle,
+      and less spreading in later anneals from the lower diffusivity.
+    </p>
+
+    <p>
+      With indium and arsenic implanted at 100–200 keV the profile reaches about 5×10¹⁶ cm⁻³ at the gate-oxide interface
+      and a peak of about 10¹⁸ cm⁻³ 80 nm below it (notes p. 76; Wolf p. 193). Table 1 places an indium peak at 80 nm at
+      about 160 keV, inside that range, and the §2 example is consistent with the low surface value: a Gaussian indium
+      profile with that peak contributes only 3×10¹⁴ cm⁻³ at the surface, far below 5×10¹⁶ cm⁻³, so the implant's own
+      Gaussian tail does not set it. The sources do not say what does; the well doping and diffusion during later
+      anneals are candidates (a channelling tail lies on the deep side of the peak, §3, so it is not). Two limits
+      come with indium. Its solid solubility caps the peak at about 10¹⁸ cm⁻³ (Wolf p. 193), and it is a deep acceptor,
+      only partly ionised at room temperature (<a href="m02-deep-submicron-roadmap.html#s5-3">M02 §5.3</a>).
+    </p>
+
+    <p>
+      Wolf is careful about the result. SSR profiles reduce short-channel effects and drain-induced barrier lowering,
+      but "it is not equally certain whether this translates into overall improvement in device performance", and the
+      subthreshold slope was reported improved in some indium studies and degraded in another (p. 193). One data point:
+      a 100 nm process reported in 1999, with indium and arsenic SSR channels, low-energy boron and arsenic extensions
+      and high-angle pocket implants, gave on-currents of 1.04 mA/µm (n-channel) and 0.46 mA/µm (p-channel) at 1.5 V
+      with an off-current of 3 nA/µm (Wolf pp. 193–194).
+    </p>
+
+    <h3 id="s5-3">5.3 The indium ion source</h3>
+
+    <p>
+      The notes record that the indium beam is produced in the ion source's vaporiser from solid InCl₃ (p. 76). Wolf
+      explains why this is a problem (pp. 194–195). InCl₃ is hygroscopic: it absorbs water from the air and may need long
+      outgassing if it is handled outside the vaporiser. It also has a low melting point, so heat from a second
+      vaporiser in the same source can evaporate it unintentionally. Both can lead to premature loss of the source charge and to indium
+      coating the source region. In operation, indium drifts down the beamline and coats its parts, from which ions of
+      other species later knock it loose: a risk of cross-contamination of wafers implanted afterwards. Active cooling of the
+      source removes the unintended heating, and an electrostatic filter near the end station removes most of the
+      cross-contamination, which lets one implanter run all species.
+    </p>
+
+    <h3 id="s5-4">5.4 Why implantation stops working below 0.1 µm</h3>
+
+    <p>
+      The notes close the topic with a number (p. 76, from Wolf p. 195). For the 50 nm node, a surface layer at
+      10¹⁷ cm⁻³ over a punch-through-control layer at 10¹⁹ cm⁻³ requires the heavy layer to begin 7 nm below the silicon
+      surface. The inversion layer is typically thinner than 7 nm, so the channel electrons still sit in the light
+      layer. But a layer this thin with so abrupt a step cannot be made by ion implantation and its anneals, and other
+      methods are needed, such as low-temperature selective epitaxy, perhaps of Si–Ge layers. Lecture 17 gave the same two doping levels. The notes state the limit outright ("it is not possible"); Wolf writes that it "probably will no longer be
+      possible". Figure 6 sets the target against the shallowest implants Table 1 offers.
+    </p>
+
+    <figure class="compact">
+<!--FIG f5-->
+<svg viewBox="0 0 430 260" role="img" aria-labelledby="m9f5-t">
+<title id="m9f5-t">The notes' 50 nm super-steep retrograde target, a step from 1e17 to 1e19 at 7 nm, against shallow boron and indium implants</title>
+<line x1="62" y1="216" x2="410" y2="216" class="dg-rule" stroke-width="1.2"/>
+<line x1="62" y1="18" x2="62" y2="216" class="dg-rule" stroke-width="1.2"/>
+<line x1="62.0" y1="216" x2="62.0" y2="220" class="dg-rule"/>
+<text x="62.0" y="232" class="dg-label-sm" text-anchor="middle">0</text>
+<line x1="122.9" y1="216" x2="122.9" y2="220" class="dg-rule"/>
+<text x="122.9" y="232" class="dg-label-sm" text-anchor="middle">7</text>
+<line x1="149.0" y1="216" x2="149.0" y2="220" class="dg-rule"/>
+<text x="149.0" y="232" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="236.0" y1="216" x2="236.0" y2="220" class="dg-rule"/>
+<text x="236.0" y="232" class="dg-label-sm" text-anchor="middle">20</text>
+<line x1="323.0" y1="216" x2="323.0" y2="220" class="dg-rule"/>
+<text x="323.0" y="232" class="dg-label-sm" text-anchor="middle">30</text>
+<line x1="410.0" y1="216" x2="410.0" y2="220" class="dg-rule"/>
+<text x="410.0" y="232" class="dg-label-sm" text-anchor="middle">40</text>
+<line x1="58" y1="216.0" x2="62" y2="216.0" class="dg-rule"/>
+<text x="55" y="219.5" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">16</tspan></text>
+<line x1="58" y1="159.1" x2="62" y2="159.1" class="dg-rule"/>
+<text x="55" y="162.6" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">17</tspan></text>
+<line x1="58" y1="102.1" x2="62" y2="102.1" class="dg-rule"/>
+<text x="55" y="105.6" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">18</tspan></text>
+<line x1="58" y1="45.2" x2="62" y2="45.2" class="dg-rule"/>
+<text x="55" y="48.7" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">19</tspan></text>
+<text x="236.0" y="252" class="dg-label" text-anchor="middle">depth (nm)</text>
+<text x="14" y="117.0" class="dg-label" text-anchor="middle" transform="rotate(-90 14 117.0)">doping (cm<tspan baseline-shift="super" style="font-size:75%">−3</tspan>)</text>
+<path d="M62.0,159.1 L122.9,159.1 L122.9,45.2 L410.0,45.2" class="dg-acc" fill="none" stroke-width="2.2"/>
+<path d="M62.0,67.0 L62.9,66.6 L63.7,66.1 L64.6,65.7 L65.5,65.2 L66.3,64.8 L67.2,64.4 L68.1,64.0 L69.0,63.5 L69.8,63.1 L70.7,62.7 L71.6,62.3 L72.4,61.9 L73.3,61.5 L74.2,61.2 L75.0,60.8 L75.9,60.4 L76.8,60.0 L77.7,59.7 L78.5,59.3 L79.4,58.9 L80.3,58.6 L81.1,58.2 L82.0,57.9 L82.9,57.5 L83.8,57.2 L84.6,56.9 L85.5,56.5 L86.4,56.2 L87.2,55.9 L88.1,55.6 L89.0,55.3 L89.8,55.0 L90.7,54.7 L91.6,54.4 L92.5,54.1 L93.3,53.8 L94.2,53.5 L95.1,53.2 L95.9,53.0 L96.8,52.7 L97.7,52.4 L98.5,52.2 L99.4,51.9 L100.3,51.7 L101.2,51.4 L102.0,51.2 L102.9,51.0 L103.8,50.7 L104.6,50.5 L105.5,50.3 L106.4,50.1 L107.2,49.9 L108.1,49.7 L109.0,49.5 L109.8,49.3 L110.7,49.1 L111.6,48.9 L112.5,48.7 L113.3,48.5 L114.2,48.3 L115.1,48.2 L115.9,48.0 L116.8,47.9 L117.7,47.7 L118.6,47.5 L119.4,47.4 L120.3,47.3 L121.2,47.1 L122.0,47.0 L122.9,46.9 L123.8,46.7 L124.6,46.6 L125.5,46.5 L126.4,46.4 L127.2,46.3 L128.1,46.2 L129.0,46.1 L129.9,46.0 L130.7,45.9 L131.6,45.8 L132.5,45.8 L133.3,45.7 L134.2,45.6 L135.1,45.6 L135.9,45.5 L136.8,45.4 L137.7,45.4 L138.6,45.4 L139.4,45.3 L140.3,45.3 L141.2,45.3 L142.0,45.2 L142.9,45.2 L143.8,45.2 L144.6,45.2 L145.5,45.2 L146.4,45.2 L147.3,45.2 L148.1,45.2 L149.0,45.2 L149.9,45.2 L150.7,45.2 L151.6,45.3 L152.5,45.3 L153.4,45.3 L154.2,45.4 L155.1,45.4 L156.0,45.4 L156.8,45.5 L157.7,45.6 L158.6,45.6 L159.4,45.7 L160.3,45.8 L161.2,45.8 L162.1,45.9 L162.9,46.0 L163.8,46.1 L164.7,46.2 L165.5,46.3 L166.4,46.4 L167.3,46.5 L168.1,46.6 L169.0,46.7 L169.9,46.9 L170.8,47.0 L171.6,47.1 L172.5,47.3 L173.4,47.4 L174.2,47.5 L175.1,47.7 L176.0,47.9 L176.8,48.0 L177.7,48.2 L178.6,48.3 L179.4,48.5 L180.3,48.7 L181.2,48.9 L182.1,49.1 L182.9,49.3 L183.8,49.5 L184.7,49.7 L185.5,49.9 L186.4,50.1 L187.3,50.3 L188.1,50.5 L189.0,50.7 L189.9,51.0 L190.8,51.2 L191.6,51.4 L192.5,51.7 L193.4,51.9 L194.2,52.2 L195.1,52.4 L196.0,52.7 L196.8,53.0 L197.7,53.2 L198.6,53.5 L199.5,53.8 L200.3,54.1 L201.2,54.4 L202.1,54.7 L202.9,55.0 L203.8,55.3 L204.7,55.6 L205.5,55.9 L206.4,56.2 L207.3,56.5 L208.2,56.9 L209.0,57.2 L209.9,57.5 L210.8,57.9 L211.6,58.2 L212.5,58.6 L213.4,58.9 L214.2,59.3 L215.1,59.7 L216.0,60.0 L216.9,60.4 L217.7,60.8 L218.6,61.2 L219.5,61.5 L220.3,61.9 L221.2,62.3 L222.1,62.7 L223.0,63.1 L223.8,63.5 L224.7,64.0 L225.6,64.4 L226.4,64.8 L227.3,65.2 L228.2,65.7 L229.0,66.1 L229.9,66.6 L230.8,67.0 L231.7,67.5 L232.5,67.9 L233.4,68.4 L234.3,68.8 L235.1,69.3 L236.0,69.8 L236.9,70.3 L237.7,70.8 L238.6,71.2 L239.5,71.7 L240.3,72.2 L241.2,72.7 L242.1,73.2 L243.0,73.8 L243.8,74.3 L244.7,74.8 L245.6,75.3 L246.4,75.9 L247.3,76.4 L248.2,76.9 L249.0,77.5 L249.9,78.0 L250.8,78.6 L251.7,79.1 L252.5,79.7 L253.4,80.3 L254.3,80.8 L255.1,81.4 L256.0,82.0 L256.9,82.6 L257.8,83.2 L258.6,83.8 L259.5,84.4 L260.4,85.0 L261.2,85.6 L262.1,86.2 L263.0,86.8 L263.8,87.5 L264.7,88.1 L265.6,88.7 L266.5,89.4 L267.3,90.0 L268.2,90.6 L269.1,91.3 L269.9,92.0 L270.8,92.6 L271.7,93.3 L272.5,94.0 L273.4,94.6 L274.3,95.3 L275.1,96.0 L276.0,96.7 L276.9,97.4 L277.8,98.1 L278.6,98.8 L279.5,99.5 L280.4,100.2 L281.2,100.9 L282.1,101.6 L283.0,102.4 L283.9,103.1 L284.7,103.8 L285.6,104.6 L286.5,105.3 L287.3,106.1 L288.2,106.8 L289.1,107.6 L289.9,108.3 L290.8,109.1 L291.7,109.9 L292.5,110.7 L293.4,111.4 L294.3,112.2 L295.2,113.0 L296.0,113.8 L296.9,114.6 L297.8,115.4 L298.6,116.2 L299.5,117.0 L300.4,117.9 L301.2,118.7 L302.1,119.5 L303.0,120.3 L303.9,121.2 L304.7,122.0 L305.6,122.9 L306.5,123.7 L307.3,124.6 L308.2,125.4 L309.1,126.3 L310.0,127.2 L310.8,128.1 L311.7,128.9 L312.6,129.8 L313.4,130.7 L314.3,131.6 L315.2,132.5 L316.0,133.4 L316.9,134.3 L317.8,135.2 L318.7,136.1 L319.5,137.1 L320.4,138.0 L321.3,138.9 L322.1,139.8 L323.0,140.8 L323.9,141.7 L324.7,142.7 L325.6,143.6 L326.5,144.6 L327.3,145.6 L328.2,146.5 L329.1,147.5 L330.0,148.5 L330.8,149.5 L331.7,150.4 L332.6,151.4 L333.4,152.4 L334.3,153.4 L335.2,154.4 L336.1,155.4 L336.9,156.5 L337.8,157.5 L338.7,158.5 L339.5,159.5 L340.4,160.6 L341.3,161.6 L342.1,162.6 L343.0,163.7 L343.9,164.7 L344.8,165.8 L345.6,166.9 L346.5,167.9 L347.4,169.0 L348.2,170.1 L349.1,171.1 L350.0,172.2 L350.8,173.3 L351.7,174.4 L352.6,175.5 L353.4,176.6 L354.3,177.7 L355.2,178.8 L356.1,179.9 L356.9,181.1 L357.8,182.2 L358.7,183.3 L359.5,184.4 L360.4,185.6 L361.3,186.7 L362.2,187.9 L363.0,189.0 L363.9,190.2 L364.8,191.4 L365.6,192.5 L366.5,193.7 L367.4,194.9 L368.2,196.0 L369.1,197.2 L370.0,198.4 L370.8,199.6 L371.7,200.8 L372.6,202.0 L373.5,203.2 L374.3,204.4 L375.2,205.7 L376.1,206.9 L376.9,208.1 L377.8,209.3 L378.7,210.6 L379.6,211.8 L380.4,213.1 L381.3,214.3 L382.2,215.6 L383.0,216.0 L383.9,216.0 L384.8,216.0 L385.6,216.0 L386.5,216.0 L387.4,216.0 L388.2,216.0 L389.1,216.0 L390.0,216.0 L390.9,216.0 L391.7,216.0 L392.6,216.0 L393.5,216.0 L394.3,216.0 L395.2,216.0 L396.1,216.0 L396.9,216.0 L397.8,216.0 L398.7,216.0 L399.6,216.0 L400.4,216.0 L401.3,216.0 L402.2,216.0 L403.0,216.0 L403.9,216.0 L404.8,216.0 L405.7,216.0 L406.5,216.0 L407.4,216.0 L408.3,216.0 L409.1,216.0 L410.0,216.0" class="dg-line" fill="none" stroke-width="1.5" stroke-dasharray="6 3"/>
+<path d="M62.0,216.0 L62.9,215.3 L63.7,213.4 L64.6,211.5 L65.5,209.6 L66.3,207.8 L67.2,205.9 L68.1,204.1 L69.0,202.3 L69.8,200.5 L70.7,198.7 L71.6,196.9 L72.4,195.2 L73.3,193.5 L74.2,191.7 L75.0,190.0 L75.9,188.4 L76.8,186.7 L77.7,185.0 L78.5,183.4 L79.4,181.8 L80.3,180.2 L81.1,178.6 L82.0,177.0 L82.9,175.5 L83.8,173.9 L84.6,172.4 L85.5,170.9 L86.4,169.4 L87.2,168.0 L88.1,166.5 L89.0,165.1 L89.8,163.6 L90.7,162.2 L91.6,160.8 L92.5,159.5 L93.3,158.1 L94.2,156.8 L95.1,155.5 L95.9,154.1 L96.8,152.8 L97.7,151.6 L98.5,150.3 L99.4,149.1 L100.3,147.8 L101.2,146.6 L102.0,145.4 L102.9,144.3 L103.8,143.1 L104.6,141.9 L105.5,140.8 L106.4,139.7 L107.2,138.6 L108.1,137.5 L109.0,136.5 L109.8,135.4 L110.7,134.4 L111.6,133.4 L112.5,132.4 L113.3,131.4 L114.2,130.4 L115.1,129.5 L115.9,128.5 L116.8,127.6 L117.7,126.7 L118.6,125.8 L119.4,124.9 L120.3,124.1 L121.2,123.3 L122.0,122.4 L122.9,121.6 L123.8,120.8 L124.6,120.1 L125.5,119.3 L126.4,118.6 L127.2,117.9 L128.1,117.1 L129.0,116.5 L129.9,115.8 L130.7,115.1 L131.6,114.5 L132.5,113.9 L133.3,113.2 L134.2,112.6 L135.1,112.1 L135.9,111.5 L136.8,111.0 L137.7,110.4 L138.6,109.9 L139.4,109.4 L140.3,108.9 L141.2,108.5 L142.0,108.0 L142.9,107.6 L143.8,107.2 L144.6,106.8 L145.5,106.4 L146.4,106.0 L147.3,105.7 L148.1,105.4 L149.0,105.0 L149.9,104.7 L150.7,104.5 L151.6,104.2 L152.5,103.9 L153.4,103.7 L154.2,103.5 L155.1,103.3 L156.0,103.1 L156.8,102.9 L157.7,102.8 L158.6,102.6 L159.4,102.5 L160.3,102.4 L161.2,102.3 L162.1,102.2 L162.9,102.2 L163.8,102.1 L164.7,102.1 L165.5,102.1 L166.4,102.1 L167.3,102.1 L168.1,102.2 L169.0,102.2 L169.9,102.3 L170.8,102.4 L171.6,102.5 L172.5,102.6 L173.4,102.8 L174.2,102.9 L175.1,103.1 L176.0,103.3 L176.8,103.5 L177.7,103.7 L178.6,103.9 L179.4,104.2 L180.3,104.5 L181.2,104.7 L182.1,105.0 L182.9,105.4 L183.8,105.7 L184.7,106.0 L185.5,106.4 L186.4,106.8 L187.3,107.2 L188.1,107.6 L189.0,108.0 L189.9,108.5 L190.8,108.9 L191.6,109.4 L192.5,109.9 L193.4,110.4 L194.2,111.0 L195.1,111.5 L196.0,112.1 L196.8,112.6 L197.7,113.2 L198.6,113.9 L199.5,114.5 L200.3,115.1 L201.2,115.8 L202.1,116.5 L202.9,117.1 L203.8,117.9 L204.7,118.6 L205.5,119.3 L206.4,120.1 L207.3,120.8 L208.2,121.6 L209.0,122.4 L209.9,123.3 L210.8,124.1 L211.6,124.9 L212.5,125.8 L213.4,126.7 L214.2,127.6 L215.1,128.5 L216.0,129.5 L216.9,130.4 L217.7,131.4 L218.6,132.4 L219.5,133.4 L220.3,134.4 L221.2,135.4 L222.1,136.5 L223.0,137.5 L223.8,138.6 L224.7,139.7 L225.6,140.8 L226.4,141.9 L227.3,143.1 L228.2,144.3 L229.0,145.4 L229.9,146.6 L230.8,147.8 L231.7,149.1 L232.5,150.3 L233.4,151.6 L234.3,152.8 L235.1,154.1 L236.0,155.5 L236.9,156.8 L237.7,158.1 L238.6,159.5 L239.5,160.8 L240.3,162.2 L241.2,163.6 L242.1,165.1 L243.0,166.5 L243.8,168.0 L244.7,169.4 L245.6,170.9 L246.4,172.4 L247.3,173.9 L248.2,175.5 L249.0,177.0 L249.9,178.6 L250.8,180.2 L251.7,181.8 L252.5,183.4 L253.4,185.0 L254.3,186.7 L255.1,188.4 L256.0,190.0 L256.9,191.7 L257.8,193.5 L258.6,195.2 L259.5,196.9 L260.4,198.7 L261.2,200.5 L262.1,202.3 L263.0,204.1 L263.8,205.9 L264.7,207.8 L265.6,209.6 L266.5,211.5 L267.3,213.4 L268.2,215.3 L269.1,216.0 L269.9,216.0 L270.8,216.0 L271.7,216.0 L272.5,216.0 L273.4,216.0 L274.3,216.0 L275.1,216.0 L276.0,216.0 L276.9,216.0 L277.8,216.0 L278.6,216.0 L279.5,216.0 L280.4,216.0 L281.2,216.0 L282.1,216.0 L283.0,216.0 L283.9,216.0 L284.7,216.0 L285.6,216.0 L286.5,216.0 L287.3,216.0 L288.2,216.0 L289.1,216.0 L289.9,216.0 L290.8,216.0 L291.7,216.0 L292.5,216.0 L293.4,216.0 L294.3,216.0 L295.2,216.0 L296.0,216.0 L296.9,216.0 L297.8,216.0 L298.6,216.0 L299.5,216.0 L300.4,216.0 L301.2,216.0 L302.1,216.0 L303.0,216.0 L303.9,216.0 L304.7,216.0 L305.6,216.0 L306.5,216.0 L307.3,216.0 L308.2,216.0 L309.1,216.0 L310.0,216.0 L310.8,216.0 L311.7,216.0 L312.6,216.0 L313.4,216.0 L314.3,216.0 L315.2,216.0 L316.0,216.0 L316.9,216.0 L317.8,216.0 L318.7,216.0 L319.5,216.0 L320.4,216.0 L321.3,216.0 L322.1,216.0 L323.0,216.0 L323.9,216.0 L324.7,216.0 L325.6,216.0 L326.5,216.0 L327.3,216.0 L328.2,216.0 L329.1,216.0 L330.0,216.0 L330.8,216.0 L331.7,216.0 L332.6,216.0 L333.4,216.0 L334.3,216.0 L335.2,216.0 L336.1,216.0 L336.9,216.0 L337.8,216.0 L338.7,216.0 L339.5,216.0 L340.4,216.0 L341.3,216.0 L342.1,216.0 L343.0,216.0 L343.9,216.0 L344.8,216.0 L345.6,216.0 L346.5,216.0 L347.4,216.0 L348.2,216.0 L349.1,216.0 L350.0,216.0 L350.8,216.0 L351.7,216.0 L352.6,216.0 L353.4,216.0 L354.3,216.0 L355.2,216.0 L356.1,216.0 L356.9,216.0 L357.8,216.0 L358.7,216.0 L359.5,216.0 L360.4,216.0 L361.3,216.0 L362.2,216.0 L363.0,216.0 L363.9,216.0 L364.8,216.0 L365.6,216.0 L366.5,216.0 L367.4,216.0 L368.2,216.0 L369.1,216.0 L370.0,216.0 L370.8,216.0 L371.7,216.0 L372.6,216.0 L373.5,216.0 L374.3,216.0 L375.2,216.0 L376.1,216.0 L376.9,216.0 L377.8,216.0 L378.7,216.0 L379.6,216.0 L380.4,216.0 L381.3,216.0 L382.2,216.0 L383.0,216.0 L383.9,216.0 L384.8,216.0 L385.6,216.0 L386.5,216.0 L387.4,216.0 L388.2,216.0 L389.1,216.0 L390.0,216.0 L390.9,216.0 L391.7,216.0 L392.6,216.0 L393.5,216.0 L394.3,216.0 L395.2,216.0 L396.1,216.0 L396.9,216.0 L397.8,216.0 L398.7,216.0 L399.6,216.0 L400.4,216.0 L401.3,216.0 L402.2,216.0 L403.0,216.0 L403.9,216.0 L404.8,216.0 L405.7,216.0 L406.5,216.0 L407.4,216.0 L408.3,216.0 L409.1,216.0 L410.0,216.0" class="dg-line" fill="none" stroke-width="1.5" stroke-dasharray="2 3"/>
+<path d="M163.8,216.0 L163.8,33.5" class="dg-guide" fill="none" stroke-width="1.0" stroke-dasharray="2 2"/>
+<path d="M181.2,216.0 L181.2,33.5" class="dg-guide" fill="none" stroke-width="1.0" stroke-dasharray="2 2"/>
+<text x="275.1" y="206.0" class="dg-label-sm" text-anchor="start">guides: W<tspan baseline-shift="sub" style="font-size:75%">dm</tspan> 11.7, 13.7 nm</text>
+<text x="240.3" y="37.7" class="dg-label-sm" text-anchor="start">notes' step profile</text>
+<text x="288.2" y="74.9" class="dg-label-sm" text-anchor="start">B 2 keV, peak 10¹⁹</text>
+<text x="231.7" y="173.8" class="dg-label-sm" text-anchor="start">In 10 keV, peak 10¹⁸</text>
+</svg>
+<!--/FIG f5-->
+      <figcaption><b>Figure 6.</b> The notes' 50 nm target (solid): 10¹⁷ cm⁻³ to 7 nm, then 10¹⁹ cm⁻³. Dashed: the
+      shallowest boron Gaussian of Table 1 (2 keV) scaled to a 10¹⁹ cm⁻³ peak at 9.7 nm: it is already at 4×10¹⁸ cm⁻³ at the
+      surface, so it leaves no light layer, and it falls away again below the peak. Dotted: indium at 10 keV, held to its
+      10¹⁸ cm⁻³ solubility. The vertical guides mark the
+      depletion widths of the next example.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">The notes' 50 nm channel: depletion width and threshold term, step against uniform</div>
+      <div class="ex-body">
+        <p><b>Given</b> the notes' profile: 10¹⁷ cm⁻³ to <em>x</em><sub>s</sub> = 7 nm, then <em>N</em><sub>A</sub> =
+        10¹⁹ cm⁻³. Gate dielectric with an equivalent oxide thickness of 1.5 nm (an assumed value; the notes give
+        none). <b>Find</b> <em>W</em><sub>dm</sub> and the depletion term of <em>V</em><sub>T</sub> for the step, and
+        for uniform doping at 10¹⁷ and at 10¹⁹ cm⁻³.</p>
+        <p><b>Plan.</b> Uniform: <em>W</em><sub>dm</sub> = (4<em>ε</em><sub>Si</sub><em>φ</em><sub>F</sub>/<em>qN</em>)<sup>1/2</sup>
+        and term <em>qNW</em><sub>dm</sub>/<em>C</em><sub>ox</sub>. Step: eqs. (9.4)–(9.5), treating the 10¹⁷ layer as
+        undoped, then checking that the charge left out is small.</p>
+        <p class="ex-step"><b>Oxide capacitance.</b> <em>C</em><sub>ox</sub> = 3.9 × 8.85×10⁻¹⁴ / 1.5×10⁻⁷ =
+        2.30×10⁻⁶ F/cm².</p>
+        <p class="ex-step"><b>Fermi potentials.</b> <em>φ</em><sub>F</sub>(10¹⁹) = 0.0259 ln(10¹⁹/1.5×10¹⁰) =
+        0.0259 × 20.32 = 0.526 V; <em>φ</em><sub>F</sub>(10¹⁷) = 0.0259 × 15.71 = 0.407 V.</p>
+        <p class="ex-step"><b>Uniform 10¹⁷ cm⁻³.</b> <em>W</em><sub>dm</sub> = (4 × 1.044×10⁻¹² × 0.407 /
+        (1.6×10⁻¹⁹ × 10¹⁷))<sup>1/2</sup> = 1.031×10⁻⁵ cm = 103 nm; term = 1.6×10⁻¹⁹ × 10¹⁷ × 1.031×10⁻⁵ / 2.30×10⁻⁶ =
+        0.072 V. A gate depletion layer twice the gate length: no control of punch-through.</p>
+        <p class="ex-step"><b>Uniform 10¹⁹ cm⁻³.</b> <em>W</em><sub>dm</sub> = (4 × 1.044×10⁻¹² × 0.526 /
+        (1.6×10⁻¹⁹ × 10¹⁹))<sup>1/2</sup> = 1.172×10⁻⁶ cm = 11.7 nm; term = 1.6×10⁻¹⁹ × 10¹⁹ × 1.172×10⁻⁶ / 2.30×10⁻⁶ =
+        0.815 V. Short depletion, but the threshold voltage carries 0.8 V of depletion charge alone, and the surface
+        is at 10¹⁹ cm⁻³ where the carriers flow.</p>
+        <p class="ex-step"><b>Step, eq. (9.5).</b> <em>W</em><sub>dm</sub> = (11.72² + 7²)<sup>1/2</sup> nm = 13.65 nm (carry the
+        unrounded value: the next step subtracts 7 nm from it).</p>
+        <p class="ex-step"><b>Step, the depletion term of eq. (9.4).</b> 1.6×10⁻¹⁹ × 10¹⁹ × (13.65 − 7)×10⁻⁷ / 2.30×10⁻⁶ =
+        0.463 V. Without the surface layer the term would be 0.815 V; the layer's own charge,
+        <em>qN</em><sub>A</sub><em>x</em><sub>s</sub>/<em>C</em><sub>ox</sub>, is 0.487 V, but the term falls by only 0.352 V because
+        the depletion layer reaches 1.9 nm deeper.</p>
+        <p class="ex-step"><b>The charge set aside.</b> The 10¹⁷ cm⁻³ surface layer holds
+        1.6×10⁻¹⁹ × 10¹⁷ × 7×10⁻⁷ = 1.12×10⁻⁸ C/cm², worth 1.12×10⁻⁸ / 2.30×10⁻⁶ = 0.0049 V, 1.1 % of the step's
+        term; treating it as undoped is justified.</p>
+        <p class="ex-answer">Step: <em>W</em><sub>dm</sub> = 13.7 nm, term 0.463 V. Uniform 10¹⁹: 11.7 nm, 0.815 V.
+        Uniform 10¹⁷: 103 nm, 0.072 V. The step keeps the depletion layer within 2 nm of the heavy uniform channel and
+        removes 0.352 V (43 %) of its depletion term. Check: Taur and Ning's "half" compares a step with a uniform channel
+        of the <em>same depletion width</em>. A uniform channel 13.65 nm deep needs 7.25×10¹⁸ cm⁻³ and carries 0.689 V; the
+        step carries 0.672 of that, between 1 and the extreme limit ½, as it should with <em>x</em><sub>s</sub> only 0.60 of the
+        uniform 11.7 nm.</p>
+      </div>
+    </div>
+
+    <p>
+      Can an implant make that step? The notes' example is an n-channel device ("the channel electrons"), so the step
+      is p-type. The rise from 10¹⁷ to 10¹⁹ cm⁻³ is two decades, which a Gaussian flank covers in
+      3.03 Δ<em>R</em><sub>p</sub> (eq. (9.2)); to fit it inside the 7 nm surface layer needs Δ<em>R</em><sub>p</sub> ≤
+      2.3 nm, with the peak at or below 7 nm. Boron, the p-type dopant that can reach 10¹⁹ cm⁻³, needs about 1.4 keV to put
+      its peak at 7 nm (SRIM: <em>R</em><sub>p</sub> 7.3 nm), where Δ<em>R</em><sub>p</sub> is still 5.7 nm, so the flank
+      takes 17 nm, more than twice the layer; at 2 keV (Figure 6) the Gaussian is still at 4×10¹⁸ cm⁻³ at the surface. A
+      single peak also falls away beyond its maximum instead of holding 10¹⁹ cm⁻³ down to the 13.7 nm the depletion layer
+      reaches. Indium straggles little, but its peak cannot exceed about 10¹⁸ cm⁻³ (Wolf p. 193). These are as-implanted
+      profiles, and the anneal that must follow (§4) only widens them; Wolf's statement covers "ion implantation (and its
+      ancillary annealing processes)" and is hedged "probably" (p. 195). The p-channel mirror is closer: antimony at
+      3.5 keV (<em>R</em><sub>p</sub> 7.0 nm, Δ<em>R</em><sub>p</sub> 2.4 nm) leaves 1.4×10¹⁷ cm⁻³ at the surface under a
+      10¹⁹ cm⁻³ peak as implanted, so for it the obstacle is the anneal and channelling, not the straggle.
+    </p>
+
+    <p>
+      The light layer has a second problem at this size: it holds almost no dopant atoms. Wolf notes that for the 50 nm
+      generation and below the number of impurity atoms in the lightly doped layer falls below ten, so any parameter
+      that depends strongly on it fluctuates from device to device; if nothing depends strongly on it, the layer "may
+      as well be undoped", and the threshold voltage is then controlled by the depth of the step and the doping below
+      it (p. 195, footnote).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Dopant atoms in the light layer under a 50 nm gate</div>
+      <div class="ex-body">
+        <p><b>Given</b> a gate 50 nm long and 50 nm wide (the narrowest device), and the notes' surface layer: 7 nm deep
+        at 10¹⁷ cm⁻³. <b>Find</b> the mean number of dopant atoms in the layer under the gate, and its statistical
+        spread.</p>
+        <p><b>Plan.</b> Number = concentration × volume, all in cm. Atoms placed at random follow Poisson statistics, so
+        the standard deviation is the square root of the mean, as Taur and Ning use (§6.3.4).</p>
+        <p class="ex-step"><b>Volume.</b> (50×10⁻⁷ cm)² × 7×10⁻⁷ cm = 2.5×10⁻¹¹ × 7×10⁻⁷ = 1.75×10⁻¹⁷ cm³.</p>
+        <p class="ex-step"><b>Mean number.</b> 10¹⁷ × 1.75×10⁻¹⁷ = 1.75 atoms.</p>
+        <p class="ex-step"><b>Spread.</b> σ = √1.75 = 1.32 atoms, 76 % of the mean.</p>
+        <p class="ex-answer">About two atoms, with a spread of three-quarters of the number itself: some devices have none,
+        some three or four. Check against Taur and Ning's uniform example at the 100 nm scale: 10¹⁸ cm⁻³ in
+        100 nm × 100 nm × 35 nm gives 350 atoms with σ = 18.7, 5 % of the mean. Wolf's "&lt; 10" is consistent
+        with this result.</p>
+      </div>
+    </div>
+
+    <p>
+      Taur and Ning show that a retrograde channel reduces the threshold-voltage fluctuation from random dopants,
+      because the dopants that matter most, those near the surface, are absent; in the extreme retrograde limit the
+      fluctuation from the doping goes to zero, and the tolerance on the undoped-layer thickness becomes the new source
+      of variation (§6.3.4.2). The practical conclusion matches Wolf's: below about 0.1 µm the surface layer may as well be
+      undoped, and a profile this abrupt has to come from a method other than implantation; Wolf names low-temperature
+      selective epitaxy, perhaps of Si–Ge layers, as "likely" to be needed (p. 195), without saying which layer it forms.
+    </p>
+
+    <details class="check">
+      <summary>Keep the 50 nm example's heavy layer (10¹⁹ cm⁻³) and oxide (1.5 nm), but make the undoped surface layer
+      20 nm thick. Find <em>W</em><sub>dm</sub> and the depletion term, and compare the term with the extreme-retrograde
+      value <em>ε</em><sub>Si</sub>(2<em>φ</em><sub>F</sub>/<em>x</em><sub>s</sub>)/<em>C</em><sub>ox</sub>. Which way did
+      the threshold voltage and the punch-through control move?</summary>
+      <div class="answer">
+        <p>Eq. (9.5): <em>W</em><sub>dm</sub> = (11.72² + 20²)<sup>1/2</sup> = 23.18 nm. Term: 1.6×10⁻¹⁹ × 10¹⁹ ×
+        (23.18 − 20)×10⁻⁷ / 2.30×10⁻⁶ = 0.221 V. Extreme limit: 1.044×10⁻¹² × 2 × 0.526 / 2×10⁻⁶ cm / 2.30×10⁻⁶ =
+        0.239 V, within 8 % of the full result, because 20 nm is now 1.7 times the uniform 11.7 nm, closer to the "much
+        larger" the limit assumes. Against a uniform channel of the same 23.18 nm depth (2.38×10¹⁸ cm⁻³, 0.383 V) the step
+        carries 0.578, nearer the extreme ½ than the 7 nm step's 0.672. The threshold voltage fell
+        (0.463 → 0.221 V in this term); the depletion width grew from 13.7 to 23.2 nm, so punch-through control is
+        weaker. A thicker light layer trades punch-through control for threshold voltage — the trade the designer
+        sets with <em>x</em><sub>s</sub>.</p>
+      </div>
+    </details>
+
+    <h2 id="s6">6 · Pocket implants</h2>
+
+    <p>
+      The SSR layer varies with depth and is the same everywhere along the channel. Punch-through, though, starts at the
+      two ends of the channel, where the source and drain depletion regions reach in. The notes' second structure puts
+      the extra doping only there: "lateral tailoring of the channel doping profile" (p. 89). M02 §5.4 introduced the
+      halo and the pocket and their order in the flow; this section quantifies the tilt, explains how a pocket
+      counteracts the fall of threshold voltage in short devices, and works through what it does to the junction
+      capacitance.
+    </p>
+
+    <h3 id="s6-1">6.1 Doping only where punch-through starts</h3>
+
+    <p>
+      The notes (p. 89) name the structure a large-angle tilt implanted punch-through stopper, LATIPS, also known as a
+      pocket implant. It "puts additional dopants in the channel close to the S/D junctions for punchthrough control and
+      leaves much of the channel region with lighter doping as needed for low V<sub>T</sub>". Its peak doping must be
+      somewhat higher than a punch-through-control layer uniform along the channel would need (p. 89). If the same
+      structure is made with the beam normal to the wafer it is called a <b>halo</b> (Wolf p. 219, footnote; M02 §5.4). The usage is not uniform: Plummer calls a 30° tilted implant a halo (p. 458), and Taur and Ning use "halo or pocket" for one structure (p. 253). All the sources agree that both names mean doping placed along the channel, at its ends.
+    </p>
+
+    <p>
+      Placing the doping at the channel ends has a second effect, which Taur and Ning describe (§6.3.3.4). Lithography
+      prints gates with a spread of lengths about the design value. In a short gate the two pockets lie closer together
+      and occupy a larger fraction of the channel, so the average doping, and with it the threshold voltage, is higher
+      than in a long one (Figure 7). Short-channel effects act the other way: as the channel shortens, the source and drain take
+      over part of the depletion charge, and the threshold voltage falls (threshold roll-off,
+      <a href="m07-high-k-dielectrics.html#s5">M07 §5.1</a>). The pocket's rise therefore offsets the roll-off over the
+      spread of gate lengths; with an optimised two-dimensional profile, the "superhalo", Taur and Ning state that it is
+      possible in principle to hold the threshold essentially constant for channel lengths within 20–30 nm.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m9f8-t">
+        <title id="m9f8-t">Two channels of different length with pockets of the same width at each end; the pockets fill a larger fraction of the shorter channel</title>
+        <text x="10" y="22" class="dg-label">longer gate</text>
+        <rect x="40" y="30" width="340" height="40" class="dg-fill"/>
+        <rect x="40" y="30" width="44" height="40" class="dg-acc-f" opacity="0.55"/>
+        <rect x="336" y="30" width="44" height="40" class="dg-acc-f" opacity="0.55"/>
+        <text x="210" y="55" class="dg-label-sm" text-anchor="middle">channel, light doping</text>
+        <text x="62" y="86" class="dg-label-sm" text-anchor="middle">pocket</text>
+        <text x="358" y="86" class="dg-label-sm" text-anchor="middle">pocket</text>
+        <text x="10" y="116" class="dg-label">shorter gate</text>
+        <rect x="120" y="124" width="180" height="40" class="dg-fill"/>
+        <rect x="120" y="124" width="44" height="40" class="dg-acc-f" opacity="0.55"/>
+        <rect x="256" y="124" width="44" height="40" class="dg-acc-f" opacity="0.55"/>
+        <text x="210" y="190" class="dg-label-sm" text-anchor="middle">same pockets, larger share of the channel: higher mean doping, higher V<tspan baseline-shift="sub" style="font-size:75%">T</tspan></text>
+      </svg>
+      <figcaption><b>Figure 7.</b> Schematic plan of the channel between source (left) and drain (right). The pockets
+      are set by the gate edge and the implant, not by the gate length, so they keep their width as the gate shortens
+      and make up more of the channel.</figcaption>
+    </figure>
+
+    <h3 id="s6-2">6.2 The tilt, the order of steps and the quad implant</h3>
+
+    <p>
+      The pocket is implanted after the source–drain extension implant and before the spacer is formed, so that the
+      gate alone masks it and it is self-aligned to the gate (notes pp. 89–90). Its dopant is the same type as the well:
+      boron or indium for an n-channel device, an n-type dopant for a p-channel one (the notes name antimony). The tilt exists to
+      give the pocket "greater lateral penetration… than the adjacent SDE implant without thermal diffusion"; typical
+      tilts are 20–45° from the wafer normal (notes p. 90). Wolf states the aim: the pocket's dopant should lie outside
+      the final extension profile after implant and anneal (p. 221). Because gates on a chip run in two perpendicular
+      directions, the dose is split into four equal segments with the wafer rotated 90° between them (notes p. 90), so
+      that every gate edge receives a beam tilted toward it (Figure 8) — the quad implant M08 met for its wells
+      (<a href="m08-well-engineering.html#s6-1">M08 §6.1</a>).
+    </p>
+
+    <figure class="compact">
+<!--FIG f7-->
+<svg viewBox="0 0 430 300" role="img" aria-labelledby="m9f7-t">
+<title id="m9f7-t">A boron pocket implant tilted 30 degrees toward a gate edge, drawn to scale, with the mean stopping point under the gate and the shadow cast by a neighbouring gate</title>
+<rect x="20" y="160" width="390.0" height="120.0" class="dg-fill"/>
+<rect x="170.0" y="10.0" width="100.0" height="150.0" class="dg-fill"/>
+<text x="220.0" y="80.0" class="dg-label" text-anchor="middle">gate</text>
+<rect x="20" y="10.0" width="12.0" height="150.0" class="dg-fill"/>
+<path d="M202.0,160.0 Q202.0,210.0 130.0,210.0 L32.0,210.0" class="dg-line" fill="none" stroke-width="1.4"/>
+<path d="M238.0,160.0 Q238.0,210.0 310.0,210.0 L380.0,210.0" class="dg-line" fill="none" stroke-width="1.4"/>
+<text x="320.0" y="202.0" class="dg-label-sm" text-anchor="middle">extension</text>
+<line x1="100.7" y1="40.0" x2="170.0" y2="160" class="dg-guide" stroke-dasharray="4 3"/>
+<line x1="80.7" y1="40.0" x2="150.0" y2="160" class="dg-guide" stroke-dasharray="4 3"/>
+<line x1="60.7" y1="40.0" x2="130.0" y2="160" class="dg-guide" stroke-dasharray="4 3"/>
+<line x1="170.0" y1="160" x2="208.5" y2="226.8" class="dg-acc" stroke-width="1.8"/>
+<circle cx="208.5" cy="226.8" r="4" class="dg-acc-f"/>
+<text x="215.5" y="230.8" class="dg-label-sm">mean stop: 38.5 nm in, 66.8 nm down</text>
+<text x="68.0" y="32.0" class="dg-label-sm">B⁺, 20 keV, θ = 30°</text>
+<line x1="32.0" y1="163" x2="118.6" y2="163" class="dg-ink" stroke-width="3"/>
+<text x="75.3" y="178" class="dg-label-sm" text-anchor="middle">shadow 86.6 nm</text>
+<line x1="32.0" y1="10.0" x2="118.6" y2="160" class="dg-guide" stroke-dasharray="2 2"/>
+<text x="220.0" y="268.0" class="dg-label-sm" text-anchor="middle">p-well · drawn to scale, 1 px = 1 nm</text>
+</svg>
+<!--/FIG f7-->
+      <figcaption><b>Figure 8.</b> A 20 keV boron pocket implant tilted 30° toward the left edge of a 100 nm gate,
+      drawn to scale (spacer not yet formed). An ion entering at the gate edge comes to rest, on average, 38.5 nm under
+      the gate, beyond the tip of an extension that reaches about 30–35 nm under it. The neighbouring gate on the left,
+      150 nm tall, shadows 86.6 nm of silicon from this beam. The quad segments tilted along the gate reach that strip;
+      the segment tilted the opposite way is shadowed near this device's own gate, so between closely spaced gates a strip
+      receives only part of the dose.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">How far under the gate a tilted pocket reaches</div>
+      <div class="ex-body">
+        <p><b>Given</b> an n-channel pocket of boron at 20 keV: <em>R</em><sub>p</sub> = 77.1 nm, lateral straggle
+        29.6 nm (SRIM). An arsenic extension with a junction depth of 50 nm, whose lateral reach under the gate edge is
+        0.6–0.7 times its depth (Wolf p. 218). Gates 150 nm tall. <b>Find</b> the mean depth and lateral reach under the
+        gate of an ion that enters at the gate edge, for 0°, 30° and 45°; compare with the extension; and find the shadow
+        a neighbouring gate casts at each tilt.</p>
+        <p><b>Plan.</b> Straight-path geometry: an ion entering at angle θ to the normal stops, on average, at depth
+        <em>R</em><sub>p</sub> cos θ and lateral distance <em>R</em><sub>p</sub> sin θ from its entry point. This ignores
+        the straggle, which spreads the stopping points about that mean, and treats the range along a tilted path as the
+        normal-incidence range; ions entering further from the gate stop further out, so the gate-edge entry marks
+        the inner edge of the pocket's mean stopping points, not its centre. The shadow is <em>h</em> tan θ, as in §3.</p>
+        <p class="ex-step"><b>Extension reach.</b> 0.6 × 50 = 30 nm to 0.7 × 50 = 35 nm.</p>
+        <p class="ex-step"><b>0° (a halo).</b> Depth 77.1 nm, lateral 0 nm; the dopant reaches under the gate only
+        through the lateral straggle, 29.6 nm, which is less than the extension's 30–35 nm. Shadow 0.</p>
+        <p class="ex-step"><b>30°.</b> Depth 77.1 × cos 30° = 77.1 × 0.866 = 66.8 nm; lateral 77.1 × sin 30° = 38.5 nm.
+        Shadow 150 × tan 30° = 150 × 0.577 = 86.6 nm.</p>
+        <p class="ex-step"><b>45°.</b> Depth and lateral reach 77.1 × 0.707 = 54.5 nm each; shadow 150 × 1 = 150 nm.</p>
+        <p class="ex-answer">At 30° the innermost mean stopping point sits 38.5 nm under the gate, beyond the 30–35 nm extension tip, as
+        Wolf requires; at 0° it sits under the gate only by straggle. At 45° the reach rises to 54.5 nm but the shadow
+        equals the gate height. Check: depth² + lateral² = 66.8² + 38.5² = 77.1², the range, as the geometry requires.
+        As gate pitches shrink, a shadow of this size stops fitting between gates, and Wolf adds that shorter gates need
+        less undercut to stop punch-through: tilt requirements fall below the 0.25 µm node and were expected to reach the
+        10° "low-tilt" threshold by 0.1 µm (p. 221).</p>
+      </div>
+    </div>
+
+    <h3 id="s6-3">6.3 What the pocket buys</h3>
+
+    <p>
+      The notes (p. 90) give two results: junction capacitance reduced by 65 %, and a steeper subthreshold slope. Wolf
+      writes "up to 65 %" and explains both: they follow from the controlled doping under the gate edge and "the near
+      elimination of all other undesired doping" (p. 221). A punch-through-control layer uniform along the channel also
+      lies under the source and drain, so their junctions face heavy doping; with pockets, the junction bottoms face the
+      light well, and the channel centre is lightly doped. Taur and Ning's low–high–low remark (§5.1) is the same point.
+      Wolf adds a third effect: the pocket's opposite-type dopant compensates part of the extension, which keeps the
+      extension junction shallower (p. 220).
+    </p>
+
+    <p>
+      The capacitance follows from the junction electrostatics of <a href="m08-well-engineering.html#s5-2">M08 §5.2</a>:
+      a one-sided junction has <em>C</em><sub>j</sub> = <em>ε</em><sub>Si</sub>/<em>W</em>, and <em>W</em> ∝
+      <em>N</em><sub>A</sub><sup>−1/2</sup> (eq. (2.4)), so <em>C</em><sub>j</sub> grows roughly as
+      <em>N</em><sub>A</sub><sup>1/2</sup>. The subthreshold slope follows from <a href="m07-high-k-dielectrics.html#s5">M07
+      eq. (7.7)</a>, <em>S</em><sub>t</sub> = 2.3(<em>kT</em>/<em>q</em>)(1 + <em>C</em><sub>d</sub>/<em>C</em><sub>ox</sub>):
+      a lighter channel centre has a wider depletion layer, a smaller depletion capacitance <em>C</em><sub>d</sub> and a
+      swing closer to the ideal 2.3 <em>kT</em>/<em>q</em>, about 60 mV/decade at 300 K.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">What a 65 % cut in junction capacitance says about the doping under the junction</div>
+      <div class="ex-body">
+        <p><b>Given</b> an n⁺ junction (10²⁰ cm⁻³) at zero bias over a uniform punch-through-control layer of
+        10¹⁸ cm⁻³. <b>Find</b> the body doping under the junction that gives 35 % of that capacitance (a 65 % cut), by
+        the square-root rule and exactly.</p>
+        <p><b>Plan.</b> <em>C</em><sub>j</sub> = <em>ε</em><sub>Si</sub>/<em>W</em> with <em>W</em> from eq. (2.4) and
+        <em>V</em><sub>bi</sub> from eq. (2.5), <em>V</em><sub>R</sub> = 0. The square-root rule ignores the change of
+        <em>V</em><sub>bi</sub> with doping; the exact answer is found by iterating.</p>
+        <p class="ex-step"><b>Starting capacitance.</b> <em>V</em><sub>bi</sub> = 0.0259 ln(10¹⁸ × 10²⁰ / 2.25×10²⁰) =
+        1.052 V; <em>W</em> = (2 × 1.044×10⁻¹² × 1.052 / (1.6×10⁻¹⁹ × 10¹⁸))<sup>1/2</sup> = 3.71×10⁻⁶ cm = 37.1 nm;
+        <em>C</em><sub>j</sub> = 1.044×10⁻¹² / 3.71×10⁻⁶ = 2.82×10⁻⁷ F/cm² = 282 nF/cm².</p>
+        <p class="ex-step"><b>Square-root rule.</b> <em>C</em><sub>j</sub> ∝ <em>N</em><sub>A</sub><sup>1/2</sup>, so
+        <em>N</em><sub>A</sub> falls by 0.35² = 0.1225, to 1.2×10¹⁷ cm⁻³.</p>
+        <p class="ex-step"><b>Exact.</b> Target 0.35 × 282 = 98.6 nF/cm². Iterating eq. (2.4)–(2.5) gives
+        <em>N</em><sub>A</sub> = 1.16×10¹⁷ cm⁻³ (<em>V</em><sub>bi</sub> falls to 0.997 V, which makes the exact ratio
+        0.116 rather than 0.1225).</p>
+        <p class="ex-answer">The doping under the junction bottom has to fall about eightfold (8.2 by the square-root rule, 8.6 exactly), from 10¹⁸ to
+        1.2×10¹⁷ cm⁻³, for a 65 % cut. Check against M08's figure for 10¹⁷ cm⁻³: 91.7 nF/cm², 67 % below the 10¹⁸ value —
+        consistent. Wolf's "up to" fits: the cut depends on how heavy the uniform layer was and how light the well is.</p>
+      </div>
+    </div>
+
+    <p>
+      The notes end Chapter 5 with the species (p. 90): because of their low diffusivity and small as-implanted straggle,
+      the heavier dopants can be placed more precisely in the channel, and indium and antimony are increasingly used for
+      pockets. Wolf calls punch-through stops the main production use of indium and antimony implants around 2000
+      (p. 221). The qualification of §4.4 applies to the diffusivity half of that reason.
+    </p>
+
+    <details class="check">
+      <summary>A channel has a background doping of 10¹⁷ cm⁻³ and two pockets, each 20 nm long at 10¹⁸ cm⁻³. Taking
+      the average doping along the channel as a measure of its threshold voltage, compare channels 200 nm, 100 nm and
+      60 nm long. How does this bear on threshold roll-off, and why would a uniform punch-through layer not give the
+      same effect?</summary>
+      <div class="answer">
+        <p>Average = 10¹⁷ + 2 × 20 × (10¹⁸ − 10¹⁷)/<em>L</em>: 200 nm → 1.0×10¹⁷ + 1.8×10¹⁷ = 2.8×10¹⁷ cm⁻³; 100 nm →
+        4.6×10¹⁷; 60 nm → 7.0×10¹⁷. The average rises as the channel shortens, which raises the threshold voltage and
+        opposes the roll-off that source and drain charge sharing causes (Taur &amp; Ning §6.3.3.4). A uniform layer has
+        the same doping at every length, so it shifts the threshold voltage of all lengths alike and offers no such
+        compensation. This is a deliberately simple measure: the real threshold depends on the two-dimensional profile,
+        which the "superhalo" optimises.</p>
+      </div>
+    </details>
+
+    <details class="check">
+      <summary>Using M07 eq. (7.7) with a 2 nm oxide and uniform channels of 10¹⁷ and 10¹⁸ cm⁻³ (depletion capacitance
+      <em>ε</em><sub>Si</sub>/<em>W</em><sub>dm</sub>), estimate the subthreshold swing of each. Which way does
+      replacing a heavy uniform layer by pockets move the swing?</summary>
+      <div class="answer">
+        <p><em>C</em><sub>ox</sub> = 3.9 × 8.85×10⁻¹⁴/2×10⁻⁷ = 1.73×10⁻⁶ F/cm². At 10¹⁷: <em>W</em><sub>dm</sub> = 103 nm,
+        <em>C</em><sub>d</sub> = 1.044×10⁻¹²/1.031×10⁻⁵ = 1.01×10⁻⁷ F/cm², <em>C</em><sub>d</sub>/<em>C</em><sub>ox</sub>
+        = 0.059, <em>S</em><sub>t</sub> = 2.3 × 25.9 × 1.059 = 63.1 mV/decade. At 10¹⁸: <em>W</em><sub>dm</sub> =
+        34.9 nm, <em>C</em><sub>d</sub>/<em>C</em><sub>ox</sub> = 0.173, <em>S</em><sub>t</sub> = 69.9 mV/decade. Pockets
+        leave the channel centre light, so the swing moves toward the lighter value: steeper, as the notes say.</p>
+      </div>
+    </details>
+
+    <h2 id="s7">7 · The channel profile, assembled</h2>
+
+    <p>
+      Six implants in this course shape the doping under the gate, in five groups. Each is defined by its direction (in depth or
+      along the channel), by when it is done relative to the gate, and by what it sets. Table 2 puts them side by side.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <caption>Table 2. The implants that shape the channel</caption>
+      <thead><tr><th>Implant</th><th>Varies</th><th>When, and masked by</th><th>n-channel / p-channel species</th><th>What it sets</th><th>Where</th></tr></thead>
+      <tbody>
+        <tr><td>Threshold-adjust</td><td>depth (shallow peak)</td><td>before the gate</td><td>boron in both, for <em>V</em><sub>T</sub> (L2)</td><td><em>V</em><sub>T</sub></td><td><a href="m03-threshold-voltage.html#s9">M03 §9</a></td></tr>
+        <tr><td>Blanket anti-punch-through, chained punch-through stop</td><td>depth (deeper peak)</td><td>before the gate; none, or the well resist</td><td>blanket: boron (n-channel); chained: boron / phosphorus</td><td>depletion spread below the channel</td><td><a href="m02-deep-submicron-roadmap.html#s5-1">M02 §5.1</a>, <a href="m08-well-engineering.html#s8">M08 §8</a></td></tr>
+        <tr><td>Super-steep retrograde</td><td>depth, steep</td><td>before the gate, in place of the threshold implant; resist</td><td>indium / arsenic or antimony; In and As at 100–200 keV (Wolf)</td><td>light surface, heavy layer below: <em>V</em><sub>T</sub> and <em>W</em><sub>dm</sub> separately</td><td>§5</td></tr>
+        <tr><td>Halo</td><td>along the channel</td><td>after the gate; gate, normal incidence</td><td>well type (boron for n-channel, L3)</td><td>doping at the channel ends</td><td><a href="m02-deep-submicron-roadmap.html#s5-4">M02 §5.4</a></td></tr>
+        <tr><td>Pocket (LATIPS)</td><td>along the channel, under the gate edge</td><td>after the extension, before the spacer; gate, 20–45° tilt, quad</td><td>well type; indium / antimony increasingly</td><td>punch-through at the ends; less <em>C</em><sub>j</sub>, steeper swing, roll-off offset</td><td>§6</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      The principle that the table encodes is to put each dopant only where it does its job. The threshold voltage and
+      the mobility are set in the top few nanometres, punch-through tens of nanometres down and at the channel ends,
+      and the junction capacitance under the source and drain. A uniform profile spends dopant everywhere to satisfy
+      the most demanding of these places. The steeper the profile and the more precisely placed, the less it costs;
+      the limits are the straggle (§2), channelling (§3), TED (§4) and, below 0.1 µm, the number of atoms (§5.4).
+    </p>
+
+    <details class="check">
+      <summary>Write the half-page answer: "uniform channel doping — its problem at a 0.13 µm gate — the profile that
+      fixes it — that profile's problem at 50 nm — the fix". Name the species and give one number at each stage.</summary>
+      <div class="answer">
+        <p>At 0.13 µm, punch-through control needs a mean channel doping above 5×10¹⁷ cm⁻³ (eq. (9.1) gives 6.9×10¹⁷ at
+        1.2 V), but the surface must stay below 5×10¹⁷ cm⁻³ for mobility; a uniform profile cannot do both. The fix is a
+        super-steep retrograde profile, light at the surface and heavy below, implanted with indium in place of boron
+        (n-channel) and arsenic or antimony in place of phosphorus (p-channel), indium and arsenic at 100–200 keV giving about 5×10¹⁶ cm⁻³ at the
+        oxide and 10¹⁸ cm⁻³ at 80 nm. Heavy ions are used because their straggle is about half boron's at the same depth
+        (18.9 against 37.9 nm), so the profile is steeper, and their diffusivity is lower. At 50 nm the light layer must
+        be only 7 nm thick over 10¹⁹ cm⁻³; boron's flank needs 22 nm even at 2 keV and indium cannot exceed about
+        10¹⁸ cm⁻³, so implantation, by Wolf's hedged judgement, probably cannot make it, and the light layer holds only about two atoms under the gate. The fix
+        the sources point to is a method other than implantation, likely low-temperature selective epitaxy, perhaps of
+        Si–Ge, with the surface layer left effectively undoped — and pockets at the channel ends for the lateral part of
+        punch-through control.</p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Punch-through needs the <em>mean</em> channel doping above 5×10¹⁷ cm⁻³ below about 0.13 µm; mobility needs the
+        doping <em>at the surface</em> below 5×10¹⁷ cm⁻³ (notes p. 75, Wolf p. 191). Only a retrograde profile meets both.
+        Minimum uniform doping from L &gt; 2W: eq. (9.1).</li>
+        <li>An implant's flank falls a decade in 2.15 Δ<em>R</em><sub>p</sub> (eq. (9.2)). Heavy ions straggle less: at
+        ≈ 76 nm depth, indium 18.9 nm against boron 37.9 nm; antimony against phosphorus likewise.</li>
+        <li>Channelling: ions steered down open lattice directions leave a deep tail, worst for low doses. Reduced by a
+        7–10° tilt and rotation (at the cost of shadowing), a screen oxide, low energy and high dose.</li>
+        <li>TED: the "+1" excess interstitials cluster into {311} defects whose dissolution keeps boron's diffusivity
+        enhanced until they are gone. Δ<em>X</em><sub>j</sub>² ∝ <em>N R</em><sub>p</sub> exp(+1.4 eV/<em>kT</em>):
+        less TED at low energy and with fast, hot anneals. It drives the reverse short-channel effect.</li>
+        <li>A light surface layer of thickness <em>x</em><sub>s</sub> removes up to <em>qN</em><sub>A</sub><em>x</em><sub>s</sub>/<em>C</em><sub>ox</sub>
+        from <em>V</em><sub>T</sub> (all of it when <em>x</em><sub>s</sub> ≪ <em>W</em><sub>m</sub>) while <em>W</em><sub>dm</sub> grows only as
+        (<em>W</em><sub>m</sub>² + <em>x</em><sub>s</sub>²)<sup>1/2</sup> (eqs. (9.4)–(9.5)); in the extreme limit the depletion term is half
+        that of a uniform channel of the same depletion width (ground plane).</li>
+        <li>SSR by implantation, 0.18–0.1 µm: In for B, As or Sb for P; In and As at 100–200 keV, ≈ 5×10¹⁶ cm⁻³ at the oxide and
+        10¹⁸ cm⁻³ at 80 nm; indium capped near 10¹⁸ cm⁻³, sourced from solid InCl₃. At 50 nm the 7 nm step cannot be
+        implanted; low-temperature selective epitaxy is the likely route (Wolf).</li>
+        <li>Pockets (LATIPS): after the extension, before the spacer, well-type dopant, 20–45° tilt in four 90° segments.
+        They place punch-through doping at the channel ends, offset threshold roll-off, cut junction capacitance by up to
+        65 % and steepen the subthreshold slope.</li>
+      </ul>
+    </div>
+
+    <h2>Where this page follows the class notes against the literature</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Point</th><th>Notes or lecture</th><th>Sources</th><th>On this page</th></tr></thead>
+      <tbody>
+        <tr><td>The two 5×10¹⁷ cm⁻³ limits</td><td>Notes p. 75: doping must exceed it, and is kept below it</td><td>Wolf p. 191: the <em>mean</em> exceeds it; the doping <em>at the surface</em> stays below it</td><td>Both kept; read as mean and surface (§1.1)</td></tr>
+        <tr><td>Name of the buried heavy layer</td><td>Lecture 17: "this is called halo"</td><td>Notes pp. 89–90, Wolf p. 219, Taur &amp; Ning §6.3.3.4: halo/pocket is lateral</td><td>Flagged (§1.1); SSR for the vertical layer</td></tr>
+        <tr><td>Depth of a heavy ion</td><td>Lecture 3: indium "penetrates deeper"</td><td>SRIM, Plummer: shallower at equal energy</td><td>Recorded on M02 §5.3; §2.2 here</td></tr>
+        <tr><td>Surface doping of the In/As implant</td><td>Notes p. 76: 5×10¹⁶ "below the gate-oxide interface"</td><td>Wolf p. 193: "at the gate-oxide interface"</td><td>Wolf's reading (§5.2)</td></tr>
+        <tr><td>SSR below 0.1 µm</td><td>Notes p. 76: "it is not possible"</td><td>Wolf p. 195: "probably will no longer be possible"</td><td>Both quoted; the arithmetic of §5.4</td></tr>
+        <tr><td>When TED happens</td><td>Notes p. 85: "occuring during implantation"</td><td>Wolf p. 206: during the implant-annealing step</td><td>Flagged (§4.3)</td></tr>
+        <tr><td>Indium and TED</td><td>Notes p. 76: reduced diffusivity</td><td>Wolf p. 221: lower TED susceptibility; Plummer p. 499: identical to boron's, benefit from segregation; Griffin: comparable</td><td>Disagreement stated (§4.4)</td></tr>
+        <tr><td>Channelling tilt</td><td>Lecture 18: 7–10°</td><td>Plummer: 7° in its problems; zero tilt to avoid shadowing (p. 475); Wolf p. 218: 0° for abrupt junctions</td><td>Lecture's range kept; the trade-off stated (§3)</td></tr>
+        <tr><td>Junction capacitance</td><td>Notes p. 90: "reduced by 65 %"</td><td>Wolf p. 221: "up to 65 %"</td><td>"Up to" added (§6.3)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Class notes p. 75; Wolf Vol. 4 §5.2 pp. 191–192 and Fig. 5-9. Eq. (9.1) from M02 eqs. (2.3)–(2.5). Lecture 17 for the board values and the "halo" naming (flagged); Lecture 3 for L &gt; 2W</td></tr>
+      <tr><td>§2</td><td>Class notes pp. 75–76; Wolf p. 193. Ranges, straggles and stopping powers from SRIM-2013 (J. F. Ziegler, www.srim.org), SR Module run for this page. Plummer, Deal &amp; Griffin pp. 458–459 (profile skewness). The deflection limit is elastic two-body kinematics. M03 eq. (3.9) for the Gaussian</td></tr>
+      <tr><td>§3</td><td>Plummer, Deal &amp; Griffin §8.2.1, pp. 461–463 and Fig. 8-12; p. 458 and Fig. 8-6 (shadowing); p. 475 (zero tilt); Problem 8.1 (7°). Wolf Vol. 4 pp. 206, 218. Lecture 18 for the explanation and the 7–10° tilt</td></tr>
+      <tr><td>§4</td><td>Wolf Vol. 4 §5.3.3.2, pp. 209–210 and eq. 5.9; p. 206; p. 221. Plummer, Deal &amp; Griffin §8.5.10, pp. 488–489 and Fig. 8-34; p. 436 and p. 499 (reverse short-channel effect, indium). Class notes pp. 85–86. Griffin <i>et al.</i>, <i>Appl. Phys. Lett.</i> <b>73</b>, 2986 (1998), as recorded on M02 §5.3</td></tr>
+      <tr><td>§5</td><td>Y. Taur and T. H. Ning, <i>Fundamentals of Modern VLSI Devices</i>, 3rd ed. (Cambridge, 2022), §6.3.3.2–6.3.3.3, eqs. (6.120)–(6.123), pp. 249–252, and §6.3.4, pp. 253–256. Class notes pp. 74–76; Wolf Vol. 4 pp. 192–195 (SSR implants, indium solubility and source, the 1999 100 nm process, the 50 nm example and its footnote). Lecture 17 for the 50 nm doping levels</td></tr>
+      <tr><td>§6</td><td>Class notes pp. 89–90; Wolf Vol. 4 pp. 218–221 (§5.3.5 and §5.4) and Figs. 5-27, 5-28. Taur &amp; Ning §6.3.3.4 (halo and roll-off). M07 eq. (7.7), M08 §5.2, M02 eqs. (2.4)–(2.5). Lateral straggle from SRIM-2013</td></tr>
+      <tr><td>§7</td><td>M02 §5, M03 §9, M08 §6–8 and this page</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m08-well-engineering.html"><span>Previous</span>M08 · Well Engineering and Retrograde Wells</a>
+      <a class="next" href="m10-source-drain-engineering.html"><span>Next</span>M10 · Source–Drain Engineering</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

@@ -1,0 +1,1889 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M21a · Space Telescopes: Hubble and JWST — EEL5385</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEL5385 Space Electronics</a>
+    <h2>M21a · Space Telescopes: Hubble and JWST</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 21a</p>
+    <h1>Space Telescopes: Hubble and JWST</h1>
+    <p class="lede">
+      What sets the sharpness and sensitivity of a telescope in space, how Hubble's mirror flaw was diagnosed and repaired
+      in low Earth orbit, why the James Webb Space Telescope works in the infrared, and how its beryllium mirror, five-layer
+      sunshield, cryocooler, orbit about L2 and segment control make a telescope that must work with no possibility of
+      repair.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m21-photodetectors.html">M21</a> (the detectors and their cooling), <a href="m05-sun-particle-populations.html">M05</a> §8 (Lagrange points), <a href="m07-orbits-and-environment.html">M07</a> §1, §8 (orbit classes, beyond the magnetosphere), <a href="m03-space-electronics-gap.html">M03</a> §2 (heat with no air)</span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Lecture 23 deck (JWST); Lecture 23 (16 Nov); opening of Lecture 24 (18 Nov); Lallo 2012; Gardner et al. 2023; McElwain et al. 2023; Rigby et al. 2023; NASA, STScI and ESA mission documentation</span>
+    </div>
+
+    <p>
+      A telescope in space avoids the two limits that the atmosphere imposes on one on the ground: turbulence, which blurs
+      the image, and absorption, which removes whole bands of the ultraviolet and infrared spectrum. What remains are the
+      limits of the telescope itself. Its aperture sets how sharp an image can be and how much light it collects (§1); the
+      accuracy of its mirror surface decides whether it reaches that sharpness, which the Hubble Space Telescope did not
+      until its mirror flaw was corrected by astronauts (§2). The James Webb Space Telescope (JWST) was designed for a
+      different purpose — the first galaxies, the formation of stars and planets, and the atmospheres of other planets —
+      and that purpose requires infrared light (§3). Working in the infrared then dictates nearly everything else: a
+      larger, lighter mirror of gold-coated beryllium (§4), a telescope colder than about 50 K so that it does not outshine
+      its targets (§5), an orbit far from Earth about the second Sun–Earth Lagrange point, L2 (§6), and a segmented
+      mirror that must be unfolded and aligned in flight to a small fraction of a wavelength (§7). At L2 nothing can be
+      repaired, so §8 examines what has gone wrong and how it was handled from the ground, and §9 how the pictures are
+      made and which telescopes come next. The detectors that convert JWST's light into signal, and their cooling, are
+      <a href="m21-photodetectors.html">M21</a>; this module treats the observatory that carries them.
+    </p>
+
+    <!-- ================================================================== 1 -->
+    <h2>1 · Hubble and the limits of a space telescope</h2>
+
+    <p>
+      Hubble was launched on 24 April 1990 by the Space Shuttle Discovery into low Earth orbit (Lecture 23 deck p. 14;
+      NASA). It is the baseline against which the course measures JWST, and its design shows the two numbers that
+      characterise any telescope: the diameter of its primary mirror and the wavelengths it was built to observe. This
+      section explains how the optics form an image, what limits the sharpness of that image, and how far Hubble's design
+      reaches in wavelength.
+    </p>
+
+    <h3>Two mirrors and a long focal length</h3>
+    <p>
+      Hubble is a Ritchey–Chrétien Cassegrain telescope: a concave primary mirror 2.4 m across reflects the incoming light
+      to a small convex secondary mirror, which returns it through a 0.6 m hole in the centre of the primary to the
+      instruments mounted behind it (Lallo 2012, Table 1). The primary alone has a focal length of 5.52 m (focal ratio
+      f/2.3); the convex secondary, 281 mm across, multiplies this by 10.4 to give the system a focal length of 57.6 m
+      (f/24) in a tube only about 5 m between the mirrors. A long focal length spreads a small angle on the sky over a
+      large distance in the focal plane, so that a detector pixel corresponds to a small patch of sky; the deck's phrase
+      for this is that "the complicated path increases the telescope's focal length" (deck p. 5). In the Ritchey–Chrétien
+      form both mirrors are hyperboloids, with shapes chosen together so that the image is free of spherical aberration
+      and coma over a wide field; §2 shows what happens when one of the two shapes is wrong. The secondary mirror and its
+      baffle block the central 33 % of the aperture's diameter (Lallo 2012); the thin spider vanes that hold the
+      secondary block a further small fraction.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 170" role="img" aria-labelledby="f21a-hst-t">
+<title id="f21a-hst-t">Side section of Hubble's optics: light enters the tube, reflects from the 2.4 metre primary mirror to the small convex secondary, and returns through the central hole in the primary to the instruments behind it</title>
+<defs><marker id="f21a-hst-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+<rect x="60" y="30" width="250" height="110" class="dg-fill" opacity="0.35"/>
+<text x="185" y="24" class="dg-label-sm" text-anchor="middle">light shield (tube) and baffles</text>
+<path d="M300,32 Q290,85 300,138" class="dg-line" stroke-width="4"/>
+<rect x="294" y="76" width="14" height="18" class="dg-fill"/>
+<text x="316" y="40" class="dg-label-sm">primary, 2.4 m</text><text x="316" y="52" class="dg-label-sm">concave, central hole</text>
+<path d="M100,72 Q104,85 100,98" class="dg-line" stroke-width="4"/>
+<text x="100" y="64" class="dg-label-sm" text-anchor="middle">secondary 0.3 m</text>
+<line x1="10" y1="40" x2="296" y2="40" class="dg-acc" marker-end="url(#f21a-hst-a)"/>
+<line x1="296" y1="40" x2="102" y2="72" class="dg-acc"/>
+<line x1="102" y1="72" x2="380" y2="82" class="dg-acc" marker-end="url(#f21a-hst-a)"/>
+<line x1="10" y1="130" x2="296" y2="130" class="dg-acc" marker-end="url(#f21a-hst-a)"/>
+<line x1="296" y1="130" x2="102" y2="98" class="dg-acc"/>
+<line x1="102" y1="98" x2="380" y2="88" class="dg-acc" marker-end="url(#f21a-hst-a)"/>
+<rect x="380" y="70" width="50" height="30" class="dg-fill"/>
+<text x="405" y="89" class="dg-label-sm" text-anchor="middle">instruments</text>
+<text x="12" y="160" class="dg-label-sm">Schematic, not to scale. The secondary blocks the central 33 % of the aperture diameter.</text>
+</svg>
+      <figcaption><b>Figure 1.</b> Hubble's two-mirror light path, after deck p. 5 and Lallo (2012). The concave primary sends light to the small convex secondary, which returns it through the primary's central hole to the instruments; the folded path gives a 57.6 m focal length in a tube about 5 m long. Schematic, not to scale.</figcaption>
+    </figure>
+
+    <p>
+      The mirror diameter was set not by optics but by the launch vehicle: 2.4 m was close to the largest telescope that,
+      together with its instruments and spacecraft systems, fitted the mass and volume of the Shuttle's payload bay, the
+      vehicle chosen because it could also return astronauts to service the observatory (Lallo 2012). The primary is made
+      of ultra-low-expansion glass coated with aluminium and a protective layer of magnesium fluoride, whose thickness was
+      chosen to raise the ultraviolet reflectance; the throughput falls sharply below about 115 nm. NASA gives Hubble's
+      range as 115–2500 nm, from the far ultraviolet to the near infrared. The long end, 2.5 µm, was reached by the Near
+      Infrared Camera and Multi-Object Spectrometer (NICMOS), Hubble's first cryogenic instrument, whose cooler has not
+      run consistently since late 2008; NICMOS is inactive (Lallo 2012; NASA). The five instruments now in use cover about
+      0.115–1.7 µm: the Wide Field Camera 3 (WFC3), whose infrared channel ends at 1.7 µm, the Advanced Camera for Surveys
+      (ACS), the Cosmic Origins Spectrograph (COS), the Space Telescope Imaging Spectrograph (STIS) and the Fine Guidance
+      Sensors (FGS), which lock onto guide stars to point the telescope (deck p. 6; NASA).
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — Hubble's wavelength range and altitude.</b> The specification table on deck p. 20 gives
+        Hubble's wavelength as "0.2-1.7 µm". That is the range of WFC3 alone, whose ultraviolet–visible channel covers
+        0.2–1.0 µm and whose infrared channel covers 0.8–1.7 µm (the same slide's infographic). The slide's long end is
+        right for Hubble today, since NICMOS, which reached 2.5 µm, is inactive; its short end is WFC3's, while COS and STIS
+        reach 0.115 µm (NASA). The deck also gives Hubble's altitude as 558 km (p. 5) and 570 km (p. 31), and
+        <a href="m07-orbits-and-environment.html">M07</a> §1 gives 535 km. Atmospheric drag lowers Hubble's orbit
+        continuously, from 615 km after launch to 565 km by 2012 (Lallo 2012), so each figure belongs to some date; NASA's
+        general description gives "about 300 miles" (≈ 480 km), an undated round figure. NASA does not expect re-entry
+        before the mid-2030s.
+      </p>
+    </div>
+
+    <h3>The diffraction limit</h3>
+    <p>
+      Light from a star is a plane wave, and a circular aperture of diameter <em>D</em> admits only a disc of it. The
+      disc's edge diffracts the wave, so even a perfect telescope images a point as a central spot surrounded by faint
+      rings (the Airy pattern). The angular radius of the first dark ring is the smallest separation at which two equally
+      bright stars can be distinguished, the Rayleigh criterion:
+    </p>
+
+    <div class="eq" id="eq-21a-1">
+      <div class="eq-body">
+        <div class="eq-math"><em>θ</em> = 1.22 <span class="frac"><span class="num"><em>λ</em></span><span class="den"><em>D</em></span></span></div>
+        <div class="eq-num">(21a.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>θ</em> angular radius of the first dark ring (rad; multiply by 206,265 for arcseconds) ·
+        <em>λ</em> wavelength (m) · <em>D</em> aperture diameter (m), the same unit as <em>λ</em>. For an unobstructed
+        circular aperture. The core's full width at half maximum is close to <em>λ</em>/<em>D</em>. A central obstruction
+        such as Hubble's (33 % of the diameter) narrows the core slightly, moving the first dark ring in to about
+        1.10 <em>λ</em>/<em>D</em>, but it moves about a fifth of the light from the core into the rings: the energy
+        inside the first dark ring falls from 84 % to about 65 %.
+        One arcsecond (″) is 1/3600 of a degree.
+      </div>
+    </div>
+
+    <p>
+      Resolution therefore improves in proportion to aperture and worsens in proportion to wavelength. To see Hubble's
+      visible-light detail at 2.7 times Hubble's wavelength, about 1.5 µm, a telescope needs 2.7 times Hubble's diameter,
+      which is what JWST's 6.5 m provides; this is the first reason for its size (§4). At longer infrared wavelengths JWST
+      is less sharp than Hubble is in the visible. The detector must then sample the image finely
+      enough not to waste the optics: by the Nyquist criterion, at least two pixels across the core width
+      <em>λ</em>/<em>D</em>.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">E1 · Resolution of Hubble and JWST, and the NIRCam pixel</div>
+      <div class="ex-body">
+        <p><b>Given</b> Hubble <em>D</em> = 2.4 m observing at 0.55 µm; JWST <em>D</em> = 6.5 m at 2.0 µm and at 0.6 µm;
+          NIRCam's short-wavelength pixels subtend 0.031″ and its long-wavelength pixels 0.063″ (deck p. 20; STScI).
+          <b>Find</b> each diffraction limit, the wavelength at which JWST matches Hubble's visible resolution, and the
+          wavelengths at which NIRCam's pixels Nyquist-sample the image.</p>
+        <p><b>Plan.</b> Apply (21a.1) in radians, convert to arcseconds, and compare <em>λ</em>/2<em>D</em> with the pixel
+          scale. The trap is units: <em>λ</em> and <em>D</em> must both be in metres.</p>
+        <p class="ex-step"><b>Hubble in the visible.</b> <em>θ</em> = 1.22 × 0.55×10⁻⁶ m / 2.4 m = 2.80×10⁻⁷ rad;
+          × 206,265 = 0.058″. The core width <em>λ</em>/<em>D</em> is 0.047″, which matches the 50 milliarcsecond core
+          width measured after the repair (Lallo 2012), a check that the corrected Hubble is diffraction-limited.</p>
+        <p class="ex-step"><b>JWST at 2 µm.</b> <em>θ</em> = 1.22 × 2.0×10⁻⁶ / 6.5 = 3.75×10⁻⁷ rad = 0.077″. At its
+          shortest wavelength, 0.6 µm, the diffraction limit of a 6.5 m aperture would be 1.13×10⁻⁷ rad = 0.023″, but JWST
+          does not reach it: the telescope is diffraction-limited only longward of about 1.1 µm (§7), and its 0.031″
+          short-wavelength pixels are too coarse to sample a 0.6 µm image fully.</p>
+        <p class="ex-step"><b>Equal resolution.</b> <em>θ</em> depends only on <em>λ</em>/<em>D</em>, so JWST matches
+          Hubble at 0.55 µm when <em>λ</em> = 0.55 µm × 6.5/2.4 = 1.49 µm. Why it matters: in the near infrared JWST
+          sees as sharply as Hubble does in the visible.</p>
+        <p class="ex-step"><b>Nyquist sampling.</b> A pixel of <em>λ</em>/2<em>D</em> puts two pixels across the core. At
+          2.0 µm, <em>λ</em>/2<em>D</em> = 2.0×10⁻⁶ / 13 = 1.54×10⁻⁷ rad = 0.0317″; at 4.0 µm, 0.0635″.</p>
+        <p class="ex-answer">Hubble 0.058″ at 0.55 µm; JWST 0.077″ at 2 µm (the 0.023″ limit at 0.6 µm is not reached); equal resolution at
+          1.49 µm. NIRCam's 0.031″ and 0.063″ pixels are Nyquist at 2.0 µm and 4.0 µm, exactly the "Nyquist wavelengths"
+          STScI lists for the two channels: the pixel scale was chosen from (21a.1). Check: the 2:1 ratio of the
+          pixel scales equals the 2:1 ratio of the Nyquist wavelengths, as it must when the aperture is shared.</p>
+      </div>
+    </div>
+
+    <p>
+      The same equation explains the sequence on deck p. 37, one field imaged by three infrared telescopes. The Wide-field
+      Infrared Survey Explorer (WISE) has a 40 cm telescope, whose diffraction limit at 4.6 µm is 2.9″; its measured
+      resolution there is 6.4″, coarser still because of its large pixels (Wright et al. 2010). Spitzer's 85 cm telescope,
+      whose camera's longest channel is 8.0 µm (the slide prints 8.6), reaches 2.4″. JWST's mid-infrared instrument at
+      7.7 µm reaches 0.30″, eight times sharper, at nearly the same wavelength as Spitzer, because the aperture is 7.6
+      times larger. This is the professor's second reason for JWST: "it has also a bigger [aperture] so it has a greater
+      resolution" (Lecture 23).
+    </p>
+
+    <details class="check">
+      <summary>The Nancy Grace Roman Space Telescope (§9) has a 2.4 m primary like Hubble's and observes in the near
+        infrared. At 1.5 µm, what is its diffraction limit, and how much sharper is JWST at the same wavelength?</summary>
+      <div class="answer">
+        <p>(21a.1): <em>θ</em> = 1.22 × 1.5×10⁻⁶ m / 2.4 m = 7.63×10⁻⁷ rad = 0.157″. JWST: 1.22 × 1.5×10⁻⁶ / 6.5 =
+          2.82×10⁻⁷ rad = 0.058″. The ratio is 6.5/2.4 = 2.71, independent of wavelength, because <em>θ</em> scales as
+          1/<em>D</em> at fixed <em>λ</em>. Roman is not built to compete on sharpness: its purpose is a field of view at
+          least 100 times larger than Hubble's (§9), which surveys large areas quickly.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 2 -->
+    <h2>2 · Hubble's mirror flaw and its repair in orbit</h2>
+
+    <p>
+      Hubble's first images were blurred. Two months after launch, on 27 June 1990, NASA announced that the telescope was
+      flawed, and the investigation found that the primary mirror had been ground to the wrong shape: "too flat near its
+      outer edge", by an error ten times larger than the tolerance the design required (NASA). The story matters to this
+      course for its engineering lessons. A test instrument can certify a wrong part, a known optical error can be
+      cancelled by added optics, and that fix was possible only because astronauts could reach the telescope.
+    </p>
+
+    <h3>Spherical aberration</h3>
+    <p>
+      A mirror brings parallel light to a single focus only if its surface has the right conic shape. The surface height,
+      or sag, of a conic mirror of vertex radius of curvature <em>R</em> at distance <em>r</em> from its centre is
+      <em>z</em>(<em>r</em>) = <em>r</em>²/{<em>R</em>[1 + (1 − (1 + <em>K</em>)<em>r</em>²/<em>R</em>²)<sup>1/2</sup>]},
+      where the conic constant <em>K</em> sets the shape: <em>K</em> = 0 is a sphere, −1 a paraboloid, and
+      <em>K</em> &lt; −1 a hyperboloid. Hubble's primary was specified as a hyperboloid with <em>K</em> = −1.0023, the
+      value that, with the secondary's shape, meets the Ritchey–Chrétien condition (Lallo 2012). A more negative
+      <em>K</em> lowers the sag toward the edge: the mirror becomes flatter there, its outer zone focuses light farther
+      from the mirror than its centre does, and no single plane is in focus. This defect is spherical aberration, and
+      because it depends only on <em>r</em> it is the same all around the mirror.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 190" role="img" aria-labelledby="f21a-ab-t">
+<title id="f21a-ab-t">Two concave mirrors focusing parallel rays. Left: the correct figure sends every ray to one point. Right: a mirror too flat at its edge focuses the edge rays farther from the mirror than the central rays, so no single plane is in focus</title>
+<text x="110" y="16" class="dg-label-sm" text-anchor="middle">correct figure</text>
+<path d="M189.8,30.0 L191.2,35.0 L192.5,40.0 L193.7,45.0 L194.8,50.0 L195.8,55.0 L196.7,60.0 L197.4,65.0 L198.1,70.0 L198.7,75.0 L199.2,80.0 L199.5,85.0 L199.8,90.0 L199.9,95.0 L200.0,100.0 L199.9,105.0 L199.8,110.0 L199.5,115.0 L199.2,120.0 L198.7,125.0 L198.1,130.0 L197.4,135.0 L196.7,140.0 L195.8,145.0 L194.8,150.0 L193.7,155.0 L192.5,160.0 L191.2,165.0 L189.8,170.0" class="dg-line" stroke-width="3"/>
+<line x1="6" y1="40" x2="192.5" y2="40" class="dg-acc" stroke-width="0.9"/>
+<line x1="192.5" y1="40" x2="40.6" y2="121.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="6" y1="60" x2="196.7" y2="60" class="dg-acc" stroke-width="0.9"/>
+<line x1="196.7" y1="60" x2="39.2" y2="114.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="6" y1="80" x2="199.2" y2="80" class="dg-acc" stroke-width="0.9"/>
+<line x1="199.2" y1="80" x2="38.3" y2="107.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="6" y1="120" x2="199.2" y2="120" class="dg-acc" stroke-width="0.9"/>
+<line x1="199.2" y1="120" x2="38.3" y2="93.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="6" y1="140" x2="196.7" y2="140" class="dg-acc" stroke-width="0.9"/>
+<line x1="196.7" y1="140" x2="39.2" y2="86.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="6" y1="160" x2="192.5" y2="160" class="dg-acc" stroke-width="0.9"/>
+<line x1="192.5" y1="160" x2="40.6" y2="79.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="6" y1="100" x2="200" y2="100" class="dg-guide" stroke-dasharray="3 3"/>
+<line x1="80.0" y1="160" x2="80.0" y2="168" class="dg-rule"/>
+<text x="80.0" y="180" class="dg-label-sm" text-anchor="middle">focus</text>
+<text x="330" y="16" class="dg-label-sm" text-anchor="middle">edge too flat (exaggerated)</text>
+<path d="M409.8,30.0 L411.2,35.0 L412.5,40.0 L413.7,45.0 L414.8,50.0 L415.8,55.0 L416.7,60.0 L417.4,65.0 L418.1,70.0 L418.7,75.0 L419.2,80.0 L419.5,85.0 L419.8,90.0 L419.9,95.0 L420.0,100.0 L419.9,105.0 L419.8,110.0 L419.5,115.0 L419.2,120.0 L418.7,125.0 L418.1,130.0 L417.4,135.0 L416.7,140.0 L415.8,145.0 L414.8,150.0 L413.7,155.0 L412.5,160.0 L411.2,165.0 L409.8,170.0" class="dg-line" stroke-width="3"/>
+<line x1="226" y1="40" x2="412.5" y2="40" class="dg-acc" stroke-width="0.9"/>
+<line x1="412.5" y1="40" x2="199.9" y2="121.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="226" y1="60" x2="416.7" y2="60" class="dg-acc" stroke-width="0.9"/>
+<line x1="416.7" y1="60" x2="232.2" y2="114.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="226" y1="80" x2="419.2" y2="80" class="dg-acc" stroke-width="0.9"/>
+<line x1="419.2" y1="80" x2="251.5" y2="107.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="226" y1="120" x2="419.2" y2="120" class="dg-acc" stroke-width="0.9"/>
+<line x1="419.2" y1="120" x2="251.5" y2="93.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="226" y1="140" x2="416.7" y2="140" class="dg-acc" stroke-width="0.9"/>
+<line x1="416.7" y1="140" x2="232.2" y2="86.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="226" y1="160" x2="412.5" y2="160" class="dg-acc" stroke-width="0.9"/>
+<line x1="412.5" y1="160" x2="199.9" y2="79.0" class="dg-acc" stroke-width="0.9"/>
+<line x1="226" y1="100" x2="420" y2="100" class="dg-guide" stroke-dasharray="3 3"/>
+<line x1="300.0" y1="160" x2="300.0" y2="168" class="dg-rule"/>
+<text x="300.0" y="180" class="dg-label-sm" text-anchor="middle">central rays</text>
+<line x1="255.0" y1="160" x2="255.0" y2="168" class="dg-rule"/>
+<text x="251.0" y="180" class="dg-label-sm" text-anchor="end">edge rays</text>
+</svg>
+      <figcaption><b>Figure 2.</b> Spherical aberration in a concave mirror, with the error exaggerated. A correctly figured mirror (left) brings every zone to one focus; a mirror too flat at its edge (right) focuses its outer zone farther from the mirror than its centre, so there is no single plane of focus. Hubble's flaw was of this kind (§2).</figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — a lens picture for a mirror.</b> Deck p. 7 explains spherical aberration with a lens whose
+        edge rays are "refracted away from the point of focus", and Lecture 23 tells the story in terms of a lens. The
+        physics is the same, since any optic whose outer zone has a different focal length from its centre has spherical
+        aberration, but Hubble has no lens in its light path: its flaw was the reflecting surface of the primary, and every
+        correction installed afterwards was reflective as well, except one lens in the WFC3 infrared channel used for
+        packaging reasons. Lallo (2012) records how persistent the "lens" or "eyeglass" picture of the repair has been,
+        among educators as well as the public.
+      </p>
+    </div>
+
+    <p>
+      The difference between two conic shapes grows as the fourth power of radius. Expanding the sag for small
+      <em>r</em>/<em>R</em> gives <em>z</em> ≈ <em>r</em>²/2<em>R</em> + (1 + <em>K</em>)<em>r</em>⁴/8<em>R</em>³, so a
+      change Δ<em>K</em> in the conic constant changes the surface by
+    </p>
+
+    <div class="eq" id="eq-21a-2">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>z</em>(<em>r</em>) ≈ <span class="frac"><span class="num">Δ<em>K</em> <em>r</em>⁴</span><span class="den">8 <em>R</em>³</span></span></div>
+        <div class="eq-num">(21a.2)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>z</em> change in surface height (m) · Δ<em>K</em> change in conic constant (dimensionless) ·
+        <em>r</em> radius on the mirror (m) · <em>R</em> vertex radius of curvature (m), twice the focal length of the
+        mirror. Leading term of the sag expansion; for Hubble the exact difference agrees with it to four figures. On
+        reflection the wavefront error is twice the surface error.
+      </div>
+    </div>
+
+    <p>
+      How the wrong shape was made is the instructive part. A mirror is figured by repeated polishing and measurement, and
+      a hyperboloid is measured with a null corrector, an arrangement of optics placed at the mirror's centre of curvature
+      that converts the light returned by a correctly shaped hyperboloid into a perfect sphere, so that a correct mirror
+      shows straight interference fringes. Hubble's reflective null corrector had a 1.3 mm spacing error, "a lens spacing
+      error" in NASA's words: the rod used to set the spacing had been measured from a reflection off its end cap, where
+      non-reflective paint had flaked, instead of from the rod end itself (Lallo 2012; NASA). The polishers worked until the null corrector
+      reported a perfect mirror, so they produced, precisely, the wrong mirror. Deck p. 8 shows this test with the mirror
+      "11 metres" away, which is its radius of curvature, and the spacing "1 millimetre askew".
+    </p>
+
+    <div class="example">
+      <div class="ex-head">E2 · How far off was Hubble's mirror?</div>
+      <div class="ex-body">
+        <p><b>Given</b> vertex radius of curvature <em>R</em> = 11.04 m; mirror radius <em>r</em> = 1.20 m; design conic
+          constant −1.0023; as-built values from −1.0132 to −1.0144 (analyses of star images and of the null corrector,
+          Lallo 2012).
+          <b>Find</b> the surface error at the edge, and the reflected wavefront error.</p>
+        <p><b>Plan.</b> (21a.2) with Δ<em>K</em> = <em>K</em><sub>built</sub> − <em>K</em><sub>design</sub>; the sign of
+          Δ<em>z</em> says flatter or steeper. Watch the cube of <em>R</em>: the error is a few parts in 10⁵ of the sag
+          itself, so it must be computed, not estimated.</p>
+        <p class="ex-step"><b>The change in conic constant.</b> Δ<em>K</em> = −1.0144 − (−1.0023) = −0.0121 (and −0.0109
+          for −1.0132).</p>
+        <p class="ex-step"><b>The surface error at the edge.</b> <em>r</em>⁴ = 1.20⁴ = 2.074 m⁴; 8<em>R</em>³ = 8 × 11.04³
+          = 1.0765×10⁴ m³. Δ<em>z</em> = −0.0121 × 2.074 / 1.0765×10⁴ = −2.33×10⁻⁶ m; for −1.0132, −2.10×10⁻⁶ m. The
+          negative sign means the as-built surface lies below the design at the edge: too flat.</p>
+        <p class="ex-step"><b>Compared with the mirror's own shape.</b> The design sag at the edge is 65.2 mm, so the
+          error is 3.6×10⁻⁵ of the sag: invisible to any mechanical gauge, and large only against the wavelength of
+          light.</p>
+        <p class="ex-step"><b>Wavefront error.</b> Reflection doubles a surface error, so the edge rays are delayed by
+          4.2–4.7 µm, about 6.6–7.4 wavelengths of the 632.8 nm laser light used to test mirrors.</p>
+        <p class="ex-answer">Δ<em>z</em> ≈ −2.1 to −2.3 µm at the edge, wavefront error ≈ 4.2–4.7 µm. Lallo (2012)
+          gives "approximately 2.3 µm", and the deck rounds to "off by 2 µm". Check: the error scales as <em>r</em>⁴, so
+          at half the radius it is 1/16 of the edge value; the flaw lives in the outer zone, as NASA's "too flat near its
+          outer edge" says.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 190" role="img" aria-labelledby="f21a-fe-t">
+<title id="f21a-fe-t">Height by which Hubble's primary mirror surface lies below its design figure, against distance from the centre, computed from the design and as-built conic constants: the error grows as the fourth power of radius and reaches 2.33 micrometres at the 1.2 metre edge</title>
+<line x1="60" y1="150" x2="390" y2="150" class="dg-rule"/><line x1="60" y1="150" x2="60" y2="30" class="dg-rule"/>
+<line x1="60.0" y1="150" x2="60.0" y2="154" class="dg-rule"/><text x="60.0" y="166" class="dg-label-sm" text-anchor="middle">0</text>
+<line x1="142.5" y1="150" x2="142.5" y2="154" class="dg-rule"/><text x="142.5" y="166" class="dg-label-sm" text-anchor="middle">0.3</text>
+<line x1="225.0" y1="150" x2="225.0" y2="154" class="dg-rule"/><text x="225.0" y="166" class="dg-label-sm" text-anchor="middle">0.6</text>
+<line x1="307.5" y1="150" x2="307.5" y2="154" class="dg-rule"/><text x="307.5" y="166" class="dg-label-sm" text-anchor="middle">0.9</text>
+<line x1="390.0" y1="150" x2="390.0" y2="154" class="dg-rule"/><text x="390.0" y="166" class="dg-label-sm" text-anchor="middle">1.2</text>
+<line x1="56" y1="150.0" x2="60" y2="150.0" class="dg-rule"/><text x="53" y="153.0" class="dg-label-sm" text-anchor="end">0</text>
+<line x1="56" y1="126.0" x2="60" y2="126.0" class="dg-rule"/><text x="53" y="129.0" class="dg-label-sm" text-anchor="end">0.5</text>
+<line x1="56" y1="102.0" x2="60" y2="102.0" class="dg-rule"/><text x="53" y="105.0" class="dg-label-sm" text-anchor="end">1</text>
+<line x1="56" y1="78.0" x2="60" y2="78.0" class="dg-rule"/><text x="53" y="81.0" class="dg-label-sm" text-anchor="end">1.5</text>
+<line x1="56" y1="54.0" x2="60" y2="54.0" class="dg-rule"/><text x="53" y="57.0" class="dg-label-sm" text-anchor="end">2</text>
+<line x1="56" y1="30.0" x2="60" y2="30.0" class="dg-rule"/><text x="53" y="33.0" class="dg-label-sm" text-anchor="end">2.5</text>
+<path d="M60.0,150.0 L65.5,150.0 L71.0,150.0 L76.5,150.0 L82.0,150.0 L87.5,150.0 L93.0,150.0 L98.5,150.0 L104.0,150.0 L109.5,149.9 L115.0,149.9 L120.5,149.9 L126.0,149.8 L131.5,149.8 L137.0,149.7 L142.5,149.6 L148.0,149.4 L153.5,149.3 L159.0,149.1 L164.5,148.9 L170.0,148.6 L175.5,148.3 L181.0,148.0 L186.5,147.6 L192.0,147.1 L197.5,146.6 L203.0,146.1 L208.5,145.4 L214.0,144.7 L219.5,143.9 L225.0,143.0 L230.5,142.0 L236.0,140.9 L241.5,139.8 L247.0,138.5 L252.5,137.0 L258.0,135.5 L263.5,133.8 L269.0,132.0 L274.5,130.0 L280.0,127.9 L285.5,125.6 L291.0,123.1 L296.5,120.5 L302.0,117.6 L307.5,114.6 L313.0,111.3 L318.5,107.9 L324.0,104.2 L329.5,100.2 L335.0,96.0 L340.5,91.6 L346.0,86.9 L351.5,81.9 L357.0,76.6 L362.5,71.0 L368.0,65.1 L373.5,58.9 L379.0,52.3 L384.5,45.4 L390.0,38.1" class="dg-acc" stroke-width="2"/>
+<circle cx="390.0" cy="38.1" r="3" class="dg-acc-f"/>
+<text x="384.0" y="32.1" class="dg-label-sm" text-anchor="end">2.33 µm at the edge</text>
+<text x="225.0" y="182" class="dg-label-sm" text-anchor="middle">distance from mirror centre, r (m)</text>
+<text x="14" y="90.0" class="dg-label-sm" transform="rotate(-90 14 90.0)" text-anchor="middle">surface error (µm)</text>
+<text x="70" y="68.4" class="dg-label-sm">K = −1.0023 designed, −1.0144 as built; R = 11.04 m</text>
+</svg>
+      <figcaption><b>Figure 3.</b> The depth by which Hubble's as-built primary lies below its design surface, computed from the two conic constants with the exact sag formula (E2). The error grows as <em>r</em>⁴: it is negligible over the inner half of the mirror and reaches 2.33 µm at the edge for <em>K</em> = −1.0144, the most negative of the as-built values (2.10 µm for −1.0132).</figcaption>
+    </figure>
+
+    <h3>COSTAR, WFPC2, and five servicing missions</h3>
+    <p>
+      Because the mirror's error was a smooth, known function of radius, it could be cancelled without touching the
+      mirror: an optic with the equal and opposite aberration, placed in the beam before each instrument, restores a
+      single focus. The analyses of star images fixed the as-built conic constant to within the range in E2, and the
+      corrective optics were built to it. On the first servicing mission, in December 1993, astronauts installed two
+      devices (Lallo 2012; NASA):
+    </p>
+    <ul>
+      <li><b>COSTAR</b> (Corrective Optics Space Telescope Axial Replacement) took the place of one of the original
+        instruments, the High Speed Photometer, and deployed small corrective mirrors into the beams feeding the three
+        remaining first-generation instruments, the Goddard High Resolution Spectrograph, the Faint Object Spectrograph
+        and the Faint Object Camera (deck p. 9: "Remove one instrument module and add additional optics").</li>
+      <li><b>WFPC2</b>, the second Wide Field and Planetary Camera, replaced the first and carried its own corrective
+        optics.</li>
+    </ul>
+    <p>
+      After the repair Hubble was diffraction-limited, with a wavefront error of 1/21 of a wavelength (rms) at 0.5 µm and
+      a Strehl ratio near 90 % (Lallo 2012; the Strehl ratio is defined in §7). Every instrument installed later carried
+      its own correction, and astronauts removed COSTAR in May 2009 to make room for the Cosmic Origins Spectrograph.
+      Shuttle crews made five servicing visits — December 1993, February 1997 (which added NICMOS, Hubble's first
+      cryogenically cooled instrument), December 1999, March 2002 and May 2009 — replacing gyroscopes, solar arrays and
+      electronics as well as instruments. Hubble was expected to last about 15 years when it launched (NASA); servicing has
+      extended that to more than three decades.
+    </p>
+
+    <p>
+      The repair was possible because Hubble's orbit is within reach of a crewed vehicle. The professor returned to this
+      contrast throughout Lecture 23: Hubble is in low Earth orbit "so we can go there and fix it"; JWST, 1.5 million km
+      away at L2, cannot be serviced (deck p. 31: "Cannot Fix!"). For JWST this turns every failure that would have been a
+      repair into one of three outcomes: a failure designed out on the ground, a failure worked around from the ground, or
+      a lost capability. §7 and §8 show each.
+    </p>
+
+    <div class="box">
+      <p>
+        <b>The Hubble Deep Field.</b> With the corrected optics, Hubble spent ten consecutive days, 18–28 December 1995,
+        pointed at a patch of sky one-thirtieth of the diameter of the full Moon that contained almost no known objects,
+        taking 342 frames with WFPC2 (NASA). The deck gives the total exposure as more than 100 hours and the result as
+        almost 3,000 galaxies (p. 11). The field showed galaxies at all distances and so at all ages of the universe, and
+        established deep imaging of the earliest galaxies as a central goal, the one that JWST was designed to continue
+        (§3).
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>Suppose the null-corrector error had been half as large, giving Δ<em>K</em> = −0.006. What would the edge
+        error have been, and why could COSTAR correct a fault in the primary mirror without changing the primary?</summary>
+      <div class="answer">
+        <p>(21a.2) is linear in Δ<em>K</em>, so halving Δ<em>K</em> halves the error: about 1.2 µm at the edge (1.17 µm from
+          the script for half of −0.0121), still five times the tolerance on NASA's account, so the telescope would still
+          have needed correction. COSTAR worked because spherical aberration is deterministic and the same for every point in
+          the field: each ray from a given zone of the primary arrives with a known path-length error that depends only on
+          its radius. A pair of mirrors in the converging beam, figured to impose the opposite path-length error zone by
+          zone, returns every ray to one focus. The correction requires an accurate measurement of the error, which the
+          analysis of star images supplied, and access to the instruments, which only servicing supplied.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 3 -->
+    <h2>3 · JWST: goals, history, and why infrared</h2>
+
+    <p>
+      JWST was conceived before Hubble flew. Its mission goals, as the deck lists them (p. 13), are to find the first
+      galaxies and luminous objects formed after the Big Bang, to follow how galaxies evolved from then to now, to observe
+      stars forming and their planetary systems forming with them, and to measure the physical and chemical properties of
+      planetary systems, including our own, and their potential for life. The professor condensed these into two: the
+      history of the universe after the Big Bang, and planets like Earth, with water and oxygen as the signs of
+      habitability (Lecture 23). This section covers the telescope's history and then the physics that makes infrared light
+      the common requirement of all four goals.
+    </p>
+
+    <h3>From a workshop in 1989 to a launch in 2021</h3>
+    <p>
+      The project began at a workshop on a "Next Generation Space Telescope" held at the Space Telescope Science Institute
+      (STScI) in Baltimore on 13–15 September 1989, seven months before Hubble launched (deck p. 14; Gardner et al. 2023).
+      An early concept already had the features that flew: a large deployable mirror (then 8 m), an orbit at L2, an open
+      telescope with no tube around it, and passive cooling behind a large multi-layer sunshield (deck p. 14; early designs
+      by Pierre Bely and Peter Stockman of STScI, Gardner et al. 2023). The telescope was named in 2002 after James E. Webb, NASA Administrator from 14 February 1961 to
+      7 October 1968, the period of the Apollo programme's build-up (deck p. 15). It was launched on an Ariane 5 from
+      Kourou, French Guiana, at 12:20 UTC on 25 December 2021, with a launch mass of 6,161 kg (Gardner et al. 2023). The
+      project's cost to NASA up to launch was $8.8 billion (Gardner et al. 2023); the deck gives $10 billion against
+      $2.5 billion for Hubble, without adjustment for inflation, as a student pointed out in class (deck p. 20; Lecture 23).
+      It is a partnership of NASA, the European Space Agency (ESA), which provided the launch, and the Canadian Space
+      Agency (CSA).
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>Source note — dates on the history slides.</b> Deck pp. 15–17 attach day-level dates to the naming (14 August
+        2002), the first full-scale mockup (4 August 2006) and the start of construction (1 January 2007). The 1 January date looks like a
+        nominal value rather than a record, and none of the three has been confirmed against a NASA source, so this page gives only the
+        years. The 1989 workshop, Hubble's launch date, Webb's term as Administrator and JWST's launch date agree with
+        NASA's documentation.
+      </p>
+    </div>
+
+    <h3>Why infrared</h3>
+    <p>
+      The professor gave four reasons (Lecture 23), and a fifth follows from the physics of thermal emission. Each is a
+      property of light at wavelengths from about 1 to 30 µm.
+    </p>
+
+    <p>
+      <b>1. Dust is more transparent to infrared light.</b> Stars and planets form inside clouds of gas and interstellar
+      dust, grains comparable to or smaller than a micrometre. Grains of that size scatter and absorb light much more
+      strongly at short wavelengths than at long ones, so ultraviolet and blue light is removed from a beam passing
+      through dust while red and infrared light passes; the light that emerges is reddened (deck p. 36). NASA's summary is
+      that "longer wavelengths of infrared light slip past dust more easily". The dust that absorbs ultraviolet and
+      visible light is heated by it and re-radiates the energy in the infrared, so the infrared also shows the dust itself
+      (NASA). Deck p. 36 makes the point with Hubble's own visible and infrared images of the Pillars of Creation: the
+      infrared image shows many stars behind and inside the pillars that the visible one hides.
+    </p>
+
+    <p>
+      <b>2. Cool objects emit in the infrared.</b> A body at temperature <em>T</em> emits a thermal spectrum whose peak
+      lies at the wavelength given by Wien's displacement law (introduced in
+      <a href="m19a-failure-analysis.html">M19a</a> §3):
+    </p>
+
+    <div class="eq" id="eq-21a-3">
+      <div class="eq-body">
+        <div class="eq-math"><em>λ</em><sub>max</sub> = <span class="frac"><span class="num"><em>b</em></span><span class="den"><em>T</em></span></span></div>
+        <div class="eq-num">(21a.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>λ</em><sub>max</sub> wavelength of peak spectral radiance per unit wavelength (m) · <em>b</em> Wien's constant,
+        2.898×10⁻³ m·K · <em>T</em> temperature (K). For a black body; real surfaces emit less, by their emissivity, but
+        peak in the same region.
+      </div>
+    </div>
+
+    <p>
+      The Sun's photosphere, at 5,772 K, peaks at 0.50 µm, in the visible. A body at 300 K peaks at 9.7 µm, a body at 40 K
+      at 72 µm. Planets, brown dwarfs, protostars still wrapped in their dust, and the dust itself are all far cooler than
+      a star's photosphere, and emit most of their light in the infrared (NASA). The same law is the reason the telescope
+      must be cold (§5): a telescope at room temperature glows at the wavelengths JWST observes.
+    </p>
+
+    <p>
+      <b>3. Molecules have infrared spectra.</b> When light with a continuous spectrum passes through a cooler gas, the gas
+      absorbs at the wavelengths of its own transitions and the transmitted spectrum shows dark absorption lines; viewed
+      from the side, the same gas emits at those wavelengths (deck p. 38). The vibrational and rotational transitions of
+      molecules such as water, carbon dioxide and methane lie in the infrared. When a planet passes in front of its star,
+      starlight filters through the planet's atmosphere, and the fraction of light blocked rises at the wavelengths the
+      atmosphere absorbs. JWST's NIRISS instrument, in its single-object slitless spectroscopy mode, recorded such a
+      transmission spectrum of the hot gas-giant planet WASP-96 b from 0.6 to 2.8 µm, released on 12 July 2022, showing "the distinct signature of water" and evidence of
+      clouds (ESA/Webb; deck p. 39). The professor's point was the method: knowing the star's spectrum, the missing light
+      identifies the gas.
+    </p>
+
+    <p>
+      <b>4. The light of the first galaxies arrives in the infrared.</b> The universe is expanding, and "that expansion
+      stretches light traveling through space in a phenomenon known as cosmological redshift" (NASA). The stretch is
+      measured by the redshift <em>z</em>:
+    </p>
+
+    <div class="eq" id="eq-21a-4">
+      <div class="eq-body">
+        <div class="eq-math">1 + <em>z</em> = <span class="frac"><span class="num"><em>λ</em><sub>obs</sub></span><span class="den"><em>λ</em><sub>em</sub></span></span></div>
+        <div class="eq-num">(21a.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>z</em> redshift (dimensionless) · <em>λ</em><sub>obs</sub> wavelength observed · <em>λ</em><sub>em</sub>
+        wavelength emitted, in the same unit. For cosmological redshift, 1 + <em>z</em> is the factor by which the
+        universe has expanded while the light travelled, so a larger <em>z</em> means light emitted earlier.
+      </div>
+    </div>
+
+    <p>
+      The ultraviolet light emitted by young stars in a galaxy at <em>z</em> ≈ 10 is stretched by a factor of eleven into
+      the near infrared, and its visible light into the mid-infrared, beyond the reach of a telescope that stops at
+      1.7 µm. The deck's p. 41 shows the record
+      before JWST: the galaxy GN-z11 at <em>z</em> = 11.1, the farthest Hubble had seen, about 400 million years after the
+      Big Bang (ESA/Webb). JWST has since confirmed galaxies at higher redshift; on 28 January 2026 ESA/Webb reported
+      MoM-z14, confirmed with NIRSpec at <em>z</em> = 14.44, 280 million years after the Big Bang.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">E3 · Where the light of an early galaxy arrives</div>
+      <div class="ex-body">
+        <p><b>Given</b> the hydrogen Lyman-α line at <em>λ</em><sub>em</sub> = 121.567 nm (ultraviolet) and the Hα line at
+          656.46 nm (red), both vacuum wavelengths, which is what a telescope in space observes (Hα is often quoted at its
+          air wavelength, 656.28 nm); galaxies at <em>z</em> = 11.1 (GN-z11, deck p. 41) and <em>z</em> = 14.44 (MoM-z14,
+          ESA/Webb); Hubble's WFC3
+          infrared channel ends at 1.7 µm and NIRCam at 5.0 µm. <b>Find</b> the observed wavelengths, and the redshift at
+          which Lyman-α leaves each instrument's range.</p>
+        <p><b>Plan.</b> (21a.4) rearranged: <em>λ</em><sub>obs</sub> = (1 + <em>z</em>) <em>λ</em><sub>em</sub>; for the
+          limit, <em>z</em> = <em>λ</em><sub>edge</sub>/<em>λ</em><sub>em</sub> − 1. Lyman-α matters because hydrogen
+          absorbs strongly at shorter wavelengths, so a galaxy's light drops sharply blueward of it: a galaxy is detected,
+          and its redshift estimated, by where that drop falls.</p>
+        <p class="ex-step"><b>Lyman-α at z = 11.1.</b> <em>λ</em><sub>obs</sub> = 12.1 × 121.567 nm = 1,471 nm = 1.47 µm:
+          inside NIRCam's short-wavelength channel, and just inside WFC3's limit, which is why Hubble could see GN-z11 at
+          all.</p>
+        <p class="ex-step"><b>Hα at z = 11.1.</b> 12.1 × 656.46 nm = 7.94 µm, in the mid-infrared: only MIRI reaches it.</p>
+        <p class="ex-step"><b>At z = 14.44.</b> 15.44 × 121.567 nm = 1.88 µm, beyond Hubble's 1.7 µm.</p>
+        <p class="ex-step"><b>Where Lyman-α leaves each range.</b> Hubble: 1.7/0.121567 − 1 = 13.0. NIRCam:
+          5.0/0.121567 − 1 = 40.1.</p>
+        <p class="ex-answer">At <em>z</em> = 11.1, Lyman-α arrives at 1.47 µm and Hα at 7.94 µm; at <em>z</em> = 14.44,
+          Lyman-α arrives at 1.88 µm. Hubble loses Lyman-α beyond <em>z</em> ≈ 13; NIRCam keeps it to <em>z</em> ≈ 40,
+          beyond the epoch of the first galaxies. Check: every factor is 1 + <em>z</em>, so the ratio of the two observed
+          lines, 7.94/1.47 = 5.40, equals the ratio of the emitted ones, 656.46/121.567 = 5.40.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 232" role="img" aria-labelledby="f21a-z-t">
+<title id="f21a-z-t">Observed wavelengths of the hydrogen Lyman-alpha and H-alpha lines for redshifts 0, 3.8, 11.1 and 14.44 on a logarithmic axis, against Hubble's and JWST's ranges: at redshift 11.1 Lyman-alpha arrives at 1.47 micrometres and H-alpha at 7.9, already in MIRI's band; at 14.44 Lyman-alpha arrives at 1.88, beyond the 1.7 micrometre end of Hubble's present instruments</title>
+<text x="64" y="30" class="dg-label-sm" text-anchor="end">z = 0</text>
+<line x1="70" y1="26" x2="410" y2="26" class="dg-guide" stroke-dasharray="2 3"/>
+<line x1="81.6" y1="19" x2="81.6" y2="33" class="dg-acc" stroke-width="2.5"/>
+<text x="81.6" y="16" class="dg-label-sm" text-anchor="middle">Lyα 0.122</text>
+<line x1="182.2" y1="19" x2="182.2" y2="33" class="dg-acc" stroke-width="2.5"/>
+<text x="182.2" y="16" class="dg-label-sm" text-anchor="middle">Hα 0.656</text>
+<text x="64" y="62" class="dg-label-sm" text-anchor="end">z = 3.8</text>
+<line x1="70" y1="58" x2="410" y2="58" class="dg-guide" stroke-dasharray="2 3"/>
+<line x1="175.1" y1="51" x2="175.1" y2="65" class="dg-acc" stroke-width="2.5"/>
+<text x="175.1" y="48" class="dg-label-sm" text-anchor="middle">Lyα 0.584</text>
+<line x1="275.7" y1="51" x2="275.7" y2="65" class="dg-acc" stroke-width="2.5"/>
+<text x="275.7" y="48" class="dg-label-sm" text-anchor="middle">Hα 3.15</text>
+<text x="64" y="94" class="dg-label-sm" text-anchor="end">z = 11.1</text>
+<line x1="70" y1="90" x2="410" y2="90" class="dg-guide" stroke-dasharray="2 3"/>
+<line x1="230.3" y1="83" x2="230.3" y2="97" class="dg-acc" stroke-width="2.5"/>
+<text x="230.3" y="80" class="dg-label-sm" text-anchor="middle">Lyα 1.47</text>
+<line x1="330.8" y1="83" x2="330.8" y2="97" class="dg-acc" stroke-width="2.5"/>
+<text x="330.8" y="80" class="dg-label-sm" text-anchor="middle">Hα 7.94</text>
+<text x="64" y="126" class="dg-label-sm" text-anchor="end">z = 14.44</text>
+<line x1="70" y1="122" x2="410" y2="122" class="dg-guide" stroke-dasharray="2 3"/>
+<line x1="244.8" y1="115" x2="244.8" y2="129" class="dg-acc" stroke-width="2.5"/>
+<text x="244.8" y="112" class="dg-label-sm" text-anchor="middle">Lyα 1.88</text>
+<line x1="345.3" y1="115" x2="345.3" y2="129" class="dg-acc" stroke-width="2.5"/>
+<text x="345.3" y="112" class="dg-label-sm" text-anchor="middle">Hα 10.1</text>
+<rect x="238.9" y="150" width="23.0" height="10" class="dg-fill" stroke-dasharray="2 2"/>
+<text x="265.9" y="158.5" class="dg-label-sm">to 2.5: NICMOS, inactive</text>
+<rect x="78.3" y="150" width="160.6" height="10" class="dg-acc-f" opacity="0.35"/>
+<text x="158.6" y="158.5" class="dg-label-sm" text-anchor="middle">Hubble today 0.115–1.7 µm</text>
+<rect x="176.8" y="164" width="229.1" height="10" class="dg-acc-f" opacity="0.35"/>
+<text x="291.3" y="172.5" class="dg-label-sm" text-anchor="middle">JWST 0.6–28 µm</text>
+<line x1="70" y1="184" x2="410" y2="184" class="dg-rule"/>
+<line x1="70.0" y1="184" x2="70.0" y2="188" class="dg-rule"/><text x="70.0" y="199" class="dg-label-sm" text-anchor="middle">0.1</text>
+<line x1="135.5" y1="184" x2="135.5" y2="188" class="dg-rule"/><text x="135.5" y="199" class="dg-label-sm" text-anchor="middle">0.3</text>
+<line x1="207.3" y1="184" x2="207.3" y2="188" class="dg-rule"/><text x="207.3" y="199" class="dg-label-sm" text-anchor="middle">1</text>
+<line x1="272.7" y1="184" x2="272.7" y2="188" class="dg-rule"/><text x="272.7" y="199" class="dg-label-sm" text-anchor="middle">3</text>
+<line x1="344.5" y1="184" x2="344.5" y2="188" class="dg-rule"/><text x="344.5" y="199" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="410.0" y1="184" x2="410.0" y2="188" class="dg-rule"/><text x="410.0" y="199" class="dg-label-sm" text-anchor="middle">30</text>
+<text x="240.0" y="212" class="dg-label-sm" text-anchor="middle">observed wavelength λ<tspan baseline-shift="sub" style="font-size:75%">obs</tspan> = (1 + z) λ<tspan baseline-shift="sub" style="font-size:75%">em</tspan>  (µm, logarithmic)</text>
+</svg>
+      <figcaption><b>Figure 4.</b> Observed wavelengths of the hydrogen Lyman-α and Hα lines at four redshifts, from (21a.4), against the ranges of Hubble's present instruments (to 1.7 µm; the dashed extension to 2.5 µm was NICMOS, now inactive) and JWST. At <em>z</em> = 11.1 Lyman-α (1.47 µm) is near the 1.7 µm end of Hubble's reach and Hα (7.94 µm) is already in MIRI's band; at <em>z</em> = 14.44 (MoM-z14) Lyman-α (1.88 µm) lies beyond Hubble.</figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — redshift is not a Doppler shift.</b> Deck p. 40 summarises the argument as "Expansion of
+        Universe → Doppler Effect → Longer Wavelength". A Doppler shift is caused by a source moving through space relative
+        to the observer. Cosmological redshift is the stretching of the wavelength by the expansion of space itself during
+        the light's journey, and its factor 1 + <em>z</em> is the factor by which the universe has grown since emission.
+        For small <em>z</em> the two descriptions agree to first order, a recession speed <em>v</em> ≈ <em>cz</em>, which
+        is why the Doppler language persists. Beyond that they diverge, and supernova observations rule out the
+        special-relativistic Doppler reading (Davis and Lineweaver 2004). Galaxies at the redshifts JWST studies recede
+        faster than light in the cosmological sense, a speed no Doppler formula can express. The slide's conclusion — longer
+        wavelengths, so look in the infrared — is right.
+      </p>
+    </div>
+
+    <p>
+      <b>5. A colder telescope is a more sensitive one.</b> This follows from reason 2 applied to the telescope: §5 shows
+      that a mirror at room temperature, as Hubble's is, emits at 10 µm more than 10¹³ times as much as the same mirror at 40 K.
+    </p>
+
+    <h3>One nebula at three wavelengths</h3>
+    <p>
+      Deck p. 60 compares the Pillars of Creation, a small region in the Eagle Nebula 6,500 light-years away (NASA), in
+      three images: Hubble in the visible, JWST's NIRCam at 0.9–4.7 µm and JWST's MIRI at 7.7–15 µm. Hubble's image is
+      dominated by opaque brown pillars and shows few stars; NIRCam's shows thousands of stars, because the near infrared
+      passes through the dust; MIRI's shows the pillars glowing against a bright background and few stars again. The
+      professor asked the class why the stars thin out again at longer wavelengths.
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — why the mid-infrared image shows fewer stars.</b> In Lecture 23, and again in Lecture 24,
+        the professor explained that the MIRI image records light emitted soon after the Big Bang, before many stars had
+        formed. That cannot apply here: the Eagle Nebula is in our own Galaxy, 6,500 light-years away, so its light is
+        thousands of years old and not measurably redshifted. The reason is the one a student offered in class, the
+        spectral output of the sources. A star's photosphere, at thousands of kelvin, peaks in the visible (21a.3), and
+        its emission falls steeply at wavelengths ten or more times longer, so "stars typically do not emit much
+        mid-infrared light" (NASA). In MIRI's bands the glow comes from large molecules, polycyclic aromatic hydrocarbons,
+        and very small dust grains, each briefly heated to hundreds of kelvin by single ultraviolet photons from the young
+        stars, and from warm dust around embedded stars (Draine and Li 2001); the bulk of the dust, at tens of kelvin, peaks
+        beyond 30 µm (21a.3) and emits almost nothing at 10 µm. So in MIRI's image the dust outshines all but the stars
+        still embedded in their own dusty envelopes. The same slide labels the
+        two JWST panels "NIRcam Visible (0.9-4.7µm)" and "MIRI Visible (7.7-15µm)": both bands are infrared. The MIRI
+        image combines filters at 7.7, 11.3 and 15 µm, and the NIRCam image six filters from 0.90 to 4.70 µm (NASA).
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>A galaxy is at <em>z</em> = 7. In which JWST instrument's range does its Lyman-α line fall, and in which its
+        Hα line? Could Hubble have detected the Lyman-α drop?</summary>
+      <div class="answer">
+        <p>(21a.4): Lyman-α arrives at 8 × 121.567 nm = 0.973 µm, inside NIRCam's 0.6–2.3 µm short-wavelength channel (and
+          NIRSpec's 0.6–5 µm range); Hα at 8 × 656.46 nm = 5.25 µm, just beyond NIRCam's 5.0 µm and inside MIRI's 5–28 µm.
+          Hubble's WFC3 infrared channel covers 0.8–1.7 µm, so 0.973 µm is within it: Hubble could detect the drop. Its
+          limit for Lyman-α is <em>z</em> ≈ 13 (E3), and its limit for Hα is much lower, 1.7/0.65646 − 1 ≈ 1.6, which is why
+          the rest-frame visible light of early galaxies, which carries most information on their stars, needed JWST.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 4 -->
+    <h2>4 · The observatory against Hubble</h2>
+
+    <p>
+      §1 showed that infrared resolution needs a larger aperture, §3 that faint, distant targets need more collecting
+      area, and §5 will show that the telescope must be cold. JWST meets all three with a design unlike Hubble's: a mirror
+      2.7 times wider, built from 18 segments light enough to launch and fold, left open to space with no tube, and shaded
+      from the Sun by a sunshield instead of being heated to a stable room temperature. This section describes that
+      observatory and its instruments.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th></th><th>Hubble</th><th>JWST</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Primary mirror</td><td>2.4 m, one ULE glass mirror, Al + MgF₂</td><td>6.5 m, 18 hexagonal beryllium segments, gold</td><td>Lallo 2012; McElwain et al. 2023</td></tr>
+        <tr><td>Collecting area</td><td>≈ 4.0 m²</td><td>25.4 m²</td><td>E4; Gardner et al. 2023</td></tr>
+        <tr><td>Mirror areal density</td><td>240 kg/m²</td><td>&lt; 26.5 kg/m²</td><td>McElwain et al. 2023</td></tr>
+        <tr><td>Mass at launch</td><td>≈ 10,800 kg (deck: 11,110 kg)</td><td>6,161 kg</td><td>NASA; deck p. 20; Gardner et al. 2023</td></tr>
+        <tr><td>Wavelengths</td><td>0.115–1.7 µm (2.5 µm with NICMOS, inactive)</td><td>0.6–28 µm</td><td>NASA; Lallo 2012; Gardner et al. 2023</td></tr>
+        <tr><td>Telescope temperature</td><td>heated to a 21.1 °C setpoint; primary surface 14–16 °C</td><td>35–55 K, passively cooled</td><td>Lallo 2012; Gardner et al. 2023</td></tr>
+        <tr><td>Orbit</td><td>low Earth orbit, a few hundred km</td><td>halo orbit about Sun–Earth L2, ≈ 1.5 million km</td><td>§1, §6</td></tr>
+        <tr><td>Servicing</td><td>five Shuttle missions, 1993–2009</td><td>none planned</td><td>§2, §6</td></tr>
+        <tr><td>Average power used</td><td>≈ 2,100 W</td><td>≈ 1,000 W, from an array rated 2,000 W</td><td><a href="m20-space-power.html">M20</a>; NASA</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — the size of JWST's mirror.</b> The specification table on deck p. 20 gives JWST's mirror as
+        6.4 m, while the infographic on the same slide and p. 42 give 6.5 m, and Lecture 23 used both. The figure NASA
+        uses is 6.5 m. The precise dimensions explain the spread: the segments measure 6.575 m across their flats and the
+        circumscribed circle 6.64 m, while the area of the 18 segments equals that of a filled circle 5.7 m in diameter,
+        because the central segment position is empty and the hexagonal outline is not a circle (McElwain et al. 2023).
+        Deck p. 20's JWST wavelength range, 0.6–28.3 µm, falls within the spread of published long-wavelength limits
+        (28.0–28.8 µm).
+      </p>
+    </div>
+
+    <h3>The optical telescope element</h3>
+    <p>
+      The optical telescope element comprises the primary mirror, the secondary mirror on three struts in front of it, and
+      the tertiary and fine-steering mirrors that relay the light into the instrument module behind the primary (deck
+      p. 22). Each of the 18 primary segments is a hexagon 1.32 m across its flats, separated from its neighbours by 7 mm
+      gaps (McElwain et al. 2023). Segmentation solves the launch problem that limited Hubble to 2.4 m: the primary is
+      folded, with two wings of three segments each turned back for launch, and unfolded in space (§7). It also creates
+      the alignment problem of §7, because 18 separate mirrors must act as one surface to a few tens of nanometres. The
+      six-pointed diffraction spikes around bright stars in JWST images come from the hexagonal outline of the segments
+      and the gaps between them, with a fainter horizontal pair from the vertical strut that supports the secondary.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 222" role="img" aria-labelledby="f21a-ap-t">
+<title id="f21a-ap-t">Primary mirrors drawn to one scale: Hubble and Roman 2.4 metres, JWST 6.5 metres as 18 hexagonal segments, the LUVOIR-B concept 8 metres and LUVOIR-A 15 metres</title>
+<circle cx="40" cy="171.8" r="13.2" class="dg-fill"/>
+<circle cx="40" cy="171.8" r="4.356" class="dg-acc-f" opacity="0.25"/>
+<text x="40" y="199" class="dg-label-sm" text-anchor="middle">Hubble, Roman</text><text x="40" y="210" class="dg-label-sm" text-anchor="middle">2.4 m</text>
+<polygon points="102.9,134.7 98.8,141.7 90.6,141.7 86.6,134.7 90.6,127.6 98.8,127.6" class="dg-acc-f" opacity="0.45"/>
+<polygon points="102.9,149.2 98.8,156.3 90.6,156.3 86.6,149.2 90.6,142.2 98.8,142.2" class="dg-acc-f" opacity="0.45"/>
+<polygon points="102.9,163.8 98.8,170.9 90.6,170.9 86.6,163.8 90.6,156.8 98.8,156.8" class="dg-acc-f" opacity="0.45"/>
+<polygon points="115.5,127.4 111.4,134.4 103.3,134.4 99.2,127.4 103.3,120.3 111.4,120.3" class="dg-acc-f" opacity="0.45"/>
+<polygon points="115.5,142.0 111.4,149.0 103.3,149.0 99.2,142.0 103.3,134.9 111.4,134.9" class="dg-acc-f" opacity="0.45"/>
+<polygon points="115.5,156.5 111.4,163.6 103.3,163.6 99.2,156.5 103.3,149.5 111.4,149.5" class="dg-acc-f" opacity="0.45"/>
+<polygon points="115.5,171.1 111.4,178.2 103.3,178.2 99.2,171.1 103.3,164.1 111.4,164.1" class="dg-acc-f" opacity="0.45"/>
+<polygon points="128.2,120.1 124.1,127.1 115.9,127.1 111.8,120.1 115.9,113.0 124.1,113.0" class="dg-acc-f" opacity="0.45"/>
+<polygon points="128.2,134.7 124.1,141.7 115.9,141.7 111.8,134.7 115.9,127.6 124.1,127.6" class="dg-acc-f" opacity="0.45"/>
+<polygon points="128.2,163.8 124.1,170.9 115.9,170.9 111.8,163.8 115.9,156.8 124.1,156.8" class="dg-acc-f" opacity="0.45"/>
+<polygon points="128.2,178.4 124.1,185.5 115.9,185.5 111.8,178.4 115.9,171.4 124.1,171.4" class="dg-acc-f" opacity="0.45"/>
+<polygon points="140.8,127.4 136.7,134.4 128.6,134.4 124.5,127.4 128.6,120.3 136.7,120.3" class="dg-acc-f" opacity="0.45"/>
+<polygon points="140.8,142.0 136.7,149.0 128.6,149.0 124.5,142.0 128.6,134.9 136.7,134.9" class="dg-acc-f" opacity="0.45"/>
+<polygon points="140.8,156.5 136.7,163.6 128.6,163.6 124.5,156.5 128.6,149.5 136.7,149.5" class="dg-acc-f" opacity="0.45"/>
+<polygon points="140.8,171.1 136.7,178.2 128.6,178.2 124.5,171.1 128.6,164.1 136.7,164.1" class="dg-acc-f" opacity="0.45"/>
+<polygon points="153.4,134.7 149.4,141.7 141.2,141.7 137.1,134.7 141.2,127.6 149.4,127.6" class="dg-acc-f" opacity="0.45"/>
+<polygon points="153.4,149.2 149.4,156.3 141.2,156.3 137.1,149.2 141.2,142.2 149.4,142.2" class="dg-acc-f" opacity="0.45"/>
+<polygon points="153.4,163.8 149.4,170.9 141.2,170.9 137.1,163.8 141.2,156.8 149.4,156.8" class="dg-acc-f" opacity="0.45"/>
+<text x="120" y="199" class="dg-label-sm" text-anchor="middle">JWST 6.5 m</text><text x="120" y="210" class="dg-label-sm" text-anchor="middle">18 segments</text>
+<circle cx="215" cy="141.0" r="44.0" class="dg-fill" stroke-dasharray="4 3"/>
+<text x="215" y="199" class="dg-label-sm" text-anchor="middle">LUVOIR-B 8 m</text><text x="215" y="210" class="dg-label-sm" text-anchor="middle">(concept)</text>
+<circle cx="345" cy="102.5" r="82.5" class="dg-fill" stroke-dasharray="4 3"/>
+<text x="345" y="199" class="dg-label-sm" text-anchor="middle">LUVOIR-A 15 m</text><text x="345" y="210" class="dg-label-sm" text-anchor="middle">(concept)</text>
+</svg>
+      <figcaption><b>Figure 5.</b> Primary mirrors to one scale, after deck p. 42: Hubble and Roman (2.4 m, with Hubble's central obstruction shaded), JWST's 18 segments of 1.32 m (6.5 m), and the two LUVOIR concepts (8 m and 15 m, dashed: not built).</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">E4 · Collecting area and mirror mass</div>
+      <div class="ex-body">
+        <p><b>Given</b> JWST collecting area 25.4 m², measured in orbit (Gardner et al. 2023); Hubble <em>D</em> = 2.4 m
+          with a 33 % diametric central obstruction (Lallo 2012); areal densities 240 kg/m² for Hubble's primary and
+          26.5 kg/m² for JWST's (McElwain et al. 2023). <b>Find</b> the ratio of collecting areas, and the mass each primary
+          would have at its own areal density.</p>
+        <p><b>Plan.</b> Light collected is proportional to unobstructed area. The trap is to square the diameter ratio,
+          which ignores Hubble's obstruction and JWST's empty centre and gaps.</p>
+        <p class="ex-step"><b>Hubble's area.</b> Gross: π/4 × 2.4² = 4.52 m². The obstruction blocks a disc 0.33 × 2.4 =
+          0.79 m across, a fraction 0.33² = 0.109 of the area, leaving 4.52 × 0.891 = 4.03 m².</p>
+        <p class="ex-step"><b>The ratio.</b> 25.4 / 4.03 = 6.30. The naive (6.5/2.4)² = 7.34 overstates it by 17 %.
+          Gardner et al. (2023) state that Hubble has 1/6.25 of JWST's collecting area, which implies 4.06 m² for Hubble,
+          within 1 % of this estimate; the deck's "more than six times the light collection of Hubble" agrees.</p>
+        <p class="ex-step"><b>Mirror masses.</b> Hubble: 240 kg/m² × 4.52 m² = 1,086 kg. NASA gives the mirror itself as
+          828 kg, about 195 kg/m² over its annulus (4.24 m² after the 0.6 m central hole), so the 240 kg/m² quoted by
+          McElwain et al. probably includes the mirror's supports; they do not say. JWST:
+          26.5 kg/m² × 25.4 m² = 673 kg for six times the area. Why areal density is the figure of merit: launch mass
+          scales with area times areal density, and a 25 m² mirror at Hubble's 240 kg/m² would weigh about 6,100 kg, the
+          whole observatory's launch mass.</p>
+        <p class="ex-answer">JWST collects about 6.3 times as much light as Hubble, with a primary mirror 0.6–0.8 times as
+          heavy (against 1,086 kg or NASA's 828 kg), because its areal density is about 9 times lower. Check: for a bright
+          source limited by its own photon noise, the signal-to-noise ratio in equal exposure times grows as the square root
+          of the area, √6.3 = 2.5. For a faint point source limited by the background the gain is larger, about the area
+          ratio itself, because JWST's smaller image core also contains less background.</p>
+      </div>
+    </div>
+
+    <h3>Beryllium and gold</h3>
+    <p>
+      The segments are made of O30 beryllium, a hot-isostatically-pressed powder grade that is more uniform in its
+      properties than earlier grades, and each blank was lightened by machining away more than 92 % of its material,
+      leaving a thin face sheet on a honeycomb of ribs (McElwain et al. 2023). The reason given by the project for the
+      choice is thermal: beryllium's coefficient of thermal expansion is small over the mirror's operating range of
+      35–55 K, so a segment polished to the right shape keeps it as the temperature drifts. The segments were cooled to
+      operating temperature in a test chamber at NASA Marshall, their shape at that temperature measured, and polished
+      again to correct the change. Low density and high stiffness were the second reasons. Beryllium mirrors had flown
+      before, on IRAS, COBE and Spitzer (McElwain et al. 2023). Beryllium is toxic when inhaled as dust or oxide, as the
+      professor stressed and as <a href="m09-bremsstrahlung-xrays.html">M09</a> records for its use in X-ray windows, so
+      machining it requires controlled facilities.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">E5 · Beryllium against aluminium</div>
+      <div class="ex-body">
+        <p><b>Given</b> deck p. 21: beryllium density 1.85 (printed "kg/m3"), Young's modulus "~290GPa", "32% lighter than
+          Aluminum", modulus "5X higher than aluminum". Reference values for the aluminium alloy 6061: 2.70 g/cm³,
+          69 GPa. <b>Find</b> the density and modulus ratios, and the specific stiffness <em>E</em>/<em>ρ</em> of
+          each.</p>
+        <p><b>Plan.</b> Check the slide's ratios against its own numbers, then form <em>E</em>/<em>ρ</em>, which governs how
+          much a mirror of given shape sags under its own weight (deflection scales as <em>ρ</em>/<em>E</em>) and how high
+          its vibration frequencies are.</p>
+        <p class="ex-step"><b>The unit.</b> 1.85 kg/m³ is about 1.5 times the density of air at sea level; no metal is that
+          light. The slide's number is in g/cm³: 1.85 g/cm³ = 1,850 kg/m³.</p>
+        <p class="ex-step"><b>Density.</b> 1.85/2.70 = 0.685, so beryllium is 31.5 % lighter: the slide's "32 %"
+          confirms g/cm³.</p>
+        <p class="ex-step"><b>Modulus.</b> 290/69 = 4.20: about four times, not five.</p>
+        <p class="ex-step"><b>Specific stiffness.</b> Be: 290×10⁹ Pa / 1,850 kg/m³ = 1.57×10⁸ m²/s². Al:
+          69×10⁹ / 2,700 = 2.56×10⁷ m²/s². Ratio 6.13.</p>
+        <p class="ex-answer">Beryllium is 32 % less dense and 4.2 times stiffer than aluminium, so 6.1 times stiffer per
+          unit mass: a beryllium mirror sags under its own weight about one-sixth as much as an aluminium mirror of the same
+          shape. The slide's "5X" lies between the modulus ratio (4.2) and the specific-stiffness ratio (6.1). Check:
+          dividing the modulus ratio by the density ratio, 4.20 / 0.685 = 6.13.</p>
+      </div>
+    </div>
+
+    <p>
+      The segments are coated with gold, deposited in vacuum and protected by a thin overcoat of silicon oxide, giving
+      high reflectance over the operating range 0.6–28.1 µm (McElwain et al. 2023). Deck p. 21 plots the reflectance of
+      silver, gold and aluminium against wavelength, and the professor read it as silver best, gold next and aluminium
+      good but not as good, with silver rejected because it is "easily damaged" (Lecture 23): silver tarnishes. Gold's
+      reflectance falls steeply below about 0.6 µm, which is why the mirror looks gold. The causation runs from the science
+      to the coating: the telescope's short-wavelength requirement of 0.6 µm was set by early science trade studies, and it
+      is what allowed a gold coating (McElwain et al. 2023). NASA's statement of the choice is that "gold is used instead of aluminum or silver because it
+      reflects red to mid-infrared light extremely well".
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — beryllium on deck p. 21.</b> The slide gives beryllium's density as "1.85kg/m3"; the unit
+        is g/cm³ (E5). It gives the modulus as "5X higher than aluminum"; the modulus ratio is about 4.2, and 6 for the
+        stiffness per unit mass. Lecture 23 attributed JWST's lower mass to the absence of Hubble's aluminium tube; the
+        open design does remove a tube, but the documented reason for the mass is the mirror's areal density, a factor of
+        nine below Hubble's (E4).
+      </p>
+    </div>
+
+    <h3>The instruments and their wavelengths</h3>
+    <p>
+      Behind the primary, the integrated science instrument module (ISIM) carries four instruments and the fine guidance
+      sensor (deck pp. 22, 53). Their detectors, and the reasons for their materials and temperatures, are the subject of
+      <a href="m21-photodetectors.html">M21</a> §5–§7; here they are described by what they observe (deck p. 23).
+    </p>
+    <ul>
+      <li><b>NIRCam</b> (Near Infrared Camera), 0.6–5.0 µm, is the main imager. A dichroic beamsplitter divides the light
+        at about 2.4 µm into a short-wavelength channel on eight HgCdTe arrays (0.031″ pixels) and a long-wavelength
+        channel on two (0.063″), observed at the same time (E1). It also provides coronagraphy, in which a mask blocks a
+        bright star so that faint companions beside it can be seen, and it serves as the wavefront sensor for aligning the
+        mirror (§7).</li>
+      <li><b>NIRSpec</b> (Near Infrared Spectrograph), 0.6–5 µm, disperses light into spectra. Its multi-object mode uses
+        the micro-shutter array, a MEMS grid of about a quarter of a million shutters in the spectrograph's aperture plane,
+        opened individually so that the light of many selected galaxies at once reaches the disperser and the two
+        detector arrays together (<a href="m21-photodetectors.html">M21</a> §7;
+        <a href="m14b-radiation-effects-mems.html">M14b</a>). It also has an integral field unit, which records a spectrum
+        for every point of a small patch of sky, and fixed slits.</li>
+      <li><b>NIRISS</b> (Near Infrared Imager and Slitless Spectrograph), provided with the fine guidance sensor by CSA,
+        offers two slitless modes: wide-field slitless spectroscopy, which disperses every object in the 2.2′ × 2.2′ field
+        over 0.8–2.2 µm, and single-object slitless spectroscopy (SOSS), which spreads the light of one bright star over
+        many pixels across 0.6–2.8 µm, the mode that recorded the WASP-96 b transmission spectrum (§3; Gardner et al.
+        2023). It also offers aperture-masking interferometry for the highest resolution near bright stars.</li>
+      <li><b>MIRI</b> (Mid-Infrared Instrument), 5–28 µm, provided by a European consortium with NASA, images, provides
+        coronagraphy, and has two spectrographs: a low-resolution one and the medium-resolution spectrometer, an integral
+        field unit with four channels (deck p. 24). It is the only instrument with active cooling (§5), and the site of the
+        wheel anomaly of §8.</li>
+    </ul>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 230" role="img" aria-labelledby="f21a-bd-t">
+<title id="f21a-bd-t">Wavelength coverage of JWST's instruments on a logarithmic axis: NIRCam, NIRSpec, NIRISS and the fine cover about 0.6 to 5 micrometres, MIRI about 5 to 28; the visible band 0.4 to 0.7 and Hubble's WFC3 infrared channel to 1.7 are marked for comparison</title>
+<text x="74" y="26" class="dg-label" text-anchor="end">NIRCam</text>
+<rect x="111.9" y="16" width="167.0" height="12" class="dg-acc-f" opacity="0.55"/>
+<text x="111.9" y="39" class="dg-label-sm">0.6–5 µm · imaging, coronagraphy, slitless</text>
+<text x="74" y="58" class="dg-label" text-anchor="end">NIRSpec</text>
+<rect x="111.9" y="48" width="171.6" height="12" class="dg-acc-f" opacity="0.55"/>
+<text x="111.9" y="71" class="dg-label-sm">0.6–5.3 µm · multi-object (micro-shutters), IFU, fixed slit</text>
+<text x="74" y="90" class="dg-label" text-anchor="end">NIRISS</text>
+<rect x="111.9" y="80" width="167.0" height="12" class="dg-acc-f" opacity="0.55"/>
+<text x="111.9" y="103" class="dg-label-sm">0.6–5 µm · slitless spectroscopy, masking interferometry</text>
+<text x="74" y="122" class="dg-label" text-anchor="end">MIRI</text>
+<rect x="278.9" y="112" width="135.7" height="12" class="dg-acc-f" opacity="0.55"/>
+<text x="414.6" y="135" class="dg-label-sm" text-anchor="end">5–28 µm · imaging, coronagraphy, MRS IFU, LRS</text>
+<rect x="80.0" y="150" width="44.1" height="9" class="dg-fill"/>
+<text x="128.1" y="158" class="dg-label-sm">visible 0.4–0.7</text>
+<rect x="134.6" y="162" width="59.4" height="9" class="dg-fill"/>
+<text x="197.9" y="170" class="dg-label-sm">Hubble WFC3/IR 0.8–1.7</text>
+<line x1="80" y1="182" x2="420" y2="182" class="dg-rule"/>
+<line x1="80.0" y1="182" x2="80.0" y2="186" class="dg-rule"/><text x="80.0" y="197" class="dg-label-sm" text-anchor="middle">0.4</text>
+<line x1="111.9" y1="182" x2="111.9" y2="186" class="dg-rule"/><text x="111.9" y="197" class="dg-label-sm" text-anchor="middle">0.6</text>
+<line x1="152.2" y1="182" x2="152.2" y2="186" class="dg-rule"/><text x="152.2" y="197" class="dg-label-sm" text-anchor="middle">1</text>
+<line x1="206.7" y1="182" x2="206.7" y2="186" class="dg-rule"/><text x="206.7" y="197" class="dg-label-sm" text-anchor="middle">2</text>
+<line x1="278.9" y1="182" x2="278.9" y2="186" class="dg-rule"/><text x="278.9" y="197" class="dg-label-sm" text-anchor="middle">5</text>
+<line x1="333.5" y1="182" x2="333.5" y2="186" class="dg-rule"/><text x="333.5" y="197" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="388.1" y1="182" x2="388.1" y2="186" class="dg-rule"/><text x="388.1" y="197" class="dg-label-sm" text-anchor="middle">20</text>
+<line x1="420.0" y1="182" x2="420.0" y2="186" class="dg-rule"/><text x="420.0" y="197" class="dg-label-sm" text-anchor="middle">30</text>
+<text x="250.0" y="210" class="dg-label-sm" text-anchor="middle">wavelength (µm), logarithmic</text>
+</svg>
+      <figcaption><b>Figure 6.</b> Wavelength coverage of JWST's four science instruments, redrawn from deck p. 23, on a logarithmic axis with the visible band and Hubble's WFC3 infrared channel for comparison. Three instruments share 0.6–5 µm; MIRI alone covers 5–28 µm.</figcaption>
+    </figure>
+
+    <p>
+      The instrument module also needs a spacecraft. On the warm side of the sunshield, the spacecraft bus holds the
+      computer (a radiation-hardened RAD750, the case study of <a href="m03-space-electronics-gap.html">M03</a> §7), the
+      reaction wheels that point the observatory, the star trackers, the antenna that sends data to NASA's Deep Space
+      Network, and the solar array, which always faces the Sun; a trim flap uses solar radiation pressure to balance the
+      torque on the large sunshield (deck p. 22).
+    </p>
+
+    <details class="check">
+      <summary>Had JWST's 25.4 m² mirror been built at Hubble's areal density, what would it have weighed, and what would a
+        Hubble-sized primary weigh at JWST's areal density? What do the two answers say about why JWST could not have been
+        built from Hubble's technology?</summary>
+      <div class="answer">
+        <p>At 240 kg/m²: 240 × 25.4 = 6,100 kg, essentially the entire launch mass of the observatory (6,161 kg), leaving
+          nothing for the sunshield, instruments or spacecraft. At 26.5 kg/m²: 26.5 × 4.52 = 120 kg instead of about 830–1,100 kg (NASA's
+          828 kg for the mirror, or 1,086 kg at the 240 kg/m² of E4).
+          The ninefold reduction in areal density, achieved with lightweighted beryllium, is what made a 6.5 m mirror
+          launchable; segmentation is what made it fit inside the fairing. Neither a glass mirror like Hubble's nor a
+          monolithic mirror of any material could have done both.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 5 -->
+    <h2>5 · The thermal ladder: sunshield and cryocooler</h2>
+
+    <p>
+      An infrared telescope is a detector of heat, and its own heat is its first source of noise. Hubble's mirrors are
+      heated to a control setpoint of 21.1 °C to keep their shape, and the primary's surface, cooler because of the
+      front-to-back gradient, runs at 14–16 °C, about 288 K (Lallo 2012). At that temperature, as Gardner et al. (2023) put it, a
+      room-temperature telescope "emits its own infrared beyond 1.7µm". JWST therefore runs its telescope at 35–55 K and
+      its mid-infrared instrument near 6 K. In vacuum there is no air to carry heat away (<a
+      href="m03-space-electronics-gap.html">M03</a> §2), so the only ways to reach these temperatures are to block the
+      heat that arrives by radiation and to radiate away what remains. This section quantifies why the telescope must be
+      cold, then shows how the five-layer sunshield cools it passively and where the one active cooler takes over.
+    </p>
+
+    <h3>Why the telescope must be cold</h3>
+    <p>
+      Every surface the light meets — mirrors, struts, baffles, the instrument enclosures — emits thermal radiation into
+      the beam at a rate set by its temperature and emissivity. The spectral radiance of a black body, the power per unit
+      area, per unit solid angle and per unit wavelength, is Planck's law:
+    </p>
+
+    <div class="eq" id="eq-21a-5">
+      <div class="eq-body">
+        <div class="eq-math"><em>B</em><sub><em>λ</em></sub>(<em>λ</em>, <em>T</em>) = <span class="frac"><span class="num">2<em>hc</em>²</span><span class="den"><em>λ</em>⁵</span></span> · <span class="frac"><span class="num">1</span><span class="den">exp(<em>hc</em>/<em>λk</em><sub>B</sub><em>T</em>) − 1</span></span></div>
+        <div class="eq-num">(21a.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>B</em><sub><em>λ</em></sub> spectral radiance (W m⁻² sr⁻¹ m⁻¹) · <em>h</em> Planck constant, 6.626×10⁻³⁴ J·s ·
+        <em>c</em> speed of light, 2.998×10⁸ m/s · <em>λ</em> wavelength (m) · <em>k</em><sub>B</sub> Boltzmann constant
+        in J/K, 1.381×10⁻²³ · <em>T</em> temperature (K). <em>hc</em>/<em>k</em><sub>B</sub> = 14,388 µm·K. When
+        <em>hc</em>/<em>λk</em><sub>B</sub><em>T</em> ≫ 1 (short wavelength or low temperature) the −1 can be dropped and
+        the radiance falls exponentially; the peak of the curve is Wien's law (21a.3).
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">E6 · How brightly a warm mirror glows</div>
+      <div class="ex-body">
+        <p><b>Given</b> a mirror at 294 K (21.1 °C, Hubble's heater setpoint, used here as a round room temperature) and
+          the same mirror at 40 K; wavelengths 2 µm and 10 µm.
+          <b>Find</b> the ratio of the two mirrors' spectral radiance at each wavelength.</p>
+        <p><b>Plan.</b> The emissivity is the same for both, so it cancels in the ratio and (21a.5) can be used directly.
+          The hinge is the exponent <em>hc</em>/<em>λk</em><sub>B</sub><em>T</em>: in the exponential regime the ratio is
+          close to exp[(<em>hc</em>/<em>λk</em><sub>B</sub>)(1/<em>T</em><sub>cold</sub> − 1/<em>T</em><sub>warm</sub>)].</p>
+        <p class="ex-step"><b>The temperature scale of each wavelength.</b> <em>hc</em>/<em>λk</em><sub>B</sub> =
+          14,388 µm·K / 10 µm = 1,439 K at 10 µm, and 7,194 K at 2 µm.</p>
+        <p class="ex-step"><b>At 10 µm.</b> From (21a.5): <em>B</em><sub><em>λ</em></sub>(294 K) = 9.03×10⁶ and
+          <em>B</em><sub><em>λ</em></sub>(40 K) = 2.85×10⁻⁷ W m⁻² sr⁻¹ m⁻¹; ratio 3.17×10¹³. The exponential estimate,
+          exp[1,439 × (1/40 − 1/294)] = exp(31.1) = 3.15×10¹³, agrees, confirming the regime.</p>
+        <p class="ex-step"><b>At 2 µm.</b> <em>B</em><sub><em>λ</em></sub>(294 K) = 89.8 W m⁻² sr⁻¹ m⁻¹, a factor
+          9.9×10⁻⁶ of its 10 µm value; the 40 K value is negligible (ratio 3×10⁶⁷).</p>
+        <p class="ex-answer">Cooling a mirror from 294 K to 40 K cuts its 10 µm emission by a factor of 3×10¹³; at the
+          288 K of Hubble's actual mirror surface the factor is 2.9×10¹³, and the warm radiance is 10 % lower at 10 µm and
+          40 % lower at 2 µm, which changes none of the conclusions. The ratio between wavelengths does not by itself say
+          where a warm telescope becomes a problem; what matters is its emission against the faint natural background, and
+          Gardner et al. (2023) state that a room-temperature telescope "emits its own infrared beyond 1.7µm". So even
+          JWST's 2–5 µm band requires a cold telescope, and the mid-infrared band sets how cold. Check: at 40 K
+          the Wien peak is at 72 µm (21a.3), far beyond JWST's 28 µm limit, so the telescope's own emission lies on the
+          steep short-wavelength side of its curve throughout the band.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 230" role="img" aria-labelledby="f21a-pl-t">
+<title id="f21a-pl-t">Black-body spectral radiance on logarithmic axes for 294 K (Hubble's mirror heater setpoint), 40 K and 6.7 K, with Hubble's present and JWST's wavelength ranges beneath: each curve peaks at the Wien wavelength, 9.85, 72 and 433 micrometres, and the 294 K curve lies many orders of magnitude above the 40 K curve across JWST's band</title>
+<line x1="60" y1="175" x2="400" y2="175" class="dg-rule"/><line x1="60" y1="175" x2="60" y2="25" class="dg-rule"/>
+<line x1="60.0" y1="175" x2="60.0" y2="179" class="dg-rule"/><text x="60.0" y="190" class="dg-label-sm" text-anchor="middle">0.3</text>
+<line x1="119.3" y1="175" x2="119.3" y2="179" class="dg-rule"/><text x="119.3" y="190" class="dg-label-sm" text-anchor="middle">1</text>
+<line x1="173.3" y1="175" x2="173.3" y2="179" class="dg-rule"/><text x="173.3" y="190" class="dg-label-sm" text-anchor="middle">3</text>
+<line x1="232.6" y1="175" x2="232.6" y2="179" class="dg-rule"/><text x="232.6" y="190" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="286.7" y1="175" x2="286.7" y2="179" class="dg-rule"/><text x="286.7" y="190" class="dg-label-sm" text-anchor="middle">30</text>
+<line x1="345.9" y1="175" x2="345.9" y2="179" class="dg-rule"/><text x="345.9" y="190" class="dg-label-sm" text-anchor="middle">100</text>
+<line x1="400.0" y1="175" x2="400.0" y2="179" class="dg-rule"/><text x="400.0" y="190" class="dg-label-sm" text-anchor="middle">300</text>
+<line x1="56" y1="156.2" x2="60" y2="156.2" class="dg-rule"/><text x="53" y="159.2" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">0</tspan></text>
+<line x1="56" y1="118.8" x2="60" y2="118.8" class="dg-rule"/><text x="53" y="121.8" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">4</tspan></text>
+<line x1="56" y1="81.2" x2="60" y2="81.2" class="dg-rule"/><text x="53" y="84.2" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">8</tspan></text>
+<line x1="56" y1="43.8" x2="60" y2="43.8" class="dg-rule"/><text x="53" y="46.8" class="dg-label-sm" text-anchor="end">10<tspan baseline-shift="super" style="font-size:75%">12</tspan></text>
+<path d="M135.7,173.8 L136.5,171.7 L137.4,169.6 L138.2,167.6 L139.1,165.6 L139.9,163.7 L140.8,161.8 L141.6,160.0 L142.4,158.2 L143.3,156.4 L144.1,154.6 L145.0,152.9 L145.8,151.3 L146.7,149.6 L147.6,148.0 L148.4,146.5 L149.2,144.9 L150.1,143.4 L150.9,142.0 L151.8,140.5 L152.7,139.1 L153.5,137.7 L154.4,136.4 L155.2,135.1 L156.1,133.8 L156.9,132.5 L157.8,131.3 L158.6,130.1 L159.4,128.9 L160.3,127.7 L161.1,126.6 L162.0,125.5 L162.8,124.4 L163.7,123.4 L164.6,122.3 L165.4,121.3 L166.2,120.4 L167.1,119.4 L167.9,118.5 L168.8,117.5 L169.7,116.6 L170.5,115.8 L171.4,114.9 L172.2,114.1 L173.1,113.3 L173.9,112.5 L174.8,111.7 L175.6,111.0 L176.4,110.2 L177.3,109.5 L178.1,108.8 L179.0,108.1 L179.8,107.5 L180.7,106.8 L181.6,106.2 L182.4,105.6 L183.2,105.0 L184.1,104.4 L184.9,103.9 L185.8,103.3 L186.7,102.8 L187.5,102.3 L188.3,101.8 L189.2,101.3 L190.1,100.8 L190.9,100.4 L191.8,99.9 L192.6,99.5 L193.5,99.1 L194.3,98.7 L195.2,98.3 L196.0,97.9 L196.8,97.5 L197.7,97.2 L198.5,96.8 L199.4,96.5 L200.2,96.2 L201.1,95.9 L201.9,95.6 L202.8,95.3 L203.7,95.0 L204.5,94.8 L205.3,94.5 L206.2,94.3 L207.0,94.0 L207.9,93.8 L208.8,93.6 L209.6,93.4 L210.5,93.2 L211.3,93.0 L212.2,92.9 L213.0,92.7 L213.8,92.5 L214.7,92.4 L215.6,92.3 L216.4,92.1 L217.3,92.0 L218.1,91.9 L219.0,91.8 L219.8,91.7 L220.7,91.6 L221.5,91.5 L222.3,91.4 L223.2,91.4 L224.0,91.3 L224.9,91.2 L225.8,91.2 L226.6,91.2 L227.4,91.1 L228.3,91.1 L229.2,91.1 L230.0,91.1 L230.8,91.0 L231.7,91.0 L232.5,91.0 L233.4,91.0 L234.2,91.1 L235.1,91.1 L235.9,91.1 L236.8,91.1 L237.6,91.2 L238.5,91.2 L239.3,91.3 L240.2,91.3 L241.0,91.4 L241.9,91.4 L242.8,91.5 L243.6,91.6 L244.4,91.6 L245.3,91.7 L246.2,91.8 L247.0,91.9 L247.8,92.0 L248.7,92.1 L249.6,92.2 L250.4,92.3 L251.2,92.4 L252.1,92.5 L252.9,92.6 L253.8,92.7 L254.7,92.8 L255.5,92.9 L256.4,93.1 L257.2,93.2 L258.1,93.3 L258.9,93.5 L259.8,93.6 L260.6,93.8 L261.5,93.9 L262.3,94.0 L263.1,94.2 L264.0,94.4 L264.9,94.5 L265.7,94.7 L266.6,94.8 L267.4,95.0 L268.2,95.2 L269.1,95.3 L270.0,95.5 L270.8,95.7 L271.6,95.8 L272.5,96.0 L273.4,96.2 L274.2,96.4 L275.0,96.6 L275.9,96.8 L276.8,96.9 L277.6,97.1 L278.4,97.3 L279.3,97.5 L280.1,97.7 L281.0,97.9 L281.9,98.1 L282.7,98.3 L283.5,98.5 L284.4,98.7 L285.2,98.9 L286.1,99.1 L286.9,99.3 L287.8,99.6 L288.6,99.8 L289.5,100.0 L290.3,100.2 L291.2,100.4 L292.1,100.6 L292.9,100.8 L293.8,101.1 L294.6,101.3 L295.4,101.5 L296.3,101.7 L297.2,102.0 L298.0,102.2 L298.9,102.4 L299.7,102.6 L300.6,102.9 L301.4,103.1 L302.2,103.3 L303.1,103.6 L303.9,103.8 L304.8,104.0 L305.6,104.3 L306.5,104.5 L307.4,104.7 L308.2,105.0 L309.1,105.2 L309.9,105.4 L310.8,105.7 L311.6,105.9 L312.5,106.2 L313.3,106.4 L314.1,106.7 L315.0,106.9 L315.9,107.1 L316.7,107.4 L317.6,107.6 L318.4,107.9 L319.2,108.1 L320.1,108.4 L320.9,108.6 L321.8,108.9 L322.6,109.1 L323.5,109.4 L324.3,109.6 L325.2,109.9 L326.1,110.1 L326.9,110.4 L327.8,110.6 L328.6,110.9 L329.4,111.1 L330.3,111.4 L331.1,111.7 L332.0,111.9 L332.8,112.2 L333.7,112.4 L334.6,112.7 L335.4,112.9 L336.2,113.2 L337.1,113.5 L337.9,113.7 L338.8,114.0 L339.7,114.2 L340.5,114.5 L341.4,114.8 L342.2,115.0 L343.1,115.3 L343.9,115.5 L344.8,115.8 L345.6,116.1 L346.4,116.3 L347.3,116.6 L348.1,116.8 L349.0,117.1 L349.9,117.4 L350.7,117.6 L351.5,117.9 L352.4,118.2 L353.3,118.4 L354.1,118.7 L354.9,119.0 L355.8,119.2 L356.6,119.5 L357.5,119.8 L358.3,120.0 L359.2,120.3 L360.1,120.6 L360.9,120.8 L361.7,121.1 L362.6,121.4 L363.4,121.6 L364.3,121.9 L365.1,122.2 L366.0,122.4 L366.8,122.7 L367.7,123.0 L368.6,123.3 L369.4,123.5 L370.2,123.8 L371.1,124.1 L371.9,124.3 L372.8,124.6 L373.6,124.9 L374.5,125.1 L375.3,125.4 L376.2,125.7 L377.0,126.0 L377.9,126.2 L378.8,126.5 L379.6,126.8 L380.4,127.1 L381.3,127.3 L382.2,127.6 L383.0,127.9 L383.9,128.1 L384.7,128.4 L385.5,128.7 L386.4,129.0 L387.2,129.2 L388.1,129.5 L388.9,129.8 L389.8,130.1 L390.6,130.3 L391.5,130.6 L392.4,130.9 L393.2,131.2 L394.0,131.4 L394.9,131.7 L395.8,132.0 L396.6,132.3 L397.4,132.5 L398.3,132.8 L399.1,133.1 L400.0,133.4" class="dg-acc" stroke-width="1.6"/>
+<line x1="231.8" y1="91.0" x2="231.8" y2="83.0" class="dg-rule"/>
+<text x="231.8" y="80.0" class="dg-label-sm" text-anchor="middle">294 K (Hubble's setpoint)</text>
+<path d="M254.7,173.8 L255.5,172.6 L256.4,171.4 L257.2,170.2 L258.1,169.0 L258.9,167.9 L259.8,166.7 L260.6,165.6 L261.5,164.6 L262.3,163.5 L263.1,162.5 L264.0,161.5 L264.9,160.5 L265.7,159.6 L266.6,158.7 L267.4,157.8 L268.2,156.9 L269.1,156.0 L270.0,155.2 L270.8,154.4 L271.6,153.5 L272.5,152.8 L273.4,152.0 L274.2,151.3 L275.0,150.5 L275.9,149.8 L276.8,149.1 L277.6,148.5 L278.4,147.8 L279.3,147.2 L280.1,146.6 L281.0,146.0 L281.9,145.4 L282.7,144.8 L283.5,144.2 L284.4,143.7 L285.2,143.2 L286.1,142.7 L286.9,142.2 L287.8,141.7 L288.6,141.2 L289.5,140.8 L290.3,140.3 L291.2,139.9 L292.1,139.5 L292.9,139.1 L293.8,138.7 L294.6,138.4 L295.4,138.0 L296.3,137.7 L297.2,137.3 L298.0,137.0 L298.9,136.7 L299.7,136.4 L300.6,136.1 L301.4,135.8 L302.2,135.5 L303.1,135.3 L303.9,135.0 L304.8,134.8 L305.6,134.6 L306.5,134.4 L307.4,134.1 L308.2,134.0 L309.1,133.8 L309.9,133.6 L310.8,133.4 L311.6,133.3 L312.5,133.1 L313.3,133.0 L314.1,132.8 L315.0,132.7 L315.9,132.6 L316.7,132.5 L317.6,132.4 L318.4,132.3 L319.2,132.2 L320.1,132.1 L320.9,132.0 L321.8,132.0 L322.6,131.9 L323.5,131.8 L324.3,131.8 L325.2,131.8 L326.1,131.7 L326.9,131.7 L327.8,131.7 L328.6,131.7 L329.4,131.7 L330.3,131.7 L331.1,131.7 L332.0,131.7 L332.8,131.7 L333.7,131.7 L334.6,131.7 L335.4,131.8 L336.2,131.8 L337.1,131.9 L337.9,131.9 L338.8,132.0 L339.7,132.0 L340.5,132.1 L341.4,132.1 L342.2,132.2 L343.1,132.3 L343.9,132.4 L344.8,132.4 L345.6,132.5 L346.4,132.6 L347.3,132.7 L348.1,132.8 L349.0,132.9 L349.9,133.0 L350.7,133.1 L351.5,133.3 L352.4,133.4 L353.3,133.5 L354.1,133.6 L354.9,133.8 L355.8,133.9 L356.6,134.0 L357.5,134.2 L358.3,134.3 L359.2,134.4 L360.1,134.6 L360.9,134.7 L361.7,134.9 L362.6,135.0 L363.4,135.2 L364.3,135.4 L365.1,135.5 L366.0,135.7 L366.8,135.9 L367.7,136.0 L368.6,136.2 L369.4,136.4 L370.2,136.6 L371.1,136.7 L371.9,136.9 L372.8,137.1 L373.6,137.3 L374.5,137.5 L375.3,137.7 L376.2,137.8 L377.0,138.0 L377.9,138.2 L378.8,138.4 L379.6,138.6 L380.4,138.8 L381.3,139.0 L382.2,139.2 L383.0,139.4 L383.9,139.6 L384.7,139.9 L385.5,140.1 L386.4,140.3 L387.2,140.5 L388.1,140.7 L388.9,140.9 L389.8,141.1 L390.6,141.4 L391.5,141.6 L392.4,141.8 L393.2,142.0 L394.0,142.2 L394.9,142.5 L395.8,142.7 L396.6,142.9 L397.4,143.1 L398.3,143.4 L399.1,143.6 L400.0,143.8" class="dg-acc" stroke-width="1.6"/>
+<line x1="330.1" y1="131.7" x2="330.1" y2="123.7" class="dg-rule"/>
+<text x="330.1" y="120.7" class="dg-label-sm" text-anchor="middle">40 K</text>
+<path d="M382.2,174.9 L383.0,174.5 L383.9,174.2 L384.7,173.8 L385.5,173.5 L386.4,173.2 L387.2,172.9 L388.1,172.6 L388.9,172.3 L389.8,172.0 L390.6,171.8 L391.5,171.5 L392.4,171.3 L393.2,171.1 L394.0,170.8 L394.9,170.6 L395.8,170.4 L396.6,170.2 L397.4,170.0 L398.3,169.9 L399.1,169.7 L400.0,169.5" class="dg-acc" stroke-width="1.6"/>
+<line x1="418.0" y1="168.0" x2="418.0" y2="160.0" class="dg-rule"/>
+<text x="418.0" y="157.0" class="dg-label-sm" text-anchor="middle">6.7 K</text>
+<rect x="60.0" y="197" width="85.4" height="9" class="dg-acc-f" opacity="0.35"/>
+<text x="149.4" y="205" class="dg-label-sm">Hubble today 0.115–1.7 µm</text>
+<rect x="94.1" y="210" width="189.2" height="9" class="dg-acc-f" opacity="0.35"/>
+<text x="287.3" y="218" class="dg-label-sm">JWST 0.6–28 µm</text>
+<text x="400" y="31" class="dg-label-sm" text-anchor="end">B<tspan baseline-shift="sub" style="font-size:75%">λ</tspan> (W m⁻² sr⁻¹ m⁻¹); λ in µm</text>
+</svg>
+      <figcaption><b>Figure 7.</b> Black-body spectral radiance from (21a.5) for a mirror at Hubble's 294 K heater setpoint (its primary's surface runs near 288 K, §5), a telescope at 40 K and MIRI at 6.7 K, with each Wien peak marked. Across JWST's band the 294 K curve lies many orders of magnitude above the 40 K curve (E6); the 6.7 K curve lies below the plotted range at wavelengths shorter than about 200 µm.</figcaption>
+    </figure>
+
+    <p>
+      The detectors add a second requirement, set by their own dark current rather than by the optics: HgCdTe at about
+      37–43 K and Si:As at 6.7 K or below, for the reasons given in <a href="m21-photodetectors.html">M21</a> §5. The two
+      requirements together define the temperature ladder of the observatory.
+    </p>
+
+    <h3>The five-layer sunshield</h3>
+    <p>
+      The sunshield is five membranes of Kapton, a polyimide film, about 21.2 m by 14.2 m when unfolded, in a kite-like
+      shape (NASA). Layer 1, facing the Sun, is 0.05 mm thick; layers 2–5 are 0.025 mm. Every layer carries a coating of
+      vacuum-deposited aluminium about 100 nm thick, and the Sun-facing sides of the two hottest layers, 1 and 2, carry
+      about 50 nm of doped silicon. Silicon has a high emissivity, so the Sun-facing surface re-radiates much of the heat
+      it absorbs straight back toward the Sun; the doping makes the coating electrically conductive, so that charge
+      cannot build up on the membranes (NASA). The layers are separated by vacuum and spaced apart, with the gaps widening
+      toward the edges.
+    </p>
+
+    <p>
+      The shield works by radiation, and the geometry is what makes five thin layers effective. Layer 1 absorbs a
+      substantial part of the sunlight and re-radiates most of it from its high-emissivity, Sun-facing side; each later
+      layer receives, and absorbs, only a small part of what the previous one emits. Except for the silicon-coated front of
+      layer 2, the surfaces facing into the gaps are aluminium, with low emissivity, so they emit little, and they reflect most of what arrives, so the radiation inside a gap
+      reflects back and forth between the two surfaces and walks outward until it leaves through the open edge: "the
+      highly-reflective aluminum surfaces also bounce the remaining energy out of the gaps at the sunshield layer's edges"
+      (NASA). Each successive layer therefore receives only a small part of what the previous one received, and the layer
+      nearest the telescope sees almost none of the Sun's power. Gardner et al. (2023) state the result: the shield
+      attenuates "the ∼ 200 kW of incident Solar radiation to mW levels".
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f21a-sh-t">
+<title id="f21a-sh-t">Section through the five-layer sunshield: sunlight strikes layer 1; each layer is separated from the next by vacuum and the gaps are narrow at the centre and widen toward the edges, so heat absorbed by a layer is radiated mostly out through the edges and only a small part passes to the next layer, leaving the telescope side cold</title>
+<defs><marker id="f21a-sh-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+<path d="M40,132 L220,104 L400,132" class="dg-line" stroke-width="2" stroke-linejoin="round"/>
+<text x="406" y="136" class="dg-label-sm">1</text>
+<path d="M40,112 L220,98 L400,112" class="dg-line" stroke-width="2" stroke-linejoin="round"/>
+<text x="406" y="116" class="dg-label-sm">2</text>
+<path d="M40,92 L220,92 L400,92" class="dg-line" stroke-width="2" stroke-linejoin="round"/>
+<text x="406" y="96" class="dg-label-sm">3</text>
+<path d="M40,72 L220,86 L400,72" class="dg-line" stroke-width="2" stroke-linejoin="round"/>
+<text x="406" y="76" class="dg-label-sm">4</text>
+<path d="M40,52 L220,80 L400,52" class="dg-line" stroke-width="2" stroke-linejoin="round"/>
+<text x="406" y="56" class="dg-label-sm">5</text>
+<text x="406" y="148" class="dg-label-sm">layer</text>
+<line x1="90" y1="196" x2="120" y2="122.6" class="dg-acc" marker-end="url(#f21a-sh-a)"/>
+<line x1="150" y1="196" x2="180" y2="113.2" class="dg-acc" marker-end="url(#f21a-sh-a)"/>
+<line x1="210" y1="196" x2="240" y2="110.1" class="dg-acc" marker-end="url(#f21a-sh-a)"/>
+<line x1="270" y1="196" x2="300" y2="119.4" class="dg-acc" marker-end="url(#f21a-sh-a)"/>
+<text x="60" y="190" class="dg-label-sm">sunlight (about 1.3 kW/m²)</text>
+<line x1="80" y1="117.3" x2="22" y2="122.0" class="dg-acc" stroke-width="1" marker-end="url(#f21a-sh-a)"/>
+<line x1="360" y1="117.3" x2="418" y2="122.0" class="dg-acc" stroke-width="1" marker-end="url(#f21a-sh-a)"/>
+<line x1="80" y1="100.4" x2="22" y2="102.0" class="dg-acc" stroke-width="1" marker-end="url(#f21a-sh-a)"/>
+<line x1="360" y1="100.4" x2="418" y2="102.0" class="dg-acc" stroke-width="1" marker-end="url(#f21a-sh-a)"/>
+<line x1="80" y1="83.6" x2="22" y2="82.0" class="dg-acc" stroke-width="1" marker-end="url(#f21a-sh-a)"/>
+<line x1="360" y1="83.6" x2="418" y2="82.0" class="dg-acc" stroke-width="1" marker-end="url(#f21a-sh-a)"/>
+<line x1="80" y1="66.7" x2="22" y2="62.0" class="dg-acc" stroke-width="1" marker-end="url(#f21a-sh-a)"/>
+<line x1="360" y1="66.7" x2="418" y2="62.0" class="dg-acc" stroke-width="1" marker-end="url(#f21a-sh-a)"/>
+<text x="220" y="30" class="dg-label" text-anchor="middle">telescope side: cold</text>
+<text x="330" y="176" class="dg-label-sm">Sun side: hot</text>
+<text x="10" y="14" class="dg-label-sm">heat radiated out through the open edges ↔</text>
+</svg>
+      <figcaption><b>Figure 8.</b> Section through the five-layer sunshield, after deck p. 27 and NASA. The layers are separated by vacuum, close together at the centre and farther apart at the edges, so radiation reflected between the aluminium-coated layers leaves through the sides; only a small part of each layer's heat reaches the next. Schematic, not to scale: the layers are 25–50 µm thick.</figcaption>
+    </figure>
+
+    <p>
+      A stack of parallel shields with closed edges shows why the open edges matter. Between two large parallel surfaces at
+      <em>T</em><sub>h</sub> and <em>T</em><sub>c</sub>, the net radiative flux falls with each shield inserted:
+    </p>
+
+    <div class="eq" id="eq-21a-6">
+      <div class="eq-body">
+        <div class="eq-math"><em>q</em><sub><em>N</em></sub> = <span class="frac"><span class="num"><em>σ</em> (<em>T</em><sub>h</sub>⁴ − <em>T</em><sub>c</sub>⁴)</span><span class="den">(<em>N</em> + 1) (2/<em>ε</em> − 1)</span></span></div>
+        <div class="eq-num">(21a.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>q</em><sub><em>N</em></sub> net flux through the stack (W/m²) · <em>σ</em> Stefan–Boltzmann constant,
+        5.670×10⁻⁸ W m⁻² K⁻⁴ · <em>T</em><sub>h</sub>, <em>T</em><sub>c</sub> temperatures of the outer surfaces (K) ·
+        <em>N</em> number of shields · <em>ε</em> emissivity, taken equal for every surface. For infinite parallel
+        plates with no edge losses (closed stack); a standard result of radiation heat transfer (Incropera &amp; DeWitt).
+      </div>
+    </div>
+
+    <p>
+      Five closed shields reduce the flux only by a factor of six relative to no shield. Low emissivity reduces it by a
+      further single factor (2/<em>ε</em> − 1) relative to black surfaces: each gap contributes a resistance
+      2/<em>ε</em> − 1, and the resistances add. Neither comes close to a reduction from about 200 kW to milliwatts, more than seven orders
+      of magnitude. The rest comes from what (21a.6) leaves out: in JWST's shield each gap is open to cold space along its
+      whole perimeter, so most of the energy in a gap escapes sideways instead of reaching the next layer. That is why the
+      design uses separated, angled layers and not a thicker blanket.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">E7 · The sunshield's energy budget</div>
+      <div class="ex-body">
+        <p><b>Given</b> unfolded dimensions 21.2 m × 14.2 m in a kite shape (NASA); solar irradiance 1,361 W/m² at 1 AU
+          (<a href="m03-space-electronics-gap.html">M03</a> (3.1)); L2 is 1.5 million km beyond Earth, about 1.01 AU from
+          the Sun; modelled layer temperatures: layer 1 at most 383 K, layer 5 at least 36 K (NASA).
+          <b>Find</b> the sunlight intercepted, and the ratio of the black-body emission per unit area of the hottest and
+          coldest surfaces.</p>
+        <p><b>Plan.</b> Approximate the shield as a kite whose diagonals are the two dimensions, so its area is half
+          their product; scale the irradiance by the inverse square of distance; then compare <em>σT</em>⁴ at the two
+          temperatures. The kite is an approximation to the real outline and the Sun does not strike the shield exactly
+          face-on, so the first result is an estimate to compare with Gardner et al.'s ~200 kW.</p>
+        <p class="ex-step"><b>The shield's area.</b> 21.2 × 14.2 / 2 = 150.5 m².</p>
+        <p class="ex-step"><b>Sunlight at L2.</b> <em>S</em> = 1,361 / (1.01)² = 1,334 W/m², 2 % below the value at
+          Earth.</p>
+        <p class="ex-step"><b>Intercepted power.</b> 1,334 W/m² × 150.5 m² = 2.01×10⁵ W = 201 kW, consistent with the
+          ~200 kW quoted.</p>
+        <p class="ex-step"><b>Emission per unit area.</b> <em>σT</em>⁴ = 5.670×10⁻⁸ × 383⁴ = 1,220 W/m² for layer 1
+          and 5.670×10⁻⁸ × 36⁴ = 0.095 W/m² for layer 5: a ratio of 1.28×10⁴.</p>
+        <p class="ex-answer">About 200 kW falls on the shield; it is attenuated to milliwatts, a factor of order 10⁷–10⁸,
+          across a temperature drop from 383 K to 36 K, at which the black-body emission per unit area falls by a factor
+          of 1.3×10⁴. Check: the hot layer's 1,220 W/m² of emission per unit emissivity is comparable to the 1,334 W/m² it
+          receives, consistent with a surface whose absorptance and emittance are similar (the ratio that sets an
+          equilibrium temperature, <a href="m03-space-electronics-gap.html">M03</a> (3.1)) and that rejects most of the
+          sunlight it absorbs by radiating it back to space.</p>
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — how the sunshield works.</b> Lecture 23 attributes the shield's effect to Kapton's "very
+        low thermal conductivity", with heat passing from layer to layer and out. Conduction through the film is not the
+        mechanism: the layers do not touch, so no heat passes between them by conduction, and the transfer across each gap
+        is radiative. The shield works because low-emissivity, high-reflectivity aluminium surfaces send most of the
+        radiation in each gap out through the open edges, which is what the deck's own cross-section on p. 27 shows ("deflects
+        the rest harmlessly out the sides"). Two further numbers in the deck belong to other objects. The temperatures on
+        p. 26, "120°C" in sunlight and "-157 °C" in shadow, are drawn beside the International Space Station and describe
+        a spacecraft in low Earth orbit, not JWST; the −157 °C on pp. 19 and 33 is a cold-side reading from the twelfth day
+        after launch, during cool-down. JWST's steady values are on p. 28: about 85 °C on the hot side and −233 °C on the
+        cold side.
+      </p>
+    </div>
+
+    <h3>From 300 K to 6 K</h3>
+    <p>
+      The shield divides the observatory into a warm side, with the solar array, antenna, computer and reaction wheels at
+      about 300 K, and a cold side carrying the mirrors and instruments (deck p. 28). On the cold side, the telescope and
+      instrument module cool by radiating to space, a process completed within 120 days of launch (Gardner et al. 2023).
+      In flight the primary segments settled between 34.7 K and 54.5 K and the secondary at 29.2 K. The near-infrared
+      instruments need no cooler: their detector-plane temperatures are actively maintained with heaters at 38.5 K
+      (NIRCam, NIRISS) and 42.8 K (NIRSpec) (Gardner et al. 2023). A heater can only warm, so the set points must lie
+      above the temperature the planes would reach passively; holding them there keeps the dark current steady (an
+      inference from how heater control works; the source gives only the set points).
+    </p>
+
+    <p>
+      MIRI needs 6.7 K or less, and passive cooling cannot reach it, because the instrument module around it sits near
+      40 K and radiates heat into it. MIRI therefore has the observatory's only active cooling, a cryocooler that circulates
+      helium: a three-stage pulse-tube precooler reaches about 18 K and a Joule–Thomson stage reaches about 6 K, with the
+      compressor in the warm spacecraft bus and the cold head on the instrument module; it reached its final temperature
+      104 days after launch (Gardner et al. 2023; deck p. 28). The design of the cooler, and the cost of active cooling in
+      power and vibration, are in <a href="m21-photodetectors.html">M21</a> §5. The professor summarised the design
+      principle in Lecture 23 as two cooling systems: passive cooling by the sunshade, and active cooling for MIRI.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 250" role="img" aria-labelledby="f21a-ld-t">
+<title id="f21a-ld-t">JWST temperatures on a logarithmic kelvin axis, from the Sun side of the shield near 380 kelvin and the spacecraft bus at 300, down to the instruments near 40 kelvin passively and MIRI at about 6 kelvin with the cryocooler</title>
+<line x1="92" y1="200" x2="92" y2="15" class="dg-rule"/>
+<line x1="88" y1="191.5" x2="92" y2="191.5" class="dg-rule"/><text x="85" y="194.5" class="dg-label-sm" text-anchor="end">5</text>
+<line x1="88" y1="164.9" x2="92" y2="164.9" class="dg-rule"/><text x="85" y="167.9" class="dg-label-sm" text-anchor="end">10</text>
+<line x1="88" y1="138.3" x2="92" y2="138.3" class="dg-rule"/><text x="85" y="141.3" class="dg-label-sm" text-anchor="end">20</text>
+<line x1="88" y1="103.2" x2="92" y2="103.2" class="dg-rule"/><text x="85" y="106.2" class="dg-label-sm" text-anchor="end">50</text>
+<line x1="88" y1="76.7" x2="92" y2="76.7" class="dg-rule"/><text x="85" y="79.7" class="dg-label-sm" text-anchor="end">100</text>
+<line x1="88" y1="50.1" x2="92" y2="50.1" class="dg-rule"/><text x="85" y="53.1" class="dg-label-sm" text-anchor="end">200</text>
+<line x1="88" y1="15.0" x2="92" y2="15.0" class="dg-rule"/><text x="85" y="18.0" class="dg-label-sm" text-anchor="end">500</text>
+<text x="92" y="216" class="dg-label-sm" text-anchor="middle">K (log)</text>
+<line x1="46" y1="25.2" x2="46" y2="123.8" class="dg-acc" stroke-width="3"/>
+<text x="40" y="74.5" class="dg-label-sm" transform="rotate(-90 40 74.5)" text-anchor="middle">passive (sunshield)</text>
+<line x1="46" y1="142.4" x2="46" y2="184.5" class="dg-acc" stroke-width="3" stroke-dasharray="3 2"/>
+<text x="40" y="163.4" class="dg-label-sm" transform="rotate(-90 40 163.4)" text-anchor="middle">active</text>
+<line x1="92" y1="25.2" x2="158" y2="25.2" class="dg-guide"/>
+<circle cx="92" cy="25.2" r="2.2" class="dg-acc-f"/>
+<text x="162" y="28.2" class="dg-label-sm">383 K · sunshield layer 1, modelled maximum</text>
+<line x1="92" y1="34.6" x2="158" y2="38.2" class="dg-guide"/>
+<circle cx="92" cy="34.6" r="2.2" class="dg-acc-f"/>
+<text x="162" y="41.2" class="dg-label-sm">300 K · spacecraft bus, cryocooler compressor</text>
+<line x1="92" y1="46.3" x2="158" y2="51.2" class="dg-guide"/>
+<circle cx="92" cy="46.3" r="2.2" class="dg-acc-f"/>
+<text x="162" y="54.2" class="dg-label-sm">221 K · layer 5, modelled maximum</text>
+<line x1="92" y1="99.9" x2="158" y2="99.9" class="dg-guide"/>
+<circle cx="92" cy="99.9" r="2.2" class="dg-acc-f"/>
+<text x="162" y="102.9" class="dg-label-sm">54.5 K · warmest primary segment</text>
+<line x1="92" y1="109.2" x2="158" y2="112.9" class="dg-guide"/>
+<circle cx="92" cy="109.2" r="2.2" class="dg-acc-f"/>
+<text x="162" y="115.9" class="dg-label-sm">42.8 K · NIRSpec detectors (heater-held)</text>
+<line x1="92" y1="113.2" x2="158" y2="125.9" class="dg-guide"/>
+<circle cx="92" cy="113.2" r="2.2" class="dg-acc-f"/>
+<text x="162" y="128.9" class="dg-label-sm">38.5 K · NIRCam, NIRISS detectors (heater-held)</text>
+<line x1="92" y1="115.8" x2="158" y2="138.9" class="dg-guide"/>
+<circle cx="92" cy="115.8" r="2.2" class="dg-acc-f"/>
+<text x="162" y="141.9" class="dg-label-sm">36 K · layer 5, modelled minimum</text>
+<line x1="92" y1="117.2" x2="158" y2="151.9" class="dg-guide"/>
+<circle cx="92" cy="117.2" r="2.2" class="dg-acc-f"/>
+<text x="162" y="154.9" class="dg-label-sm">34.7 K · coldest primary segment</text>
+<line x1="92" y1="123.8" x2="158" y2="164.9" class="dg-guide"/>
+<circle cx="92" cy="123.8" r="2.2" class="dg-acc-f"/>
+<text x="162" y="167.9" class="dg-label-sm">29.2 K · secondary mirror</text>
+<line x1="92" y1="138.3" x2="158" y2="177.9" class="dg-guide"/>
+<circle cx="92" cy="138.3" r="2.2" class="dg-acc-f"/>
+<text x="162" y="180.9" class="dg-label-sm">20 K · MIRI shield</text>
+<line x1="92" y1="142.4" x2="158" y2="190.9" class="dg-guide"/>
+<circle cx="92" cy="142.4" r="2.2" class="dg-acc-f"/>
+<text x="162" y="193.9" class="dg-label-sm">18 K · cryocooler pulse-tube stage</text>
+<line x1="92" y1="184.5" x2="158" y2="203.9" class="dg-guide"/>
+<circle cx="92" cy="184.5" r="2.2" class="dg-acc-f"/>
+<text x="162" y="206.9" class="dg-label-sm">6 K · MIRI (requirement ≤ 6.7 K)</text>
+</svg>
+      <figcaption><b>Figure 9.</b> JWST's temperature ladder on a logarithmic kelvin axis: modelled sunshield layer temperatures (NASA), the warm spacecraft bus (deck p. 28), and the in-flight temperatures of the mirrors and instruments (Gardner et al. 2023). The sunshield cools everything on the cold side passively to about 30–55 K (solid bracket); only MIRI goes lower, with the cryocooler (dashed bracket).</figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p>
+        <b>Source note — which cooling reaches which temperature.</b> Lecture 23 credits the sunshield with MIRI's 6.7 K
+        ("because of that people actually using sunshield"), and Lecture 24 remarks that the shield passively reaches
+        "around 50 K ... still not good enough". Both statements merge the two stages of the ladder. The shield brings the
+        whole cold side to 30–55 K, which is good enough for the near-infrared detectors at 37–43 K (deck p. 28: ISIM 40 K);
+        only MIRI, at 6 K, needs the cryocooler.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>The thermal background argument of E6 was made at 10 µm. Repeat it at 5 µm and at 28 µm for a 294 K and a
+        40 K mirror. At which end of MIRI's band is a cold telescope least critical, and why?</summary>
+      <div class="answer">
+        <p>(21a.5) gives a ratio <em>B</em><sub><em>λ</em></sub>(294 K)/<em>B</em><sub><em>λ</em></sub>(40 K) of
+          9.9×10²⁶ at 5 µm and 8.0×10⁴ at 28 µm. The ratio shrinks with wavelength because
+          <em>hc</em>/<em>λk</em><sub>B</sub> falls (2,878 K at 5 µm, 514 K at 28 µm): cooling helps least at long
+          wavelength. The question, though, is how large the cold telescope's own residual emission is, and that answers
+          it. The short end, 5 µm, is the least critical: there even a modestly cold telescope's emission is negligible.
+          The long end is the most demanding, because a 40 K mirror's absolute emission rises by orders of magnitude between
+          5 and 28 µm on the way to its own peak at 72 µm (from 2.8×10⁻⁷ W m⁻² sr⁻¹ m⁻¹ at 10 µm to 0.58 at 20 µm), and
+          beyond about 12.5 µm it exceeds the zodiacal light, so JWST is limited by its own thermal emission there
+          (Gardner et al. 2023). MIRI's own optics are cooled with the instrument; its 6.7 K is set mainly by the
+          detectors' dark current (<a href="m21-photodetectors.html">M21</a> §5).</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 6 -->
+    <h2>6 · L2 and the halo orbit</h2>
+
+    <p>
+      JWST orbits the Sun from a location near the second Sun–Earth Lagrange point, L2, about 1.5 million km from Earth on
+      the side away from the Sun (Gardner et al. 2023; NASA). <a href="m05-sun-particle-populations.html">M05</a> §8
+      introduced the five Lagrange points and the radiation environment there, and
+      <a href="m07-orbits-and-environment.html">M07</a> §8 the environment beyond the magnetosphere. This section explains
+      why L2 exists where it does, why it suits a cold telescope, and what the choice costs.
+    </p>
+
+    <h3>Why a point beyond Earth orbits in one year</h3>
+    <p>
+      A body farther from the Sun than Earth would, under the Sun's gravity alone, orbit more slowly than Earth and fall
+      behind it. Beyond Earth on the Sun–Earth line, Earth's pull adds to the Sun's: both point toward the Sun. At one
+      distance the combined pull is exactly the centripetal force needed to orbit the Sun in one year, so a spacecraft
+      there keeps its position relative to Earth. This is the deck's statement on p. 31, "Gravitational Force =
+      Centripetal Force". For a planet of mass <em>m</em> much smaller than the Sun's mass <em>M</em>, the distance of L2
+      from the planet is approximately
+    </p>
+
+    <div class="eq" id="eq-21a-7">
+      <div class="eq-body">
+        <div class="eq-math"><em>r</em><sub>L2</sub> ≈ <em>a</em> <span class="dl">(</span><span class="frac"><span class="num"><em>m</em></span><span class="den">3<em>M</em></span></span><span class="dl">)</span><sup>1/3</sup></div>
+        <div class="eq-num">(21a.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>r</em><sub>L2</sub> distance of L2 beyond the planet (m) · <em>a</em> planet–Sun distance (m) · <em>m</em>,
+        <em>M</em> masses of the planet and the Sun (any one unit). Leading order in (<em>m</em>/<em>M</em>)<sup>1/3</sup>;
+        the same distance locates L1 on the sunward side. For Sun–Earth, use the mass of Earth and Moon together.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">E8 · Where L2 is, and what holds a spacecraft there</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>a</em> = 1 AU = 1.496×10¹¹ m; gravitational parameters <em>GM</em><sub>Sun</sub> =
+          1.3271×10²⁰ m³/s², <em>GM</em><sub>Earth</sub> = 3.9860×10¹⁴ m³/s², <em>GM</em><sub>Moon</sub> =
+          4.905×10¹² m³/s². <b>Find</b> <em>r</em><sub>L2</sub> from (21a.7), check it against the exact balance of forces,
+          and find what share of the centripetal acceleration each body supplies.</p>
+        <p><b>Plan.</b> Mass ratios equal ratios of <em>GM</em>, so (21a.7) needs no value of <em>G</em>. For the check,
+          the condition is that the two gravitational accelerations, both sunward, sum to
+          <em>ω</em>²<em>x</em>, where <em>ω</em> = 2π/(1 year) and <em>x</em> is the distance from the Sun–Earth centre of
+          mass.</p>
+        <p class="ex-step"><b>Mass ratio.</b> (3.9860×10¹⁴ + 4.905×10¹²)/1.3271×10²⁰ = 3.040×10⁻⁶.</p>
+        <p class="ex-step"><b>Distance from (21a.7).</b> (3.040×10⁻⁶/3)<sup>1/3</sup> = 1.004×10⁻²;
+          <em>r</em><sub>L2</sub> = 1.496×10¹¹ × 1.004×10⁻² = 1.503×10⁹ m = 1.50 million km.</p>
+        <p class="ex-step"><b>Exact balance.</b> Solving <em>GM</em><sub>Sun</sub>/<em>d</em><sub>S</sub>² +
+          <em>GM</em><sub>E+M</sub>/<em>r</em>² = <em>ω</em>²<em>x</em> numerically gives <em>r</em> = 1.508 million km.
+          There the Sun's pull is 5.81×10⁻³ m/s² and Earth and Moon add 1.78×10⁻⁴ m/s², summing to 5.99×10⁻³ m/s², the
+          centripetal acceleration for a one-year orbit.</p>
+        <p class="ex-step"><b>Shares.</b> The Sun supplies 97.0 % and Earth with the Moon 3.0 %. Without Earth, a body at that
+          distance from the Sun would take 370.8 days per orbit, 5.5 days longer than a year.</p>
+        <p class="ex-answer"><em>r</em><sub>L2</sub> ≈ 1.5 million km (1.50 from (21a.7), 1.51 exact), the deck's
+          "1.5 Million km". Check: L2 is 3.9 times as far as the Moon (384,400 km) and about 2,600 times as far as Hubble at
+          the deck's 570 km (p. 31; about 3,100 times at NASA's ≈ 480 km), and a radio signal takes 5.0 s to travel from it to Earth.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 190" role="img" aria-labelledby="f21a-l2-t">
+<title id="f21a-l2-t">Sun, Earth and L2 on one line, not to scale: at L2 the Sun's pull and Earth's pull both point toward the Sun and together supply the centripetal acceleration for a one-year orbit; JWST loops around L2 on a halo orbit that keeps it out of Earth's shadow</title>
+<defs><marker id="f21a-l2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+<defs><marker id="f21a-l2-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/></marker></defs>
+<circle cx="30" cy="95" r="18" class="dg-acc-f" opacity="0.6"/><text x="30" y="128" class="dg-label-sm" text-anchor="middle">Sun</text>
+<circle cx="250" cy="95" r="6" class="dg-fill"/><text x="250" y="80" class="dg-label-sm" text-anchor="middle">Earth</text>
+<line x1="48" y1="95" x2="420" y2="95" class="dg-guide" stroke-dasharray="2 3"/>
+<path d="M250,89 L330,95 L250,101 z" class="dg-ink" opacity="0.25"/>
+<text x="300" y="112" class="dg-label-sm">umbra ends ≈1.4 million km</text>
+<circle cx="360" cy="95" r="2.5" class="dg-ink"/><text x="360" y="130" class="dg-label-sm" text-anchor="middle">L2, 1.5 million km</text>
+<ellipse cx="360" cy="95" rx="12" ry="40" class="dg-acc" stroke-dasharray="3 2"/>
+<circle cx="360" cy="55" r="3.5" class="dg-acc-f"/><text x="350" y="52" class="dg-label-sm" text-anchor="end">JWST on its halo orbit</text>
+<line x1="356" y1="150" x2="296" y2="150" class="dg-acc" stroke-width="2" marker-end="url(#f21a-l2-a)"/>
+<text x="300" y="164" class="dg-label-sm">Sun's pull, 97 %</text>
+<line x1="356" y1="172" x2="338" y2="172" class="dg-acc" stroke-width="2" marker-end="url(#f21a-l2-a)"/>
+<text x="300" y="185" class="dg-label-sm">Earth–Moon pull, 3 %</text>
+<text x="380" y="160" class="dg-label-sm">sum = ω²r</text><text x="380" y="172" class="dg-label-sm">for one year</text>
+<text x="8" y="16" class="dg-label-sm">Not to scale (distances or arrow lengths). Both pulls point sunward.</text>
+</svg>
+      <figcaption><b>Figure 10.</b> Sun, Earth and L2, not to scale. At L2 the Sun's and Earth's pulls point the same way, toward the Sun, and together supply the centripetal acceleration for a one-year orbit (E8: 97 % and 3 %; the arrows are not drawn in that proportion). JWST flies a halo orbit around L2, outside Earth's shadow, whose umbra ends short of L2.</figcaption>
+    </figure>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — at L2 the forces add, and JWST is not in Earth's shadow.</b> Lecture 23 describes L2 as the
+        place where the gravity of the Sun and of Earth "balance each other ... cancel each other", and says that JWST "is
+        always inside of the Earth's shadow", so it receives little sunlight; Lecture 24 repeats the shadow, and deck p. 30
+        draws JWST inside a shadow cone. The shadow claim is the one <a href="m05-sun-particle-populations.html">M05</a> §8
+        already corrects for Lecture 4, and M05 §8's definition of a Lagrange point already implies that the pulls combine
+        rather than cancel. At L2 nothing cancels: both pulls point toward the Sun and together supply the centripetal
+        force (E8; deck p. 31 states this correctly). And JWST is not shadowed. Earth's umbra ends about 1.4 million km
+        from Earth, short of L2, and JWST does not sit at L2 but flies a large halo orbit around it, which keeps it in
+        sunlight: its solar array must always face the Sun (deck p. 22). What keeps JWST cold is its own sunshield, which
+        can block the Sun, Earth and Moon together because at L2 all three lie in roughly the same direction.
+      </p>
+    </div>
+
+    <h3>What L2 gives, and what it costs</h3>
+    <p>
+      For a cold telescope, L2 has three advantages that follow from the geometry. The Sun, Earth and Moon stay on one side,
+      so a single shield shades the telescope from all three at once and the telescope never passes into and out of
+      Earth's shadow, which keeps its temperature steady; in low Earth orbit a spacecraft alternates between sunlight and
+      shadow every orbit (deck p. 26 shows this for the International Space Station). Earth's own infrared glow, which a
+      telescope a few hundred kilometres up must look past, is far away. And the radiation environment lacks the trapped
+      belts, leaving solar energetic particles and galactic cosmic rays (<a href="m05-sun-particle-populations.html">M05</a>
+      §8; <a href="m07-orbits-and-environment.html">M07</a> §8), whose hits on the detectors are treated in
+      <a href="m21-photodetectors.html">M21</a> §9.
+    </p>
+
+    <p>
+      L2 has two costs. It is unstable: a spacecraft displaced along the Sun–Earth line drifts away, so JWST fires its
+      thrusters for small station-keeping manoeuvres, nominally about every three weeks, and its propellant sets its life.
+      JWST was required to carry propellant for at least 10.5 years. An accurate launch, a launch date that needed
+      relatively little energy to reach L2, three accurate mid-course corrections, and tanks filled beyond the requirement
+      with the remaining mass margin left propellant for more than 20 years (Rigby et al. 2023), against a 10-year goal
+      (Gardner et al. 2023). The deck's "Lifetime 5–10 Years" (p. 31) spans the 5-year minimum lifetime for which the
+      spacecraft was designed and the 10-year goal. In Lecture 23 the professor noted that the 5–10-year figure reflects
+      the fact that the telescope cannot be fixed, and that in practice it can be used much longer, limited by the fuel on
+      board. The second cost is the one the professor stressed: at 1.5 million km, about 2,600 times Hubble's distance at
+      the deck's 570 km, no crewed or robotic servicing was planned, so the telescope had to work as launched.
+    </p>
+
+    <details class="check">
+      <summary>Use (21a.7) to find L2 of the Sun–Jupiter system (Jupiter at 5.204 AU, mass ratio to the Sun
+        9.548×10⁻⁴). Compare its distance from the planet, as a fraction of the orbit radius, with Sun–Earth L2, and say
+        why the two fractions differ.</summary>
+      <div class="answer">
+        <p>(9.548×10⁻⁴/3)<sup>1/3</sup> = 0.0683, so <em>r</em><sub>L2</sub> = 0.0683 × 5.204 × 1.496×10⁸ km =
+          5.32×10⁷ km, 53.2 million km. For Sun–Earth the fraction is 0.0100. The fraction is (<em>m</em>/3<em>M</em>)<sup>1/3</sup>:
+          Jupiter is 314 times as massive as Earth and Moon together, and 314<sup>1/3</sup> = 6.8, the ratio of the two
+          fractions. A heavier planet's pull remains a significant share of the centripetal requirement out to a greater
+          distance, so its L2 lies farther out in proportion to its orbit.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 7 -->
+    <h2>7 · Deployment and segment alignment</h2>
+
+    <p>
+      JWST was launched folded: the sunshield packed against the sides of the spacecraft, the secondary mirror on its
+      folded struts, and the two side wings of the primary turned back (deck p. 32). Unfolding it in space was a sequence
+      of mechanisms, each of which had to work once, and the unfolded mirror then had to be aligned, from the ground, to a
+      small fraction of a wavelength. This section covers both, and the measure of image quality that defines the target.
+    </p>
+
+    <h3>The deployment</h3>
+    <p>
+      The deployment comprised more than 50 major deployments driven by 178 release mechanisms, with more than 300
+      possible single points of failure, a failure of any one of which would have ended or seriously degraded the mission
+      (NASA). The sunshield alone had 140 release mechanisms; the first two weeks went with "almost no unexpected issues"
+      (Gardner et al. 2023). The professor's comment on the deployment video was the reliability point of this course:
+      "if anything goes wrong then we cannot fix it" (Lecture 23). <a href="m19-reliability-qualification.html">M19</a>
+      treats how such a system is qualified on the ground when no repair is possible.
+    </p>
+
+    <h3>Aligning 18 mirrors</h3>
+    <p>
+      Each segment sits on a hexapod of six actuators, which sets its position and tilt in all six degrees of freedom, and
+      has a seventh actuator at its centre that adjusts its radius of curvature, so that the 18 focal lengths can be made
+      equal; with the secondary's hexapod there are 132 actuators (McElwain et al. 2023). Each actuator has a fine stage
+      with steps of 7.7 nm, repeatable to 2 nm, over a 10 µm range, and a coarse stage with 58 nm steps over 21 mm. The
+      deck rounds this to "10nm resolution actuators" (p. 56). The actuators move through gear trains and flexures rather
+      than piezoelectric elements, so they hold their positions with the power off and add no heat to the cold telescope.
+    </p>
+
+    <p>
+      At first light, in February 2022, the segments pointed in slightly different directions, so a single star appeared as
+      18 separate images, one per segment (deck p. 56). Using NIRCam as the wavefront sensor, the team identified which
+      image came from which segment, moved each segment to bring its image to a common point, then adjusted the segments'
+      piston, their positions along the optical axis, until the light from all 18 combined coherently as from one mirror —
+      the step called phasing (deck p. 56; Lecture 23). Only after phasing does the image reach the diffraction limit of
+      the full 6.5 m aperture (§1), with the six-pointed spikes of the hexagonal outline.
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 170" role="img" aria-labelledby="f21a-al-t">
+<title id="f21a-al-t">Image of one star seen by the unaligned telescope as 18 separate spots, one per segment, then after the spots are moved together and stacked, then after phasing when the segments act as one mirror and the image is a single sharp core with diffraction spikes</title>
+<defs><marker id="f21a-al-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-ink"/></marker></defs>
+<circle cx="52.4" cy="50.1" r="3" class="dg-acc-f"/>
+<circle cx="85.1" cy="42.2" r="3" class="dg-acc-f"/>
+<circle cx="73.6" cy="71.6" r="3" class="dg-acc-f"/>
+<circle cx="25.8" cy="85.7" r="3" class="dg-acc-f"/>
+<circle cx="23.7" cy="78.4" r="3" class="dg-acc-f"/>
+<circle cx="27.0" cy="44.1" r="3" class="dg-acc-f"/>
+<circle cx="62.5" cy="117.7" r="3" class="dg-acc-f"/>
+<circle cx="32.4" cy="57.3" r="3" class="dg-acc-f"/>
+<circle cx="82.7" cy="129.8" r="3" class="dg-acc-f"/>
+<circle cx="77.7" cy="74.7" r="3" class="dg-acc-f"/>
+<circle cx="117.6" cy="39.7" r="3" class="dg-acc-f"/>
+<circle cx="105.8" cy="64.0" r="3" class="dg-acc-f"/>
+<circle cx="34.4" cy="46.8" r="3" class="dg-acc-f"/>
+<circle cx="50.8" cy="116.6" r="3" class="dg-acc-f"/>
+<circle cx="38.1" cy="93.2" r="3" class="dg-acc-f"/>
+<circle cx="83.9" cy="72.2" r="3" class="dg-acc-f"/>
+<circle cx="74.8" cy="41.3" r="3" class="dg-acc-f"/>
+<circle cx="26.0" cy="55.6" r="3" class="dg-acc-f"/>
+<text x="70" y="160" class="dg-label-sm" text-anchor="middle">1 star, 18 spots</text>
+<line x1="135" y1="85" x2="165" y2="85" class="dg-ink" marker-end="url(#f21a-al-a)"/>
+<circle cx="220" cy="85" r="12" class="dg-acc-f" opacity="0.35"/>
+<text x="220" y="160" class="dg-label-sm" text-anchor="middle">stacked, not phased</text>
+<line x1="270" y1="85" x2="300" y2="85" class="dg-ink" marker-end="url(#f21a-al-a)"/>
+<line x1="370" y1="85" x2="409.0" y2="107.5" class="dg-acc" stroke-width="1"/>
+<line x1="370" y1="85" x2="370.0" y2="130.0" class="dg-acc" stroke-width="1"/>
+<line x1="370" y1="85" x2="331.0" y2="107.5" class="dg-acc" stroke-width="1"/>
+<line x1="370" y1="85" x2="331.0" y2="62.5" class="dg-acc" stroke-width="1"/>
+<line x1="370" y1="85" x2="370.0" y2="40.0" class="dg-acc" stroke-width="1"/>
+<line x1="370" y1="85" x2="409.0" y2="62.5" class="dg-acc" stroke-width="1"/>
+<line x1="340" y1="85" x2="400" y2="85" class="dg-acc" stroke-width="0.7"/>
+<circle cx="370" cy="85" r="4" class="dg-acc-f"/>
+<text x="370" y="160" class="dg-label-sm" text-anchor="middle">phased: one core, spikes</text>
+</svg>
+      <figcaption><b>Figure 11.</b> Aligning the segmented mirror, after deck p. 56. At first light one star appears as 18 images, one per segment; the segments are tilted to stack the images, then moved along the optical axis until they are phased and the 6.5 m aperture forms one diffraction-limited image. Schematic.</figcaption>
+    </figure>
+
+    <h3>The measure of image quality</h3>
+    <p>
+      An aberrated wavefront moves light from the core of the image into a halo. The Strehl ratio <em>S</em> is the peak
+      intensity of the actual image divided by that of a perfect image from the same aperture. For small errors it depends
+      only on the root-mean-square (rms) wavefront error <em>σ</em> relative to the wavelength (the Maréchal
+      approximation):
+    </p>
+
+    <div class="eq" id="eq-21a-8">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em> ≈ exp<span class="dl">[</span>−<span class="dl">(</span><span class="frac"><span class="num">2π<em>σ</em></span><span class="den"><em>λ</em></span></span><span class="dl">)</span>²<span class="dl">]</span></div>
+        <div class="eq-num">(21a.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em> Strehl ratio, 0–1 · <em>σ</em> rms wavefront error (m) · <em>λ</em> wavelength (m). Valid for
+        small errors, <em>σ</em> ≲ <em>λ</em>/10 or so, that is <em>S</em> ≳ 0.7; a telescope is conventionally called diffraction-limited
+        at <em>λ</em> when <em>S</em> ≥ 0.8, which (21a.8) puts at <em>σ</em> = <em>λ</em>/13.3. The wavefront error of a
+        reflection is twice the surface error.
+      </div>
+    </div>
+
+    <p>
+      JWST was specified to be diffraction-limited at 2 µm, defined as a Strehl ratio above 0.8 at the end of a five-year
+      mission, "equivalent to 150nm" rms wavefront error, and at 5.6 µm for MIRI, equivalent to 420 nm (Gardner et al.
+      2023; Rigby et al. 2023); the telescope's own share of that budget was 131 nm rms (Rigby et al. 2023). At the end of
+      commissioning the telescope's wavefront error was as low as 50 nm rms; after the micrometeoroid impact of May 2022
+      (§8) the floor, the best achievable, is 59 nm rms (Rigby et al. 2023), the value on deck p. 34. In operation the
+      error varies with time, generally between 60 and 80 nm rms, routinely 65–70 nm in NIRCam's short-wavelength
+      channel, and the segments are corrected when it exceeds 80 nm. The measured Strehl ratios are 0.84 over NIRCam's
+      field at 2 µm and 0.92 over MIRI's at 5.6 µm (McElwain et al. 2023), and operationally the telescope gives
+      diffraction-limited images down to 1.1 µm (Rigby et al. 2023; Gardner et al. 2023).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">E9 · What 59 nm of wavefront error costs</div>
+      <div class="ex-body">
+        <p><b>Given</b> the telescope's wavefront-error floor <em>σ</em> = 59 nm rms and its 80 nm correction threshold
+          (Rigby et al. 2023), and the 150 nm rms requirement; Hubble's wavefront error after its repair, <em>λ</em>/21 at
+          0.5 µm (Lallo 2012). <b>Find</b> <em>S</em> at 0.6, 1, 2 and 5 µm for 59 nm, check the requirement, find where
+          80 nm stops being diffraction-limited, and check (21a.8) against Hubble's measured Strehl ratio.</p>
+        <p><b>Plan.</b> (21a.8) at each wavelength. The hinge is that the same <em>σ</em> is a smaller fraction of a longer
+          wavelength, so image quality improves toward the infrared.</p>
+        <p class="ex-step"><b>At 2 µm.</b> 2π × 0.059/2.0 = 0.185; squared 0.0344; <em>S</em> = e<sup>−0.0344</sup> =
+          0.966.</p>
+        <p class="ex-step"><b>Across the band.</b> At 1 µm: (2π × 0.059)² = 0.137, <em>S</em> = 0.872. At 0.6 µm:
+          <em>S</em> = 0.683. At 5 µm: 0.995.</p>
+        <p class="ex-step"><b>The requirement.</b> 150 nm at 2 µm: (2π × 0.150/2.0)² = 0.222, <em>S</em> = 0.801, the 0.8
+          criterion. Why the telescope is better than required: the 150 nm is an observatory budget that includes the
+          instruments' own errors and drift over five years, and the 59 nm is the telescope's floor, to be compared with
+          its own 131 nm share.</p>
+        <p class="ex-step"><b>In operation.</b> <em>S</em> = 0.8 at <em>λ</em> = 13.3<em>σ</em> (the self-check below
+          derives the factor), so at the 80 nm correction threshold the telescope is diffraction-limited down to
+          13.3 × 80 nm = 1.06 µm, which is the basis of the operational limit of 1.1 µm (Rigby et al. 2023, who use the
+          equivalent λ/14 rule: 14 × 80 nm = 1.12 µm). At the 59 nm floor the limit would be 0.79 µm.</p>
+        <p class="ex-step"><b>Hubble's check.</b> <em>σ</em> = <em>λ</em>/21: (2π/21)² = 0.0895, <em>S</em> = 0.914,
+          against the measured value of about 90 %. Before its repair Hubble's wavefront error was 253–277 nm rms at
+          0.5 µm, far outside the range of (21a.8); most of the light lay in a broad halo.</p>
+        <p class="ex-answer"><em>S</em> = 0.97 at 2 µm, 0.87 at 1 µm and 0.68 at 0.6 µm for 59 nm rms; the 150 nm
+          requirement gives exactly 0.80 at 2 µm. Because the wavefront drifts between corrections up to 80 nm, the
+          telescope is diffraction-limited in operation from about 1.1 µm, not from the 0.79 µm its floor would allow.
+          Check: even at 80 nm, <em>S</em> at 2 µm is 0.94, well above the requirement.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 200" role="img" aria-labelledby="f21a-st-t">
+<title id="f21a-st-t">Strehl ratio from the Marechal approximation against wavelength for rms wavefront errors of 59, 80 and 150 nanometres: the 150 nanometre curve crosses 0.8 at 2 micrometres, the diffraction-limit criterion, and the 59 nanometre curve is above 0.8 from about 0.8 micrometres and the 80 nanometre curve from about 1.1</title>
+<line x1="60" y1="160" x2="390" y2="160" class="dg-rule"/><line x1="60" y1="160" x2="60" y2="30" class="dg-rule"/>
+<line x1="60.0" y1="160" x2="60.0" y2="164" class="dg-rule"/><text x="60.0" y="175" class="dg-label-sm" text-anchor="middle">0.6</text>
+<line x1="103.9" y1="160" x2="103.9" y2="164" class="dg-rule"/><text x="103.9" y="175" class="dg-label-sm" text-anchor="middle">1</text>
+<line x1="163.4" y1="160" x2="163.4" y2="164" class="dg-rule"/><text x="163.4" y="175" class="dg-label-sm" text-anchor="middle">2</text>
+<line x1="242.1" y1="160" x2="242.1" y2="164" class="dg-rule"/><text x="242.1" y="175" class="dg-label-sm" text-anchor="middle">5</text>
+<line x1="301.6" y1="160" x2="301.6" y2="164" class="dg-rule"/><text x="301.6" y="175" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="390.0" y1="160" x2="390.0" y2="164" class="dg-rule"/><text x="390.0" y="175" class="dg-label-sm" text-anchor="middle">28</text>
+<line x1="56" y1="160.0" x2="60" y2="160.0" class="dg-rule"/><text x="53" y="163.0" class="dg-label-sm" text-anchor="end">0</text>
+<line x1="56" y1="134.0" x2="60" y2="134.0" class="dg-rule"/><text x="53" y="137.0" class="dg-label-sm" text-anchor="end">0.2</text>
+<line x1="56" y1="108.0" x2="60" y2="108.0" class="dg-rule"/><text x="53" y="111.0" class="dg-label-sm" text-anchor="end">0.4</text>
+<line x1="56" y1="82.0" x2="60" y2="82.0" class="dg-rule"/><text x="53" y="85.0" class="dg-label-sm" text-anchor="end">0.6</text>
+<line x1="56" y1="56.0" x2="60" y2="56.0" class="dg-rule"/><text x="53" y="59.0" class="dg-label-sm" text-anchor="end">0.8</text>
+<line x1="56" y1="30.0" x2="60" y2="30.0" class="dg-rule"/><text x="53" y="33.0" class="dg-label-sm" text-anchor="end">1</text>
+<line x1="60" y1="56.0" x2="390" y2="56.0" class="dg-guide" stroke-dasharray="3 3"/>
+<text x="390" y="52.0" class="dg-label-sm" text-anchor="end">S = 0.8</text>
+<path d="M60.0,71.3 L61.7,70.0 L63.3,68.7 L65.0,67.5 L66.6,66.3 L68.3,65.1 L69.9,64.0 L71.5,62.9 L73.2,61.8 L74.8,60.8 L76.5,59.8 L78.1,58.8 L79.8,57.8 L81.5,56.9 L83.1,56.0 L84.8,55.1 L86.4,54.2 L88.1,53.4 L89.7,52.6 L91.3,51.8 L93.0,51.1 L94.7,50.4 L96.3,49.7 L98.0,49.0 L99.6,48.3 L101.2,47.7 L102.9,47.0 L104.6,46.4 L106.2,45.9 L107.9,45.3 L109.5,44.8 L111.2,44.2 L112.8,43.7 L114.5,43.2 L116.1,42.8 L117.8,42.3 L119.4,41.9 L121.0,41.4 L122.7,41.0 L124.4,40.6 L126.0,40.2 L127.6,39.9 L129.3,39.5 L130.9,39.2 L132.6,38.8 L134.2,38.5 L135.9,38.2 L137.6,37.9 L139.2,37.6 L140.8,37.3 L142.5,37.1 L144.2,36.8 L145.8,36.6 L147.4,36.3 L149.1,36.1 L150.8,35.9 L152.4,35.6 L154.0,35.4 L155.7,35.2 L157.3,35.0 L159.0,34.9 L160.6,34.7 L162.3,34.5 L163.9,34.3 L165.6,34.2 L167.2,34.0 L168.9,33.9 L170.6,33.7 L172.2,33.6 L173.9,33.5 L175.5,33.3 L177.1,33.2 L178.8,33.1 L180.5,33.0 L182.1,32.9 L183.8,32.7 L185.4,32.6 L187.1,32.5 L188.7,32.5 L190.3,32.4 L192.0,32.3 L193.7,32.2 L195.3,32.1 L196.9,32.0 L198.6,32.0 L200.2,31.9 L201.9,31.8 L203.6,31.7 L205.2,31.7 L206.8,31.6 L208.5,31.6 L210.2,31.5 L211.8,31.4 L213.5,31.4 L215.1,31.3 L216.8,31.3 L218.4,31.2 L220.0,31.2 L221.7,31.1 L223.3,31.1 L225.0,31.1 L226.7,31.0 L228.3,31.0 L230.0,30.9 L231.6,30.9 L233.2,30.9 L234.9,30.8 L236.6,30.8 L238.2,30.8 L239.9,30.8 L241.5,30.7 L243.2,30.7 L244.8,30.7 L246.4,30.6 L248.1,30.6 L249.7,30.6 L251.4,30.6 L253.0,30.6 L254.7,30.5 L256.4,30.5 L258.0,30.5 L259.6,30.5 L261.3,30.5 L262.9,30.4 L264.6,30.4 L266.2,30.4 L267.9,30.4 L269.6,30.4 L271.2,30.4 L272.9,30.3 L274.5,30.3 L276.1,30.3 L277.8,30.3 L279.5,30.3 L281.1,30.3 L282.8,30.3 L284.4,30.3 L286.1,30.3 L287.7,30.2 L289.4,30.2 L291.0,30.2 L292.6,30.2 L294.3,30.2 L295.9,30.2 L297.6,30.2 L299.2,30.2 L300.9,30.2 L302.5,30.2 L304.2,30.2 L305.9,30.2 L307.5,30.2 L309.1,30.1 L310.8,30.1 L312.5,30.1 L314.1,30.1 L315.8,30.1 L317.4,30.1 L319.1,30.1 L320.7,30.1 L322.4,30.1 L324.0,30.1 L325.7,30.1 L327.3,30.1 L328.9,30.1 L330.6,30.1 L332.2,30.1 L333.9,30.1 L335.6,30.1 L337.2,30.1 L338.8,30.1 L340.5,30.1 L342.1,30.1 L343.8,30.1 L345.4,30.1 L347.1,30.1 L348.8,30.1 L350.4,30.1 L352.1,30.1 L353.7,30.1 L355.4,30.1 L357.0,30.0 L358.7,30.0 L360.3,30.0 L361.9,30.0 L363.6,30.0 L365.2,30.0 L366.9,30.0 L368.6,30.0 L370.2,30.0 L371.8,30.0 L373.5,30.0 L375.1,30.0 L376.8,30.0 L378.4,30.0 L380.1,30.0 L381.8,30.0 L383.4,30.0 L385.1,30.0 L386.7,30.0 L388.4,30.0 L390.0,30.0" class="dg-acc" stroke-width="1.8"/>
+<line x1="203.7" y1="92.4" x2="225.7" y2="92.4" class="dg-acc" stroke-width="1.8"/>
+<text x="230.7" y="95.4" class="dg-label-sm">59 nm (floor)</text>
+<path d="M60.0,95.6 L61.7,93.8 L63.3,92.1 L65.0,90.4 L66.6,88.8 L68.3,87.2 L69.9,85.5 L71.5,84.0 L73.2,82.4 L74.8,80.9 L76.5,79.4 L78.1,77.9 L79.8,76.5 L81.5,75.1 L83.1,73.7 L84.8,72.4 L86.4,71.1 L88.1,69.8 L89.7,68.5 L91.3,67.3 L93.0,66.1 L94.7,65.0 L96.3,63.8 L98.0,62.7 L99.6,61.7 L101.2,60.6 L102.9,59.6 L104.6,58.6 L106.2,57.7 L107.9,56.7 L109.5,55.8 L111.2,55.0 L112.8,54.1 L114.5,53.3 L116.1,52.5 L117.8,51.7 L119.4,51.0 L121.0,50.2 L122.7,49.5 L124.4,48.9 L126.0,48.2 L127.6,47.6 L129.3,47.0 L130.9,46.4 L132.6,45.8 L134.2,45.2 L135.9,44.7 L137.6,44.2 L139.2,43.7 L140.8,43.2 L142.5,42.7 L144.2,42.2 L145.8,41.8 L147.4,41.4 L149.1,41.0 L150.8,40.6 L152.4,40.2 L154.0,39.8 L155.7,39.5 L157.3,39.1 L159.0,38.8 L160.6,38.5 L162.3,38.2 L163.9,37.9 L165.6,37.6 L167.2,37.3 L168.9,37.0 L170.6,36.8 L172.2,36.5 L173.9,36.3 L175.5,36.0 L177.1,35.8 L178.8,35.6 L180.5,35.4 L182.1,35.2 L183.8,35.0 L185.4,34.8 L187.1,34.6 L188.7,34.5 L190.3,34.3 L192.0,34.1 L193.7,34.0 L195.3,33.8 L196.9,33.7 L198.6,33.6 L200.2,33.4 L201.9,33.3 L203.6,33.2 L205.2,33.1 L206.8,32.9 L208.5,32.8 L210.2,32.7 L211.8,32.6 L213.5,32.5 L215.1,32.4 L216.8,32.3 L218.4,32.3 L220.0,32.2 L221.7,32.1 L223.3,32.0 L225.0,31.9 L226.7,31.9 L228.3,31.8 L230.0,31.7 L231.6,31.7 L233.2,31.6 L234.9,31.5 L236.6,31.5 L238.2,31.4 L239.9,31.4 L241.5,31.3 L243.2,31.3 L244.8,31.2 L246.4,31.2 L248.1,31.1 L249.7,31.1 L251.4,31.1 L253.0,31.0 L254.7,31.0 L256.4,30.9 L258.0,30.9 L259.6,30.9 L261.3,30.8 L262.9,30.8 L264.6,30.8 L266.2,30.7 L267.9,30.7 L269.6,30.7 L271.2,30.7 L272.9,30.6 L274.5,30.6 L276.1,30.6 L277.8,30.6 L279.5,30.5 L281.1,30.5 L282.8,30.5 L284.4,30.5 L286.1,30.5 L287.7,30.5 L289.4,30.4 L291.0,30.4 L292.6,30.4 L294.3,30.4 L295.9,30.4 L297.6,30.4 L299.2,30.3 L300.9,30.3 L302.5,30.3 L304.2,30.3 L305.9,30.3 L307.5,30.3 L309.1,30.3 L310.8,30.3 L312.5,30.3 L314.1,30.2 L315.8,30.2 L317.4,30.2 L319.1,30.2 L320.7,30.2 L322.4,30.2 L324.0,30.2 L325.7,30.2 L327.3,30.2 L328.9,30.2 L330.6,30.2 L332.2,30.2 L333.9,30.2 L335.6,30.1 L337.2,30.1 L338.8,30.1 L340.5,30.1 L342.1,30.1 L343.8,30.1 L345.4,30.1 L347.1,30.1 L348.8,30.1 L350.4,30.1 L352.1,30.1 L353.7,30.1 L355.4,30.1 L357.0,30.1 L358.7,30.1 L360.3,30.1 L361.9,30.1 L363.6,30.1 L365.2,30.1 L366.9,30.1 L368.6,30.1 L370.2,30.1 L371.8,30.1 L373.5,30.1 L375.1,30.1 L376.8,30.1 L378.4,30.1 L380.1,30.1 L381.8,30.1 L383.4,30.0 L385.1,30.0 L386.7,30.0 L388.4,30.0 L390.0,30.0" class="dg-acc" stroke-width="1.8" stroke-dasharray="6 3"/>
+<line x1="203.7" y1="108.0" x2="225.7" y2="108.0" class="dg-acc" stroke-width="1.8" stroke-dasharray="6 3"/>
+<text x="230.7" y="111.0" class="dg-label-sm">80 nm (correction threshold)</text>
+<path d="M60.0,149.0 L61.7,147.9 L63.3,146.8 L65.0,145.6 L66.6,144.3 L68.3,143.0 L69.9,141.7 L71.5,140.3 L73.2,138.8 L74.8,137.3 L76.5,135.8 L78.1,134.2 L79.8,132.6 L81.5,130.9 L83.1,129.2 L84.8,127.5 L86.4,125.8 L88.1,124.0 L89.7,122.2 L91.3,120.4 L93.0,118.6 L94.7,116.8 L96.3,114.9 L98.0,113.1 L99.6,111.3 L101.2,109.4 L102.9,107.6 L104.6,105.8 L106.2,103.9 L107.9,102.1 L109.5,100.3 L111.2,98.6 L112.8,96.8 L114.5,95.1 L116.1,93.3 L117.8,91.6 L119.4,90.0 L121.0,88.3 L122.7,86.7 L124.4,85.1 L126.0,83.5 L127.6,82.0 L129.3,80.5 L130.9,79.0 L132.6,77.5 L134.2,76.1 L135.9,74.7 L137.6,73.3 L139.2,72.0 L140.8,70.7 L142.5,69.4 L144.2,68.2 L145.8,67.0 L147.4,65.8 L149.1,64.6 L150.8,63.5 L152.4,62.4 L154.0,61.4 L155.7,60.3 L157.3,59.3 L159.0,58.3 L160.6,57.4 L162.3,56.5 L163.9,55.6 L165.6,54.7 L167.2,53.9 L168.9,53.1 L170.6,52.3 L172.2,51.5 L173.9,50.8 L175.5,50.0 L177.1,49.3 L178.8,48.7 L180.5,48.0 L182.1,47.4 L183.8,46.8 L185.4,46.2 L187.1,45.6 L188.7,45.1 L190.3,44.5 L192.0,44.0 L193.7,43.5 L195.3,43.0 L196.9,42.6 L198.6,42.1 L200.2,41.7 L201.9,41.3 L203.6,40.8 L205.2,40.5 L206.8,40.1 L208.5,39.7 L210.2,39.4 L211.8,39.0 L213.5,38.7 L215.1,38.4 L216.8,38.1 L218.4,37.8 L220.0,37.5 L221.7,37.2 L223.3,37.0 L225.0,36.7 L226.7,36.4 L228.3,36.2 L230.0,36.0 L231.6,35.8 L233.2,35.5 L234.9,35.3 L236.6,35.1 L238.2,35.0 L239.9,34.8 L241.5,34.6 L243.2,34.4 L244.8,34.3 L246.4,34.1 L248.1,34.0 L249.7,33.8 L251.4,33.7 L253.0,33.5 L254.7,33.4 L256.4,33.3 L258.0,33.1 L259.6,33.0 L261.3,32.9 L262.9,32.8 L264.6,32.7 L266.2,32.6 L267.9,32.5 L269.6,32.4 L271.2,32.3 L272.9,32.2 L274.5,32.2 L276.1,32.1 L277.8,32.0 L279.5,31.9 L281.1,31.8 L282.8,31.8 L284.4,31.7 L286.1,31.6 L287.7,31.6 L289.4,31.5 L291.0,31.5 L292.6,31.4 L294.3,31.4 L295.9,31.3 L297.6,31.3 L299.2,31.2 L300.9,31.2 L302.5,31.1 L304.2,31.1 L305.9,31.0 L307.5,31.0 L309.1,31.0 L310.8,30.9 L312.5,30.9 L314.1,30.9 L315.8,30.8 L317.4,30.8 L319.1,30.8 L320.7,30.7 L322.4,30.7 L324.0,30.7 L325.7,30.7 L327.3,30.6 L328.9,30.6 L330.6,30.6 L332.2,30.6 L333.9,30.5 L335.6,30.5 L337.2,30.5 L338.8,30.5 L340.5,30.5 L342.1,30.4 L343.8,30.4 L345.4,30.4 L347.1,30.4 L348.8,30.4 L350.4,30.4 L352.1,30.4 L353.7,30.3 L355.4,30.3 L357.0,30.3 L358.7,30.3 L360.3,30.3 L361.9,30.3 L363.6,30.3 L365.2,30.3 L366.9,30.3 L368.6,30.2 L370.2,30.2 L371.8,30.2 L373.5,30.2 L375.1,30.2 L376.8,30.2 L378.4,30.2 L380.1,30.2 L381.8,30.2 L383.4,30.2 L385.1,30.2 L386.7,30.2 L388.4,30.2 L390.0,30.1" class="dg-acc" stroke-width="1.8" stroke-dasharray="2 2"/>
+<line x1="203.7" y1="123.6" x2="225.7" y2="123.6" class="dg-acc" stroke-width="1.8" stroke-dasharray="2 2"/>
+<text x="230.7" y="126.6" class="dg-label-sm">150 nm (requirement)</text>
+<circle cx="163.4" cy="55.9" r="3" class="dg-acc-f"/>
+<text x="225.0" y="190" class="dg-label-sm" text-anchor="middle">wavelength (µm), logarithmic</text>
+<text x="14" y="95.0" class="dg-label-sm" transform="rotate(-90 14 95.0)" text-anchor="middle">Strehl ratio S</text>
+</svg>
+      <figcaption><b>Figure 12.</b> Strehl ratio from (21a.8) for 59 nm rms, the telescope's wavefront-error floor after the C3 impact (§8); 80 nm, the level at which the segments are corrected in operation; and the 150 nm requirement. The requirement curve crosses <em>S</em> = 0.8 at 2 µm (dot), the definition of diffraction-limited at 2 µm; the 80 nm curve crosses it at 1.06 µm, the basis of the operational limit of about 1.1 µm, and the 59 nm curve at 0.79 µm.</figcaption>
+    </figure>
+
+    <h3>Keeping the alignment</h3>
+    <p>
+      Between corrections the wavefront drifts slowly as the structure responds to changes in temperature when the
+      telescope points to different parts of the sky. The corrections, however, have mostly been triggered by tilt events:
+      sudden, uncommanded small tilts of a segment or group of segments, such as a wing, ascribed to the release of strain
+      stored in the structure during cooldown, which McElwain et al. (2023) call the dominant source of wavefront
+      degradation requiring segment correction. In a few cases strain sensors on the wing latches detected stress relief
+      at the moment of a tilt event (Rigby et al. 2023). In operations NIRCam measures the wavefront about every two days, and the segments are corrected
+      when the total wavefront error reaches 80 nm rms; in the first months this averaged one correction every 2.6 weeks,
+      and between disturbances the telescope held its shape to about 10 nm rms (Rigby et al. 2023; McElwain et al. 2023).
+      Rigby et al. compare the two telescopes: Hubble is typically stable to <em>λ</em>/30 at 0.5 µm over 90 minutes; JWST
+      is often stable to <em>λ</em>/100 at 2 µm over two days.
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>Source discrepancy — how often the mirror is realigned, and why.</b> Deck p. 47 gives "Checking mirrors every two
+        days → Align Mirrors again Every two-three month" and "Mechanical Clip (Latch): Mechanically Weak → Mirror
+        Misalignment"; in Lecture 23 the professor says the mirror must be realigned every two to three months because it
+        drifts. The checking every two days is correct. The corrections are made whenever the measured error crosses
+        80 nm, which in practice has been every few weeks. On the cause, the sources partly support the slide: the
+        dominant trigger has been tilt events attributed to the release of strain stored during cooldown, and in a few
+        cases stress relief was detected by the wing-latch strain sensors at the time of a tilt (Rigby et al. 2023;
+        McElwain et al. 2023). They describe strain release, not a weak latch; slow thermal drift and micrometeoroid hits
+        (§8) add to it. The two to three months is the duration of the initial alignment in 2022. The deck's figure on p. 45 that light
+        travels "~130m" between optics before reaching a detector (113 m in Lecture 23) has no source that this page could
+        find and is not used.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>Over what range of wavelengths is a telescope with 59 nm rms wavefront error diffraction-limited by the
+        S ≥ 0.8 criterion? Would a telescope just meeting the 150 nm requirement still be diffraction-limited at 1.1 µm,
+        where JWST is observed to be?</summary>
+      <div class="answer">
+        <p>(21a.8) gives <em>S</em> = 0.8 when 2π<em>σ</em>/<em>λ</em> = (−ln 0.8)<sup>1/2</sup> = 0.472, so
+          <em>λ</em> = 2π<em>σ</em>/0.472 = 13.3<em>σ</em>. For 59 nm that is 785 nm: the telescope alone is
+          diffraction-limited at all wavelengths longer than about 0.79 µm. At 1.1 µm, 59 nm gives <em>S</em> = 0.893. A
+          telescope with 150 nm would give, at 1.1 µm, (2π × 0.150/1.1)² = 0.734 and <em>S</em> = 0.48: not
+          diffraction-limited. JWST's operational limit of 1.1 µm, set by its 80 nm correction threshold (E9), shows how
+          far it exceeds its requirement.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 8 -->
+    <h2>8 · Operations, and what went wrong</h2>
+
+    <p>
+      A telescope that cannot be serviced is operated rather than repaired: every problem after launch is diagnosed from
+      its telemetry and handled by changing how it is used. This section describes how JWST is operated, then the two
+      in-flight problems the course covered — micrometeoroid damage to the exposed mirror and friction in a MIRI mechanism
+      — and what each shows about designing electronics and mechanisms for a system nobody can reach.
+    </p>
+
+    <h3>Operations</h3>
+    <p>
+      JWST is operated from STScI in Baltimore, which also runs Hubble's science operations. Its Mission Operations Center
+      monitors the observatory around the clock, with separate teams for tasks such as wavefront sensing and control
+      (deck pp. 43–44). Observations are planned and uploaded from the ground, and the observatory executes them on its
+      own between contacts. The first full-colour science images were released on 11–12 July 2022, starting with a deep
+      field toward the galaxy cluster SMACS 0723 (deck p. 57), and the science performance measured in commissioning is
+      reported by Rigby et al. (2023).
+    </p>
+
+    <h3>Micrometeoroids on an exposed mirror</h3>
+    <p>
+      Hubble's mirror sits at the bottom of a tube; JWST's is open to space, as the professor stressed. Interplanetary
+      space contains micrometeoroids, dust grains from comets and asteroids moving at kilometres per second, and an impact
+      raises a small crater on a segment that distorts its surface locally. Between 11 March 2022 and 12 January 2023,
+      wavefront sensing recorded 25 such localized deformations, a rate of 2.5 per month (Rigby et al. 2023). Most are
+      small. The exception was a hit on segment C3 between 22 and 24 May 2022: before launch, each segment had been
+      predicted to accumulate about 16 nm of added wavefront error over six years, and this single impact added more than
+      ten times that average to one segment (Rigby et al. 2023). Part of the damage could not be corrected by moving the
+      segment, because a crater is a local deformation and the actuators can only move and bend the segment as a whole.
+      After the best correction, the whole telescope's wavefront error had risen by 9 nm rms (McElwain et al. 2023), the
+      rise from about 50 to 59 nm of §7: "the effect was small at the full telescope level because only a small portion
+      of the telescope area was affected" (Rigby et al. 2023). The self-check below shows how the numbers combine.
+    </p>
+
+    <p>
+      Deck p. 50, from an image taken on 19 May 2024 by the camera that images the primary mirror, counts 78 hits in
+      26 months, 3.0 per month, in line with the earlier rate, and the slide describes them as consistent with predictions.
+      Hits on any surface exposed to space are listed among the hazards of the space environment in
+      <a href="m03-space-electronics-gap.html">M03</a> §1. Deck pp. 48–49 illustrate them with orbital debris around Earth;
+      at L2, far beyond the debris that crowds low Earth orbit, the particles are natural micrometeoroids.
+    </p>
+
+    <h3>The MIRI grating wheel</h3>
+    <p>
+      MIRI's medium-resolution spectrometer selects its wavelength ranges by rotating wheels that carry gratings and
+      dichroic filters into the beam. On 24 August 2022 one of these wheels showed "what appears to be increased friction
+      during setup for a science observation" (NASA). Use of that mode was paused and an anomaly review board was convened
+      on 6 September. It traced the friction to "increased contact forces between sub-components of the wheel central
+      bearing assembly", confirmed its model of the wheel's friction with an engineering test on 2 November, and the mode
+      returned to science use from 12 November 2022, with the wheel used under restrictions while it was monitored; MIRI's
+      other modes had operated normally throughout (NASA). The professor's point was that the fault was handled without
+      physical repair, by a change in how the hardware was commanded (Lecture 23).
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>Source note — the size of the MIRI anomaly.</b> Deck p. 35 describes it as "Center Turret Rotation Issue: It
+        should move 1cm, but it moves only 0.7mm due to high friction". NASA's reports describe increased friction in the
+        wheel's central bearing and give no travel figures, and this page found no source for 1 cm or 0.7 mm. The account
+        above follows NASA.
+      </p>
+    </div>
+
+    <details class="check">
+      <summary>Why could the C3 micrometeoroid damage be only partly corrected, when segment misalignments of many
+        micrometres were corrected completely during commissioning? Why is a hit on one segment much less serious for the
+        whole telescope than for that segment?</summary>
+      <div class="answer">
+        <p>The actuators move and bend a segment as a rigid body: six control its position and tilt, and one its radius of
+          curvature. A misalignment is an error of exactly those kinds, so it can be removed completely, however large it
+          is, within the actuators' range. A crater is a local deformation of the surface, an error with a spatial scale far
+          smaller than the segment, which no combination of the seven motions can reproduce; the best correction only
+          minimises its effect. For the telescope, the rms error is an average over the whole pupil,
+          <em>σ</em>² = (1/<em>A</em>)∫<em>W</em>² d<em>A</em>, so an error confined to one segment adds to the pupil's
+          variance in proportion to that segment's share of the area, about 1/18, and independent errors add in quadrature.
+          A rise from 50 to 59 nm means an added variance of 59² − 50² = 981 nm², a term of 31 nm rms at pupil level, which
+          corresponds to about √(981 × 18) = 133 nm rms on C3 itself. Added in quadrature to the existing 50 nm, it raises
+          the total by only 9 nm, which at 2 µm lowers <em>S</em> (21a.8) only from 0.976 to 0.966.</p>
+      </div>
+    </details>
+
+    <!-- ================================================================== 9 -->
+    <h2>9 · From photons to pictures, and the telescopes that follow</h2>
+
+    <p>
+      The images that represent JWST to the public are not what its detectors record, and the telescopes that follow it
+      address what it was not designed to do. This section explains how the published colour images are made, then
+      places JWST between Roman, launched in 2026, and the large ultraviolet-to-infrared telescope that the field has
+      chosen as its next major goal.
+    </p>
+
+    <h3>How colour is assigned</h3>
+    <p>
+      A detector pixel records how many photons arrived, not their wavelength, so each exposure is monochrome; the
+      wavelength information comes from the filter in front of the detector. A colour image is a composite. Separate
+      exposures are taken through several filters, each is stretched in brightness, and each is assigned a visible colour
+      before they are combined (deck p. 62; NASA). The professor's statement of it: "there is no color. We actually add the
+      colour later. The actual image we can take is always black and white" (Lecture 23). The convention is to keep the
+      order of the wavelengths: "the shortest wavelengths are assigned blue, slightly longer wavelengths are assigned
+      green", so that the processors "translate these wavelengths of light, in order, to visible colors" (NASA). Because
+      every filter JWST uses is infrared, every colour in its images stands for an infrared wavelength. The NIRCam image
+      of the Pillars of Creation combines six filters from 0.90 to 4.70 µm, displayed from purple to red; the MIRI image
+      assigns blue, green and red to 7.7, 11.3 and 15 µm (NASA).
+    </p>
+
+    <figure class="compact">
+<svg viewBox="0 0 440 150" role="img" aria-labelledby="f21a-col-t">
+<title id="f21a-col-t">Six NIRCam filters used for the Pillars of Creation, placed on a wavelength axis from 0.9 to 4.7 micrometres, each assigned a display colour in order of wavelength, from purple for the shortest to red for the longest, as NASA assigned them</title>
+<line x1="40" y1="80" x2="400" y2="80" class="dg-rule"/>
+<line x1="83.8" y1="80" x2="83.8" y2="84" class="dg-rule"/><text x="83.8" y="96" class="dg-label-sm" text-anchor="middle">1</text>
+<line x1="220.0" y1="80" x2="220.0" y2="84" class="dg-rule"/><text x="220.0" y="96" class="dg-label-sm" text-anchor="middle">2</text>
+<line x1="299.7" y1="80" x2="299.7" y2="84" class="dg-rule"/><text x="299.7" y="96" class="dg-label-sm" text-anchor="middle">3</text>
+<line x1="356.2" y1="80" x2="356.2" y2="84" class="dg-rule"/><text x="356.2" y="96" class="dg-label-sm" text-anchor="middle">4</text>
+<line x1="400.0" y1="80" x2="400.0" y2="84" class="dg-rule"/><text x="400.0" y="96" class="dg-label-sm" text-anchor="middle">5</text>
+<line x1="63.1" y1="64" x2="63.1" y2="78" class="dg-guide"/>
+<rect x="48.1" y="48" width="30" height="14" class="dg-fill"/>
+<text x="63.1" y="58" class="dg-label-sm" text-anchor="middle">F090W</text>
+<text x="63.1" y="112" class="dg-label-sm" text-anchor="middle">→ purple</text>
+<line x1="206.8" y1="42" x2="206.8" y2="78" class="dg-guide"/>
+<rect x="191.8" y="26" width="30" height="14" class="dg-fill"/>
+<text x="206.8" y="36" class="dg-label-sm" text-anchor="middle">F187N</text>
+<text x="206.8" y="124" class="dg-label-sm" text-anchor="middle">→ blue</text>
+<line x1="219.0" y1="64" x2="219.0" y2="78" class="dg-guide"/>
+<rect x="204.0" y="48" width="30" height="14" class="dg-fill"/>
+<text x="219.0" y="58" class="dg-label-sm" text-anchor="middle">F200W</text>
+<text x="219.0" y="112" class="dg-label-sm" text-anchor="middle">→ cyan</text>
+<line x1="321.9" y1="42" x2="321.9" y2="78" class="dg-guide"/>
+<rect x="306.9" y="26" width="30" height="14" class="dg-fill"/>
+<text x="321.9" y="36" class="dg-label-sm" text-anchor="middle">F335M</text>
+<text x="321.9" y="124" class="dg-label-sm" text-anchor="middle">→ yellow</text>
+<line x1="374.9" y1="64" x2="374.9" y2="78" class="dg-guide"/>
+<rect x="359.9" y="48" width="30" height="14" class="dg-fill"/>
+<text x="374.9" y="58" class="dg-label-sm" text-anchor="middle">F444W</text>
+<text x="374.9" y="112" class="dg-label-sm" text-anchor="middle">→ orange</text>
+<line x1="388.3" y1="42" x2="388.3" y2="78" class="dg-guide"/>
+<rect x="373.3" y="26" width="30" height="14" class="dg-fill"/>
+<text x="388.3" y="36" class="dg-label-sm" text-anchor="middle">F470N</text>
+<text x="388.3" y="124" class="dg-label-sm" text-anchor="middle">→ red</text>
+<text x="220.0" y="146" class="dg-label-sm" text-anchor="middle">filter pivot wavelength (µm, logarithmic) and the display colour assigned to it</text>
+</svg>
+      <figcaption><b>Figure 13.</b> The six NIRCam filters of the Pillars of Creation image placed at their pivot wavelengths (STScI), with the display colours NASA assigned. The colours follow the order of wavelength, so the colour of each region of the image encodes its relative brightness in these infrared bands.</figcaption>
+    </figure>
+
+    <h3>Roman</h3>
+    <p>
+      The Nancy Grace Roman Space Telescope, earlier called WFIRST, has a 2.4 m primary mirror like Hubble's (deck p. 42:
+      "HST/WFIRST 2.4m") and observes in the near infrared. It was launched on 30 August 2026 on a Falcon Heavy from
+      Kennedy Space Center toward an orbit about Sun–Earth L2, and in October 2026 it entered its final commissioning phase
+      (NASA). Its distinguishing feature is a field of view "at least 100 times larger than Hubble's" (NASA). Roman is
+      built to survey: to measure the expansion history of the universe for the study of dark energy, to complete "a
+      statistical census of planetary systems in our galaxy" (NASA). It also carries a coronagraph, flown as a technology
+      demonstration, which blocks starlight to image planets and planet-forming disks directly and tests the techniques the
+      Habitable Worlds Observatory will need (NASA). A student made the complementary point in Lecture 24: Roman images large
+      areas quickly, at lower resolution than JWST, and can find the targets that JWST then studies in detail. Roman's
+      orbit about L2 has the thermal and operational reasons of §6.
+    </p>
+
+    <h3>Beyond JWST</h3>
+    <p>
+      Deck p. 42 compares, to scale, the primary mirrors of Hubble (2.4 m), JWST (6.5 m) and two concepts (redrawn in the figure of §4) for the Large Ultraviolet
+      Optical Infrared Surveyor (LUVOIR): LUVOIR-B, an 8 m off-axis design, and LUVOIR-A, 15 m on-axis. An off-axis design
+      places the secondary mirror outside the incoming beam, so that nothing obstructs the aperture; this improves the
+      contrast for imaging a faint planet beside its star. The professor's summary in Lecture 23 is the principle of §1:
+      the aim of a 15 m primary mirror is higher resolution. The 2020 US
+      astronomy and astrophysics decadal survey recommended a smaller telescope, about 6 m across, covering ultraviolet,
+      visible and infrared light, with the direct imaging of Earth-like planets around nearby stars as its goal; NASA has
+      named it the Habitable Worlds Observatory. Such a telescope works in the ultraviolet and visible as well as the
+      infrared, so to be diffraction-limited in visible light it must hold roughly half JWST's wavefront error ((21a.8):
+      about 38 nm rms at 0.5 µm, against JWST's 59–80 nm), and for its starlight
+      suppression the stability of the wavefront matters as much as its value.
+    </p>
+
+
+    <details class="check">
+      <summary>An image combines three NIRCam filters, F150W, F277W and F444W. Using the convention of this section,
+        which display colour goes to each filter, and what do the colours in the result mean physically?</summary>
+      <div class="answer">
+        <p>The number in a JWST filter name is its approximate central wavelength in hundredths of a micrometre: about
+          1.50, 2.77 and 4.44 µm (STScI gives F444W a pivot wavelength of 4.40 µm and a band of 3.9–5.0 µm). In chromatic
+          order the shortest, F150W, is shown blue, F277W green and F444W red. A region that appears red is relatively
+          bright at 4–5 µm, which in a nebula often means warm dust or emission lines in that band, such as hydrogen Brα
+          (4.05 µm) or molecular hydrogen (4.7 µm), and in a galaxy field can mean a larger redshift; a blue region is relatively brighter at
+          1.5 µm, such as a hot star little reddened by dust. The colours encode the shape of each source's infrared
+          spectrum across the three filters; they are not the colours an eye would see.</p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Resolution is <em>θ</em> = 1.22<em>λ</em>/<em>D</em> (21a.1): JWST's 6.5 m at 1.49 µm matches Hubble's 2.4 m at
+          0.55 µm, and NIRCam's pixels are chosen to Nyquist-sample at 2 and 4 µm. JWST collects 6.3 times Hubble's
+          light.</li>
+        <li>Hubble's primary was ground to a conic constant of about −1.014 instead of −1.0023 because a null-corrector
+          lens spacing was 1.3 mm wrong; the edge was 2.1–2.3 µm too flat (21a.2). COSTAR and WFPC2, installed by astronauts
+          in 1993, cancelled the known aberration. Five servicing missions were possible because Hubble is in low Earth
+          orbit.</li>
+        <li>JWST observes in the infrared because dust is more transparent there, cool objects emit there (21a.3), molecules
+          have spectra there, and the light of the first galaxies is redshifted there (21a.4). Cosmological redshift is the
+          stretching of light by expansion, not a Doppler shift. The mid-infrared Pillars show fewer stars because stars
+          emit little at 7–15 µm while hydrocarbon molecules and small grains heated by ultraviolet photons glow, not because
+          the light is from the early universe.</li>
+        <li>The mirror is 18 gold-coated beryllium segments with an areal density nine times lower than Hubble's; beryllium
+          was chosen for its low thermal expansion at 35–55 K, and is 4.2 times as stiff as aluminium and 32 % less
+          dense (density in g/cm³, not kg/m³).</li>
+        <li>A warm mirror glows 3×10¹³ times more brightly at 10 µm than a 40 K one (21a.5), and a room-temperature
+          telescope outshines the sky beyond 1.7 µm. A five-layer radiative sunshield
+          — vacuum gaps, low-emissivity aluminium, open edges — reduces ~200 kW of sunlight to milliwatts and cools the
+          telescope passively to 35–55 K; only MIRI's 6 K needs the helium cryocooler.</li>
+        <li>At L2, 1.5 million km away (21a.7), the Sun's and Earth's pulls add to give a one-year orbit. JWST flies a halo
+          orbit in sunlight, not in Earth's shadow; propellant for more than 20 years remains, and no servicing was
+          planned.</li>
+        <li>132 actuators with 7.7 nm steps phased the 18 segments into one mirror. A Strehl ratio above 0.8 at 2 µm (150 nm
+          rms, (21a.8)) was required; the floor is 59 nm after the C3 impact, and in operation 60–80 nm. The wavefront is
+          sensed every two days and corrected at 80 nm, mostly after tilt events from strain released in the structure;
+          the operational diffraction limit is 1.1 µm.</li>
+        <li>In flight, micrometeoroids strike the open mirror about 2.5–3 times a month, one large hit on segment C3; a MIRI
+          wheel's bearing friction was handled by restricting its use. Colour is assigned in wavelength order to monochrome
+          filter images. Roman (launched 2026) surveys wide fields; the next large telescope is planned for direct imaging of
+          Earth-like planets.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <div class="table-scroll">
+    <table class="srcmap">
+      <tr><td>Intro, §1</td><td>Lecture 23 deck pp. 4–6, 14, 20, 31, 37; Lecture 23 (16 Nov). Hubble optical prescription, altitudes, Shuttle constraint, mirror temperature, corrected PSF: M. Lallo, "Experience with the Hubble Space Telescope: 20 years of an archetype", Opt. Eng. 51, 011011 (2012), Table 1 and §§2–4. Hubble range, instruments, mass, altitude, re-entry: NASA, "About Hubble" and "Hubble FAQs" (2025–26). NIRCam pixel scales and Nyquist wavelengths: STScI JWST User Documentation, "NIRCam Imaging". WISE: Wright et al., AJ 140, 1868 (2010); IRAC: Fazio et al., ApJS 154, 10 (2004). E1 computed in <code>examples-m21a.py</code></td></tr>
+      <tr><td>§2</td><td>Deck pp. 7–11; Lecture 23. NASA, "Hubble's Mirror Flaw". Lallo (2012) §3–§4 (null corrector, conic constants, wavefront error, COSTAR, WFPC2, servicing missions). Hubble Deep Field: NASA photo-gallery caption; deck p. 11. E2 computed in <code>examples-m21a.py</code></td></tr>
+      <tr><td>§3</td><td>Deck pp. 13–18, 36–41, 60; Lecture 23; Lecture 24 (18 Nov). J. P. Gardner et al., "The James Webb Space Telescope Mission", PASP 135, 068001 (2023). NASA, "Infrared Astronomy" and "Hubble Cosmological Redshift". ESA/Webb releases weic2206 (WASP-96 b, 12 July 2022) and weic2603 (MoM-z14, 28 January 2026). NASA, Pillars of Creation NIRCam and MIRI image pages. Emission of heated small grains and aromatic molecules: B. T. Draine and A. Li, ApJ 551, 807 (2001). Redshift and the Doppler interpretation: T. M. Davis and C. H. Lineweaver, PASA 21, 97 (2004). Wien's constant: CODATA 2018. E3 computed in <code>examples-m21a.py</code></td></tr>
+      <tr><td>§4</td><td>Deck pp. 20–25, 42, 53; Lecture 23. M. W. McElwain et al., "The James Webb Space Telescope Mission: Optical Telescope Element Design, Development, and Performance", PASP 135, 058001 (2023), §§2, 4.2. Gardner et al. (2023) (NIRISS modes, §5.3). NASA, "Telescope Overview" (solar array). NASA, Hubble "Optics" (primary mirror mass). Aluminium 6061 properties: standard handbook values. Detectors and micro-shutters: <a href="m21-photodetectors.html">M21</a> §5–§7. E4–E5 computed in <code>examples-m21a.py</code></td></tr>
+      <tr><td>§5</td><td>Deck pp. 19, 26–28, 33, 51; Lecture 23; Lecture 24. NASA, "Webb's Sunshield" and "Sunshield Membrane Coatings". Gardner et al. (2023), cooldown and MIRI cooler. Radiation shields: F. P. Incropera and D. P. DeWitt, <i>Fundamentals of Heat and Mass Transfer</i>, radiation-shield analysis. E6–E7 computed in <code>examples-m21a.py</code></td></tr>
+      <tr><td>§6</td><td>Deck pp. 29–31; Lecture 23; Lecture 24. Gardner et al. (2023) (L2 halo orbit, 10-year goal). Rigby et al. (2023) §2.2–2.3 (propellant requirement and its causes, five-year design). Umbra and halo orbit: <a href="m05-sun-particle-populations.html">M05</a> §8 and NASA mission documentation. Collinear Lagrange points: C. D. Murray and S. F. Dermott, <i>Solar System Dynamics</i> (1999), §3.5. Gravitational parameters: IAU 2015 nominal values and the JPL ephemeris constants. E8 computed in <code>examples-m21a.py</code></td></tr>
+      <tr><td>§7</td><td>Deck pp. 32, 34, 45–47, 56; Lecture 23. NASA, "Webb's Deployment". McElwain et al. (2023) (actuators, measured Strehl ratios). Gardner et al. (2023) (requirement, deployment). J. Rigby et al., "The Science Performance of JWST as Characterized in Commissioning", PASP 135, 048001 (2023) (wavefront error floor and operating range, correction threshold, tilt events and wing-latch strain sensors, sensing cadence, stability). McElwain et al. (2023) §6.2 (tilt events as the dominant source of correction). Maréchal approximation: M. Born and E. Wolf, <i>Principles of Optics</i>, §9.1. E9 computed in <code>examples-m21a.py</code></td></tr>
+      <tr><td>§8</td><td>Deck pp. 34–35, 43–44, 48–50, 54, 57; Lecture 23. Rigby et al. (2023) and McElwain et al. (2023) (micrometeoroids, C3). NASA Webb blog, 20 September and 8 November 2022 (MIRI grating wheel)</td></tr>
+      <tr><td>§9</td><td>Deck pp. 42, 62; Lecture 23; Lecture 24. NASA, "How Are Webb's Full-Color Images Made?". STScI JWST User Documentation, "NIRCam Filters" (pivot wavelengths and bands). NASA Roman mission and launch pages (2026); NASA, "The Roman Space Telescope Coronagraph Technology Demonstration" (NTRS 20230006969, 2023). Astro2020: National Academies, <i>Pathways to Discovery in Astronomy and Astrophysics for the 2020s</i> (2021)</td></tr>
+    </table>
+    </div>
+
+    <nav class="pagination">
+      <a class="prev" href="m21-photodetectors.html"><span>Previous</span>M21 · Photodetectors for Space</a>
+      <a class="next" href="index.html"><span>Next</span>M22 · Emerging Technologies — not yet built</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

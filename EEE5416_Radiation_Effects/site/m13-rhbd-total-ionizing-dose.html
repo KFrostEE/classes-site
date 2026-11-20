@@ -1,0 +1,1785 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M13 · Rad-Hard Circuit Design: Total Ionizing Dose — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M13 · Rad-Hard Circuit Design: Total Ionizing Dose</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 13</p>
+    <h1>Rad-Hard Circuit Design: Total Ionizing Dose</h1>
+    <p class="lede">
+      How a designer working in a commercial process keeps a circuit working while its transistors
+      degrade under total dose: by closing feedback loops around gain that is falling, by matching
+      transistors so that their shifts cancel, by averaging out offsets with clocked switches, by
+      supplying from a helper transistor the extra base current that degraded bipolar transistors draw, by budgeting
+      voltage headroom for thresholds that move, and by drawing transistors whose leakage paths do not
+      exist. Each technique masks degradation up to a limit, and the module sets out where each limit lies.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M06, M08, M09 (M15 for the design margin)</span>
+      <span><b>Read time</b> ~60 min</span>
+      <span><b>Sources</b> Deck 09; lecture on Deck 09; Holman, Nowlin <em>et al.</em> and Faccio in the course textbook; IEEE NSREC 2001 Short Course §§II–III</span>
+    </div>
+
+    <p>
+      <a href="m08-tid-effects-devices-ics.html">M08</a> followed total dose from trapped charge to the
+      device parameters it moves: n-channel thresholds fall, p-channel threshold magnitudes rise, bipolar
+      current gain falls, and charge in the isolation oxides opens leakage paths. It ended on the step from
+      device to circuit, which is not a scaling: a circuit can hold its specification through most of its
+      transistors' degradation and then fail abruptly. This module is about designing for that step.
+      Radiation hardening by design (RHBD) is the practice of building radiation-tolerant circuits in a
+      commercial process, where the designer cannot change the oxides or the doping and must work with the
+      topology, the transistor sizes and the layout instead (Deck 09 p. 9). Its single-event counterpart is
+      <a href="m14-rhbd-single-event-effects.html">M14</a>.
+    </p>
+    <p>
+      §1 explains why hardening moved from the process to the design and states the design philosophy the
+      course follows. §§2–3 treat the operational amplifier: what feedback does with an open-loop gain that
+      falls, and why it cannot do the same for an input offset. §4 treats bipolar current mirrors whose
+      current gain degrades, and §5 CMOS mirrors and the voltage headroom a threshold shift consumes. §6
+      covers matched gate–source voltages, periodic reconfiguration and chopper stabilization, which average
+      a radiation-induced offset away. §7 turns to layout, the enclosed transistor and the guard ring, and to
+      the FinFET technologies where neither can be drawn. §8 covers silicon on insulator, where a bias on the
+      substrate can compensate charge trapped in the buried oxide, and §9 sets the techniques side by side
+      with what each costs and how a design is checked against the end of the mission.
+    </p>
+
+    <!-- ============================================================ -->
+    <h2>1 · Hardening by process and by design</h2>
+
+    <p>
+      A circuit can be made tolerant of total dose in two places. Radiation hardening by process (RHBP)
+      changes the fabrication itself, the oxide growth, the anneals and the hydrogen content, so that less
+      charge is trapped per unit dose (<a href="m10-gate-oxide-processing.html">M10</a>). Hardening by
+      design leaves the process alone and changes what is drawn on it. This section explains why the second
+      approach now dominates, and what the course's design philosophy asks of a circuit.
+    </p>
+
+    <h3>Why design replaced process</h3>
+    <p>
+      Radiation-hardened processes were developed from the 1960s through the 1980s, typically with defence
+      funding (Deck 09 p. 5). The market that sustained them did not grow with the industry: by Deck 09's
+      figure only 0.05 % of the integrated circuits manufactured in 2000 were radiation-hardened, and most
+      foundries have long since left the radiation-hardened market. Commercial process development is driven
+      by smaller features, higher speed, lower supply voltage and lower power, and radiation tolerance is a
+      side effect when it appears at all (Deck 09 p. 8). Silicon on insulator (SOI) is Deck 09's example: it
+      was developed for speed, for removing bulk effects and for lower power, and it happens to suit
+      single-event-tolerant design.
+    </p>
+    <p>
+      Scaling has in one respect helped. The total-dose threshold shift falls steeply with gate-oxide
+      thickness (<a href="m08-tid-effects-devices-ics.html">M08</a> §8), and Deck 09 p. 7 records that thinner
+      oxides and better oxide–silicon interfaces have reduced total-dose effects while smaller devices at
+      lower voltages have made single-event effects worse. Holman, in the course textbook, draws the
+      practical consequence: gate oxides in deep-submicron CMOS are about 1 nm thick and trap little charge,
+      so a hardened digital cell library for a bulk process can tolerate several hundred krad(Si) by
+      drawing its n-channel transistors without edges and surrounding them with guard rings (§7), while
+      ignoring the small threshold shifts. The thick isolation oxides, not the gate oxide, now carry most of
+      the trapped charge, and the analog circuits, which depend on precise bias points, carry most of the
+      sensitivity.
+    </p>
+
+    <h3>The course's design philosophy</h3>
+    <p>
+      Deck 09 p. 11 lists the four total-dose effects a CMOS or BiCMOS designer must expect, each traced to
+      its mechanism in an earlier module:
+    </p>
+    <ul>
+      <li><b>p-channel threshold magnitudes increase</b>, so p-channel transistors become harder to turn on.
+      Trapped holes and, in p-channel devices, interface traps both drive the threshold negative
+      (<a href="m08-tid-effects-devices-ics.html">M08</a> §1).</li>
+      <li><b>n-channel threshold magnitudes decrease</b>, so n-channel transistors become harder to turn
+      off: trapped holes drive the threshold negative, while interface traps drive it back positive.</li>
+      <li><b>Bipolar current gain <em>β</em> falls</b>, because the base current rises through recombination
+      at the oxide over the emitter–base junction (<a href="m08-tid-effects-devices-ics.html">M08</a> §9).</li>
+      <li><b>Leakage between adjacent n-type diffusions rises</b>, because positive charge in the field or
+      trench oxide inverts the p-type surface beneath it (<a href="m08-tid-effects-devices-ics.html">M08</a>
+      §5).</li>
+    </ul>
+    <p>
+      The same slide states the philosophy in one sentence: design the circuit as if it were to be made in a
+      technology with very poor process control. Radiation moves the transistor parameters after the circuit
+      is built, by amounts that differ from transistor to transistor because each transistor's shift depends
+      on its own bias during irradiation (<a href="m09-oxide-charge-kinetics.html">M09</a> §3). A circuit
+      that already tolerates wide process spread tolerates much of that movement too. The tools the slide
+      names are conservative design, matching, negative feedback, special layout and the right choice of
+      components, and §§2–8 take them in turn.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 236" role="img" aria-labelledby="m13f1-t">
+        <title id="m13f1-t">The four device-level total-dose effects and the circuit symptom each produces</title>
+        <text x="110" y="18" class="dg-label" text-anchor="middle" font-weight="600">Device effect</text>
+        <text x="330" y="18" class="dg-label" text-anchor="middle" font-weight="600">Circuit symptom</text>
+        <rect x="8" y="30" width="204" height="40" rx="4" class="dg-fill"/>
+        <text x="110" y="47" class="dg-label" text-anchor="middle">p-channel |<tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">th</tspan>| rises</text>
+        <text x="110" y="62" class="dg-label-sm" text-anchor="middle">harder to turn on</text>
+        <rect x="228" y="30" width="204" height="40" rx="4" class="dg-fill"/>
+        <text x="330" y="47" class="dg-label" text-anchor="middle">headroom lost, offset</text>
+        <text x="330" y="62" class="dg-label-sm" text-anchor="middle">§§3, 5</text>
+        <rect x="8" y="82" width="204" height="40" rx="4" class="dg-fill"/>
+        <text x="110" y="99" class="dg-label" text-anchor="middle">n-channel |<tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">th</tspan>| falls</text>
+        <text x="110" y="114" class="dg-label-sm" text-anchor="middle">harder to turn off</text>
+        <rect x="228" y="82" width="204" height="40" rx="4" class="dg-fill"/>
+        <text x="330" y="99" class="dg-label" text-anchor="middle">off-state current, offset</text>
+        <text x="330" y="114" class="dg-label-sm" text-anchor="middle">§§3, 5</text>
+        <rect x="8" y="134" width="204" height="40" rx="4" class="dg-fill"/>
+        <text x="110" y="151" class="dg-label" text-anchor="middle">bipolar <tspan class="dg-math">β</tspan> falls</text>
+        <text x="110" y="166" class="dg-label-sm" text-anchor="middle">base current rises</text>
+        <rect x="228" y="134" width="204" height="40" rx="4" class="dg-fill"/>
+        <text x="330" y="151" class="dg-label" text-anchor="middle">gain and mirror error</text>
+        <text x="330" y="166" class="dg-label-sm" text-anchor="middle">§§2, 4</text>
+        <rect x="8" y="186" width="204" height="40" rx="4" class="dg-fill"/>
+        <text x="110" y="203" class="dg-label" text-anchor="middle">isolation-oxide charge</text>
+        <text x="110" y="218" class="dg-label-sm" text-anchor="middle">n⁺-to-n⁺ and edge leakage</text>
+        <rect x="228" y="186" width="204" height="40" rx="4" class="dg-fill"/>
+        <text x="330" y="203" class="dg-label" text-anchor="middle">supply current, lost isolation</text>
+        <text x="330" y="218" class="dg-label-sm" text-anchor="middle">§§7–8</text>
+        <line x1="212" y1="50" x2="226" y2="50" class="dg-acc"/>
+        <line x1="212" y1="102" x2="226" y2="102" class="dg-acc"/>
+        <line x1="212" y1="154" x2="226" y2="154" class="dg-acc"/>
+        <line x1="212" y1="206" x2="226" y2="206" class="dg-acc"/>
+      </svg>
+      <figcaption>Figure 1. Deck 09 p. 11's four total-dose effects and the circuit symptom each produces,
+      with the section of this module that treats the design response. The left column is the device
+      physics of M08; the right column is what a circuit designer measures.</figcaption>
+    </figure>
+
+    <h3>Choosing the process and the components</h3>
+    <p>
+      Deck 09 p. 9 names the commercial processes a hardened design can use: submicron bulk CMOS, which is
+      inexpensive; BiCMOS, which combines CMOS with bipolar transistors and suits mixed-signal design; SOI;
+      and three-dimensional transistors, FinFETs and gate-all-around devices. Holman weighs them for
+      mixed-signal work. Bulk CMOS has good inherent total-dose tolerance once the leakage paths are removed.
+      SOI is intrinsically harder against single events and prompt dose but still leaks under total dose.
+      BiCMOS adds low-noise, high-frequency bipolar transistors and with them the bipolar gain degradation of
+      §4. Within any process, Holman lists components to avoid as inherently vulnerable to radiation:
+    </p>
+    <ul>
+      <li>pinched and diffused resistors;</li>
+      <li>MOS capacitors, replaced by poly–poly or poly–metal capacitors;</li>
+      <li>surface Zener diodes;</li>
+      <li>lateral p-n-p transistors, replaced where needed by a gated lateral p-n-p.</li>
+    </ul>
+    <p>
+      Holman also notes that no design method is optimal for every case: each new design and each new
+      process generation may require the hardening techniques to be reassessed. He states a limit of the
+      compensation circuits he describes (switched-capacitor offset cancellation, charge pumps and bulk–source
+      biasing): they usually compensate for the symptoms of degradation at the circuit level rather than
+      reversing or preventing the degradation in the transistor, so an analog circuit may work normally until
+      a critical dose and then fail catastrophically when the voltage headroom or the gain falls below what it
+      needs. The same reasoning extends to the other circuit-level techniques of §§2–6, which also act on the
+      symptoms; the layout of §7 is different, because it removes a leakage path rather than compensating
+      for it. That behaviour is the threshold effect of
+      <a href="m08-tid-effects-devices-ics.html">M08</a> §10, produced deliberately, and it is why §9 checks
+      every design against the parameter values expected at the end of the mission.
+    </p>
+
+    <details class="check">
+      <summary>A mixed-signal chip for a long interplanetary mission is to be built in a commercial 65 nm bulk CMOS process. Which of Deck 09 p. 11's four effects would you expect to dominate the digital logic, and which the analog front end, and why does that difference arise?</summary>
+      <div class="answer">
+        <p>In the digital logic, leakage between n-type diffusions and along transistor edges dominates. The
+        gate oxide at that node is very thin (Holman puts deep-submicron gate oxides at about 1 nm), so it traps little charge and the threshold
+        shifts are small; the thick trench isolation still traps enough positive charge to invert the p-type
+        surface beside it, which raises the off-state and supply current (M08 §§5, 8). Digital gates switch
+        between rails, so a few tens of millivolts of threshold shift does not change a logic level. In the
+        analog front end the threshold shifts themselves matter, because analog circuits rest on precise bias
+        points and on matching between transistor pairs. A shift of a few millivolts that differs between the
+        two transistors of a differential pair is an input offset, and the gain that follows multiplies it
+        (§3). Bipolar gain loss would enter as well if the process offered bipolar transistors, which a bulk
+        CMOS process does not. The difference arises because digital circuits tolerate parameter changes up
+        to a noise margin, while analog circuits convert any parameter change, or any difference between
+        matched devices, directly into an error.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>2 · Feedback and a falling open-loop gain</h2>
+
+    <p>
+      An operational amplifier, or op-amp, is a differential amplifier with a very large voltage gain,
+      the open-loop gain <em>A</em><sub>OL</sub>, typically 10⁵ or more before irradiation. Total dose
+      lowers it: bipolar input and gain stages lose current gain, and in CMOS the bias currents and the
+      transconductances move as the thresholds and the mobility change. Deck 09 p. 12 states the first
+      design response: negative feedback, which makes the closed-loop gain depend on resistors rather than
+      on the amplifier, so that the open-loop gain can fall a long way before the circuit notices.
+    </p>
+
+    <h3>Why feedback conceals gain loss</h3>
+    <p>
+      In the non-inverting amplifier of Deck 09 p. 12, a divider of two resistors returns a fraction
+      <em>β</em><sub>f</sub> = <em>R</em><sub>1</sub>/(<em>R</em><sub>1</sub> + <em>R</em><sub>2</sub>) of
+      the output to the inverting input; with <em>R</em><sub>2</sub> = 9 kΩ and <em>R</em><sub>1</sub> =
+      1 kΩ, <em>β</em><sub>f</sub> = 1/10. The amplifier multiplies the difference between its inputs by
+      <em>A</em><sub>OL</sub>: <em>V</em><sub>out</sub> = <em>A</em><sub>OL</sub>(<em>V</em><sub>in</sub> −
+      <em>β</em><sub>f</sub><em>V</em><sub>out</sub>). Solving for the ratio of output to input gives the
+      closed-loop gain:
+    </p>
+
+    <div class="eq" id="eq-aol">
+      <div class="eq-body">
+        <div class="eq-math"><em>A</em><sub>CL</sub> = <span class="frac"><span class="num"><em>A</em><sub>OL</sub></span><span class="den">1 + <em>A</em><sub>OL</sub><em>β</em><sub>f</sub></span></span></div>
+        <div class="eq-num">(13.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>A</em><sub>CL</sub> closed-loop gain, dimensionless · <em>A</em><sub>OL</sub> open-loop gain of
+        the op-amp at the dose of interest, dimensionless · <em>β</em><sub>f</sub> feedback factor, the
+        fraction of the output returned to the inverting input, dimensionless (1/10 for an ideal gain of 10,
+        1 for a unity-gain buffer). The product <em>A</em><sub>OL</sub><em>β</em><sub>f</sub> is the loop
+        gain. Written with the subscript f to keep it apart from the bipolar current gain <em>β</em> of §4.
+        Holds at frequencies where <em>A</em><sub>OL</sub> is real (well inside the amplifier's bandwidth)
+        and with resistors that do not load the output.
+      </div>
+    </div>
+
+    <p>
+      When the loop gain is large, the 1 in the denominator is negligible and <em>A</em><sub>CL</sub> →
+      1/<em>β</em><sub>f</sub>, which depends only on the resistor ratio. Deck 09 gives the reason in words:
+      feedback continuously adjusts the difference between the amplifier's inputs to keep the output
+      accurate. If <em>A</em><sub>OL</sub> falls, the output initially falls with it, the fed-back fraction
+      falls, the difference between the inputs grows, and the larger difference restores the output; the
+      loop settles where the remaining input difference, <em>V</em><sub>out</sub>/<em>A</em><sub>OL</sub>, is
+      just large enough to sustain the output. The fractional shortfall from the ideal gain follows from
+      (13.1):
+    </p>
+
+    <div class="eq" id="eq-gain-error">
+      <div class="eq-body">
+        <div class="eq-math"><em>ε</em> = 1 − <em>A</em><sub>CL</sub><em>β</em><sub>f</sub> = <span class="frac"><span class="num">1</span><span class="den">1 + <em>A</em><sub>OL</sub><em>β</em><sub>f</sub></span></span> ≈ <span class="frac"><span class="num">1</span><span class="den"><em>A</em><sub>OL</sub><em>β</em><sub>f</sub></span></span></div>
+        <div class="eq-num">(13.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>ε</em> fractional gain error, the closed-loop gain's shortfall as a fraction of its ideal value
+        1/<em>β</em><sub>f</sub>, dimensionless (multiply by 100 for per cent) · other symbols as in (13.1).
+        The approximation holds when the loop gain is much larger than 1. The error falls short, never over:
+        finite open-loop gain always makes the closed-loop gain smaller than 1/<em>β</em><sub>f</sub>. Taking
+        the derivative of (13.1) gives the same factor as a sensitivity: a fractional change
+        d<em>A</em><sub>OL</sub>/<em>A</em><sub>OL</sub> changes <em>A</em><sub>CL</sub> by the fraction
+        (d<em>A</em><sub>OL</sub>/<em>A</em><sub>OL</sub>)/(1 + <em>A</em><sub>OL</sub><em>β</em><sub>f</sub>).
+      </div>
+    </div>
+
+    <p>
+      Deck 09's figures reproduce from (13.2). For the gain-of-10 amplifier, an open-loop gain of 10⁵ leaves
+      the closed-loop gain 0.010 % low, 10⁴ leaves it 0.100 % low, and 10³ leaves it 0.990 % low. The slide's
+      shaded band, closed-loop gain within 1 % of ideal, therefore begins at <em>A</em><sub>OL</sub> ≈ 10³,
+      and the slide's statement follows: if the feedback resistors are matched, the open-loop gain can
+      degrade by two orders of magnitude from 10⁵ and the circuit remains functional. Below about 100 the
+      error grows quickly; at <em>A</em><sub>OL</sub> = 10 the closed-loop gain is 5, half the ideal.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 252" role="img" aria-labelledby="m13f2-t">
+<title id="m13f2-t">Closed-loop gain as a fraction of its ideal value against op-amp open-loop gain, for ideal gains of 10 and 100</title>
+<rect x="240.7" y="24" width="179.3" height="172" class="dg-faint" opacity="0.35"/>
+<line x1="62" y1="196" x2="420" y2="196" class="dg-rule"/><line x1="62" y1="24" x2="62" y2="196" class="dg-rule"/>
+<line x1="62.0" y1="196" x2="62.0" y2="200" class="dg-rule"/>
+<text x="62.0" y="213" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">0</tspan></text>
+<line x1="121.7" y1="196" x2="121.7" y2="200" class="dg-rule"/>
+<text x="121.7" y="213" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">1</tspan></text>
+<line x1="181.3" y1="196" x2="181.3" y2="200" class="dg-rule"/>
+<text x="181.3" y="213" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">2</tspan></text>
+<line x1="241.0" y1="196" x2="241.0" y2="200" class="dg-rule"/>
+<text x="241.0" y="213" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">3</tspan></text>
+<line x1="300.7" y1="196" x2="300.7" y2="200" class="dg-rule"/>
+<text x="300.7" y="213" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">4</tspan></text>
+<line x1="360.3" y1="196" x2="360.3" y2="200" class="dg-rule"/>
+<text x="360.3" y="213" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">5</tspan></text>
+<line x1="420.0" y1="196" x2="420.0" y2="200" class="dg-rule"/>
+<text x="420.0" y="213" class="dg-label-sm" text-anchor="middle">10<tspan baseline-shift="super" style="font-size:75%">6</tspan></text>
+<line x1="58" y1="196.0" x2="62" y2="196.0" class="dg-rule"/>
+<text x="55" y="200.0" class="dg-label-sm" text-anchor="end">0</text>
+<line x1="58" y1="110.0" x2="62" y2="110.0" class="dg-rule"/>
+<text x="55" y="114.0" class="dg-label-sm" text-anchor="end">0.5</text>
+<line x1="58" y1="24.0" x2="62" y2="24.0" class="dg-rule"/>
+<text x="55" y="28.0" class="dg-label-sm" text-anchor="end">1</text>
+<line x1="62" y1="25.7" x2="420" y2="25.7" class="dg-guide" stroke-dasharray="3 3"/>
+<path d="M62.0,194.3 L63.2,194.2 L64.4,194.1 L65.6,194.0 L66.8,194.0 L68.0,193.9 L69.2,193.8 L70.4,193.7 L71.5,193.5 L72.7,193.4 L73.9,193.3 L75.1,193.2 L76.3,193.1 L77.5,192.9 L78.7,192.8 L79.9,192.6 L81.1,192.5 L82.3,192.3 L83.5,192.1 L84.7,192.0 L85.9,191.8 L87.1,191.6 L88.3,191.4 L89.4,191.2 L90.6,191.0 L91.8,190.7 L93.0,190.5 L94.2,190.2 L95.4,190.0 L96.6,189.7 L97.8,189.4 L99.0,189.1 L100.2,188.8 L101.4,188.5 L102.6,188.1 L103.8,187.8 L105.0,187.4 L106.2,187.0 L107.3,186.6 L108.5,186.2 L109.7,185.8 L110.9,185.3 L112.1,184.9 L113.3,184.4 L114.5,183.9 L115.7,183.3 L116.9,182.8 L118.1,182.2 L119.3,181.6 L120.5,181.0 L121.7,180.4 L122.9,179.7 L124.1,179.0 L125.2,178.3 L126.4,177.5 L127.6,176.8 L128.8,176.0 L130.0,175.1 L131.2,174.3 L132.4,173.4 L133.6,172.5 L134.8,171.5 L136.0,170.5 L137.2,169.5 L138.4,168.5 L139.6,167.4 L140.8,166.3 L142.0,165.1 L143.1,163.9 L144.3,162.7 L145.5,161.5 L146.7,160.2 L147.9,158.9 L149.1,157.5 L150.3,156.1 L151.5,154.7 L152.7,153.2 L153.9,151.7 L155.1,150.2 L156.3,148.6 L157.5,147.0 L158.7,145.4 L159.9,143.7 L161.0,142.0 L162.2,140.3 L163.4,138.6 L164.6,136.8 L165.8,135.0 L167.0,133.2 L168.2,131.3 L169.4,129.5 L170.6,127.6 L171.8,125.7 L173.0,123.7 L174.2,121.8 L175.4,119.9 L176.6,117.9 L177.8,115.9 L178.9,114.0 L180.1,112.0 L181.3,110.0 L182.5,108.0 L183.7,106.0 L184.9,104.1 L186.1,102.1 L187.3,100.1 L188.5,98.2 L189.7,96.3 L190.9,94.3 L192.1,92.4 L193.3,90.5 L194.5,88.7 L195.7,86.8 L196.8,85.0 L198.0,83.2 L199.2,81.4 L200.4,79.7 L201.6,78.0 L202.8,76.3 L204.0,74.6 L205.2,73.0 L206.4,71.4 L207.6,69.8 L208.8,68.3 L210.0,66.8 L211.2,65.3 L212.4,63.9 L213.6,62.5 L214.7,61.1 L215.9,59.8 L217.1,58.5 L218.3,57.3 L219.5,56.1 L220.7,54.9 L221.9,53.7 L223.1,52.6 L224.3,51.5 L225.5,50.5 L226.7,49.5 L227.9,48.5 L229.1,47.5 L230.3,46.6 L231.5,45.7 L232.6,44.9 L233.8,44.0 L235.0,43.2 L236.2,42.5 L237.4,41.7 L238.6,41.0 L239.8,40.3 L241.0,39.6 L242.2,39.0 L243.4,38.4 L244.6,37.8 L245.8,37.2 L247.0,36.7 L248.2,36.1 L249.4,35.6 L250.5,35.1 L251.7,34.7 L252.9,34.2 L254.1,33.8 L255.3,33.4 L256.5,33.0 L257.7,32.6 L258.9,32.2 L260.1,31.9 L261.3,31.5 L262.5,31.2 L263.7,30.9 L264.9,30.6 L266.1,30.3 L267.3,30.0 L268.4,29.8 L269.6,29.5 L270.8,29.3 L272.0,29.0 L273.2,28.8 L274.4,28.6 L275.6,28.4 L276.8,28.2 L278.0,28.0 L279.2,27.9 L280.4,27.7 L281.6,27.5 L282.8,27.4 L284.0,27.2 L285.2,27.1 L286.3,26.9 L287.5,26.8 L288.7,26.7 L289.9,26.6 L291.1,26.5 L292.3,26.3 L293.5,26.2 L294.7,26.1 L295.9,26.0 L297.1,26.0 L298.3,25.9 L299.5,25.8 L300.7,25.7 L301.9,25.6 L303.1,25.6 L304.2,25.5 L305.4,25.4 L306.6,25.4 L307.8,25.3 L309.0,25.2 L310.2,25.2 L311.4,25.1 L312.6,25.1 L313.8,25.0 L315.0,25.0 L316.2,24.9 L317.4,24.9 L318.6,24.9 L319.8,24.8 L321.0,24.8 L322.1,24.7 L323.3,24.7 L324.5,24.7 L325.7,24.7 L326.9,24.6 L328.1,24.6 L329.3,24.6 L330.5,24.5 L331.7,24.5 L332.9,24.5 L334.1,24.5 L335.3,24.5 L336.5,24.4 L337.7,24.4 L338.9,24.4 L340.0,24.4 L341.2,24.4 L342.4,24.3 L343.6,24.3 L344.8,24.3 L346.0,24.3 L347.2,24.3 L348.4,24.3 L349.6,24.3 L350.8,24.2 L352.0,24.2 L353.2,24.2 L354.4,24.2 L355.6,24.2 L356.8,24.2 L357.9,24.2 L359.1,24.2 L360.3,24.2 L361.5,24.2 L362.7,24.2 L363.9,24.1 L365.1,24.1 L366.3,24.1 L367.5,24.1 L368.7,24.1 L369.9,24.1 L371.1,24.1 L372.3,24.1 L373.5,24.1 L374.7,24.1 L375.8,24.1 L377.0,24.1 L378.2,24.1 L379.4,24.1 L380.6,24.1 L381.8,24.1 L383.0,24.1 L384.2,24.1 L385.4,24.1 L386.6,24.1 L387.8,24.1 L389.0,24.1 L390.2,24.1 L391.4,24.1 L392.6,24.0 L393.7,24.0 L394.9,24.0 L396.1,24.0 L397.3,24.0 L398.5,24.0 L399.7,24.0 L400.9,24.0 L402.1,24.0 L403.3,24.0 L404.5,24.0 L405.7,24.0 L406.9,24.0 L408.1,24.0 L409.3,24.0 L410.5,24.0 L411.6,24.0 L412.8,24.0 L414.0,24.0 L415.2,24.0 L416.4,24.0 L417.6,24.0 L418.8,24.0 L420.0,24.0" class="dg-line"/>
+<path d="M62.0,180.4 L63.2,179.7 L64.4,179.0 L65.6,178.3 L66.8,177.5 L68.0,176.8 L69.2,176.0 L70.4,175.1 L71.5,174.3 L72.7,173.4 L73.9,172.5 L75.1,171.5 L76.3,170.5 L77.5,169.5 L78.7,168.5 L79.9,167.4 L81.1,166.3 L82.3,165.1 L83.5,163.9 L84.7,162.7 L85.9,161.5 L87.1,160.2 L88.3,158.9 L89.4,157.5 L90.6,156.1 L91.8,154.7 L93.0,153.2 L94.2,151.7 L95.4,150.2 L96.6,148.6 L97.8,147.0 L99.0,145.4 L100.2,143.7 L101.4,142.0 L102.6,140.3 L103.8,138.6 L105.0,136.8 L106.2,135.0 L107.3,133.2 L108.5,131.3 L109.7,129.5 L110.9,127.6 L112.1,125.7 L113.3,123.7 L114.5,121.8 L115.7,119.9 L116.9,117.9 L118.1,115.9 L119.3,114.0 L120.5,112.0 L121.7,110.0 L122.9,108.0 L124.1,106.0 L125.2,104.1 L126.4,102.1 L127.6,100.1 L128.8,98.2 L130.0,96.3 L131.2,94.3 L132.4,92.4 L133.6,90.5 L134.8,88.7 L136.0,86.8 L137.2,85.0 L138.4,83.2 L139.6,81.4 L140.8,79.7 L142.0,78.0 L143.1,76.3 L144.3,74.6 L145.5,73.0 L146.7,71.4 L147.9,69.8 L149.1,68.3 L150.3,66.8 L151.5,65.3 L152.7,63.9 L153.9,62.5 L155.1,61.1 L156.3,59.8 L157.5,58.5 L158.7,57.3 L159.9,56.1 L161.0,54.9 L162.2,53.7 L163.4,52.6 L164.6,51.5 L165.8,50.5 L167.0,49.5 L168.2,48.5 L169.4,47.5 L170.6,46.6 L171.8,45.7 L173.0,44.9 L174.2,44.0 L175.4,43.2 L176.6,42.5 L177.8,41.7 L178.9,41.0 L180.1,40.3 L181.3,39.6 L182.5,39.0 L183.7,38.4 L184.9,37.8 L186.1,37.2 L187.3,36.7 L188.5,36.1 L189.7,35.6 L190.9,35.1 L192.1,34.7 L193.3,34.2 L194.5,33.8 L195.7,33.4 L196.8,33.0 L198.0,32.6 L199.2,32.2 L200.4,31.9 L201.6,31.5 L202.8,31.2 L204.0,30.9 L205.2,30.6 L206.4,30.3 L207.6,30.0 L208.8,29.8 L210.0,29.5 L211.2,29.3 L212.4,29.0 L213.6,28.8 L214.7,28.6 L215.9,28.4 L217.1,28.2 L218.3,28.0 L219.5,27.9 L220.7,27.7 L221.9,27.5 L223.1,27.4 L224.3,27.2 L225.5,27.1 L226.7,26.9 L227.9,26.8 L229.1,26.7 L230.3,26.6 L231.5,26.5 L232.6,26.3 L233.8,26.2 L235.0,26.1 L236.2,26.0 L237.4,26.0 L238.6,25.9 L239.8,25.8 L241.0,25.7 L242.2,25.6 L243.4,25.6 L244.6,25.5 L245.8,25.4 L247.0,25.4 L248.2,25.3 L249.4,25.2 L250.5,25.2 L251.7,25.1 L252.9,25.1 L254.1,25.0 L255.3,25.0 L256.5,24.9 L257.7,24.9 L258.9,24.9 L260.1,24.8 L261.3,24.8 L262.5,24.7 L263.7,24.7 L264.9,24.7 L266.1,24.7 L267.3,24.6 L268.4,24.6 L269.6,24.6 L270.8,24.5 L272.0,24.5 L273.2,24.5 L274.4,24.5 L275.6,24.5 L276.8,24.4 L278.0,24.4 L279.2,24.4 L280.4,24.4 L281.6,24.4 L282.8,24.3 L284.0,24.3 L285.2,24.3 L286.3,24.3 L287.5,24.3 L288.7,24.3 L289.9,24.3 L291.1,24.2 L292.3,24.2 L293.5,24.2 L294.7,24.2 L295.9,24.2 L297.1,24.2 L298.3,24.2 L299.5,24.2 L300.7,24.2 L301.9,24.2 L303.1,24.2 L304.2,24.1 L305.4,24.1 L306.6,24.1 L307.8,24.1 L309.0,24.1 L310.2,24.1 L311.4,24.1 L312.6,24.1 L313.8,24.1 L315.0,24.1 L316.2,24.1 L317.4,24.1 L318.6,24.1 L319.8,24.1 L321.0,24.1 L322.1,24.1 L323.3,24.1 L324.5,24.1 L325.7,24.1 L326.9,24.1 L328.1,24.1 L329.3,24.1 L330.5,24.1 L331.7,24.1 L332.9,24.0 L334.1,24.0 L335.3,24.0 L336.5,24.0 L337.7,24.0 L338.9,24.0 L340.0,24.0 L341.2,24.0 L342.4,24.0 L343.6,24.0 L344.8,24.0 L346.0,24.0 L347.2,24.0 L348.4,24.0 L349.6,24.0 L350.8,24.0 L352.0,24.0 L353.2,24.0 L354.4,24.0 L355.6,24.0 L356.8,24.0 L357.9,24.0 L359.1,24.0 L360.3,24.0 L361.5,24.0 L362.7,24.0 L363.9,24.0 L365.1,24.0 L366.3,24.0 L367.5,24.0 L368.7,24.0 L369.9,24.0 L371.1,24.0 L372.3,24.0 L373.5,24.0 L374.7,24.0 L375.8,24.0 L377.0,24.0 L378.2,24.0 L379.4,24.0 L380.6,24.0 L381.8,24.0 L383.0,24.0 L384.2,24.0 L385.4,24.0 L386.6,24.0 L387.8,24.0 L389.0,24.0 L390.2,24.0 L391.4,24.0 L392.6,24.0 L393.7,24.0 L394.9,24.0 L396.1,24.0 L397.3,24.0 L398.5,24.0 L399.7,24.0 L400.9,24.0 L402.1,24.0 L403.3,24.0 L404.5,24.0 L405.7,24.0 L406.9,24.0 L408.1,24.0 L409.3,24.0 L410.5,24.0 L411.6,24.0 L412.8,24.0 L414.0,24.0 L415.2,24.0 L416.4,24.0 L417.6,24.0 L418.8,24.0 L420.0,24.0" class="dg-acc"/>
+<text x="150" y="52" class="dg-label" text-anchor="end">ideal gain 10</text>
+<text x="184" y="132" class="dg-label">ideal gain 100</text>
+<text x="246.7" y="144.4" class="dg-label-sm">gain-10 stage within 1 %</text>
+<text x="246.7" y="158.4" class="dg-label-sm">for <tspan class="dg-math">A</tspan><tspan baseline-shift="sub" style="font-size:75%">OL</tspan> ≥ 990</text>
+<text x="241.0" y="230" class="dg-label" text-anchor="middle">open-loop gain <tspan class="dg-math">A</tspan><tspan baseline-shift="sub" style="font-size:75%">OL</tspan></text>
+<text x="16" y="110.0" class="dg-label" text-anchor="middle" transform="rotate(-90 16 110.0)"><tspan class="dg-math">A</tspan><tspan baseline-shift="sub" style="font-size:75%">CL</tspan> ÷ ideal</text>
+</svg>
+      <figcaption>Figure 2. Closed-loop gain as a fraction of ideal, from (13.1), against the op-amp's
+      open-loop gain. The accent curve is Deck 09 p. 12's gain-of-10 amplifier; the shaded band is where it
+      stays within 1 %, from <em>A</em><sub>OL</sub> = 990 upward. A gain-of-100 stage (grey) has one tenth
+      the loop gain at every <em>A</em><sub>OL</sub>, so it needs ten times the open-loop gain for the same
+      accuracy: the larger the closed-loop gain, the less degradation the stage can absorb.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">How far the open-loop gain of a precision stage may fall</div>
+      <div class="ex-body">
+        <p><b>Given</b> A non-inverting stage with an ideal gain of 50 must stay within 0.1 % of that gain at
+        the end of the mission. Its op-amp has an open-loop gain of 2.0×10⁵ before irradiation.
+        <b>Find</b> the smallest open-loop gain the stage tolerates, and the factor by which the open-loop
+        gain may degrade.</p>
+        <p><b>Plan.</b> Set the error (13.2) equal to the limit and solve for <em>A</em><sub>OL</sub>. Use
+        the exact form, since the inversion is as easy as the approximation. The feedback factor is the
+        inverse of the ideal gain.</p>
+        <p class="ex-step"><b>Feedback factor.</b> <em>β</em><sub>f</sub> = 1/50 = 0.020.</p>
+        <p class="ex-step"><b>Invert (13.2).</b> 1/(1 + <em>A</em><sub>OL</sub><em>β</em><sub>f</sub>) ≤
+          <em>ε</em> gives <em>A</em><sub>OL</sub> ≥ (1/<em>ε</em> − 1)/<em>β</em><sub>f</sub> =
+          (1000 − 1) × 50 = 49 950. Why the inequality runs this way: the error falls as the open-loop gain
+          rises, so the limit on the error is a floor on the gain.</p>
+        <p class="ex-step"><b>Permitted degradation.</b> 2.0×10⁵ ÷ 49 950 = 4.00.</p>
+        <p class="ex-answer"><em>A</em><sub>OL</sub> must stay above about 5.0×10⁴, so it may fall by a
+          factor of 4.0. Check: at <em>A</em><sub>OL</sub> = 49 950 the loop gain is 999 and (13.1) gives a
+          closed-loop gain of 49.95, exactly 0.1 % low; before irradiation the error is 0.025 %. The gain-of-10
+          amplifier of Figure 2 can lose two orders of magnitude for 1 %; this stage can lose barely one
+          factor of four for 0.1 %, because both its ideal gain and its accuracy requirement are higher.</p>
+      </div>
+    </div>
+
+    <h3>Where feedback stops working</h3>
+    <p>
+      Deck 09 p. 12 names two limits. Feedback cannot compensate if radiation also shifts the values of the
+      feedback resistors or opens leakage paths, because the closed-loop gain 1/<em>β</em><sub>f</sub> is set
+      by those resistors and a leakage current into the feedback node changes the fraction fed back. This is
+      one reason for the component rules of §1, which exclude pinched and diffused resistors. And
+      feedback loses its corrective power when the open-loop gain falls towards unity, because the loop gain
+      then no longer dominates the 1 in (13.1). A third limit lies outside (13.1) altogether: the
+      open-loop gain is set by the bias currents of the amplifier's internal stages, so the same degradation
+      that lowers <em>A</em><sub>OL</sub> can also move an internal bias point out of its operating range,
+      and a stage that leaves its operating range stops amplifying at all. §§4–5 treat the bias circuits.
+    </p>
+
+    <details class="check">
+      <summary>An inverting amplifier uses <em>R</em><sub>1</sub> = 1 kΩ at the input and <em>R</em><sub>2</sub> = 20 kΩ in feedback, for an ideal gain of −20. Its op-amp's open-loop gain falls from 10⁵ to 2000. Find the feedback factor, the gain before and after, and the error after; then say whether the same op-amp in a non-inverting stage of gain +20 would do better or worse.</summary>
+      <div class="answer">
+        <p>The feedback factor of an inverting amplifier is the fraction of the output that reaches the
+        inverting input through the divider, with the signal source set to zero: <em>β</em><sub>f</sub> =
+        <em>R</em><sub>1</sub>/(<em>R</em><sub>1</sub> + <em>R</em><sub>2</sub>) = 1/21 = 0.0476. Its
+        closed-loop gain is −(<em>R</em><sub>2</sub>/<em>R</em><sub>1</sub>) multiplied by the same factor
+        <em>A</em><sub>OL</sub><em>β</em><sub>f</sub>/(1 + <em>A</em><sub>OL</sub><em>β</em><sub>f</sub>), so the
+        fractional error is again 1/(1 + <em>A</em><sub>OL</sub><em>β</em><sub>f</sub>). Before irradiation
+        the loop gain is 10⁵/21 = 4762 and the gain is −19.996 (0.021 % low). After, the loop gain is
+        2000/21 = 95.2 and the gain is −20 × 95.2/96.2 = −19.79, 1.04 % low. A non-inverting stage of gain
+        +20 has <em>β</em><sub>f</sub> = 1/20, a slightly larger loop gain (100) and an error of 0.99 %, so it
+        does marginally better. The difference is that an inverting stage of gain <em>G</em> has a
+        feedback factor of 1/(<em>G</em> + 1), not 1/<em>G</em>: its noise gain, 1/<em>β</em><sub>f</sub>, is
+        one more than its signal gain, and the error depends on the noise gain.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>3 · Offset: the error feedback does not remove</h2>
+
+    <p>
+      The input offset voltage <em>V</em><sub>OS</sub> of an op-amp is the differential input voltage that
+      would bring its output to zero; it arises from mismatch between the two halves of the input stage.
+      Total dose creates offset where none was designed, because two transistors that were matched when
+      made degrade by different amounts. This section explains why they degrade differently, how a design
+      prevents it, and why feedback, which concealed a falling gain in §2, passes an offset straight to the
+      output.
+    </p>
+
+    <h3>Why matched transistors drift apart</h3>
+    <p>
+      The charge a transistor traps depends on the field across its oxide during irradiation, and so on its
+      bias (<a href="m09-oxide-charge-kinetics.html">M09</a> §3). Holman states the consequence for analog
+      design: two matched transistors degrade at different rates if they are biased at different average
+      voltages, and small differences between threshold shifts become failures once a large voltage gain
+      multiplies them. Two transistors drawn identically therefore stay matched under dose only if they spend
+      the mission at the same average gate–source voltage <em>V</em><sub>GS</sub>.
+    </p>
+    <p>
+      Deck 09 pp. 19–20, after Edwards <em>et al.</em> (1999), shows the case. In the cascode amplifier's
+      schematic, diode-connected M6 in the bias branch, its source at ground, sets the gate voltage of the
+      cascode transistor M2 in the output stack, whose source is the drain of the input transistor M1. M2
+      and M6 are drawn as a matched pair, but they operate at different <em>V</em><sub>GS</sub>, so their
+      thresholds diverge with dose. Because M1's drain sits at M6's gate–source voltage less M2's, the
+      divergence moves M1's operating point; in Holman's account the input transistor M1 is eventually driven
+      out of saturation and the amplifier stops working. (The slide's bullet labels M6 the output stage and
+      M2 the bias stage, the reverse of its own schematic and of Holman's figure; the schematic is followed
+      here.) The hardened version sizes and biases every matched
+      transistor so that its <em>V</em><sub>GS</sub> is identical, and Deck 09 p. 20 reports that the bias
+      point then does not shift significantly even after several Mrad. The same reasoning applies to a
+      comparator (Deck 09 p. 21): unless the average value of the signal input equals the reference voltage,
+      the two input transistors accumulate different average <em>V</em><sub>GS</sub> and the comparator
+      develops an offset as dose accumulates. §6 removes that offset by swapping the inputs.
+    </p>
+
+    <h3>How an offset reaches the output</h3>
+    <p>
+      An input offset acts as a small voltage source in series with the non-inverting input. The feedback
+      loop treats it exactly as it treats a signal there: it amplifies it by 1/<em>β</em><sub>f</sub>, the
+      noise gain, whatever the signal gain of the circuit. Feedback therefore gives no protection against an
+      offset; the loop holds the inputs equal, and an offset is a defined inequality between them. The output
+      error of a stage at a dose combines the two contributions of this section and §2:
+    </p>
+
+    <div class="eq" id="eq-error-budget">
+      <div class="eq-body">
+        <div class="eq-math">|Δ<em>V</em><sub>out</sub>| ≤ <em>ε</em> · <span class="frac"><span class="num"><em>V</em><sub>in</sub></span><span class="den"><em>β</em><sub>f</sub></span></span> + <span class="frac"><span class="num">|<em>V</em><sub>OS</sub>|</span><span class="den"><em>β</em><sub>f</sub></span></span></div>
+        <div class="eq-num">(13.3)</div>
+      </div>
+      <div class="eq-says">
+        Written for the non-inverting stage, the unity-gain buffer included. Δ<em>V</em><sub>out</sub> output
+        error from its ideal value <em>V</em><sub>in</sub>/<em>β</em><sub>f</sub> (V) · <em>ε</em> fractional gain error (13.2) · <em>V</em><sub>in</sub> input signal (V) ·
+        <em>V</em><sub>OS</sub> input offset at the dose of interest (V) · <em>β</em><sub>f</sub> feedback factor,
+        so 1/<em>β</em><sub>f</sub> is the noise gain (1 for a unity-gain buffer). For an inverting stage the
+        offset term keeps the noise gain, which is one more than the signal gain, but the first term becomes
+        <em>ε</em>(<em>R</em><sub>2</sub>/<em>R</em><sub>1</sub>)|<em>V</em><sub>in</sub>|, since the ideal
+        output is −(<em>R</em><sub>2</sub>/<em>R</em><sub>1</sub>)<em>V</em><sub>in</sub>. The first term always reduces the output magnitude; the second has the sign
+        of the offset, which is not known in advance. Adding magnitudes gives the worst case, in which the two
+        errors add. The second term neglects the factor <em>A</em><sub>OL</sub><em>β</em><sub>f</sub>/(1 +
+        <em>A</em><sub>OL</sub><em>β</em><sub>f</sub>), as the first-order budget does.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 190" role="img" aria-labelledby="m13f3-t">
+        <title id="m13f3-t">Non-inverting amplifier with the input offset drawn as a source in series with the non-inverting input</title>
+        <polygon points="200,40 200,140 290,90" class="dg-fill"/>
+        <text x="210" y="70" class="dg-label">+</text>
+        <text x="210" y="122" class="dg-label">−</text>
+        <line x1="60" y1="65" x2="110" y2="65" class="dg-line"/>
+        <circle cx="125" cy="65" r="15" class="dg-acc"/>
+        <text x="125" y="70" class="dg-label" text-anchor="middle">±</text>
+        <text x="125" y="40" class="dg-label" text-anchor="middle"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">OS</tspan></text>
+        <line x1="140" y1="65" x2="200" y2="65" class="dg-line"/>
+        <text x="20" y="70" class="dg-label"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">in</tspan></text>
+        <line x1="290" y1="90" x2="400" y2="90" class="dg-line"/>
+        <text x="405" y="94" class="dg-label"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">out</tspan></text>
+        <line x1="200" y1="117" x2="170" y2="117" class="dg-line"/>
+        <line x1="170" y1="117" x2="170" y2="165" class="dg-line"/>
+        <line x1="360" y1="90" x2="360" y2="165" class="dg-line"/>
+        <rect x="245" y="158" width="70" height="14" class="dg-fill"/>
+        <text x="280" y="186" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">R</tspan><tspan baseline-shift="sub" style="font-size:75%">2</tspan></text>
+        <line x1="170" y1="165" x2="245" y2="165" class="dg-line"/>
+        <line x1="315" y1="165" x2="360" y2="165" class="dg-line"/>
+        <line x1="170" y1="165" x2="120" y2="165" class="dg-line"/>
+        <rect x="62" y="158" width="58" height="14" class="dg-fill"/>
+        <text x="91" y="186" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">R</tspan><tspan baseline-shift="sub" style="font-size:75%">1</tspan></text>
+        <line x1="62" y1="165" x2="40" y2="165" class="dg-line"/>
+        <line x1="40" y1="165" x2="40" y2="174" class="dg-line"/><line x1="31" y1="174" x2="49" y2="174" class="dg-line"/><line x1="34.5" y1="178" x2="45.5" y2="178" class="dg-line"/><line x1="38" y1="182" x2="42" y2="182" class="dg-line"/>
+        <text x="300" y="125" class="dg-label-sm">noise gain 1/<tspan class="dg-math">β</tspan><tspan baseline-shift="sub" style="font-size:75%">f</tspan> = 1 + <tspan class="dg-math">R</tspan><tspan baseline-shift="sub" style="font-size:75%">2</tspan>/<tspan class="dg-math">R</tspan><tspan baseline-shift="sub" style="font-size:75%">1</tspan></text>
+      </svg>
+      <figcaption>Figure 3. The offset as a source in series with the non-inverting input. The loop cannot
+      distinguish it from the signal, so it reaches the output multiplied by the noise gain
+      1 + <em>R</em><sub>2</sub>/<em>R</em><sub>1</sub>, which is 1/<em>β</em><sub>f</sub>.</figcaption>
+    </figure>
+
+    <p>
+      Two consequences follow. In a high-gain precision stage the offset term usually dominates, because the
+      gain error is divided by a large loop gain and the offset is not. And the two terms respond to
+      different remedies: a gain error falls when the open-loop gain is raised or preserved (§4), while an
+      offset falls only when the matching is preserved (this section) or when the offset is averaged away
+      (§6).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Allocating an end-of-life error budget</div>
+      <div class="ex-body">
+        <p><b>Given</b> A non-inverting stage of ideal gain 50 amplifies a 40 mV signal. Its total output error
+        at the end of the mission may not exceed 10 mV. Characterization shows the open-loop gain falling to
+        2.0×10⁴ by then. <b>Find</b> the largest input offset the op-amp may develop.</p>
+        <p><b>Plan.</b> Use (13.3) with the limit as the total. Compute the gain-error term first, since its
+        inputs are all given, and assign what is left of the budget to the offset term. Worst case: the two
+        terms add.</p>
+        <p class="ex-step"><b>Ideal output.</b> <em>V</em><sub>in</sub>/<em>β</em><sub>f</sub> = 50 × 40 mV =
+          2.000 V.</p>
+        <p class="ex-step"><b>Gain error.</b> Loop gain <em>A</em><sub>OL</sub><em>β</em><sub>f</sub> =
+          2.0×10⁴ × (1/50) = 400; <em>ε</em> = 1/401 = 0.2494 %. Output contribution: 2.000 V × 0.002494 =
+          4.99 mV.</p>
+        <p class="ex-step"><b>What is left for the offset.</b> 10 mV − 4.99 mV = 5.01 mV at the output.</p>
+        <p class="ex-step"><b>Refer it to the input.</b> Divide by the noise gain, 1/<em>β</em><sub>f</sub> =
+          50: <em>V</em><sub>OS</sub> ≤ 5.01 mV ÷ 50 = 100 µV. Why the noise gain and not some other factor:
+          the offset sits at the non-inverting input, where the loop amplifies it as it does the signal.</p>
+        <p class="ex-answer"><em>V</em><sub>OS</sub> ≤ about 100 µV. Check: 100 µV × 50 = 5.00 mV, and
+          5.00 + 4.99 = 9.99 mV, inside 10 mV. Keeping the factor 400/401 that (13.3) neglects gives 100.5 µV,
+          a 0.25 % difference. The offset allowance is a tenth of a millivolt, a threshold mismatch that two
+          differently biased input transistors can accumulate well before the open-loop gain has fallen to
+          2.0×10⁴: in a precision stage the matching, not the gain, usually sets the dose the stage
+          survives.</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>The two input transistors of a comparator are biased so that one spends most of the mission conducting and the other mostly off. At the end of the mission their threshold shifts are −45 mV and −30 mV. What input offset has the comparator developed, what does a gain stage of 200 after it make of that, and what design change would have prevented it?</summary>
+      <div class="answer">
+        <p>The offset is the difference between the two threshold shifts, 45 − 30 = 15 mV: a comparator
+        whose input pair is otherwise ideal switches when the differential input overcomes the difference
+        in thresholds. Multiplied by a gain of 200 it is 3.0 V, enough to saturate the output on one side,
+        so small inputs of the wrong sign are no longer resolved. The shifts differ because the transistor
+        held conducting had a positive gate–source voltage, and so a larger oxide field, for longer, and
+        trapped more charge (M09 §3). The remedy is to make the two transistors spend the mission at the same
+        average <em>V</em><sub>GS</sub>: either by design, so that the signal input averages to the reference
+        (Deck 09 p. 21), or by periodically swapping the two inputs, so that each transistor serves half the
+        time on each side and both accumulate the same history (§6).</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>4 · Bipolar current mirrors and degraded gain</h2>
+
+    <p>
+      A current mirror copies a reference current into one or more output branches, and it sets the bias of
+      nearly every stage in an analog circuit. In a bipolar mirror the copy is made through the transistors'
+      bases, so the base currents are a built-in error, and total dose enlarges that error as the current
+      gain falls. Deck 09 pp. 13–16 treats the simple mirror, the hardened mirror that supplies its base
+      current from a third transistor, and what that change did for a complete voltage regulator.
+    </p>
+
+    <details class="recap">
+      <summary>Assumes: collector, base and emitter currents of a bipolar transistor (M06 §7)</summary>
+      <p>
+        In forward-active operation the collector current is set by the base–emitter voltage,
+        <em>I</em><sub>C</sub> = <em>I</em><sub>S</sub> exp(<em>V</em><sub>BE</sub>/<em>V</em><sub>T</sub>),
+        and the base current is <em>I</em><sub>B</sub> = <em>I</em><sub>C</sub>/<em>β</em>, where <em>β</em>
+        is the common-emitter current gain. The emitter carries both,
+        <em>I</em><sub>E</sub> = <em>I</em><sub>C</sub> + <em>I</em><sub>B</sub> =
+        (<em>β</em> + 1)<em>I</em><sub>B</sub>. Total dose raises the base current at a given
+        <em>V</em><sub>BE</sub> by adding recombination at the oxide over the emitter–base junction, while the
+        collector current at that <em>V</em><sub>BE</sub> is nearly unchanged, so <em>β</em> falls
+        (<a href="m08-tid-effects-devices-ics.html">M08</a> §9).
+      </p>
+    </details>
+
+    <h3>The simple mirror</h3>
+    <p>
+      In the simple mirror of Deck 09 p. 13, transistor Q1 has its collector tied to its base, so it
+      carries whatever collector current the reference current leaves it and develops the matching
+      <em>V</em><sub>BE</sub>. Q2 shares that <em>V</em><sub>BE</sub>, because the two bases and the two
+      emitters are connected; if the transistors are identical, the same <em>V</em><sub>BE</sub> gives the
+      same collector current, and Q2's collector current is the output. The reference current, however,
+      must supply three currents at the node where it enters: Q1's collector current and the base currents
+      of both transistors. Kirchhoff's current law at that node gives <em>I</em><sub>ref</sub> =
+      <em>I</em><sub>C</sub> + 2<em>I</em><sub>C</sub>/<em>β</em>, and so:
+    </p>
+
+    <div class="eq" id="eq-current-mirror">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>out</sub> = <span class="frac"><span class="num"><em>I</em><sub>ref</sub></span><span class="den">1 + 2/<em>β</em></span></span> = <em>I</em><sub>ref</sub> · <span class="frac"><span class="num"><em>β</em></span><span class="den"><em>β</em> + 2</span></span></div>
+        <div class="eq-num">(13.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>I</em><sub>out</sub> output current, the collector current of Q2 (A) · <em>I</em><sub>ref</sub>
+        reference current entering the diode-connected transistor's collector node (A) · <em>β</em> current
+        gain of the two identical transistors at the dose of interest, dimensionless. Ignores the Early effect
+        (the collector voltages of Q1 and Q2 differ) and any mismatch. For a mirror with <em>N</em> identical
+        outputs, <em>N</em> + 1 base currents are drawn from the reference node and the 2 becomes
+        <em>N</em> + 1.
+      </div>
+    </div>
+
+    <p>
+      The output always falls short of the reference, by 2/(<em>β</em> + 2). With a pre-irradiation gain of
+      150 the shortfall is 1.32 %; as <em>β</em> falls the shortfall rises, which is Deck 09 p. 13's
+      statement that the output current becomes smaller than the reference current to compensate for the
+      larger base currents. The output also inherits any mismatch between the gains of Q1 and Q2; the lecture stressed that
+      the two gains need not degrade together.
+    </p>
+
+    <div class="box warn">
+      <p>
+        <b>The course's first-order form.</b> The course works the mirror with <em>I</em><sub>out</sub> ≈
+        <em>I</em><sub>ref</sub>·<em>β</em>/(<em>β</em> + 1), which charges the reference node with one base
+        current instead of two. Use that form where the course asks for its first-order result. Kirchhoff's
+        current law at the reference node gives (13.4), and the difference matters exactly where radiation
+        puts the circuit: the two forms agree at high gain (0.993 against 0.987 at <em>β</em> = 150) and
+        diverge as gain falls (0.962 against 0.926 at <em>β</em> = 25). Figure 5 plots both.
+      </p>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 210" role="img" aria-labelledby="m13f4-t">
+        <title id="m13f4-t">A simple bipolar current mirror and the beta-helper mirror in which a third transistor supplies the base currents</title>
+        <!-- panel A: simple mirror -->
+        <line x1="56" y1="34" x2="56" y2="50" class="dg-acc"/><polygon points="52,46 60,46 56,54" class="dg-acc-f"/>
+        <text x="62" y="40" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">ref</tspan></text>
+        <line x1="164" y1="34" x2="164" y2="50" class="dg-line"/><polygon points="160,46 168,46 164,54" class="dg-ink"/>
+        <text x="170" y="40" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">out</tspan></text>
+        <line x1="56" y1="54" x2="56" y2="102" class="dg-line"/><line x1="56" y1="102" x2="70" y2="114" class="dg-line"/>
+        <line x1="70" y1="106" x2="70" y2="134" class="dg-rule"/>
+        <line x1="70" y1="126" x2="56" y2="138" class="dg-line"/><line x1="56" y1="138" x2="56" y2="172" class="dg-line"/>
+        <line x1="164" y1="54" x2="164" y2="102" class="dg-line"/><line x1="164" y1="102" x2="150" y2="114" class="dg-line"/>
+        <line x1="150" y1="106" x2="150" y2="134" class="dg-rule"/>
+        <line x1="150" y1="126" x2="164" y2="138" class="dg-line"/><line x1="164" y1="138" x2="164" y2="172" class="dg-line"/>
+        <line x1="70" y1="120" x2="150" y2="120" class="dg-line"/>
+        <line x1="56" y1="80" x2="110" y2="80" class="dg-line"/><line x1="110" y1="80" x2="110" y2="120" class="dg-line"/>
+        <circle cx="56" cy="80" r="2.6" class="dg-ink"/><circle cx="110" cy="120" r="2.6" class="dg-ink"/>
+        <line x1="56" y1="172" x2="164" y2="172" class="dg-rule"/>
+        <text x="110" y="186" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">EE</tspan></text>
+        <text x="40" y="124" class="dg-label" text-anchor="end">Q1</text>
+        <text x="180" y="124" class="dg-label">Q2</text>
+        <text x="114" y="104" class="dg-label-sm">2<tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">B</tspan></text>
+        <text x="110" y="204" class="dg-label" text-anchor="middle" font-weight="600">Simple mirror</text>
+        <!-- panel B: beta-helper -->
+        <line x1="276" y1="34" x2="276" y2="50" class="dg-acc"/><polygon points="272,46 280,46 276,54" class="dg-acc-f"/>
+        <text x="250" y="40" class="dg-label-sm" text-anchor="end"><tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">ref</tspan></text>
+        <line x1="384" y1="34" x2="384" y2="50" class="dg-line"/><polygon points="380,46 388,46 384,54" class="dg-ink"/>
+        <text x="390" y="40" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">out</tspan></text>
+        <line x1="276" y1="54" x2="276" y2="112" class="dg-line"/><line x1="276" y1="112" x2="290" y2="124" class="dg-line"/>
+        <line x1="290" y1="116" x2="290" y2="144" class="dg-rule"/>
+        <line x1="290" y1="136" x2="276" y2="148" class="dg-line"/><line x1="276" y1="148" x2="276" y2="176" class="dg-line"/>
+        <line x1="384" y1="54" x2="384" y2="112" class="dg-line"/><line x1="384" y1="112" x2="370" y2="124" class="dg-line"/>
+        <line x1="370" y1="116" x2="370" y2="144" class="dg-rule"/>
+        <line x1="370" y1="136" x2="384" y2="148" class="dg-line"/><line x1="384" y1="148" x2="384" y2="176" class="dg-line"/>
+        <line x1="290" y1="130" x2="370" y2="130" class="dg-line"/>
+        <line x1="276" y1="80" x2="318" y2="80" class="dg-acc"/><circle cx="276" cy="80" r="2.6" class="dg-ink"/>
+        <line x1="318" y1="68" x2="318" y2="92" class="dg-rule"/>
+        <line x1="318" y1="74" x2="332" y2="62" class="dg-line"/><line x1="332" y1="62" x2="332" y2="30" class="dg-line"/>
+        <line x1="318" y1="86" x2="332" y2="98" class="dg-line"/><line x1="332" y1="98" x2="332" y2="130" class="dg-line"/>
+        <circle cx="332" cy="130" r="2.6" class="dg-ink"/>
+        <text x="340" y="26" class="dg-label-sm"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">CC</tspan></text>
+        <line x1="276" y1="176" x2="384" y2="176" class="dg-rule"/>
+        <text x="330" y="190" class="dg-label-sm" text-anchor="middle"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">EE</tspan></text>
+        <text x="262" y="134" class="dg-label" text-anchor="end">Q1</text>
+        <text x="400" y="134" class="dg-label">Q2</text>
+        <text x="340" y="88" class="dg-label">Q3</text>
+        <text x="330" y="204" class="dg-label" text-anchor="middle" font-weight="600"><tspan class="dg-math">β</tspan>-helper mirror</text>
+        <!-- n-p-n emitter arrows (checker A12) -->
+        <polygon points="58.1,136.2 61.3,129.2 65.5,134.1" class="dg-ink"/>
+        <polygon points="161.9,136.2 154.5,134.1 158.7,129.2" class="dg-ink"/>
+        <polygon points="278.1,146.2 281.3,139.2 285.5,144.1" class="dg-ink"/>
+        <polygon points="381.9,146.2 374.5,144.1 378.7,139.2" class="dg-ink"/>
+        <polygon points="329.9,96.2 322.5,94.1 326.7,89.2" class="dg-ink"/>
+      </svg>
+      <figcaption>Figure 4. Left: the simple mirror. The reference current must supply Q1's collector current
+      and both base currents, 2<em>I</em><sub>B</sub>, so the output falls short by 2/(<em>β</em> + 2).
+      Right: the hardened mirror of Deck 09 p. 14. Q3's emitter supplies both base currents, and the
+      reference node supplies only Q3's base current (accent), smaller by a further factor
+      <em>β</em> + 1. Q3's base–emitter drop stacks on Q1's, which is the extra <em>V</em><sub>BE</sub> of
+      headroom the slide charges against it.</figcaption>
+    </figure>
+
+    <h3>The β-helper mirror</h3>
+    <p>
+      Deck 09 p. 14's hardened mirror adds transistor Q3, often called a <b>β-helper</b>. Its base connects
+      to the reference node and its emitter drives the joined bases of Q1 and Q2, with its collector at the
+      positive supply. The base current 2<em>I</em><sub>C</sub>/<em>β</em> now flows out of Q3's emitter, so
+      the reference node supplies only Q3's base current, which is that emitter current divided by
+      <em>β</em> + 1. Kirchhoff's law at the reference node becomes <em>I</em><sub>ref</sub> =
+      <em>I</em><sub>C</sub> + 2<em>I</em><sub>C</sub>/(<em>β</em>(<em>β</em> + 1)):
+    </p>
+
+    <div class="eq" id="eq-beta-helper">
+      <div class="eq-body">
+        <div class="eq-math"><em>I</em><sub>out</sub> = <span class="frac"><span class="num"><em>I</em><sub>ref</sub></span><span class="den">1 + <span class="frac"><span class="num">2</span><span class="den"><em>β</em>(<em>β</em> + 1)</span></span></span></span></div>
+        <div class="eq-num">(13.5)</div>
+      </div>
+      <div class="eq-says">
+        Symbols as in (13.4); Q3 is assumed to have the same <em>β</em> as Q1 and Q2. The base-current error
+        now enters through <em>β</em>(<em>β</em> + 1) in place of <em>β</em>, which is Deck 09's statement that
+        the helper sets the effective gain to <em>β</em>². Costs one extra <em>V</em><sub>BE</sub> in the
+        reference branch: the reference node now sits two base–emitter drops above the emitter rail instead of
+        one, which raises the circuit's minimum operating voltage.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 248" role="img" aria-labelledby="m13f5-t">
+<title id="m13f5-t">Bipolar mirror output current as a fraction of the reference current against transistor current gain, for the simple mirror, the first-order form of the course key and the beta-helper mirror</title>
+<line x1="62" y1="196" x2="420" y2="196" class="dg-rule"/><line x1="62" y1="20" x2="62" y2="196" class="dg-rule"/>
+<line x1="62.0" y1="196" x2="62.0" y2="200" class="dg-rule"/><text x="62.0" y="213" class="dg-label-sm" text-anchor="middle">0</text>
+<line x1="151.5" y1="196" x2="151.5" y2="200" class="dg-rule"/><text x="151.5" y="213" class="dg-label-sm" text-anchor="middle">50</text>
+<line x1="241.0" y1="196" x2="241.0" y2="200" class="dg-rule"/><text x="241.0" y="213" class="dg-label-sm" text-anchor="middle">100</text>
+<line x1="330.5" y1="196" x2="330.5" y2="200" class="dg-rule"/><text x="330.5" y="213" class="dg-label-sm" text-anchor="middle">150</text>
+<line x1="420.0" y1="196" x2="420.0" y2="200" class="dg-rule"/><text x="420.0" y="213" class="dg-label-sm" text-anchor="middle">200</text>
+<line x1="58" y1="196.0" x2="62" y2="196.0" class="dg-rule"/><text x="55" y="200.0" class="dg-label-sm" text-anchor="end">0.80</text>
+<line x1="58" y1="152.0" x2="62" y2="152.0" class="dg-rule"/><text x="55" y="156.0" class="dg-label-sm" text-anchor="end">0.85</text>
+<line x1="58" y1="108.0" x2="62" y2="108.0" class="dg-rule"/><text x="55" y="112.0" class="dg-label-sm" text-anchor="end">0.90</text>
+<line x1="58" y1="64.0" x2="62" y2="64.0" class="dg-rule"/><text x="55" y="68.0" class="dg-label-sm" text-anchor="end">0.95</text>
+<line x1="58" y1="20.0" x2="62" y2="20.0" class="dg-rule"/><text x="55" y="24.0" class="dg-label-sm" text-anchor="end">1.00</text>
+<path d="M71.0,166.7 L71.8,155.4 L72.7,145.7 L73.6,137.3 L74.5,130.0 L75.4,123.5 L76.3,117.8 L77.2,112.6 L78.1,108.0 L79.0,103.8 L79.9,100.0 L80.8,96.5 L81.7,93.3 L82.6,90.4 L83.5,87.7 L84.4,85.2 L85.3,82.9 L86.2,80.7 L87.1,78.7 L88.0,76.8 L88.8,75.0 L89.7,73.3 L90.6,71.8 L91.5,70.3 L92.4,68.9 L93.3,67.6 L94.2,66.3 L95.1,65.1 L96.0,64.0 L96.9,62.9 L97.8,61.9 L98.7,60.9 L99.6,60.0 L100.5,59.1 L101.4,58.3 L102.3,57.4 L103.2,56.7 L104.1,55.9 L105.0,55.2 L105.9,54.5 L106.8,53.8 L107.6,53.2 L108.5,52.6 L109.4,52.0 L110.3,51.4 L111.2,50.9 L112.1,50.3 L113.0,49.8 L113.9,49.3 L114.8,48.9 L115.7,48.4 L116.6,47.9 L117.5,47.5 L118.4,47.1 L119.3,46.7 L120.2,46.3 L121.1,45.9 L122.0,45.5 L122.9,45.1 L123.8,44.8 L124.7,44.4 L125.5,44.1 L126.4,43.8 L127.3,43.5 L128.2,43.2 L129.1,42.9 L130.0,42.6 L130.9,42.3 L131.8,42.0 L132.7,41.7 L133.6,41.5 L134.5,41.2 L135.4,41.0 L136.3,40.7 L137.2,40.5 L138.1,40.2 L139.0,40.0 L139.9,39.8 L140.8,39.6 L141.7,39.3 L142.6,39.1 L143.4,38.9 L144.3,38.7 L145.2,38.5 L146.1,38.3 L147.0,38.1 L147.9,38.0 L148.8,37.8 L149.7,37.6 L150.6,37.4 L151.5,37.3 L152.4,37.1 L153.3,36.9 L154.2,36.8 L155.1,36.6 L156.0,36.4 L156.9,36.3 L157.8,36.1 L158.7,36.0 L159.6,35.9 L160.4,35.7 L161.3,35.6 L162.2,35.4 L163.1,35.3 L164.0,35.2 L164.9,35.0 L165.8,34.9 L166.7,34.8 L167.6,34.7 L168.5,34.5 L169.4,34.4 L170.3,34.3 L171.2,34.2 L172.1,34.1 L173.0,34.0 L173.9,33.9 L174.8,33.8 L175.7,33.6 L176.6,33.5 L177.5,33.4 L178.4,33.3 L179.2,33.2 L180.1,33.1 L181.0,33.0 L181.9,32.9 L182.8,32.8 L183.7,32.8 L184.6,32.7 L185.5,32.6 L186.4,32.5 L187.3,32.4 L188.2,32.3 L189.1,32.2 L190.0,32.1 L190.9,32.1 L191.8,32.0 L192.7,31.9 L193.6,31.8 L194.5,31.7 L195.4,31.7 L196.2,31.6 L197.1,31.5 L198.0,31.4 L198.9,31.4 L199.8,31.3 L200.7,31.2 L201.6,31.1 L202.5,31.1 L203.4,31.0 L204.3,30.9 L205.2,30.9 L206.1,30.8 L207.0,30.7 L207.9,30.7 L208.8,30.6 L209.7,30.5 L210.6,30.5 L211.5,30.4 L212.4,30.4 L213.3,30.3 L214.2,30.2 L215.0,30.2 L215.9,30.1 L216.8,30.1 L217.7,30.0 L218.6,29.9 L219.5,29.9 L220.4,29.8 L221.3,29.8 L222.2,29.7 L223.1,29.7 L224.0,29.6 L224.9,29.6 L225.8,29.5 L226.7,29.5 L227.6,29.4 L228.5,29.4 L229.4,29.3 L230.3,29.3 L231.2,29.2 L232.0,29.2 L232.9,29.1 L233.8,29.1 L234.7,29.0 L235.6,29.0 L236.5,28.9 L237.4,28.9 L238.3,28.8 L239.2,28.8 L240.1,28.8 L241.0,28.7 L241.9,28.7 L242.8,28.6 L243.7,28.6 L244.6,28.5 L245.5,28.5 L246.4,28.5 L247.3,28.4 L248.2,28.4 L249.1,28.3 L250.0,28.3 L250.8,28.3 L251.7,28.2 L252.6,28.2 L253.5,28.1 L254.4,28.1 L255.3,28.1 L256.2,28.0 L257.1,28.0 L258.0,28.0 L258.9,27.9 L259.8,27.9 L260.7,27.9 L261.6,27.8 L262.5,27.8 L263.4,27.8 L264.3,27.7 L265.2,27.7 L266.1,27.7 L267.0,27.6 L267.9,27.6 L268.7,27.6 L269.6,27.5 L270.5,27.5 L271.4,27.5 L272.3,27.4 L273.2,27.4 L274.1,27.4 L275.0,27.3 L275.9,27.3 L276.8,27.3 L277.7,27.2 L278.6,27.2 L279.5,27.2 L280.4,27.2 L281.3,27.1 L282.2,27.1 L283.1,27.1 L284.0,27.0 L284.9,27.0 L285.8,27.0 L286.6,27.0 L287.5,26.9 L288.4,26.9 L289.3,26.9 L290.2,26.8 L291.1,26.8 L292.0,26.8 L292.9,26.8 L293.8,26.7 L294.7,26.7 L295.6,26.7 L296.5,26.7 L297.4,26.6 L298.3,26.6 L299.2,26.6 L300.1,26.6 L301.0,26.5 L301.9,26.5 L302.8,26.5 L303.6,26.5 L304.5,26.4 L305.4,26.4 L306.3,26.4 L307.2,26.4 L308.1,26.4 L309.0,26.3 L309.9,26.3 L310.8,26.3 L311.7,26.3 L312.6,26.2 L313.5,26.2 L314.4,26.2 L315.3,26.2 L316.2,26.2 L317.1,26.1 L318.0,26.1 L318.9,26.1 L319.8,26.1 L320.7,26.0 L321.6,26.0 L322.4,26.0 L323.3,26.0 L324.2,26.0 L325.1,25.9 L326.0,25.9 L326.9,25.9 L327.8,25.9 L328.7,25.9 L329.6,25.8 L330.5,25.8 L331.4,25.8 L332.3,25.8 L333.2,25.8 L334.1,25.8 L335.0,25.7 L335.9,25.7 L336.8,25.7 L337.7,25.7 L338.6,25.7 L339.4,25.6 L340.3,25.6 L341.2,25.6 L342.1,25.6 L343.0,25.6 L343.9,25.6 L344.8,25.5 L345.7,25.5 L346.6,25.5 L347.5,25.5 L348.4,25.5 L349.3,25.4 L350.2,25.4 L351.1,25.4 L352.0,25.4 L352.9,25.4 L353.8,25.4 L354.7,25.3 L355.6,25.3 L356.5,25.3 L357.3,25.3 L358.2,25.3 L359.1,25.3 L360.0,25.3 L360.9,25.2 L361.8,25.2 L362.7,25.2 L363.6,25.2 L364.5,25.2 L365.4,25.2 L366.3,25.1 L367.2,25.1 L368.1,25.1 L369.0,25.1 L369.9,25.1 L370.8,25.1 L371.7,25.1 L372.6,25.0 L373.5,25.0 L374.4,25.0 L375.2,25.0 L376.1,25.0 L377.0,25.0 L377.9,25.0 L378.8,24.9 L379.7,24.9 L380.6,24.9 L381.5,24.9 L382.4,24.9 L383.3,24.9 L384.2,24.9 L385.1,24.8 L386.0,24.8 L386.9,24.8 L387.8,24.8 L388.7,24.8 L389.6,24.8 L390.5,24.8 L391.4,24.8 L392.3,24.7 L393.2,24.7 L394.0,24.7 L394.9,24.7 L395.8,24.7 L396.7,24.7 L397.6,24.7 L398.5,24.7 L399.4,24.6 L400.3,24.6 L401.2,24.6 L402.1,24.6 L403.0,24.6 L403.9,24.6 L404.8,24.6 L405.7,24.6 L406.6,24.5 L407.5,24.5 L408.4,24.5 L409.3,24.5 L410.2,24.5 L411.1,24.5 L411.9,24.5 L412.8,24.5 L413.7,24.5 L414.6,24.4 L415.5,24.4 L416.4,24.4 L417.3,24.4 L418.2,24.4 L419.1,24.4 L420.0,24.4" class="dg-guide" stroke-dasharray="5 4"/>
+<path d="M71.0,75.0 L71.8,66.6 L72.7,60.0 L73.6,54.7 L74.5,50.3 L75.4,46.8 L76.3,43.8 L77.2,41.3 L78.1,39.1 L79.0,37.3 L79.9,35.7 L80.8,34.3 L81.7,33.1 L82.6,32.1 L83.5,31.1 L84.4,30.3 L85.3,29.6 L86.2,28.9 L87.1,28.3 L88.0,27.8 L88.8,27.3 L89.7,26.8 L90.6,26.4 L91.5,26.1 L92.4,25.7 L93.3,25.4 L94.2,25.1 L95.1,24.9 L96.0,24.6 L96.9,24.4 L97.8,24.2 L98.7,24.0 L99.6,23.8 L100.5,23.6 L101.4,23.5 L102.3,23.3 L103.2,23.2 L104.1,23.0 L105.0,22.9 L105.9,22.8 L106.8,22.7 L107.6,22.6 L108.5,22.5 L109.4,22.4 L110.3,22.3 L111.2,22.2 L112.1,22.2 L113.0,22.1 L113.9,22.0 L114.8,22.0 L115.7,21.9 L116.6,21.8 L117.5,21.8 L118.4,21.7 L119.3,21.7 L120.2,21.6 L121.1,21.6 L122.0,21.5 L122.9,21.5 L123.8,21.4 L124.7,21.4 L125.5,21.4 L126.4,21.3 L127.3,21.3 L128.2,21.2 L129.1,21.2 L130.0,21.2 L130.9,21.2 L131.8,21.1 L132.7,21.1 L133.6,21.1 L134.5,21.0 L135.4,21.0 L136.3,21.0 L137.2,21.0 L138.1,21.0 L139.0,20.9 L139.9,20.9 L140.8,20.9 L141.7,20.9 L142.6,20.8 L143.4,20.8 L144.3,20.8 L145.2,20.8 L146.1,20.8 L147.0,20.8 L147.9,20.7 L148.8,20.7 L149.7,20.7 L150.6,20.7 L151.5,20.7 L152.4,20.7 L153.3,20.7 L154.2,20.7 L155.1,20.6 L156.0,20.6 L156.9,20.6 L157.8,20.6 L158.7,20.6 L159.6,20.6 L160.4,20.6 L161.3,20.6 L162.2,20.6 L163.1,20.5 L164.0,20.5 L164.9,20.5 L165.8,20.5 L166.7,20.5 L167.6,20.5 L168.5,20.5 L169.4,20.5 L170.3,20.5 L171.2,20.5 L172.1,20.5 L173.0,20.5 L173.9,20.4 L174.8,20.4 L175.7,20.4 L176.6,20.4 L177.5,20.4 L178.4,20.4 L179.2,20.4 L180.1,20.4 L181.0,20.4 L181.9,20.4 L182.8,20.4 L183.7,20.4 L184.6,20.4 L185.5,20.4 L186.4,20.4 L187.3,20.4 L188.2,20.3 L189.1,20.3 L190.0,20.3 L190.9,20.3 L191.8,20.3 L192.7,20.3 L193.6,20.3 L194.5,20.3 L195.4,20.3 L196.2,20.3 L197.1,20.3 L198.0,20.3 L198.9,20.3 L199.8,20.3 L200.7,20.3 L201.6,20.3 L202.5,20.3 L203.4,20.3 L204.3,20.3 L205.2,20.3 L206.1,20.3 L207.0,20.3 L207.9,20.3 L208.8,20.3 L209.7,20.3 L210.6,20.3 L211.5,20.2 L212.4,20.2 L213.3,20.2 L214.2,20.2 L215.0,20.2 L215.9,20.2 L216.8,20.2 L217.7,20.2 L218.6,20.2 L219.5,20.2 L220.4,20.2 L221.3,20.2 L222.2,20.2 L223.1,20.2 L224.0,20.2 L224.9,20.2 L225.8,20.2 L226.7,20.2 L227.6,20.2 L228.5,20.2 L229.4,20.2 L230.3,20.2 L231.2,20.2 L232.0,20.2 L232.9,20.2 L233.8,20.2 L234.7,20.2 L235.6,20.2 L236.5,20.2 L237.4,20.2 L238.3,20.2 L239.2,20.2 L240.1,20.2 L241.0,20.2 L241.9,20.2 L242.8,20.2 L243.7,20.2 L244.6,20.2 L245.5,20.2 L246.4,20.2 L247.3,20.2 L248.2,20.2 L249.1,20.2 L250.0,20.2 L250.8,20.2 L251.7,20.2 L252.6,20.2 L253.5,20.2 L254.4,20.2 L255.3,20.1 L256.2,20.1 L257.1,20.1 L258.0,20.1 L258.9,20.1 L259.8,20.1 L260.7,20.1 L261.6,20.1 L262.5,20.1 L263.4,20.1 L264.3,20.1 L265.2,20.1 L266.1,20.1 L267.0,20.1 L267.9,20.1 L268.7,20.1 L269.6,20.1 L270.5,20.1 L271.4,20.1 L272.3,20.1 L273.2,20.1 L274.1,20.1 L275.0,20.1 L275.9,20.1 L276.8,20.1 L277.7,20.1 L278.6,20.1 L279.5,20.1 L280.4,20.1 L281.3,20.1 L282.2,20.1 L283.1,20.1 L284.0,20.1 L284.9,20.1 L285.8,20.1 L286.6,20.1 L287.5,20.1 L288.4,20.1 L289.3,20.1 L290.2,20.1 L291.1,20.1 L292.0,20.1 L292.9,20.1 L293.8,20.1 L294.7,20.1 L295.6,20.1 L296.5,20.1 L297.4,20.1 L298.3,20.1 L299.2,20.1 L300.1,20.1 L301.0,20.1 L301.9,20.1 L302.8,20.1 L303.6,20.1 L304.5,20.1 L305.4,20.1 L306.3,20.1 L307.2,20.1 L308.1,20.1 L309.0,20.1 L309.9,20.1 L310.8,20.1 L311.7,20.1 L312.6,20.1 L313.5,20.1 L314.4,20.1 L315.3,20.1 L316.2,20.1 L317.1,20.1 L318.0,20.1 L318.9,20.1 L319.8,20.1 L320.7,20.1 L321.6,20.1 L322.4,20.1 L323.3,20.1 L324.2,20.1 L325.1,20.1 L326.0,20.1 L326.9,20.1 L327.8,20.1 L328.7,20.1 L329.6,20.1 L330.5,20.1 L331.4,20.1 L332.3,20.1 L333.2,20.1 L334.1,20.1 L335.0,20.1 L335.9,20.1 L336.8,20.1 L337.7,20.1 L338.6,20.1 L339.4,20.1 L340.3,20.1 L341.2,20.1 L342.1,20.1 L343.0,20.1 L343.9,20.1 L344.8,20.1 L345.7,20.1 L346.6,20.1 L347.5,20.1 L348.4,20.1 L349.3,20.1 L350.2,20.1 L351.1,20.1 L352.0,20.1 L352.9,20.1 L353.8,20.1 L354.7,20.1 L355.6,20.1 L356.5,20.1 L357.3,20.1 L358.2,20.1 L359.1,20.1 L360.0,20.1 L360.9,20.1 L361.8,20.1 L362.7,20.1 L363.6,20.1 L364.5,20.1 L365.4,20.1 L366.3,20.1 L367.2,20.1 L368.1,20.1 L369.0,20.1 L369.9,20.1 L370.8,20.1 L371.7,20.1 L372.6,20.1 L373.5,20.1 L374.4,20.1 L375.2,20.1 L376.1,20.1 L377.0,20.1 L377.9,20.1 L378.8,20.1 L379.7,20.1 L380.6,20.1 L381.5,20.1 L382.4,20.1 L383.3,20.1 L384.2,20.1 L385.1,20.1 L386.0,20.1 L386.9,20.1 L387.8,20.1 L388.7,20.1 L389.6,20.1 L390.5,20.1 L391.4,20.1 L392.3,20.1 L393.2,20.1 L394.0,20.1 L394.9,20.1 L395.8,20.1 L396.7,20.1 L397.6,20.0 L398.5,20.0 L399.4,20.0 L400.3,20.0 L401.2,20.0 L402.1,20.0 L403.0,20.0 L403.9,20.0 L404.8,20.0 L405.7,20.0 L406.6,20.0 L407.5,20.0 L408.4,20.0 L409.3,20.0 L410.2,20.0 L411.1,20.0 L411.9,20.0 L412.8,20.0 L413.7,20.0 L414.6,20.0 L415.5,20.0 L416.4,20.0 L417.3,20.0 L418.2,20.0 L419.1,20.0 L420.0,20.0" class="dg-line"/>
+<path d="M76.3,196.0 L77.2,187.6 L78.1,180.0 L79.0,173.0 L79.9,166.7 L80.8,160.8 L81.7,155.4 L82.6,150.4 L83.5,145.7 L84.4,141.4 L85.3,137.3 L86.2,133.5 L87.1,130.0 L88.0,126.7 L88.8,123.5 L89.7,120.6 L90.6,117.8 L91.5,115.1 L92.4,112.6 L93.3,110.3 L94.2,108.0 L95.1,105.9 L96.0,103.8 L96.9,101.9 L97.8,100.0 L98.7,98.2 L99.6,96.5 L100.5,94.9 L101.4,93.3 L102.3,91.8 L103.2,90.4 L104.1,89.0 L105.0,87.7 L105.9,86.4 L106.8,85.2 L107.6,84.0 L108.5,82.9 L109.4,81.8 L110.3,80.7 L111.2,79.7 L112.1,78.7 L113.0,77.7 L113.9,76.8 L114.8,75.9 L115.7,75.0 L116.6,74.2 L117.5,73.3 L118.4,72.5 L119.3,71.8 L120.2,71.0 L121.1,70.3 L122.0,69.6 L122.9,68.9 L123.8,68.2 L124.7,67.6 L125.5,66.9 L126.4,66.3 L127.3,65.7 L128.2,65.1 L129.1,64.6 L130.0,64.0 L130.9,63.5 L131.8,62.9 L132.7,62.4 L133.6,61.9 L134.5,61.4 L135.4,60.9 L136.3,60.5 L137.2,60.0 L138.1,59.6 L139.0,59.1 L139.9,58.7 L140.8,58.3 L141.7,57.8 L142.6,57.4 L143.4,57.1 L144.3,56.7 L145.2,56.3 L146.1,55.9 L147.0,55.6 L147.9,55.2 L148.8,54.9 L149.7,54.5 L150.6,54.2 L151.5,53.8 L152.4,53.5 L153.3,53.2 L154.2,52.9 L155.1,52.6 L156.0,52.3 L156.9,52.0 L157.8,51.7 L158.7,51.4 L159.6,51.2 L160.4,50.9 L161.3,50.6 L162.2,50.3 L163.1,50.1 L164.0,49.8 L164.9,49.6 L165.8,49.3 L166.7,49.1 L167.6,48.9 L168.5,48.6 L169.4,48.4 L170.3,48.2 L171.2,47.9 L172.1,47.7 L173.0,47.5 L173.9,47.3 L174.8,47.1 L175.7,46.9 L176.6,46.7 L177.5,46.5 L178.4,46.3 L179.2,46.1 L180.1,45.9 L181.0,45.7 L181.9,45.5 L182.8,45.3 L183.7,45.1 L184.6,45.0 L185.5,44.8 L186.4,44.6 L187.3,44.4 L188.2,44.3 L189.1,44.1 L190.0,43.9 L190.9,43.8 L191.8,43.6 L192.7,43.5 L193.6,43.3 L194.5,43.2 L195.4,43.0 L196.2,42.9 L197.1,42.7 L198.0,42.6 L198.9,42.4 L199.8,42.3 L200.7,42.1 L201.6,42.0 L202.5,41.9 L203.4,41.7 L204.3,41.6 L205.2,41.5 L206.1,41.3 L207.0,41.2 L207.9,41.1 L208.8,41.0 L209.7,40.8 L210.6,40.7 L211.5,40.6 L212.4,40.5 L213.3,40.3 L214.2,40.2 L215.0,40.1 L215.9,40.0 L216.8,39.9 L217.7,39.8 L218.6,39.7 L219.5,39.6 L220.4,39.4 L221.3,39.3 L222.2,39.2 L223.1,39.1 L224.0,39.0 L224.9,38.9 L225.8,38.8 L226.7,38.7 L227.6,38.6 L228.5,38.5 L229.4,38.4 L230.3,38.3 L231.2,38.2 L232.0,38.1 L232.9,38.1 L233.8,38.0 L234.7,37.9 L235.6,37.8 L236.5,37.7 L237.4,37.6 L238.3,37.5 L239.2,37.4 L240.1,37.3 L241.0,37.3 L241.9,37.2 L242.8,37.1 L243.7,37.0 L244.6,36.9 L245.5,36.8 L246.4,36.8 L247.3,36.7 L248.2,36.6 L249.1,36.5 L250.0,36.4 L250.8,36.4 L251.7,36.3 L252.6,36.2 L253.5,36.1 L254.4,36.1 L255.3,36.0 L256.2,35.9 L257.1,35.9 L258.0,35.8 L258.9,35.7 L259.8,35.6 L260.7,35.6 L261.6,35.5 L262.5,35.4 L263.4,35.4 L264.3,35.3 L265.2,35.2 L266.1,35.2 L267.0,35.1 L267.9,35.0 L268.7,35.0 L269.6,34.9 L270.5,34.9 L271.4,34.8 L272.3,34.7 L273.2,34.7 L274.1,34.6 L275.0,34.5 L275.9,34.5 L276.8,34.4 L277.7,34.4 L278.6,34.3 L279.5,34.3 L280.4,34.2 L281.3,34.1 L282.2,34.1 L283.1,34.0 L284.0,34.0 L284.9,33.9 L285.8,33.9 L286.6,33.8 L287.5,33.8 L288.4,33.7 L289.3,33.6 L290.2,33.6 L291.1,33.5 L292.0,33.5 L292.9,33.4 L293.8,33.4 L294.7,33.3 L295.6,33.3 L296.5,33.2 L297.4,33.2 L298.3,33.1 L299.2,33.1 L300.1,33.0 L301.0,33.0 L301.9,32.9 L302.8,32.9 L303.6,32.8 L304.5,32.8 L305.4,32.8 L306.3,32.7 L307.2,32.7 L308.1,32.6 L309.0,32.6 L309.9,32.5 L310.8,32.5 L311.7,32.4 L312.6,32.4 L313.5,32.4 L314.4,32.3 L315.3,32.3 L316.2,32.2 L317.1,32.2 L318.0,32.1 L318.9,32.1 L319.8,32.1 L320.7,32.0 L321.6,32.0 L322.4,31.9 L323.3,31.9 L324.2,31.9 L325.1,31.8 L326.0,31.8 L326.9,31.7 L327.8,31.7 L328.7,31.7 L329.6,31.6 L330.5,31.6 L331.4,31.5 L332.3,31.5 L333.2,31.5 L334.1,31.4 L335.0,31.4 L335.9,31.4 L336.8,31.3 L337.7,31.3 L338.6,31.2 L339.4,31.2 L340.3,31.2 L341.2,31.1 L342.1,31.1 L343.0,31.1 L343.9,31.0 L344.8,31.0 L345.7,31.0 L346.6,30.9 L347.5,30.9 L348.4,30.9 L349.3,30.8 L350.2,30.8 L351.1,30.8 L352.0,30.7 L352.9,30.7 L353.8,30.7 L354.7,30.6 L355.6,30.6 L356.5,30.6 L357.3,30.5 L358.2,30.5 L359.1,30.5 L360.0,30.4 L360.9,30.4 L361.8,30.4 L362.7,30.4 L363.6,30.3 L364.5,30.3 L365.4,30.3 L366.3,30.2 L367.2,30.2 L368.1,30.2 L369.0,30.1 L369.9,30.1 L370.8,30.1 L371.7,30.1 L372.6,30.0 L373.5,30.0 L374.4,30.0 L375.2,29.9 L376.1,29.9 L377.0,29.9 L377.9,29.9 L378.8,29.8 L379.7,29.8 L380.6,29.8 L381.5,29.8 L382.4,29.7 L383.3,29.7 L384.2,29.7 L385.1,29.6 L386.0,29.6 L386.9,29.6 L387.8,29.6 L388.7,29.5 L389.6,29.5 L390.5,29.5 L391.4,29.5 L392.3,29.4 L393.2,29.4 L394.0,29.4 L394.9,29.4 L395.8,29.3 L396.7,29.3 L397.6,29.3 L398.5,29.3 L399.4,29.2 L400.3,29.2 L401.2,29.2 L402.1,29.2 L403.0,29.1 L403.9,29.1 L404.8,29.1 L405.7,29.1 L406.6,29.0 L407.5,29.0 L408.4,29.0 L409.3,29.0 L410.2,29.0 L411.1,28.9 L411.9,28.9 L412.8,28.9 L413.7,28.9 L414.6,28.8 L415.5,28.8 L416.4,28.8 L417.3,28.8 L418.2,28.8 L419.1,28.7 L420.0,28.7" class="dg-acc"/>
+<line x1="130.0" y1="64.0" x2="130.0" y2="196" class="dg-guide" stroke-dasharray="3 3"/>
+<circle cx="130.0" cy="64.0" r="3.2" class="dg-acc-f"/>
+<text x="137.0" y="80.0" class="dg-label-sm"><tspan class="dg-math">β</tspan> = 38: 5 % short</text>
+<line x1="228" y1="118" x2="252" y2="118" class="dg-acc"/>
+<text x="258" y="122" class="dg-label-sm">simple (13.4), 1/(1 + 2/<tspan class="dg-math">β</tspan>)</text>
+<line x1="228" y1="136" x2="252" y2="136" class="dg-guide" stroke-dasharray="5 4"/>
+<text x="258" y="140" class="dg-label-sm">course form, <tspan class="dg-math">β</tspan>/(<tspan class="dg-math">β</tspan> + 1)</text>
+<line x1="228" y1="154" x2="252" y2="154" class="dg-line"/>
+<text x="258" y="158" class="dg-label-sm">β-helper (13.5)</text>
+<text x="241.0" y="230" class="dg-label" text-anchor="middle">current gain <tspan class="dg-math">β</tspan> after irradiation</text>
+<text x="16" y="108.0" class="dg-label" text-anchor="middle" transform="rotate(-90 16 108.0)"><tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">out</tspan> ÷ <tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">ref</tspan></text>
+</svg>
+      <figcaption>Figure 5. Mirror output as a fraction of the reference current against current gain. The
+      simple mirror (13.4) loses 5 % at <em>β</em> = 38; the course's first-order form (dashed) understates
+      that loss at every gain; the β-helper (13.5) stays within 0.2 % down to the same gain and falls 5 % short only near
+      <em>β</em> = 5.7, at the far left of the plot, where its curve starts (at <em>β</em> = 5).</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">The gain at which a mirror falls 5 % short, and what a helper buys</div>
+      <div class="ex-body">
+        <p><b>Given</b> A bias network built from simple bipolar mirrors fails when any output falls more than
+        5 % below its reference. The transistors' gain is 150 before irradiation. <b>Find</b> the gain at
+        which a simple mirror reaches the limit, and the shortfall of a β-helper mirror at that gain.</p>
+        <p><b>Plan.</b> Solve (13.4) for <em>β</em> at <em>I</em><sub>out</sub>/<em>I</em><sub>ref</sub> =
+        0.95, then substitute that gain into (13.5). The pre-irradiation gain is not needed for the threshold;
+        it shows how much margin the design starts with.</p>
+        <p class="ex-step"><b>Invert (13.4).</b> 1/(1 + 2/<em>β</em>) = 0.95 gives 2/<em>β</em> = 1/0.95 − 1 =
+          0.05263, so <em>β</em> = 2 ÷ 0.05263 = 38.0.</p>
+        <p class="ex-step"><b>Starting margin.</b> At <em>β</em> = 150, (13.4) gives 0.9868, a 1.32 %
+          shortfall: the gain may fall by a factor of 150/38 ≈ 3.9 before the network fails.</p>
+        <p class="ex-step"><b>Helper at the same gain.</b> <em>β</em>(<em>β</em> + 1) = 38 × 39 = 1482;
+          (13.5) gives 1/(1 + 2/1482) = 0.99865, a shortfall of 0.135 %.</p>
+        <p class="ex-answer">A simple mirror fails at <em>β</em> ≈ 38; a β-helper mirror built from the same
+          transistors is then still within 0.14 %, because its effective gain is 1482. Check: the helper's
+          shortfall is roughly the simple mirror's 5 % divided by <em>β</em> + 1 = 39, which is 0.13 %. The
+          helper does not stop the transistors degrading; it moves the circuit's failure to a far lower
+          gain, and so to a higher dose.</p>
+      </div>
+    </div>
+
+    <h3>One bias circuit, a whole system's tolerance</h3>
+    <p>
+      Deck 09 pp. 15–16 carries the idea to a product, after Adell <em>et al.</em> (2004). In the LM124 op-amp,
+      adding three transistors to the bias circuit for β compensation of its current mirrors reduced the
+      circuit's sensitivity to gain loss at little cost in area or power and without redesigning the rest of
+      the amplifier. In a linear voltage regulator built around the LM124, the simulated output held its
+      value with the hardened bias circuit to degraded gains well below those that caused failure in the
+      original, and the slide states that this effectively doubled the total-dose tolerance of the whole
+      regulator. The leverage comes from the bias circuit's position: every stage of the amplifier takes its
+      current from it, so a mirror error there propagates everywhere. The alternative is a better transistor
+      rather than a better circuit: Holman notes that SiGe heterojunction bipolar transistors tolerate
+      total dose far better than conventional silicon transistors, and Deck 09 p. 18 reports excellent
+      total-dose hardness in the vertical SiGe n-p-n transistors of some BiCMOS processes.
+    </p>
+
+    <details class="check">
+      <summary>A bipolar mirror has one reference transistor and three identical output transistors, each copying the reference. Its transistors' gain falls from 150 to 60. What fraction of the reference does each output carry before and after, and why is the multi-output mirror more exposed to gain loss than a single-output one?</summary>
+      <div class="answer">
+        <p>The reference node supplies the reference transistor's collector current and four base currents,
+        one for each transistor, so <em>I</em><sub>ref</sub> = <em>I</em><sub>C</sub>(1 + 4/<em>β</em>) and
+        each output carries 1/(1 + 4/<em>β</em>) of the reference. At <em>β</em> = 150 that is 0.974 (2.60 %
+        short); at <em>β</em> = 60 it is 0.9375 (6.25 % short). A single-output mirror at <em>β</em> = 60
+        carries 0.968. Every additional output adds one more base current drawn from the same node, so the
+        error grows with the number of outputs, and it grows as 1/<em>β</em>: the gain loss is multiplied
+        by the fan-out. A β-helper on the shared base line divides all of these base currents by
+        <em>β</em> + 1 at once, which is why the LM124's three added transistors could protect every stage.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>5 · CMOS mirrors, matching and voltage headroom</h2>
+
+    <p>
+      In CMOS the mirror copies current through gate voltage rather than base current, and the gates draw no
+      current, so the error of §4 does not arise. What does arise is a threshold shift. Deck 09 p. 17 makes two
+      points about it: matching makes the mirror's current ratio insensitive to the shift, and the shift
+      still consumes voltage until the circuit runs out of it, at which point failure is abrupt. This
+      section explains both and shows where in a mirror the voltage is lost.
+    </p>
+
+    <details class="recap">
+      <summary>Assumes: the MOS transistor in saturation (M06 §4)</summary>
+      <p>
+        Above threshold, a MOS transistor whose drain–source voltage exceeds its overdrive is in saturation
+        and carries <em>I</em><sub>D</sub> = (<em>μC</em><sub>ox</sub>/2)(<em>W</em>/<em>L</em>)<em>V</em><sub>ov</sub>²,
+        where the overdrive is <em>V</em><sub>ov</sub> = <em>V</em><sub>GS</sub> − <em>V</em><sub>th</sub>,
+        <em>μ</em> is the channel mobility, <em>C</em><sub>ox</sub> the gate capacitance per unit area and
+        <em>W</em>/<em>L</em> the width-to-length ratio. For a p-channel transistor the same holds with
+        source-referred magnitudes: <em>V</em><sub>SG</sub> = |<em>V</em><sub>th</sub>| + <em>V</em><sub>ov</sub>,
+        and saturation requires <em>V</em><sub>SD</sub> ≥ <em>V</em><sub>ov</sub>. At a fixed current the
+        overdrive is fixed by <em>W</em>/<em>L</em> and <em>μ</em>, so a threshold shift moves
+        <em>V</em><sub>GS</sub> by the full amount of the shift.
+      </p>
+    </details>
+
+    <h3>Matching masks the shift</h3>
+    <p>
+      In Deck 09 p. 17's mirror, two p-channel transistors share their source (at <em>V</em><sub>DD</sub>) and
+      their gate. M1 is diode-connected, with its gate tied to its drain, and the reference current
+      <em>I</em><sub>REF</sub> flows from its drain to ground; M2 carries the output. Because both have the
+      same <em>V</em><sub>SG</sub>, both have the same overdrive if their thresholds are equal, and the
+      square law gives the ratio of their currents as the ratio of their geometries:
+      <em>I</em><sub>OUT</sub>/<em>I</em><sub>REF</sub> = (<em>W</em><sub>2</sub>/<em>L</em><sub>2</sub>) ÷
+      (<em>W</em><sub>1</sub>/<em>L</em><sub>1</sub>). The two transistors also share their gate bias during
+      irradiation, so they trap charge at the same rate and their thresholds shift together. The current
+      ratio is then, to first order, independent of dose, as the slide states, and so is a common mobility
+      loss, which cancels from the ratio as well. The residual error comes from what the two do not share:
+      their drain voltages differ, so their channel-length modulation differs, and so, slightly, does the
+      bias each sees during irradiation.
+    </p>
+
+    <h3>Where the headroom goes</h3>
+    <p>
+      Matching keeps the ratio; it does not keep the voltages. At a fixed reference current, M1 must develop
+      <em>V</em><sub>SG</sub> = |<em>V</em><sub>th</sub>| + <em>V</em><sub>ov</sub>, so its gate–drain node sits
+      that far below the supply. As total dose makes the p-channel threshold more negative,
+      |<em>V</em><sub>th</sub>| grows and the node falls with it:
+    </p>
+
+    <div class="eq" id="eq-headroom">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>G</sub> = <em>V</em><sub>DD</sub> − (|<em>V</em><sub>th</sub>| + <em>V</em><sub>ov</sub>) ,&emsp; <em>V</em><sub>OUT</sub> ≤ <em>V</em><sub>DD</sub> − <em>V</em><sub>ov</sub></div>
+        <div class="eq-num">(13.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>G</sub> voltage of the common gate node, which is also M1's drain and the top of the
+        reference current source (V) · <em>V</em><sub>DD</sub> supply (V) · |<em>V</em><sub>th</sub>| p-channel
+        threshold magnitude at the dose of interest (V) · <em>V</em><sub>ov</sub> overdrive needed to carry the
+        mirror current (V) · <em>V</em><sub>OUT</sub> output voltage at M2's drain (V). Left: the reference
+        source works only while <em>V</em><sub>G</sub> stays above the minimum voltage that source needs.
+        Right: M2 stays in saturation while <em>V</em><sub>SD2</sub> ≥ <em>V</em><sub>ov</sub>, an upper limit on
+        the output voltage of a sourcing mirror that contains no threshold, because M2's gate and its
+        saturation edge move together. Mobility loss raises <em>V</em><sub>ov</sub> at a fixed current and
+        tightens both.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 214" role="img" aria-labelledby="m13f6-t">
+        <title id="m13f6-t">A p-channel current mirror with the voltage drops that set its headroom</title>
+        <line x1="60" y1="30" x2="380" y2="30" class="dg-rule"/>
+        <text x="384" y="34" class="dg-label-sm"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">DD</tspan></text>
+        <!-- M1 -->
+        <line x1="150" y1="30" x2="150" y2="62" class="dg-line"/>
+        <line x1="150" y1="62" x2="150" y2="98" class="dg-rule"/>
+        <line x1="158" y1="66" x2="158" y2="94" class="dg-rule"/>
+        <circle cx="162" cy="80" r="3" class="dg-guide"/>
+        <line x1="165" y1="80" x2="275" y2="80" class="dg-line"/>
+        <line x1="150" y1="98" x2="150" y2="152" class="dg-line"/>
+        <line x1="150" y1="115" x2="215" y2="115" class="dg-line"/><line x1="215" y1="115" x2="215" y2="80" class="dg-line"/>
+        <circle cx="215" cy="80" r="2.6" class="dg-ink"/><circle cx="150" cy="115" r="2.6" class="dg-acc-f"/>
+        <text x="136" y="84" class="dg-label" text-anchor="end">M1</text>
+        <!-- reference source -->
+        <circle cx="150" cy="166" r="13" class="dg-line"/>
+        <line x1="150" y1="158" x2="150" y2="172" class="dg-line"/><polygon points="146,169 154,169 150,176" class="dg-ink"/>
+        <line x1="150" y1="179" x2="150" y2="196" class="dg-line"/>
+        <line x1="140" y1="196" x2="160" y2="196" class="dg-rule"/><line x1="144" y1="200" x2="156" y2="200" class="dg-rule"/>
+        <text x="168" y="170" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">REF</tspan>: needs ≥ <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">sink</tspan></text>
+        <!-- M2 -->
+        <line x1="290" y1="30" x2="290" y2="62" class="dg-line"/>
+        <line x1="290" y1="62" x2="290" y2="98" class="dg-rule"/>
+        <line x1="282" y1="66" x2="282" y2="94" class="dg-rule"/>
+        <circle cx="278" cy="80" r="3" class="dg-guide"/>
+        <line x1="290" y1="98" x2="290" y2="180" class="dg-line"/>
+        <polygon points="286,168 294,168 290,176" class="dg-ink"/>
+        <text x="300" y="84" class="dg-label">M2</text>
+        <text x="296" y="194" class="dg-label-sm"><tspan class="dg-math">I</tspan><tspan baseline-shift="sub" style="font-size:75%">OUT</tspan> to load at <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">OUT</tspan></text>
+        <!-- annotations -->
+        <line x1="100" y1="30" x2="100" y2="115" class="dg-acc"/>
+        <line x1="95" y1="30" x2="105" y2="30" class="dg-acc"/><line x1="95" y1="115" x2="105" y2="115" class="dg-acc"/>
+        <text x="94" y="66" class="dg-label-sm" text-anchor="end">|<tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">th</tspan>| +</text>
+        <text x="94" y="80" class="dg-label-sm" text-anchor="end"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">ov</tspan>, grows</text>
+        <text x="158" y="132" class="dg-label-sm"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">G</tspan> falls with dose</text>
+        <line x1="340" y1="30" x2="340" y2="140" class="dg-guide" stroke-dasharray="3 3"/>
+        <text x="346" y="110" class="dg-label-sm"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">SD2</tspan> ≥ <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">ov</tspan></text>
+        <text x="346" y="124" class="dg-label-sm">only</text>
+      </svg>
+      <figcaption>Figure 6. The p-channel mirror of Deck 09 p. 17 with its voltages. M1's source–gate
+      drop |<em>V</em><sub>th</sub>| + <em>V</em><sub>ov</sub> (accent) grows with dose, so the gate node, which
+      is also the top of the reference source, moves down towards ground. M2 needs only
+      <em>V</em><sub>ov</sub> across it to stay saturated, so the output side of a simple mirror keeps its
+      range; the voltage is lost in the reference branch.</figcaption>
+    </figure>
+
+    <p>
+      Deck 09 p. 17's warning, that the circuit functions normally as the p-channel threshold increases until
+      it runs out of voltage headroom, describes the left-hand condition of (13.6). While
+      <em>V</em><sub>G</sub> is above what the reference source needs, the source delivers its current and the
+      mirror copies it exactly, so a measurement of the output current shows nothing. When the growing
+      threshold pulls <em>V</em><sub>G</sub> below that minimum, the reference current itself collapses and the
+      mirror's output with it. Every circuit that stacks a gate–source voltage in a path between the supplies
+      loses headroom this way, and a cascode mirror stacks two. In the standard cascode, a second transistor
+      sits in series with each mirror transistor and its gate is biased by a second diode-connected device in
+      the reference branch, so the reference branch stacks two drops and the output must leave room for a
+      threshold as well as two overdrives:
+    </p>
+
+    <div class="eq" id="eq-cascode">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>OUT</sub> ≤ <em>V</em><sub>DD</sub> − (|<em>V</em><sub>th</sub>| + 2<em>V</em><sub>ov</sub>) ,&emsp; <em>V</em><sub>ref</sub> = <em>V</em><sub>DD</sub> − 2(|<em>V</em><sub>th</sub>| + <em>V</em><sub>ov</sub>)</div>
+        <div class="eq-num">(13.7)</div>
+      </div>
+      <div class="eq-says">
+        Standard p-channel cascode mirror, all four transistors with the same threshold and overdrive. Left:
+        the output-voltage limit for both output transistors to stay saturated (V). Right:
+        <em>V</em><sub>ref</sub> voltage at the bottom of the reference branch, the top of the reference
+        source (V). Symbols otherwise as in (13.6). Here the threshold enters the output limit directly, so a
+        threshold shift narrows the output range one-for-one and the reference node falls twice as fast.
+      </div>
+    </div>
+
+    <div class="box warn">
+      <p>
+        <b>The course's form.</b> The course writes the p-channel mirror's headroom condition as
+        <em>V</em><sub>OUT,min</sub> = <em>V</em><sub>DD</sub> − (|<em>V</em><sub>th</sub>| +
+        <em>V</em><sub>ov</sub>), the minimum output voltage for M2 to stay saturated. Reproduce that
+        expression where the course asks for it. Physically, the expression is the gate-node voltage
+        <em>V</em><sub>G</sub> of (13.6), and M2's own saturation condition bounds the output from above, at
+        <em>V</em><sub>DD</sub> − <em>V</em><sub>ov</sub>. Read either way, a growing |<em>V</em><sub>th</sub>|
+        lowers <em>V</em><sub>DD</sub> − (|<em>V</em><sub>th</sub>| + <em>V</em><sub>ov</sub>); the physical
+        meaning of that fall is lost headroom in the reference branch, not a relaxed requirement on the
+        output.
+      </p>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 252" role="img" aria-labelledby="m13f7-t">
+<title id="m13f7-t">Voltage limits of simple and cascode PMOS current mirrors against the magnitude of the threshold shift</title>
+<line x1="62" y1="196" x2="420" y2="196" class="dg-rule"/><line x1="62" y1="20" x2="62" y2="196" class="dg-rule"/>
+<line x1="62.0" y1="196" x2="62.0" y2="200" class="dg-rule"/><text x="62.0" y="213" class="dg-label-sm" text-anchor="middle">0.0</text>
+<line x1="133.6" y1="196" x2="133.6" y2="200" class="dg-rule"/><text x="133.6" y="213" class="dg-label-sm" text-anchor="middle">0.1</text>
+<line x1="205.2" y1="196" x2="205.2" y2="200" class="dg-rule"/><text x="205.2" y="213" class="dg-label-sm" text-anchor="middle">0.2</text>
+<line x1="276.8" y1="196" x2="276.8" y2="200" class="dg-rule"/><text x="276.8" y="213" class="dg-label-sm" text-anchor="middle">0.3</text>
+<line x1="348.4" y1="196" x2="348.4" y2="200" class="dg-rule"/><text x="348.4" y="213" class="dg-label-sm" text-anchor="middle">0.4</text>
+<line x1="420.0" y1="196" x2="420.0" y2="200" class="dg-rule"/><text x="420.0" y="213" class="dg-label-sm" text-anchor="middle">0.5</text>
+<line x1="58" y1="196.0" x2="62" y2="196.0" class="dg-rule"/><text x="55" y="200.0" class="dg-label-sm" text-anchor="end">0.0</text>
+<line x1="58" y1="160.8" x2="62" y2="160.8" class="dg-rule"/><text x="55" y="164.8" class="dg-label-sm" text-anchor="end">0.5</text>
+<line x1="58" y1="125.6" x2="62" y2="125.6" class="dg-rule"/><text x="55" y="129.6" class="dg-label-sm" text-anchor="end">1.0</text>
+<line x1="58" y1="90.4" x2="62" y2="90.4" class="dg-rule"/><text x="55" y="94.4" class="dg-label-sm" text-anchor="end">1.5</text>
+<line x1="58" y1="55.2" x2="62" y2="55.2" class="dg-rule"/><text x="55" y="59.2" class="dg-label-sm" text-anchor="end">2.0</text>
+<line x1="58" y1="20.0" x2="62" y2="20.0" class="dg-rule"/><text x="55" y="24.0" class="dg-label-sm" text-anchor="end">2.5</text>
+<line x1="62" y1="90.4" x2="420" y2="90.4" class="dg-guide" stroke-dasharray="4 3"/>
+<line x1="62" y1="174.9" x2="420" y2="174.9" class="dg-guide" stroke-dasharray="4 3"/>
+<path d="M62.0,30.6 L65.6,30.6 L69.2,30.6 L72.7,30.6 L76.3,30.6 L79.9,30.6 L83.5,30.6 L87.1,30.6 L90.6,30.6 L94.2,30.6 L97.8,30.6 L101.4,30.6 L105.0,30.6 L108.5,30.6 L112.1,30.6 L115.7,30.6 L119.3,30.6 L122.9,30.6 L126.4,30.6 L130.0,30.6 L133.6,30.6 L137.2,30.6 L140.8,30.6 L144.3,30.6 L147.9,30.6 L151.5,30.6 L155.1,30.6 L158.7,30.6 L162.2,30.6 L165.8,30.6 L169.4,30.6 L173.0,30.6 L176.6,30.6 L180.1,30.6 L183.7,30.6 L187.3,30.6 L190.9,30.6 L194.5,30.6 L198.0,30.6 L201.6,30.6 L205.2,30.6 L208.8,30.6 L212.4,30.6 L215.9,30.6 L219.5,30.6 L223.1,30.6 L226.7,30.6 L230.3,30.6 L233.8,30.6 L237.4,30.6 L241.0,30.6 L244.6,30.6 L248.2,30.6 L251.7,30.6 L255.3,30.6 L258.9,30.6 L262.5,30.6 L266.1,30.6 L269.6,30.6 L273.2,30.6 L276.8,30.6 L280.4,30.6 L284.0,30.6 L287.5,30.6 L291.1,30.6 L294.7,30.6 L298.3,30.6 L301.9,30.6 L305.4,30.6 L309.0,30.6 L312.6,30.6 L316.2,30.6 L319.8,30.6 L323.3,30.6 L326.9,30.6 L330.5,30.6 L334.1,30.6 L337.7,30.6 L341.2,30.6 L344.8,30.6 L348.4,30.6 L352.0,30.6 L355.6,30.6 L359.1,30.6 L362.7,30.6 L366.3,30.6 L369.9,30.6 L373.5,30.6 L377.0,30.6 L380.6,30.6 L384.2,30.6 L387.8,30.6 L391.4,30.6 L394.9,30.6 L398.5,30.6 L402.1,30.6 L405.7,30.6 L409.3,30.6 L412.8,30.6 L416.4,30.6 L420.0,30.6" class="dg-line"/>
+<path d="M62.0,72.8 L65.6,73.2 L69.2,73.5 L72.7,73.9 L76.3,74.2 L79.9,74.6 L83.5,74.9 L87.1,75.3 L90.6,75.6 L94.2,76.0 L97.8,76.3 L101.4,76.7 L105.0,77.0 L108.5,77.4 L112.1,77.7 L115.7,78.1 L119.3,78.4 L122.9,78.8 L126.4,79.1 L130.0,79.5 L133.6,79.8 L137.2,80.2 L140.8,80.5 L144.3,80.9 L147.9,81.2 L151.5,81.6 L155.1,82.0 L158.7,82.3 L162.2,82.7 L165.8,83.0 L169.4,83.4 L173.0,83.7 L176.6,84.1 L180.1,84.4 L183.7,84.8 L187.3,85.1 L190.9,85.5 L194.5,85.8 L198.0,86.2 L201.6,86.5 L205.2,86.9 L208.8,87.2 L212.4,87.6 L215.9,87.9 L219.5,88.3 L223.1,88.6 L226.7,89.0 L230.3,89.3 L233.8,89.7 L237.4,90.0 L241.0,90.4 L244.6,90.8 L248.2,91.1 L251.7,91.5 L255.3,91.8 L258.9,92.2 L262.5,92.5 L266.1,92.9 L269.6,93.2 L273.2,93.6 L276.8,93.9 L280.4,94.3 L284.0,94.6 L287.5,95.0 L291.1,95.3 L294.7,95.7 L298.3,96.0 L301.9,96.4 L305.4,96.7 L309.0,97.1 L312.6,97.4 L316.2,97.8 L319.8,98.1 L323.3,98.5 L326.9,98.8 L330.5,99.2 L334.1,99.6 L337.7,99.9 L341.2,100.3 L344.8,100.6 L348.4,101.0 L352.0,101.3 L355.6,101.7 L359.1,102.0 L362.7,102.4 L366.3,102.7 L369.9,103.1 L373.5,103.4 L377.0,103.8 L380.6,104.1 L384.2,104.5 L387.8,104.8 L391.4,105.2 L394.9,105.5 L398.5,105.9 L402.1,106.2 L405.7,106.6 L409.3,106.9 L412.8,107.3 L416.4,107.6 L420.0,108.0" class="dg-line"/>
+<path d="M62.0,125.6 L65.6,126.3 L69.2,127.0 L72.7,127.7 L76.3,128.4 L79.9,129.1 L83.5,129.8 L87.1,130.5 L90.6,131.2 L94.2,131.9 L97.8,132.6 L101.4,133.3 L105.0,134.0 L108.5,134.8 L112.1,135.5 L115.7,136.2 L119.3,136.9 L122.9,137.6 L126.4,138.3 L130.0,139.0 L133.6,139.7 L137.2,140.4 L140.8,141.1 L144.3,141.8 L147.9,142.5 L151.5,143.2 L155.1,143.9 L158.7,144.6 L162.2,145.3 L165.8,146.0 L169.4,146.7 L173.0,147.4 L176.6,148.1 L180.1,148.8 L183.7,149.5 L187.3,150.2 L190.9,150.9 L194.5,151.6 L198.0,152.4 L201.6,153.1 L205.2,153.8 L208.8,154.5 L212.4,155.2 L215.9,155.9 L219.5,156.6 L223.1,157.3 L226.7,158.0 L230.3,158.7 L233.8,159.4 L237.4,160.1 L241.0,160.8 L244.6,161.5 L248.2,162.2 L251.7,162.9 L255.3,163.6 L258.9,164.3 L262.5,165.0 L266.1,165.7 L269.6,166.4 L273.2,167.1 L276.8,167.8 L280.4,168.5 L284.0,169.2 L287.5,170.0 L291.1,170.7 L294.7,171.4 L298.3,172.1 L301.9,172.8 L305.4,173.5 L309.0,174.2 L312.6,174.9 L316.2,175.6 L319.8,176.3 L323.3,177.0 L326.9,177.7 L330.5,178.4 L334.1,179.1 L337.7,179.8 L341.2,180.5 L344.8,181.2 L348.4,181.9 L352.0,182.6 L355.6,183.3 L359.1,184.0 L362.7,184.7 L366.3,185.4 L369.9,186.1 L373.5,186.8 L377.0,187.6 L380.6,188.3 L384.2,189.0 L387.8,189.7 L391.4,190.4 L394.9,191.1 L398.5,191.8 L402.1,192.5 L405.7,193.2 L409.3,193.9 L412.8,194.6 L416.4,195.3 L420.0,196.0" class="dg-line"/>
+<path d="M62.0,83.4 L65.6,83.7 L69.2,84.1 L72.7,84.4 L76.3,84.8 L79.9,85.1 L83.5,85.5 L87.1,85.8 L90.6,86.2 L94.2,86.5 L97.8,86.9 L101.4,87.2 L105.0,87.6 L108.5,87.9 L112.1,88.3 L115.7,88.6 L119.3,89.0 L122.9,89.3 L126.4,89.7 L130.0,90.0 L133.6,90.4 L137.2,90.8 L140.8,91.1 L144.3,91.5 L147.9,91.8 L151.5,92.2 L155.1,92.5 L158.7,92.9 L162.2,93.2 L165.8,93.6 L169.4,93.9 L173.0,94.3 L176.6,94.6 L180.1,95.0 L183.7,95.3 L187.3,95.7 L190.9,96.0 L194.5,96.4 L198.0,96.7 L201.6,97.1 L205.2,97.4 L208.8,97.8 L212.4,98.1 L215.9,98.5 L219.5,98.8 L223.1,99.2 L226.7,99.6 L230.3,99.9 L233.8,100.3 L237.4,100.6 L241.0,101.0 L244.6,101.3 L248.2,101.7 L251.7,102.0 L255.3,102.4 L258.9,102.7 L262.5,103.1 L266.1,103.4 L269.6,103.8 L273.2,104.1 L276.8,104.5 L280.4,104.8 L284.0,105.2 L287.5,105.5 L291.1,105.9 L294.7,106.2 L298.3,106.6 L301.9,106.9 L305.4,107.3 L309.0,107.6 L312.6,108.0 L316.2,108.4 L319.8,108.7 L323.3,109.1 L326.9,109.4 L330.5,109.8 L334.1,110.1 L337.7,110.5 L341.2,110.8 L344.8,111.2 L348.4,111.5 L352.0,111.9 L355.6,112.2 L359.1,112.6 L362.7,112.9 L366.3,113.3 L369.9,113.6 L373.5,114.0 L377.0,114.3 L380.6,114.7 L384.2,115.0 L387.8,115.4 L391.4,115.7 L394.9,116.1 L398.5,116.4 L402.1,116.8 L405.7,117.2 L409.3,117.5 L412.8,117.9 L416.4,118.2 L420.0,118.6" class="dg-acc"/>
+<circle cx="133.6" cy="90.4" r="3.2" class="dg-acc-f"/>
+<circle cx="312.6" cy="174.9" r="3.2" class="dg-ink"/>
+<text x="276.8" y="24.6" class="dg-label-sm">simple: <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">OUT</tspan> ≤ <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">DD</tspan> − <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">ov</tspan></text>
+<text x="69.2" y="64.8" class="dg-label-sm">simple: gate node</text>
+<text x="262.5" y="125.6" class="dg-label-sm">cascode: output limit</text>
+<text x="147.9" y="138.5" class="dg-label-sm">cascode: reference node</text>
+<text x="66" y="104.4" class="dg-label-sm">load needs 1.5 V</text>
+<text x="66" y="169.9" class="dg-label-sm">reference sink needs 0.3 V</text>
+<text x="241.0" y="230" class="dg-label" text-anchor="middle">threshold shift |Δ<tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">th</tspan>| (V)</text>
+<text x="16" y="108.0" class="dg-label" text-anchor="middle" transform="rotate(-90 16 108.0)">voltage (V)</text>
+</svg>
+      <figcaption>Figure 7. The voltage limits of (13.6) and (13.7) against the threshold shift, for
+      <em>V</em><sub>DD</sub> = 2.5 V, |<em>V</em><sub>th</sub>| = 0.60 V before irradiation and
+      <em>V</em><sub>ov</sub> = 0.15 V (the example below). The simple mirror's output limit is flat; its gate
+      node falls one-for-one. The cascode's output limit (accent) crosses a 1.5 V load requirement after
+      0.10 V of shift; its reference node, falling at twice the rate, reaches a 0.3 V sink limit only after
+      0.35 V.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">How much threshold shift a cascode mirror tolerates</div>
+      <div class="ex-body">
+        <p><b>Given</b> A p-channel cascode mirror on a 2.5 V supply: every transistor has
+        |<em>V</em><sub>th</sub>| = 0.60 V before irradiation and runs at <em>V</em><sub>ov</sub> = 0.15 V.
+        The load needs the output to reach 1.50 V, and the n-channel reference sink needs at least 0.30 V
+        across it. <b>Find</b> the largest increase in |<em>V</em><sub>th</sub>| the mirror tolerates, which
+        branch fails first, and the corresponding limit for a simple mirror.</p>
+        <p><b>Plan.</b> Write both conditions of (13.7) with |<em>V</em><sub>th</sub>| = 0.60 V + Δ and solve
+        each for Δ; the smaller value binds. Assume the overdrive stays at 0.15 V, that is, ignore mobility
+        loss.</p>
+        <p class="ex-step"><b>Before irradiation.</b> Output limit 2.5 − (0.60 + 0.30) = 1.60 V, above the
+          1.50 V the load needs. Reference node 2.5 − 2(0.60 + 0.15) = 1.00 V, above the 0.30 V the sink
+          needs.</p>
+        <p class="ex-step"><b>Output branch.</b> 2.5 − (0.60 + Δ + 0.30) ≥ 1.50 gives Δ ≤ 0.100 V.</p>
+        <p class="ex-step"><b>Reference branch.</b> 2.5 − 2(0.60 + Δ + 0.15) ≥ 0.30 gives 0.75 + Δ ≤ 1.10,
+          so Δ ≤ 0.350 V.</p>
+        <p class="ex-step"><b>Simple mirror, for comparison.</b> Its output limit, 2.5 − 0.15 = 2.35 V, does
+          not depend on the threshold. Its gate node needs 2.5 − (0.60 + Δ + 0.15) ≥ 0.30, so Δ ≤ 1.45 V.</p>
+        <p class="ex-answer">The cascode tolerates a 0.10 V increase in |<em>V</em><sub>th</sub>|, limited by
+          its output branch; its reference branch would last to 0.35 V. A simple mirror on the same supply
+          tolerates 1.45 V. Check: at Δ = 0.10 V the output limit is exactly 1.50 V. The cascode buys output
+          resistance and gain at the price of a threshold in its output headroom, and under dose that price
+          sets the circuit's life.</p>
+      </div>
+    </div>
+
+    <h3>Raising an n-channel threshold on purpose</h3>
+    <p>
+      For n-channel transistors the shift runs the other way: the threshold falls, headroom grows, and the
+      problem becomes turning the transistor off. Deck 09 p. 18 gives a remedy at the cost of speed and gain:
+      a resistance in series with the source raises the effective n-channel threshold through the body
+      effect. The body effect is the increase of threshold with source-to-body reverse bias,
+      <em>V</em><sub>th</sub> = <em>V</em><sub>th0</sub> + <em>γ</em>(√(2<em>Φ</em><sub>F</sub> +
+      <em>V</em><sub>SB</sub>) − √(2<em>Φ</em><sub>F</sub>)) in Colinge's form (IEEE NSREC 2001 Short Course
+      §II), where <em>γ</em> is the body-effect coefficient and <em>Φ</em><sub>F</sub> the body's Fermi
+      potential. With a resistor <em>R</em><sub>S</sub> in the source, any current the transistor carries,
+      leakage included, lifts the source by <em>I</em><sub>D</sub><em>R</em><sub>S</sub>. That lift reduces
+      <em>V</em><sub>GS</sub> and adds reverse bias <em>V</em><sub>SB</sub>, which raises the threshold, and both
+      act against the leakage that caused them. The same resistor degenerates the transistor's
+      transconductance and adds resistance to every switching path, which is the cost the slide names. Holman
+      describes the active version: where wells can be isolated, charge pumps and bulk–source bias circuits
+      can drive each transistor's body to restore its threshold, the bulk counterpart of the back-gate bias of
+      §8.
+    </p>
+
+    <details class="check">
+      <summary>An n-channel cascode mirror sinks current to ground. Each transistor has <em>V</em><sub>th</sub> = 0.55 V and runs at <em>V</em><sub>ov</sub> = 0.15 V. Total dose lowers every threshold by 0.12 V. How does the minimum output voltage change, and what failure should the designer look for instead of lost headroom?</summary>
+      <div class="answer">
+        <p>The n-channel cascode is the mirror image of (13.7): its output must stay above
+        <em>V</em><sub>th</sub> + 2<em>V</em><sub>ov</sub> for both output transistors to stay saturated.
+        Before irradiation that is 0.55 + 0.30 = 0.85 V; after, 0.43 + 0.30 = 0.73 V. The output range widens
+        by the 0.12 V of the shift, because a falling n-channel threshold lowers every stacked gate–source
+        drop. The failure to look for is the opposite one: transistors that should be off conduct, because
+        the gate voltage that held them off is now closer to, or above, the lowered threshold, and because the
+        trench and field oxides at their edges leak (M08 §5). In a mirror carrying a small current, the
+        off-state and edge leakage of the output transistors adds directly to the mirrored current. Edgeless
+        layout (§7) and a series source resistance (this section) address that failure.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>6 · Averaging an offset away: reconfiguration and chopping</h2>
+
+    <p>
+      §3 prevented radiation-induced offset by keeping matched transistors at the same average bias. When the
+      signal does not allow that, the circuit can make the transistors share their history by exchanging their
+      roles periodically, and it can go further and cancel whatever offset remains by averaging. Deck 09
+      pp. 21–24 takes this from a comparator to a measured chopper-stabilized op-amp.
+    </p>
+
+    <h3>Periodic reconfiguration</h3>
+    <p>
+      A comparator whose signal input does not average to its reference develops an offset as dose
+      accumulates, because its two input transistors spend the mission at different average
+      <em>V</em><sub>GS</sub> (§3). Deck 09 p. 22's remedy, after Edwards <em>et al.</em> (1999), swaps the input transistors and the input signals
+      periodically, using additional transistors as switches. Each input transistor then serves half the time
+      on each input, the average voltage at both inputs is the same, and the two transistors accumulate the
+      same threshold shift. Reconfiguration removes the cause of the offset: it equalizes the irradiation
+      bias.
+    </p>
+
+    <h3>Chopper stabilization</h3>
+    <p>
+      Deck 09 p. 23 names the clocked version of the same idea dynamic offset cancellation, or input chopping,
+      widely used against offsets from device mismatch and process variation. A pair of switches at the
+      amplifier's input, driven by a clock of frequency <em>f</em><sub>ch</sub>, exchanges the two inputs every
+      half-period; a second pair at the output exchanges the outputs in step. The signal passes both
+      exchanges and emerges with its sign unchanged. The offset enters after the first exchange and passes
+      only the second, so it emerges with alternating sign: during one half-period the output is the signal
+      plus the offset, during the next the signal minus the offset, as Figure 8 shows. A low-pass filter
+      averages the two phases:
+    </p>
+
+    <div class="eq" id="eq-chop">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num">(<em>V</em><sub>IN</sub> + <em>V</em><sub>OS</sub>) + (<em>V</em><sub>IN</sub> − <em>V</em><sub>OS</sub>)</span><span class="den">2</span></span> = <em>V</em><sub>IN</sub></div>
+        <div class="eq-num">(13.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>IN</sub> input signal, constant over a chopping period (V) · <em>V</em><sub>OS</sub>
+        offset of the chopped stage (V). Deck 09 p. 23's statement of the averaging. Holds while the signal
+        and the offset change slowly compared with the period 1/<em>f</em><sub>ch</sub> and while the two
+        half-periods are equal. The average cancels the offset; the filter must still remove the alternating
+        part, which is a square wave of amplitude <em>V</em><sub>OS</sub> at <em>f</em><sub>ch</sub>.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 160" role="img" aria-labelledby="m13f8-t">
+<title id="m13f8-t">Output of a chopped amplifier alternating between the input plus and minus the offset, and its average</title>
+<line x1="30" y1="140" x2="420" y2="140" class="dg-rule"/>
+<path d="M30.0,66.0 L60.0,66.0 L60.0,118.0 L60.0,118.0 L90.0,118.0 L90.0,66.0 L90.0,66.0 L120.0,66.0 L120.0,118.0 L120.0,118.0 L150.0,118.0 L150.0,66.0 L150.0,66.0 L180.0,66.0 L180.0,118.0 L180.0,118.0 L210.0,118.0 L210.0,66.0 L210.0,66.0 L240.0,66.0 L240.0,118.0 L240.0,118.0 L270.0,118.0 L270.0,66.0 L270.0,66.0 L300.0,66.0 L300.0,118.0 L300.0,118.0 L330.0,118.0" class="dg-line"/>
+<line x1="30" y1="92" x2="330" y2="92" class="dg-acc" stroke-dasharray="6 4"/>
+<text x="34" y="59" class="dg-label-sm"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">IN</tspan> + <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">OS</tspan></text>
+<text x="64.0" y="133" class="dg-label-sm"><tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">IN</tspan> − <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">OS</tspan></text>
+<text x="336" y="96" class="dg-label-sm">average = <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">IN</tspan></text>
+<line x1="150" y1="48" x2="210" y2="48" class="dg-rule"/>
+<line x1="150" y1="43" x2="150" y2="53" class="dg-rule"/><line x1="210" y1="43" x2="210" y2="53" class="dg-rule"/>
+<text x="180.0" y="39" class="dg-label-sm" text-anchor="middle">1/<tspan class="dg-math">f</tspan><tspan baseline-shift="sub" style="font-size:75%">ch</tspan></text>
+<text x="180.0" y="155" class="dg-label" text-anchor="middle">time</text>
+</svg>
+      <figcaption>Figure 8. The output of a chopped stage before filtering, after Deck 09 p. 23: it
+      alternates between <em>V</em><sub>IN</sub> + <em>V</em><sub>OS</sub> and <em>V</em><sub>IN</sub> −
+      <em>V</em><sub>OS</sub> at the chopping frequency, and its average (accent) is the offset-free
+      signal.</figcaption>
+    </figure>
+
+    <p>
+      Deck 09 p. 24 answers the question p. 23 poses, whether chopping works on radiation-induced offset, with
+      measurements from Atkinson's dissertation (2013) and Shetler (NSREC 2015) on a static op-amp and a
+      chopped one. The largest offset shift measured was 9.82 mV for the static amplifier and
+      50 µV for the chopped one, which the slide summarizes as over 99 % reduction. The chopped amplifier's
+      offset stayed flat through 300 krad(SiO₂) and the anneal that followed, while the static amplifier's
+      offset changed during both. Two numbers describe such a result:
+    </p>
+
+    <div class="eq" id="eq-chop-reduction">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>OS,ch</sub> = (1 − <em>r</em>) <em>V</em><sub>OS,static</sub> ,&emsp; <em>F</em> = <span class="frac"><span class="num"><em>V</em><sub>OS,static</sub></span><span class="den"><em>V</em><sub>OS,ch</sub></span></span> = <span class="frac"><span class="num">1</span><span class="den">1 − <em>r</em></span></span></div>
+        <div class="eq-num">(13.9)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>OS,static</sub> radiation-induced offset of the unchopped amplifier (V) ·
+        <em>V</em><sub>OS,ch</sub> residual offset with chopping (V) · <em>r</em> fractional reduction,
+        dimensionless (0.99 for "99 %") · <em>F</em> improvement factor, dimensionless. The factor is set by
+        what is left, not by what is removed: each further nine in <em>r</em> multiplies <em>F</em> by ten. For
+        Deck 09 p. 24's data, <em>r</em> = 1 − 50 µV/9.82 mV = 99.49 % and <em>F</em> = 196.
+      </div>
+    </div>
+
+    <p>
+      The slide does not say what sets the 50 µV residual. Its block diagram shows one contribution: only the
+      first stage is chopped, so the offset of the stage after the demodulating switches is not modulated and
+      passes to the output, although referred to the input it is divided by the first stage's gain. The
+      switches are another likely one, since Kugelstadt (Texas Instruments, 2005) names errors induced by
+      the switches' response time among the limits of chopping. Kugelstadt also sets out the price. The
+      amplifier becomes a sampled system whose usable bandwidth is a small fraction of the chopping
+      frequency, and in the classic chopper amplifier, the circuit Deck 09 p. 24 measured, the chopping
+      frequency lies in the low-kilohertz range, so that amplifier is a precision, low-bandwidth one. (The
+      chopper-<em>stabilized</em> amplifier in Kugelstadt's sense adds a parallel wideband path and recovers
+      bandwidths of several megahertz; the chopped path inside it still needs the filter below.) The filter
+      that removes the square wave sets the bandwidth. A first-order filter with corner
+      <em>f</em><sub>c</sub> passes the square wave's fundamental, whose amplitude is 4/π times the square
+      wave's, attenuated by 1/√(1 + (<em>f</em><sub>ch</sub>/<em>f</em><sub>c</sub>)²); far above the corner
+      the harmonics add to it at the peak, as the second form gives:
+    </p>
+
+    <div class="eq" id="eq-ripple">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>ripple,1</sub> = <span class="frac"><span class="num">4</span><span class="den">π</span></span> · <span class="frac"><span class="num"><em>V</em><sub>OS</sub></span><span class="den">√(1 + (<em>f</em><sub>ch</sub>/<em>f</em><sub>c</sub>)²)</span></span><br><em>V</em><sub>ripple,pk</sub> ≈ <span class="frac"><span class="num">π</span><span class="den">2</span></span> <em>V</em><sub>OS</sub> <span class="frac"><span class="num"><em>f</em><sub>c</sub></span><span class="den"><em>f</em><sub>ch</sub></span></span></div>
+        <div class="eq-num">(13.10)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>ripple,1</sub> amplitude of the ripple's fundamental, at the chopping frequency, after
+        the filter (V) · <em>V</em><sub>ripple,pk</sub> peak of the whole ripple (V) · <em>V</em><sub>OS</sub>
+        offset being chopped, the square wave's amplitude (V) · <em>f</em><sub>ch</sub> chopping frequency
+        (Hz) · <em>f</em><sub>c</sub> corner frequency of a first-order low-pass filter (Hz), in the same unit
+        as <em>f</em><sub>ch</sub>. The square wave's odd harmonics have amplitudes
+        (4/π)<em>V</em><sub>OS</sub>/<em>n</em>, and far above the corner the filter divides each by
+        <em>nf</em><sub>ch</sub>/<em>f</em><sub>c</sub>, so they fall as 1/<em>n</em>²; they do not vanish
+        from the peak. There the filter integrates: its output ramps at ±<em>V</em><sub>OS</sub>/<em>τ</em>
+        (<em>τ</em> = 1/2π<em>f</em><sub>c</sub>) for each half-period 1/(2<em>f</em><sub>ch</sub>), a triangle
+        wave whose harmonics all peak together. Its peak is the second form, π²/8 = 1.23 times the
+        fundamental. The second form holds for <em>f</em><sub>c</sub> ≪ <em>f</em><sub>ch</sub>; the exact
+        steady-state peak is <em>V</em><sub>OS</sub> tanh(π<em>f</em><sub>c</sub>/2<em>f</em><sub>ch</sub>).
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">The filter a chopped amplifier needs</div>
+      <div class="ex-body">
+        <p><b>Given</b> A chopped amplifier's first stage develops a 5 mV offset at the end of the mission. It
+        chops at 20 kHz, faster than the classic low-kilohertz chopper, and the ripple left at its output, referred to the input, must stay below 10 µV peak.
+        <b>Find</b> the highest corner frequency of a first-order output filter that meets this, and the
+        bandwidth that leaves for the signal.</p>
+        <p><b>Plan.</b> Size the filter for the fundamental first, with the first form of (13.10), then
+        check the harmonics against the same limit, since the limit is on the peak of their sum. If they push
+        the peak over, size the filter with the second form.</p>
+        <p class="ex-step"><b>Fundamental before filtering.</b> (4/π) × 5 mV = 6.37 mV.</p>
+        <p class="ex-step"><b>Attenuation needed.</b> |<em>H</em>(<em>f</em><sub>ch</sub>)| ≤ 10 µV ÷ 6.37 mV
+          = 1.571×10⁻³.</p>
+        <p class="ex-step"><b>Corner for the fundamental alone.</b> 1/√(1 + (<em>f</em><sub>ch</sub>/<em>f</em><sub>c</sub>)²)
+          = 1.571×10⁻³ gives <em>f</em><sub>ch</sub>/<em>f</em><sub>c</sub> = √(1/(1.571×10⁻³)² − 1) = 637,
+          so <em>f</em><sub>c</sub> = 20 kHz ÷ 637 = 31.4 Hz. The 1 inside the root is negligible: the
+          required attenuation is so strong that the filter works far above its corner, where its gain is
+          simply <em>f</em><sub>c</sub>/<em>f</em>.</p>
+        <p class="ex-step"><b>The harmonics at that corner.</b> The third harmonic, (4/π)(5 mV)/3 = 2.12 mV
+          at 60 kHz, is attenuated by about 1910 to 1.11 µV; the fifth leaves 0.40 µV. They are small one
+          by one, but they add to the fundamental's 10.0 µV at the peak, and the whole series gives
+          10.0 µV × π²/8 = 12.3 µV. A corner of 31.4 Hz misses the limit by 23 %. Why they add: after the
+          filter the ripple is a triangle wave, and every harmonic of a triangle wave peaks at the same
+          instant.</p>
+        <p class="ex-step"><b>Corner for the peak.</b> Set the second form of (13.10) to the limit:
+          <em>f</em><sub>c</sub> ≤ (2/π)(10 µV ÷ 5 mV) × 20 kHz = 25.5 Hz.</p>
+        <p class="ex-answer"><em>f</em><sub>c</sub> ≤ 25 Hz, so the chopped amplifier is usable to a few
+          tens of hertz. Check: at 25.5 Hz the fundamental is 8.11 µV and 8.11 µV × 1.234 = 10.0 µV; the exact
+          form, 5 mV × tanh(π × 25.5/40 000), also gives 10.0 µV. The corner sits 785 times below the
+          chopping frequency, consistent with a usable bandwidth that is a small fraction of
+          <em>f</em><sub>ch</sub>. The chopper converted a 5 mV offset problem into a filtering problem, and
+          the filter is paid for in bandwidth.</p>
+      </div>
+    </div>
+
+    <p>
+      A related family stores the offset instead of modulating it. In an auto-zero amplifier (Kugelstadt), a
+      nulling amplifier alternately cancels its own offset, with its inputs shorted, and measures the main
+      amplifier's, storing each correction on a capacitor. In current designs the main amplifier carries the signal at
+      full bandwidth; older auto-zero amplifiers had to limit the input bandwidth to less than half the
+      auto-zero clock frequency (Kugelstadt), so their cost was the sampling and the clock rather than a
+      filter. Deck 09
+      p. 33 lists chopper and auto-zero op-amps among the techniques validated against radiation-induced
+      offset. Both rest on switches and stored charge, and Holman warns that total-dose compensation that
+      relies on switched capacitors may itself be vulnerable to single-event errors: a strike on the storage
+      capacitor or a switch corrupts the correction (<a href="m14-rhbd-single-event-effects.html">M14</a>). Hardening one effect can expose a circuit to another.
+    </p>
+
+    <details class="check">
+      <summary>During a ground test an op-amp is irradiated to 300 krad(SiO₂) at 50 rad(SiO₂)/s, and its static offset grows by about 9 mV over the exposure. Does a chopper running at 20 kHz see this offset as constant, and what kind of error could chopping not remove however fast it runs?</summary>
+      <div class="answer">
+        <p>The exposure lasts 300 000 ÷ 50 = 6000 s, so the offset changes at an average 9 mV ÷ 6000 s =
+        1.5 µV/s. Over one 50 µs chopping period it changes by 0.075 nV, negligible against the offset
+        itself, so each period sees a constant offset and (13.8) cancels it; dose accumulates far too slowly
+        for chopping to fall behind. Chopping cannot remove an error that the switches cannot distinguish from
+        the signal. A gain error is the example: if the open-loop gain falls, both half-periods are scaled by
+        the same wrong factor and their average is wrong by that factor, so a gain error is handled by feedback
+        (§2), not by chopping. The same holds for a drifting feedback resistor or a leakage current into the
+        signal path after the output switches.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>7 · Layout: edgeless transistors and guard rings</h2>
+
+    <p>
+      §§2–6 compensated for parameter shifts that the process allows. Leakage through the isolation oxides is
+      different: it is a current path that should not exist, and the designer can remove it by drawing the
+      transistor so that the path has nowhere to form. <a href="m08-tid-effects-devices-ics.html">M08</a>
+      §§5–6 explained the physics of the two paths and how layout weakens or removes them; this section takes
+      the designer's side: which closed geometry to draw, what it costs, how it behaves in a circuit, and why
+      it cannot be drawn in a FinFET process.
+    </p>
+
+    <h3>Two paths, two remedies</h3>
+    <p>
+      Deck 09 p. 25 names the two total-dose leakage problems of a bulk n-channel transistor. The first runs
+      from drain to source along the edges of the transistor, where the polysilicon gate crosses from the thin
+      gate oxide onto the thick field or trench oxide; positive charge trapped there inverts the p-type edge
+      and forms a parasitic channel in parallel with the real one. The second runs between adjacent
+      n-type diffusions, from one transistor to its neighbour or to an n-well, under the isolation oxide that
+      separates them. Deck 09 p. 26 gives one remedy for each. An edgeless n-channel layout removes the
+      drain-to-source edge path: the gate is drawn as a closed ring, so source and drain are separated only by
+      polysilicon over thin gate oxide everywhere (Holman). An individual p-type guard ring around each
+      n-channel transistor removes the path to adjacent n-type diffusions: the charge that inverts the lightly doped
+      substrate beside it cannot invert the heavily doped p⁺ ring (Faccio). That protection has a limit,
+      which <a href="m08-tid-effects-devices-ics.html">M08</a> §6 quantifies: the ring's margin is fixed by
+      its doping while the trapped charge keeps growing, so at a high enough dose even the p⁺ surface
+      inverts. Holman adds that
+      guard rings also suppress latchup, the second reason hardened bulk libraries use them.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 178" role="img" aria-labelledby="m13f9-t">
+        <title id="m13f9-t">Plan views of an annular edgeless transistor, a ringed-source transistor and a transistor inside a p-plus guard ring</title>
+        <!-- A: annular -->
+        <rect x="20" y="30" width="100" height="100" class="dg-fill"/>
+        <path d="M40,50 H100 V110 H40 Z M52,62 V98 H88 V62 Z" fill-rule="evenodd" class="dg-acc-f"/>
+        <text x="70" y="84" class="dg-label-sm" text-anchor="middle">D</text>
+        <text x="30" y="44" class="dg-label-sm">S</text>
+        <text x="70" y="150" class="dg-label" text-anchor="middle">annular</text>
+        <text x="70" y="165" class="dg-label-sm" text-anchor="middle">drain inside, no edge</text>
+        <!-- B: ringed source -->
+        <rect x="176" y="60" width="100" height="40" class="dg-fill"/>
+        <path d="M172,46 H224 V114 H172 Z M184,66 V94 H212 V66 Z" fill-rule="evenodd" class="dg-soft" opacity="0.85"/>
+        <text x="198" y="84" class="dg-label-sm" text-anchor="middle">S</text>
+        <text x="252" y="84" class="dg-label-sm" text-anchor="middle">D</text>
+        <text x="225" y="150" class="dg-label" text-anchor="middle">ringed source</text>
+        <text x="225" y="165" class="dg-label-sm" text-anchor="middle">gate around the source</text>
+        <!-- C: guard ring -->
+        <path d="M312,30 H404 V130 H312 Z M320,38 V122 H396 V38 Z" fill-rule="evenodd" class="dg-ink" opacity="0.55"/>
+        <rect x="334" y="60" width="50" height="40" class="dg-fill"/>
+        <rect x="354" y="50" width="10" height="60" class="dg-soft" opacity="0.85"/>
+        <rect x="414" y="66" width="22" height="28" class="dg-fill"/>
+        <text x="425" y="60" class="dg-label-sm" text-anchor="middle">n⁺</text>
+        <text x="358" y="150" class="dg-label" text-anchor="middle">p⁺ guard ring</text>
+        <text x="358" y="165" class="dg-label-sm" text-anchor="middle">cuts the path to neighbours</text>
+      </svg>
+      <figcaption>Figure 9. Three hardened layouts in plan view, schematic and not to scale, with square
+      corners for simplicity; plain boxes are active area, the accent ring (left) and the shaded shapes
+      (centre, right) are polysilicon gates, the solid ring at the right is the p⁺ diffusion, and D and S
+      are drain and source. Left: the annular transistor,
+      whose gate ring (accent) leaves no edge where the gate crosses onto field oxide between source and
+      drain. Centre: the ringed-source transistor, whose gate ring keeps the source away from the field-oxide
+      edge while the channel to the drain runs straight across, as in a standard device. Right: a p⁺ ring
+      around a standard transistor, which resists inversion and so separates it from the neighbouring n⁺
+      diffusion.</figcaption>
+    </figure>
+
+    <h3>Choosing the closed geometry</h3>
+    <p>
+      Nowlin, Bailey, Turfler and Alexander, in the course textbook, distinguish two closed geometries.
+      In the <b>annular</b> transistor, also called re-entrant or edgeless, the gate forms a ring around one
+      diffusion. The usual choice puts the drain inside, because that minimizes the drain area and with it
+      the drain-to-substrate capacitance. The field at the inner electrode varies roughly as 1/<em>r</em>,
+      however, so an inner drain concentrates the field and can become a reliability problem; inside corners
+      of 90° are therefore usually avoided and the ring is drawn with corners bevelled at 45°. Conduction is
+      radial, which constrains the dimensions: the minimum effective width is set by the contact size and
+      spacing inside the ring, the channel length cannot be chosen independently of the width, and adding
+      contacts to carry more current enlarges the inner diffusion and with it the width. In the
+      <b>ringed-source</b> transistor the gate surrounds the source instead and the channel to the drain runs
+      straight across, as in a standard transistor. The width can be made smaller than an annular device
+      allows and the length is unconstrained, but the excess polysilicon around the source adds a large
+      parasitic gate-to-source capacitance. Nowlin <em>et al.</em> draw the ringed source to eliminate the
+      source-to-drain edge path: an edge channel from the drain must still cross thin-oxide gate to reach
+      the enclosed source. <a href="m08-tid-effects-devices-ics.html">M08</a> §6 gives the same account, beside Deck 08's
+      preference for the fully enclosed transistor. Enclosing the drain instead would place that capacitance between
+      gate and drain, where the transistor's gain multiplies it as a Miller capacitance, so the usual choice is
+      to enclose the source.
+    </p>
+    <p>
+      Faccio, in the same textbook, reports what an annular library cost at CERN in a quarter-micron process.
+      The transistors are not source–drain symmetric: their output conductance is higher when the central
+      electrode is the drain, which standard circuit models did not represent. The gate must surround a
+      minimum-size drain, which set a lower limit on gate width of about 3.3 µm in that process. And the
+      enclosed transistors and guard rings together cost a density penalty of 1.5 to 3.5 for the digital cells
+      of the library. Deck 09 p. 27, from Atkinson's dissertation, shows the choice a designer makes in
+      180 nm. Symmetrical edgeless layouts provide matching and closely resemble standard layouts, while
+      asymmetrical layouts, such as the source-enclosed shape, suit transistors whose voltages are DC or
+      mostly static: a transistor whose source and drain never exchange roles has one fixed asymmetry, which
+      can be characterized, whereas a switch conducting both ways would behave differently in each direction.
+      The fully enclosed shape conducts in four directions, and its corner transistors increase the effective
+      <em>W</em>/<em>L</em>.
+    </p>
+    <p>
+      Deck 09 pp. 29–30, from the same dissertation, shows the result. Standard n-channel layouts developed
+      large current increases at low gate voltage by 1 Mrad, while the slide states that the edgeless layouts
+      eliminate the leakage path; its plot shows one excursion, at 100 krad and low gate voltage, about a
+      decade above the pre-irradiation curve, which the 300 krad and 1 Mrad curves do not repeat. Measured as
+      the change in gate voltage needed to hold a bias current, the shift of the edgeless layouts was an
+      order of magnitude smaller than that of the standard ones, about −5 mV against about −60 mV at the
+      highest dose plotted. The slide marks the edgeless data as varying strongly with the test setup and
+      does not say what the residual shift is.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The aspect ratio an annular transistor can provide</div>
+      <div class="ex-body">
+        <p><b>Given</b> A square annular n-channel transistor whose inner drain is 1.0 µm on a side, with a gate
+        ring of drawn length <em>L</em> = 0.5 µm. The course's rule takes the effective width as the perimeter
+        of the line running through the middle of the gate ring (<a href="m08-tid-effects-devices-ics.html">M08</a>
+        §6). <b>Find</b> the width and <em>W</em>/<em>L</em>; then the aspect ratio of a minimum device with an
+        assumed 0.6 µm drain and <em>L</em> = 0.25 µm, and how low <em>W</em>/<em>L</em> can go as the ring
+        is lengthened.</p>
+        <p><b>Plan.</b> The midline of a square ring of inner side <em>a</em> and width <em>L</em> is a square
+        of side <em>a</em> + <em>L</em>, so <em>W</em> = 4(<em>a</em> + <em>L</em>) and
+        <em>W</em>/<em>L</em> = 4<em>a</em>/<em>L</em> + 4. Evaluate, then let <em>L</em> grow and test the
+        rule against radial conduction, which it approximates.</p>
+        <p class="ex-step"><b>Width.</b> <em>W</em> = 4 × (1.0 + 0.5) µm = 6.0 µm.</p>
+        <p class="ex-step"><b>Aspect ratio.</b> <em>W</em>/<em>L</em> = 6.0/0.5 = 12.0.</p>
+        <p class="ex-step"><b>Minimum device.</b> <em>W</em> = 4 × (0.6 + 0.25) µm = 3.4 µm, so
+          <em>W</em>/<em>L</em> = 13.6. The 0.6 µm drain is an assumed minimum that can hold a contact, not a
+          value from the sources; Faccio reports the resulting width limit, about 3.3 µm, for a quarter-micron
+          process.</p>
+        <p class="ex-step"><b>Long rings by the rule.</b> <em>W</em>/<em>L</em> = 4<em>a</em>/<em>L</em> + 4
+          falls towards 4 as <em>L</em> grows: 6.4 at <em>L</em> = 1 µm, 4.6 at 4 µm, 4.12 at 20 µm for the
+          0.6 µm drain, because lengthening the ring also lengthens its midline.</p>
+        <p class="ex-step"><b>Long rings by radial conduction.</b> The rule treats the ring as a straight
+          channel as wide as its midline, which holds only while <em>L</em> is small compared with
+          <em>a</em>. In a ring the current flows radially. For a circular ring of inner radius
+          <em>R</em><sub>in</sub> and outer radius <em>R</em><sub>out</sub>, a thin annulus of radius
+          <em>r</em> and width d<em>r</em> has resistance <em>R</em><sub>s</sub>d<em>r</em>/(2π<em>r</em>)
+          for a channel sheet resistance <em>R</em><sub>s</sub>; summing from <em>R</em><sub>in</sub> to
+          <em>R</em><sub>out</sub> gives <em>R</em><sub>s</sub>ln(<em>R</em><sub>out</sub>/<em>R</em><sub>in</sub>)/2π,
+          so <em>W</em>/<em>L</em> = 2π/ln(<em>R</em><sub>out</sub>/<em>R</em><sub>in</sub>). It has no
+          floor. With the circle inscribed in the 0.6 µm drain (<em>R</em><sub>in</sub> = 0.3 µm,
+          <em>R</em><sub>out</sub> = 0.3 µm + <em>L</em>) it gives 4.3 at <em>L</em> = 1 µm, 2.4 at 4 µm and
+          1.5 at 20 µm. A square ring conducts somewhat more through its corners but follows the same
+          trend.</p>
+        <p class="ex-answer"><em>W</em> = 6.0 µm and <em>W</em>/<em>L</em> = 12 for the first device. By the
+          course's rule <em>W</em>/<em>L</em> cannot fall below 4, but that floor belongs to the
+          approximation, not to the geometry: radial conduction lets the aspect ratio keep falling, only
+          logarithmically, as the ring lengthens. Check: for <em>L</em> ≪ <em>R</em><sub>in</sub>,
+          ln(<em>R</em><sub>out</sub>/<em>R</em><sub>in</sub>) ≈ <em>L</em>/<em>R</em><sub>in</sub>, and the
+          radial result becomes 2π<em>R</em><sub>in</sub>/<em>L</em>, the circumference over the length, which
+          is the rule's idea applied to a circle. A low aspect ratio is therefore possible but expensive in
+          area: <em>W</em>/<em>L</em> ≈ 1.5 takes a ring about 40 µm across around a 0.6 µm drain. A weak
+          transistor, such as a long-channel load or a low-current bias device, is impractical to draw annular;
+          it uses the ringed-source shape or a series stack.</p>
+      </div>
+    </div>
+
+    <h3>Where edgeless layout ends</h3>
+    <p>
+      Deck 09 p. 31, after Chatterjee <em>et al.</em> (2014), records two facts about advanced technologies.
+      Many modern FinFET structures have shown total-dose leakage currents comparable to those of older bulk
+      CMOS, and geometric constraints make edgeless layouts impossible below 65 nm, which limits their use in
+      modern hardened designs. In a FinFET each fin is a thin vertical slab of silicon rising through shallow
+      trench isolation (STI), and the gate wraps over it; a ring-shaped gate around a contacted drain cannot be
+      formed from such fins. Deck 09 p. 34 states the consequence, that STI sidewalls dominate the leakage,
+      and summarizes the measurements of Bonaldo <em>et al.</em> (2024) on 16 nm silicon FinFETs. Positive
+      charge trapped deep in the STI sidewalls and negative charge in the upper STI corners make the
+      drain-to-source leakage of n-channel FinFETs rise steadily and then plateau at very large doses, and make
+      the transconductance increase up to 3–10 Mrad and then decrease. Only the leakage depends on the number of
+      fins: at 500 Mrad it rose about tenfold in two-fin transistors against about 2.5-fold in twenty-fin
+      ones, while the transconductance change was practically the same for all. The authors attribute this
+      to the lateral STI beside the outermost fins, which is larger than the STI between fins, so a device
+      with few fins has a larger share of exposed edge fins (the paper's abstract says inter-fin STI; its
+      body and conclusion say lateral). Deck 09 p. 34 adds fin spacing as a factor. The designer's lever in a
+      FinFET process is therefore the choice of fin count, and on the slide's account fin spacing, among the
+      devices the process offers; the leakage itself is set by the quality of
+      the isolation oxide, which the process controls (<a href="m08-tid-effects-devices-ics.html">M08</a> §8).
+      Deck 09 p. 36 draws the conclusion that design and process must now work together.
+    </p>
+
+    <details class="check">
+      <summary>A designer needs a 1:2 current mirror built from annular n-channel transistors with the same gate length. Using the course's width rule, what inner drain size gives one transistor twice the aspect ratio of a reference device with a 1.0 µm drain and a 0.5 µm ring, and why is that not the better design?</summary>
+      <div class="answer">
+        <p>At equal length, twice the aspect ratio needs twice the width: 4(<em>a</em>₂ + 0.5) =
+        2 × 4(1.0 + 0.5) = 12.0 µm, so <em>a</em>₂ = 2.5 µm, a drain more than six times the area of the
+        reference's. That device matches the reference poorly. The course's rule is an approximation whose
+        error lies in the corners: both devices have four corners, but the corners are a larger fraction of the
+        small device's width, so the real current ratio is not exactly 2. The drain-inside asymmetry and the
+        drain capacitance also differ between the two. The better design draws the output as two copies of the
+        reference transistor connected in parallel: every unit then has the same geometry, the same corners and
+        the same irradiation bias, so the ratio is 2 to the extent the units match, which is the same principle
+        as the matched gate–source voltages of §3.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>8 · Silicon on insulator: back-gate bias</h2>
+
+    <p>
+      In silicon on insulator, each transistor sits in a thin film of silicon on a buried oxide (BOX), with the
+      silicon substrate beneath. The buried oxide isolates every transistor dielectrically, so the leakage
+      between adjacent n-type diffusions of §7 cannot form, and Holman notes that SOI processes need no guard
+      rings. The buried oxide is, however, a thick oxide under every channel, and the charge it traps opens a
+      back channel along the bottom of the film (<a href="m08-tid-effects-devices-ics.html">M08</a> §7). The
+      lecture on Deck 06 raised a remedy that leaves the oxide alone: change the potential behind it, using
+      the substrate as a second gate, and monitor and adjust that potential as the charge builds up. This
+      section quantifies the remedy for a fully depleted device.
+    </p>
+
+    <h3>How the back gate moves the front threshold</h3>
+    <p>
+      In a partially depleted film, a neutral region separates the front and back surfaces, so the back
+      potential does not reach the front channel. In a fully depleted film the whole film is depleted, and the
+      front and back surfaces are capacitively coupled through it. The substrate then acts as a back gate, with
+      the buried oxide as its gate oxide, and its bias <em>V</em><sub>B</sub> shifts the front threshold
+      linearly while the back surface is depleted. Colinge gives the coefficient (IEEE NSREC 2001 Short Course
+      §II, eq. (10)) as a series combination of the film and buried-oxide capacitances referred to the front
+      gate:
+    </p>
+
+    <div class="eq" id="eq-fdsoi-coupling">
+      <div class="eq-body">
+        <div class="eq-math"><span class="frac"><span class="num">d<em>V</em><sub>tf</sub></span><span class="den">d<em>V</em><sub>B</sub></span></span> = −<em>k</em> ,&emsp; <em>k</em> = <span class="frac"><span class="num"><em>C</em><sub>Si</sub><em>C</em><sub>BOX</sub></span><span class="den"><em>C</em><sub>ox</sub>(<em>C</em><sub>Si</sub> + <em>C</em><sub>BOX</sub>)</span></span></div>
+        <div class="eq-num">(13.11)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>tf</sub> front-gate threshold voltage (V) · <em>V</em><sub>B</sub> back-gate (substrate)
+        bias (V) · <em>k</em> coupling coefficient, dimensionless · <em>C</em><sub>Si</sub> =
+        <em>ε</em><sub>Si</sub>/<em>t</em><sub>Si</sub>, <em>C</em><sub>BOX</sub> =
+        <em>ε</em><sub>ox</sub>/<em>t</em><sub>BOX</sub>, <em>C</em><sub>ox</sub> =
+        <em>ε</em><sub>ox</sub>/<em>t</em><sub>ox</sub> capacitances per unit area of the film, the buried oxide
+        and the front gate oxide (F/cm²), with <em>ε</em><sub>Si</sub> = 1.04×10⁻¹² F/cm and
+        <em>ε</em><sub>ox</sub> = 3.45×10⁻¹³ F/cm and thicknesses in cm. Holds while the back surface is
+        depleted; it neglects traps at the back interface, which change the coupling (Musseau and
+        Ferlet-Cavrois, §III). Zero in a partially depleted device.
+      </div>
+    </div>
+
+    <p>
+      Musseau and Ferlet-Cavrois (§III of the same short course) describe the three states of the back
+      surface. With <em>V</em><sub>B</sub> strongly negative the back surface accumulates, its potential is
+      pinned and the front threshold no longer depends on <em>V</em><sub>B</sub>. With <em>V</em><sub>B</sub>
+      strongly positive the back surface inverts and a back-channel transistor conducts in parallel with the
+      front one. Between the two the back surface is depleted and (13.11) holds. Positive charge trapped in
+      the buried oxide acts on the back surface like an additional positive back-gate bias, so each state of
+      the back surface is reached at a more negative <em>V</em><sub>B</sub>. Their irradiated SIMOX devices
+      show the whole <em>V</em><sub>tf</sub>–<em>V</em><sub>B</sub> curve moving toward negative
+      <em>V</em><sub>B</sub> as dose increases (they word it as a negative shift of the effective back-gate
+      bias, and quote <em>k</em> with a negative sign, taking the coefficient as d<em>V</em><sub>tf</sub>/d<em>V</em><sub>B</sub>
+      itself; (13.11) writes that sign out, so <em>k</em> here is positive), with the front-threshold shift proportional to the shift of the back-channel
+      threshold, Δ<em>V</em><sub>tf</sub> ≈ <em>k</em>Δ<em>V</em><sub>tb</sub>. If the trapped charge sits at
+      the interface between the buried oxide and the film, the back threshold shifts by the charge divided by
+      the buried-oxide capacitance, and the same amount of back-gate bias, applied in the negative direction,
+      undoes the shift:
+    </p>
+
+    <div class="eq" id="eq-backgate-comp">
+      <div class="eq-body">
+        <div class="eq-math">Δ<em>V</em><sub>tb</sub> = −<span class="frac"><span class="num"><em>q</em>Δ<em>N</em><sub>BOX</sub></span><span class="den"><em>C</em><sub>BOX</sub></span></span> ,&emsp; Δ<em>V</em><sub>tf</sub> = <em>k</em>Δ<em>V</em><sub>tb</sub> ,&emsp; Δ<em>V</em><sub>B,comp</sub> = Δ<em>V</em><sub>tb</sub></div>
+        <div class="eq-num">(13.12)</div>
+      </div>
+      <div class="eq-says">
+        Δ<em>V</em><sub>tb</sub> shift of the back-channel threshold (V), negative for trapped holes ·
+        <em>q</em> = 1.602×10⁻¹⁹ C · Δ<em>N</em><sub>BOX</sub> net positive charge trapped in the buried
+        oxide per unit area (cm⁻²), taken at the oxide–film interface; charge spread through the oxide
+        shifts less, in proportion to its centroid's distance from the substrate
+        (<a href="m06-device-physics.html">M06</a> §3) · Δ<em>V</em><sub>tf</sub> resulting front-threshold shift
+        at fixed <em>V</em><sub>B</sub> (V) · Δ<em>V</em><sub>B,comp</sub> change in back-gate bias that restores
+        the front threshold (V). Valid while the back surface stays depleted.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 252" role="img" aria-labelledby="m13f10-t">
+<title id="m13f10-t">Front-gate threshold voltage of a fully depleted SOI transistor against back-gate bias, before and after positive charge is trapped in the buried oxide</title>
+<line x1="62" y1="196" x2="420" y2="196" class="dg-rule"/><line x1="62" y1="20" x2="62" y2="196" class="dg-rule"/>
+<line x1="62.0" y1="196" x2="62.0" y2="200" class="dg-rule"/><text x="62.0" y="213" class="dg-label-sm" text-anchor="middle">-25</text>
+<line x1="106.8" y1="196" x2="106.8" y2="200" class="dg-rule"/><text x="106.8" y="213" class="dg-label-sm" text-anchor="middle">-20</text>
+<line x1="151.5" y1="196" x2="151.5" y2="200" class="dg-rule"/><text x="151.5" y="213" class="dg-label-sm" text-anchor="middle">-15</text>
+<line x1="196.2" y1="196" x2="196.2" y2="200" class="dg-rule"/><text x="196.2" y="213" class="dg-label-sm" text-anchor="middle">-10</text>
+<line x1="241.0" y1="196" x2="241.0" y2="200" class="dg-rule"/><text x="241.0" y="213" class="dg-label-sm" text-anchor="middle">-5</text>
+<line x1="285.8" y1="196" x2="285.8" y2="200" class="dg-rule"/><text x="285.8" y="213" class="dg-label-sm" text-anchor="middle">0</text>
+<line x1="330.5" y1="196" x2="330.5" y2="200" class="dg-rule"/><text x="330.5" y="213" class="dg-label-sm" text-anchor="middle">5</text>
+<line x1="375.2" y1="196" x2="375.2" y2="200" class="dg-rule"/><text x="375.2" y="213" class="dg-label-sm" text-anchor="middle">10</text>
+<line x1="420.0" y1="196" x2="420.0" y2="200" class="dg-rule"/><text x="420.0" y="213" class="dg-label-sm" text-anchor="middle">15</text>
+<line x1="58" y1="196.0" x2="62" y2="196.0" class="dg-rule"/><text x="55" y="200.0" class="dg-label-sm" text-anchor="end">0.0</text>
+<line x1="58" y1="160.8" x2="62" y2="160.8" class="dg-rule"/><text x="55" y="164.8" class="dg-label-sm" text-anchor="end">0.2</text>
+<line x1="58" y1="125.6" x2="62" y2="125.6" class="dg-rule"/><text x="55" y="129.6" class="dg-label-sm" text-anchor="end">0.4</text>
+<line x1="58" y1="90.4" x2="62" y2="90.4" class="dg-rule"/><text x="55" y="94.4" class="dg-label-sm" text-anchor="end">0.6</text>
+<line x1="58" y1="55.2" x2="62" y2="55.2" class="dg-rule"/><text x="55" y="59.2" class="dg-label-sm" text-anchor="end">0.8</text>
+<line x1="58" y1="20.0" x2="62" y2="20.0" class="dg-rule"/><text x="55" y="24.0" class="dg-label-sm" text-anchor="end">1.0</text>
+<line x1="285.8" y1="20" x2="285.8" y2="196" class="dg-guide" stroke-dasharray="3 3"/>
+<path d="M62.0,55.2 L62.9,55.2 L63.8,55.2 L64.7,55.2 L65.6,55.2 L66.5,55.2 L67.4,55.2 L68.3,55.2 L69.2,55.2 L70.1,55.2 L71.0,55.2 L71.8,55.2 L72.7,55.2 L73.6,55.2 L74.5,55.2 L75.4,55.2 L76.3,55.2 L77.2,55.2 L78.1,55.2 L79.0,55.2 L79.9,55.2 L80.8,55.2 L81.7,55.2 L82.6,55.2 L83.5,55.2 L84.4,55.2 L85.3,55.2 L86.2,55.2 L87.1,55.2 L88.0,55.2 L88.8,55.2 L89.7,55.2 L90.6,55.2 L91.5,55.2 L92.4,55.2 L93.3,55.2 L94.2,55.2 L95.1,55.2 L96.0,55.2 L96.9,55.2 L97.8,55.2 L98.7,55.2 L99.6,55.2 L100.5,55.2 L101.4,55.2 L102.3,55.2 L103.2,55.2 L104.1,55.2 L105.0,55.2 L105.9,55.2 L106.8,55.2 L107.6,55.2 L108.5,55.2 L109.4,55.2 L110.3,55.2 L111.2,55.2 L112.1,55.2 L113.0,55.2 L113.9,55.2 L114.8,55.2 L115.7,55.2 L116.6,55.2 L117.5,55.2 L118.4,55.2 L119.3,55.2 L120.2,55.2 L121.1,55.2 L122.0,55.2 L122.9,55.2 L123.8,55.2 L124.7,55.2 L125.5,55.2 L126.4,55.2 L127.3,55.2 L128.2,55.2 L129.1,55.2 L130.0,55.2 L130.9,55.2 L131.8,55.2 L132.7,55.2 L133.6,55.2 L134.5,55.2 L135.4,55.2 L136.3,55.2 L137.2,55.2 L138.1,55.2 L139.0,55.2 L139.9,55.2 L140.8,55.2 L141.7,55.2 L142.6,55.2 L143.4,55.2 L144.3,55.2 L145.2,55.2 L146.1,55.2 L147.0,55.2 L147.9,55.2 L148.8,55.2 L149.7,55.2 L150.6,55.2 L151.5,55.2 L152.4,55.8 L153.3,56.4 L154.2,56.9 L155.1,57.5 L156.0,58.1 L156.9,58.7 L157.8,59.3 L158.7,59.8 L159.6,60.4 L160.4,61.0 L161.3,61.6 L162.2,62.2 L163.1,62.7 L164.0,63.3 L164.9,63.9 L165.8,64.5 L166.7,65.1 L167.6,65.6 L168.5,66.2 L169.4,66.8 L170.3,67.4 L171.2,68.0 L172.1,68.5 L173.0,69.1 L173.9,69.7 L174.8,70.3 L175.7,70.9 L176.6,71.4 L177.5,72.0 L178.4,72.6 L179.2,73.2 L180.1,73.8 L181.0,74.4 L181.9,74.9 L182.8,75.5 L183.7,76.1 L184.6,76.7 L185.5,77.3 L186.4,77.8 L187.3,78.4 L188.2,79.0 L189.1,79.6 L190.0,80.2 L190.9,80.7 L191.8,81.3 L192.7,81.9 L193.6,82.5 L194.5,83.1 L195.4,83.6 L196.2,84.2 L197.1,84.8 L198.0,85.4 L198.9,86.0 L199.8,86.5 L200.7,87.1 L201.6,87.7 L202.5,88.3 L203.4,88.9 L204.3,89.4 L205.2,90.0 L206.1,90.6 L207.0,91.2 L207.9,91.8 L208.8,92.3 L209.7,92.9 L210.6,93.5 L211.5,94.1 L212.4,94.7 L213.3,95.2 L214.2,95.8 L215.0,96.4 L215.9,97.0 L216.8,97.6 L217.7,98.1 L218.6,98.7 L219.5,99.3 L220.4,99.9 L221.3,100.5 L222.2,101.0 L223.1,101.6 L224.0,102.2 L224.9,102.8 L225.8,103.4 L226.7,103.9 L227.6,104.5 L228.5,105.1 L229.4,105.7 L230.3,106.3 L231.2,106.9 L232.0,107.4 L232.9,108.0 L233.8,108.6 L234.7,109.2 L235.6,109.8 L236.5,110.3 L237.4,110.9 L238.3,111.5 L239.2,112.1 L240.1,112.7 L241.0,113.2 L241.9,113.8 L242.8,114.4 L243.7,115.0 L244.6,115.6 L245.5,116.1 L246.4,116.7 L247.3,117.3 L248.2,117.9 L249.1,118.5 L250.0,119.0 L250.8,119.6 L251.7,120.2 L252.6,120.8 L253.5,121.4 L254.4,121.9 L255.3,122.5 L256.2,123.1 L257.1,123.7 L258.0,124.3 L258.9,124.8 L259.8,125.4 L260.7,126.0 L261.6,126.6 L262.5,127.2 L263.4,127.7 L264.3,128.3 L265.2,128.9 L266.1,129.5 L267.0,130.1 L267.9,130.6 L268.7,131.2 L269.6,131.8 L270.5,132.4 L271.4,133.0 L272.3,133.5 L273.2,134.1 L274.1,134.7 L275.0,135.3 L275.9,135.9 L276.8,136.4 L277.7,137.0 L278.6,137.6 L279.5,138.2 L280.4,138.8 L281.3,139.3 L282.2,139.9 L283.1,140.5 L284.0,141.1 L284.9,141.7 L285.8,142.3 L286.6,142.8 L287.5,143.4 L288.4,144.0 L289.3,144.6 L290.2,145.2 L291.1,145.7 L292.0,146.3 L292.9,146.9 L293.8,147.5 L294.7,148.1 L295.6,148.6 L296.5,149.2 L297.4,149.8 L298.3,150.4 L299.2,151.0 L300.1,151.5 L301.0,152.1 L301.9,152.7 L302.8,153.3 L303.6,153.9 L304.5,154.4 L305.4,155.0 L306.3,155.6 L307.2,156.2 L308.1,156.8 L309.0,157.3 L309.9,157.9 L310.8,158.5 L311.7,159.1 L312.6,159.7 L313.5,160.2 L314.4,160.8 L315.3,161.4 L316.2,162.0 L317.1,162.6 L318.0,163.1 L318.9,163.7 L319.8,164.3 L320.7,164.9 L321.6,165.5 L322.4,166.0 L323.3,166.6 L324.2,167.2 L325.1,167.8 L326.0,168.4 L326.9,168.9 L327.8,169.5 L328.7,170.1 L329.6,170.7 L330.5,171.3 L331.4,171.8 L332.3,172.4 L333.2,173.0 L334.1,173.6 L335.0,174.2 L335.9,174.8 L336.8,175.3 L337.7,175.9 L338.6,176.5 L339.4,177.1 L340.3,177.7 L341.2,178.2 L342.1,178.4 L343.0,178.4 L343.9,178.4 L344.8,178.4 L345.7,178.4 L346.6,178.4 L347.5,178.4 L348.4,178.4 L349.3,178.4 L350.2,178.4 L351.1,178.4 L352.0,178.4 L352.9,178.4 L353.8,178.4 L354.7,178.4 L355.6,178.4 L356.5,178.4 L357.3,178.4 L358.2,178.4 L359.1,178.4 L360.0,178.4 L360.9,178.4 L361.8,178.4 L362.7,178.4 L363.6,178.4 L364.5,178.4 L365.4,178.4 L366.3,178.4 L367.2,178.4 L368.1,178.4 L369.0,178.4 L369.9,178.4 L370.8,178.4 L371.7,178.4 L372.6,178.4 L373.5,178.4 L374.4,178.4 L375.2,178.4 L376.1,178.4 L377.0,178.4 L377.9,178.4 L378.8,178.4 L379.7,178.4 L380.6,178.4 L381.5,178.4 L382.4,178.4 L383.3,178.4 L384.2,178.4 L385.1,178.4 L386.0,178.4 L386.9,178.4 L387.8,178.4 L388.7,178.4 L389.6,178.4 L390.5,178.4 L391.4,178.4 L392.3,178.4 L393.2,178.4 L394.0,178.4 L394.9,178.4 L395.8,178.4 L396.7,178.4 L397.6,178.4 L398.5,178.4 L399.4,178.4 L400.3,178.4 L401.2,178.4 L402.1,178.4 L403.0,178.4 L403.9,178.4 L404.8,178.4 L405.7,178.4 L406.6,178.4 L407.5,178.4 L408.4,178.4 L409.3,178.4 L410.2,178.4 L411.1,178.4 L411.9,178.4 L412.8,178.4 L413.7,178.4 L414.6,178.4 L415.5,178.4 L416.4,178.4 L417.3,178.4 L418.2,178.4 L419.1,178.4 L420.0,178.4" class="dg-line"/>
+<path d="M62.0,55.2 L62.9,55.2 L63.8,55.2 L64.7,55.2 L65.6,55.2 L66.5,55.2 L67.4,55.2 L68.3,55.2 L69.2,55.2 L70.1,55.2 L71.0,55.2 L71.8,55.2 L72.7,55.2 L73.6,55.2 L74.5,55.2 L75.4,55.2 L76.3,55.2 L77.2,55.2 L78.1,55.2 L79.0,55.2 L79.9,55.2 L80.8,55.2 L81.7,55.2 L82.6,55.2 L83.5,55.2 L84.4,55.2 L85.3,55.2 L86.2,55.2 L87.1,55.2 L88.0,55.2 L88.8,55.2 L89.7,55.2 L90.6,55.2 L91.5,55.2 L92.4,55.2 L93.3,55.2 L94.2,55.2 L95.1,55.2 L96.0,55.2 L96.9,55.2 L97.8,55.2 L98.7,55.2 L99.6,55.2 L100.5,55.2 L101.4,55.2 L102.3,55.2 L103.2,55.2 L104.1,55.2 L105.0,55.2 L105.9,55.2 L106.8,55.2 L107.6,55.2 L108.5,55.2 L109.4,55.2 L110.3,55.2 L111.2,55.2 L112.1,55.2 L113.0,55.2 L113.9,55.2 L114.8,55.2 L115.7,55.2 L116.6,55.2 L117.5,55.2 L118.4,55.2 L119.3,55.2 L120.2,55.2 L121.1,55.2 L122.0,55.6 L122.9,56.2 L123.8,56.7 L124.7,57.3 L125.5,57.9 L126.4,58.5 L127.3,59.1 L128.2,59.6 L129.1,60.2 L130.0,60.8 L130.9,61.4 L131.8,62.0 L132.7,62.6 L133.6,63.1 L134.5,63.7 L135.4,64.3 L136.3,64.9 L137.2,65.5 L138.1,66.0 L139.0,66.6 L139.9,67.2 L140.8,67.8 L141.7,68.4 L142.6,68.9 L143.4,69.5 L144.3,70.1 L145.2,70.7 L146.1,71.3 L147.0,71.8 L147.9,72.4 L148.8,73.0 L149.7,73.6 L150.6,74.2 L151.5,74.7 L152.4,75.3 L153.3,75.9 L154.2,76.5 L155.1,77.1 L156.0,77.6 L156.9,78.2 L157.8,78.8 L158.7,79.4 L159.6,80.0 L160.4,80.5 L161.3,81.1 L162.2,81.7 L163.1,82.3 L164.0,82.9 L164.9,83.4 L165.8,84.0 L166.7,84.6 L167.6,85.2 L168.5,85.8 L169.4,86.3 L170.3,86.9 L171.2,87.5 L172.1,88.1 L173.0,88.7 L173.9,89.2 L174.8,89.8 L175.7,90.4 L176.6,91.0 L177.5,91.6 L178.4,92.1 L179.2,92.7 L180.1,93.3 L181.0,93.9 L181.9,94.5 L182.8,95.0 L183.7,95.6 L184.6,96.2 L185.5,96.8 L186.4,97.4 L187.3,98.0 L188.2,98.5 L189.1,99.1 L190.0,99.7 L190.9,100.3 L191.8,100.9 L192.7,101.4 L193.6,102.0 L194.5,102.6 L195.4,103.2 L196.2,103.8 L197.1,104.3 L198.0,104.9 L198.9,105.5 L199.8,106.1 L200.7,106.7 L201.6,107.2 L202.5,107.8 L203.4,108.4 L204.3,109.0 L205.2,109.6 L206.1,110.1 L207.0,110.7 L207.9,111.3 L208.8,111.9 L209.7,112.5 L210.6,113.0 L211.5,113.6 L212.4,114.2 L213.3,114.8 L214.2,115.4 L215.0,115.9 L215.9,116.5 L216.8,117.1 L217.7,117.7 L218.6,118.3 L219.5,118.8 L220.4,119.4 L221.3,120.0 L222.2,120.6 L223.1,121.2 L224.0,121.7 L224.9,122.3 L225.8,122.9 L226.7,123.5 L227.6,124.1 L228.5,124.6 L229.4,125.2 L230.3,125.8 L231.2,126.4 L232.0,127.0 L232.9,127.5 L233.8,128.1 L234.7,128.7 L235.6,129.3 L236.5,129.9 L237.4,130.5 L238.3,131.0 L239.2,131.6 L240.1,132.2 L241.0,132.8 L241.9,133.4 L242.8,133.9 L243.7,134.5 L244.6,135.1 L245.5,135.7 L246.4,136.3 L247.3,136.8 L248.2,137.4 L249.1,138.0 L250.0,138.6 L250.8,139.2 L251.7,139.7 L252.6,140.3 L253.5,140.9 L254.4,141.5 L255.3,142.1 L256.2,142.6 L257.1,143.2 L258.0,143.8 L258.9,144.4 L259.8,145.0 L260.7,145.5 L261.6,146.1 L262.5,146.7 L263.4,147.3 L264.3,147.9 L265.2,148.4 L266.1,149.0 L267.0,149.6 L267.9,150.2 L268.7,150.8 L269.6,151.3 L270.5,151.9 L271.4,152.5 L272.3,153.1 L273.2,153.7 L274.1,154.2 L275.0,154.8 L275.9,155.4 L276.8,156.0 L277.7,156.6 L278.6,157.1 L279.5,157.7 L280.4,158.3 L281.3,158.9 L282.2,159.5 L283.1,160.0 L284.0,160.6 L284.9,161.2 L285.8,161.8 L286.6,162.4 L287.5,162.9 L288.4,163.5 L289.3,164.1 L290.2,164.7 L291.1,165.3 L292.0,165.9 L292.9,166.4 L293.8,167.0 L294.7,167.6 L295.6,168.2 L296.5,168.8 L297.4,169.3 L298.3,169.9 L299.2,170.5 L300.1,171.1 L301.0,171.7 L301.9,172.2 L302.8,172.8 L303.6,173.4 L304.5,174.0 L305.4,174.6 L306.3,175.1 L307.2,175.7 L308.1,176.3 L309.0,176.9 L309.9,177.5 L310.8,178.0 L311.7,178.4 L312.6,178.4 L313.5,178.4 L314.4,178.4 L315.3,178.4 L316.2,178.4 L317.1,178.4 L318.0,178.4 L318.9,178.4 L319.8,178.4 L320.7,178.4 L321.6,178.4 L322.4,178.4 L323.3,178.4 L324.2,178.4 L325.1,178.4 L326.0,178.4 L326.9,178.4 L327.8,178.4 L328.7,178.4 L329.6,178.4 L330.5,178.4 L331.4,178.4 L332.3,178.4 L333.2,178.4 L334.1,178.4 L335.0,178.4 L335.9,178.4 L336.8,178.4 L337.7,178.4 L338.6,178.4 L339.4,178.4 L340.3,178.4 L341.2,178.4 L342.1,178.4 L343.0,178.4 L343.9,178.4 L344.8,178.4 L345.7,178.4 L346.6,178.4 L347.5,178.4 L348.4,178.4 L349.3,178.4 L350.2,178.4 L351.1,178.4 L352.0,178.4 L352.9,178.4 L353.8,178.4 L354.7,178.4 L355.6,178.4 L356.5,178.4 L357.3,178.4 L358.2,178.4 L359.1,178.4 L360.0,178.4 L360.9,178.4 L361.8,178.4 L362.7,178.4 L363.6,178.4 L364.5,178.4 L365.4,178.4 L366.3,178.4 L367.2,178.4 L368.1,178.4 L369.0,178.4 L369.9,178.4 L370.8,178.4 L371.7,178.4 L372.6,178.4 L373.5,178.4 L374.4,178.4 L375.2,178.4 L376.1,178.4 L377.0,178.4 L377.9,178.4 L378.8,178.4 L379.7,178.4 L380.6,178.4 L381.5,178.4 L382.4,178.4 L383.3,178.4 L384.2,178.4 L385.1,178.4 L386.0,178.4 L386.9,178.4 L387.8,178.4 L388.7,178.4 L389.6,178.4 L390.5,178.4 L391.4,178.4 L392.3,178.4 L393.2,178.4 L394.0,178.4 L394.9,178.4 L395.8,178.4 L396.7,178.4 L397.6,178.4 L398.5,178.4 L399.4,178.4 L400.3,178.4 L401.2,178.4 L402.1,178.4 L403.0,178.4 L403.9,178.4 L404.8,178.4 L405.7,178.4 L406.6,178.4 L407.5,178.4 L408.4,178.4 L409.3,178.4 L410.2,178.4 L411.1,178.4 L411.9,178.4 L412.8,178.4 L413.7,178.4 L414.6,178.4 L415.5,178.4 L416.4,178.4 L417.3,178.4 L418.2,178.4 L419.1,178.4 L420.0,178.4" class="dg-acc"/>
+<circle cx="285.8" cy="142.3" r="3" class="dg-ink"/>
+<circle cx="285.8" cy="161.8" r="3" class="dg-acc-f"/>
+<circle cx="255.6" cy="142.3" r="3" class="dg-acc-f"/>
+<text x="66.5" y="47.2" class="dg-label-sm">back surface accumulated</text>
+<text x="299.2" y="86.9" class="dg-label-sm">depleted: slope −<tspan class="dg-math">k</tspan></text>
+<text x="415.5" y="170.4" class="dg-label-sm" text-anchor="end">inverted</text>
+<text x="66.5" y="143.2" class="dg-label-sm">after dose: curve moves</text>
+<text x="66.5" y="157.2" class="dg-label-sm">3.37 V toward negative <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">B</tspan></text>
+<text x="241.0" y="230" class="dg-label" text-anchor="middle">back-gate bias <tspan class="dg-math">V</tspan><tspan baseline-shift="sub" style="font-size:75%">B</tspan> (V)</text>
+<text x="16" y="108.0" class="dg-label" text-anchor="middle" transform="rotate(-90 16 108.0)">front threshold (V)</text>
+</svg>
+      <figcaption>Figure 10. Front threshold against back-gate bias for the fully depleted device of the
+      example below, before (grey) and after (accent) 5×10¹¹ cm⁻² of positive charge is trapped at the
+      buried-oxide interface. In the depleted range the slope is −<em>k</em> = −0.033 from (13.11); the
+      charge moves the curve 3.37 V toward negative <em>V</em><sub>B</sub>, so at <em>V</em><sub>B</sub> = 0
+      the threshold falls 111 mV, and moving the bias to −3.37 V restores it. The positions of the
+      accumulation and inversion edges are illustrative; the slope and the shift are computed.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Back-gate compensation of buried-oxide charge</div>
+      <div class="ex-body">
+        <p><b>Given</b> A fully depleted SOI n-channel transistor with a 5 nm front gate oxide, a 20 nm silicon
+        film and a 145 nm buried oxide, operated with the back surface depleted at <em>V</em><sub>B</sub> = 0.
+        Irradiation traps a net 5×10¹¹ cm⁻² of positive charge at the buried-oxide interface.
+        <b>Find</b> the coupling coefficient, the shift of the front threshold, and the back-gate bias that
+        restores it.</p>
+        <p><b>Plan.</b> Compute the three capacitances per unit area, combine them in (13.11), then apply
+        (13.12). Keep every capacitance in F/cm², so thicknesses go in cm.</p>
+        <p class="ex-step"><b>Capacitances.</b> <em>C</em><sub>ox</sub> = 3.45×10⁻¹³/5×10⁻⁷ = 6.90×10⁻⁷
+          F/cm²; <em>C</em><sub>Si</sub> = 1.04×10⁻¹²/2.0×10⁻⁶ = 5.20×10⁻⁷ F/cm²; <em>C</em><sub>BOX</sub> =
+          3.45×10⁻¹³/1.45×10⁻⁵ = 2.38×10⁻⁸ F/cm².</p>
+        <p class="ex-step"><b>Coupling.</b> <em>k</em> = (5.20×10⁻⁷ × 2.38×10⁻⁸) ÷ (6.90×10⁻⁷ × (5.20×10⁻⁷ +
+          2.38×10⁻⁸)) = 1.237×10⁻¹⁴ ÷ 3.752×10⁻¹³ = 0.0330. Why it is small: the thick buried oxide is the
+          smallest capacitance in the series, and it dominates.</p>
+        <p class="ex-step"><b>Back-threshold shift.</b> <em>q</em>Δ<em>N</em><sub>BOX</sub> = 1.602×10⁻¹⁹ ×
+          5×10¹¹ = 8.01×10⁻⁸ C/cm²; Δ<em>V</em><sub>tb</sub> = −8.01×10⁻⁸ ÷ 2.38×10⁻⁸ = −3.37 V.</p>
+        <p class="ex-step"><b>Front-threshold shift.</b> Δ<em>V</em><sub>tf</sub> = 0.0330 × (−3.37 V) =
+          −0.111 V.</p>
+        <p class="ex-step"><b>Compensation.</b> Δ<em>V</em><sub>B,comp</sub> = −3.37 V: moving the back-gate
+          bias from 0 to −3.37 V raises the front threshold by <em>k</em> × 3.37 V = 0.111 V, cancelling the
+          shift.</p>
+        <p class="ex-answer"><em>k</em> = 0.033; the front threshold falls 111 mV, and a back-gate bias of
+          about −3.4 V restores it. Check: the sign is right, since trapped holes lower an n-channel threshold
+          and a more negative back gate raises it, and the compensating bias equals the back-channel shift,
+          independent of <em>k</em>. Because the charge keeps growing with dose, the compensation must grow
+          with it, which is why the lecture paired the bias with monitoring.</p>
+      </div>
+    </div>
+
+    <p>
+      Biasing the back surface into accumulation is the limiting case. Musseau and Ferlet-Cavrois note that
+      with the back surface accumulated the fully depleted transistor works like a partially depleted one
+      and no longer depends on the buried-oxide charge; the bias needed to hold accumulation grows with the
+      trapped charge, however, and the device gives up the coupling that defines fully depleted operation.
+      Deck 09 p. 35 brings the question to current technology. In 22 nm fully depleted SOI (22FDX) the slide reports a stable threshold
+      and a reproducible total-dose response across arrays, with biasing strategies still critical (NSREC
+      2025), and p. 33 lists a 22 nm FDSOI RISC-V microcontroller demonstrated as radiation-tolerant. In
+      three-dimensional sequential integration, where transistor layers are stacked with an oxide between
+      them, trapped charge in the middle oxide couples one layer to the next, and the layer-to-layer shift
+      depends on bias (Toguchi <em>et al.</em>, 2022). The slide's design implications are to isolate the
+      supply rails, decouple the transistor bodies and budget for the vertical coupling, the coupling that
+      (13.11) describes with a lower transistor layer acting as the back gate.
+    </p>
+
+    <details class="check">
+      <summary>An ultrathin-BOX fully depleted device has a front oxide with an equivalent thickness of 1.2 nm, a 7 nm film and a 25 nm buried oxide. For the same 5×10¹¹ cm⁻² of interface charge as the example, find <em>k</em>, the front-threshold shift and the compensating back-gate bias. Which of the three thinner layers is responsible for the smaller front shift, and what does the thin buried oxide itself buy?</summary>
+      <div class="answer">
+        <p><em>C</em><sub>ox</sub> = 3.45×10⁻¹³/1.2×10⁻⁷ = 2.88×10⁻⁶ F/cm², <em>C</em><sub>Si</sub> =
+        1.04×10⁻¹²/7×10⁻⁷ = 1.49×10⁻⁶ F/cm², <em>C</em><sub>BOX</sub> = 3.45×10⁻¹³/2.5×10⁻⁶ = 1.38×10⁻⁷
+        F/cm². Then <em>k</em> = (1.49×10⁻⁶ × 1.38×10⁻⁷) ÷ (2.88×10⁻⁶ × 1.62×10⁻⁶) = 0.044. The
+        back-threshold shift is −8.01×10⁻⁸ ÷ 1.38×10⁻⁷ = −0.58 V, so the front threshold moves by 0.044 ×
+        (−0.58) = −25.5 mV, and −0.58 V of back-gate bias restores it. The front shift is 4.4 times smaller
+        than the example's, but the buried oxide is not the reason. Combining (13.11) and (13.12),
+        Δ<em>V</em><sub>tf</sub> = −(<em>q</em>Δ<em>N</em>/<em>C</em><sub>ox</sub>) ×
+        <em>C</em><sub>Si</sub>/(<em>C</em><sub>Si</sub> + <em>C</em><sub>BOX</sub>): <em>C</em><sub>BOX</sub>
+        cancels to first order, because a thinner buried oxide shrinks the back-channel shift and raises
+        <em>k</em> in the same proportion. Thinning only the buried oxide of the example to 25 nm gives
+        <em>k</em> = 0.158 and −91.7 mV, barely less than −111 mV; thinning only the front oxide and film gives
+        −27.4 mV. The thinner front oxide does the work. Musseau and Ferlet-Cavrois found the same in
+        measurement: a SIMOX buried oxide five times thinner shifted five times less, its <em>k</em> rose by the
+        same ratio, and the thin-BOX transistor was about as sensitive as the standard one. What the thin
+        buried oxide buys is the compensating bias, which is set by <em>C</em><sub>BOX</sub> alone: −0.58 V
+        instead of −3.37 V, small enough to generate on chip.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>9 · Designing to the end of the mission</h2>
+
+    <p>
+      The circuit techniques of §§2–6 hide degradation rather than prevent it, and Holman's warning from §1
+      applies to them: the circuit may work normally until a critical dose and then fail abruptly. Layout
+      (§7) removes a leakage path and back-gate bias (§8) cancels a charge, but the gate-oxide shifts and the
+      growing charge they leave behind still accumulate. A
+      measurement at one dose therefore says little about the margin left, and a design is judged by checking
+      each of its conditions with the parameter values expected at the end of the mission. This section states
+      that procedure and sets the techniques side by side.
+    </p>
+
+    <h3>End-of-life parameters and margin</h3>
+    <p>
+      The procedure has four steps, each drawing on an earlier module:
+    </p>
+    <ol>
+      <li>Characterize the transistors of the process under total dose at worst-case bias
+      (<a href="m15-hardness-assurance.html">M15</a> §6): threshold shifts of both polarities, current gain,
+      leakage and mobility against dose, at the dose rate the mission will see, since the two trapped-charge
+      components respond differently to it (<a href="m15-hardness-assurance.html">M15</a> §§3–4).</li>
+      <li>Choose the design dose: the mission dose at the part's location multiplied by the radiation design
+      margin, the ratio of failure level to specification (<a href="m15-hardness-assurance.html">M15</a>,
+      (15.1)).</li>
+      <li>Evaluate every circuit condition with the parameters at the design dose: the gain error (13.2) and
+      the error budget (13.3), the mirror ratios (13.4) and (13.5), the headroom conditions (13.6) and (13.7),
+      and the leakage the layout leaves.</li>
+      <li>Simulate the circuit with transistor models extracted from irradiated devices, which
+      <a href="m08-tid-effects-devices-ics.html">M08</a> §10 described, because devices in a circuit interact
+      and each degrades according to its own bias.</li>
+    </ol>
+    <p>
+      The space-systems guest lecture (Airbus, 9 Nov) described derating for wear-out in highly scaled parts:
+      keeping each part inside a safe operating area, with bias, temperature, performance and duty cycle
+      derated to meet the lifetime objective. The end-of-life check is the total-dose counterpart, in this
+      page's comparison rather than the lecture's: the circuit is designed to work with the gain, threshold
+      and leakage it will have at the design dose, not with their data-sheet values, which
+      <a href="m15-hardness-assurance.html">M15</a> §8 treats as parameter-delta design margins.
+    </p>
+
+    <h3>The techniques compared</h3>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Technique</th><th>What it protects against</th><th>What it costs</th><th>Where it stops working</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Negative feedback (§2)</td><td>Falling open-loop gain</td><td>Closed-loop gain below open-loop gain</td><td>Loop gain near 1; resistor drift or leakage into the feedback network</td></tr>
+          <tr><td>Matched <em>V</em><sub>GS</sub> (§3)</td><td>Offset and bias drift from unequal shifts</td><td>Design constraint on sizing and biasing; extra transistors</td><td>Where the signal itself sets one transistor's bias</td></tr>
+          <tr><td>β-helper (§4)</td><td>Mirror error from falling <em>β</em></td><td>One transistor per mirror; one <em>V</em><sub>BE</sub> of headroom</td><td><em>β</em>(<em>β</em> + 1) no longer large; headroom</td></tr>
+          <tr><td>SiGe n-p-n in place of n-channel or Si bipolar (§4)</td><td>Gain loss and threshold shift</td><td>Needs a BiCMOS process that offers it</td><td>Process-dependent</td></tr>
+          <tr><td>Matched mirrors (§5)</td><td>Current-ratio error</td><td>Nothing beyond good layout</td><td>Headroom: abrupt failure when a stacked <em>V</em><sub>GS</sub> exhausts it</td></tr>
+          <tr><td>Series source resistance (§5)</td><td>n-channel off-state leakage</td><td>Speed and gain</td><td>Threshold shifts larger than the body effect can offset</td></tr>
+          <tr><td>Reconfiguration (§6)</td><td>Offset from unequal irradiation bias</td><td>Switches, clock</td><td>Gain errors; single-event exposure of the switches</td></tr>
+          <tr><td>Chopping (§6)</td><td>Radiation-induced offset</td><td>Bandwidth (output filter), switches, clock</td><td>Gain errors; residual from the unchopped stage; single-event exposure of switches</td></tr>
+          <tr><td>Auto-zero (§6)</td><td>Radiation-induced offset</td><td>Sampling, clock, stored charge (older parts: bandwidth below half the clock)</td><td>Gain errors; single-event exposure of switches and stored charge</td></tr>
+          <tr><td>Edgeless transistors and guard rings (§7)</td><td>Edge and inter-device leakage</td><td>Density penalty 1.5–3.5 (one library); capacitance; low <em>W</em>/<em>L</em> costs a large ring</td><td>Not drawable below 65 nm; FinFET STI leakage</td></tr>
+          <tr><td>Back-gate bias (§8)</td><td>Buried-oxide charge in fully depleted SOI</td><td>Bias generation and monitoring</td><td>Back surface leaving depletion; charge that keeps growing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      The table separates two kinds of technique. Feedback, matching and chopping compensate for changes in
+      the transistors that the circuit can absorb, and each fails at a threshold that the end-of-life check
+      must locate. Layout and back-gate bias remove or cancel a physical path for leakage or charge, and each
+      depends on a geometry or a bias that advanced processes may not permit. A hardened design usually needs
+      both kinds, chosen against the effect that dominates each block: leakage in digital logic, offsets and
+      headroom in analog circuits, gain in bipolar bias networks.
+    </p>
+
+    <details class="check">
+      <summary>The bias network of the example in §4 flies on a mission whose specified dose at the part is 40 krad(Si). The project requires a radiation design margin of 2, and characterization at worst-case bias gives a transistor gain of 45 at 80 krad(Si). Does the simple-mirror network pass its 5 % limit, and what would you check next?</summary>
+      <div class="answer">
+        <p>The design dose is the specification times the margin, 40 × 2 = 80 krad(Si), so the circuit is
+        checked with <em>β</em> = 45. From (13.4) each simple mirror carries 1/(1 + 2/45) = 0.957 of its
+        reference, 4.26 % short, inside the 5 % limit: the network passes, with the gain still above the
+        failure value of 38 found in §4. The margin is thin, though, so the next checks are the ones that the
+        single number hides: whether the gain was measured at the dose rate the mission will see, since a
+        bipolar process may show enhanced low-dose-rate sensitivity (M15 §7); whether the transistors of the
+        network are biased alike, since unequal bias makes their gains degrade differently and adds mismatch to
+        the base-current error; and whether any mirror has several outputs, since each output adds a base
+        current (§4). Replacing the simple mirrors by β-helper mirrors would remove the question.</p>
+      </div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li><b>RHBD:</b> hardening by layout, topology and component choice in a commercial process (Deck 09
+          p. 9); hardened processes are rare (0.05 % of ICs in 2000). Design as if process control were very
+          poor (p. 11). Four effects: p-channel |<em>V</em><sub>th</sub>| up, n-channel |<em>V</em><sub>th</sub>|
+          down, <em>β</em> down, n⁺-to-n⁺ leakage up. Avoid diffused and pinched resistors, MOS capacitors,
+          surface Zeners, lateral p-n-p. Circuit-level compensation masks degradation until a possibly abrupt failure; layout removes paths.</li>
+        <li><b>Feedback:</b> <em>A</em><sub>CL</sub> = <em>A</em><sub>OL</sub>/(1 + <em>A</em><sub>OL</sub><em>β</em><sub>f</sub>)
+          (13.1); error 1/(1 + <em>A</em><sub>OL</sub><em>β</em><sub>f</sub>) (13.2), always low. Gain-of-10
+          stage: within 1 % for <em>A</em><sub>OL</sub> ≥ 990, so two decades of loss from 10⁵ are tolerated.
+          Fails with resistor drift, leakage, or loop gain near 1.</li>
+        <li><b>Offset:</b> matched transistors at different average <em>V</em><sub>GS</sub> shift differently;
+          design for identical <em>V</em><sub>GS</sub>. Offset reaches the output times the noise gain
+          1/<em>β</em><sub>f</sub>; worst case |Δ<em>V</em><sub>out</sub>| ≤ <em>εV</em><sub>in</sub>/<em>β</em><sub>f</sub> +
+          |<em>V</em><sub>OS</sub>|/<em>β</em><sub>f</sub> (13.3).</li>
+        <li><b>Bipolar mirror:</b> <em>I</em><sub>out</sub> = <em>I</em><sub>ref</sub>/(1 + 2/<em>β</em>) (13.4),
+          5 % short at <em>β</em> = 38; course's first-order form <em>β</em>/(<em>β</em> + 1). β-helper:
+          1/(1 + 2/(<em>β</em>(<em>β</em> + 1))) (13.5), effective gain ≈ <em>β</em>², one extra
+          <em>V</em><sub>BE</sub>. LM124 bias fix: three transistors, regulator tolerance doubled. N outputs:
+          2 → <em>N</em> + 1.</li>
+        <li><b>CMOS mirror:</b> ratio (<em>W</em>₂/<em>L</em>₂)/(<em>W</em>₁/<em>L</em>₁) independent of dose to
+          first order; gate node <em>V</em><sub>DD</sub> − (|<em>V</em><sub>th</sub>| + <em>V</em><sub>ov</sub>)
+          falls with dose, M2 needs only <em>V</em><sub>OUT</sub> ≤ <em>V</em><sub>DD</sub> − <em>V</em><sub>ov</sub>
+          (13.6); cascode <em>V</em><sub>OUT</sub> ≤ <em>V</em><sub>DD</sub> − (|<em>V</em><sub>th</sub>| +
+          2<em>V</em><sub>ov</sub>) (13.7). The course writes <em>V</em><sub>OUT,min</sub> =
+          <em>V</em><sub>DD</sub> − (|<em>V</em><sub>th</sub>| + <em>V</em><sub>ov</sub>). Source resistor raises
+          n-channel <em>V</em><sub>th</sub> through the body effect.</li>
+        <li><b>Chopping:</b> swap inputs (reconfiguration) or modulate–amplify–demodulate–filter;
+          [(<em>V</em><sub>IN</sub> + <em>V</em><sub>OS</sub>) + (<em>V</em><sub>IN</sub> − <em>V</em><sub>OS</sub>)]/2
+          = <em>V</em><sub>IN</sub> (13.8). Measured 9.82 mV static against 50 µV chopped; residual
+          (1 − <em>r</em>)<em>V</em><sub>OS</sub>, factor 1/(1 − <em>r</em>) (13.9). Ripple fundamental (4/π)<em>V</em><sub>OS</sub>/√(1 +
+          (<em>f</em><sub>ch</sub>/<em>f</em><sub>c</sub>)²), but the peak is π²/8 larger,
+          ≈ (π/2)<em>V</em><sub>OS</sub><em>f</em><sub>c</sub>/<em>f</em><sub>ch</sub> (13.10). Costs bandwidth;
+          cannot fix gain error.</li>
+        <li><b>Layout:</b> edgeless gate ring removes the edge path; p⁺ guard ring removes the path to
+          neighbours up to a dose and helps against latchup. Annular: drain inside, 45° corners; midline rule
+          <em>W</em> = 4(<em>a</em> + <em>L</em>) for short rings, radial 2π/ln(<em>R</em><sub>out</sub>/<em>R</em><sub>in</sub>)
+          for long ones, so low <em>W</em>/<em>L</em> costs area;
+          ringed-source: enclose the source. ELTs asymmetric; ~3.3 µm minimum <em>W</em> at 0.25 µm; density
+          ×1.5–3.5. Edgeless gate shift ~10× smaller. Impossible below 65 nm; FinFET STI sidewalls dominate.</li>
+        <li><b>FD-SOI:</b> <em>k</em> = <em>C</em><sub>Si</sub><em>C</em><sub>BOX</sub>/(<em>C</em><sub>ox</sub>(<em>C</em><sub>Si</sub> +
+          <em>C</em><sub>BOX</sub>)) (13.11); BOX charge Δ<em>V</em><sub>tb</sub> = −<em>q</em>Δ<em>N</em>/<em>C</em><sub>BOX</sub>,
+          Δ<em>V</em><sub>tf</sub> = <em>k</em>Δ<em>V</em><sub>tb</sub>, compensate with Δ<em>V</em><sub>B</sub> =
+          Δ<em>V</em><sub>tb</sub> (13.12). Front shift ≈ −<em>q</em>Δ<em>N</em>/<em>C</em><sub>ox</sub>: a thin
+          BOX shrinks the compensating bias, not the front shift. Accumulated back surface decouples.</li>
+        <li><b>End of life:</b> design dose = mission dose × RDM; check every condition with parameters at
+          that dose, not data-sheet values.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <div class="table-scroll">
+      <table class="srcmap">
+        <tr><td>§1</td><td>Deck 09 pp. 5, 7–9, 11; W. T. Holman, "Radiation-tolerant design for high performance mixed-signal circuits", in R. D. Schrimpf and D. M. Fleetwood (eds.), <em>Radiation Effects and Soft Errors in Integrated Circuits and Electronic Devices</em> (World Scientific, 2004), pp. 353–358</td></tr>
+        <tr><td>§2</td><td>Deck 09 p. 12 and the lecture on it; (13.1) and (13.2) are the standard negative-feedback relations, checked against the slide's figure</td></tr>
+        <tr><td>§3</td><td>Deck 09 pp. 19–21, after C. F. Edwards, W. Redman-White, M. Bracey, B. M. Tenbroek, M. S. L. Lee and M. J. Uren, <em>IEEE J. Solid-State Circuits</em> <b>34</b>, 937 (1999); Holman p. 357. (13.3) is the standard first-order error budget</td></tr>
+        <tr><td>§4</td><td>Deck 09 pp. 13–17, after P. C. Adell <em>et al.</em>, "Total dose effects in a linear voltage regulator", <em>IEEE Trans. Nucl. Sci.</em> <b>51</b>(6), 3816–3821 (2004), and p. 18; the lecture on Deck 09; Holman p. 358. (13.4) and (13.5) follow from Kirchhoff's current law at the reference node</td></tr>
+        <tr><td>§5</td><td>Deck 09 pp. 17–18 and the lecture on them; the body effect in J.-P. Colinge's form, IEEE NSREC 2001 Short Course §II eq. (9); Holman p. 358. (13.6) and (13.7) are the standard saturation conditions</td></tr>
+        <tr><td>§6</td><td>Deck 09 pp. 21–22, after Edwards <em>et al.</em> (1999), pp. 23–24, after N. M. Atkinson, Ph.D. dissertation (2013), and K. J. Shetler, IEEE NSREC 2015, and p. 33; T. Kugelstadt, "Auto-zero amplifiers ease the design of high-precision circuits", Texas Instruments <em>Analog Applications Journal</em>, 2Q 2005; Holman p. 359. (13.10) is the square wave's Fourier series through a first-order filter: its fundamental, and the peak of the filtered triangle wave</td></tr>
+        <tr><td>§7</td><td>Deck 09 pp. 25–27, 29–31, 34 (after D. R. Alexander and D. G. Mavis, 2002; D. R. Alexander, 1996; Atkinson 2013; I. Chatterjee <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em>, Dec. 2014); N. Nowlin, J. Bailey, B. Turfler and D. Alexander, "A total-dose hardening-by-design approach for high-speed mixed-signal CMOS integrated circuits", course textbook p. 369; F. Faccio, "Radiation issues in the new generation of high energy physics experiments", course textbook pp. 388–395; Holman pp. 355–356; S. Bonaldo <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>71</b>, 427 (2024). The width rule is the course's, from M08 §6; the radial-conduction result is the standard conductance of an annular sheet</td></tr>
+        <tr><td>§8</td><td>IEEE NSREC 2001 Short Course: J.-P. Colinge §II eq. (10); O. Musseau and V. Ferlet-Cavrois §III, §§2.2.5, 3.1.3 and 3.1.4, eq. (3) and Figs. 17, 25 and 26; Holman p. 356; the lecture on Deck 06 for back-gate bias as a hardening technique; Deck 09 pp. 33, 35 (NSREC 2025; S. Toguchi <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>69</b>(7), 1420 (2022), read here through the same group's <em>IEEE Trans. Nucl. Sci.</em> <b>70</b>(4), 627 (2023), whose Fig. 7 is the slide's plot). (13.12) places the charge at the interface, as M06 does for oxide charge</td></tr>
+        <tr><td>§9</td><td>Holman p. 358; M15 for the radiation design margin and worst-case bias; M08 §10 for circuit simulation with irradiated parameters; the space-systems guest deck (9 Nov) p. 29 for derating against wear-out; the cost column assembles §§2–8</td></tr>
+      </table>
+    </div>
+
+    <nav class="pagination">
+      <a class="prev" href="m12b-dd-measurement-modelling.html"><span>Previous</span>M12b · Displacement Damage: Measurement, Modelling and Assurance</a>
+      <a class="next" href="m14-rhbd-single-event-effects.html"><span>Next</span>M14 · Rad-Hard Circuit Design: Single-Event Effects</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

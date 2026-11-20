@@ -1,0 +1,1381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M11 · Advanced Lithography I: Resists — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M11 · Advanced Lithography I: Resists</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 11</p>
+    <h1>Advanced Lithography I: Resists</h1>
+    <p class="lede">
+      How a pattern is transferred from a mask into a light-sensitive film on the wafer; the diffraction limits of shadow
+      printing and of projection printing, with the feature size and depth of focus that the numerical aperture trades
+      against each other; why the move from the mercury lines to the 248 nm and 193 nm excimer lasers required a new resist
+      chemistry, chemical amplification; the polymers used at 193 nm and 157 nm; resist collapse; and the anti-reflective
+      coatings that keep light reflected from the wafer from exposing the resist unevenly.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m01-mosfet-and-how-one-is-made.html">M01</a>, <a href="m02-deep-submicron-roadmap.html">M02</a></span>
+      <span><b>Read time</b> ~50 min</span>
+      <span><b>Sources</b> Class notes pp. 91–95, 97–98 (Chapters 6–7); the recorded class of 23 Oct and Lecture 19; Wolf Vol. 4 Ch. 6 and §7.2.6; Plummer, Deal &amp; Griffin Ch. 5</span>
+    </div>
+
+    <p>
+      Every structure built in the previous modules — the gate, the well and channel implants, the spacer, the source/drain
+      contacts — was given its outline by <b>lithography</b>: a light-sensitive film, the <b>photoresist</b> (resist), is
+      exposed through a patterned plate, the <b>mask</b>, and developed, so that the resist remains where the wafer is to be
+      protected and is removed where it is to be etched or implanted. M01 introduced the step in the three-mask process;
+      M02 followed the gate length from 10 µm to below 0.1 µm, and that shrink was paid for at the lithography step. Wolf
+      counts more than 20 mask levels in a 2002 process flow, so the whole sequence is repeated more than 20 times per wafer.
+      This module takes Chapter 6 of the notes (pp. 91–95), which is about the resist, together with the part of Chapter 7
+      (pp. 97–98) that sets the two limits every exposure tool works against: the smallest feature it can print and the
+      depth over which the image stays in focus. It begins with the vocabulary of the process and the shadow-printing tools
+      the recorded class of 23 October described, because those set the problem; then derives the projection limits; then
+      explains why shortening the wavelength from 436 nm to 248 nm and 193 nm forced a new resist chemistry, what that
+      chemistry is and what limits it; and ends with the reflections from the wafer that every exposure must suppress. The
+      exposure sources themselves — the excimer lasers and their optics, phase-shift masks, extreme ultraviolet and electron
+      beams — are the subject of M12.
+    </p>
+
+    <h2 id="s1">1 · The lithography sequence and its vocabulary</h2>
+
+    <p>
+      This section defines the objects and steps that the rest of the module refers to: the mask and its polarity, the two
+      tones of resist, the sequence of coating, baking, exposure and development, and alignment. None of it is in the notes,
+      which begin at the 248 nm resist; the recorded class of 23 October covered it at the board before opening
+      Chapter 6, and Plummer, Deal and Griffin (Plummer below) give the standard process.
+    </p>
+
+    <h3 id="s1-1">1.1 Mask, resist and tone</h3>
+
+    <p>
+      A <b>mask</b> is a plate of glass or fused silica that carries the pattern of one layer as an opaque film, normally
+      chromium, on its surface. A mask whose pattern is mostly opaque, with transparent openings, is a <b>dark-field</b>
+      mask; one that is mostly transparent, with opaque features, is a <b>clear-field</b> (bright-field) mask. A mask that
+      carries the pattern enlarged, to be reduced optically onto the wafer, is called a <b>reticle</b>.
+    </p>
+
+    <p>
+      A <b>photoresist</b> is a polymer film whose solubility in a liquid <b>developer</b> changes where it absorbs light.
+      Light breaks chemical bonds in the resist, and the material rearranges into a new stable form that retains a latent
+      image of the exposure until it is developed (Plummer §5.2.3). A <b>positive</b> resist becomes more soluble where it
+      is exposed, so the developer removes the exposed areas; a <b>negative</b> resist becomes less soluble where exposed,
+      so the developer removes the unexposed areas. The pattern left in the resist is therefore the mask pattern itself for a
+      positive resist and its inverse for a negative resist. Industry relies mainly on positive resists because they
+      generally resolve finer features (Plummer); Wolf records that positive-tone materials also became the preferred
+      deep-ultraviolet resists, while negative resists print isolated lines better through a dark-field mask (Wolf p. 229).
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 300 170" role="img" aria-labelledby="m11f1a-t">
+          <title id="m11f1a-t">A positive resist keeps the shadowed region</title>
+          <rect x="20" y="20" width="80" height="10" class="dg-ink"/>
+          <rect x="200" y="20" width="80" height="10" class="dg-ink"/>
+          <line x1="100" y1="25" x2="200" y2="25" class="dg-guide"/>
+          <text x="150" y="16" class="dg-label-sm" text-anchor="middle">mask: opening</text>
+          <g class="dg-acc">
+            <line x1="125" y1="36" x2="125" y2="60"/><line x1="150" y1="36" x2="150" y2="60"/><line x1="175" y1="36" x2="175" y2="60"/>
+          </g>
+          <text x="150" y="74" class="dg-label-sm" text-anchor="middle">light</text>
+          <rect x="20" y="120" width="80" height="18" class="dg-fill"/>
+          <rect x="200" y="120" width="80" height="18" class="dg-fill"/>
+          <rect x="20" y="138" width="260" height="16" class="dg-faint"/>
+          <text x="150" y="133" class="dg-label-sm" text-anchor="middle">removed</text>
+          <text x="60" y="114" class="dg-label-sm" text-anchor="middle">resist kept</text>
+          <text x="150" y="166" class="dg-label-sm" text-anchor="middle">wafer</text>
+        </svg>
+        <figcaption><b>Positive resist.</b> The exposed resist dissolves; the resist pattern copies the opaque parts of the mask.</figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 300 170" role="img" aria-labelledby="m11f1b-t">
+          <title id="m11f1b-t">A negative resist keeps the exposed region</title>
+          <rect x="20" y="20" width="80" height="10" class="dg-ink"/>
+          <rect x="200" y="20" width="80" height="10" class="dg-ink"/>
+          <line x1="100" y1="25" x2="200" y2="25" class="dg-guide"/>
+          <text x="150" y="16" class="dg-label-sm" text-anchor="middle">mask: opening</text>
+          <g class="dg-acc">
+            <line x1="125" y1="36" x2="125" y2="60"/><line x1="150" y1="36" x2="150" y2="60"/><line x1="175" y1="36" x2="175" y2="60"/>
+          </g>
+          <text x="150" y="74" class="dg-label-sm" text-anchor="middle">light</text>
+          <rect x="100" y="120" width="100" height="18" class="dg-fill"/>
+          <rect x="20" y="138" width="260" height="16" class="dg-faint"/>
+          <text x="150" y="114" class="dg-label-sm" text-anchor="middle">resist kept</text>
+          <text x="60" y="133" class="dg-label-sm" text-anchor="middle">removed</text>
+          <text x="150" y="166" class="dg-label-sm" text-anchor="middle">wafer</text>
+        </svg>
+        <figcaption><b>Negative resist.</b> The exposed resist becomes insoluble; the resist pattern is the inverse of the mask.</figcaption>
+      </figure>
+    </div>
+
+    <h3 id="s1-2">1.2 The process steps</h3>
+
+    <p>
+      Plummer's standard sequence for a positive resist, with the conditions he gives, is a list of steps, each with one
+      purpose:
+    </p>
+    <ol>
+      <li><b>Clean and dehydrate</b> the surface, then apply an <b>adhesion promoter</b>, hexamethyldisilazane (HMDS), usually as
+        a vapour, one end of which bonds to SiO₂ and the other to the resist.</li>
+      <li><b>Spin-coat</b> the resist: a liquid dispensed on the wafer is spun at 3000–6000 rpm for about 30 s, giving a
+        uniform film about 0.6–1 µm thick. Spin speed and the resist's viscosity, set by its solvent content, fix the
+        thickness. A resist that masks an implant may be thicker.</li>
+      <li><b>Prebake</b> (soft bake) on a hot plate at 90–100 °C, which drives the solvent from about 25 % to about 5 % of the
+        film, improves adhesion and relaxes the stress left by spinning.</li>
+      <li><b>Align and expose</b>, field by field: the mask is aligned to marks left on the wafer by the previous level, then
+        the resist is exposed.</li>
+      <li><b>Post-exposure bake</b> (PEB). Optional for the older resists, where it smooths standing waves (§8); essential for
+        the chemically amplified resists of §5, where it completes the exposure chemistry.</li>
+      <li><b>Develop</b> for 30–60 s at room temperature, by spray or by a puddle of developer. The developer of positive resists
+        is an aqueous base: tetramethylammonium hydroxide (TMAH), KOH or NaOH in water.</li>
+      <li><b>Postbake</b> (hard bake) at 100–140 °C to harden the resist for the etch or implant it is to mask.</li>
+      <li>After the etch or implant, <b>strip</b> the resist, usually in an oxygen plasma.</li>
+    </ol>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 120" role="img" aria-labelledby="m11f2-t">
+        <title id="m11f2-t">The lithography sequence from coating to stripping</title>
+        <g class="dg-label-sm" text-anchor="middle">
+          <rect x="4" y="30" width="62" height="40" rx="4" class="dg-fill"/><text x="35" y="48">HMDS +</text><text x="35" y="61">spin coat</text>
+          <rect x="76" y="30" width="56" height="40" rx="4" class="dg-fill"/><text x="104" y="48">prebake</text><text x="104" y="61">90–100 °C</text>
+          <rect x="142" y="30" width="62" height="40" rx="4" class="dg-fill"/><text x="173" y="48">align +</text><text x="173" y="61">expose</text>
+          <rect x="214" y="30" width="50" height="40" rx="4" class="dg-fill"/><text x="239" y="48">PEB</text><text x="239" y="61">(§5)</text>
+          <rect x="274" y="30" width="54" height="40" rx="4" class="dg-fill"/><text x="301" y="48">develop</text><text x="301" y="61">TMAH</text>
+          <rect x="338" y="30" width="46" height="40" rx="4" class="dg-fill"/><text x="361" y="48">etch or</text><text x="361" y="61">implant</text>
+          <rect x="392" y="30" width="44" height="40" rx="4" class="dg-fill"/><text x="414" y="48">strip</text><text x="414" y="61">O₂</text>
+        </g>
+        <g class="dg-rule">
+          <line x1="66" y1="50" x2="76" y2="50"/><line x1="132" y1="50" x2="142" y2="50"/><line x1="204" y1="50" x2="214" y2="50"/>
+          <line x1="264" y1="50" x2="274" y2="50"/><line x1="328" y1="50" x2="338" y2="50"/><line x1="384" y1="50" x2="392" y2="50"/>
+        </g>
+        <rect x="142" y="26" width="62" height="48" rx="5" class="dg-acc" fill="none" stroke-width="1.6"/>
+        <text x="173" y="94" class="dg-label-sm" text-anchor="middle">the step §2–§3 analyse</text>
+        <text x="220" y="16" class="dg-label-sm" text-anchor="middle">repeated for every mask level (&gt; 20 in a 2002 flow)</text>
+      </svg>
+      <figcaption>The sequence for one mask level (the hard bake after development omitted). The exposure is where resolution is won or lost; the bakes and the developer decide whether the resist reproduces the image it received.</figcaption>
+    </figure>
+
+    <p>
+      Each level must land on the one before it. The recorded class of 23 October showed the consequence of misalignment with a
+      metal contact drawn over an n⁺ region: shifted sideways, the contact covers only part of the n⁺ area, so the contact
+      area, and with it the current path, shrinks and the contact resistance rises (M10 §4.1 gives the contact-resistance term
+      this enlarges). Alignment is done to marks — crosses or squares — printed on the wafer at the first level and seen through the
+      mask at every later one.
+    </p>
+
+    <details class="check">
+      <summary>A dark-field mask, transparent only where a contact hole is wanted, is used to open contact holes through an oxide
+        that is then etched. Which resist tone makes the developed resist expose the oxide only at the holes? What would the
+        other tone produce through the same mask?</summary>
+      <div class="answer"><p>A <b>positive</b> resist. Light passes only through the holes in the mask, so only the resist over
+        the holes is exposed; a positive resist dissolves there, leaving openings in the resist exactly where the oxide is to be
+        etched, and resist everywhere else. A <b>negative</b> resist through the same mask would harden only over the holes, and
+        the developer would remove it everywhere else: the etch would remove the oxide everywhere except at the hole positions,
+        the inverse of what is wanted. To use a negative resist for contact holes, the mask polarity has to be reversed, to a
+        clear-field mask with opaque squares at the holes.</p></div>
+    </details>
+
+    <h2 id="s2">2 · Shadow printing and its diffraction limit</h2>
+
+    <p>
+      Three kinds of tool expose the resist: contact, proximity and projection printers (Plummer §5.2.2). The first two have no
+      lens; the mask casts a shadow on the resist, and the shadow is blurred by diffraction at the edges of each opening. The
+      recorded class of 23 October worked the resolution of this shadow printing at the board, as the problem that projection
+      printing solves. The formula is not in the notes.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 170" role="img" aria-labelledby="m11f3-t">
+        <title id="m11f3-t">Contact, proximity and projection printing</title>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="70" y="160">contact</text><text x="220" y="160">proximity</text><text x="370" y="160">projection</text>
+        </g>
+        <!-- contact -->
+        <rect x="20" y="96" width="100" height="6" class="dg-ink"/>
+        <rect x="20" y="102" width="100" height="10" class="dg-fill"/>
+        <rect x="20" y="112" width="100" height="20" class="dg-faint"/>
+        <text x="70" y="90" class="dg-label-sm" text-anchor="middle">mask on resist</text>
+        <text x="70" y="146" class="dg-label-sm" text-anchor="middle">s = 0</text>
+        <!-- proximity -->
+        <rect x="170" y="70" width="100" height="6" class="dg-ink"/>
+        <rect x="170" y="102" width="100" height="10" class="dg-fill"/>
+        <rect x="170" y="112" width="100" height="20" class="dg-faint"/>
+        <line x1="282" y1="76" x2="282" y2="102" class="dg-acc" stroke-width="1.6"/>
+        <text x="288" y="93" class="dg-label">s</text>
+        <text x="220" y="62" class="dg-label-sm" text-anchor="middle">mask</text>
+        <text x="220" y="146" class="dg-label-sm" text-anchor="middle">gap s above the resist</text>
+        <!-- projection -->
+        <rect x="330" y="14" width="80" height="6" class="dg-ink"/>
+        <text x="370" y="10" class="dg-label-sm" text-anchor="middle">reticle (4–5×)</text>
+        <ellipse cx="370" cy="58" rx="40" ry="8" class="dg-fill"/>
+        <text x="370" y="62" class="dg-label-sm" text-anchor="middle">lens</text>
+        <line x1="335" y1="20" x2="365" y2="102" class="dg-guide"/>
+        <line x1="405" y1="20" x2="375" y2="102" class="dg-guide"/>
+        <rect x="330" y="102" width="80" height="10" class="dg-fill"/>
+        <rect x="330" y="112" width="80" height="20" class="dg-faint"/>
+        <text x="370" y="146" class="dg-label-sm" text-anchor="middle">image reduced</text>
+      </svg>
+      <figcaption>Contact and proximity printers lay the mask on, or just above, the resist and print it 1:1; a projection printer forms an image of a reticle through a lens, normally reduced four or five times.</figcaption>
+    </figure>
+
+    <h3 id="s2-1">2.1 Contact and proximity printing</h3>
+
+    <p>
+      In <b>contact printing</b> the mask is pressed onto the resist. The resolution is good, because the light has almost no
+      distance in which to spread, but the contact damages the mask and the resist and transfers particles, so every exposure
+      degrades the mask (Plummer). The recorded class of 23 October distinguished photographic-emulsion masks, which scratch
+      quickly, from chromium masks, which last longer, and hard contact from soft contact, in which a small gap is left to extend
+      the mask's life at some cost in resolution. <b>Proximity printing</b> holds the mask a fixed gap <em>s</em> above the
+      resist and avoids the damage; diffraction across the gap then blurs the image. Both print the mask 1:1.
+    </p>
+
+    <p>
+      Light passing through an opening in the mask spreads by diffraction, so the edge of the exposed region is not sharp, and
+      the spreading grows with the distance between the mask and the plane where the image is recorded. Two distances
+      contribute: the gap <em>s</em>, and the depth inside the resist, since the image must be recorded through the resist's
+      whole thickness <em>d</em>. For a grating of equal lines and spaces the smallest period that can be printed is
+    </p>
+
+    <div class="eq" id="eq11-1">
+      <div class="eq-body">
+        <div class="eq-math">2<em>b</em><sub>min</sub> = 3&thinsp;<span class="sqrt"><span class="rad">√</span><span class="arg"><em>λ</em><span class="dl">(</span><em>s</em> + <span class="frac"><span class="num"><em>d</em></span><span class="den">2</span></span><span class="dl">)</span></span></span></div>
+        <div class="eq-num">(11.1)</div>
+      </div>
+      <div class="eq-says">
+        2<em>b</em><sub>min</sub> minimum grating period, one line plus one space; <em>b</em><sub>min</sub> the minimum line width
+        (µm) · <em>λ</em> exposure wavelength (µm) · <em>s</em> gap between mask and resist surface (µm; <em>s</em> = 0 in hard
+        contact) · <em>d</em> resist thickness (µm). All lengths in the same unit; the result is in that unit. Shadow printing
+        only (no lens), equal lines and spaces. The form the recorded class of 23 October used; it is not in the notes or the course
+        textbooks, which give only Plummer's simpler proximity estimate <em>W</em><sub>min</sub> ≈ √(<em>λg</em>) for a gap <em>g</em>
+        (eq. 5.12). Use the lecture's form for the course's problems.
+      </div>
+    </div>
+
+    <p>
+      Equation (11.1) carries two lessons. The resolution improves only as the square root of the wavelength, so halving
+      <em>λ</em> narrows the period by a factor of 1/√2 ≈ 0.71. And even in hard contact the resist's own thickness keeps
+      2<em>b</em><sub>min</sub> above zero: the resist cannot be thinner than the etch or implant it must survive, so the
+      thickness term sets a floor.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Contact-printing resolution: the 23 October board values</div>
+      <div class="ex-body">
+        <p><b>Given</b> the mercury g-line, rounded at the board to <em>λ</em> = 400 nm = 0.4 µm for easy arithmetic; hard contact,
+        <em>s</em> = 0; resist thickness <em>d</em> = 1 µm = 1000 nm. <b>Find</b> the minimum grating period and the minimum line
+        width.</p>
+        <p><b>Plan.</b> Eq. (11.1) with every length in µm. The argument of the root is a length squared; take the square root,
+        then multiply by 3. The line width is half the period.</p>
+        <p class="ex-step"><b>The bracket.</b> <em>s</em> + <em>d</em>/2 = 0 + 1 µm/2 = 0.5 µm. With <em>s</em> = 0, only the
+        resist thickness contributes.</p>
+        <p class="ex-step"><b>Under the root.</b> <em>λ</em>(<em>s</em> + <em>d</em>/2) = 0.4 µm × 0.5 µm = 0.200 µm².</p>
+        <p class="ex-step"><b>Square root.</b> √(0.200 µm²) = 0.4472 µm. A square root, not a cube root: the board made this point
+        explicitly.</p>
+        <p class="ex-step"><b>Period.</b> 2<em>b</em><sub>min</sub> = 3 × 0.4472 µm = 1.342 µm = 1342 nm.</p>
+        <p class="ex-step"><b>Line width.</b> <em>b</em><sub>min</sub> = 1.342 µm/2 = 0.671 µm.</p>
+        <p class="ex-answer">2<em>b</em><sub>min</sub> ≈ 1.34 µm and <em>b</em><sub>min</sub> ≈ 0.67 µm, the "1340 nanometers" of the
+        board. Check: with the exact g-line wavelength, 0.436 µm, the period is 1.40 µm; a √ dependence makes the 9 %
+        rounding of <em>λ</em> a 4 % change in the answer.</p>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">The two remedies and the cost of a gap</div>
+      <div class="ex-body">
+        <p><b>Given</b> the same 1 µm resist. <b>Find</b> 2<em>b</em><sub>min</sub> (a) in hard contact with the i-line,
+        <em>λ</em> = 0.365 µm, and (b) at the g-line, 0.436 µm, with a proximity gap <em>s</em> = 10 µm.</p>
+        <p><b>Plan.</b> Eq. (11.1) twice. Part (a) is the remedy the board named, a shorter wavelength; part (b) shows what
+        removing the mask from the resist costs.</p>
+        <p class="ex-step"><b>(a) Under the root.</b> 0.365 µm × (0 + 0.5) µm = 0.1825 µm²; √ = 0.4272 µm.</p>
+        <p class="ex-step"><b>(a) Period.</b> 3 × 0.4272 = 1.282 µm, so <em>b</em><sub>min</sub> = 0.641 µm. Against the 0.4 µm
+        board case the period shrinks by √(0.365/0.4) = 0.955, only 4.5 %.</p>
+        <p class="ex-step"><b>(b) Under the root.</b> 0.436 µm × (10 + 0.5) µm = 4.578 µm²; √ = 2.140 µm.</p>
+        <p class="ex-step"><b>(b) Period.</b> 3 × 2.140 = 6.42 µm, so <em>b</em><sub>min</sub> = 3.21 µm: 4.58 times the hard-contact
+        period at the same wavelength (1.40 µm).</p>
+        <p class="ex-answer">(a) 2<em>b</em><sub>min</sub> ≈ 1.28 µm; (b) ≈ 6.42 µm. Check: in (b) the gap is 20 times the
+        resist's half-thickness, so the bracket grows 21-fold and the period √21 ≈ 4.58-fold, as computed.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m11fa-t">
+<title id="m11fa-t">Minimum grating period against mask-to-resist gap for g-line and i-line, resist 1 µm thick</title>
+<line x1="60" y1="205" x2="400" y2="205" class="dg-rule" stroke-width="1.2"/>
+<line x1="60" y1="205" x2="60" y2="25" class="dg-rule" stroke-width="1.2"/>
+<text x="60" y="221" class="dg-label-sm" text-anchor="middle">0</text>
+<text x="145" y="221" class="dg-label-sm" text-anchor="middle">5</text>
+<text x="230" y="221" class="dg-label-sm" text-anchor="middle">10</text>
+<text x="315" y="221" class="dg-label-sm" text-anchor="middle">15</text>
+<text x="400" y="221" class="dg-label-sm" text-anchor="middle">20</text>
+<text x="52" y="209" class="dg-label-sm" text-anchor="end">0</text>
+<text x="52" y="173" class="dg-label-sm" text-anchor="end">2</text>
+<line x1="60" y1="169.0" x2="400" y2="169.0" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="137" class="dg-label-sm" text-anchor="end">4</text>
+<line x1="60" y1="133.0" x2="400" y2="133.0" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="101" class="dg-label-sm" text-anchor="end">6</text>
+<line x1="60" y1="97.0" x2="400" y2="97.0" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="65" class="dg-label-sm" text-anchor="end">8</text>
+<line x1="60" y1="61.0" x2="400" y2="61.0" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="29" class="dg-label-sm" text-anchor="end">10</text>
+<line x1="60" y1="25.0" x2="400" y2="25.0" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="230" y="244" class="dg-label" text-anchor="middle">gap s (µm)</text>
+<text x="18" y="115" class="dg-label" text-anchor="middle" transform="rotate(-90 18 115)">2b<tspan baseline-shift="sub" style="font-size:75%">min</tspan> (µm)</text>
+<path d="M60.0,179.8 L61.7,177.4 L63.4,175.2 L65.1,173.1 L66.8,171.2 L68.5,169.3 L70.2,167.6 L71.9,165.9 L73.6,164.3 L75.3,162.8 L77.0,161.3 L78.7,159.9 L80.4,158.5 L82.1,157.2 L83.8,155.9 L85.5,154.6 L87.2,153.3 L88.9,152.1 L90.6,150.9 L92.3,149.8 L94.0,148.6 L95.7,147.5 L97.4,146.4 L99.1,145.3 L100.8,144.3 L102.5,143.2 L104.2,142.2 L105.9,141.2 L107.6,140.2 L109.3,139.3 L111.0,138.3 L112.7,137.3 L114.4,136.4 L116.1,135.5 L117.8,134.6 L119.5,133.7 L121.2,132.8 L122.9,131.9 L124.6,131.1 L126.3,130.2 L128.0,129.4 L129.7,128.5 L131.4,127.7 L133.1,126.9 L134.8,126.1 L136.5,125.3 L138.2,124.5 L139.9,123.7 L141.6,122.9 L143.3,122.1 L145.0,121.4 L146.7,120.6 L148.4,119.9 L150.1,119.1 L151.8,118.4 L153.5,117.7 L155.2,116.9 L156.9,116.2 L158.6,115.5 L160.3,114.8 L162.0,114.1 L163.7,113.4 L165.4,112.7 L167.1,112.0 L168.8,111.3 L170.5,110.7 L172.2,110.0 L173.9,109.3 L175.6,108.7 L177.3,108.0 L179.0,107.4 L180.7,106.7 L182.4,106.1 L184.1,105.4 L185.8,104.8 L187.5,104.1 L189.2,103.5 L190.9,102.9 L192.6,102.3 L194.3,101.7 L196.0,101.0 L197.7,100.4 L199.4,99.8 L201.1,99.2 L202.8,98.6 L204.5,98.0 L206.2,97.4 L207.9,96.8 L209.6,96.3 L211.3,95.7 L213.0,95.1 L214.7,94.5 L216.4,93.9 L218.1,93.4 L219.8,92.8 L221.5,92.2 L223.2,91.7 L224.9,91.1 L226.6,90.6 L228.3,90.0 L230.0,89.5 L231.7,88.9 L233.4,88.4 L235.1,87.8 L236.8,87.3 L238.5,86.7 L240.2,86.2 L241.9,85.7 L243.6,85.1 L245.3,84.6 L247.0,84.1 L248.7,83.6 L250.4,83.0 L252.1,82.5 L253.8,82.0 L255.5,81.5 L257.2,81.0 L258.9,80.5 L260.6,79.9 L262.3,79.4 L264.0,78.9 L265.7,78.4 L267.4,77.9 L269.1,77.4 L270.8,76.9 L272.5,76.4 L274.2,75.9 L275.9,75.5 L277.6,75.0 L279.3,74.5 L281.0,74.0 L282.7,73.5 L284.4,73.0 L286.1,72.5 L287.8,72.1 L289.5,71.6 L291.2,71.1 L292.9,70.6 L294.6,70.2 L296.3,69.7 L298.0,69.2 L299.7,68.8 L301.4,68.3 L303.1,67.8 L304.8,67.4 L306.5,66.9 L308.2,66.4 L309.9,66.0 L311.6,65.5 L313.3,65.1 L315.0,64.6 L316.7,64.2 L318.4,63.7 L320.1,63.3 L321.8,62.8 L323.5,62.4 L325.2,61.9 L326.9,61.5 L328.6,61.0 L330.3,60.6 L332.0,60.2 L333.7,59.7 L335.4,59.3 L337.1,58.9 L338.8,58.4 L340.5,58.0 L342.2,57.6 L343.9,57.1 L345.6,56.7 L347.3,56.3 L349.0,55.8 L350.7,55.4 L352.4,55.0 L354.1,54.6 L355.8,54.1 L357.5,53.7 L359.2,53.3 L360.9,52.9 L362.6,52.5 L364.3,52.1 L366.0,51.6 L367.7,51.2 L369.4,50.8 L371.1,50.4 L372.8,50.0 L374.5,49.6 L376.2,49.2 L377.9,48.8 L379.6,48.4 L381.3,48.0 L383.0,47.5 L384.7,47.1 L386.4,46.7 L388.1,46.3 L389.8,45.9 L391.5,45.5 L393.2,45.1 L394.9,44.7 L396.6,44.3 L398.3,44.0 L400.0,43.6" class="dg-acc" fill="none" stroke-width="2"/>
+<path d="M60.0,181.9 L61.7,179.7 L63.4,177.7 L65.1,175.8 L66.8,174.0 L68.5,172.4 L70.2,170.8 L71.9,169.3 L73.6,167.8 L75.3,166.4 L77.0,165.0 L78.7,163.7 L80.4,162.5 L82.1,161.2 L83.8,160.0 L85.5,158.9 L87.2,157.7 L88.9,156.6 L90.6,155.5 L92.3,154.5 L94.0,153.4 L95.7,152.4 L97.4,151.4 L99.1,150.4 L100.8,149.4 L102.5,148.5 L104.2,147.6 L105.9,146.6 L107.6,145.7 L109.3,144.8 L111.0,144.0 L112.7,143.1 L114.4,142.2 L116.1,141.4 L117.8,140.6 L119.5,139.8 L121.2,138.9 L122.9,138.1 L124.6,137.3 L126.3,136.6 L128.0,135.8 L129.7,135.0 L131.4,134.3 L133.1,133.5 L134.8,132.8 L136.5,132.1 L138.2,131.3 L139.9,130.6 L141.6,129.9 L143.3,129.2 L145.0,128.5 L146.7,127.8 L148.4,127.1 L150.1,126.4 L151.8,125.8 L153.5,125.1 L155.2,124.4 L156.9,123.8 L158.6,123.1 L160.3,122.5 L162.0,121.8 L163.7,121.2 L165.4,120.6 L167.1,119.9 L168.8,119.3 L170.5,118.7 L172.2,118.1 L173.9,117.5 L175.6,116.9 L177.3,116.3 L179.0,115.7 L180.7,115.1 L182.4,114.5 L184.1,113.9 L185.8,113.3 L187.5,112.7 L189.2,112.1 L190.9,111.6 L192.6,111.0 L194.3,110.4 L196.0,109.9 L197.7,109.3 L199.4,108.8 L201.1,108.2 L202.8,107.7 L204.5,107.1 L206.2,106.6 L207.9,106.0 L209.6,105.5 L211.3,105.0 L213.0,104.4 L214.7,103.9 L216.4,103.4 L218.1,102.9 L219.8,102.4 L221.5,101.8 L223.2,101.3 L224.9,100.8 L226.6,100.3 L228.3,99.8 L230.0,99.3 L231.7,98.8 L233.4,98.3 L235.1,97.8 L236.8,97.3 L238.5,96.8 L240.2,96.3 L241.9,95.8 L243.6,95.3 L245.3,94.8 L247.0,94.4 L248.7,93.9 L250.4,93.4 L252.1,92.9 L253.8,92.5 L255.5,92.0 L257.2,91.5 L258.9,91.0 L260.6,90.6 L262.3,90.1 L264.0,89.7 L265.7,89.2 L267.4,88.7 L269.1,88.3 L270.8,87.8 L272.5,87.4 L274.2,86.9 L275.9,86.5 L277.6,86.0 L279.3,85.6 L281.0,85.1 L282.7,84.7 L284.4,84.2 L286.1,83.8 L287.8,83.4 L289.5,82.9 L291.2,82.5 L292.9,82.1 L294.6,81.6 L296.3,81.2 L298.0,80.8 L299.7,80.3 L301.4,79.9 L303.1,79.5 L304.8,79.1 L306.5,78.6 L308.2,78.2 L309.9,77.8 L311.6,77.4 L313.3,77.0 L315.0,76.6 L316.7,76.1 L318.4,75.7 L320.1,75.3 L321.8,74.9 L323.5,74.5 L325.2,74.1 L326.9,73.7 L328.6,73.3 L330.3,72.9 L332.0,72.5 L333.7,72.1 L335.4,71.7 L337.1,71.3 L338.8,70.9 L340.5,70.5 L342.2,70.1 L343.9,69.7 L345.6,69.3 L347.3,68.9 L349.0,68.5 L350.7,68.1 L352.4,67.7 L354.1,67.4 L355.8,67.0 L357.5,66.6 L359.2,66.2 L360.9,65.8 L362.6,65.4 L364.3,65.1 L366.0,64.7 L367.7,64.3 L369.4,63.9 L371.1,63.5 L372.8,63.2 L374.5,62.8 L376.2,62.4 L377.9,62.0 L379.6,61.7 L381.3,61.3 L383.0,60.9 L384.7,60.6 L386.4,60.2 L388.1,59.8 L389.8,59.5 L391.5,59.1 L393.2,58.7 L394.9,58.4 L396.6,58.0 L398.3,57.6 L400.0,57.3" class="dg-line" fill="none" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="396" y="36" class="dg-label" text-anchor="end">g-line 436 nm</text>
+<text x="396" y="83" class="dg-label" text-anchor="end">i-line 365 nm</text>
+<circle cx="60.0" cy="179.8" r="3.2" class="dg-acc-f"/>
+<circle cx="230.0" cy="89.5" r="3.2" class="dg-acc-f"/>
+<text x="70" y="194" class="dg-label-sm">1.40 µm at s = 0</text>
+<text x="224" y="79" class="dg-label-sm" text-anchor="end">6.42 µm at 10 µm</text>
+</svg>
+      <figcaption>Eq. (11.1) for a 1 µm resist. A gap of a few micrometres costs more resolution than any change of mercury line can recover.</figcaption>
+    </figure>
+
+    <h3 id="s2-2">2.2 Projection printing</h3>
+
+    <p>
+      A <b>projection printer</b> places a lens between the mask and the wafer and forms an image of the mask on the resist, so
+      the mask never touches the wafer. Early projection aligners printed 1:1 across the whole wafer. A <b>stepper</b> exposes one
+      field at a time and steps the wafer between exposures (step and repeat); its reticle carries the pattern enlarged, normally
+      4× or 5×, and the lens reduces it (Plummer). The reduction makes the reticle easier to fabricate and inspect, and, for features well
+      above the resolution limit, a linewidth error on it prints at a quarter or a fifth of its size; near the limit the error is
+      reduced less, and can even be magnified (Wolf pp. 293–294). A <b>step-and-scan</b> tool, or scanner, illuminates a
+      slit and moves reticle and wafer past it, the reticle four or five times faster (Plummer), which enlarges the
+      field. The resolution of a projection system is set by diffraction at the lens, not at the mask, and is the subject of §3.
+    </p>
+
+    <details class="check">
+      <summary>A proximity printer uses the i-line with a 0.8 µm resist. What gap keeps 2<em>b</em><sub>min</sub> at or below 3 µm?
+        If the resist is thinned to 0.6 µm and the gap set to 5 µm, what line width can be printed?</summary>
+      <div class="answer"><p><b>Gap.</b> Square eq. (11.1): <em>λ</em>(<em>s</em> + <em>d</em>/2) ≤ (3/3)² µm² = 1 µm², so
+        <em>s</em> + 0.4 ≤ 1/0.365 = 2.740 µm and <em>s</em> ≤ 2.34 µm.</p>
+        <p><b>Line width.</b> <em>λ</em>(<em>s</em> + <em>d</em>/2) = 0.365 × (5 + 0.3) = 1.9345 µm²; √ = 1.391 µm;
+        2<em>b</em><sub>min</sub> = 4.17 µm, so <em>b</em><sub>min</sub> ≈ 2.09 µm. In hard contact the same resist would give
+        2<em>b</em><sub>min</sub> = 0.993 µm: the 5 µm gap costs a factor of 4.2.</p></div>
+    </details>
+
+    <h2 id="s3">3 · Resolution and depth of focus in projection printing</h2>
+
+    <p>
+      A lens resolves fine detail only by collecting the light that the detail diffracts, and the finer the detail, the wider the
+      angle into which it diffracts. A lens that accepts wider angles therefore resolves finer features, but its rays converge
+      more steeply on the wafer, so the image goes out of focus over a shorter distance above and below the focal plane. Notes
+      p. 98 states both limits as two short equations and works one example; Lecture 19 worked the same example at the board and
+      ended on its consequence for the flatness of the wafer, which leads to the planarization of <a href="m13-cmp-process.html">M13</a>.
+    </p>
+
+    <h3 id="s3-1">3.1 Numerical aperture, feature size and depth of focus</h3>
+
+    <p>
+      The <b>numerical aperture</b> NA measures the cone of light a lens accepts: for a lens in air it is the sine of the half-angle
+      <em>θ</em> of the cone of rays converging on a point of the image. The notes' drawing (p. 98) marks <em>θ</em> across the whole
+      cone; NA = sin <em>θ</em> holds for the half-angle, which is what Lecture 19's 30° and Plummer's definition use. In general NA = <em>n</em>
+      sin <em>θ</em>, with <em>n</em> the refractive index of the medium between lens and wafer, which is 1 for air (Plummer
+      eq. 5.3); since sin <em>θ</em> &lt; 1, NA in air cannot reach 1. The notes give
+    </p>
+
+    <div class="eq" id="eq11-2">
+      <div class="eq-body">
+        <div class="eq-math">NA = sin&thinsp;<em>θ</em>&emsp;&emsp;<em>F</em> = 0.5&thinsp;<span class="frac"><span class="num"><em>λ</em></span><span class="den">NA</span></span>&emsp;&emsp;DOF = 0.6&thinsp;<span class="frac"><span class="num"><em>λ</em></span><span class="den">NA<sup>2</sup></span></span></div>
+        <div class="eq-num">(11.2)</div>
+      </div>
+      <div class="eq-says">
+        NA numerical aperture (dimensionless, &lt; 1 in air) · <em>θ</em> half-angle of the cone of rays converging on the image ·
+        <em>F</em> minimum feature size (same unit as <em>λ</em>) · <em>λ</em> exposure wavelength · DOF depth of focus, the
+        <i>total</i> range of wafer height over which the image stays acceptably in focus (same unit as <em>λ</em>); the image plane
+        may lie anywhere within ±DOF/2 of the best focus. Notes pp. 97–98, which write "DF" and call it "depth of field" in the formula
+        and "depth of focus" in the heading (p. 97); this page uses DOF throughout. Diffraction-limited lens, air between lens and wafer.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 220" role="img" aria-labelledby="m11f4-t">
+        <title id="m11f4-t">Lens geometry: the half-angle theta at the image and the depth of focus</title>
+        <rect x="150" y="14" width="120" height="6" class="dg-ink"/>
+        <text x="282" y="21" class="dg-label-sm">mask (reticle)</text>
+        <ellipse cx="210" cy="70" rx="80" ry="10" class="dg-fill"/>
+        <text x="300" y="74" class="dg-label-sm">lens</text>
+        <line x1="210" y1="8" x2="210" y2="212" class="dg-guide" stroke-dasharray="4 4"/>
+        <text x="216" y="40" class="dg-label-sm">lens axis</text>
+        <line x1="135" y1="70" x2="210" y2="160" class="dg-line"/>
+        <line x1="285" y1="70" x2="210" y2="160" class="dg-line"/>
+        <line x1="210" y1="160" x2="250" y2="208" class="dg-guide"/>
+        <line x1="210" y1="160" x2="170" y2="208" class="dg-guide"/>
+        <path d="M210,130 A30,30 0 0 0 190.8,136.9" class="dg-acc" fill="none" stroke-width="1.6"/>
+        <text x="186" y="128" class="dg-math" text-anchor="end">θ</text>
+        <line x1="120" y1="160" x2="300" y2="160" class="dg-rule"/>
+        <text x="306" y="164" class="dg-label-sm">best focus</text>
+        <line x1="150" y1="138" x2="270" y2="138" class="dg-guide" stroke-dasharray="2 3"/>
+        <line x1="150" y1="182" x2="270" y2="182" class="dg-guide" stroke-dasharray="2 3"/>
+        <line x1="130" y1="138" x2="130" y2="182" class="dg-acc" stroke-width="1.8"/>
+        <line x1="124" y1="138" x2="136" y2="138" class="dg-acc"/><line x1="124" y1="182" x2="136" y2="182" class="dg-acc"/>
+        <text x="122" y="164" class="dg-label" text-anchor="end">DOF</text>
+        <text x="306" y="186" class="dg-label-sm">± DOF/2</text>
+      </svg>
+      <figcaption>A larger half-angle <em>θ</em> collects more of the diffracted light and resolves finer features, but the converging cone is steeper, so the spot broadens faster on either side of best focus and the depth of focus shrinks. Not to scale.</figcaption>
+    </figure>
+
+    <p>
+      <em>F</em> falls as 1/NA and DOF as 1/NA², so raising the numerical aperture gains resolution linearly and loses depth of focus
+      quadratically. At a fixed NA a shorter wavelength shrinks <em>F</em> and DOF in the same
+      proportion. Its advantage appears at a fixed feature size: eliminating NA between the two equations gives DOF = 2.4<em>F</em>²/<em>λ</em>,
+      so a shorter wavelength reaches the same feature with a smaller NA and a longer depth of focus — for 0.13 µm features, 0.164 µm at
+      248 nm against 0.210 µm at 193 nm. Wolf records the same gain: shorter wavelengths reduced the resolution limit and "also brought with
+      it an increased depth of focus" (p. 297). With NA = 0.5, <em>F</em> = <em>λ</em>, the case the notes single out.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Feature size and depth of focus at the 0.1 µm node: the notes' example (Lecture 19 at the board)</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>λ</em> = 100 nm = 0.1 µm; a lens whose converging cone has half-angle <em>θ</em> = 30° (Lecture 19's
+        angle; the notes give NA = 0.5 directly). <b>Find</b> NA, the feature size <em>F</em>, the depth of focus and the
+        allowable focus error.</p>
+        <p><b>Plan.</b> Eq. (11.2) in order: NA from <em>θ</em>, then <em>F</em>, then DOF, keeping <em>λ</em> in µm. The
+        allowable error either side of best focus is half the DOF.</p>
+        <p class="ex-step"><b>Numerical aperture.</b> NA = sin 30° = 0.5.</p>
+        <p class="ex-step"><b>Feature size.</b> <em>F</em> = 0.5 × 0.1 µm/0.5 = 0.1 µm. With NA = 0.5 the factor 0.5/NA is 1,
+        so <em>F</em> = <em>λ</em>: a 100 nm feature needs a 100 nm source at this aperture.</p>
+        <p class="ex-step"><b>Square of NA.</b> NA² = 0.5² = 0.25.</p>
+        <p class="ex-step"><b>Depth of focus.</b> DOF = 0.6 × 0.1 µm/0.25 = 0.24 µm = 240 nm.</p>
+        <p class="ex-step"><b>Focus tolerance.</b> ±DOF/2 = ±0.12 µm about the best focal plane.</p>
+        <p class="ex-answer"><em>F</em> = 0.1 µm, DOF = 0.24 µm, focus held within ±0.12 µm: the notes' 240 nm and ±0.12 µm.
+        Check: DOF/<em>F</em> = 1.2/NA = 2.4 here, so the in-focus depth is only a few feature sizes — about a quarter of the
+        ≈ 1 µm resist thickness of older generations (Wolf p. 240).</p>
+      </div>
+    </div>
+
+    <p>
+      No 100 nm exposure source is in use; the example is the notes' illustration of the scale of the problem, and the shortest
+      optical sources they discuss are the F₂ laser at 157 nm and the Ar₂* excimer at 126 nm (M12). The next example applies
+      eq. (11.2) to a real wavelength and shows the trade.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The aperture trade at 193 nm</div>
+      <div class="ex-body">
+        <p><b>Given</b> the ArF excimer wavelength, <em>λ</em> = 193 nm = 0.193 µm, and two lenses, NA = 0.5 and NA = 0.75 (Wolf
+        p. 273 lists a 0.75-NA 193 nm scanner). <b>Find</b> <em>F</em> and DOF for each, and the factor by which each changes.</p>
+        <p><b>Plan.</b> Eq. (11.2) twice. <em>F</em> scales as 1/NA and DOF as 1/NA², so the ratios can be predicted before any
+        arithmetic: 0.75/0.5 = 1.5 and 1.5² = 2.25.</p>
+        <p class="ex-step"><b>NA = 0.5.</b> <em>F</em> = 0.5 × 0.193/0.5 = 0.193 µm; DOF = 0.6 × 0.193/0.25 = 0.463 µm.</p>
+        <p class="ex-step"><b>NA = 0.75.</b> <em>F</em> = 0.5 × 0.193/0.75 = 0.129 µm; NA² = 0.5625; DOF = 0.6 × 0.193/0.5625
+        = 0.206 µm.</p>
+        <p class="ex-step"><b>Ratios.</b> 0.193/0.129 = 1.50; 0.463/0.206 = 2.25.</p>
+        <p class="ex-answer">NA 0.5: <em>F</em> = 0.193 µm, DOF = 0.463 µm. NA 0.75: <em>F</em> = 0.129 µm, DOF = 0.206 µm (±0.103 µm).
+        A third smaller feature costs more than half the depth of focus. Check: the ratios equal 1.5 and 1.5², as predicted.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 250" role="img" aria-labelledby="m11fb-t">
+<title id="m11fb-t">Feature size and depth of focus against numerical aperture at 193 nm</title>
+<line x1="60" y1="205" x2="400" y2="205" class="dg-rule" stroke-width="1.2"/>
+<line x1="60" y1="205" x2="60" y2="25" class="dg-rule" stroke-width="1.2"/>
+<text x="60" y="221" class="dg-label-sm" text-anchor="middle">0.3</text>
+<text x="117" y="221" class="dg-label-sm" text-anchor="middle">0.4</text>
+<text x="173" y="221" class="dg-label-sm" text-anchor="middle">0.5</text>
+<text x="230" y="221" class="dg-label-sm" text-anchor="middle">0.6</text>
+<text x="287" y="221" class="dg-label-sm" text-anchor="middle">0.7</text>
+<text x="343" y="221" class="dg-label-sm" text-anchor="middle">0.8</text>
+<text x="400" y="221" class="dg-label-sm" text-anchor="middle">0.9</text>
+<text x="52" y="209" class="dg-label-sm" text-anchor="end">0.0</text>
+<text x="52" y="183" class="dg-label-sm" text-anchor="end">0.2</text>
+<line x1="60" y1="179.3" x2="400" y2="179.3" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="158" class="dg-label-sm" text-anchor="end">0.4</text>
+<line x1="60" y1="153.6" x2="400" y2="153.6" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="132" class="dg-label-sm" text-anchor="end">0.6</text>
+<line x1="60" y1="127.9" x2="400" y2="127.9" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="106" class="dg-label-sm" text-anchor="end">0.8</text>
+<line x1="60" y1="102.1" x2="400" y2="102.1" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="80" class="dg-label-sm" text-anchor="end">1.0</text>
+<line x1="60" y1="76.4" x2="400" y2="76.4" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="55" class="dg-label-sm" text-anchor="end">1.2</text>
+<line x1="60" y1="50.7" x2="400" y2="50.7" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="52" y="29" class="dg-label-sm" text-anchor="end">1.4</text>
+<line x1="60" y1="25.0" x2="400" y2="25.0" class="dg-guide" stroke-dasharray="2 4"/>
+<text x="230" y="244" class="dg-label" text-anchor="middle">numerical aperture NA</text>
+<text x="18" y="115" class="dg-label" text-anchor="middle" transform="rotate(-90 18 115)">length (µm)</text>
+<path d="M60.0,39.6 L62.8,45.0 L65.7,50.1 L68.5,55.0 L71.3,59.6 L74.2,64.0 L77.0,68.3 L79.8,72.3 L82.7,76.2 L85.5,79.9 L88.3,83.5 L91.2,86.9 L94.0,90.1 L96.8,93.2 L99.7,96.2 L102.5,99.1 L105.3,101.9 L108.2,104.6 L111.0,107.1 L113.8,109.6 L116.7,111.9 L119.5,114.2 L122.3,116.4 L125.2,118.6 L128.0,120.6 L130.8,122.6 L133.7,124.5 L136.5,126.3 L139.3,128.1 L142.2,129.8 L145.0,131.5 L147.8,133.1 L150.7,134.6 L153.5,136.1 L156.3,137.6 L159.2,139.0 L162.0,140.4 L164.8,141.7 L167.7,143.0 L170.5,144.2 L173.3,145.4 L176.2,146.6 L179.0,147.8 L181.8,148.9 L184.7,149.9 L187.5,151.0 L190.3,152.0 L193.2,153.0 L196.0,153.9 L198.8,154.9 L201.7,155.8 L204.5,156.7 L207.3,157.5 L210.2,158.4 L213.0,159.2 L215.8,160.0 L218.7,160.7 L221.5,161.5 L224.3,162.2 L227.2,162.9 L230.0,163.6 L232.8,164.3 L235.7,165.0 L238.5,165.6 L241.3,166.3 L244.2,166.9 L247.0,167.5 L249.8,168.1 L252.7,168.7 L255.5,169.2 L258.3,169.8 L261.2,170.3 L264.0,170.8 L266.8,171.3 L269.7,171.8 L272.5,172.3 L275.3,172.8 L278.2,173.3 L281.0,173.7 L283.8,174.2 L286.7,174.6 L289.5,175.0 L292.3,175.5 L295.2,175.9 L298.0,176.3 L300.8,176.7 L303.7,177.1 L306.5,177.4 L309.3,177.8 L312.2,178.2 L315.0,178.5 L317.8,178.9 L320.7,179.2 L323.5,179.6 L326.3,179.9 L329.2,180.2 L332.0,180.5 L334.8,180.8 L337.7,181.1 L340.5,181.4 L343.3,181.7 L346.2,182.0 L349.0,182.3 L351.8,182.6 L354.7,182.9 L357.5,183.1 L360.3,183.4 L363.2,183.6 L366.0,183.9 L368.8,184.1 L371.7,184.4 L374.5,184.6 L377.3,184.9 L380.2,185.1 L383.0,185.3 L385.8,185.6 L388.7,185.8 L391.5,186.0 L394.3,186.2 L397.2,186.4 L400.0,186.6" class="dg-acc" fill="none" stroke-width="2"/>
+<path d="M60.0,163.6 L62.8,164.3 L65.7,165.0 L68.5,165.6 L71.3,166.2 L74.2,166.8 L77.0,167.4 L79.8,168.0 L82.7,168.5 L85.5,169.0 L88.3,169.6 L91.2,170.1 L94.0,170.5 L96.8,171.0 L99.7,171.5 L102.5,171.9 L105.3,172.3 L108.2,172.8 L111.0,173.2 L113.8,173.6 L116.7,174.0 L119.5,174.4 L122.3,174.7 L125.2,175.1 L128.0,175.5 L130.8,175.8 L133.7,176.1 L136.5,176.5 L139.3,176.8 L142.2,177.1 L145.0,177.4 L147.8,177.7 L150.7,178.0 L153.5,178.3 L156.3,178.6 L159.2,178.9 L162.0,179.2 L164.8,179.4 L167.7,179.7 L170.5,179.9 L173.3,180.2 L176.2,180.4 L179.0,180.7 L181.8,180.9 L184.7,181.1 L187.5,181.4 L190.3,181.6 L193.2,181.8 L196.0,182.0 L198.8,182.2 L201.7,182.4 L204.5,182.6 L207.3,182.8 L210.2,183.0 L213.0,183.2 L215.8,183.4 L218.7,183.6 L221.5,183.8 L224.3,184.0 L227.2,184.1 L230.0,184.3 L232.8,184.5 L235.7,184.7 L238.5,184.8 L241.3,185.0 L244.2,185.1 L247.0,185.3 L249.8,185.5 L252.7,185.6 L255.5,185.8 L258.3,185.9 L261.2,186.1 L264.0,186.2 L266.8,186.3 L269.7,186.5 L272.5,186.6 L275.3,186.8 L278.2,186.9 L281.0,187.0 L283.8,187.1 L286.7,187.3 L289.5,187.4 L292.3,187.5 L295.2,187.6 L298.0,187.8 L300.8,187.9 L303.7,188.0 L306.5,188.1 L309.3,188.2 L312.2,188.3 L315.0,188.5 L317.8,188.6 L320.7,188.7 L323.5,188.8 L326.3,188.9 L329.2,189.0 L332.0,189.1 L334.8,189.2 L337.7,189.3 L340.5,189.4 L343.3,189.5 L346.2,189.6 L349.0,189.7 L351.8,189.8 L354.7,189.9 L357.5,190.0 L360.3,190.1 L363.2,190.1 L366.0,190.2 L368.8,190.3 L371.7,190.4 L374.5,190.5 L377.3,190.6 L380.2,190.7 L383.0,190.7 L385.8,190.8 L388.7,190.9 L391.5,191.0 L394.3,191.1 L397.2,191.1 L400.0,191.2" class="dg-line" fill="none" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="94" y="88" class="dg-label">DOF = 0.6λ/NA²</text>
+<text x="219" y="202" class="dg-label">F = 0.5λ/NA</text>
+<circle cx="173.3" cy="180.2" r="3" class="dg-acc-f"/>
+<circle cx="173.3" cy="145.4" r="3" class="dg-acc-f"/>
+<circle cx="315.0" cy="188.5" r="3" class="dg-acc-f"/>
+<circle cx="315.0" cy="178.5" r="3" class="dg-acc-f"/>
+<line x1="173.3" y1="205" x2="173.3" y2="139.4" class="dg-guide" stroke-dasharray="3 3"/>
+<line x1="315.0" y1="205" x2="315.0" y2="172.5" class="dg-guide" stroke-dasharray="3 3"/>
+<text x="178" y="139" class="dg-label-sm">0.463</text>
+<text x="320" y="171" class="dg-label-sm">0.206</text>
+</svg>
+      <figcaption>Eq. (11.2) at 193 nm. The depth of focus (solid) falls faster than the feature size (dashed) as NA rises; the marked points are the two lenses of the example.</figcaption>
+    </figure>
+
+    <h3 id="s3-2">3.2 The general form and the course's constants</h3>
+
+    <p>
+      Equation (11.2) is a special case of the form every lithography text uses, <em>F</em> = <em>k</em><sub>1</sub><em>λ</em>/NA
+      and DOF = <em>k</em><sub>2</sub><em>λ</em>/NA² (Wolf eq. 7.1; Plummer eqs. 5.4, 5.8). The constants absorb everything that is
+      not wavelength or aperture: the shape of the features, the illumination, the resist's ability to turn a weak image into a sharp
+      edge, and the process margin demanded. Wolf calls <em>k</em><sub>1</sub> "the measure of lithographic aggressiveness": it was
+      0.8 in 1980 and below 0.5 by 2001 (Wolf p. 297). Plummer derives <em>k</em><sub>1</sub> = 0.61 from the Rayleigh criterion for
+      two point images, quotes practical values of 0.6–0.8, and writes the depth of focus as ±<em>λ</em>/(2NA²), a total range of
+      <em>λ</em>/NA². The notes' 0.5 and 0.6 are therefore an aggressive feature size and a conservative depth of focus; they are the
+      course's values for any calculation.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The same lens with the course's constants and with Plummer's</div>
+      <div class="ex-body">
+        <p><b>Given</b> a KrF stepper, <em>λ</em> = 248 nm, NA = 0.6; Plummer's worked example uses <em>k</em><sub>1</sub> = 0.75,
+        <em>k</em><sub>2</sub> = 0.5. <b>Find</b> <em>F</em> and DOF both ways.</p>
+        <p><b>Plan.</b> Same <em>λ</em> and NA, two pairs of constants; DOF in Plummer's convention is a ± value, so double it to
+        compare with the course's total range.</p>
+        <p class="ex-step"><b>Course form.</b> <em>F</em> = 0.5 × 0.248/0.6 = 0.207 µm. NA² = 0.36; DOF = 0.6 × 0.248/0.36 = 0.413 µm
+        total.</p>
+        <p class="ex-step"><b>Plummer's constants.</b> <em>R</em> = 0.75 × 0.248/0.6 = 0.310 µm. DOF = ±0.5 × 0.248/0.36 = ±0.344 µm,
+        a total of 0.689 µm.</p>
+        <p class="ex-answer">Course: 0.207 µm and 0.413 µm. Plummer: 0.31 µm and ±0.34 µm. Check: the ratio of feature sizes is
+        0.75/0.5 = 1.5, which is the ratio of the <em>k</em><sub>1</sub> values, as it must be for the same lens.</p>
+      </div>
+    </div>
+
+    <h3 id="s3-3">3.3 Consequences: flat wafers and mixed tools</h3>
+
+    <p>
+      A depth of focus of a few tenths of a micrometre is comparable with the resist thickness itself, so the wafer surface must be
+      very flat (Plummer §5.2.2.2); the steps that earlier levels leave on the surface are of the same order. Any part of the field that lies above or below the in-focus
+      range prints with a blurred edge and a wrong linewidth. The notes therefore call the planarity of the wafer at each exposure "a
+      critical issue", and Lecture 19 drew the conclusion explicitly: this is where chemical-mechanical polishing enters. Wolf
+      records that CMP is the main reason the industry could relax the depth of focus it demanded of a lens to about ±0.2 µm
+      (Wolf p. 297). <a href="m13-cmp-process.html">M13</a> covers the process.
+    </p>
+
+    <p>
+      The same trade sets which tool prints which level. <b>Mix-and-match lithography</b> uses the newest, most expensive exposure
+      tools only for the critical levels and older or simpler tools for the rest (notes p. 98). At the 0.13 µm node Wolf lists
+      the critical levels as gate, active area, contact, first metal and first via (p. 238). The low-NA tools are not only cheaper: implant masks have
+      large features in thick resist, and a high-resolution stepper does an inferior job on them because of its limited depth of
+      focus (notes p. 98; Wolf p. 274).
+    </p>
+
+    <div class="box insight">
+      <p>Resolution and depth of focus are bought from the same two parameters, and they move in opposite directions with NA. At a given
+      feature size only a shorter wavelength buys back depth of focus (DOF = 2.4<em>F</em>²/<em>λ</em>); a flatter wafer and a resist that forms sharp edges from a weak image (§5) are what make the
+      remaining depth of focus usable.</p>
+    </div>
+
+    <details class="check">
+      <summary>A 248 nm stepper has NA = 0.5. Using the course's forms, what are <em>F</em> and DOF? The lens is replaced by one with
+        NA = 0.7. What happens to each, and what does the second change demand of the wafer surface? Finally, what wavelength would
+        print 0.13 µm features at NA = 0.6?</summary>
+      <div class="answer"><p><b>NA 0.5.</b> <em>F</em> = 0.5 × 0.248/0.5 = 0.248 µm; DOF = 0.6 × 0.248/0.25 = 0.595 µm (±0.30 µm).</p>
+        <p><b>NA 0.7.</b> <em>F</em> = 0.5 × 0.248/0.7 = 0.177 µm; DOF = 0.6 × 0.248/0.49 = 0.304 µm (±0.15 µm). The feature shrinks
+        by 0.7/0.5 = 1.4 and the depth of focus by 1.4² = 1.96: the wafer surface across each exposure field must now be flat to about
+        ±0.15 µm instead of ±0.30 µm, which is the demand that CMP meets.</p>
+        <p><b>Wavelength.</b> From <em>F</em> = 0.5<em>λ</em>/NA, <em>λ</em> = 2<em>F</em>·NA = 2 × 0.13 × 0.6 = 0.156 µm = 156 nm, close
+        to the F₂ laser's 157 nm. In practice 0.13 µm was printed with 248 nm light only by pushing <em>k</em><sub>1</sub>
+        below 0.5 with the resolution-enhancement techniques of M12 (Wolf pp. 234, 296); 193 nm light at NA 0.75 reaches it with
+        <em>k</em><sub>1</sub> = 0.5 (§3.1), without them (Wolf p. 296).</p></div>
+    </details>
+
+    <h2 id="s4">4 · Shorter wavelengths, and why the resist had to change</h2>
+
+    <p>
+      Equation (11.2) makes the wavelength the most direct lever on resolution, and at a given feature size a shorter wavelength also
+      lengthens the depth of focus (§3.1). The history of the resist follows the
+      history of the wavelength. This section places the five exposure wavelengths the notes name, gives the energy of a photon at
+      each, and explains why the resists that worked at the mercury lines could not be used at 248 nm. The sources themselves are in
+      M12.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 130" role="img" aria-labelledby="m11fc-t">
+<title id="m11fc-t">Exposure wavelengths from the mercury g-line to the F2 laser, with photon energies</title>
+<line x1="30" y1="70" x2="400" y2="70" class="dg-rule" stroke-width="1.2"/>
+<text x="30" y="122" class="dg-label-sm">longer λ, lower photon energy</text>
+<text x="400" y="122" class="dg-label-sm" text-anchor="end">→ shorter λ</text>
+<circle cx="46.7" cy="70" r="4.5" class="dg-ink"/>
+<text x="46.7" y="40" class="dg-label" text-anchor="middle">g</text>
+<text x="46.7" y="56" class="dg-label-sm" text-anchor="middle">436 nm</text>
+<text x="46.7" y="90" class="dg-label-sm" text-anchor="middle">2.84 eV</text>
+<text x="46.7" y="104" class="dg-label-sm" text-anchor="middle">Hg lamp</text>
+<circle cx="131.5" cy="70" r="4.5" class="dg-ink"/>
+<text x="131.5" y="40" class="dg-label" text-anchor="middle">i</text>
+<text x="131.5" y="56" class="dg-label-sm" text-anchor="middle">365 nm</text>
+<text x="131.5" y="90" class="dg-label-sm" text-anchor="middle">3.40 eV</text>
+<text x="131.5" y="104" class="dg-label-sm" text-anchor="middle">Hg lamp</text>
+<circle cx="271.1" cy="70" r="4.5" class="dg-acc-f"/>
+<text x="271.1" y="40" class="dg-label" text-anchor="middle">KrF</text>
+<text x="271.1" y="56" class="dg-label-sm" text-anchor="middle">248 nm</text>
+<text x="271.1" y="90" class="dg-label-sm" text-anchor="middle">5.00 eV</text>
+<text x="271.1" y="104" class="dg-label-sm" text-anchor="middle">excimer</text>
+<circle cx="336.7" cy="70" r="4.5" class="dg-ink"/>
+<text x="336.7" y="40" class="dg-label" text-anchor="middle">ArF</text>
+<text x="336.7" y="56" class="dg-label-sm" text-anchor="middle">193 nm</text>
+<text x="336.7" y="90" class="dg-label-sm" text-anchor="middle">6.42 eV</text>
+<text x="336.7" y="104" class="dg-label-sm" text-anchor="middle">excimer</text>
+<circle cx="379.7" cy="70" r="4.5" class="dg-ink"/>
+<text x="379.7" y="40" class="dg-label" text-anchor="middle">F₂</text>
+<text x="379.7" y="56" class="dg-label-sm" text-anchor="middle">157 nm</text>
+<text x="379.7" y="90" class="dg-label-sm" text-anchor="middle">7.90 eV</text>
+<text x="379.7" y="104" class="dg-label-sm" text-anchor="middle">excimer</text>
+<text x="201" y="20" class="dg-label-sm" text-anchor="middle">DUV begins</text>
+<line x1="201.3" y1="24" x2="201.3" y2="80" class="dg-guide" stroke-dasharray="3 3"/>
+</svg>
+      <figcaption>The exposure wavelengths of notes pp. 91–92, with the photon energy <em>E</em> = <em>hc</em>/<em>λ</em> at each. The step from the i-line to KrF is the move into the deep ultraviolet (DUV) and the change of light source from a mercury lamp to a laser.</figcaption>
+    </figure>
+
+    <h3 id="s4-1">4.1 The wavelengths and their generations</h3>
+
+    <p>
+      The <b>g-line</b> (436 nm) and <b>i-line</b> (365 nm) are emission lines of the mercury-arc lamp, selected by filters. The
+      <b>KrF</b> (248 nm), <b>ArF</b> (193 nm) and <b>F₂</b> (157 nm) wavelengths come from excimer lasers, which M12 describes. The
+      notes tie each to the features it printed:
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Wavelength</th><th>Source</th><th>Photon energy</th><th>Features (notes p. 91; Wolf)</th><th>Resist platform</th></tr></thead>
+      <tbody>
+        <tr><td>436 nm (g)</td><td>Hg lamp</td><td>2.84 eV</td><td rowspan="2">i-line printed 0.35 µm with DNQ/novolac; cannot print 0.25 µm, even with phase-shift masks and off-axis illumination (Wolf pp. 227–228)</td><td rowspan="2">DNQ/novolac</td></tr>
+        <tr><td>365 nm (i)</td><td>Hg lamp</td><td>3.40 eV</td></tr>
+        <tr><td>248 nm</td><td>KrF laser</td><td>5.00 eV</td><td>0.25 µm (the conversion from i-line was complete there, Wolf p. 233), extended to 0.13 µm</td><td>Chemically amplified hydroxystyrene</td></tr>
+        <tr><td>193 nm</td><td>ArF laser</td><td>6.42 eV</td><td>below 0.13 µm, adopted 2003 (notes); Wolf p. 237 predicted insertion in late 2002 or early 2003</td><td>Acrylates, cyclic olefins, COMAs (§6)</td></tr>
+        <tr><td>157 nm</td><td>F₂ laser</td><td>7.90 eV</td><td>planned for the generation after 193 nm</td><td>Fluorinated hydrocarbons, siloxanes (§6)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      The higher the photon energy, the more of the chemical structures in a polymer absorb it: novolac and DNQ, transparent enough at
+      the mercury lines, absorb strongly near 250 nm (Wolf p. 228), and at 157 nm most of the polymers used in earlier resists absorb strongly (notes p. 92). Absorption in
+      the resist is exactly what a resist must keep low (§6.3).
+      The energies follow from <em>E</em> = <em>hc</em>/<em>λ</em>.
+    </p>
+
+    <div class="eq" id="eq11-3">
+      <div class="eq-body">
+        <div class="eq-math"><em>E</em> = <span class="frac"><span class="num"><em>hc</em></span><span class="den"><em>λ</em></span></span> = <span class="frac"><span class="num">1239.84</span><span class="den"><em>λ</em> (nm)</span></span> eV</div>
+        <div class="eq-num">(11.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>E</em> photon energy (eV) · <em>h</em> Planck's constant · <em>c</em> speed of light · <em>λ</em> wavelength (nm).
+        <em>hc</em> = 1239.84 eV·nm (CODATA). M03 uses the same relation as <em>E</em> = 1.24/<em>λ</em> with <em>λ</em> in µm.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Photon energy of the F₂ laser</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>λ</em> = 157 nm. <b>Find</b> the photon energy, and compare it with the KrF photon.</p>
+        <p><b>Plan.</b> Eq. (11.3) with <em>λ</em> in nm.</p>
+        <p class="ex-step"><b>Energy.</b> <em>E</em> = 1239.84 eV·nm/157 nm = 7.897 eV.</p>
+        <p class="ex-step"><b>Against KrF.</b> 1239.84/248 = 4.999 eV, so the F₂ photon carries 7.897/4.999 = 1.58 times as much
+        energy.</p>
+        <p class="ex-answer"><em>E</em> ≈ 7.9 eV, the notes' "7.9 eV high energy photons" (p. 92). Check: 1.24/0.157 µm = 7.90 eV by
+        M03's form.</p>
+      </div>
+    </div>
+
+    <h3 id="s4-2">4.2 Why the mercury-line resists stopped at the i-line</h3>
+
+    <p>
+      The g-line and i-line resists are <b>DNQ/novolac</b> resists: a novolac resin, a hydrocarbon polymer that forms the film, mixed
+      with a photoactive compound, diazonaphthoquinone (DNQ), that inhibits the resin's dissolution in base until light converts it
+      into an acid that no longer does (Plummer §5.2.3.1). Two properties of this chemistry failed in the deep ultraviolet:
+    </p>
+    <ul>
+      <li><b>Absorption.</b> Both novolac and DNQ absorb strongly near 250 nm (Wolf p. 228). Light that is absorbed in the top of the
+        film never reaches the bottom, so the resist cannot be exposed through its thickness; the developed opening narrows toward
+        the bottom or never clears.</li>
+      <li><b>Sensitivity.</b> When DUV resists were first developed, the only source was the mercury-arc lamp, whose output in the
+        deep ultraviolet is far weaker than at the i-line (Plummer §5.2.3.2). In a DNQ resist about 30 % of the incoming photons
+        are effective in exposing it (a quantum efficiency of about 0.3), so its sensitivity could improve at most about threefold — too little to expose
+        a wafer in an economic time with so little light.</li>
+    </ul>
+
+    <p>
+      The notes compress this into one sentence: regular resists could no longer print 0.25 µm, the illumination moved to the 248 nm
+      KrF laser, and a new resist based on <b>chemical amplification</b> was adopted for that wavelength, offering "increased photo
+      speed and contrast" (p. 91). The rest of the module is about that resist.
+    </p>
+
+    <details class="check">
+      <summary>A resist absorbs a large fraction of the exposing light in its top 100 nm. Explain what happens to a positive resist
+        line exposed through a 1 µm film, and why raising the exposure dose does not cure it.</summary>
+      <div class="answer"><p>The light intensity falls steeply with depth, so the top of the film receives a full dose and the bottom
+        very little. In a positive resist the top of the exposed region dissolves and the bottom does not, so the opening never clears
+        to the substrate, or clears only with sloped sidewalls that narrow toward the bottom. Raising the dose increases the light reaching the bottom only in
+        proportion to the already small transmitted fraction, while the top and the edges of the opening, where diffracted light spills
+        under the mask edge, are over-exposed and the opening widens. Linewidth control is lost before the bottom clears. This is why
+        DNQ/novolac, which absorbs strongly near 250 nm, could not simply be used at 248 nm with a longer exposure, and why the first
+        of the three requirements for a resist (notes p. 92) is high transparency at the exposure wavelength.</p></div>
+    </details>
+
+    <h2 id="s5">5 · Chemically amplified resists</h2>
+
+    <p>
+      Chemical amplification decouples the number of chemical events in the resist from the number of photons absorbed. An absorbed
+      photon releases acid from a photoacid generator, with an efficiency below one; each acid molecule then catalyses many reactions
+      during a bake. This section explains the two steps, what
+      they buy, and the price: a catalytic resist can be poisoned by a few parts per billion of base in the air, and its linewidth
+      depends on the temperature of the bake. The notes state only the result (p. 91); Wolf §6.1.1 and Plummer §5.2.3.2 give the
+      mechanism.
+    </p>
+
+    <h3 id="s5-1">5.1 Acid generation and the catalytic bake</h3>
+
+    <p>
+      A positive chemically amplified (CA) resist has two essential components. The <b>matrix resin</b> is a polymer that would
+      dissolve in an aqueous base, but its acidic sites are <b>protected</b> — chemically capped — by groups that make it insoluble.
+      In the IBM resists that started the technology the resin is polyhydroxystyrene (pHOST), whose phenolic sites are protected
+      with <i>t</i>-butoxycarbonyl (<i>t</i>-BOC) groups (Wolf p. 229). The second component is a <b>photoacid generator</b> (PAG),
+      a molecule that decomposes when it absorbs a photon and releases a strong acid; the early PAGs were onium salts (Wolf
+      p. 228). Imaging then takes two steps (Wolf p. 229):
+    </p>
+    <ol>
+      <li><b>Exposure: acid generation.</b> Absorbed photons decompose PAG molecules, each into one acid molecule; not every absorbed photon does so (Plummer). The exposed regions now hold a small
+        concentration of acid, a latent image of the mask, and nothing else has changed.</li>
+      <li><b>Post-exposure bake: acid-catalysed deprotection.</b> During the PEB, at the order of 120 °C for a few minutes
+        (Plummer), each acid molecule removes a protecting group from the resin and is regenerated by the reaction, so it goes on to
+        remove another. Wolf gives 500–1000 reactions per photon absorbed; Plummer, "tens or hundreds" of further reactions for each acid molecule. The deprotected resin is
+        soluble in the TMAH developer, so the exposed regions dissolve.</li>
+    </ol>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 170" role="img" aria-labelledby="m11f5-t">
+        <title id="m11f5-t">Chemical amplification: few acids at exposure, many deprotected sites after the bake</title>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="75" y="14">1 · exposure</text><text x="220" y="14">2 · post-exposure bake</text><text x="365" y="14">3 · develop</text>
+        </g>
+        <!-- panel 1 -->
+        <rect x="10" y="60" width="130" height="50" class="dg-fill"/>
+        <rect x="45" y="22" width="60" height="6" class="dg-guide"/>
+        <rect x="10" y="22" width="35" height="6" class="dg-ink"/><rect x="105" y="22" width="35" height="6" class="dg-ink"/>
+        <g class="dg-acc"><line x1="60" y1="32" x2="60" y2="56"/><line x1="90" y1="32" x2="90" y2="56"/></g>
+        <g class="dg-acc-f"><circle cx="62" cy="76" r="3.5"/><circle cx="88" cy="92" r="3.5"/><circle cx="74" cy="100" r="3.5"/></g>
+        <g class="dg-ink"><circle cx="25" cy="72" r="2"/><circle cx="125" cy="96" r="2"/><circle cx="30" cy="98" r="2"/><circle cx="118" cy="74" r="2"/></g>
+        <text x="75" y="128" class="dg-label-sm" text-anchor="middle">● acid (H⁺) from PAG</text>
+        <text x="75" y="142" class="dg-label-sm" text-anchor="middle">· protected resin</text>
+        <!-- panel 2 -->
+        <rect x="155" y="60" width="130" height="50" class="dg-fill"/>
+        <rect x="190" y="60" width="60" height="50" class="dg-acc-f" opacity="0.35"/>
+        <g class="dg-acc-f"><circle cx="207" cy="76" r="3.5"/><circle cx="233" cy="92" r="3.5"/><circle cx="219" cy="100" r="3.5"/></g>
+        <g class="dg-guide"><path d="M207,76 C220,66 236,70 240,80"/><path d="M233,92 C244,100 236,106 226,104"/></g>
+        <text x="220" y="128" class="dg-label-sm" text-anchor="middle">each acid deprotects</text>
+        <text x="220" y="142" class="dg-label-sm" text-anchor="middle">hundreds of sites, regenerated</text>
+        <!-- panel 3 -->
+        <rect x="300" y="60" width="35" height="50" class="dg-fill"/>
+        <rect x="395" y="60" width="35" height="50" class="dg-fill"/>
+        <line x1="300" y1="110" x2="430" y2="110" class="dg-rule"/>
+        <text x="365" y="90" class="dg-label-sm" text-anchor="middle">dissolved</text>
+        <text x="365" y="128" class="dg-label-sm" text-anchor="middle">soluble region removed</text>
+        <text x="365" y="142" class="dg-label-sm" text-anchor="middle">in aqueous TMAH</text>
+      </svg>
+      <figcaption>A positive CA resist. The exposure writes a latent image in acid; the bake converts it into a solubility image, many reactions per photon; the developer removes the deprotected resin.</figcaption>
+    </figure>
+
+    <p>
+      The gain is <b>sensitivity</b>, the exposure dose a resist needs, and with it throughput. A g-line or i-line DNQ resist needs
+      about 100 mJ/cm²; a DUV CA resist 20–40 mJ/cm² (Plummer), or 10–50 mJ/cm² in Wolf's range (p. 230). The overall quantum
+      efficiency is the efficiency of the photon–PAG reaction multiplied by the number of catalysed reactions, and can far exceed 1
+      (Plummer). The chemistry was developed at IBM in the early 1980s for exactly the reason of §4.2: the mercury lamp gave little
+      light at 248 nm (Wolf p. 229). CA resists also have higher <b>contrast</b> than DNQ resists (Plummer): a small change in dose
+      across the edge of the image switches the resist from insoluble to soluble, which sharpens the printed edge of a blurred aerial
+      image. Both tones exist; a negative CA resist uses the acid to cross-link the resin instead (Plummer).
+    </p>
+
+    <h3 id="s5-2">5.2 The cost of a catalyst: base poisoning and bake temperature</h3>
+
+    <p>
+      Because the exposure produces only a small amount of acid, anything that neutralises acid between exposure and PEB removes a
+      large fraction of the latent image. The commonest culprit is airborne base: amines, ammonia, ammonium hydroxide, the HMDS
+      adhesion promoter itself, or <i>N</i>-methylpyrrolidone from resist strippers, present in fab air at the order of 10 ppb (Wolf
+      p. 230). The top surface of the resist absorbs these vapours while the wafer waits for its bake, the acid there is neutralised,
+      and the surface layer stays insoluble while the acid-containing resist below it dissolves. The developed line acquires an
+      overhanging cap, a <b>T-top</b>.
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 220 140" role="img" aria-labelledby="m11f6a-t">
+          <title id="m11f6a-t">Normal developed resist lines</title>
+          <rect x="45" y="40" width="40" height="70" class="dg-fill"/>
+          <rect x="135" y="40" width="40" height="70" class="dg-fill"/>
+          <line x1="10" y1="110" x2="210" y2="110" class="dg-rule"/>
+          <text x="110" y="130" class="dg-label-sm" text-anchor="middle">bake promptly in clean air</text>
+        </svg>
+        <figcaption>Vertical sidewalls: the acid survived to the bake throughout the exposed resist.</figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 220 140" role="img" aria-labelledby="m11f6b-t">
+          <title id="m11f6b-t">T-topped resist lines after amine contamination</title>
+          <rect x="50" y="48" width="30" height="62" class="dg-fill"/>
+          <rect x="140" y="48" width="30" height="62" class="dg-fill"/>
+          <rect x="34" y="40" width="62" height="10" class="dg-acc-f"/>
+          <rect x="124" y="40" width="62" height="10" class="dg-acc-f"/>
+          <line x1="10" y1="110" x2="210" y2="110" class="dg-rule"/>
+          <text x="110" y="28" class="dg-label-sm" text-anchor="middle">insoluble skin: acid neutralised by amine</text>
+          <text x="110" y="130" class="dg-label-sm" text-anchor="middle">delay in amine-bearing air</text>
+        </svg>
+        <figcaption>The surface skin develops slowly and overhangs the line below it. Schematic, after Wolf Fig. 6-2.</figcaption>
+      </figure>
+    </div>
+
+    <p>
+      The extent of the skin depends on how long the wafer waits and on how much base is in the air, neither of which is controlled
+      precisely, so the linewidth varies from wafer to wafer. Wolf quotes a delay of usually less than 3 minutes between exposure and
+      PEB, occasionally 10 minutes or more; a 10-minute pause in air holding 5 ppb of amine or more can shift the critical dimension by
+      as much as 10–20 nm. After the PEB the resist is no longer susceptible (p. 231). The remedies are to filter the air of the exposure tool and
+      resist track through activated charcoal to below 1 ppb inside the enclosure (the ITRS requirement), to hold exposed wafers in
+      protected positions, to coat the resist with a removable water-soluble top film, to add stabilising additives, and to densify
+      the resist by a bake (Wolf p. 232).
+    </p>
+
+    <p>
+      The bake itself is a second sensitivity. The catalysed reaction runs faster at higher temperature, so the PEB temperature sets
+      how far the deprotection proceeds and how far the acid diffuses, and the linewidth follows. One of the earliest commercial 248 nm resists, Shipley's APEX,
+      changed its linewidth by 16 nm per °C of PEB temperature; later formulations reduced this to 2.6–1.8 nm/°C, and one resist to about zero,
+      though Wolf cautions that such resists may not suit every feature type (Table 6-1, p. 235). Even 2 nm/°C requires hot plates
+      uniform to well within 0.5 °C. The early 193 nm resists returned to 10 nm/°C against a target of
+      3 nm/°C (Wolf p. 240).
+    </p>
+
+    <div class="box pitfall">
+      <p><b>Delay before the bake.</b> A CA-resist wafer that waits between exposure and PEB in ordinary fab air — a tool fault, a full
+      track — prints its lines with T-tops and shifted widths that a wafer baked at once does not. The defect is in the timing and the
+      air, not in the exposure, so it does not show up in a focus or dose check.</p>
+    </div>
+
+    <details class="check">
+      <summary>Two wafers coated with the same positive CA resist are exposed together. One is baked at once; the other waits 30
+        minutes beside an open bottle of HMDS before its bake. Predict the difference in the developed lines and explain it step by
+        step. Would the same delay matter after the bake?</summary>
+      <div class="answer"><p>HMDS releases ammonia, a base. During the wait the top of the second wafer's resist absorbs base, which
+        neutralises the photo-generated acid in the surface layer. At the PEB the acid below the surface catalyses deprotection as
+        usual, but the surface layer of the exposed regions has no acid left and stays protected and insoluble. In the developer the
+        exposed resist below dissolves and the surface skin does not, so the second wafer shows T-topped lines, or openings that fail
+        to clear at the top, and its linewidth differs from the first wafer's by an amount that depends on the delay and the
+        concentration. After the PEB the deprotection is complete and the image is fixed in the resin's solubility, so the
+        resist is no longer susceptible (Wolf p. 231); the same wait after the bake does no harm.</p></div>
+    </details>
+
+    <h2 id="s6">6 · Resist polymers for 193 nm and 157 nm</h2>
+
+    <p>
+      Each move to a shorter wavelength has required a new polymer, because the polymer that formed the previous resist absorbs too
+      strongly at the new wavelength. This section gives the polymer families the notes list for 193 nm and 157 nm, what each
+      trades, and the three requirements that every CA resist must meet whatever its wavelength.
+    </p>
+
+    <h3 id="s6-1">6.1 Three platforms at 193 nm</h3>
+
+    <p>
+      The 248 nm CA resists are built on hydroxystyrene. The 193 nm resists are not: the notes list three families, "all different
+      than the hydroxy styrene based resist used for 248-nm lithography" (p. 91). The reason is the aromatic (benzene) ring of
+      hydroxystyrene, which gives the resist its resistance to plasma etching but absorbs strongly at 193 nm (H. Ito, Adv. Polym.
+      Sci. 172, 37 (2005)). The 193 nm platforms carry <b>alicyclic</b> groups — saturated carbon rings without the aromatic
+      double bonds — to recover etch resistance with less absorption. After nearly a decade of development no single polymer had
+      emerged, and Wolf describes three platforms, each with part of what is needed (p. 238):
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Platform (notes p. 91)</th><th>What it is</th><th>Strength</th><th>Weakness</th></tr></thead>
+      <tbody>
+        <tr><td>Acrylates</td><td>Acrylate polymers with alicyclic groups attached</td><td>Best dense-line performance (Fujitsu's "adamantane methylacrylate" chemistry, Wolf's wording)</td><td>Generally poor etch resistance</td></tr>
+        <tr><td>Pure cyclic olefins</td><td>Polymers whose backbone is built from cyclic olefins</td><td>Better etch resistance; robust in harsh etches</td><td>—</td></tr>
+        <tr><td>Cyclic olefin/maleic anhydride (COMA)</td><td>Free-radical copolymer of functionalised cyclic olefins and maleic anhydride</td><td>Very cost-effective</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Etch resistance matters more at 193 nm than before because the resist is thinner: 400–600 nm against about 1000 nm in earlier
+      generations (Wolf p. 240), for the reasons of §3 (depth of focus) and §7 (collapse). Where the resist cannot survive the etch, a
+      <b>hard mask</b> — an inorganic film patterned by the resist and then used to mask the etch — replaces it.
+    </p>
+
+    <h3 id="s6-2">6.2 157 nm: fluorine and silicon</h3>
+
+    <p>
+      At 157 nm the photon carries 7.9 eV (§4), and most of the polymers used in earlier resists absorb it strongly (notes p. 92).
+      The two backbones identified are <b>highly fluorinated hydrocarbons</b> (Wolf: fluoropolymers based on norbornane) and
+      <b>silicon-based siloxanes</b>, polymers with an Si–O backbone; the siloxanes have difficulty reaching a high enough
+      glass-transition temperature (Wolf p. 242). A second problem is <b>outgassing</b>. The resist releases volatile fragments that
+      settle on the final lens, and at 157 nm "even a monolayer of oxygen or water can significantly change the transmission of light
+      through the lens" (notes p. 93). Fluorocarbon deposits can be removed by bleeding oxygen into the tool with the laser on, which
+      makes them volatile; siloxane resists leave SiO₂ deposits, which are harder to remove, and nitrogen purging of the gap between
+      lens and wafer is the defence (Wolf p. 244). Outgassing is already a problem at 193 nm, where the working distance between lens
+      and resist is shorter than at 248 nm and vapours adsorb more strongly (Wolf p. 241).
+    </p>
+
+    <h3 id="s6-3">6.3 What every CA resist must do</h3>
+
+    <p>
+      The notes close the resist chemistry with the three requirements common to all CA resists (p. 92), and each traces to a
+      mechanism of this module:
+    </p>
+    <ol>
+      <li><b>High transparency at the exposure wavelength</b>, so the light reaches the bottom of the film (§4.2).</li>
+      <li><b>Sufficient resistance to plasma etching</b>, because the patterned resist is the mask for the etch that follows, and it
+        is thinner at each generation (§6.1).</li>
+      <li><b>Functional units that undergo efficient photochemical transformations that change their solubility in the
+        developer</b> — in a positive resist, an acidic resin masked by acid-labile protecting groups that the photo-generated acid
+        removes during the bake (Wolf p. 243; §5.1).</li>
+    </ol>
+    <p>
+      Wolf adds a glass-transition temperature above the processing temperatures, an acceptable shelf life and low toxicity
+      (p. 243).
+    </p>
+
+    <details class="check">
+      <summary>A process engineer proposes keeping the 248 nm hydroxystyrene resist for the first 193 nm critical level and simply
+        thinning it to 150 nm so that enough light reaches the bottom. Using §§3, 6 and 7, give two reasons this fails.</summary>
+      <div class="answer"><p>First, etch resistance: the resist is the etch mask, and 150 nm of a polymer chosen for 248 nm is far
+        thinner than the 400–600 nm planned for 193 nm resists (Wolf p. 240); resist thickness, not only the polymer, sets how long the mask
+        lasts, and Wolf's remedy for insufficient etch resistance is a hard mask (p. 240). Second, the absorption that motivates the thinning does not go away: hydroxystyrene's aromatic rings absorb
+        strongly at 193 nm, so even a thin film absorbs most of the light in its upper part and the image through its depth is
+        non-uniform, with sloped sidewalls; the first of the three requirements, transparency at the exposure wavelength, is still not
+        met. (Thin films of existing resists, 60–70 nm thick, were used at 157 nm as a stop-gap for tool testing and early baseline processes, while real 157 nm resists were
+        developed: Wolf p. 244.) Collapse, §7, is not the problem here, since thinning lowers the aspect ratio.</p></div>
+    </details>
+
+    <h2 id="s7">7 · Resist collapse</h2>
+
+    <p>
+      Once a resist pattern is developed it must survive the rinse and the drying that follow. The notes describe the failure that
+      limits how tall a closely spaced resist line can be (pp. 91–92), and Wolf gives it as one reason resist films have become
+      thinner as features shrank (p. 240).
+    </p>
+
+    <p>
+      After development the wafer is rinsed in water and dried. As the developer and rinse water are removed from the narrow spaces between
+      lines, surface-tension forces pull closely spaced neighbouring lines together (notes p. 92; Wolf p. 240). A line is held only at its
+      base, so a sideways force near its top bends it more the taller and narrower it is, and the lines bend over and touch, or stick to,
+      their neighbours. This is <b>resist collapse</b>. The tendency grows with the <b>aspect ratio</b>, the height of the
+      line divided by its width, and the notes put the threshold at "about 4:1": collapse "becomes common when resist-feature
+      aspect-ratios exceed about 4:1" (pp. 91–92, from Wolf p. 240).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 170" role="img" aria-labelledby="m11f7-t">
+        <title id="m11f7-t">Resist lines before and after collapse during drying</title>
+        <line x1="10" y1="140" x2="410" y2="140" class="dg-rule"/>
+        <rect x="30" y="40" width="22" height="100" class="dg-fill"/>
+        <rect x="74" y="40" width="22" height="100" class="dg-fill"/>
+        <rect x="118" y="40" width="22" height="100" class="dg-fill"/>
+        <path d="M52,70 Q63,82 74,70" class="dg-acc" fill="none" stroke-width="1.6"/>
+        <text x="63" y="66" class="dg-label-sm" text-anchor="middle">water</text>
+        <line x1="22" y1="40" x2="22" y2="140" class="dg-ink"/>
+        <text x="16" y="94" class="dg-label-sm" text-anchor="end">h</text>
+        <line x1="30" y1="150" x2="52" y2="150" class="dg-ink"/>
+        <text x="41" y="164" class="dg-label-sm" text-anchor="middle">w</text>
+        <text x="85" y="28" class="dg-label-sm" text-anchor="middle">during the rinse dry</text>
+        <!-- collapsed -->
+        <path d="M250,140 L250,90 Q252,52 278,44 L290,52 Q272,62 272,94 L272,140 Z" class="dg-fill"/>
+        <path d="M316,140 L316,90 Q314,52 290,44 L278,40 Q296,44 296,94 L296,140 Z" class="dg-fill"/>
+        <rect x="340" y="40" width="22" height="100" class="dg-fill"/>
+        <text x="300" y="28" class="dg-label-sm" text-anchor="middle">after drying: a collapsed pair</text>
+        <text x="300" y="160" class="dg-label-sm" text-anchor="middle">h/w here ≈ 4.5</text>
+      </svg>
+      <figcaption>Surface tension in the draining rinse water pulls neighbouring lines together; above an aspect ratio of about 4:1 the lines bend and stick. Schematic.</figcaption>
+    </figure>
+
+    <p>
+      The 4:1 limit converts directly into a ceiling on resist thickness for a given line width, and this ceiling falls with every
+      generation. It joins the depth of focus (§3) and the etch resistance (§6.1) as the three constraints that set the resist
+      thickness, and the first two pull it down while the third pulls it up.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">The thickest resist a 130 nm line allows</div>
+      <div class="ex-body">
+        <p><b>Given</b> a dense pattern of 130 nm lines and the 4:1 collapse limit (notes p. 92). <b>Find</b> the maximum resist
+        thickness, compare it with the 400–600 nm planned for 193 nm resists (Wolf p. 240), and find the narrowest lines each end of
+        that range allows.</p>
+        <p><b>Plan.</b> Aspect ratio = <em>h</em>/<em>w</em> ≤ 4, so <em>h</em><sub>max</sub> = 4<em>w</em> and
+        <em>w</em><sub>min</sub> = <em>h</em>/4.</p>
+        <p class="ex-step"><b>Ceiling for 130 nm lines.</b> <em>h</em><sub>max</sub> = 4 × 130 nm = 520 nm = 0.52 µm.</p>
+        <p class="ex-step"><b>Against the 193 nm resist range.</b> 520 nm lies inside 400–600 nm: a 600 nm film would exceed the
+        limit for these lines (600/130 = 4.6), a 400 nm film would not (3.1).</p>
+        <p class="ex-step"><b>Narrowest lines.</b> 400 nm/4 = 100 nm; 600 nm/4 = 150 nm.</p>
+        <p class="ex-answer"><em>h</em><sub>max</sub> = 0.52 µm; a 400 nm resist supports dense lines down to 100 nm, a 600 nm resist
+        only to 150 nm. Check: the 1 µm resist of earlier generations reaches 4:1 at 250 nm lines, the 0.25 µm node, close to where DUV lithography, with its shorter depth of
+        focus, began to require thinner resists (Wolf p. 246).</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>Dense 70 nm lines are to be printed. What is the thickest resist the collapse limit allows? Name two process changes that
+        would let the pattern be etched into a 300 nm oxide anyway.</summary>
+      <div class="answer"><p><em>h</em><sub>max</sub> = 4 × 70 nm = 280 nm. That is thinner than the oxide it must pattern and far
+        below the 400–600 nm assumed for 193 nm resists, so the resist alone may not survive the etch. Two remedies from this module and
+        its sources: (1) a <b>hard mask</b> — the thin resist patterns an inorganic film, which then masks the oxide etch (Wolf
+        p. 240); (2) a <b>bilayer resist</b>, in which a thin imaging layer on top is patterned and the pattern transferred
+        anisotropically into a thick underlayer that provides the etch resistance and acts as the anti-reflective coating (Wolf
+        pp. 236–237). Both separate the imaging function from the etch-resistance function, which is the conflict the 4:1 limit
+        creates.</p></div>
+    </details>
+
+    <h2 id="s8">8 · Reflections and anti-reflective coatings</h2>
+
+    <p>
+      Light that passes through the resist is not absorbed by the wafer; part of it reflects from the substrate back up through the
+      resist, where it interferes with the incoming light. The notes give the problem, the two ways an anti-reflective coating (ARC)
+      suppresses it, and the coatings used (pp. 93–95). Lecture 19 drew the layer stack and the quarter-wave argument at the board.
+      This section explains the interference, derives the quarter-wave thickness, and compares the coatings.
+    </p>
+
+    <h3 id="s8-1">8.1 Standing waves and reflective notching</h3>
+
+    <p>
+      Light reflected from the substrate travels back up through the resist and overlaps the downward light. Where the two are in
+      phase the intensity is high; where they are out of phase it is low. The result is a <b>standing wave</b>: the dose varies
+      periodically with depth, with a period of half the wavelength in the resist, and the developed sidewall acquires a ripple of the
+      same period (Plummer §5.5). The total dose coupled into the resist also depends on the resist thickness, through the same
+      interference, so a resist that varies in thickness over topography prints a varying linewidth (Wolf's "clearing-dose swing",
+      p. 247). Over a sloped or curved feature — a step, the edge of a polysilicon line — the reflection is directed sideways, under the
+      mask's opaque area, and exposes resist that should have been dark; the line is narrowed locally, which is <b>reflective
+      notching</b>. Both effects worsen at shorter wavelengths, because the reflectivity of the substrate increases as the wavelength
+      falls (Wolf p. 245), and they matter more as linewidth tolerances tighten. The notes' summary: ARCs "minimize standing waves and
+      reflective notching from substrate reflections" (p. 93).
+    </p>
+
+    <div class="figrow">
+      <figure class="compact">
+        <svg viewBox="0 0 220 160" role="img" aria-labelledby="m11f8a-t">
+          <title id="m11f8a-t">Standing waves in the resist produce a rippled sidewall</title>
+          <rect x="20" y="120" width="180" height="20" class="dg-faint"/>
+          <text x="110" y="155" class="dg-label-sm" text-anchor="middle">reflective substrate</text>
+          <path d="M60,40 L60,120 L140,120 L140,40 Z" class="dg-fill"/>
+          <path d="M140,40 q8,5 0,10 q8,5 0,10 q8,5 0,10 q8,5 0,10 q8,5 0,10 q8,5 0,10 q8,5 0,10 q8,5 0,10" class="dg-acc" fill="none" stroke-width="1.6"/>
+          <line x1="175" y1="30" x2="175" y2="118" class="dg-line"/>
+          <line x1="185" y1="118" x2="185" y2="30" class="dg-line" stroke-dasharray="4 3"/>
+          <text x="180" y="24" class="dg-label-sm" text-anchor="middle">in / reflected</text>
+          <text x="100" y="34" class="dg-label-sm" text-anchor="middle">resist line</text>
+        </svg>
+        <figcaption>Incoming and reflected light interfere; the dose, and so the developed edge, ripples with depth.</figcaption>
+      </figure>
+      <figure class="compact">
+        <svg viewBox="0 0 220 160" role="img" aria-labelledby="m11f8b-t">
+          <title id="m11f8b-t">Reflective notching at a step</title>
+          <path d="M20,60 L200,60 L200,100 L122,100 L70,130 L20,130 Z" class="dg-fill" opacity="0.6"/>
+          <path d="M20,130 L70,130 L122,100 L200,100 L200,140 L20,140 Z" class="dg-faint"/>
+          <rect x="20" y="14" width="70" height="6" class="dg-ink"/>
+          <text x="55" y="10" class="dg-label-sm" text-anchor="middle">opaque mask</text>
+          <line x1="96" y1="22" x2="96" y2="115" class="dg-line"/>
+          <line x1="96" y1="115" x2="52.7" y2="90" class="dg-acc" stroke-width="1.8"/>
+          <text x="22" y="54" class="dg-label-sm">reflected under the mask</text>
+          <text x="150" y="154" class="dg-label-sm" text-anchor="middle">step in the substrate</text>
+          <text x="160" y="84" class="dg-label-sm" text-anchor="middle">resist</text>
+        </svg>
+        <figcaption>Light reflected from a sloped surface is directed under the opaque area and notches the line.</figcaption>
+      </figure>
+    </div>
+
+    <h3 id="s8-2">8.2 Two ways to suppress the reflection, and where to put the coating</h3>
+
+    <p>
+      An ARC suppresses the reflection in one of two ways (notes p. 93): by <b>attenuation</b>, absorbing the light that passes through
+      it, so little returns from the substrate; or by <b>index matching</b>, choosing the coating's refractive index and thickness so
+      that light reflected from its lower surface cancels light reflected from its upper surface by destructive interference. A coating
+      may be placed on top of the resist, a <b>top anti-reflective coating</b> (TAR), or under it on the wafer, a <b>bottom
+      anti-reflective coating</b> (BARC). For 0.25 µm lithography and below, a BARC must suppress more than 99 % of the light reflected
+      from the substrate to give sufficient critical-dimension control (notes p. 94). The BARC acts at the interface that causes the
+      problem; a TAR sits on the resist's top surface, so it cannot remove the reflection from the substrate. Both together have been
+      used for the levels that need the tightest control, such as the polysilicon gate (Wolf p. 245).
+    </p>
+
+    <p>
+      In practice no coating is purely one or the other: Wolf notes that all BARCs use some of both mechanisms (p. 247). Attenuation
+      alone has a limit. A coating needs a high extinction coefficient <em>k</em>, the imaginary part of the refractive index that
+      measures absorption, or a large thickness; but if <em>k</em> is too high the coating's own top surface becomes reflective, so
+      useful values lie between about 0.22 and 0.5, holding the reflectance back into the resist below 10 % (Wolf p. 246). Thick
+      absorbing layers (60–90 nm for i-line resists) suited the older generations; the shorter depth of focus of DUV lithography
+      demands thinner resists and thinner BARCs, which is why index matching is favoured at 0.25 µm and below (Wolf pp. 246–247).
+    </p>
+
+    <h3 id="s8-3">8.3 The quarter-wave condition</h3>
+
+    <p>
+      The notes state the index-matching design in one sentence: the BARC has "an optical path length of λ/4 for the wavelength of light
+      being employed", which produces "a light wave with half-wavelength phase shift toward the BARC/Resist interface" (p. 94). The
+      <b>optical path length</b> of a layer is its thickness multiplied by its refractive index, <em>n</em><em>d</em>; it is the
+      distance in vacuum that light would cover in the time it takes to cross the layer. Two reflections compete at the top of the
+      BARC: light reflected directly at the resist/BARC interface, and light that enters the BARC, reflects at the substrate and
+      returns. The second has crossed the BARC twice, an extra optical path of 2<em>nd</em>. If 2<em>nd</em> = <em>λ</em>/2, it
+      returns half a wavelength behind the first and the two cancel. This assumes the two reflections suffer the same phase change on
+      reflection, which holds when the refractive index increases at each interface going down — resist, BARC, substrate — and when
+      the layers absorb little.
+    </p>
+
+    <div class="eq" id="eq11-4">
+      <div class="eq-body">
+        <div class="eq-math"><em>n</em><em>d</em> = <span class="frac"><span class="num"><em>λ</em></span><span class="den">4</span></span>&emsp;⇒&emsp;<em>d</em> = <span class="frac"><span class="num"><em>λ</em></span><span class="den">4<em>n</em></span></span>&emsp;&emsp;(or <em>d</em> = <span class="frac"><span class="num">3<em>λ</em></span><span class="den">4<em>n</em></span></span>)</div>
+        <div class="eq-num">(11.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>d</em> BARC thickness (nm) · <em>n</em> refractive index of the BARC at the exposure wavelength · <em>λ</em> exposure
+        wavelength in vacuum (nm). The two-pass path 2<em>nd</em> is then <em>λ</em>/2 (or 3<em>λ</em>/2 for the thicker solution, which
+        Wolf notes reduces reflectivity further if the thickness can be tolerated, p. 247). Normal incidence, weakly absorbing layers,
+        index rising from resist to BARC to substrate. Complete cancellation needs the two reflected amplitudes to be equal as well
+        (Wolf p. 247); for lossless layers that requires <em>n</em><sub>BARC</sub> = √(<em>n</em><sub>resist</sub><em>n</em><sub>substrate</sub>)
+        (E. Hecht, <i>Optics</i>, §9.7, antireflection coatings). Real substrates at DUV wavelengths are strongly absorbing — silicon at
+        248 nm has <em>n</em> ≈ 1.57, <em>k</em> ≈ 3.57 (Aspnes and Studna, 1983) — so the condition is an idealisation, which is why every
+        practical BARC also absorbs (Wolf p. 247).
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m11f9-t">
+        <title id="m11f9-t">Quarter-wave BARC: two reflections half a wavelength apart cancel</title>
+        <rect x="40" y="30" width="340" height="70" class="dg-fill" opacity="0.5"/>
+        <rect x="40" y="100" width="340" height="30" class="dg-fill"/>
+        <rect x="40" y="130" width="340" height="40" class="dg-faint"/>
+        <text x="372" y="70" class="dg-label-sm" text-anchor="end">resist</text>
+        <text x="372" y="119" class="dg-label-sm" text-anchor="end">BARC, d = λ/4n</text>
+        <text x="372" y="156" class="dg-label-sm" text-anchor="end">substrate</text>
+        <line x1="90" y1="20" x2="130" y2="100" class="dg-line" stroke-width="1.6"/>
+        <line x1="130" y1="100" x2="170" y2="20" class="dg-line" stroke-dasharray="5 3"/>
+        <text x="174" y="24" class="dg-label-sm">r₁</text>
+        <line x1="130" y1="100" x2="145" y2="130" class="dg-acc" stroke-width="1.6"/>
+        <line x1="145" y1="130" x2="160" y2="100" class="dg-acc" stroke-width="1.6"/>
+        <line x1="160" y1="100" x2="200" y2="20" class="dg-acc" stroke-dasharray="5 3" stroke-width="1.6"/>
+        <text x="204" y="24" class="dg-label-sm">r₂</text>
+        <text x="150" y="190" class="dg-label-sm" text-anchor="middle">r₂ travels an extra 2nd = λ/2: r₁ and r₂ cancel</text>
+      </svg>
+      <figcaption>The ray reflected at the substrate (r₂) returns to the resist half a wavelength behind the ray reflected at the top of the BARC (r₁). Rays drawn oblique for clarity; the condition is for normal incidence.</figcaption>
+    </figure>
+
+    <div class="example">
+      <div class="ex-head">Quarter-wave BARC thickness at 248 nm</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>λ</em> = 248 nm; a BARC whose refractive index at 248 nm is taken, for illustration, as <em>n</em> = 2.0 (a
+        real film's index is measured and tuned for each process). <b>Find</b> the quarter-wave thickness, the thicker 3<em>λ</em>/2
+        solution, and check the two-pass path.</p>
+        <p><b>Plan.</b> Eq. (11.4) with <em>λ</em> in vacuum and the BARC's index; the wavelength inside the film is <em>λ</em>/<em>n</em>,
+        and the film must be a quarter of that.</p>
+        <p class="ex-step"><b>Wavelength inside the BARC.</b> <em>λ</em>/<em>n</em> = 248/2.0 = 124 nm.</p>
+        <p class="ex-step"><b>Quarter-wave thickness.</b> <em>d</em> = 124 nm/4 = 31.0 nm.</p>
+        <p class="ex-step"><b>Two-pass optical path.</b> 2<em>nd</em> = 2 × 2.0 × 31.0 nm = 124 nm = <em>λ</em>/2. ✓</p>
+        <p class="ex-step"><b>Thicker solution.</b> <em>d</em> = 3 × 248/(4 × 2.0) = 93.0 nm, two-pass path 3<em>λ</em>/2 = 372 nm.</p>
+        <p class="ex-answer"><em>d</em> = 31.0 nm or 93.0 nm. Check: 31 nm lies in the 30–50 nm range the notes give for inorganic
+        BARCs (p. 94; Wolf p. 249), and the vacuum quarter-wave, 62 nm, would be twice too thick — forgetting <em>n</em> is the error to
+        avoid. Wolf's index-matching paragraph gives 50–80 nm instead (p. 247), a range that <em>λ</em>/(4<em>n</em>) at 248 nm reproduces
+        only for <em>n</em> between 0.8 and 1.2, below any real BARC; the two statements in the source disagree.</p>
+      </div>
+    </div>
+
+    <p>
+      The thickness tolerance is tight: a quarter-wave layer 31 nm thick that is 3 nm off changes the two-pass path by 12 nm, about 10 % of
+      the half-wave shift, and the cancellation degrades accordingly. Wolf names tight thickness control as an "obvious requirement" (p. 247).
+    </p>
+
+    <h3 id="s8-4">8.4 The coatings in use</h3>
+
+    <p>
+      The notes list three kinds of BARC and a fourth arrangement for copper interconnect (pp. 94–95). Wolf supplies the details:
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th></th><th>Organic (spin-on)</th><th>Inorganic dielectric</th><th>PVD TiN</th></tr></thead>
+      <tbody>
+        <tr><td>Deposition</td><td>Spun on like resist</td><td>PECVD SiON or SiN</td><td>Reactive sputtering (PVD)</td></tr>
+        <tr><td>Thickness</td><td>60–120 nm (notes)</td><td>30–50 nm (notes)</td><td>≈ 80 nm (Wolf)</td></tr>
+        <tr><td>Mechanism</td><td>Mainly absorption, by dyes in the polymer</td><td>Both index matching and absorption; <em>n</em>, <em>k</em> and thickness tuned through the CVD conditions</td><td>Absorption (<em>k</em> ≈ 1.1)</td></tr>
+        <tr><td>Covers topography</td><td>Self-planarizes: thicker in hollows, thinner on peaks</td><td>Conformal: the correct thickness everywhere</td><td>—</td></tr>
+        <tr><td>Removal</td><td>Opened by an O₂ plasma etch before the main etch</td><td>Hard to remove; some processes leave it in place. High etch selectivity, so the open step matters less; some processes omit it</td><td>Left in place; can serve as a diffusion barrier</td></tr>
+        <tr><td>Wavelengths</td><td>Before DUV as ≈ 200 nm wet-opened films (unsuitable below 0.5 µm); in DUV with an O₂ dry open; for KrF and ArF CA resists, chemistry matched to the resist</td><td>i-line, 248 nm, 193 nm (at 193 nm the film is made more oxide-like, since Si-rich SiON is opaque)</td><td>Mainly i-line patterning of Al; limited in DUV by 20–30 % reflectivity</td></tr>
+        <tr><td>Problem</td><td>Acidity can interact with CA resists and intermix at the interface</td><td>Amine (NH₃) groups on the SiON surface poison CA resists; cured by a thin oxide cap or an O₂ / N₂O treatment</td><td>Reflective in DUV</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Organic BARCs and CA resists need a word. The notes state that organic BARCs "cannot be used with CA resist" (p. 94). Wolf, the
+      source of the notes' text, describes the same issue as an incompatibility to be managed rather than an exclusion: the acidity of
+      an organic BARC can react with a CA resist and form an intermixed layer at the interface, which must not happen, and organic
+      BARCs were developed for KrF and ArF resists with the same copolymer chemistry as the resist to avoid it, although in 2001 no
+      mature 193 nm resist yet existed to match (Wolf pp. 248–249).
+      For an answer graded on the notes, the notes' statement stands; the physics is that the BARC chemistry must be matched to the
+      CA resist. Inorganic BARCs raise the same acid–base problem from the other side, through amine groups left on the SiON surface
+      (Wolf p. 250).
+    </p>
+
+    <p>
+      For the dual-damascene copper interconnect of M14, a single BARC is not enough. The layer being patterned is a transparent
+      intermetal dielectric, and beneath it lie reflective surfaces — copper, polysilicon — at several depths over rough topography. A
+      BARC tuned to cancel the reflection for one local film stack can reflect strongly over another (notes p. 95). The answer is a
+      multilayer coating, the <b>universal anti-reflective layer</b> (UARL), of two or three layers deposited on the dielectric: the
+      bottom layer is opaque to UV light (and reflective), so it hides everything beneath it, and the upper layer then cancels the
+      single, known reflection from that bottom layer by destructive interference (notes p. 95). The third layer, where used, is a thin
+      oxide that keeps the other two from reacting with the DUV resist (Wolf p. 251).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="-96 0 516 176" role="img" aria-labelledby="m11f10-t">
+        <title id="m11f10-t">Universal anti-reflective layer over a transparent dielectric on reflective topography</title>
+        <rect x="20" y="14" width="380" height="20" class="dg-fill" opacity="0.5"/>
+        <rect x="20" y="34" width="380" height="12" class="dg-guide"/>
+        <rect x="20" y="46" width="380" height="14" class="dg-fill"/>
+        <rect x="20" y="60" width="380" height="14" class="dg-acc-f"/>
+        <g class="dg-label" text-anchor="end" style="font-size:14px">
+          <text x="12" y="29">resist</text><text x="12" y="45">oxide cap</text>
+          <text x="12" y="59">cancelling</text><text x="12" y="73">opaque</text>
+        </g>
+        <rect x="20" y="74" width="380" height="56" class="dg-faint"/>
+        <text x="210" y="94" class="dg-label" text-anchor="middle" style="font-size:14px">transparent dielectric</text>
+        <rect x="60" y="108" width="60" height="22" class="dg-ink"/>
+        <rect x="200" y="100" width="80" height="30" class="dg-ink"/>
+        <rect x="320" y="112" width="50" height="18" class="dg-ink"/>
+        <rect x="20" y="130" width="380" height="20" class="dg-fill"/>
+        <text x="210" y="170" class="dg-label" text-anchor="middle" style="font-size:14px">reflective Cu / poly at several depths</text>
+      </svg>
+      <figcaption>The opaque bottom layer of the UARL replaces many unknown reflections from below with one known reflection, which the upper layer cancels. After notes p. 95 and Wolf Fig. 6-14; not to scale.</figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>An inorganic SiON BARC tuned for a 248 nm process is to be reused at 193 nm. Give two things that must change, and
+        explain why. Then explain why a single quarter-wave BARC on top of a transparent oxide over copper lines cannot work everywhere
+        on the die.</summary>
+      <div class="answer"><p><b>Composition and thickness.</b> The film's optical constants must be retuned: Si-rich SiON is opaque at
+        193 nm, so the composition is moved toward an oxide-like film through the PECVD conditions (Wolf pp. 249–250); and the
+        quarter-wave thickness <em>λ</em>/(4<em>n</em>) changes with both the shorter wavelength and the new index, so a film right for
+        248 nm is the wrong thickness at 193 nm (with <em>n</em> = 2.0 the quarter-wave thickness drops from 31 nm to 24 nm; at
+        <em>n</em> = 1.8, the 193 nm value is 26.8 nm). The amine-poisoning treatment (oxide cap or O₂/N₂O step) still applies,
+        since DUV CA resists are more sensitive to it than i-line resists.</p>
+        <p><b>Over copper.</b> A quarter-wave BARC cancels the reflection from one interface at one known depth. Over a transparent
+        oxide, the light reaches copper lines at several depths and the bare substrate between them, so each location returns a
+        reflection with a different phase; a thickness that cancels one leaves the others, or even reinforces them (notes p. 95). The
+        remedy is the UARL: an opaque bottom layer that blocks the light before it reaches the dielectric, leaving one reflection to
+        cancel.</p></div>
+    </details>
+
+    <h2 id="s9">9 · The board problems, collected</h2>
+
+    <p>
+      The two calculations of this part of the course, with the numbers used in class, and the method for each.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Problem</th><th>Method</th><th>Board values</th><th>Result</th><th>Worked in</th></tr></thead>
+      <tbody>
+        <tr><td>Shadow-printing resolution</td><td>2<em>b</em><sub>min</sub> = 3√(<em>λ</em>(<em>s</em> + <em>d</em>/2)); <em>b</em><sub>min</sub> = half</td><td><em>λ</em> ≈ 0.4 µm (g-line rounded), <em>s</em> = 0, <em>d</em> = 1 µm</td><td>1.34 µm; 0.67 µm</td><td><a href="#s2-1">§2.1</a></td></tr>
+        <tr><td>Feature size and depth of focus</td><td>NA = sin <em>θ</em>; <em>F</em> = 0.5<em>λ</em>/NA; DOF = 0.6<em>λ</em>/NA²</td><td><em>λ</em> = 0.1 µm, <em>θ</em> = 30° (NA = 0.5)</td><td>0.1 µm; 0.24 µm, ±0.12 µm</td><td><a href="#s3-1">§3.1</a></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <details class="check">
+      <summary>A lens has a converging cone of half-angle 36.9° and is used at 193 nm. Find NA, <em>F</em> and DOF by the course's
+        forms. What contact-printing period would the same wavelength give in hard contact through a 0.4 µm resist?</summary>
+      <div class="answer"><p>NA = sin 36.9° = 0.600. <em>F</em> = 0.5 × 0.193/0.6 = 0.161 µm; DOF = 0.6 × 0.193/0.36 = 0.322 µm, so
+        focus is held within ±0.161 µm. In hard contact, eq. (11.1): 0.193 × (0 + 0.2) = 0.0386 µm²; √ = 0.196 µm; 2<em>b</em><sub>min</sub>
+        = 0.589 µm, <em>b</em><sub>min</sub> = 0.295 µm. Here the projection system also resolves features about half that size. Resolution was
+        not why contact printing was abandoned, though: it is capable of high resolution, but hard contact damages the mask and the resist
+        and gives high defect densities, and proximity printing avoids the damage only by giving up resolution to the gap (Plummer
+        §5.2.2).</p></div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Positive resist: exposed areas dissolve, pattern = mask; negative: exposed areas remain, pattern = inverse. Sequence: HMDS,
+        spin (3000–6000 rpm, 0.6–1 µm), prebake 90–100 °C, align and expose, PEB, develop in TMAH, hard bake, strip in O₂.</li>
+        <li>Shadow printing: 2<em>b</em><sub>min</sub> = 3√(<em>λ</em>(<em>s</em> + <em>d</em>/2)) (11.1); board case 0.4 µm, <em>s</em> = 0,
+        <em>d</em> = 1 µm → 1.34 µm period, 0.67 µm line. Improves only as √<em>λ</em>; a gap costs far more. Projection steppers reduce 4–5×.</li>
+        <li>Projection: NA = sin <em>θ</em>; <em>F</em> = 0.5<em>λ</em>/NA; DOF = 0.6<em>λ</em>/NA² (11.2). 0.1 µm at NA 0.5 → DOF 0.24 µm,
+        ±0.12 µm. Higher NA: <em>F</em> ∝ 1/NA, DOF ∝ 1/NA²; at a given <em>F</em>, DOF = 2.4<em>F</em>²/<em>λ</em>, so shorter <em>λ</em> gives more DOF. Literature form <em>k</em><sub>1</sub><em>λ</em>/NA,
+        <em>k</em><sub>2</sub><em>λ</em>/NA².</li>
+        <li>Short DOF → wafer planarity is critical → CMP (<a href="m13-cmp-process.html">M13</a>). Mix-and-match: newest tools only on critical levels; low-NA tools for
+        implant masks, whose thick resist exceeds a high-NA tool's DOF.</li>
+        <li>Wavelengths: g 436, i 365 (Hg lamp); KrF 248, ArF 193 (2003, below 0.13 µm), F₂ 157 nm (7.9 eV). DNQ/novolac failed at 248 nm:
+        it absorbs there, and the Hg lamp was too weak in the DUV.</li>
+        <li>Chemical amplification: photon → PAG → acid; PEB → acid-catalysed deprotection, 500–1000 reactions per photon (Wolf); 20–40
+        mJ/cm² against ≈ 100 mJ/cm². Costs: airborne base (≈ 10 ppb) neutralises the acid → T-tops; a 10-min delay in ≥ 5 ppb can shift the
+        CD 10–20 nm; linewidth sensitive to PEB temperature (16 → 2.6–1.8 nm/°C at 248 nm).</li>
+        <li>193 nm resists: acrylates (best dense lines, poor etch resistance), pure cyclic olefins (better etch resistance), COMAs (cheap);
+        not hydroxystyrene, whose aromatic rings absorb at 193 nm. Thinner, 400–600 nm. 157 nm: fluorinated hydrocarbons, siloxanes;
+        outgassing onto the lens. All CA resists: transparent, etch resistant, efficient photochemical solubility change.</li>
+        <li>Resist collapse: surface tension during the rinse dry pulls lines together; common above aspect ratio ≈ 4:1, so
+        <em>h</em><sub>max</sub> = 4<em>w</em>.</li>
+        <li>Reflections cause standing waves and reflective notching. ARCs attenuate or index-match; TAR on top, BARC beneath; BARC
+        suppresses &gt; 99 % at ≤ 0.25 µm. Quarter-wave: <em>nd</em> = <em>λ</em>/4, two-pass path <em>λ</em>/2 (11.4). Organic 60–120 nm,
+        inorganic PECVD SiON/SiN 30–50 nm, PVD TiN left in place; UARLs for damascene over reflective topography.</li>
+      </ul>
+    </div>
+
+    <h2>Where this page follows the class notes against the literature</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Point</th><th>Notes or lecture</th><th>Sources</th><th>On this page</th></tr></thead>
+      <tbody>
+        <tr><td>Organic BARCs with CA resists</td><td>Notes p. 94: "cannot be used with CA resist"</td><td>Wolf pp. 248–249: an acid–base incompatibility that causes intermixing; matched-chemistry organic BARCs developed for KrF and ArF</td><td>Notes' statement for graded answers; the matching requirement stated; flagged (§8.4)</td></tr>
+        <tr><td>The constants in <em>F</em> and DOF</td><td>Notes p. 98: <em>F</em> = 0.5<em>λ</em>/NA, DOF = 0.6<em>λ</em>/NA²</td><td>Plummer eqs. 5.4, 5.8: Rayleigh <em>k</em><sub>1</sub> = 0.61, practical 0.6–0.8; DOF = ±<em>λ</em>/(2NA²). Wolf: <em>k</em><sub>1</sub> &lt; 0.5 by 2001</td><td>Course constants for calculation; the general form and Plummer's example given (§3.2)</td></tr>
+        <tr><td>"DF"</td><td>Notes p. 98: "Depth of field DF" in the formula, "Depth of Focus" in the heading</td><td>The quantity at the wafer is the depth of focus (Plummer §5.2.2.2)</td><td>DOF throughout (§3.1)</td></tr>
+        <tr><td>A 100 nm source</td><td>Notes p. 98: "the required wavelength of the source is 100 nm"</td><td>No such source; the shortest the notes discuss are F₂ 157 nm and Ar₂* 126 nm (p. 101)</td><td>Treated as an illustration (§3.1)</td></tr>
+        <tr><td>The angle in NA = sin <em>θ</em></td><td>Notes p. 98: drawing marks <em>θ</em> across the whole cone; Lecture 19 uses 30° and sin 30° = 0.5</td><td>Plummer eq. 5.3: <em>θ</em> is the half-angle</td><td>Half-angle (§3.1)</td></tr>
+        <tr><td>BARC thickness</td><td>Notes p. 94: inorganic 30–50 nm</td><td>Wolf p. 249 agrees for inorganic films; Wolf p. 247 gives 50–80 nm for an index-matching film, which λ/(4<em>n</em>) at 248 nm reproduces only for <em>n</em> ≈ 0.8–1.2</td><td>Both given; the disagreement stated (§8.3)</td></tr>
+        <tr><td>ArF adoption</td><td>Notes p. 91: below 0.13 µm "in 2003"</td><td>Wolf p. 237: predicted for late 2002 or early 2003</td><td>Notes' date with Wolf's forecast (§4.1)</td></tr>
+        <tr><td>Shadow-printing formula</td><td>Recorded class of 23 Oct; not in the notes</td><td>Not in the course textbooks; Plummer eq. 5.12 gives the simpler √(<em>λg</em>). The same 3√ form appears in the microfabrication literature; its original textbook source was not confirmed</td><td>The lecture's form (§2.1)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>J. D. Plummer, M. D. Deal and P. B. Griffin, <i>Silicon VLSI Technology</i> (Prentice Hall, 2000), §5.2.3 and Fig. 5-31 with its text (process steps and conditions), developer list in §5.2.3.1. S. Wolf, <i>Silicon Processing for the VLSI Era</i>, Vol. 4 (Lattice Press, 2002), pp. 227, 229. The recorded class of 23 October (masks, tone, alignment, the misalignment example)</td></tr>
+      <tr><td>§2</td><td>The recorded class of 23 October (the shadow-printing formula and its board example). Plummer §5.2.2 and eq. 5.12 (contact, proximity and projection; 4×–5× reduction). Wolf pp. 293–294 (mask error transfer)</td></tr>
+      <tr><td>§3</td><td>Class notes pp. 97–98. Lecture 19 (the board example and the 30° angle). Plummer §5.2.2.2, eqs. 5.3–5.8 and the KrF example. Wolf eq. (7.1), pp. 238, 273–274, 296–297</td></tr>
+      <tr><td>§4</td><td>Class notes pp. 91–92. Wolf pp. 227–228, 233. Plummer §5.2.3.1–5.2.3.2. CODATA value of <em>hc</em></td></tr>
+      <tr><td>§5</td><td>Class notes p. 91. Wolf §6.1.1, pp. 228–235, Figs. 6-2, 6-3, Table 6-1; p. 240. Plummer §5.2.3.2</td></tr>
+      <tr><td>§6</td><td>Class notes pp. 91–93. Wolf §6.1.2–6.1.3, pp. 237–244. H. Ito, "Chemical amplification resists for microlithography," <i>Adv. Polym. Sci.</i> 172, 37 (2005) (aromatic absorption at 193 nm)</td></tr>
+      <tr><td>§7</td><td>Class notes pp. 91–92. Wolf pp. 236–237, 240, Fig. 6-10. The recorded class of 23 October</td></tr>
+      <tr><td>§8</td><td>Class notes pp. 93–95. Wolf §6.2, pp. 244–251, Figs. 6-13, 6-14. Plummer §5.5 (standing waves). E. Hecht, <i>Optics</i>, 5th ed. (Pearson, 2017), §9.7. D. E. Aspnes and A. A. Studna, <i>Phys. Rev. B</i> 27, 985 (1983). Lecture 19</td></tr>
+      <tr><td>§9</td><td>This page</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m10-source-drain-engineering.html"><span>Previous</span>M10 · Source–Drain Engineering</a>
+      <a class="next" href="m12-lithography-sources.html"><span>Next</span>M12 · Advanced Lithography II: Sources and Tricks</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

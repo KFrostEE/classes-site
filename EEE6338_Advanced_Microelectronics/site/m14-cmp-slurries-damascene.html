@@ -1,0 +1,1578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M14 · CMP: Slurries, Damascene and Endpoint — EEE6338</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE6338 Advanced Microelectronics</a>
+    <h2>M14 · CMP: Slurries, Damascene and Endpoint</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 14</p>
+    <h1>CMP: Slurries, Damascene and Endpoint</h1>
+    <p class="lede">
+      The slurries that polish oxide and metal and why their chemistries differ; how a metal is polished; the tools, pads and pad
+      conditioning; the tungsten-plug and copper damascene processes; dishing and erosion; how a polish is stopped at the right point;
+      how the wafer is cleaned afterwards; and why the oxide between copper lines is being replaced by low-k dielectrics.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> <a href="m13-cmp-process.html">M13</a>, <a href="m10-source-drain-engineering.html">M10</a> (sheet resistance), <a href="m11-lithography-resists.html">M11</a> (thin-film interference)</span>
+      <span><b>Read time</b> ~50 min</span>
+      <span><b>Sources</b> Class notes pp. 119–130 (Chapter 8); Lectures 22–24; Wolf Vol. 4 Chs. 8, 12, 14, 15, 16; Plummer Chs. 2, 11</span>
+    </div>
+
+    <p>
+      <a href="m13-cmp-process.html">M13</a> explained why a chip with several metal levels must be planarized and how chemical mechanical
+      polishing (CMP) removes oxide: the slurry water hydrates the oxide surface, the abrasive particles plow the softened layer off, and
+      a compliant pad presses harder on the high regions than on the low ones. That was the first of the two polishing jobs the notes
+      distinguish (p. 119): planarizing a homogeneous film. This module takes up the second job, removing a deposited metal from the
+      surface until it remains only in trenches and holes, which is how tungsten plugs and copper lines are made. Polishing a metal needs
+      a different chemistry, so the module begins with the slurries (§1) and the mechanism by which a metal is polished (§2), then the
+      tools and pads that carry the slurry (§3). The damascene processes follow (§4), with the dishing and erosion they suffer (§5), the
+      methods that decide when to stop polishing (§6) and the cleaning that follows every polish (§7). The last section (§8) takes the
+      thread Lecture 22 drew from CMP to interconnect delay: the capacitance of the oxide between lines, and the low-k dielectrics that
+      replace it.
+    </p>
+
+
+    <h2 id="s1">1 · Slurries</h2>
+
+    <p>
+      A slurry carries both halves of CMP: the abrasive that removes material mechanically and the chemistry that makes the surface
+      removable. Its composition is chosen for the film being polished, and the difference between an oxide slurry and a metal slurry
+      is the difference between the two removal mechanisms (M13 §6.3 and §2 below).
+    </p>
+
+    <h3 id="s1-1">1.1 What a slurry is and what it must do</h3>
+
+    <p>
+      A CMP slurry consists of small abrasive particles, generally inorganic oxides 10–100 nm across, suspended in an aqueous solution
+      (notes p. 124). The particles have roughly the same hardness as the film being polished. Reagents are added according to the
+      material: acids, bases, surfactants, buffers, corrosion inhibitors and complexing agents. The polishing rate depends on the
+      chemical composition and pH of the solution, on the concentration of solids in weight per cent, and on the shape, size and size
+      distribution of the particles (Wolf §8.6.3).
+    </p>
+
+    <p>
+      The notes state four requirements (pp. 122, 124): a high removal rate, good planarity, local film uniformity and high selectivity.
+      The first three are the metrics of <a href="m13-cmp-process.html#s5">M13 §5</a>. Selectivity is new. It compares how fast the
+      slurry removes the film being polished with how fast it removes another film that the polish exposes, usually the one beneath:
+    </p>
+
+    <div class="eq" id="eq-sel">
+      <div class="eq-body">
+        <div class="eq-math"><em>S</em><sub>A:B</sub> = <span class="frac"><span class="num">RR<sub>A</sub></span><span class="den">RR<sub>B</sub></span></span></div>
+        <div class="eq-num">(14.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>S</em><sub>A:B</sub> selectivity of material A to material B, written "<em>S</em>:1" (dimensionless) ·
+        RR<sub>A</sub>, RR<sub>B</sub> removal rates of A and B (<a href="m13-cmp-process.html#s5-1">M13 eq. 13.3</a>) in the same unit,
+        for example nm/min, measured under the same polishing conditions. A slurry with high selectivity of the polished film to the
+        film beneath lets the polish stop on the lower film.
+      </div>
+    </div>
+
+    <p>
+      The particles must also stay apart. Particles that stick together form agglomerates, and agglomerates produce microscratches in the
+      polished film (Wolf §8.6.3.2). What keeps them apart is surface charge. A particle immersed in a liquid becomes charged by
+      adsorbing ions from the solution, and an equal and opposite layer of ions gathers in the liquid next to it: an electric double
+      layer. The potential associated with the adsorbed charge is the zeta potential (ZP). Because the adsorbed ions come from the
+      solution, the zeta potential depends on its pH. Silica particles have a ZP of about −30 mV at pH 7, and it becomes strongly
+      negative as the pH rises above 7; alumina particles have a positive ZP in acidic solution (Wolf §8.7.1.1). Particles whose zeta
+      potentials have the same sign repel one another, but the repulsion must be strong enough to overcome the van der Waals attraction
+      that would otherwise bind them. A silica slurry is therefore stabilized by raising its pH, for example with NH₄OH, which makes
+      the zeta potential more strongly negative (Wolf §8.7.1.1).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 170" role="img" aria-labelledby="m14f1-t">
+      <title id="m14f1-t">Two negatively charged silica particles, each surrounded by a layer of positive counter-ions, repelling each other in an alkaline slurry</title>
+      <defs>
+        <marker id="m14f1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+        </marker>
+      </defs>
+      <circle cx="120" cy="82" r="34" class="dg-fill"/>
+      <circle cx="120" cy="82" r="50" class="dg-guide" fill="none"/>
+      <circle cx="300" cy="82" r="34" class="dg-fill"/>
+      <circle cx="300" cy="82" r="50" class="dg-guide" fill="none"/>
+      <g class="dg-label-sm" text-anchor="middle">
+        <text x="120" y="70">−  −</text><text x="104" y="86">−</text><text x="136" y="86">−</text><text x="120" y="102">−  −</text>
+        <text x="300" y="70">−  −</text><text x="284" y="86">−</text><text x="316" y="86">−</text><text x="300" y="102">−  −</text>
+        <text x="120" y="38">+</text><text x="76" y="86">+</text><text x="164" y="86">+</text><text x="120" y="134">+</text>
+        <text x="300" y="38">+</text><text x="256" y="86">+</text><text x="344" y="86">+</text><text x="300" y="134">+</text>
+      </g>
+      <line x1="176" y1="82" x2="196" y2="82" class="dg-acc" stroke-width="2" marker-start="url(#m14f1-a)"/>
+      <line x1="224" y1="82" x2="244" y2="82" class="dg-acc" stroke-width="2" marker-end="url(#m14f1-a)"/>
+      <text x="210" y="70" class="dg-label-sm" text-anchor="middle">repel</text>
+      <text x="120" y="158" class="dg-label-sm" text-anchor="middle">silica, ZP &lt; 0</text>
+      <text x="300" y="158" class="dg-label-sm" text-anchor="middle">pH 9–11</text>
+      <text x="210" y="20" class="dg-label-sm" text-anchor="middle">adsorbed charge (−) and counter-ion layer (+)</text>
+      </svg>
+      <figcaption>The electric double layer, schematic. Each silica particle carries negative adsorbed charge, balanced by a layer of
+      positive ions in the liquid around it. Two particles of the same sign of zeta potential repel; in an alkaline silica slurry the potential is negative enough that the
+      repulsion overcomes the van der Waals attraction and the particles do not agglomerate. The same physics decides whether a particle sticks to the wafer after polishing (§7).</figcaption>
+    </figure>
+
+    <h3 id="s1-2">1.2 Oxide slurries</h3>
+
+    <p>
+      The oxide slurry is the silica slurry of <a href="m13-cmp-process.html#s6-3">M13 §6.3</a>: fumed silica suspended in an alkaline
+      solution of potassium hydroxide (KOH) or ammonium hydroxide (NH₄OH) diluted in deionized water, with the pH held at 9–11 (notes
+      p. 125). Wolf adds the detail. Fumed silica is made as a dry powder by oxidizing silicon tetrachloride (SiCl₄) in a flame, and must
+      be dispersed and blended into the slurry. Colloidal silica is grown directly in solution by hydrolysis of sodium silicate, followed
+      by ion exchange to remove the sodium; it is more stable, less prone to agglomeration and, with its more uniform particle size, less
+      likely to scratch, and it has been replacing fumed silica in STI, ILD and polysilicon polishing. The solids content is 5–35 wt%.
+      Holding the pH at 9–11 minimizes agglomeration (§1.1), and the alkaline chemical also raises the oxide removal rate. The rate
+      increases with pH, with particle concentration and with particle size (Wolf §8.6.3.1). A buffering agent keeps the pH constant
+      through the slurry volume and over time.
+    </p>
+
+    <p>
+      Two other abrasives appear in the notes (p. 125). <b>Ceria</b> (CeO₂) slurries have been introduced for STI and ILD polishing.
+      Ceria removes oxide faster than silica and at a much lower pH, 6–7, and a ceria slurry polishes oxide up to 250 times faster than
+      silicon nitride. That oxide-to-nitride selectivity is why ceria was adopted for STI, where the oxide filling the trenches is
+      polished down to a nitride layer (<a href="m15-shallow-trench-isolation.html#s3-3">M15</a>). Ceria is difficult to make in small particles, and silica is sometimes blended in to keep
+      the ceria particles suspended (Wolf §8.6.3.1). <b>Zirconia</b> (ZrO₂) slurries, harder than silica but softer than alumina, have
+      been investigated for polishing low-k dielectrics (§8).
+    </p>
+
+    <h3 id="s1-3">1.3 Metal slurries</h3>
+
+    <p>
+      A metal slurry has more constituents than an oxide slurry (notes p. 125; Wolf §8.6.3.2). It always contains:
+    </p>
+    <ul>
+      <li>an <b>oxidizer</b>, such as ferric nitrate (Fe(NO₃)₃) or hydrogen peroxide (H₂O₂), which converts the metal surface into its
+      oxide (§2);</li>
+      <li>a <b>buffer</b> agent, which holds the pH.</li>
+    </ul>
+    <p>It may also contain:</p>
+    <ul>
+      <li>a <b>surfactant</b>, which keeps the particles dispersed;</li>
+      <li>a <b>complexing agent</b>, a compound that binds dissolved metal ions and so helps carry the metal away from the surface;</li>
+      <li>a <b>corrosion inhibitor</b>, such as benzotriazole (BTA) in copper slurries, which protects the copper surface so that an
+      acidic slurry can be used;</li>
+      <li><b>additives</b> that change the selectivity to other films.</li>
+    </ul>
+    <p>
+      The abrasive is usually alumina (Al₂O₃). Alumina slurries give higher metal removal rates and higher selectivity to the oxide
+      interlevel dielectric, more than 20:1 metal to oxide (Wolf). Their pH is low: 1–5 for tungsten slurries and 3–9 for copper slurries
+      (notes p. 125). Alumina particles have traditionally shown poor colloidal stability and so form the agglomerates that scratch, and
+      the oxidizer is often kept apart from the abrasive until use, for colloidal stability or shelf life (Wolf).
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th></th><th>Oxide slurry</th><th>Metal slurry (W, Cu)</th></tr></thead>
+      <tbody>
+        <tr><td>Abrasive</td><td>Fumed or colloidal silica; ceria for STI and ILD</td><td>Alumina, usually</td></tr>
+        <tr><td>Solution</td><td>KOH or NH₄OH in DI water; few additives (alkali, buffer)</td><td>Oxidizer (ferric nitrate, H₂O₂) and buffer; surfactant, complexing agent, inhibitor (BTA for Cu), selectivity additives</td></tr>
+        <tr><td>pH</td><td>9–11 (ceria 6–7)</td><td>1–5 (W); 3–9 (Cu)</td></tr>
+        <tr><td>What the chemistry does</td><td>Water hydrates and softens the oxide network (M13 §6.3)</td><td>Oxidizer converts the metal surface into a softer oxide that passivates the rest (§2)</td></tr>
+        <tr><td>Selectivity</td><td>Ceria: oxide to nitride up to 250:1</td><td>Metal to oxide &gt; 20:1 (alumina); W to SiO₂ e.g. 120:1</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      The two chemistries differ because the two removal mechanisms differ. Oxide is removed by hydration: water enters the strained
+      oxide network and softens it, and the alkaline solution speeds the attack (M13 §6.3). A metal cannot be hydrated in that way. It is
+      polished by converting its surface into an oxide that is softer than the metal and that the abrasive can remove, which needs an
+      oxidizer and a pH at which that oxide forms and stays on the surface (§2). Wolf attributes the fairly high metal-to-oxide
+      selectivity that can be reached, for example 120:1 for tungsten to SiO₂, to the larger part the slurry chemistry plays in metal
+      CMP than in dielectric CMP (§8.5.4).
+    </p>
+
+    <p>
+      An automatic feed system delivers the slurry so that the pad is wetted uniformly (notes p. 124). The slurry dries quickly once a
+      wafer leaves the pad, and dried slurry is very difficult to remove, so wafers are rinsed while still on the pad and moved at once
+      into wet cleaning tanks (notes p. 124; Wolf §8.6.3). A metal polish removes two materials, the metal and the barrier beneath it,
+      and one slurry cannot remove both without excessive dishing; production uses one slurry for each (Wolf §8.6.3.3), a point taken
+      up in §5.
+    </p>
+
+    <p>
+      Lecture 24 named a specific copper slurry: hydrogen peroxide and glycine in water, with silica particles. The peroxide oxidizes the
+      copper surface, the abrasive removes the oxide, and the fresh copper exposed is oxidized again, the cycle of §2. Glycine is an amino
+      acid that binds copper ions in solution, a complexing agent in the sense of the list above; glycine–peroxide slurries for copper are
+      documented in the literature, with alumina as the abrasive in the work cited (S. Aksu and F. M. Doyle, 201st Meeting of the
+      Electrochemical Society, abstract 379; abstract read). For the tantalum barrier the lecture had the peroxide form an oxide, Ta₂O₅,
+      that silica or alumina particles remove; Wolf regards tantalum, harder and more inert than copper, as removed mainly by abrasion
+      (<a href="#s5-2">§5.2</a>). The lecture's pH ranges, about 2–4 for tungsten and 3–6 for copper, lie inside the notes' 1–5 and 3–9.
+      It gave two rules for every slurry: the particles should be similar in hardness to the film or harder, which agrees with the notes'
+      "roughly the same hardness" (§1.1); and the chemicals should be of high purity, about 99.9 % in the lecture's figure. Its definition
+      of a surfactant is the standard one, a substance that lowers the surface tension of the liquid in which it is dissolved.
+    </p>
+    <div class="box warn">
+      <p><b>Ceria is not harder than silica.</b> Lecture 24 said, hesitantly, that ceria is harder than silicon dioxide. It is generally
+      described as softer, which is one reason it scratches less (US Patent 6,645,265, background). Its higher removal rate on oxide is
+      chemical: Cook traced it to the attraction between the ceria particle and the oxide surface (Wolf §8.5.2.1;
+      <a href="m13-cmp-process.html#s6-3">M13 §6.3</a>), not to hardness.</p>
+    </div>
+
+    <details class="check">
+      <summary>A ceria slurry clears a 400 nm oxide overburden from the nitride of an STI structure, and the polish runs on for a further
+        20 % of that clearing time to be sure every die is clear. How much nitride is lost during the overpolish? Why would a silica
+        slurry at pH 10 be a poor choice for this step, and why is it held at pH 10 in the first place?</summary>
+      <div class="answer"><p>The overpolish lasts 20 % of the time needed to remove 400 nm of oxide, so at the oxide rate it would remove
+        0.20 × 400 = 80 nm of oxide. On the exposed nitride the rate is 250 times lower (eq. 14.1), so the nitride loss is 80/250 =
+        0.32 nm. A silica slurry polishes nitride far less selectively than ceria; the sources give ceria's 250:1 as the reason it was
+        adopted for STI, so silica would thin the nitride stop layer much more during the same overpolish. Silica is held at pH 9–11
+        because at high pH its particles carry a strongly negative zeta potential and repel one another, which prevents the agglomerates
+        that scratch, and because the alkaline solution raises the oxide removal rate.</p></div>
+    </details>
+
+
+    <h2 id="s2">2 · How a metal is polished</h2>
+
+    <p>
+      A metal film is polished by repeatedly converting its surface into a soft oxide and scraping the oxide off where the pad touches.
+      The notes (p. 121) give the three-step model proposed by Kaufman, and Wolf (§8.5.4) gives the same model with the conditions that
+      make it work. The same model explains why a metal slurry polishes the high regions of a metal film selectively and why a metal
+      polish has a sharp end.
+    </p>
+
+    <h3 id="s2-1">2.1 Kaufman's three steps</h3>
+
+    <p>
+      The notes write the reaction for tungsten as W, with an oxidizer such as Fe(NO₃)₃, giving WO₃ and H₂O. It is a schematic of the
+      step, not a balanced equation. The three steps are these (notes p. 121; Wolf §8.5.4):
+    </p>
+    <ol>
+      <li><b>Passivation.</b> The oxidizing power of the solution forms a passivation layer, an oxide of the metal, on both the up-areas
+      and the down-areas of the metal film.</li>
+      <li><b>Abrasion of the up-areas.</b> The freshly formed oxide is softer than the metal and is removed mechanically from the
+      up-areas by the pad and abrasive. The down-areas are not touched, because the pad is only partly flexible
+      (<a href="m13-cmp-process.html#s7-1">M13 §7.1</a>).</li>
+      <li><b>Regrowth.</b> The corrosive slurry regrows the passive film on the up-areas, while the passivation film on the down-areas
+      keeps the corrosive species away from the metal there.</li>
+    </ol>
+    <p>
+      The cycle repeats, so the up-areas are corroded and polished away while the down-areas stay protected, until the pad's flexibility
+      lets it reach the down-areas. From that point the planarization depends on the hardness of the pad and the downforce on the wafer
+      (notes p. 121).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m14f2-t">
+      <title id="m14f2-t">Kaufman's three steps on a stepped metal film: oxide forms everywhere, the pad removes it from the high region, the oxide reforms there</title>
+      <g>
+        <path d="M10,60 L60,60 L72,40 L130,40 L130,80 L10,80 Z" class="dg-fill"/>
+        <path d="M10,60 L60,60 L72,40 L130,40" class="dg-acc" stroke-width="3" fill="none"/>
+        <text x="70" y="98" class="dg-label-sm" text-anchor="middle">1 · oxide forms</text>
+        <text x="70" y="112" class="dg-label-sm" text-anchor="middle">on up- and down-areas</text>
+      </g>
+      <g>
+        <path d="M150,60 L200,60 L212,40 L270,40 L270,80 L150,80 Z" class="dg-fill"/>
+        <path d="M150,60 L200,60 L206,50" class="dg-acc" stroke-width="3" fill="none"/>
+        <rect x="200" y="22" width="80" height="12" class="dg-soft"/>
+        <text x="240" y="18" class="dg-label-sm" text-anchor="middle">pad</text>
+        <circle cx="236" cy="38" r="2.5" class="dg-ink"/><circle cx="252" cy="38" r="2.5" class="dg-ink"/>
+        <text x="210" y="98" class="dg-label-sm" text-anchor="middle">2 · pad and abrasive</text>
+        <text x="210" y="112" class="dg-label-sm" text-anchor="middle">remove it from up-areas</text>
+      </g>
+      <g>
+        <path d="M290,60 L340,60 L352,40 L410,40 L410,80 L290,80 Z" class="dg-fill"/>
+        <path d="M290,60 L340,60 L352,40 L410,40" class="dg-acc" stroke-width="3" fill="none"/>
+        <text x="350" y="98" class="dg-label-sm" text-anchor="middle">3 · oxide reforms;</text>
+        <text x="350" y="112" class="dg-label-sm" text-anchor="middle">down-areas stay protected</text>
+      </g>
+      <path d="M30,150 L130,150 L150,135 L390,135 L390,170 L30,170 Z" class="dg-fill"/>
+      <path d="M30,150 L130,150" class="dg-acc" stroke-width="3"/>
+      <path d="M150,135 L390,135" class="dg-acc" stroke-width="3" stroke-dasharray="4 3"/>
+      <text x="210" y="190" class="dg-label-sm" text-anchor="middle">repeated: the up-area recedes, the down-area does not, until the pad reaches it</text>
+      <text x="80" y="144" class="dg-label-sm" text-anchor="middle">down-area</text>
+      <text x="270" y="129" class="dg-label-sm" text-anchor="middle">up-area</text>
+      </svg>
+      <figcaption>After notes p. 121 and Wolf Fig. 8-29, schematic. Solid accent line: the passivating oxide; grey: the metal. Each cycle
+      removes the oxide only where the pad presses (step 2), and the slurry regrows it there (step 3). The down-area keeps its oxide and
+      is not attacked, so the step shrinks.</figcaption>
+    </figure>
+
+    <h3 id="s2-2">2.2 The balance the slurry must strike</h3>
+
+    <p>
+      The model works only if the oxide has the right properties. It must be soft enough for the pad and abrasive to remove it, yet hard
+      and impermeable enough to stop the slurry from etching the metal beneath; and the abrasive must be about as hard as the material
+      it removes (Wolf §8.5.4). The slurry may also dissolve the metal oxide it forms, so oxidation and etching must be balanced. If
+      etching dominates, the metal is etched isotropically, from the down-areas as fast as from the up-areas, and no planarization
+      results.
+    </p>
+
+    <p>
+      Which oxide forms, and whether it stays on the surface or dissolves, depends on the pH of the solution and on its electrochemical
+      potential, the tendency of the solution to remove electrons from the metal. A Pourbaix diagram maps the stable forms of a metal in
+      water on these two axes. The diagram for tungsten shows that to form an undissolved, protective WO₃ layer the solution should be below about pH 4
+      and at a slightly positive potential, which is why most tungsten slurries run at pH 2–3 (Wolf §8.5.4), inside the 1–5 the notes
+      give for alumina tungsten slurries. The condition is a design guide rather than a hard limit: tungsten slurries at IBM originally
+      used potassium ferricyanide at a pH of about 5.0–6.5 (Wolf §8.11.2), outside that window; because it is highly toxic it has
+      been replaced, most often by ferric nitrate, potassium iodate (KIO₃) or hydrogen peroxide (Wolf §8.11.2).
+    </p>
+
+    <h3 id="s2-3">2.3 Selectivity and overpolish</h3>
+
+    <p>
+      Because the chemistry plays a larger part than in an oxide polish, a metal slurry can be made highly selective: for example
+      120:1 for tungsten against silicon dioxide (notes p. 122; Wolf §8.5.4). Selectivity matters because a metal polish, unlike an oxide polish, must go on past the
+      moment the metal clears. An oxide polish removes a set thickness and stops with oxide still everywhere; a metal polish must remove
+      every trace of metal from the field, the flat oxide surface between features, or neighbouring lines remain shorted. Some
+      overpolish is therefore required, and the field oxide is exposed during it (notes p. 122). The challenge is to keep the overpolish
+      long enough to clear the metal everywhere and short enough to limit the oxide lost (Wolf §8.5.4).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Oxide lost during a tungsten overpolish</div>
+      <div class="ex-body">
+        <p><b>Given</b> a tungsten slurry removing W at 350 nm/min with a selectivity of 120:1 to SiO₂; an overpolish of 30 s after the
+        field has cleared. <b>Find</b> the oxide removed during the overpolish, and the same for a slurry with the 20:1 selectivity that
+        Wolf gives as the lower bound for alumina metal slurries.</p>
+        <p><b>Plan.</b> During the overpolish the slurry acts on exposed oxide, so the oxide is removed at the tungsten rate divided by
+        the selectivity (eq. 14.1). Multiply by the time. The 350 nm/min is the lower end of the tungsten rates Wolf quotes ("exceeding 350 nm/min", §8.11.2); Wolf gives the 120:1 in
+        another passage, so the pair is a constructed case, and the 30 s is chosen for the example.</p>
+        <p class="ex-step"><b>Oxide removal rate.</b> RR<sub>ox</sub> = RR<sub>W</sub>/<em>S</em> = 350/120 = 2.92 nm/min.</p>
+        <p class="ex-step"><b>Oxide removed.</b> 30 s = 0.5 min, so 2.92 nm/min × 0.5 min = 1.46 nm.</p>
+        <p class="ex-step"><b>At 20:1.</b> RR<sub>ox</sub> = 350/20 = 17.5 nm/min, and 17.5 × 0.5 = 8.75 nm, six times as much.</p>
+        <p class="ex-answer">1.46 nm of oxide at 120:1; 8.75 nm at 20:1. Check: the loss scales inversely with selectivity, and 120/20 = 6
+        = 8.75/1.458.</p>
+      </div>
+    </div>
+
+    <p>
+      A metal polish is also easier to stop than an oxide polish. When the metal over the field clears, the oxide is exposed, and the
+      reflectivity, the temperature and the friction at the wafer surface all change, so the end of a metal polish gives a clear signal
+      (notes p. 122). The best metal process has a clear endpoint signal followed by a short overpolish (§6).
+    </p>
+
+    <details class="check">
+      <summary>A copper slurry removes Cu at 350 nm/min with a selectivity of 150:1 to the oxide beneath. How much oxide does a 45 s
+        overpolish remove? A process engineer doubles the oxidizer concentration to raise the copper removal rate. What can go wrong,
+        in terms of Kaufman's model?</summary>
+      <div class="answer"><p>RR<sub>ox</sub> = 350/150 = 2.33 nm/min; 45 s = 0.75 min, so the oxide loss is 2.33 × 0.75 = 1.75 nm. What
+        can go wrong is the balance between oxidation and etching on which Kaufman's model depends. More oxidizer does not by itself
+        mean faster removal: whether the film formed protects the metal or dissolves depends on the pH and the complexing agent as well
+        (the Pourbaix argument of §2.2). If the solution comes to dissolve the oxide, or the metal, faster than the passivating film
+        re-forms, the down-areas are no longer protected, the copper is etched there as fast as on the up-areas, the etch is isotropic
+        and the step is not planarized (Wolf §8.5.4). Wolf makes a related remark about the barrier step: an aggressive oxidizer chosen
+        to attack the tantalum would risk polishing through the copper (§8.11.3).</p></div>
+    </details>
+
+
+    <h2 id="s3">3 · Tools, pads and pad conditioning</h2>
+
+    <p>
+      <a href="m13-cmp-process.html#s4">M13 §4</a> described the rotary polisher. A complete CMP process needs more than the polisher:
+      the notes list seven kinds of tool and consumable (p. 123): the polishing tools, the slurries, the slurry distribution system, the
+      pads, the endpoint detection systems (§6), the cleaning tools (§7) and the metrology tools. This section covers the polishers, the
+      wafer carrier, the pads and the conditioning that keeps a pad working.
+    </p>
+
+    <h3 id="s3-1">3.1 Polishers and carriers</h3>
+
+    <p>
+      Four configurations of polishing tool are in use (notes p. 123):
+    </p>
+    <ul>
+      <li><b>Rotary:</b> the table (platen) and the carrier both rotate (M13 §4).</li>
+      <li><b>Orbital:</b> the carrier rotates, and the table moves in an orbital path.</li>
+      <li><b>Linear:</b> the carrier rotates, and the table, a continuous belt, moves in a straight line.</li>
+      <li><b>Fixed table:</b> the table is stationary, and the carrier moves in an orbital path.</li>
+    </ul>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 130" role="img" aria-labelledby="m14f3-t">
+      <title id="m14f3-t">Top views of the four polisher configurations: rotary, orbital, linear belt and fixed table</title>
+      <defs>
+        <marker id="m14f3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+        </marker>
+      </defs>
+      <g>
+        <circle cx="52" cy="58" r="40" class="dg-soft"/>
+        <circle cx="66" cy="50" r="14" class="dg-fill"/>
+        <path d="M22,30 A40,40 0 0,1 82,30" class="dg-acc" fill="none" stroke-width="1.6" marker-end="url(#m14f3-a)"/>
+        <path d="M58,40 A14,14 0 0,1 78,44" class="dg-line" fill="none" stroke-width="1.4"/>
+        <text x="52" y="118" class="dg-label-sm" text-anchor="middle">rotary</text>
+      </g>
+      <g>
+        <circle cx="157" cy="58" r="38" class="dg-soft"/>
+        <circle cx="157" cy="58" r="14" class="dg-fill"/>
+        <circle cx="157" cy="58" r="44" class="dg-guide" fill="none" stroke-dasharray="3 3"/>
+        <text x="157" y="118" class="dg-label-sm" text-anchor="middle">orbital table</text>
+      </g>
+      <g>
+        <rect x="222" y="34" width="86" height="48" rx="6" class="dg-soft"/>
+        <circle cx="265" cy="58" r="14" class="dg-fill"/>
+        <line x1="226" y1="92" x2="304" y2="92" class="dg-acc" stroke-width="1.6" marker-end="url(#m14f3-a)"/>
+        <text x="265" y="118" class="dg-label-sm" text-anchor="middle">linear belt</text>
+      </g>
+      <g>
+        <rect x="330" y="20" width="80" height="76" class="dg-soft"/>
+        <circle cx="370" cy="58" r="14" class="dg-fill"/>
+        <circle cx="370" cy="58" r="22" class="dg-acc" fill="none" stroke-dasharray="3 3"/>
+        <text x="370" y="118" class="dg-label-sm" text-anchor="middle">fixed table</text>
+      </g>
+      </svg>
+      <figcaption>The four configurations of notes p. 123, top view, schematic. Light: the pad on its table; dark: the wafer in its
+      carrier, which rotates in the first three; in the fixed-table tool the sources say only that it moves in an orbital path. Dashed circles: an orbital path, of the table (second panel) or of the carrier (fourth).</figcaption>
+    </figure>
+
+    <p>
+      The notes name two design elements of improved wafer carriers (pp. 123–124). A <b>retaining ring</b> around the wafer keeps it from
+      slipping out of the carrier pocket under high downforce and high speed. <b>Wafer levelling</b> is achieved by backing the wafer
+      with a compressible film (a film-backed carrier), with a pneumatic bladder, or with an air bearing sealed by a lip. Each backing
+      spreads the downforce over the back of the wafer. Uniform pressure matters because, by Preston's law
+      (<a href="m13-cmp-process.html#s6-1">M13 §6.1</a>), the removal rate at each point is proportional to the pressure there, so any
+      local excess of pressure becomes a local excess of removal, a within-wafer non-uniformity (M13 §5.3).
+    </p>
+
+    <h3 id="s3-2">3.2 Pads</h3>
+
+    <p>
+      Polishing pads are made of polyurethane in one of two forms (notes p. 126; Wolf §8.6.6):
+    </p>
+    <ul>
+      <li><b>Polyurethane-impregnated felts.</b> The fibre structure of the felt makes them porous, so they carry a larger volume of water
+      or slurry. They are soft and compressible. Rodel's Suba IV, a felt impregnated with polyurethane, is the standard example.</li>
+      <li><b>Closed-cell polyurethane</b>, cast and sliced, with a filler to set the hardness. These pads are hard and have low
+      compressibility. Rodel's IC-1000 is micro-porous, with pores about 30 % of its volume, and has been the most widely used pad for
+      oxide CMP.</li>
+    </ul>
+    <p>
+      A hard pad bridges the down-areas and gives better planarity within a die; a soft pad follows the long-range shape of the wafer
+      and gives more uniform removal across it. A hard IC-1000 pad mounted on a soft Suba IV pad, a stacked pad, is the usual compromise
+      (Wolf §8.6.6; <a href="m13-cmp-process.html#s7-2">M13 §7.2</a>). The pad surface is cut with concentric grooves or punched with
+      perforations, 1 mm wide and 250 µm deep, that form channels to carry slurry between the pad and the wafer; the pores of the surface
+      also carry slurry (Wolf).
+    </p>
+
+    <h3 id="s3-3">3.3 Glazing and conditioning</h3>
+
+    <p>
+      The roughness and porosity of the pad surface determine three things (notes p. 126): how slurry reaches the wafer, how removed
+      material is carried away from it, and how much of the pad touches the wafer. If the surface is not kept at its optimum roughness,
+      the removal rate drifts. During polishing the pad surface deforms plastically, becomes smoother, and its pores fill with pad
+      material. This is <b>glazing</b>. A glazed pad delivers less slurry to the wafer, so the polishing rate falls (notes p. 126).
+      The fall is roughly logarithmic in time; Wolf gives an example in which a new pad's removal rate dropped from 210 nm/min to
+      75 nm/min after only 50 wafers (§8.6.7). Large waste particles can also become embedded in the pad and scratch the wafer.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 150" role="img" aria-labelledby="m14f4-t">
+      <title id="m14f4-t">Pad surface in cross-section: new with open pores, glazed with pores closed, conditioned with pores reopened by diamond grit</title>
+      <g>
+        <path d="M10,60 L130,60 L130,110 L10,110 Z" class="dg-fill"/>
+        <path d="M24,60 q6,14 12,0 M52,60 q6,16 12,0 M82,60 q6,14 12,0 M108,60 q6,16 12,0" class="dg-soft" stroke-width="1"/>
+        <path d="M24,60 q6,14 12,0 M52,60 q6,16 12,0 M82,60 q6,14 12,0 M108,60 q6,16 12,0" class="dg-line" fill="none" stroke-width="1"/>
+        <text x="70" y="132" class="dg-label-sm" text-anchor="middle">new: pores open</text>
+      </g>
+      <g>
+        <path d="M150,60 L270,60 L270,110 L150,110 Z" class="dg-fill"/>
+        <line x1="150" y1="60" x2="270" y2="60" class="dg-acc" stroke-width="2.5"/>
+        <text x="210" y="132" class="dg-label-sm" text-anchor="middle">glazed: smooth, pores filled</text>
+      </g>
+      <g>
+        <path d="M290,60 L410,60 L410,110 L290,110 Z" class="dg-fill"/>
+        <path d="M300,60 l4,8 l4,-8 M318,60 l4,10 l4,-10 M338,60 l4,8 l4,-8 M356,60 l4,10 l4,-10 M376,60 l4,8 l4,-8 M394,60 l4,10 l4,-10" class="dg-line" fill="none" stroke-width="1"/>
+        <rect x="316" y="26" width="70" height="14" rx="3" class="dg-soft"/>
+        <path d="M322,40 l3,6 l3,-6 M336,40 l3,6 l3,-6 M350,40 l3,6 l3,-6 M364,40 l3,6 l3,-6 M378,40 l3,6 l3,-6" class="dg-ink" stroke-width="1"/>
+        <text x="351" y="20" class="dg-label-sm" text-anchor="middle">diamond-grit disk</text>
+        <text x="350" y="132" class="dg-label-sm" text-anchor="middle">conditioned: micro-scratches</text>
+      </g>
+      </svg>
+      <figcaption>Notes p. 126, schematic. Polishing smooths the pad and closes its pores (glazing), so less slurry reaches the wafer and
+      the removal rate falls. A disk set with diamond grit, swept over the pad, cuts micro-scratches that reopen the surface.</figcaption>
+    </figure>
+
+    <p>
+      <b>Pad conditioning</b> restores the surface. A disk embedded with diamond grit is swept back and forth across the rotating pad, and
+      the micro-scratches it cuts reopen the pores (notes p. 126). Wolf gives the detail (§8.6.7). Hard cast pads such as the IC-1000
+      are conditioned with 80–120 grit diamonds set in a nickel plate; a nylon brush is enough for soft pads. Diamonds can fracture and
+      break away; an 80-grit diamond is 100–200 µm across, so a loose one embedded in the pad scratches the wafer severely. Chemically
+      bonding the diamonds, collecting loose ones in the pad grooves and washing the pad with a high-pressure spray between wafers reduce
+      the problem. Many polishers condition the pad continuously during polishing, so that every wafer meets a pad in the same state,
+      which makes the removal rate more uniform from wafer to wafer (WTWNU, M13 §5.3). A new pad also needs a break-in cycle on dummy
+      wafers before its removal rate settles. The lectures gave two different conditioning frequencies (Lecture 21: every one or two
+      wafers; Lecture 22: every three or four); the notes give none.
+    </p>
+
+    <p>
+      <b>Slurry-free pads</b>, also called fixed-abrasive pads, carry the abrasive in the pad itself, as a precisely micro-replicated
+      abrasive surface on a two-component sub-pad, and are used with a particle-free solution (notes p. 127; Wolf §8.6.8): a simple
+      basic solution for dielectrics, an oxidizing solution at pH 2–7 for metals. The notes list their benefits: a higher degree of
+      planarization; a lower cost of ownership, since consumables cost less; no slurry handling and no slurry distribution system; and
+      none of the problems of slurry stability and solution variation.
+    </p>
+
+    <details class="check">
+      <summary>Over a lot of 50 wafers polished on a new IC-1000 pad without conditioning, the blanket removal rate falls steadily. What is
+        happening to the pad, why does it lower the rate, and what two changes to the process fix it? Why is a soft felt pad mounted
+        under the IC-1000?</summary>
+      <div class="answer"><p>The pad is glazing: its surface deforms plastically, smooths and fills its own pores, so less slurry is
+        carried to the wafer and less removed material is carried away, and the rate falls (Wolf's example: 210 to 75 nm/min in 50
+        wafers). Conditioning with a diamond-grit disk reopens the pores by cutting micro-scratches; doing it continuously in situ keeps
+        the pad in the same state for every wafer, and a break-in cycle on dummy wafers brings a new pad to a steady rate before product
+        is polished. The soft Suba IV underneath lets the hard pad follow the long-range shape of the wafer, which improves uniformity
+        across the wafer, while the hard IC-1000 surface still bridges the down-areas within a die and keeps the planarization.</p></div>
+    </details>
+
+
+    <h2 id="s4">4 · Damascene: tungsten plugs and copper lines</h2>
+
+    <p>
+      Aluminium lines are made by depositing a blanket film and etching away what is not wanted, a subtractive process (Wolf §12.1.1).
+      Copper conducts better than aluminium but is difficult to etch by plasma (Plummer Ch. 2), so copper lines are made the other
+      way round: the pattern is etched into the dielectric, metal is deposited to overfill it, and CMP removes the metal from the surface
+      so that it remains only in the pattern. This is the second polishing job of the notes (p. 119; M13 §7.3). It is called the
+      damascene process, after the ancient practice of inlaying metal in wood or ceramics that originated in Damascus (Wolf §12.1.4).
+      Elsewhere Wolf words it as "metal inlays, as developed by the artisans of Damascus in the Middle Ages" (§15.2), and damascening, in
+      the reference definition, is the inlaying of one metal into another, typically gold or silver into darkened steel; "wood or
+      ceramics" is the odd version. Lecture 24 derived the name from a rain-water drainage system in Damascus, which no reference
+      supports.
+    </p>
+
+    <h3 id="s4-1">4.1 Tungsten plugs</h3>
+
+    <p>
+      The tungsten plug is itself a damascene step (Wolf §12.1.4). Contact and via holes in the oxide are lined with a TiN/Ti film,
+      filled with tungsten deposited by CVD, and the tungsten and liner are polished off the field, leaving a plug in each hole (Wolf
+      §8.11.2). The aluminium lines above are still patterned by etching, so this W-plug/Al structure combines a single damascene step for
+      the plugs with a subtractive etch for the lines (Wolf §12.1.4). Tungsten CMP replaced an earlier tungsten etchback for the same
+      job; it requires a planar surface before the vias are formed, and Wolf reports higher yields for it, attributed to fewer defects
+      and better plug shape.
+    </p>
+    <p>
+      Lecture 24 drew the contact plug in more detail. The contact window is opened in the oxide over an n⁺ source or drain and lined
+      with titanium or titanium nitride (the lecture's alternatives; the stack above is Wolf's TiN over Ti). Where titanium touches the
+      silicon at the bottom of the window, an anneal forms titanium silicide, a low-resistance contact; on the oxide sidewalls it does not
+      react (Plummer Ch. 11). It is the reaction of the self-aligned silicide of
+      <a href="m10-source-drain-engineering.html#s4">M10 §4</a>, confined here to the contact opening. Tungsten is deposited by CVD from
+      WF₆ and polished back with enough overpolish to leave no Ti or TiN on the field. The lecture added that the contact openings are
+      round, not square, and that in a copper-interconnect chip the tungsten contacts remain while every interconnect level above them
+      is copper: the W-plug/Al structure above is the earlier generation.
+    </p>
+
+    <h3 id="s4-2">4.2 Copper single damascene, step by step</h3>
+
+    <p>
+      Lecture 23 drew the copper damascene sequence at the board, and the notes (p. 129) draw a single damascene process. The steps:
+    </p>
+    <ol>
+      <li><b>Trench.</b> A trench is etched in the oxide where the line is to run, about 1 µm deep in the lecture's example. Lecture 23 added that if the oxide is a doped glass, its sharp corners can first be rounded by reflow, so that the barrier
+      sputtered into the trench is continuous over them. That is limited to the dielectric under the first metal: reflow needs
+      850–900 °C, and once metal is on the wafer later steps stay far below that (<a href="m13-cmp-process.html#s3-1">M13 §3.1</a>;
+      Wolf classes reflow as a pre-metal technique). A copper trench lies over metal, so its corner profile has to come from the
+      etch.</li>
+      <li><b>Barrier.</b> A thin barrier film of Ta, TaN, Ti or TiN is deposited by sputtering over the whole surface, trench walls and
+      floor included; Lecture 23 put it at 200–300 Å. Lecture 24 gave 100–200 Å (Lecture 23's own words had spanned 100–300 Å), and
+      about 1000 Å (0.1 µm) for the copper seed, as Lecture 23 did. The barrier has two jobs. Copper does not adhere well to the oxide (Lecture 23).
+      And copper is a fast-diffusing contaminant that causes device failure even in trace concentrations in silicon, so it must be
+      surrounded by a diffusion barrier on every side (Wolf §12.1.5).</li>
+      <li><b>Seed.</b> A thin copper seed layer, about 0.1 µm, is sputtered over the barrier (Lecture 23; Wolf: by PVD). Electroplating
+      needs a conducting surface to carry the plating current, and plated copper does not grow well directly on titanium nitride
+      (Lecture 23).</li>
+      <li><b>Plate.</b> Copper is electroplated to 1–2 µm, enough to fill the trench and overfill the field (Lecture 23). Sputtering a
+      micrometre of copper would take a long time and might not fill the trench.</li>
+      <li><b>Polish.</b> CMP removes the copper from the field. When the copper is gone and the harder barrier is exposed, the slurry is
+      changed, because the copper slurry does not remove the barrier, and the barrier is polished off the field (Lecture 23; §5).
+      Copper, with its barrier, remains only in the trench.</li>
+      <li><b>Cap.</b> The whole surface is covered with a non-conducting diffusion barrier such as silicon nitride, which closes the
+      copper in from above (Wolf §12.1.5).</li>
+    </ol>
+
+    <figure>
+      <svg viewBox="0 0 640 170" role="img" aria-labelledby="m14f5-t">
+      <title id="m14f5-t">Single damascene in five panels: trench in oxide; barrier; copper seed; plated copper overfilling; after CMP and the nitride cap</title>
+      <g>
+        <path d="M10,60 L45,60 L45,100 L80,100 L80,60 L115,60 L115,130 L10,130 Z" class="dg-soft"/>
+        <text x="62" y="152" class="dg-label-sm" text-anchor="middle">1 · trench</text>
+        <text x="25" y="82" class="dg-label-sm">SiO₂</text>
+      </g>
+      <g>
+        <path d="M135,60 L170,60 L170,100 L205,100 L205,60 L240,60 L240,130 L135,130 Z" class="dg-soft"/>
+        <path d="M135,58 L168,58 L168,98 L207,98 L207,58 L240,58" class="dg-ink" stroke-width="3" fill="none"/>
+        <text x="187" y="152" class="dg-label-sm" text-anchor="middle">2 · barrier</text>
+        <text x="187" y="46" class="dg-label-sm" text-anchor="middle">Ta / TaN / Ti / TiN</text>
+      </g>
+      <g>
+        <path d="M260,60 L295,60 L295,100 L330,100 L330,60 L365,60 L365,130 L260,130 Z" class="dg-soft"/>
+        <path d="M260,58 L293,58 L293,98 L332,98 L332,58 L365,58" class="dg-ink" stroke-width="3" fill="none"/>
+        <path d="M260,54 L289,54 L289,94 L336,94 L336,54 L365,54" class="dg-acc" stroke-width="3" fill="none"/>
+        <text x="312" y="152" class="dg-label-sm" text-anchor="middle">3 · Cu seed</text>
+        <text x="312" y="44" class="dg-label-sm" text-anchor="middle">≈ 0.1 µm</text>
+      </g>
+      <g>
+        <path d="M385,60 L420,60 L420,100 L455,100 L455,60 L490,60 L490,130 L385,130 Z" class="dg-soft"/>
+        <path d="M385,58 L418,58 L418,98 L457,98 L457,58 L490,58" class="dg-ink" stroke-width="3" fill="none"/>
+        <path d="M385,56 L416,56 L416,96 L459,96 L459,56 L490,56 L490,30 L385,30 Z" class="dg-acc-f"/>
+        <text x="437" y="152" class="dg-label-sm" text-anchor="middle">4 · plated Cu</text>
+        <text x="437" y="22" class="dg-label-sm" text-anchor="middle">1–2 µm</text>
+      </g>
+      <g>
+        <path d="M510,60 L545,60 L545,100 L580,100 L580,60 L615,60 L615,130 L510,130 Z" class="dg-soft"/>
+        <path d="M545,60 L547,60 L547,98 L578,98 L578,60 L580,60" class="dg-ink" stroke-width="3" fill="none"/>
+        <path d="M547,60 L547,98 L578,98 L578,60 Z" class="dg-acc-f"/>
+        <rect x="510" y="52" width="105" height="8" class="dg-fill"/>
+        <text x="562" y="152" class="dg-label-sm" text-anchor="middle">5–6 · CMP, cap</text>
+        <text x="562" y="44" class="dg-label-sm" text-anchor="middle">SiN cap</text>
+      </g>
+      </svg>
+      <figcaption>The sequence of Lecture 23 and notes p. 129, schematic, not to scale. Dark line: the barrier; accent: copper, first as
+      the sputtered seed (panel 3), then as the plated fill (panel 4). CMP removes the copper and then the barrier from the field
+      (panel 5), and a nitride cap seals the top (the cap after Wolf §12.1.5). Notes p. 129 labels the liner in panel 2 "seed layer Ta, TiN"; it is the barrier, and
+      the seed is the copper film over it (notes p. 130; Lecture 23).</figcaption>
+    </figure>
+
+    <h3 id="s4-3">4.3 Dual damascene</h3>
+
+    <p>
+      In the single damascene process each via level and each line level is filled and polished separately. The dual damascene process
+      forms the lines and the vias beneath them at the same time (notes p. 130). The notes draw it on a stack built over a copper line of
+      the level below: a silicon nitride (Si₃N₄) etch-stop layer, an insulator, a second Si₃N₄ etch stop, a second insulator and a top
+      Si₃N₄ layer. An etch-stop layer is a film that the insulator etch removes much more slowly than the insulator, so an etch through the
+      insulator ends on it at a known depth. Two masking and etch steps open a narrow via through the lower insulator down to the copper
+      below and a wider trench through the upper insulator (Wolf §12.1.5). A TiN barrier and a copper seed are sputtered into both
+      openings at once, copper is plated to fill them both, and one CMP step removes the overburden (notes p. 130; Wolf §12.1.5).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m14f6-t">
+      <title id="m14f6-t">Dual damascene cross-section: a trench in the upper insulator over a via in the lower insulator, both filled with copper over a barrier, landing on the copper line below, with silicon nitride etch stops between the layers</title>
+      <rect x="40" y="160" width="340" height="24" class="dg-soft"/>
+      <rect x="160" y="160" width="100" height="24" class="dg-acc-f"/>
+      <text x="210" y="176" class="dg-label-sm" text-anchor="middle">Cu line below</text>
+      <rect x="40" y="154" width="340" height="6" class="dg-fill"/>
+      <rect x="40" y="108" width="340" height="46" class="dg-soft"/>
+      <rect x="40" y="102" width="340" height="6" class="dg-fill"/>
+      <rect x="40" y="56" width="340" height="46" class="dg-soft"/>
+      <rect x="40" y="50" width="340" height="6" class="dg-fill"/>
+      <path d="M140,50 L140,102 L188,102 L188,160 L232,160 L232,102 L280,102 L280,50 Z" class="dg-acc-f"/>
+      <path d="M140,50 L140,102 L188,102 L188,160 L232,160 L232,102 L280,102 L280,50" class="dg-ink" stroke-width="2.5" fill="none"/>
+      <text x="210" y="80" class="dg-label-sm" text-anchor="middle">trench (line)</text>
+      <text x="210" y="134" class="dg-label-sm" text-anchor="middle">via</text>
+      <text x="90" y="84" class="dg-label-sm" text-anchor="middle">insulator</text>
+      <text x="90" y="134" class="dg-label-sm" text-anchor="middle">insulator</text>
+      <text x="388" y="56" class="dg-label-sm">Si₃N₄</text>
+      <text x="388" y="108" class="dg-label-sm">Si₃N₄</text>
+      <text x="388" y="160" class="dg-label-sm">Si₃N₄</text>
+      <text x="330" y="38" class="dg-label-sm" text-anchor="middle">barrier (TiN), dark line</text>
+      </svg>
+      <figcaption>After notes p. 130, schematic, after CMP. The middle nitride sets the depth of the trench; the bottom nitride protects
+      the copper below until the via is opened onto it. One barrier, one seed, one plating and one polish fill the line and its via
+      together, and the barrier at the via bottom is the only interface between the two copper levels.</figcaption>
+    </figure>
+
+    <p>
+      Wolf (§12.1.5) lists five advantages of the copper dual damascene structure over W plugs under etched aluminium lines:
+    </p>
+    <ol>
+      <li>all-copper wiring has lower resistivity and better resistance to electromigration than the W-plug/Al-alloy system;</li>
+      <li>it can be combined with low-k dielectrics, which reduces the capacitance and so the RC delay (§8);</li>
+      <li>only one CMP step is needed per level, the copper and barrier stack, against two (the W plugs and the ILD oxide);</li>
+      <li>the copper never has to be etched;</li>
+      <li>each via has a single interface, the barrier against the copper below, instead of two, at the top and bottom of a W plug.</li>
+    </ol>
+    <p>
+      The costs are equally specific. The barrier must reach sufficient thickness everywhere in high-aspect-ratio trenches and vias, which
+      becomes harder as they shrink; copper and barrier CMP is complex (§5); electroplating brings a new and potentially contaminating
+      process into the fab; and the low-k dielectrics are hard to integrate (§8).
+    </p>
+
+    <details class="check">
+      <summary>Draw the cross-section of a W-plug/Al-line interconnect level and of a copper dual damascene level. For each, name the
+        steps that need CMP and the one that needs a metal etch. What problem of the first does the second remove, and what new
+        problem does it bring? Why is the copper seed sputtered, but the bulk of the copper plated?</summary>
+      <div class="answer"><p>W-plug/Al: a TiN/Ti-lined via filled with CVD tungsten, polished back (CMP of W and liner), under an
+        aluminium line patterned by plasma etching (the metal etch), with the ILD oxide over the lines polished flat (a second CMP).
+        Dual damascene: via and trench etched into the dielectric over nitride etch stops, lined with barrier and seed, filled with
+        plated copper and polished once; no metal etch. The second removes the first's complexity: two metals and two metal depositions, two CMP steps
+        and a metal etch become one metal, one polish per level and no metal etch; it also lowers the resistance of the line-and-plug
+        path and puts a single interface at each via instead of two, which helps electromigration (Wolf §12.1.4–12.1.5). Not having to
+        etch the metal is what makes copper usable at all, since copper is difficult to plasma-etch. It brings copper
+        diffusion, so every surface of the copper needs a barrier and the top a nitride cap, and it brings copper CMP with its dishing
+        and erosion (§5). The seed is sputtered because electroplating needs a continuous conducting layer to carry the plating current,
+        and a 0.1 µm film is quick to sputter; the 1–2 µm fill is plated because sputtering that thickness is slow and may not fill the
+        trench.</p></div>
+    </details>
+
+
+    <h2 id="s5">5 · Polishing tungsten and copper: dishing and erosion</h2>
+
+    <p>
+      A damascene polish removes two materials, the metal and the barrier or liner beneath it, which polish at very different rates, and
+      it must go on past the point where the metal clears. Both facts leave the metal in the trenches below the oxide surface. This section
+      gives the rates, the multi-step processes built around them, and the two kinds of recess that result: dishing and erosion.
+    </p>
+
+    <h3 id="s5-1">5.1 Tungsten and its liner</h3>
+
+    <p>
+      Tungsten is removed at more than 350 nm/min, but its TiN/Ti liner polishes three to eight times more slowly (Wolf §8.11.2). The
+      liner must still be cleared from the field, and a slow liner removal both erodes the oxide beneath and recesses the plugs. Clearing
+      it takes an overpolish, during which the tungsten in the plugs keeps being removed and the plug surface sinks below the oxide.
+      Production therefore uses a three-step process on three platens: tungsten on the first; the liner on the second; and on the third, an
+      oxide buff with a silica slurry that removes a little of the exposed oxide, repairs the oxide damage and brings the oxide surface
+      back level with the recessed plugs (Wolf §8.11.2). A seam or void left in the tungsten fill is opened by the polish, traps slurry,
+      and can be enlarged by the slurry chemistry into a hole down the plug, a defect called plug coring.
+    </p>
+
+    <h3 id="s5-2">5.2 Copper and its barrier</h3>
+
+    <p>
+      Copper is soft and oxidizes easily in standard chemistries such as hydrogen peroxide; tantalum, its usual barrier, is very hard and
+      chemically much more inert, and is thought to be removed mainly by abrasion (Wolf §8.11.3). The rates show the mismatch: copper at
+      about 350 nm/min with a selectivity of 150:1 to the oxide, tantalum at only about 30 nm/min. A damascene polish needs the opposite
+      of that mismatch: a selectivity near 1:1 between the copper and the barrier, so that while the barrier clears the copper in the
+      trenches comes down with the field and is not recessed below it, and a selectivity above 100:1 between the copper and the insulator, so that the polish effectively stops on the
+      insulator.
+    </p>
+
+    <p>
+      No single slurry gives both, so copper CMP is done in steps (Wolf §8.6.3.3, §8.11.3). The first slurry removes the bulk copper and
+      stops on the barrier; the second removes the barrier from the field; a third step buffs the oxide. All the copper on the field must
+      be cleared in the first step, because the second step's copper rate is deliberately kept very small. Lecture 23 described the same
+      practice: when the copper is gone the slurry is changed, because the copper chemistry does not remove the much harder barrier. A
+      further hazard appears near the end of the polish, when barrier metal is exposed on the field and copper in the trenches: two
+      dissimilar metals in electrical contact in an electrolyte form a galvanic cell, and the resulting anodic corrosion can remove the
+      copper from a trench, sometimes entirely (Wolf §8.11.3).
+    </p>
+
+    <h3 id="s5-3">5.3 Dishing and erosion</h3>
+
+    <p>
+      <b>Dishing</b> is the thinning of a film that is polished until it remains only in recessed regions (Wolf §8.12.1;
+      <a href="m13-cmp-process.html#s5-3">M13 §5.3</a>). During the overpolish the layer beneath is exposed, and ideally it would act as a
+      perfect polish stop. But the pad is not perfectly rigid. A perfectly rigid pad would exert no pressure on a recessed region and would
+      leave the surface flat; a real pad sags into a wide recess and presses on its middle, so the soft film there keeps being polished
+      away. Dishing therefore grows with the width of the feature. Wolf's example is from STI: in some processes the oxide in a field
+      region wider than 100 µm loses more than 50 nm. Copper, soft and polished fast, dishes in the same way between harder oxide walls.
+    </p>
+
+    <p>
+      <b>Erosion</b> is the thinning of the dielectric itself during a metal polish: the difference between the ILD thickness before and
+      after the metal CMP step (Wolf §8.12.1). It occurs because the dielectric is removed at a small but non-zero rate during the
+      overpolish. It depends strongly on the density of the metal pattern and not on the line width. Wolf's reason: where the pattern is
+      dense, the copper bearing the pad's load at the start of the polish carries a higher pressure and polishes faster, so the copper
+      clears there first, and the dielectric there then receives a longer overpolish than in sparse regions. The metal in a dense array is
+      thinned by both effects at once:
+    </p>
+
+    <div class="eq" id="eq-tm">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em><sub>m</sub> = <em>h</em> − (<em>D</em> + <em>E</em>)</div>
+        <div class="eq-num">(14.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>m</sub> final thickness of the metal in the trench · <em>h</em> depth of the trench as etched, measured from the
+        original dielectric surface · <em>D</em> dishing, the recess of the metal below the dielectric surface beside it ·
+        <em>E</em> erosion, the loss of dielectric thickness during the metal polish. All in the same length unit (nm or µm). The barrier
+        thickness, where it matters, is subtracted separately (eq. 14.4).
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 170" role="img" aria-labelledby="m14f7-t">
+      <title id="m14f7-t">After a copper polish: a narrow line nearly flush, a wide line dished in the middle, and a dense array whose oxide is eroded below the original surface</title>
+      <line x1="10" y1="50" x2="410" y2="50" class="dg-guide" stroke-dasharray="4 3"/>
+      <text x="410" y="44" class="dg-label-sm" text-anchor="end">original oxide surface</text>
+      <path d="M10,50 L60,50 L60,110 L10,110 Z" class="dg-soft"/>
+      <path d="M60,51 L80,51 L80,110 L60,110 Z" class="dg-acc-f"/>
+      <path d="M80,50 L120,50 L120,110 L80,110 Z" class="dg-soft"/>
+      <path d="M120,50 Q170,72 220,50 L220,110 L120,110 Z" class="dg-acc-f"/>
+      <path d="M220,50 L250,50 L250,110 L220,110 Z" class="dg-soft"/>
+      
+      <path d="M250,50 Q270,58 290,62 L410,62 L410,110 L250,110 Z" class="dg-soft"/>
+      <path d="M296,64 L310,64 L310,110 L296,110 Z M324,64 L338,64 L338,110 L324,110 Z M352,64 L366,64 L366,110 L352,110 Z M380,64 L394,64 L394,110 L380,110 Z" class="dg-acc-f"/>
+      <rect x="10" y="110" width="400" height="14" class="dg-fill"/>
+      <text x="70" y="140" class="dg-label-sm" text-anchor="middle">narrow</text>
+      <text x="170" y="140" class="dg-label-sm" text-anchor="middle">wide: dishing</text>
+      <text x="345" y="140" class="dg-label-sm" text-anchor="middle">dense array: erosion</text>
+      <line x1="170" y1="50" x2="170" y2="61" class="dg-acc" stroke-width="1.6"/>
+      <text x="176" y="34" class="dg-label-sm">D</text>
+      <line x1="404" y1="50" x2="404" y2="62" class="dg-acc" stroke-width="1.6"/>
+      <text x="392" y="78" class="dg-label-sm" text-anchor="end">E</text>
+      <text x="10" y="160" class="dg-label-sm">accent: copper; light: oxide; dark: the level below</text>
+      </svg>
+      <figcaption>After Wolf Figs. 8-96 and 8-99, schematic, depths exaggerated. Dishing (<em>D</em>) grows with line width, because the
+      pad sags into a wide line. Erosion (<em>E</em>) lowers the oxide itself and grows with pattern density, because a dense region
+      clears first and is overpolished longest. The barrier is omitted for clarity.</figcaption>
+    </figure>
+
+    <p>
+      Lecture 23 described dishing as appearing when the barrier is removed, because copper is softer than titanium nitride; as worse in
+      wide trenches and less in narrow, deep ones; as depending on the pattern density and the trench width; and as impossible to prevent
+      entirely, only to reduce. The lecture placed the dependence on pattern density under dishing. Wolf separates the two: dishing
+      depends on the line width and erosion on the pattern density. Both recess the metal (eq. 14.2), and both are present in a real
+      polish.
+    </p>
+
+    <p>
+      The rates of §5.2 show how much of the dishing the barrier step alone can cause. When the barrier step starts, the copper in a
+      wide trench is level with the top of the barrier on the field, <em>t</em><sub>b</sub> above the dielectric. While the slurry clears
+      the barrier from the field at rate RR<sub>b</sub>, that copper, where the pad presses on it, is polished for the same time and
+      loses <em>t</em><sub>b</sub>RR<sub>Cu</sub>/RR<sub>b</sub>. The field comes down by only <em>t</em><sub>b</sub>, so the copper ends
+      recessed below the dielectric by:
+    </p>
+
+    <div class="eq" id="eq-dmax">
+      <div class="eq-body">
+        <div class="eq-math"><em>D</em><sub>b</sub> = <em>t</em><sub>b</sub> · <span class="frac"><span class="num">RR<sub>Cu</sub></span><span class="den">RR<sub>b</sub></span></span> − <em>t</em><sub>b</sub> = <em>t</em><sub>b</sub>(<em>S</em><sub>Cu:b</sub> − 1)</div>
+        <div class="eq-num">(14.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>D</em><sub>b</sub> recess of the trench copper below the dielectric surface produced by the barrier step (nm), the
+        <em>D</em> of eq. (14.2) · <em>t</em><sub>b</sub> barrier thickness on the field (nm) · RR<sub>Cu</sub>, RR<sub>b</sub> removal
+        rates of copper and barrier (nm/min) · <em>S</em><sub>Cu:b</sub> their selectivity (eq. 14.1); the copper removed is
+        <em>t</em><sub>b</sub><em>S</em><sub>Cu:b</sub>. Assumes the pad presses on the trench copper as hard as on the field, which holds
+        only in the middle of a line much wider than the pad's sag. One contribution only: the overpolish, dishing left by the copper
+        step, and chemical or galvanic removal add to it.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Why one slurry cannot clear the barrier</div>
+      <div class="ex-body">
+        <p><b>Given</b> a 25 nm tantalum barrier, in the middle of Lecture 23's 200–300 Å; Wolf's rates for one slurry, copper
+        350 nm/min and tantalum 30 nm/min; a copper line 1 µm deep (Lecture 23). <b>Find</b> the copper removed from a wide line
+        while this slurry clears the barrier and the recess it leaves, and the same for a barrier slurry with Wolf's 1:1 copper-to-barrier
+        selectivity.</p>
+        <p><b>Plan.</b> The barrier clearing time is its thickness over its rate; the copper exposed in a wide trench is removed for that
+        time; the recess is that loss less the barrier thickness by which the copper started above the dielectric (eq. 14.3).</p>
+        <p class="ex-step"><b>Time to clear the barrier.</b> 25 nm ÷ 30 nm/min = 0.833 min = 50.0 s.</p>
+        <p class="ex-step"><b>Copper removed meanwhile.</b> 350 nm/min × 0.833 min = 292 nm; equivalently 25 nm × (350/30) = 25 × 11.7.
+        </p>
+        <p class="ex-step"><b>Recess.</b> <em>D</em><sub>b</sub> = 292 − 25 = 25 × (11.7 − 1) = 267 nm, 27.4 % of the 975 nm copper
+        height left after the barrier is subtracted.</p>
+        <p class="ex-step"><b>With a 1:1 barrier slurry.</b> <em>S</em><sub>Cu:b</sub> = 1: 25 nm of copper is removed, the same as
+        the field loses, so <em>D</em><sub>b</sub> = 0; the copper comes down level with the dielectric.</p>
+        <p class="ex-answer">With the copper slurry 292 nm of copper is removed and the line is recessed 267 nm (27 % of its copper); with a
+        1:1 barrier slurry 25 nm is removed and there is no recess. Check: the two removals are in the ratio of the copper-to-tantalum
+        selectivity, 292/25 = 11.7 = 350/30.</p>
+      </div>
+    </div>
+
+    <p>
+      This recess is why the two-slurry process was adopted: the single-slurry process could not hold dishing and erosion down far enough
+      (Wolf §8.6.3.3). Wolf lists the other remedies (§8.12.1): dummy structures: regions of silicon left unetched inside wide STI trenches
+      (dummy active areas), and support features added to wide metal areas such as bond pads, power buses and wide lines, which reduce
+      the width of soft material the pad has to span; a harder pad, a relatively non-selective slurry and an efficient
+      endpoint detection; and slurry-free pads (§3.3). Dummy structures carry a cost: several times as many structures in a die, which
+      complicates design and mask making and raises defect levels, and some see the approach as a stop-gap.
+    </p>
+
+    <h3 id="s5-4">5.4 What the recess costs: line resistance</h3>
+
+    <p>
+      Lecture 23 ended the dishing discussion on its consequence. A line's resistance is <em>R</em> = <em>ρL</em>/<em>A</em>, with
+      <em>A</em> its cross-section (<a href="m10-source-drain-engineering.html#s2">M10 §2</a> writes the same law as <em>ρ</em><sub>s</sub><em>L</em>/<em>W</em>).
+      A dished line is thinner, so its resistance rises; and a chip has millions of lines, so the increases add up. The barrier also takes
+      cross-section from the copper, since its resistivity is far higher; Plummer notes that long lines made of TiN would have unacceptable
+      RC delays. Counting only the copper:
+    </p>
+
+    <div class="eq" id="eq-rline">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em> = <span class="frac"><span class="num"><em>ρ</em><sub>Cu</sub><em>L</em></span><span class="den">(<em>W</em> − 2<em>t</em><sub>b</sub>)(<em>h</em> − <em>t</em><sub>b</sub> − <em>D</em> − <em>E</em>)</span></span></div>
+        <div class="eq-num">(14.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em> line resistance (Ω) · <em>ρ</em><sub>Cu</sub> copper resistivity, 1.7 µΩ·cm for bulk copper (Wolf; Plummer) ·
+        <em>L</em> line length · <em>W</em> trench width · <em>h</em> trench depth · <em>t</em><sub>b</sub> barrier thickness on the walls
+        and floor · <em>D</em>, <em>E</em> dishing and erosion (eq. 14.2). Lengths in cm when <em>ρ</em> is in Ω·cm. Assumes a rectangular
+        copper core, the barrier carrying no current, and <em>D</em> as the mean recess across the line.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">The barrier's share, and the cost of dishing</div>
+      <div class="ex-body">
+        <p><b>Given</b> copper lines 1 mm long in trenches 1.0 µm deep (Lecture 23), lined with a 25 nm barrier; <em>ρ</em><sub>Cu</sub> =
+        1.7 µΩ·cm. A narrow line 1.0 µm wide with no dishing; a wide line 10 µm wide, first undished, then with a mean dishing of 0.10 µm
+        (chosen for the example; erosion neglected). <b>Find</b> each resistance and the effect of the barrier and of the dishing.</p>
+        <p><b>Plan.</b> Apply eq. (14.4): subtract the barrier from both walls and the floor, then the dishing from the height. Convert
+        µm² to cm² (1 µm² = 10⁻⁸ cm²) and 1 mm = 0.1 cm, so <em>ρL</em> = 1.7×10⁻⁶ Ω·cm × 0.1 cm = 1.7×10⁻⁷ Ω·cm².</p>
+        <p class="ex-step"><b>Narrow line.</b> Copper section (1.0 − 0.05) × (1.0 − 0.025) = 0.95 × 0.975 = 0.926 µm². <em>R</em> =
+        1.7×10⁻⁷ / 0.926×10⁻⁸ = 18.4 Ω. Had the whole 1.00 µm² been copper, <em>R</em> = 17.0 Ω: the barrier takes 7.4 % of the section
+        and raises <em>R</em> by 8.0 %.</p>
+        <p class="ex-step"><b>Wide line, undished.</b> (10 − 0.05) × 0.975 = 9.95 × 0.975 = 9.70 µm²; <em>R</em> = 1.7×10⁻⁷ / 9.70×10⁻⁸ =
+        1.75 Ω. Here the barrier takes only 3.0 % of the section.</p>
+        <p class="ex-step"><b>Wide line, dished.</b> Height 0.975 − 0.10 = 0.875 µm; section 9.95 × 0.875 = 8.71 µm²; <em>R</em> = 1.95 Ω.
+        The width cancels in the ratio: 0.975/0.875 = 1.114, an 11.4 % rise.</p>
+        <p class="ex-answer">18.4 Ω for the narrow line (8.0 % above all-copper because of the barrier); 1.75 Ω for the wide line, rising
+        to 1.95 Ω (+11.4 %) with 0.10 µm of dishing. Check: a 10 % loss of copper height should raise <em>R</em> by about 1/0.9 − 1 ≈ 11 %,
+        as found.</p>
+      </div>
+    </div>
+
+    <p>
+      The two cases pull in opposite directions. The barrier costs a narrow line most, because its fixed thickness is a larger fraction of
+      a small section; dishing costs a wide line most, because the pad sags furthest into it. As lines shrink, the barrier's share grows,
+      which is one reason to want the barrier thin. Wolf names a problem that pulls the other way: depositing a barrier of sufficient
+      thickness everywhere in narrow, high-aspect-ratio trenches and vias, so that it still blocks copper diffusion (§4.3).
+    </p>
+
+    <details class="check">
+      <summary>A process uses a 15 nm TaN barrier and the single slurry of the example (Cu 350 nm/min, barrier 30 nm/min). How much copper
+        is removed from a wide line while the barrier clears, and how deep is the recess it leaves? A 4 µm wide, 0.8 µm deep line with a 20 nm barrier dishes by a
+        mean 0.05 µm: by what percentage does its resistance rise? Which effect, dishing or erosion, would grow if the same lines were
+        packed at twice the density?</summary>
+      <div class="answer"><p>The barrier clears in 15/30 = 0.50 min, during which 350 × 0.50 = 175 nm of copper is removed; the copper
+        started 15 nm above the dielectric, so the recess is 175 − 15 = 160 nm (eq. 14.3). A 1:1 barrier slurry removes 15 nm and
+        leaves no recess. For the 4 µm line the copper height is 0.8 − 0.02 = 0.78 µm undished and 0.73 µm
+        dished, and the width (3.96 µm) cancels, so <em>R</em> rises by 0.78/0.73 − 1 = 6.85 %: from 5.50 to 5.88 Ω per mm. Packing the
+        lines more densely increases erosion, which depends on pattern density; dishing depends on the width of each line, which has not
+        changed (Wolf §8.12.1).</p></div>
+    </details>
+
+
+    <h2 id="s6">6 · Endpoint detection</h2>
+
+    <p>
+      A polish must stop at the right point, and the notes (p. 127) distinguish two kinds of process with two different meanings of
+      "right". A dielectric is polished to a known final thickness: nothing changes at the surface when that thickness is reached. An
+      inlaid metal, usually several layers, is polished until it clears and the polish lands on the surrounding dielectric: the surface
+      material changes. There are two ways to control them: in-line measurement, between polishes, and real-time in-situ detection, during
+      the polish. In 2002 only the second kind of process, the metal one, could be controlled in situ (Wolf §8.6.9).
+    </p>
+
+    <h3 id="s6-1">6.1 In-line endpoint: measure, calculate, polish, measure</h3>
+
+    <p>
+      For a dielectric, the thickness <em>T</em><sub>0</sub> of the film over the features is measured before polishing, over an area
+      dense in features (notes p. 127; Wolf §8.6.9). The polishing time is calculated from calibration data, which give the removal rate
+      for the pressure, the rotation speed and the average state of the pad:
+    </p>
+
+    <div class="eq" id="eq-tf">
+      <div class="eq-body">
+        <div class="eq-math"><em>t</em><sub>f</sub> = <span class="frac"><span class="num"><em>T</em><sub>0</sub> − <em>T</em><sub>f</sub></span><span class="den">RR</span></span></div>
+        <div class="eq-num">(14.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>t</em><sub>f</sub> polishing time (min) · <em>T</em><sub>0</sub> measured thickness before polishing · <em>T</em><sub>f</sub>
+        required final thickness (both nm, or µm × 1000) · RR removal rate from the calibration (nm/min), the rate of M13 eq. 13.3 rearranged.
+      </div>
+    </div>
+
+    <p>
+      The thickness actually reached at <em>t</em><sub>f</sub> varies, by as much as 20 % (1σ) during process development (Wolf). The two
+      errors are not equally costly. A film left too thick can go back to the polisher; a film polished too thin must be scrapped or have
+      more dielectric deposited. A typical manufacturing practice is therefore to underpolish on purpose, measure, and polish again for an
+      adjusted time, repeating until the film is within specification. The cycle is often run on a look-ahead or pilot wafer from each
+      lot, and the rest of the lot is polished for the time the pilot wafer gave (Wolf §8.6.9).
+    </p>
+
+    <div class="example">
+      <div class="ex-head">A pilot wafer through the in-line loop</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>T</em><sub>0</sub> = 1.20 µm measured over dense features; target <em>T</em><sub>f</sub> = 0.80 µm; a
+        calibrated removal rate of 150 nm/min; a first polish deliberately set at 90 % of the calculated time; a measured thickness of
+        0.86 µm after it. (All values chosen for the example.) <b>Find</b> the first polish time, the actual removal rate, the second polish
+        time, and the time to use for the rest of the lot.</p>
+        <p><b>Plan.</b> Eq. (14.5) with the calibrated rate gives the nominal time; the first measurement gives the true rate on today's pad;
+        the remaining thickness over the true rate gives the second polish.</p>
+        <p class="ex-step"><b>Nominal time.</b> (1.20 − 0.80) µm = 400 nm; 400/150 = 2.67 min (160 s).</p>
+        <p class="ex-step"><b>First polish, 90 %.</b> 0.90 × 2.67 = 2.40 min (144 s). Why not the full time: if the pad were faster than
+        calibrated, a full-time polish would overshoot the target, which cannot be undone.</p>
+        <p class="ex-step"><b>Actual rate.</b> Removed 1.20 − 0.86 = 0.34 µm = 340 nm in 2.40 min: RR = 340/2.40 = 142 nm/min, 5.6 % below
+        the calibration, as from a partly glazed pad (§3.3).</p>
+        <p class="ex-step"><b>Second polish.</b> Remaining 0.86 − 0.80 = 60 nm; 60/141.7 = 0.424 min = 25.4 s.</p>
+        <p class="ex-step"><b>Rest of the lot.</b> 400/141.7 = 2.82 min (169 s), the sum of the two polishes.</p>
+        <p class="ex-answer">2.40 min, then 25.4 s; the lot is polished for 2.82 min. Check: had the full 2.67 min been used at the true rate,
+        the film would have been left at 0.822 µm, 22 nm thick of target and recoverable; a pad 5.6 % faster than calibration would instead
+        have left 0.778 µm, 22 nm too thin and not recoverable.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 220" role="img" aria-labelledby="m14f8-t">
+      <title id="m14f8-t">Film thickness against polishing time for the pilot wafer: the calibrated line reaches the target at 2.67 minutes; the real first polish stops at 2.40 minutes at 0.86 micrometres; a second polish reaches 0.80 micrometres at 2.82 minutes</title>
+      <line x1="60" y1="190" x2="400" y2="190" class="dg-rule"/>
+      <line x1="60" y1="30" x2="60" y2="190" class="dg-rule"/>
+      <g class="dg-label-sm" text-anchor="middle">
+        <text x="60.0" y="204">0</text><text x="166.2" y="204">1</text><text x="272.5" y="204">2</text><text x="378.8" y="204">3</text>
+        <text x="230" y="218">polishing time (min)</text>
+      </g>
+      <g class="dg-label-sm" text-anchor="end">
+        <text x="54" y="167">0.8</text><text x="54" y="114">1.0</text><text x="54" y="61">1.2</text>
+      </g>
+      <text x="14" y="110" class="dg-label-sm" transform="rotate(-90 14 110)" text-anchor="middle">thickness (µm)</text>
+      <line x1="60" y1="163.3" x2="400" y2="163.3" class="dg-guide" stroke-dasharray="4 3"/>
+      <text x="398" y="176" class="dg-label-sm" text-anchor="end">target 0.80</text>
+      <path d="M60.0,56.7 L343.3,163.3" class="dg-line" stroke-dasharray="5 4" stroke-width="1.4"/>
+      <path d="M60.0,56.7 L315.0,147.3" class="dg-acc" stroke-width="2"/>
+      <path d="M315.0,147.3 L360.0,163.3" class="dg-acc" stroke-width="2"/>
+      <circle cx="315.0" cy="147.3" r="3.5" class="dg-acc-f"/>
+      <text x="309" y="140" class="dg-label-sm" text-anchor="end">measured 0.86 at 2.40</text>
+      <text x="200" y="96" class="dg-label-sm">calibrated, 150 nm/min</text>
+      <text x="364" y="157" class="dg-label-sm">2.82</text>
+      </svg>
+      <figcaption>The pilot wafer of the example, computed. Dashed: the calibrated rate would reach the target at 2.67 min. Accent: the
+      real pad is 5.6 % slower; the deliberate underpolish stops at 2.40 min and 0.86 µm, the measurement gives the true rate, and a 25 s
+      second polish lands on 0.80 µm.</figcaption>
+    </figure>
+
+    <p>
+      The loop works but costs time: it is measurement-intensive, keeps the polisher idle, and risks breaking wafers as they are moved to
+      the metrology tool (Wolf §8.6.9).
+    </p>
+
+    <h3 id="s6-2">6.2 In-situ endpoint detection</h3>
+
+    <p>
+      In-situ detection identifies the end of a polish without taking the wafer off the tool. The notes list three methods (p. 128):
+    </p>
+    <ol>
+      <li><b>Front-side laser interferometry or spectroscopy.</b> A laser and a detector are mounted in the polishing table, and a clear
+      window in the pad lets the laser reach the front of the wafer; Wolf gives the angle as 45°. Each time the laser and detector pass
+      under the wafer, the reflected light is sampled, and its intensity is recorded against time (notes p. 128). In a transparent film,
+      light reflected from the top surface interferes with light reflected from the bottom, as in an anti-reflective coating
+      (<a href="m11-lithography-resists.html#s8-3">M11 §8.3</a>), so the reflected intensity rises and falls as the film thins. In a
+      copper polish the signal is a different shape. The reflectance reaches a maximum on the copper, drops sharply when the polish breaks
+      through to the semi-transparent tantalum, and settles at a small constant value from the copper left in the trenches (Wolf §8.6.9).
+      Endpoint accuracies within 20 nm were reported in development. A spectrometer reading many wavelengths can follow a thin metal film
+      and see the copper endpoint coming, so as the endpoint approaches the polish can be switched from a fast copper rate to a slower one, which clears the copper from the tantalum without eroding the copper in the trenches.</li>
+      <li><b>Optical sensing at several points on the back of the wafer.</b> Silicon is substantially transparent to infrared light, so
+      infrared shone onto the back of the wafer passes through it and senses the thickness of the film on the front by the same
+      interference (notes p. 128; Wolf §8.6.9). Two optical fibres, one to an infrared emitter and one to a detector, are mounted in the
+      wafer carrier, and up to four such sensors can sit in one carrier, each reading a spot about 0.5 mm across. Metal on the front blocks
+      some of the light, but there is usually enough space between features for light to pass.</li>
+      <li><b>Monitoring the current supplied to the carrier motor.</b> A current shunt or a Hall-effect probe measures the current to the
+      motor that rotates the wafer carrier (notes p. 129). The carrier is driven at constant speed, so the drive current changes to
+      compensate for any change in the load, and the load is the friction at the wafer surface (Wolf §8.6.9). The largest change comes
+      when one material has been polished away and a layer with different polishing properties is exposed: tungsten clearing from oxide,
+      copper clearing from tantalum, or STI oxide clearing from its nitride stop. The method is production-proven and simple to fit, but
+      useless for an oxide polish, in which no layer is broken through.</li>
+    </ol>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 190" role="img" aria-labelledby="m14f9-t">
+      <title id="m14f9-t">Schematic signals against time during a copper polish: reflectance high on copper then dropping sharply at breakthrough to tantalum and settling low; motor current flat on copper, rising as tantalum is exposed and peaking as the oxide is exposed</title>
+      <line x1="40" y1="80" x2="400" y2="80" class="dg-rule"/>
+      <line x1="40" y1="12" x2="40" y2="80" class="dg-rule"/>
+      <text x="34" y="46" class="dg-label-sm" text-anchor="end" transform="rotate(-90 26 46)">reflectance</text>
+      <path d="M40,40 L90,26 L210,24 L226,62 L250,66 L400,66" class="dg-acc" stroke-width="2" fill="none"/>
+      <text x="130" y="18" class="dg-label-sm" text-anchor="middle">copper</text>
+      <text x="300" y="58" class="dg-label-sm" text-anchor="middle">Cu left in trenches</text>
+      <line x1="218" y1="12" x2="218" y2="168" class="dg-guide" stroke-dasharray="4 3"/>
+      <text x="222" y="94" class="dg-label-sm">Cu clears</text>
+      <line x1="40" y1="168" x2="400" y2="168" class="dg-rule"/>
+      <line x1="40" y1="104" x2="40" y2="168" class="dg-rule"/>
+      <text x="34" y="138" class="dg-label-sm" text-anchor="end" transform="rotate(-90 26 138)">motor I</text>
+      <path d="M40,140 L214,140 L303,116 Q330,130 400,136" class="dg-line" stroke-width="2" fill="none"/>
+      <line x1="303" y1="104" x2="303" y2="168" class="dg-guide" stroke-dasharray="4 3"/>
+      <text x="308" y="112" class="dg-label-sm">oxide exposed</text>
+      <text x="220" y="184" class="dg-label-sm" text-anchor="middle">polishing time →</text>
+      </svg>
+      <figcaption>Schematic, after Wolf Figs. 8-70 and 8-73; no scale. Reflectance (top) is high on copper and drops
+      sharply when the polish breaks through to the semi-transparent tantalum. The carrier motor current (bottom) follows Wolf's measured
+      trace for Cu/Ta/oxide (Fig. 8-73b): flat while copper is polished, rising once the tantalum is exposed, peaking as the oxide is
+      exposed, then falling back slowly.</figcaption>
+    </figure>
+
+    <p>
+      The notes (p. 122) add a fourth signal for metal polishing, the change in surface temperature when the metal clears, and summarize
+      the aim: a clear endpoint signal followed by a short overpolish, which removes metal left in dished areas or in scratches (Wolf
+      §8.5.4). Lecture 23 described the motor method as detecting a change in motor speed when the polish reaches the harder barrier.
+      In the method as Wolf describes it, the carrier is driven at constant speed and the current is what changes; the notes make the motor current (and the torque, p. 122) the monitored quantity; the friction change the
+      lecture had in mind is the cause in both readings.
+    </p>
+    <p>
+      Lecture 24 went through the same methods with one change of label. It introduced the signals read during the polish, those of
+      notes p. 122, as "in-line" detection: a change in surface temperature when the harder barrier is reached, a change in the torque of
+      the platen or of the wafer carrier, and a change heard in the captions as "surface velocity" where the notes have surface
+      reflectivity, presumably a misreading or a captioning error. In the notes and in Wolf, "in-line" is the measure–polish–measure
+      procedure between polishes (notes p. 127), and every signal read during the polish belongs to real-time in-situ detection
+      (p. 128), as on this page. For the laser method the lecture used the notes' term, "real-time": the beam reaches the wafer through
+      an opening in the pad, the lecture's "hole" and the notes' clear window, and the reflectivity changes once the copper clears.
+      Asked whether the signal came from one spot, the lecture agreed that it does not: wafer and platen both rotate, so successive passes
+      cross different parts of the wafer, and the signal is in effect an average.
+    </p>
+
+    <details class="check">
+      <summary>Which endpoint method would you choose for (a) an ILD oxide polished to leave 0.60 µm over metal-1, (b) a tungsten plug
+        polish, (c) an STI oxide polished down to its nitride? For (a), a pilot wafer measured at 0.95 µm is to be brought to 0.60 µm on a
+        pad calibrated at 120 nm/min; it is first polished for 85 % of the calculated time and then measures 0.68 µm. Give the first time,
+        the true rate and the second time.</summary>
+      <div class="answer"><p>(a) No layer breaks through, so neither the motor current nor a reflectivity change marks the end: use the
+        in-line loop; Wolf (2002) reports no satisfactory in-situ method for polishing a homogeneous dielectric to a set thickness, although
+        interferometry through a pad window can follow a transparent film as it thins. (b) and (c) end on a different material,
+        tungsten clearing to oxide and oxide clearing to nitride, so the friction changes and motor-current monitoring works; Wolf names
+        both as its production uses. For (a): nominal time (950 − 600)/120 = 350/120 = 2.92 min; first polish 0.85 × 2.92 = 2.48 min
+        (149 s). Removed 950 − 680 = 270 nm, so RR = 270/2.48 = 109 nm/min. Second polish (680 − 600)/108.9 = 0.735 min (44.1 s). The rest
+        of the lot gets 350/108.9 = 3.21 min.</p></div>
+    </details>
+
+
+    <h2 id="s7">7 · Cleaning after CMP</h2>
+
+    <p>
+      CMP is an inherently dirty process. After polishing, the wafer surface carries slurry particles, abraded pad material and debris
+      removed from the wafer (notes p. 129). Residual slurry brings foreign particles, metal contaminants and chemicals, all harmful to the
+      steps that follow. Left on the wafer, particles can obstruct electrical connections, create voids in the next deposited film, or
+      corrode exposed metal; the cleaning must also remove organic residues and trace metal ions, and control corrosion where tungsten or
+      copper is exposed (Wolf §8.7). Every post-CMP clean has to overcome the forces that hold a particle on the surface without
+      damaging the surface.
+    </p>
+
+    <h3 id="s7-1">7.1 Why particles stick, and the three ways to remove them</h3>
+
+    <p>
+      A particle that comes close enough to a surface is captured by the van der Waals force and physisorbed (Wolf §8.7.1). Static charge
+      and capillary adhesion, the pull of a liquid film between particle and surface, also hold particles, but van der Waals is usually
+      the strongest. It can be strong enough to deform the particle, enlarging the contact area and so the binding. Wolf names three ways to
+      remove such particles:
+    </p>
+    <ol>
+      <li><b>Electrical repulsion</b> between the particle and the surface, set by their zeta potentials (§1.1).</li>
+      <li><b>Chemically assisted removal:</b> dissolving the particle, oxidizing it and then dissolving it, or lifting it off by etching the
+      surface slightly beneath it. The SC-1 step of the RCA clean does the last: it oxidizes and etches the surface at once, undercutting the
+      particle and reducing its contact area.</li>
+      <li><b>Mechanical dislodgement:</b> a shear force slides or rolls the particle off. Smaller particles are harder to dislodge this way.
+      The mechanical methods are brush scrubbing and megasonic (high-frequency vibrational) cleaning.</li>
+    </ol>
+    <p>
+      Immersion alone, in DI water or a wet chemical, does not remove slurry particles adequately (Wolf §8.7.1), because of the adhesion
+      forces and the slow-moving boundary layer of liquid at the surface. The cleaning must also begin at once. Wafers are kept wet from the
+      polisher to the cleaner: rinsed on the pad, sprayed as they are lifted off. A wafer left in air for one or two minutes before the spray
+      becomes difficult and sometimes impossible to clean, and a metal slurry left on the wafer keeps reacting and removing material after
+      the polish has stopped (Wolf §8.7).
+    </p>
+
+    <p>
+      Electrical repulsion decides the chemistry. Silica particles and an oxide surface both have negative zeta potentials at neutral pH, and
+      both become more negative as the pH rises. After an oxide polish, a cleaning solution above pH 7 gives the silica particles more
+      negative charge, which increases their repulsion from the oxide surface and makes them easier to remove; the drag of the liquid
+      still does the removing (Wolf §8.7.1.1). Alumina particles from a metal slurry are positive below about pH 8; in an
+      acidic cleaning solution they would be attracted to the negative oxide, which covers more than half of a wafer after a tungsten or
+      copper polish. For surfaces with exposed metal, for alumina particles, and to stop particles re-adhering, Wolf specifies a cleaning solution above pH 8. Adding NH₄OH to the brush-cleaning water,
+      which raises its pH, reduced the defects after both oxide and tungsten CMP by as much as 75 %. Cleaning chemistries are very dilute,
+      around 1:50 chemical to DI water.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 160" role="img" aria-labelledby="m14f10-t">
+      <title id="m14f10-t">A slurry particle on an oxide surface: in acid an alumina particle is positive and attracted to the negative oxide; above pH 8 both are negative and the particle is repelled and swept away by the liquid pushed by the brush</title>
+      <defs>
+        <marker id="m14f10-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+        </marker>
+      </defs>
+      <rect x="10" y="100" width="190" height="30" class="dg-soft"/>
+      <rect x="220" y="100" width="190" height="30" class="dg-soft"/>
+      <g class="dg-label-sm" text-anchor="middle">
+        <text x="40" y="117">− − −</text><text x="105" y="117">− − −</text><text x="170" y="117">− − −</text>
+        <text x="250" y="117">− − −</text><text x="315" y="117">− − −</text><text x="380" y="117">− − −</text>
+      </g>
+      <circle cx="105" cy="84" r="16" class="dg-fill"/>
+      <text x="105" y="89" class="dg-label-sm" text-anchor="middle">+ +</text>
+      <text x="105" y="148" class="dg-label-sm" text-anchor="middle">acidic: alumina (+) held</text>
+      <circle cx="300" cy="56" r="16" class="dg-fill"/>
+      <text x="300" y="61" class="dg-label-sm" text-anchor="middle">− −</text>
+      <line x1="300" y1="96" x2="300" y2="76" class="dg-acc" stroke-width="1.6" marker-end="url(#m14f10-a)"/>
+      <line x1="322" y1="56" x2="372" y2="56" class="dg-acc" stroke-width="1.6" marker-end="url(#m14f10-a)"/>
+      <text x="376" y="48" class="dg-label-sm">liquid flow</text>
+      <text x="315" y="148" class="dg-label-sm" text-anchor="middle">pH &gt; 8: particle (−) repelled</text>
+      <text x="105" y="20" class="dg-label-sm" text-anchor="middle">oxide surface, ZP &lt; 0</text>
+      </svg>
+      <figcaption>After Wolf §8.7.1.1, schematic. Left: in an acidic solution a positively charged alumina particle is drawn onto the
+      negatively charged oxide. Right: above pH 8 the particle's zeta potential turns negative, the double layers repel, and the liquid
+      driven by the brush carries the particle away instead of letting it re-adhere.</figcaption>
+    </figure>
+
+    <h3 id="s7-2">7.2 Brush scrubbing</h3>
+
+    <p>
+      The most widely used post-CMP clean is brush scrubbing while the wafer is sprayed with, or immersed in, the cleaning solution (Wolf
+      §8.7.2). The removal force is the hydrodynamic drag of the liquid that the brush drives across the surface. The brush is a cylinder of
+      polyvinyl alcohol (PVA): a soft, sponge-like, chemically resistant and highly compressible material that is pressed against the wafer
+      and does not scratch it, unlike the rigid nylon brushes of the 1970s. Current tools scrub both faces of the wafer at once. Particles as
+      small as 0.12 µm have been removed this way. Once dislodged, the particles stay suspended and are flushed over the wafer edge; keeping
+      the pH above 8 stops them re-adhering to the wafer or the brush.
+    </p>
+
+    <p>
+      After an oxide polish with a silica slurry, the solution is DI water with NH₄OH, often with H₂O₂ (Wolf §8.7.2.1). After a metal
+      polish the clean has three further requirements: it must leave the metal surface free of oxide, leave it smooth, and not attack it
+      (§8.7.2.2). The scrubbers must also tolerate acidic chemistries, such as citric acid and HF, used to remove metals and mobile ions, and
+      the alumina from tungsten slurries adheres more readily and is harder to remove than silica. One limit remains: particles inside
+      recesses. Wolf shows a slurry particle left in a 0.7 µm contact hole of aspect ratio 3:1 after both brush and megasonic cleaning.
+    </p>
+
+    <details class="check">
+      <summary>After a tungsten polish with an alumina slurry, a process engineer proposes a dilute acidic rinse, on the grounds that the
+        tungsten slurry was acidic. Explain, with a sketch of the charges, why the defect count would rise. What clean would you use
+        instead, and why does it matter that the wafer reaches the cleaner wet?</summary>
+      <div class="answer"><p>Below about pH 8 the alumina particles carry a positive zeta potential, while the oxide that makes up most of the
+        polished surface is negative; the double layers attract, and the particles are held on the oxide (sketch: + particle on a − surface).
+        Raising the pH above 8, for example with dilute NH₄OH, turns the alumina zeta potential negative so that particle and surface repel,
+        and a PVA brush scrub then removes them by the drag of the liquid; re-adhesion is suppressed at the same pH. Citric acid or HF may
+        still be used in a separate step to remove metal ions. The wafer must arrive wet because slurry that dries on the surface becomes
+        very difficult or impossible to remove, and a metal slurry left on it keeps reacting with the tungsten (Wolf §8.7).</p></div>
+    </details>
+
+
+    <h2 id="s8">8 · Low-k dielectrics and interconnect delay</h2>
+
+    <p>
+      Lecture 22 led from CMP to this topic. The oxide left over and between metal lines after polishing must be thick enough to limit the
+      crosstalk and the parasitic capacitance between metal levels (notes p. 117; <a href="m13-cmp-process.html#s5-4">M13 §5.4</a>), and that
+      capacitance, with the resistance of the lines, sets their RC time constant; that, the lecture said, is where low-k dielectrics are
+      used. A low-k dielectric is an insulator with a dielectric constant <em>k</em> below that of thermal silicon dioxide, 3.9; a high-k
+      dielectric (<a href="m07-high-k-dielectrics.html">M07</a>) has one above that of silicon nitride, about 7 (Wolf Ch. 14). The notes
+      have no section on low-k; this section follows the lectures for what was taught and Wolf for the physics, labelled.
+    </p>
+
+    <h3 id="s8-1">8.1 The RC delay of a line</h3>
+
+    <p>
+      A signal travelling down a wire charges the wire's capacitance through the wire's own resistance, so the wire adds a delay of the
+      order of the product <em>RC</em>. Wolf (§12.2.1) models a level of parallel lines between two grounded planes, embedded in a dielectric
+      of constant <em>k</em>: lines of width <em>w</em>, thickness <em>t</em> and length <em>l</em>, spaced <em>s</em> apart at pitch
+      <em>p</em> = <em>w</em> + <em>s</em>, with dielectric of thickness <em>d</em> between the lines and the planes. The resistance of
+      a line is
+    </p>
+
+    <div class="eq" id="eq-rint">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>int</sub> = <span class="frac"><span class="num"><em>ρl</em></span><span class="den"><em>wt</em></span></span></div>
+        <div class="eq-num">(14.6)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em><sub>int</sub> line resistance (Ω) · <em>ρ</em> metal resistivity (Ω·m) · <em>l</em>, <em>w</em>, <em>t</em> length,
+        width and thickness of the line (m). Wolf eq. 12.2; the same law as eq. (14.4) without the barrier.
+      </div>
+    </div>
+
+    <p>
+      Its capacitance has two parts. The vertical part, to the planes above and below, is a parallel-plate capacitance of area
+      <em>wl</em> and gap <em>d</em>. The horizontal part, to the neighbouring lines on either side, has plate area <em>tl</em> and gap
+      <em>s</em>. Counting both planes and both neighbours:
+    </p>
+
+    <div class="eq" id="eq-cint">
+      <div class="eq-body">
+        <div class="eq-math"><em>C</em><sub>int</sub> = 2<em>kε</em><sub>0</sub><em>l</em> <span class="dl">(</span><span class="frac"><span class="num"><em>w</em></span><span class="den"><em>d</em></span></span> + <span class="frac"><span class="num"><em>t</em></span><span class="den"><em>s</em></span></span><span class="dl">)</span></div>
+        <div class="eq-num">(14.7)</div>
+      </div>
+      <div class="eq-says">
+        <em>C</em><sub>int</sub> capacitance of one line to its surroundings (F) · <em>k</em> relative dielectric constant of the insulator
+        (dimensionless) · <em>ε</em><sub>0</sub> = 8.854×10⁻¹² F/m · <em>d</em> dielectric thickness to the ground planes · <em>s</em> spacing
+        to the neighbouring lines (m). Wolf eqs. 12.3–12.5, parallel-plate terms only, fringing neglected.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m14f11-t">
+      <title id="m14f11-t">Cross-section of Wolf's test structure: three parallel metal lines of width w and thickness t at pitch p between two ground planes a distance d above and below, with vertical capacitance to the planes and horizontal capacitance between neighbouring lines</title>
+      <rect x="20" y="20" width="380" height="12" class="dg-fill"/>
+      <rect x="20" y="168" width="380" height="12" class="dg-fill"/>
+      <text x="210" y="16" class="dg-label-sm" text-anchor="middle">ground plane</text>
+      <text x="210" y="196" class="dg-label-sm" text-anchor="middle">ground plane</text>
+      <rect x="70" y="76" width="60" height="48" class="dg-acc-f"/>
+      <rect x="180" y="76" width="60" height="48" class="dg-acc-f"/>
+      <rect x="290" y="76" width="60" height="48" class="dg-acc-f"/>
+      <line x1="180" y1="136" x2="240" y2="136" class="dg-rule"/>
+      <text x="210" y="150" class="dg-label-sm" text-anchor="middle">w</text>
+      <line x1="252" y1="76" x2="252" y2="124" class="dg-rule"/>
+      <text x="258" y="104" class="dg-label-sm">t</text>
+      <line x1="130" y1="64" x2="180" y2="64" class="dg-rule"/>
+      <text x="155" y="60" class="dg-label-sm" text-anchor="middle">s</text>
+      <line x1="180" y1="56" x2="290" y2="56" class="dg-guide"/>
+      <text x="270" y="52" class="dg-label-sm" text-anchor="middle">p</text>
+      <line x1="372" y1="32" x2="372" y2="76" class="dg-rule"/>
+      <text x="378" y="58" class="dg-label-sm">d</text>
+      <line x1="210" y1="32" x2="210" y2="76" class="dg-line" stroke-dasharray="3 2"/>
+      <text x="214" y="46" class="dg-label-sm">C<tspan baseline-shift="sub" style="font-size:75%">LG</tspan></text>
+      <line x1="130" y1="100" x2="180" y2="100" class="dg-line" stroke-dasharray="3 2"/>
+      <text x="155" y="96" class="dg-label-sm" text-anchor="middle">C<tspan baseline-shift="sub" style="font-size:75%">LL</tspan></text>
+      <text x="40" y="104" class="dg-label-sm">k</text>
+      </svg>
+      <figcaption>After Wolf Fig. 12-19, schematic. Each line couples to the planes above and below (<em>C</em><sub>LG</sub>, area
+      <em>wl</em>, gap <em>d</em>) and to its two neighbours (<em>C</em><sub>LL</sub>, area <em>tl</em>, gap <em>s</em>). Making lines
+      taller and closer to cram more wiring into a level raises the horizontal term.</figcaption>
+    </figure>
+
+    <p>
+      Wolf writes the geometry in terms of the pitch, with <em>w</em> = <em>ap</em>, <em>d</em> = <em>bt</em> and an aspect ratio
+      <em>A</em> = <em>t</em>/<em>w</em>. For the simplest geometry, lines as wide as the spaces (<em>a</em> = 0.5) and dielectric as thick as
+      the lines (<em>b</em> = 1, <em>d</em> = <em>t</em>), the product of (14.6) and (14.7) reduces to
+    </p>
+
+    <div class="eq" id="eq-rc">
+      <div class="eq-body">
+        <div class="eq-math"><em>R</em><sub>int</sub><em>C</em><sub>int</sub> = 8<em>ρkε</em><sub>0</sub> <span class="frac"><span class="num"><em>l</em><sup>2</sup></span><span class="den"><em>p</em><sup>2</sup></span></span> <span class="dl">(</span><span class="frac"><span class="num">1</span><span class="den"><em>A</em><sup>2</sup></span></span> + 1<span class="dl">)</span></div>
+        <div class="eq-num">(14.8)</div>
+      </div>
+      <div class="eq-says">
+        <em>R</em><sub>int</sub><em>C</em><sub>int</sub> RC time constant of the line (s) · <em>ρ</em> (Ω·m) · <em>k</em> (dimensionless) ·
+        <em>ε</em><sub>0</sub> (F/m) · <em>l</em> line length and <em>p</em> pitch (same unit, so <em>l</em>/<em>p</em> is a pure number) ·
+        <em>A</em> = <em>t</em>/<em>w</em>. Wolf eq. 12.10; valid for <em>w</em> = <em>s</em> and <em>d</em> = <em>t</em>. The 1/<em>A</em>²
+        term is the vertical capacitance, the 1 the horizontal.
+      </div>
+    </div>
+
+    <p>
+      The equation separates the two levers. The factor <em>ρk</em> is the materials' contribution, and it is a product: a lower-resistivity
+      metal and a lower-k dielectric reduce the delay in the same proportion. The factor <em>l</em>²/<em>p</em>² is the geometry: at fixed
+      length and aspect ratio, halving the pitch quadruples the RC delay, which is why interconnect delay, negligible beside gate delay in
+      older technologies, became a significant part of the total at feature sizes of order 0.5 µm (Wolf Ch. 12). A tall line
+      (<em>A</em> &gt; 1) is dominated by the capacitance to its neighbours, a flat one (<em>A</em> &lt; 1) by the capacitance to the levels
+      above and below.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">RC of a 1 mm line, aluminium and oxide against copper and low-k</div>
+      <div class="ex-body">
+        <p><b>Given</b> a line 1 mm long at a pitch of 0.5 µm (<em>w</em> = <em>s</em> = 0.25 µm), 0.5 µm thick, with <em>d</em> = <em>t</em>,
+        so <em>A</em> = 2. Pure aluminium, <em>ρ</em> = 2.7 µΩ·cm (Wolf §12.1.1), in SiO₂ with <em>k</em> = 3.9, the thermal-oxide value the lecture uses, so that only <em>ρ</em> changes between Al/SiO₂ and Cu/SiO₂ (Wolf §12.1.1 gives 4.2 for the deposited oxide under aluminium, which would raise the Al/SiO₂ result by 7.7 %, to 40.2 ps); copper, 1.7 µΩ·cm, in SiO₂,
+        in fluorine-doped oxide at the lecture's <em>k</em> = 3.3, and in the BN/BCN films the lecture quoted at about 2.2. <b>Find</b> the
+        RC time constant of each, and the reduction against Al/SiO₂.</p>
+        <p><b>Plan.</b> Compute <em>R</em> and <em>C</em> separately for one case from (14.6) and (14.7) to see the sizes, then use (14.8),
+        in which only <em>ρk</em> changes between the cases. Work in SI: 1 µΩ·cm = 10⁻⁸ Ω·m.</p>
+        <p class="ex-step"><b>Resistance, copper.</b> <em>R</em> = <em>ρl</em>/(<em>wt</em>) = 1.7×10⁻⁸ × 10⁻³ / (0.25×10⁻⁶ × 0.5×10⁻⁶) =
+        1.7×10⁻¹¹ / 1.25×10⁻¹³ = 136 Ω. For aluminium, 216 Ω.</p>
+        <p class="ex-step"><b>Capacitance, SiO₂.</b> <em>w</em>/<em>d</em> = 0.25/0.5 = 0.5 and <em>t</em>/<em>s</em> = 0.5/0.25 = 2.0, so the
+        bracket is 2.5, 80 % of it from the neighbours. <em>C</em> = 2 × 3.9 × 8.854×10⁻¹² × 10⁻³ × 2.5 = 6.91×10⁻¹⁴ × 2.5 = 1.73×10⁻¹³ F
+        = 173 fF.</p>
+        <p class="ex-step"><b>Cu/SiO₂.</b> <em>RC</em> = 136 × 1.73×10⁻¹³ = 2.35×10⁻¹¹ s = 23.5 ps. Check against (14.8): 8 × 1.7×10⁻⁸ × 3.9
+        × 8.854×10⁻¹² × (10⁻³/0.5×10⁻⁶)² × (1/2² + 1) = 4.70×10⁻¹⁸ × 4.00×10⁶ × 1.25 = 2.35×10⁻¹¹ s.</p>
+        <p class="ex-step"><b>The other cases by <em>ρk</em>.</b> Al/SiO₂: 2.7 × 3.9 = 10.53 → 37.3 ps. Cu/SiO₂: 1.7 × 3.9 = 6.63 → 23.5 ps.
+        Cu/FSG: 1.7 × 3.3 = 5.61 → 19.9 ps. Cu/BCN: 1.7 × 2.2 = 3.74 → 13.2 ps (all <em>ρ</em> in µΩ·cm).</p>
+        <p class="ex-answer">37.3, 23.5, 19.9 and 13.2 ps: copper alone cuts the delay by 37 %, copper with FSG by 47 %, copper with a
+        <em>k</em> = 2.2 film by 64.5 %. Check: each ratio equals the ratio of <em>ρk</em>, e.g. 3.74/10.53 = 0.355.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 230" role="img" aria-labelledby="m14f12-t">
+      <title id="m14f12-t">Log-log plot of RC time constant against pitch for a 1 mm line, four parallel lines for Al/SiO2, Cu/SiO2, Cu/FSG and Cu/BCN, each falling as one over pitch squared</title>
+      <line x1="70" y1="190" x2="400" y2="190" class="dg-rule"/>
+      <line x1="70" y1="20" x2="70" y2="190" class="dg-rule"/>
+      <g class="dg-label-sm" text-anchor="middle">
+        <text x="70.0" y="204">0.1</text><text x="169.3" y="204">0.2</text><text x="300.7" y="204">0.5</text><text x="400.0" y="204">1</text>
+        <text x="235" y="222">pitch p (µm)</text>
+      </g>
+      <g class="dg-label-sm" text-anchor="end">
+        <text x="64" y="194">1</text><text x="64" y="137">10</text><text x="64" y="81">100</text><text x="64" y="24">1000</text>
+      </g>
+      <text x="16" y="105" class="dg-label-sm" transform="rotate(-90 16 105)" text-anchor="middle">RC (ps)</text>
+      <line x1="300.7" y1="20" x2="300.7" y2="190" class="dg-guide" stroke-dasharray="3 3"/>
+      <path d="M70.0,21.7 L400.0,135.1" class="dg-ink" stroke-width="1.8"/>
+      <path d="M70.0,33.1 L400.0,146.4" class="dg-line" stroke-width="1.6"/>
+      <path d="M70.0,37.2 L400.0,150.6" class="dg-line" stroke-width="1.6" stroke-dasharray="5 3"/>
+      <path d="M70.0,47.2 L400.0,160.5" class="dg-acc" stroke-width="2"/>
+      <circle cx="300.7" cy="100.9" r="3" class="dg-ink"/>
+      <circle cx="300.7" cy="126.4" r="3" class="dg-acc-f"/>
+      
+      
+      <g class="dg-label-sm"><line x1="82" y1="126" x2="102" y2="126" class="dg-ink" stroke-width="1.8"/><text x="107" y="129">Al / SiO₂</text><line x1="82" y1="140" x2="102" y2="140" class="dg-line" stroke-width="1.6"/><text x="107" y="143">Cu / SiO₂</text><line x1="82" y1="154" x2="102" y2="154" class="dg-line" stroke-width="1.6" stroke-dasharray="5 3"/><text x="107" y="157">Cu / FSG</text><line x1="82" y1="168" x2="102" y2="168" class="dg-acc" stroke-width="2"/><text x="107" y="171">Cu / k = 2.2</text></g>
+      <text x="306" y="96" class="dg-label-sm">37.3</text>
+      <text x="306" y="140" class="dg-label-sm">13.2</text>
+      </svg>
+      <figcaption>Eq. (14.8) computed for a 1 mm line with <em>A</em> = 2 and <em>d</em> = <em>t</em>. Each material pair is a straight line
+      of slope −2 on log axes: the delay rises as 1/<em>p</em>². Changing the materials shifts the line down by the ratio of <em>ρk</em>; at
+      0.5 µm pitch (dotted), from 37.3 ps for Al/SiO₂ to 13.2 ps for copper with a <em>k</em> = 2.2 dielectric.</figcaption>
+    </figure>
+
+    <p>
+      The model gives the line's own RC. Wolf's fuller expression for the delay of a wire (eq. 12.1) is
+      <em>t</em><sub>int</sub> = <em>R</em><sub>0</sub><em>C</em> + 0.4[(<em>RC</em>)<sup>1.6</sup> + (tof)<sup>1.6</sup>]<sup>1/1.6</sup>
+      + 0.7<em>RC</em><sub>in</sub>, with <em>R</em><sub>0</sub> the output resistance of the driving transistor, tof the time of flight
+      of the signal along the line and <em>C</em><sub>in</sub> the input capacitance of the next gate. The line's own <em>RC</em> enters as
+      0.4 <em>RC</em>, combined with the time of flight. <em>ρ</em> and <em>k</em> enter every term through the line's <em>R</em> and
+      <em>C</em>, and which term dominates depends on the gate size, the line length and the geometry. At fixed length the <em>RC</em>
+      term grows as 1/<em>p</em>² as the pitch shrinks (eq. 14.8).
+    </p>
+
+    <h3 id="s8-2">8.2 How the dielectric constant is lowered</h3>
+
+    <p>
+      Silicon dioxide has <em>k</em> from 3.9 to 4.5 depending on how it is formed (Wolf Ch. 14). Thermal SiO₂ is relatively dense, about
+      2.3 g/cm³; no film as dense as thermal oxide reaches a <em>k</em> much below 3.5, and CVD oxides, though less dense, contain more
+      silanol (Si–OH) groups, absorb more moisture, and the water raises their <em>k</em>. Wolf names three routes to a lower <em>k</em>:
+    </p>
+    <ol>
+      <li><b>Lower density.</b> A more open molecular structure, or pores a few nanometres across, replaces part of the solid with free
+      space, whose <em>k</em> is 1. This is the most effective route, and below <em>k</em> ≈ 2 the only one; but less dense films are
+      mechanically weaker, and the strength falls with the solid fraction.</li>
+      <li><b>Less ionization:</b> methyl groups replace oxygen, forming Si–CH₃ bonds, a smaller fraction of which ionize than Si–O bonds.</li>
+      <li><b>Less polarization:</b> fluorine replaces oxygen, forming Si–F bonds. Fluorine holds its valence electrons more tightly, so the
+      Si–F bond is less polarizable than the Si–O bond it replaces; fluorine atoms also repel one another more strongly than oxygen atoms
+      do, which lowers the density as well.</li>
+    </ol>
+    <p>
+      The second and third routes lower <em>k</em> only modestly. Wolf groups the materials in three ranges: a first generation,
+      <em>k</em> = 2.8–3.5; a second generation, 2.5–2.8; and ultra-low-k, below 2.0.
+    </p>
+
+    <h3 id="s8-3">8.3 The materials the lectures named</h3>
+
+    <p>
+      Lecture 22 gave three routes from the oxide's 3.9. <b>Fluorine-doped oxide</b>, fluorinated silicate glass (FSG), the lecture put at
+      3.3. FSG is deposited by PECVD or HDP-CVD from the usual oxide chemistry with a fluorine source added, such as SiF₄, CF₄, C₂F₆ or NF₃.
+      Wolf gives a minimum <em>k</em> of about 3.5 for the FSG films used in ICs, with the fluorine content limited to about 6 %: above that
+      the film is unstable, releases fluorine, and the fluorine forms HF with water and corrodes aluminium lines. In copper wiring the
+      fluorine attacks the tantalum barrier, forming volatile tantalum fluorides and weakening adhesion. FSG is attractive nonetheless
+      because it is a doped CVD oxide much like those already in use, and IBM integrated it at 0.35, 0.25 and 0.18 µm (Wolf §14.4.3). Wolf
+      adds that FSG for copper damascene, deposited on a flat surface with no gap to fill, can take more fluorine, and that its
+      <em>k</em> is 0.2–0.3 lower than that of FSG used with aluminium. Read with the 3.5, that puts damascene FSG at about 3.2–3.3, so
+      the lecture's 3.3 agrees with Wolf for the copper case; Wolf does not say outright which case his 3.5 refers to. <b>Boron- and
+      phosphorus-doped oxides</b>, the lecture said, lower <em>k</em> only slightly, to perhaps 3.8. <b>Boron nitride and boron
+      carbonitride</b> (BN, BCN) films reached <em>k</em> ≈ 2.2 in the lecturer's own group's work (Lecture 22); reported values for these films depend strongly on composition and deposition method, and 2.2 is at the low end, below the 2.5–2.8 of Wolf's second generation and above his ultra-low-k range.
+    </p>
+    <p>
+      Lecture 24 repeated the argument from the metal side. Aluminium was used first because it was easy to deposit, with no polishing
+      problem in those days; copper came in when RC delay mattered, because a chip carries interconnect whose total length can run to
+      miles, so a lower resistivity pays everywhere. Copper oxidizes in air and its resistance rises, the lecture said, and aluminium does
+      not; aluminium's oxide is hard and adheres tightly to the metal (Wolf §8.11.4), and copper is capped with silicon nitride (§4.2).
+      The lecture's resistivities were aluminium 2.3, copper 1.8 and silver 1.2 µΩ·cm. Handbook values for the pure metals at 20 °C are
+      2.65, 1.68 and 1.59 µΩ·cm (CRC Handbook of Chemistry and Physics, 84th ed., as reproduced), and Wolf gives 2.7 and 1.7 (§16.1.1),
+      so silver's advantage over copper is about 5 %, not a third. Silver was rejected, the lecture said, for its cost and because it
+      "oxidizes worse than copper"; the tarnish on silver is mainly silver sulfide, formed with sulfur compounds in air, not an oxide.
+      For the dielectric, the lecture put fluorinated oxide at "around three", a "25 % drop" from 3.9 rounded to 4 (from 3.9 the drop is
+      23 %), against Lecture 22's 3.3, which this section uses; it named Teflon and other polymers at 2.6–2.8, which are hard to polish and
+      for which zirconia abrasives have been investigated (§8.4); and it gave the lecturer's BCN films as 2.2–2.6. Wolf's Table 14-2 lists
+      Teflon films at 1.9–2.1 and most other organic polymer candidates at 2.5–2.9, polyimides higher at 3.0–3.6, so the lecture's
+      2.6–2.8 describes the polymers as a group but not Teflon.
+    </p>
+
+    <h3 id="s8-4">8.4 Polishing low-k dielectrics</h3>
+
+    <p>
+      A low-k film in a damascene structure has to survive CMP (Wolf §8.11.7). Most schemes avoid exposing it, capping it with silicon oxide
+      or nitride and polishing the cap. The cap must be thick enough that the polish never reaches the low-k layer, and its erosion must be
+      less than its thickness; but the cap's higher <em>k</em> raises the effective <em>k</em> of the stack. The films raise three problems
+      of their own: adhesion to the cap and to the layer below under the shear of polishing; compressibility, which lets the stack flex,
+      crack the rigid cap and delaminate; and low thermal conductivity, so frictional heating can form hot spots and locally cure the film
+      further. Fluorine-doped oxide adds a fourth: it is softer and more reactive than undoped oxide and is polished faster both mechanically and
+      chemically, as doping softens oxide in general (<a href="m13-cmp-process.html#s6-4">M13 §6.4</a>). Special slurries have been tried for
+      direct polishing: zirconia (notes p. 125; §1.2), and manganese oxide, which reduced the depth of the deep scratches left by a silica
+      slurry from 20 nm to 2 nm.
+    </p>
+
+    <details class="check">
+      <summary>A designer replaces an aluminium line in oxide, 1 mm long, by a copper line in a <em>k</em> = 2.2 dielectric of the same cross
+        section, but the route now needs 2 mm. Is the new line faster or slower than the old one, and by what factor? If the
+        example's 1 mm copper line in SiO₂ were made in FSG (<em>k</em> = 3.3) instead, how much would that change its delay?</summary>
+      <div class="answer"><p>By eq. (14.8), <em>RC</em> ∝ <em>ρkl</em>² at fixed pitch and aspect ratio. The materials factor falls by
+        (1.7 × 2.2)/(2.7 × 3.9) = 3.74/10.53 = 0.355; doubling the length multiplies by 2² = 4. Net 0.355 × 4 = 1.42: the new line is 42 % slower
+        (53.0 ps against 37.3 ps in the example's geometry), because the delay grows with the square of the length and the materials gain
+        only a factor of 2.8. In FSG the delay scales with <em>k</em>: 3.3/3.9 = 0.846, so 15.4 % less, 19.9 ps against 23.5 ps.</p></div>
+    </details>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li>Slurry: 10–100 nm inorganic-oxide abrasive about as hard as the film, in a reagent solution; needs high RR, planarity, local
+        uniformity and selectivity <em>S</em> = RR<sub>A</sub>/RR<sub>B</sub>. Particles stay apart by zeta-potential repulsion. Oxide:
+        fumed or colloidal silica in KOH/NH₄OH, pH 9–11, 5–35 wt%; ceria for STI and ILD (pH 6–7, oxide:nitride up to 250:1); zirconia
+        tried for low-k. Metal: oxidizer (ferric nitrate, H₂O₂), buffer, surfactant, complexing agent, inhibitor (BTA for Cu); alumina,
+        &gt; 20:1 to oxide; pH 1–5 W, 3–9 Cu.</li>
+        <li>Metal CMP (Kaufman): oxide forms everywhere → abraded from up-areas → regrows; down-areas stay passivated. The oxide must be soft
+        enough to abrade, dense enough to stop etching. W slurries pH 2–3 (WO₃ stable below pH 4). W:SiO₂ e.g. 120:1. Metal CMP needs
+        overpolish; its endpoint is sharp.</li>
+        <li>Tools: rotary, orbital, linear, fixed table; retaining ring; film, bladder or air-bearing backing. Pads: felt (soft, porous,
+        Suba IV) or cast closed-cell (hard, IC-1000), stacked. Glazing lowers RR (210 → 75 nm/min in 50 wafers); diamond-grit conditioning
+        reopens pores. Slurry-free fixed-abrasive pads.</li>
+        <li>Damascene: W plugs (TiN/Ti liner, three-step W CMP with oxide buff). Cu: trench → barrier Ta/TaN/Ti/TiN (200–300 Å, adhesion and
+        diffusion barrier) → Cu seed ≈ 0.1 µm sputtered → Cu plated 1–2 µm → CMP Cu, change slurry, CMP barrier → SiN cap. Dual damascene:
+        via and trench together over Si₃N₄ etch stops, one fill, one polish.</li>
+        <li>Cu 350 nm/min, 150:1 to oxide; Ta ≈ 30 nm/min; needed: Cu:barrier ≈ 1:1, Cu:insulator &gt; 100:1, hence two or three slurries.
+        Dishing grows with width (pad sag), erosion with density (longer overpolish); <em>t</em><sub>m</sub> = <em>h</em> − (<em>D</em> +
+        <em>E</em>); <em>D</em><sub>b</sub> = <em>t</em><sub>b</sub>(<em>S</em><sub>Cu:b</sub> − 1). Recess and barrier raise <em>R</em> =
+        <em>ρL</em>/<em>A</em>.</li>
+        <li>Endpoint: dielectric to a thickness (in-line, <em>t</em><sub>f</sub> = (<em>T</em><sub>0</sub> − <em>T</em><sub>f</sub>)/RR,
+        deliberate underpolish on a pilot wafer) or metal to a stop (in situ). In situ: laser through a pad window (interference; Cu
+        reflectance drops at Ta), backside IR through the silicon, carrier motor current at constant speed (friction change at a layer
+        change; useless for oxide-only polishes).</li>
+        <li>Cleaning: van der Waals adhesion; remove by repulsion (pH &gt; 7 for silica on oxide; &gt; 8 with metal exposed or alumina), chemistry (SC-1 undercut) and
+        mechanics (PVA brush, double-sided; megasonic). Keep wafers wet; immersion alone fails.</li>
+        <li>RC = 8<em>ρkε</em><sub>0</sub>(<em>l</em>/<em>p</em>)²(1/<em>A</em>² + 1): materials factor <em>ρk</em>, geometry
+        (<em>l</em>/<em>p</em>)². Low-k: &lt; 3.9 (SiO₂ 3.9–4.5). Routes: density (pores), ionization (Si–CH₃), polarization (Si–F). FSG:
+        lecture 3.3; Wolf min ≈ 3.5, 0.2–0.3 lower in Cu damascene (≈ 3.2–3.3); ≤ 6 % F; BN/BCN ≈ 2.2 (lecturer's group). Low-k under CMP: caps, adhesion, compressibility, heat.</li>
+      </ul>
+    </div>
+
+    <h2>Where this page follows the class notes against the literature</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Point</th><th>Notes or lecture</th><th>Sources</th><th>On this page</th></tr></thead>
+      <tbody>
+        <tr><td>The liner in single damascene</td><td>Notes p. 129 labels the Ta/TiN liner "seed layer"</td><td>Notes p. 130 (barrier layer TiN, Cu seed sputter-deposited), Lecture 23, Wolf §12.1.5: the liner is the barrier; the seed is a sputtered Cu film</td><td>Barrier and seed distinguished (§4.2)</td></tr>
+        <tr><td>Motor-current endpoint</td><td>Lecture 23: the motor speed changes when the polish reaches the barrier</td><td>Notes p. 129: the motor current is monitored and is sensitive to friction; Wolf §8.6.9: constant rotational speed, so the drive current varies</td><td>Constant speed, current measured (§6.2)</td></tr>
+        <tr><td>What pattern density changes</td><td>Lecture 23: dishing depends on pattern density and trench width</td><td>Wolf §8.12.1: dishing depends on line width; erosion, the dielectric loss, on pattern density</td><td>Both effects, separated (§5.3)</td></tr>
+        <tr><td><em>k</em> of fluorine-doped oxide</td><td>Lecture 22: 3.9 → 3.3</td><td>Wolf §14.4.3: FSG in ICs has a minimum <em>k</em> of about 3.5 (≤ 6 % F); damascene FSG 0.2–0.3 lower than FSG with Al</td><td>Agree for copper damascene (≈ 3.2–3.3); 3.3 used in the example (§8.3)</td></tr>
+        <tr><td><em>k</em> of B- and P-doped oxide</td><td>Lecture 22: a small drop, perhaps to 3.8</td><td>No value in the notes, Wolf or Plummer</td><td>Attributed to the lecture (§8.3)</td></tr>
+        <tr><td><em>k</em> of BN/BCN</td><td>Lecture 22: ≈ 2.2, the lecturer's group's films</td><td>Not in Wolf or Plummer</td><td>Attributed to the lecture (§8.3)</td></tr>
+        <tr><td>The tungsten reaction</td><td>Notes p. 121: W + oxidizer → WO₃ + H₂O</td><td>Unbalanced as written; Wolf gives the oxidation to WO₃ in words</td><td>Stated as the notes' schematic of the step (§2.1)</td></tr>
+        <tr><td>Copper slurry abrasive</td><td>Lecture 24: silica, with H₂O₂ and glycine</td><td>Notes p. 125, Wolf §8.6.3.2: metal slurries typically use alumina</td><td>Lecture's slurry attributed (§1.3)</td></tr>
+        <tr><td>Hardness of ceria</td><td>Lecture 24: ceria "more harder" than SiO₂</td><td>Ceria is softer than SiO₂ (US 6,645,265); its higher rate is chemical (Wolf §8.5.2.1)</td><td>Corrected, flagged (§1.3)</td></tr>
+        <tr><td>Tantalum removal</td><td>Lecture 24: oxidized by H₂O₂ to Ta₂O₅, then abraded</td><td>Wolf §8.11.3: Ta is hard and inert, "thought to be removed primarily by abrasion"</td><td>Both stated (§1.3, §5.2)</td></tr>
+        <tr><td>Origin of "damascene"</td><td>Lecture 24: a rain-water drainage system in Damascus</td><td>Wolf §15.2: metal inlay by the artisans of Damascus (§12.1.4: "metal in wood or ceramics"); damascening is one metal inlaid into another</td><td>Metal inlay; lecture's derivation flagged (§4)</td></tr>
+        <tr><td>"In-line" endpoint signals</td><td>Lecture 24: "in-line" for temperature, torque and "surface velocity", read during the polish</td><td>Notes p. 127: in-line = measured between polishes; p. 128: real-time in-situ during the polish; p. 122: surface reflectivity, not velocity</td><td>Notes' terms; lecture's label and "velocity" flagged (§6.2)</td></tr>
+        <tr><td>Metal resistivities</td><td>Lecture 24: Al 2.3, Cu 1.8, Ag 1.2 µΩ·cm</td><td>CRC 84th ed.: 2.65, 1.68, 1.59; Wolf §16.1.1: Al 2.7, Cu 1.7</td><td>Handbook values beside the lecture's (§8.3)</td></tr>
+        <tr><td>Silver "oxidizes"</td><td>Lecture 24</td><td>Silver tarnish is silver sulfide</td><td>Corrected (§8.3)</td></tr>
+        <tr><td><em>k</em> of FSG and Teflon</td><td>Lecture 24: FSG "around three", a "25 % drop"; Teflon and polymers 2.6–2.8</td><td>Lecture 22: FSG 3.3; Wolf §14.4.3 ≈ 3.5, 0.2–0.3 lower in damascene; Wolf Table 14-2: Teflon 1.9–2.1, most organic polymers 2.5–2.9</td><td>3.3 kept; Lecture 24 noted (§8.3)</td></tr>
+        <tr><td>Pad conditioning frequency</td><td>Lecture 21: every one or two wafers; Lecture 22: every three or four</td><td>Notes p. 126 and Wolf §8.6.7 give no frequency; Wolf describes continuous in-situ conditioning</td><td>No number given (§3.3)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Where this came from</h2>
+    <table class="srcmap">
+      <tr><td>§1</td><td>Class notes pp. 122, 124–125. Lecture 24. S. Aksu and F. M. Doyle, 201st ECS Meeting, abstract 379. US Patent
+        6,645,265 B1 (background, ceria). S. Wolf, <i>Silicon Processing for the VLSI Era</i>, Vol. 4 (Lattice Press, 2002),
+        §8.6.3–8.6.3.3, pp. 366–371; §8.7.1.1, pp. 394–396 (zeta potential). M13 §6.3</td></tr>
+      <tr><td>§2</td><td>Class notes pp. 121–122. Wolf §8.5.4, pp. 349–352, Figs. 8-29, 8-30 (after F. Kaufman, Wolf ref. 26); §8.11.2,
+        pp. 415–416</td></tr>
+      <tr><td>§3</td><td>Class notes pp. 123–124, 126–127. Wolf §8.6.6–8.6.8, pp. 375–385. Lectures 21–22 (conditioning frequency)</td></tr>
+      <tr><td>§4</td><td>Class notes pp. 119, 129–130. Lectures 23–24. Wolf §8.11.2; §12.1.1, §12.1.4–12.1.5, pp. 575–584; §15.2.
+        Plummer Ch. 11 (contact silicide). J. D. Plummer, M. D.
+        Deal and P. B. Griffin, <i>Silicon VLSI Technology</i> (Prentice Hall, 2000), Ch. 2 (copper is difficult to plasma etch) and §11.3.5
+        (dual damascene)</td></tr>
+      <tr><td>§5</td><td>Class notes p. 120. Lecture 23. Wolf §8.6.3.3, §8.11.2–8.11.3, §8.12.1, pp. 371, 415–418, 421–426, Figs. 8-92, 8-96 to
+        8-99; Cu resistivity: Wolf Ch. 16 and Plummer problem 11.1. Plummer Ch. 2 (TiN lines). M10 §2</td></tr>
+      <tr><td>§6</td><td>Class notes pp. 122, 127–129. Lectures 23–24. Wolf §8.5.4, p. 351; §8.6.9, pp. 385–391, Figs. 8-67 to 8-73. M11 §8.3</td></tr>
+      <tr><td>§7</td><td>Class notes p. 129. Wolf §8.7–8.7.2.2, pp. 392–402, Figs. 8-74 to 8-82</td></tr>
+      <tr><td>§8</td><td>Class notes p. 117 (via M13 §5.4), p. 125. Lectures 1, 22 and 24. CRC Handbook of Chemistry and Physics, 84th
+        ed., electrical resistivity of the pure metals. Wolf §8.11.4; §16.1.1 (Cu and Al resistivity); Table 14-2; §12.1.1 (Al resistivity), §12.2.1, eqs. 12.1–12.10,
+        Fig. 12-19, pp. 574–591; Ch. 14, pp. 639–646, §14.4.3, pp. 654–655; §8.11.7, pp. 420–421</td></tr>
+    </table>
+
+    <nav class="pagination">
+      <a class="prev" href="m13-cmp-process.html"><span>Previous</span>M13 · Chemical Mechanical Polishing: The Process</a>
+      <a class="next" href="m15-shallow-trench-isolation.html"><span>Next</span>M15 · Shallow Trench Isolation</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>

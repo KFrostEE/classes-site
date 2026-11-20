@@ -1,0 +1,1857 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M16 · Destructive Single-Event Effects — EEE5416</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfaf7">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15161a">
+<link rel="icon" href="../../_system/assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../_system/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../_system/assets/course.css">
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">← EEE5416 Radiation Effects</a>
+    <h2>M16 · Destructive Single-Event Effects</h2>
+    <nav data-toc></nav>
+    <hr class="side-sep">
+    <nav>
+      <ol>
+        <li><a href="index.html">Course home</a></li>
+        <li><a href="formula-sheet.html">Formula sheet</a></li>
+        <li><a href="glossary.html">Glossary and quick reference</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <main>
+  <div class="wrap">
+
+    <p class="eyebrow">Module 16</p>
+    <h1>Destructive Single-Event Effects</h1>
+    <p class="lede">
+      How one ion destroys a device: the avalanche and thermal feedback that turn a few picocoulombs
+      into a melted filament, latchup in CMOS, burnout and gate rupture in silicon power MOSFETs, the
+      new failure modes of silicon carbide and gallium nitride, and how test data with few or no
+      events become a safe operating voltage for a mission.
+    </p>
+
+    <div class="meta-bar">
+      <span><b>Prerequisites</b> M11</span>
+      <span><b>Read time</b> ~55 min</span>
+      <span><b>Sources</b> Deck 14 parts 1–2 (52 slides); lectures of 19 and 21 Oct; Shenai, Galloway and Schrimpf (2004); IEEE NSREC 2024 Short Course</span>
+    </div>
+
+    <p>
+      <a href="m11-single-event-effects.html">M11</a> followed a single ion from the charge it
+      deposits to the bit it flips, and its §10 introduced the events that do more than flip a bit.
+      Those events are this module's subject. They share one structure: the ion supplies a trigger of
+      a few picocoulombs, and the circuit's own power supply supplies the energy that does the damage,
+      through a feedback loop that the trigger switches on. Whether the loop closes depends on the
+      device structure, on the voltage across it and on the charge the ion delivers; whether the
+      device survives depends on how quickly the current is removed. Power devices hold the highest
+      voltages across their high-field regions when they are off, so the destructive events concentrate there,
+      and the wide-bandgap materials that make power devices smaller make the problem sharper.
+    </p>
+    <p>
+      The module runs from the shared physics to the engineering decision. §1 separates recoverable
+      from permanent effects and locates the energy that destroys a part. §2 gives the two feedback
+      mechanisms, avalanche multiplication and thermal runaway. §3 treats latchup in CMOS and §4
+      burnout and gate rupture in silicon power MOSFETs. §5 turns to silicon carbide and gallium
+      nitride. §6 covers how these events are measured and what few or zero events can establish,
+      §7 how test data become a safe operating area and a flight decision, and §8 how a destructive
+      event propagates through a system and why a mission is qualified against total dose, single
+      events and displacement damage together.
+    </p>
+
+    <!-- ============================================================ -->
+    <h2>1 · From upset to destruction</h2>
+    <p>
+      Deck 14 opens by placing the three radiation effects on one continuum (pp. 3–4). Total
+      ionizing dose degrades a device gradually through trapped oxide charge and interface traps.
+      A soft single-event effect is a transient or recoverable fault. A hard single-event effect is a
+      permanent failure. This section defines each effect in the second group, sorts them by whether
+      the part survives, and shows where the destructive energy comes from.
+    </p>
+
+    <h3>The family of single-event effects</h3>
+    <p>
+      Deck 14 p. 7 lists nine effects in order of increasing severity. The first four are soft. A
+      <b>single-event transient</b> (SET) is a voltage pulse on a node; a <b>single-event upset</b>
+      (SEU) is a changed stored bit; a <b>multiple-cell upset</b> (MCU) is several bits changed by one
+      particle; a <b>single-event functional interrupt</b> (SEFI) is a loss of a circuit function, such
+      as a control state machine that stops responding, that a reset restores. The remaining five are
+      the hard errors of this module. <b>Single-event latchup</b> (SEL) is a sustained high-current
+      state through a parasitic four-layer structure. <b>Single-event leakage current</b> (SELC) is a
+      permanent step increase in a device's leakage current. <b>Single-event burnout</b> (SEB) is the
+      thermal destruction of a power device by a regenerative current. <b>Single-event gate rupture</b>
+      (SEGR) and <b>single-event dielectric rupture</b> (SEDR) are the breakdown of a gate dielectric
+      and of another dielectric layer, such as the field-plate dielectric of a gallium nitride
+      transistor (§5), along the ion track.
+    </p>
+    <p>
+      "Hard" and "destructive" are not the same property, and the sources sort the borderline cases
+      differently. Latchup is destructive if the current persists, yet removing power clears it and
+      the part usually returns to service (§3), so it is a recoverable effect that can become
+      permanent. Leakage-current events are permanent, yet the part keeps working with a higher
+      leakage. Deck 14 counts SELC among the hard errors (pp. 7, 52); the IEEE NSREC 2024 Short Course
+      lists it among the non-destructive effects. The two lists sort different properties: the damage
+      is permanent, but the device still functions. The useful classification uses two
+      questions: does the damage persist after power is cycled, and does the part still meet its
+      function?
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Effect</th><th>What changes</th><th>Cleared by power cycling?</th><th>Part still functions?</th></tr></thead>
+      <tbody>
+        <tr><td>SET, SEU, MCU</td><td>A node voltage or stored bits</td><td>Not needed; rewrite or wait</td><td>Yes</td></tr>
+        <tr><td>SEFI</td><td>A control state</td><td>Not needed; a reset restores it</td><td>Yes, after reset</td></tr>
+        <tr><td>SEL</td><td>A latched current path</td><td>Yes, if cut before damage</td><td>Yes if cut in time; latent damage possible</td></tr>
+        <tr><td>SELC</td><td>Permanent leakage increase</td><td>No</td><td>Yes, degraded</td></tr>
+        <tr><td>SEGR, SEDR</td><td>Ruptured dielectric</td><td>No</td><td>No</td></tr>
+        <tr><td>SEB</td><td>Melted source–drain short</td><td>No</td><td>No</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 210" role="img" aria-labelledby="m16f1-t">
+        <title id="m16f1-t">Single-event effects ordered by severity and grouped by whether they recover</title>
+        <rect x="20" y="36" width="130" height="150" class="dg-fill"/>
+        <rect x="155" y="36" width="80" height="150" class="dg-fill"/>
+        <rect x="240" y="36" width="180" height="150" class="dg-fill"/>
+        <text x="85" y="28" class="dg-label" text-anchor="middle">recoverable</text>
+        <text x="195" y="28" class="dg-label" text-anchor="middle">if cut in time</text>
+        <text x="330" y="28" class="dg-label" text-anchor="middle"><tspan class="dg-acc-f">permanent</tspan></text>
+        <text x="85" y="66" class="dg-label" text-anchor="middle">SET</text>
+        <text x="85" y="96" class="dg-label" text-anchor="middle">SEU · MCU</text>
+        <text x="85" y="126" class="dg-label" text-anchor="middle">SEFI</text>
+        <text x="85" y="166" class="dg-label-sm" text-anchor="middle">soft errors</text>
+        <text x="195" y="96" class="dg-label" text-anchor="middle">SEL</text>
+        <text x="195" y="166" class="dg-label-sm" text-anchor="middle">latched current</text>
+        <text x="285" y="66" class="dg-label" text-anchor="middle">SELC</text>
+        <text x="285" y="82" class="dg-label-sm" text-anchor="middle">still works</text>
+        <text x="375" y="66" class="dg-label" text-anchor="middle">SEGR · SEDR</text>
+        <text x="375" y="96" class="dg-label" text-anchor="middle">SEB</text>
+        <text x="375" y="112" class="dg-label-sm" text-anchor="middle">part destroyed</text>
+        <line x1="30" y1="140" x2="410" y2="140" class="dg-acc" stroke-width="2" marker-end="url(#m16f1-a)"/>
+        <text x="330" y="166" class="dg-label-sm" text-anchor="middle">hard errors</text>
+        <text x="220" y="204" class="dg-label-sm" text-anchor="middle">severity rises left to right (Deck 14 p. 7)</text>
+        <defs>
+          <marker id="m16f1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 1.</b> Latchup sits on the boundary: it is a current state, not damage, and it
+        becomes damage only if the current is left on. Leakage-current events are permanent but leave a
+        working part.
+      </figcaption>
+    </figure>
+
+    <h3>The supply, not the ion, destroys the part</h3>
+    <p>
+      An ion deposits a fixed, small energy: its linear energy transfer times the density times the
+      path length (<a href="m04-quantifying-energy-deposition.html">M04</a> §2). A destructive event
+      dissipates far more. The difference comes from the circuit: once the ion's charge switches on
+      a low-impedance path, the supply drives current through it for as long as the path persists.
+      Deck 14 p. 52 writes the sequence as ionization, charge collection, avalanche multiplication,
+      thermal runaway and structural failure. The first two steps are the ion's; the last three are
+      powered by the supply. The comparison below puts numbers on that division.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Energy from the ion against energy from the supply</div>
+      <div class="ex-body">
+        <p><b>Given</b> A heavy ion with LET 40 MeV·cm²/mg crosses 10 µm of silicon (density
+        2.329 g/cm³) and triggers a latchup that draws 0.2 A from a 3.3 V supply for 1 ms before a
+        protection circuit removes power. The numbers are illustrative. <b>Find</b> the energy the ion
+        deposits, the charge it generates, the energy the supply dissipates, and their ratio.</p>
+        <p><b>Plan.</b> The deposited energy is LET × density × path length; the density must be in
+        mg/cm³ so that the mass units cancel. The supply's energy is power × time. The ratio says which
+        one can melt anything.</p>
+        <p class="ex-step"><b>Energy deposited by the ion.</b>
+          <em>E</em><sub>dep</sub> = LET · <em>ρ</em> · <em>L</em> = 40 MeV·cm²/mg × 2329 mg/cm³ ×
+          1.0×10⁻³ cm = 93.2 MeV. In joules: 93.2×10⁶ eV × 1.602×10⁻¹⁹ J/eV = 1.49×10⁻¹¹ J, about
+          15 pJ. Why 2329 mg/cm³: the LET is per milligram per square centimetre, so the density must be
+          per milligram for cm² · mg⁻¹ × mg · cm⁻³ × cm to leave MeV.</p>
+        <p class="ex-step"><b>Charge generated.</b> Silicon takes 3.6 eV per electron–hole pair
+          (<a href="m04-quantifying-energy-deposition.html">M04</a> §4): 93.2×10⁶ eV ÷ 3.6 eV =
+          2.59×10⁷ pairs, and 2.59×10⁷ × 1.602×10⁻¹⁹ C = 4.1×10⁻¹² C, or 4.1 pC. This agrees with the
+          rule that an LET of 97 MeV·cm²/mg generates 1 pC/µm in silicon: 40/97 × 10 µm × 1 pC/µm
+          = 4.1 pC.</p>
+        <p class="ex-step"><b>Energy from the supply.</b> <em>E</em><sub>sup</sub> = <em>V I t</em> =
+          3.3 V × 0.2 A × 1.0×10⁻³ s = 6.6×10⁻⁴ J.</p>
+        <p class="ex-step"><b>Ratio.</b> 6.6×10⁻⁴ J ÷ 1.49×10⁻¹¹ J = 4.4×10⁷.</p>
+        <p class="ex-answer"><em>E</em><sub>dep</sub> ≈ 15 pJ and 4.1 pC; <em>E</em><sub>sup</sub> ≈
+          0.66 mJ, some forty million times larger. Check: a track 1 µm wide and 10 µm long holds
+          1×10⁻¹¹ cm³ × 2.33 g/cm³ = 2.3×10⁻¹¹ g of silicon; with a specific heat of 0.71 J/(g·K) the
+          15 pJ raises it by about 1 K, more than a thousand times too little to melt it. Every
+          destructive effect therefore needs a path through which the supply can deliver current.</p>
+      </div>
+    </div>
+
+    <p>
+      The same division explains which variables control the outcome. The ion's LET sets whether
+      the trigger is large enough to switch the path on. The applied voltage sets both whether the
+      path can sustain itself and how much power flows once it does. The time before the current is
+      removed sets whether the dissipated energy reaches the level that melts metal or silicon. The
+      19 Oct lecture asked which factors decide between no error, a soft error and a hard error, and
+      this is the answer: the charge delivered, how fast the circuit removes it, and how much power
+      the supply can push through the struck structure.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 150" role="img" aria-labelledby="m16f2-t">
+        <title id="m16f2-t">Damage pathway from ionization to structural failure, with the energy source of each step</title>
+        <g class="dg-label-sm" text-anchor="middle">
+          <rect x="6" y="40" width="78" height="40" class="dg-fill"/>
+          <text x="45" y="58">ionization</text><text x="45" y="72">along track</text>
+          <rect x="94" y="40" width="78" height="40" class="dg-fill"/>
+          <text x="133" y="58">charge</text><text x="133" y="72">collection</text>
+          <rect x="182" y="40" width="78" height="40" class="dg-fill"/>
+          <text x="221" y="58">avalanche</text><text x="221" y="72">multiplication</text>
+          <rect x="270" y="40" width="78" height="40" class="dg-fill"/>
+          <text x="309" y="58">thermal</text><text x="309" y="72">runaway</text>
+          <rect x="358" y="40" width="76" height="40" class="dg-fill"/>
+          <text x="396" y="58">structural</text><text x="396" y="72">failure</text>
+        </g>
+        <line x1="84" y1="60" x2="93" y2="60" class="dg-line" stroke-width="1.4"/>
+        <line x1="172" y1="60" x2="181" y2="60" class="dg-line" stroke-width="1.4"/>
+        <line x1="260" y1="60" x2="269" y2="60" class="dg-line" stroke-width="1.4"/>
+        <line x1="348" y1="60" x2="357" y2="60" class="dg-line" stroke-width="1.4"/>
+        <line x1="10" y1="100" x2="168" y2="100" class="dg-rule" stroke-width="1.2"/>
+        <text x="89" y="118" class="dg-label" text-anchor="middle">energy from the ion</text>
+        <text x="89" y="133" class="dg-label-sm" text-anchor="middle">picojoules, picocoulombs</text>
+        <line x1="186" y1="100" x2="430" y2="100" class="dg-acc" stroke-width="2.4"/>
+        <text x="308" y="118" class="dg-label" text-anchor="middle"><tspan class="dg-acc-f">energy from the supply</tspan></text>
+        <text x="308" y="133" class="dg-label-sm" text-anchor="middle">millijoules while the path persists</text>
+        <text x="220" y="24" class="dg-label-sm" text-anchor="middle">Deck 14 p. 52</text>
+      </svg>
+      <figcaption>
+        <b>Figure 2.</b> The ion's contribution ends at charge collection. Everything after it is power
+        delivered by the circuit, which is why voltage and the time to cut the current decide survival.
+      </figcaption>
+    </figure>
+
+    <details class="check">
+      <summary>A latchup in a 1.8 V logic chip draws 0.5 A. Detection and power removal take 5 ms in one design and 50 µs in another. By what factor does the energy dissipated differ, and why does the faster design matter even if both parts survive?</summary>
+      <div class="answer">
+        <p>The dissipated energy is <em>VIt</em>. Slow design: 1.8 V × 0.5 A × 5×10⁻³ s =
+        4.5×10⁻³ J. Fast design: 1.8 V × 0.5 A × 50×10⁻⁶ s = 4.5×10⁻⁵ J. The ratio is
+        5×10⁻³ / 5×10⁻⁵ = 100. The ion's energy is the same in both cases and is irrelevant to the
+        comparison. Survival is not the only criterion: a latchup that is cleared can still leave
+        latent damage, such as melted and voided metal lines, if the current lasts too long (§3), so a
+        hundredfold reduction in the dissipated energy also reduces the latent damage a cleared event
+        can leave.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>2 · Avalanche multiplication and thermal runaway</h2>
+    <p>
+      Two feedback mechanisms turn the ion's trigger into the supply-powered event of §1. Avalanche
+      multiplication multiplies the collected charge inside a high-field region; thermal runaway
+      couples current to temperature until the material fails. Deck 14 p. 21 names both, and the 19 and
+      21 Oct lectures returned to them for every effect in the module. This section states each
+      mechanism and the condition under which it becomes unstable.
+    </p>
+
+    <details class="recap">
+      <summary>Assumes: impact ionization and avalanche breakdown of a reverse-biased junction</summary>
+      <p>
+        In a reverse-biased junction the depletion region holds a field that accelerates carriers.
+        Between collisions with the lattice an electron or hole gains kinetic energy from the field.
+        When that energy exceeds a threshold of the order of the bandgap, a collision can lift an
+        electron from the valence band to the conduction band and create a new electron–hole pair:
+        <b>impact ionization</b>. The rate is described by ionization coefficients
+        <em>α</em><sub>n</sub> and <em>α</em><sub>p</sub>, the number of pairs a carrier creates per
+        unit distance, which rise steeply with field. Each new carrier is accelerated and can ionize in
+        turn. The junction reaches <b>avalanche breakdown</b> when the multiplication diverges, which
+        for equal coefficients is the condition that the ionization integral across the depletion
+        width, ∫<em>α</em> d<em>x</em>, reaches 1. Electrons ionize more readily than holes in silicon
+        (Sze and Ng, <em>Physics of Semiconductor Devices</em>).
+      </p>
+    </details>
+
+    <h3>Avalanche multiplication</h3>
+    <p>
+      Deck 14 p. 21 describes the avalanche as the slide states it: a carrier with enough energy
+      collides and creates pairs, which collide again and create more, so the current grows
+      exponentially. Below breakdown the multiplication is finite. A current entering the high-field
+      region, such as the charge from an ion track, leaves it multiplied by a factor <em>M</em> that
+      depends on how close the junction voltage is to its breakdown voltage. The empirical form in
+      general use is due to Miller.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>M</em> = <span class="frac"><span class="num">1</span><span class="den">1 − (<em>V</em> / <em>V</em><sub>BR</sub>)<sup><em>n</em></sup></span></span></div>
+        <div class="eq-num">(16.1)</div>
+      </div>
+      <div class="eq-says">
+        <em>M</em> multiplication factor, collected charge out over charge in, dimensionless ·
+        <em>V</em> reverse voltage across the junction (V) · <em>V</em><sub>BR</sub> avalanche
+        breakdown voltage (V) · <em>n</em> empirical exponent, between 2 and 6 for silicon. A static,
+        uniform-junction description: it ignores the high-injection effects of the track's own
+        carriers. Sze and Ng, 3rd ed., p. 257.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Multiplication of a strike's charge against bias</div>
+      <div class="ex-body">
+        <p><b>Given</b> A silicon junction with <em>n</em> = 4 in (16.1) collects the 4.1 pC of §1.
+        <b>Find</b> the charge leaving the high-field region at 50%, 80%, 90% and 95% of
+        <em>V</em><sub>BR</sub>.</p>
+        <p><b>Plan.</b> Raise the voltage ratio to the fourth power, subtract from one, invert, and
+        multiply the collected charge. The point is the shape of <em>M</em>(<em>V</em>), not the
+        exact exponent.</p>
+        <p class="ex-step"><b>50%.</b> 0.5⁴ = 0.0625; <em>M</em> = 1/(1 − 0.0625) = 1.07;
+          4.1 pC × 1.07 = 4.4 pC.</p>
+        <p class="ex-step"><b>80%.</b> 0.8⁴ = 0.410; <em>M</em> = 1/0.590 = 1.69; 6.9 pC.</p>
+        <p class="ex-step"><b>90%.</b> 0.9⁴ = 0.656; <em>M</em> = 1/0.344 = 2.91; 11.9 pC.</p>
+        <p class="ex-step"><b>95%.</b> 0.95⁴ = 0.815; <em>M</em> = 1/0.185 = 5.39; 22.1 pC. Why the
+          rise is so steep: the denominator is the distance from breakdown, and it shrinks to zero as
+          <em>V</em> approaches <em>V</em><sub>BR</sub>.</p>
+        <p class="ex-answer"><em>M</em> = 1.07, 1.69, 2.91 and 5.39; the charge leaving the junction
+          is 4.4, 6.9, 11.9 and 22.1 pC. Check: at <em>V</em> → 0, <em>M</em> → 1, and <em>M</em>
+          diverges at <em>V</em> = <em>V</em><sub>BR</sub>, the definition of breakdown. The step from 90%
+          to 95% alone multiplies <em>M</em> by 1.85.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="m16f3-t">
+        <title id="m16f3-t">Avalanche multiplication factor against reverse voltage as a fraction of breakdown, Miller form with exponent 4</title>
+        <line x1="60" y1="190" x2="405" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="190" x2="60" y2="30" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="205">0</text><text x="145" y="205">0.25</text><text x="230" y="205">0.5</text><text x="315" y="205">0.75</text><text x="400" y="205">1</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="54" y="194">1</text><text x="54" y="143">4</text><text x="54" y="91">7</text><text x="54" y="40">10</text>
+        </g>
+        <text x="232" y="219" class="dg-label" text-anchor="middle">V / V<tspan baseline-shift="sub" style="font-size:75%">BR</tspan></text>
+        <text x="24" y="112" class="dg-label" text-anchor="middle" transform="rotate(-90 24 112)">M</text>
+        <line x1="400" y1="190" x2="400" y2="30" class="dg-guide" stroke-dasharray="4 3"/>
+        <path d="M60,190 L162,189.9 L230,188.9 L264,187.5 L298,184.6 L332,178.1 L349,171.3 L366,157.4 L376.2,139.2 L383,114.8 L386.4,93.6 L389.8,57.9 L391.2,36" class="dg-acc" stroke-width="2.2"/>
+        <text x="300" y="120" class="dg-label-sm" text-anchor="end">n = 4</text>
+        <text x="300" y="134" class="dg-label-sm" text-anchor="end">M = 2.9 at 0.9</text>
+        <text x="300" y="148" class="dg-label-sm" text-anchor="end">M = 5.4 at 0.95</text>
+      </svg>
+      <figcaption>
+        <b>Figure 3.</b> Equation (16.1) with <em>n</em> = 4. The multiplication stays near one for
+        most of the voltage range and rises without bound in the last tenth before breakdown. Static
+        multiplication alone does not explain burnout at half the rating or below; the gain of the
+        parasitic transistor, fed by the track's charge, does (§4).
+      </figcaption>
+    </figure>
+
+    <h3>Thermal runaway</h3>
+    <p>
+      Current through a region with a voltage across it dissipates power density
+      <em>J</em> · <em>E</em>, current density times field, as heat. Deck 14 p. 21 states that impact
+      ionization together with this Joule dissipation may lead to thermal breakdown. The instability
+      arises because heating increases the current. In a reverse-biased silicon junction the
+      generation current is proportional to the intrinsic carrier concentration
+      <em>n</em><sub>i</sub>, which rises exponentially with temperature
+      (<a href="m06-device-physics.html">M06</a>); a hotter region therefore conducts more, dissipates
+      more and heats further. When the heat generated rises faster with temperature than the heat
+      conducted away, the temperature has no stable value. The current then concentrates into the
+      hottest filament, because that filament conducts best, and the local temperature climbs until
+      silicon or metal melts and resolidifies as a permanent short. Johnston describes burnout in the
+      same terms: the current in small inhomogeneous regions becomes high enough to cause local
+      melting (<em>Reliability and Radiation Effects in Compound Semiconductors</em>, 2010).
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 420 200" role="img" aria-labelledby="m16f4-t">
+        <title id="m16f4-t">Thermal runaway loop: current heats the region, heat raises the intrinsic carrier density, which raises the current</title>
+        <rect x="150" y="18" width="120" height="34" class="dg-fill"/>
+        <text x="210" y="40" class="dg-label" text-anchor="middle">current density J</text>
+        <rect x="290" y="92" width="120" height="34" class="dg-fill"/>
+        <text x="350" y="114" class="dg-label" text-anchor="middle">heating J · E</text>
+        <rect x="150" y="160" width="120" height="34" class="dg-fill"/>
+        <text x="210" y="182" class="dg-label" text-anchor="middle">temperature T</text>
+        <rect x="10" y="92" width="130" height="34" class="dg-fill"/>
+        <text x="75" y="106" class="dg-label-sm" text-anchor="middle">n<tspan baseline-shift="sub" style="font-size:75%">i</tspan>(T), conduction</text>
+        <text x="75" y="122" class="dg-label-sm" text-anchor="middle">rise exponentially</text>
+        <path d="M270,40 C320,40 350,60 350,90" class="dg-acc" stroke-width="2" marker-end="url(#m16f4-a)"/>
+        <path d="M350,128 C350,160 320,178 272,178" class="dg-acc" stroke-width="2" marker-end="url(#m16f4-a)"/>
+        <path d="M150,178 C100,178 75,160 75,128" class="dg-acc" stroke-width="2" marker-end="url(#m16f4-a)"/>
+        <path d="M75,92 C75,60 100,40 148,40" class="dg-acc" stroke-width="2" marker-end="url(#m16f4-a)"/>
+        <text x="210" y="110" class="dg-label-sm" text-anchor="middle">unstable when heat</text>
+        <text x="210" y="124" class="dg-label-sm" text-anchor="middle">generated outruns heat</text>
+        <text x="210" y="138" class="dg-label-sm" text-anchor="middle">conducted away</text>
+        <defs>
+          <marker id="m16f4-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 4.</b> Every arrow is an increase. Avalanche multiplication adds a second loop on top
+        of this one, because a higher current in a high field also generates more pairs.
+      </figcaption>
+    </figure>
+
+    <p>
+      A second, slower damage mechanism acts in metal. A sustained high current density in an
+      interconnect transfers momentum from the conduction electrons to the metal ions, the
+      electron-wind force, and the ions drift with the electron flow. This is
+      <b>electromigration</b>, a transport of atoms, not of electrons alone, as the 19 Oct lecture
+      stressed in answer to a question. Where the atomic flux diverges, voids open and hillocks grow.
+      Combined with Joule heating, a latchup current held for long enough melts metal lines and leaves
+      voids, which the IEEE NSREC 2024 Short Course shows in a scanning electron micrograph of a line
+      after latchup. A part that survives such an event may fail later from the weakened line (§3).
+    </p>
+
+    <details class="check">
+      <summary>Using (16.1) with <em>n</em> = 5, by what factor does the multiplication rise when a junction is taken from 85% to 95% of its breakdown voltage? Explain why derating a power device below a fixed fraction of its rating is effective against this mechanism.</summary>
+      <div class="answer">
+        <p>At 85%: 0.85⁵ = 0.4437, so <em>M</em> = 1/(1 − 0.4437) = 1/0.5563 = 1.80. At 95%:
+        0.95⁵ = 0.7738, so <em>M</em> = 1/0.2262 = 4.42. The factor is 4.42/1.80 = 2.46. The
+        multiplication depends on how close the voltage is to breakdown, and the dependence is steepest
+        in the last few percent; keeping the operating voltage at a fixed fraction well below
+        breakdown keeps the device on the flat part of the curve, where the collected charge is barely
+        multiplied and the avalanche loop cannot close. The fraction that is safe in practice is far
+        lower than this static picture suggests, because the track's charge drives the parasitic bipolar
+        transistor that closes the loop (§4); that is why the derating rules of §7 are set from measured burnout thresholds, not from
+        (16.1).</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>3 · Single-event latchup in CMOS</h2>
+    <p>
+      <a href="m11-single-event-effects.html">M11</a> §10 gave the structure: bulk CMOS contains a
+      p⁺–n-well–p-substrate–n⁺ path that acts as a vertical pnp and a lateral npn transistor, each
+      feeding the other's base, and a strike that injects enough current into the well or substrate
+      can switch it into a self-sustaining low-impedance state. Deck 14 p. 20 states the consequence:
+      the thyristor holds a low-voltage, high-current state, the component stops functioning, and the
+      current may lead to thermal wear-out. This section gives the electrical condition for the latched
+      state, how a system clears it, and what clearing it does not undo.
+    </p>
+
+    <h3>The latched state and its holding point</h3>
+    <p>
+      Once latched, the four-layer path conducts as a forward-biased thyristor: the voltage across it
+      falls to a low <b>holding voltage</b>, and it stays latched as long as the circuit can supply at
+      least the <b>holding current</b>. Both are properties of the parasitic structure. The latched
+      state is stable only if the supply can maintain a current above the holding current at a voltage
+      above the holding voltage; if the supply voltage is below the holding voltage, or a series
+      resistance limits the current below the holding current, the structure cannot remain latched
+      and returns to its blocking state when the strike's current has passed. That gives two design
+      levers against latchup that do not touch the silicon: the supply voltage and the current the
+      supply can deliver.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="m16f5-t">
+        <title id="m16f5-t">Current–voltage curve of the parasitic thyristor with blocking, negative-resistance and latched branches and a supply load line</title>
+        <line x1="60" y1="190" x2="410" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="190" x2="60" y2="24" class="dg-rule" stroke-width="1.2"/>
+        <text x="236" y="222" class="dg-label" text-anchor="middle">voltage across the four-layer path</text>
+        <text x="24" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 24 110)">current</text>
+        <path d="M60,188 L320,182" class="dg-line" stroke-width="1.8"/>
+        <path d="M320,182 C300,160 200,140 130,128" class="dg-line" stroke-width="1.6" stroke-dasharray="5 3"/>
+        <path d="M130,128 C140,96 150,60 158,30" class="dg-acc" stroke-width="2.4"/>
+        <text x="200" y="176" class="dg-label-sm">blocking</text>
+        <text x="258" y="152" class="dg-label-sm">negative resistance</text>
+        <text x="166" y="48" class="dg-label"><tspan class="dg-acc-f">latched</tspan></text>
+        <circle cx="130" cy="128" r="3.5" class="dg-ink"/>
+        <text x="122" y="122" class="dg-label-sm" text-anchor="end">holding point</text>
+        <text x="122" y="136" class="dg-label-sm" text-anchor="end">(V_H, I_H)</text>
+        <line x1="290" y1="190" x2="110" y2="30" class="dg-guide" stroke-dasharray="4 3"/>
+        <text x="204" y="104" class="dg-label-sm">load line</text>
+        <text x="290" y="201" class="dg-label-sm" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">DD</tspan></text>
+        <circle cx="148" cy="64" r="3.5" class="dg-acc-f"/>
+        <text x="156" y="68" class="dg-label-sm">stable latched point</text>
+        <circle cx="282" cy="183" r="3" class="dg-ink"/>
+        <text x="282" y="174" class="dg-label-sm" text-anchor="middle">off</text>
+      </svg>
+      <figcaption>
+        <b>Figure 5.</b> Schematic. A strike moves the structure from the blocking branch to the
+        latched branch. The latched state survives only where the supply's load line crosses that
+        branch above the holding point; a supply below <em>V</em><sub>H</sub>, or a series resistance
+        steep enough to keep the current below <em>I</em><sub>H</sub>, leaves no stable latched point.
+      </figcaption>
+    </figure>
+
+    <h3>Clearing a latchup, and what clearing leaves</h3>
+    <p>
+      Removing power collapses the latched state, which is why spacecraft electronics carry latchup
+      protection: a current sensor on the supply line detects the over-current, a switch removes power,
+      and power is restored after the structure has returned to blocking
+      (<a href="m11-single-event-effects.html">M11</a> §10). The design question is the time between the
+      strike and the cut, because the energy dissipated grows linearly with it (§1). The 19 Oct lecture
+      used the same picture: a latchup that is cut before it heats the structure is recoverable by a
+      reboot; one left on long enough overheats the junction and the metal and becomes permanent. The
+      IEEE NSREC 2024 Short Course defines the boundary the same way: if power cycling does not restore
+      normal operation, the loss of function is permanent. A recovered part is not necessarily an
+      undamaged one. Melted and voided metal lines left by a latchup that was cleared can shorten the
+      part's life, so a latchup that was detected and cleared in flight is a reliability event, not
+      only an availability one.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 200" role="img" aria-labelledby="m16f6-t">
+        <title id="m16f6-t">Supply current against time through a latchup: strike, latched current, detection threshold, power cut and restore</title>
+        <line x1="50" y1="170" x2="420" y2="170" class="dg-rule" stroke-width="1.2"/>
+        <line x1="50" y1="170" x2="50" y2="24" class="dg-rule" stroke-width="1.2"/>
+        <text x="235" y="192" class="dg-label" text-anchor="middle">time</text>
+        <text x="22" y="98" class="dg-label" text-anchor="middle" transform="rotate(-90 22 98)">supply current</text>
+        <line x1="50" y1="92" x2="420" y2="92" class="dg-guide" stroke-dasharray="4 3"/>
+        <text x="416" y="86" class="dg-label-sm" text-anchor="end">detection threshold</text>
+        <path d="M50,150 L120,150 L124,48 L210,48 L214,170 L300,170 L304,150 L420,150" class="dg-acc" stroke-width="2.2"/>
+        <line x1="122" y1="24" x2="122" y2="44" class="dg-line" stroke-width="1.2"/>
+        <text x="122" y="20" class="dg-label-sm" text-anchor="middle">strike</text>
+        <text x="167" y="40" class="dg-label-sm" text-anchor="middle">latched</text>
+        <text x="212" y="20" class="dg-label-sm" text-anchor="middle">power cut</text>
+        <line x1="212" y1="24" x2="212" y2="44" class="dg-line" stroke-width="1.2"/>
+        <text x="302" y="140" class="dg-label-sm" text-anchor="middle">restored</text>
+        <text x="167" y="132" class="dg-label-sm" text-anchor="middle">energy ∝ this interval</text>
+        <line x1="124" y1="120" x2="210" y2="120" class="dg-line" stroke-width="1" marker-start="url(#m16f6-a)" marker-end="url(#m16f6-a)"/>
+        <defs>
+          <marker id="m16f6-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 6.</b> Schematic. Latchup protection limits the damage by shortening the latched
+        interval. The current falls to zero at the cut, the structure returns to blocking, and normal
+        current resumes when power is restored.
+      </figcaption>
+    </figure>
+
+    <h3>What sets the sensitivity</h3>
+    <p>
+      The loop sustains itself when the product of the two parasitic transistors' current gains,
+      as modified by the well and substrate shunt resistances, exceeds unity
+      (<a href="m11-single-event-effects.html">M11</a> §10). Anything that raises the gains or the
+      shunt resistances makes latchup easier. Temperature does both: bipolar current gain rises with
+      temperature and so does the resistivity of the lightly doped well and substrate, so the
+      latchup threshold LET falls as a part runs hotter: Johnston, Hughlock, Baze and Plaag measured
+      threshold LETs about 2.5 times lower at 125 °C (<em>IEEE Trans. Nucl. Sci.</em> <b>38</b>, 1435,
+      1991), which is why latchup is tested at the highest temperature the part will see. The hardening measures are
+      the ones <a href="m11-single-event-effects.html">M11</a> §10 listed: an epitaxial layer on a
+      heavily doped substrate to lower the substrate resistance, guard rings and channel stops, and silicon on insulator, which removes the four-layer path entirely.
+      The scaled-node variant, micro-latchup in FinFET circuits, belongs with rad-hard design for
+      single events (M14). Deck 14 p. 48 adds two power devices with their own regenerative paths: the
+      insulated-gate bipolar transistor (IGBT), whose internal npnp structure can trigger latchup or
+      burnout depending on bias, and the power bipolar transistor, a three-layer device that a strike
+      in its base can drive into avalanche and burnout. The IEEE NSREC 2024 Short Course calls IGBTs highly prone to latchup
+      and unsuitable for space for that reason.
+    </p>
+
+    <details class="check">
+      <summary>A latchup-susceptible ASIC is to be powered either directly from a 3.3 V rail or through a series resistor sized so that the supply cannot deliver more than half of the parasitic structure's holding current. Which configuration can latch, and what does the resistor cost in normal operation?</summary>
+      <div class="answer">
+        <p>The latched state needs a current at or above the holding current at a voltage at or
+        above the holding voltage. Directly on the rail, the supply can deliver any current the latched
+        branch draws, so if the rail exceeds the holding voltage a stable latched point exists and the
+        part latches. Behind the resistor, the load line reaches the latched branch only below the
+        holding current, so no stable latched point exists: a strike can switch the structure on
+        momentarily, but it returns to blocking once the strike's current has passed. The cost is that
+        the same resistance sits in series with the chip's normal supply current, producing a voltage
+        drop <em>IR</em> that rises with the chip's activity and reduces the voltage its transistors
+        see, so the method works only where the normal current is small compared with the holding
+        current. Where it is not, the alternative is detection and fast power cycling (Figure 6).</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>4 · Burnout and gate rupture in silicon power MOSFETs</h2>
+    <p>
+      Deck 14 p. 12 asks why power devices are the ones that fail, and gives three reasons: they hold
+      high voltages and currents, so a strike that disturbs the local field can trigger a destructive
+      current surge; they contain parasitic bipolar structures; and the surge can produce a local hot
+      spot that their heat removal cannot handle. This section develops those reasons for the
+      vertical power MOSFET, which <a href="m11-single-event-effects.html">M11</a> §10 drew: the
+      device, the two destructive mechanisms, how each depends on bias, LET and design, and the
+      empirical expression for gate rupture.
+    </p>
+
+    <h3>Why the off state is the vulnerable one</h3>
+    <p>
+      A vertical double-diffused MOSFET carries current from its n⁺ sources through a channel in the
+      p body and down through a lightly doped n⁻ epitaxial drift region to the n⁺ substrate, which is
+      the drain. The device is built as many such cells in parallel to give a wide channel and a low
+      on-resistance. Its lightly doped epitaxial layer, 10 to 120 µm thick in silicon parts, exists to
+      hold the blocking voltage across a wide depletion region (IEEE NSREC 2024 Short Course). In the
+      on state the drain voltage is low and the field is small. In the off state the gate is at 0 V,
+      the p-body–n-epitaxial junction is reverse-biased, and nearly the full drain voltage stands
+      across the depleted drift region. The 21 Oct lecture worked through this point with the class:
+      in a power switch the source is grounded, the high voltage is on the drain, and the off state
+      puts that voltage across a reverse-biased junction, which is where both destructive mechanisms
+      need it. A power MOSFET is most vulnerable to both events when off, and sensitive to burnout only
+      when off (IEEE NSREC 2024 Short Course).
+    </p>
+
+    <h3>Single-event burnout</h3>
+    <p>
+      Deck 14 p. 25 assigns the parasitic transistor's terminals: the n⁺ source is the emitter, the
+      p body the base, and the n⁻ epitaxial layer the collector. It is held off in normal operation
+      because the source metallization shorts the body to the source. The slide gives the mechanism
+      in order, starting from the static avalanche characteristic, and Shenai, Galloway and Schrimpf
+      give the same sequence for the strike:
+    </p>
+    <ol>
+      <li>The ion's track crosses the source, body and drift region. Its holes flow through the body
+        toward the source contact; its electrons are collected at the drain.</li>
+      <li>The hole current flows laterally through the body beneath the source, and the body's
+        resistance converts it into a voltage. When that voltage forward-biases the source–body junction
+        enough for it to inject, about 0.6–0.7 V in silicon (Deck 14 p. 25 writes the condition as
+        <em>V</em><sub>BE</sub> &gt; <em>V</em><sub>bi</sub>), the parasitic npn transistor turns
+        on.</li>
+      <li>The transistor injects electrons from the source into the body; they cross it into the
+        high-field drift region, the collector.</li>
+      <li>In the drift region the electrons impact-ionize. The generated holes drift back into the
+        body and add to the lateral current that forward-biases the source–body junction.</li>
+      <li>Every hole returned to the base increases the injection, which increases the avalanche
+        current, which returns more holes. When the loop gain exceeds one the device enters
+        <b>second breakdown</b>: the drain current rises while the drain voltage collapses, the device
+        can no longer block, and the current filaments and melts a permanent source–drain short.</li>
+    </ol>
+    <p>
+      The signature at test (Deck 14 p. 22) follows from the mechanism: a large increase in drain
+      current with no change in gate current, and, after the package is opened, damage visible in the
+      drain area. The drain voltage falls at the same moment; the 21 Oct lecture warned that this
+      snapback in the measured voltage is the instrument's current limit acting on a shorted device,
+      not a recovery. Two dependences follow from the loop as well. P-channel power MOSFETs are less
+      susceptible because holes have lower impact-ionization rates and lower mobility than electrons,
+      so the avalanche current that closes the loop is smaller (Deck 14 p. 23); Shenai, Galloway and
+      Schrimpf note that p-channel burnout had not been reported at all at the time of their review.
+      And the burnout threshold voltage does not depend on the off-state gate bias (Deck 14 p. 23),
+      because the gate takes no part in the loop.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="m16f7-t">
+        <title id="m16f7-t">Drain current against drain voltage of a power MOSFET: blocking, avalanche, and second breakdown with voltage snapback</title>
+        <line x1="60" y1="190" x2="410" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="190" x2="60" y2="24" class="dg-rule" stroke-width="1.2"/>
+        <text x="236" y="222" class="dg-label" text-anchor="middle">drain voltage V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan></text>
+        <text x="24" y="110" class="dg-label" text-anchor="middle" transform="rotate(-90 24 110)">drain current I<tspan baseline-shift="sub" style="font-size:75%">D</tspan></text>
+        <path d="M60,188 L330,184 C350,182 362,170 366,140" class="dg-line" stroke-width="1.8"/>
+        <path d="M366,140 C350,110 290,96 250,86 C246,70 244,50 242,30" class="dg-acc" stroke-width="2.4"/>
+        <text x="200" y="178" class="dg-label-sm" text-anchor="middle">blocking</text>
+        <text x="374" y="160" class="dg-label-sm">avalanche</text>
+        <text x="372" y="132" class="dg-label-sm" text-anchor="start">bipolar on</text>
+        <text x="300" y="82" class="dg-label"><tspan class="dg-acc-f">second breakdown</tspan></text>
+        <text x="236" y="40" class="dg-label-sm" text-anchor="end">current filament,</text>
+        <text x="236" y="53" class="dg-label-sm" text-anchor="end">thermal failure</text>
+        <line x1="332" y1="190" x2="332" y2="196" class="dg-rule" stroke-width="1.2"/>
+        <text x="332" y="206" class="dg-label-sm" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">BR</tspan></text>
+      </svg>
+      <figcaption>
+        <b>Figure 7.</b> Schematic of the quasi-static characteristic on Deck 14 p. 25. Past the
+        avalanche knee the parasitic transistor turns on and the curve snaps back to lower voltage at
+        higher current. A strike reaches the same second-breakdown branch from a drain voltage far below
+        <em>V</em><sub>BR</sub>, because the track's charge supplies the base current that the static
+        avalanche would otherwise have to.
+      </figcaption>
+    </figure>
+
+    <p>
+      The burnout cross-section has a threshold and a saturation in drain voltage. Below a threshold
+      drain voltage, <em>V</em><sub>th|SEB</sub>, no burnout occurs; above it the cross-section rises
+      with <em>V</em><sub>DS</sub>, steeply at first, then levels off (Deck 14 pp. 23, 28). The LET moves both: a higher LET lowers the
+      threshold voltage and raises the cross-section at a given voltage. Deck 14 p. 28 shows this for a
+      55 V commercial MOSFET tested with xenon, argon and carbon ions at several energies
+      (Fernández-Martínez and Papadopoulou): the higher-LET ions give larger cross-sections and reach
+      them at lower bias, and the slide states that no burnout occurred below 50% of the rated voltage
+      for this part (its first xenon events sit at about half the rating). The
+      21 Oct lecture read the same kind of plot: a change of a few volts near threshold moved the
+      cross-section by several orders of magnitude.
+    </p>
+
+    <div class="box warn">
+      <p>
+        Deck 14 p. 23 states that LET "increases both bias threshold voltage and the cross-section
+        itself for a given voltage". The cross-section half is right; the threshold half is reversed.
+        A higher LET <b>lowers</b> the drain voltage at which burnout begins: Deck 14 p. 28 shows the
+        higher-LET curves starting at lower bias, the 21 Oct lecture said that a lower-LET ion lets the
+        voltage be raised further, and the burnout failure voltage of Deck 03 p. 32 falls from about
+        200 V to about 75 V as the LET rises (<a href="m11-single-event-effects.html">M11</a> §10).
+        The slide most likely means that LET <em>affects</em> both. Read it as: higher LET, lower
+        threshold, larger cross-section.
+      </p>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="m16f8-t">
+        <title id="m16f8-t">Burnout cross-section against normalized drain voltage for a high and a low LET, showing threshold and saturation</title>
+        <line x1="60" y1="190" x2="410" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="190" x2="60" y2="24" class="dg-rule" stroke-width="1.2"/>
+        <text x="236" y="222" class="dg-label" text-anchor="middle">V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> / V<tspan baseline-shift="sub" style="font-size:75%">rated</tspan></text>
+        <text x="24" y="108" class="dg-label" text-anchor="middle" transform="rotate(-90 24 108)">σ<tspan baseline-shift="sub" style="font-size:75%">SEB</tspan>, log scale</text>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="205">0.4</text><text x="148" y="205">0.6</text><text x="235" y="205">0.8</text><text x="322" y="205">1.0</text>
+        </g>
+        <path d="M112,186 C122,140 140,90 180,62 C210,48 260,44 320,42" class="dg-acc" stroke-width="2.4"/>
+        <path d="M170,186 C182,150 200,112 236,90 C262,78 290,74 320,72" class="dg-line" stroke-width="1.8" stroke-dasharray="6 3"/>
+        <text x="186" y="56" class="dg-label"><tspan class="dg-acc-f">high LET</tspan></text>
+        <text x="250" y="106" class="dg-label-sm">low LET</text>
+        <line x1="112" y1="190" x2="112" y2="196" class="dg-rule"/>
+        <line x1="170" y1="190" x2="170" y2="196" class="dg-rule"/>
+        <text x="330" y="38" class="dg-label-sm">saturation</text>
+        <text x="96" y="172" class="dg-label-sm" text-anchor="end">threshold</text>
+      </svg>
+      <figcaption>
+        <b>Figure 8.</b> Schematic of the curves on Deck 14 p. 28. Raising the LET moves the
+        threshold to lower voltage and the whole curve upward. Near threshold the cross-section changes
+        by orders of magnitude for a few percent of voltage.
+      </figcaption>
+    </figure>
+
+    <p>
+      The design features that move the threshold act on the two quantities the loop needs, the
+      parasitic transistor's gain and the field in the drift region (Deck 14 p. 24). A heavily doped
+      <b>p⁺ plug</b> under the source lowers the body resistance, so a larger hole current is needed
+      to forward-bias the source–body junction; it prevents bipolar turn-on in normal operation and
+      reduces, without eliminating, the burnout sensitivity under irradiation. A more heavily doped
+      <b>buffer layer</b> between the drift region and the substrate lowers the maximum field where the
+      track's carriers pile up and raises the burnout threshold. <b>Lighter doping of the epitaxial
+      layer</b>, the usual way to raise a part's voltage rating, increases the burnout susceptibility.
+      Trench-gate architectures may be less sensitive. The slide marks the most sensitive area for an
+      ion strike at the channel end of the source, where the track feeds the parasitic base; the IEEE
+      NSREC 2024 Short Course names the channel region as the most sensitive to burnout.
+    </p>
+
+    <h3>Single-event gate rupture</h3>
+    <p>
+      Gate rupture needs no parasitic transistor; it is a dielectric breakdown. Deck 14 p. 32 gives
+      the mechanism for an ion that strikes through the <b>neck</b>, the region between body wells
+      where the drift region reaches the surface under the gate:
+    </p>
+    <ol>
+      <li>The dense electron–hole plasma along the track separates under the drain field. Electrons
+        are swept to the n⁺ substrate, where they no longer affect the device.</li>
+      <li>Holes drift toward the surface end of the track and pool against the silicon–oxide
+        interface under the gate, before moving radially through the surface accumulation layer to the
+        p body, where they are collected.</li>
+      <li>The pooled holes induce an image charge on the gate electrode, which raises the field across
+        the gate oxide transiently. The field grows as holes pool and falls as they diffuse laterally
+        and are collected.</li>
+      <li>The raised field in the oxide reduces recombination of the pairs the ion generated in the
+        oxide itself, increasing hole trapping in the oxide and the leakage current toward the source
+        electrode.</li>
+      <li>If the field exceeds what the weakened oxide can hold, the oxide breaks down, the collected
+        holes discharge through it and heat it locally, and a breakdown current that lasts long enough
+        leaves a permanent short through the oxide.</li>
+    </ol>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 220" role="img" aria-labelledby="m16f9-t">
+        <title id="m16f9-t">Gate rupture: holes from the track pool under the gate oxide in the neck and induce an image charge on the gate, raising the oxide field</title>
+        <rect x="20" y="78" width="400" height="120" class="dg-fill"/>
+        <path d="M20,78 L130,78 L130,112 Q130,124 118,124 L20,124 Z" class="dg-fill"/>
+        <path d="M420,78 L310,78 L310,112 Q310,124 322,124 L420,124 Z" class="dg-fill"/>
+        <rect x="110" y="66" width="220" height="12" class="dg-fill"/>
+        <rect x="114" y="44" width="212" height="22" class="dg-fill"/>
+        <text x="140" y="59" class="dg-label-sm" text-anchor="middle">gate</text>
+        <text x="345" y="74" class="dg-label-sm">gate oxide</text>
+        <text x="40" y="104" class="dg-label-sm">p body</text>
+        <text x="360" y="104" class="dg-label-sm">p body</text>
+        <text x="30" y="170" class="dg-label-sm">n⁻ drift region</text>
+        <text x="30" y="190" class="dg-label-sm">drain at +V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> below</text>
+        <line x1="220" y1="18" x2="220" y2="196" class="dg-line" stroke-width="1.6" stroke-dasharray="5 3"/>
+        <text x="226" y="28" class="dg-label-sm">ion track</text>
+        <g class="dg-label" text-anchor="middle">
+          <text x="190" y="92"><tspan class="dg-acc-f">+ + + + + + +</tspan></text>
+          <text x="252" y="92"><tspan class="dg-acc-f">+ + + +</tspan></text>
+          <text x="220" y="62"><tspan class="dg-acc-f">− − − −</tspan></text>
+        </g>
+        <text x="300" y="112" class="dg-label-sm" text-anchor="start">holes pool at</text>
+        <text x="300" y="125" class="dg-label-sm" text-anchor="start">the interface</text>
+        <line x1="236" y1="160" x2="236" y2="196" class="dg-line" stroke-width="1.2" marker-end="url(#m16f9-a)"/>
+        <text x="244" y="182" class="dg-label-sm">electrons to drain</text>
+        <text x="220" y="214" class="dg-label-sm" text-anchor="middle">neck: drift region reaching the surface under the gate. Schematic.</text>
+        <defs>
+          <marker id="m16f9-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 9.</b> The pooled holes and their image charge on the gate add a transient field
+        across the oxide to the field the gate bias already applies. Rupture occurs where the sum exceeds
+        what the oxide, weakened by the ion's own charge in it, can hold.
+      </figcaption>
+    </figure>
+
+    <p>
+      The signature differs from burnout's (Deck 14 p. 30): the gate current rises sharply, usually
+      followed by a similar rise in drain current, and there is often no damage visible on inspection.
+      Any measurable rise in gate current during irradiation indicates that a rupture may have
+      occurred. The dependences follow from the mechanism (Deck 14 p. 31). Raising the magnitude of
+      <em>V</em><sub>GS</sub> (negative, to hold an n-channel part off) or <em>V</em><sub>DS</sub>
+      raises the rupture cross-section, the first by adding to the field the oxide already holds, the
+      second by driving more holes to the interface. N-channel and p-channel parts are about equally
+      sensitive, which is consistent with a mechanism that involves no carrier multiplication. A higher LET causes rupture at lower <em>V</em><sub>DS</sub> and
+      <em>V</em><sub>GS</sub>. The worst case occurs when the Bragg peak lies near the interface
+      between the epitaxial layer and the substrate, where the deposited charge is largest within the
+      depleted region. On oxide thickness, the slide states that thick oxides (above about 30 nm) need
+      a higher gate voltage to rupture as they thicken, and that thinner ones (below about 30 nm)
+      appear less susceptible because of their higher dielectric strength.
+      <a href="m11-single-event-effects.html">M11</a> §10 showed the thin-oxide case and its precursor
+      damage; the breakdown of thin oxides under electrical stress is treated in
+      <a href="../../EEE6338_Advanced_Microelectronics/site/m06-thin-gate-oxides-conduction-breakdown.html">EEE6338 M06</a> §5.
+    </p>
+
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Feature</th><th>Burnout (SEB)</th><th>Gate rupture (SEGR)</th></tr></thead>
+      <tbody>
+        <tr><td>Failing structure</td><td>Parasitic npn: source, body, drift region</td><td>Gate oxide over the neck</td></tr>
+        <tr><td>Feedback</td><td>Bipolar gain plus avalanche</td><td>None; field exceeds oxide strength</td></tr>
+        <tr><td>Electrical signature</td><td>Drain current rises, gate current unchanged</td><td>Gate current rises, then drain current</td></tr>
+        <tr><td>Visible damage</td><td>Drain area, after delidding</td><td>Often none</td></tr>
+        <tr><td>Gate-bias dependence</td><td>None in the off state</td><td>Strong</td></tr>
+        <tr><td>N- against p-channel</td><td>P-channel much less susceptible</td><td>Similar</td></tr>
+        <tr><td>Can a test circuit stop it?</td><td>Yes, by limiting current (§6)</td><td>No; fully destructive</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>
+      Because a rupture destroys the part, its data are presented as a boundary in the
+      (<em>V</em><sub>DS</sub>, <em>V</em><sub>GS</sub>) plane for a given ion, rather than as a
+      cross-section, and a rupture cross-section, when quoted, is one event divided by the fluence it
+      took (Shenai, Galloway and Schrimpf). Deck 14 p. 31 gives an empirical expression for the
+      critical gate voltage at zero drain bias, the oxide's "capacitor response".
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>crit</sub> = <span class="frac"><span class="num"><em>E</em><sub>BD</sub> · <em>t</em><sub>ox</sub></span><span class="den">1 + <em>Z</em> / 44</span></span></div>
+        <div class="eq-num">(16.2)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>crit</sub> magnitude of the critical gate voltage for rupture (V) ·
+        <em>E</em><sub>BD</sub> breakdown field of the gate oxide (V/cm); the published fit fixes it at
+        10⁷ V/cm · <em>t</em><sub>ox</sub> gate oxide thickness (cm) · <em>Z</em> atomic number of the
+        incident ion, dimensionless. The numerator is the oxide's breakdown voltage without
+        irradiation; the denominator is the reduction an ion of atomic number <em>Z</em> causes.
+        Empirical, at zero drain bias. J. L. Titus, C. F. Wheatley <em>et al.</em>, <em>IEEE Trans.
+        Nucl. Sci.</em> <b>45</b>, 2492 (1998), which replaced the LET-based expression of Wheatley,
+        Titus and Burton, <em>ibid.</em> <b>41</b>, 2152 (1994); Deck 14 p. 31 credits the 1994
+        paper, which used LET, not <em>Z</em>.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Critical gate voltage for three ions</div>
+      <div class="ex-body">
+        <p><b>Given</b> A power MOSFET with a 100 nm gate oxide at zero drain bias, and the published
+        breakdown field of 10 MV/cm, the low end of the 10–15 MV/cm range of
+        <a href="m10-gate-oxide-processing.html">M10</a> §1.
+        <b>Find</b> the critical gate voltage under argon (<em>Z</em> = 18), krypton (<em>Z</em> = 36)
+        and xenon (<em>Z</em> = 54) from (16.2).</p>
+        <p><b>Plan.</b> Compute the numerator once, in consistent units, then divide by each ion's
+        factor. Thickness must be in centimetres because the field is in volts per centimetre.</p>
+        <p class="ex-step"><b>Oxide breakdown voltage.</b> <em>t</em><sub>ox</sub> = 100 nm =
+          1.0×10⁻⁵ cm; <em>E</em><sub>BD</sub><em>t</em><sub>ox</sub> = 1.0×10⁷ V/cm × 1.0×10⁻⁵ cm =
+          100 V. This is <em>V</em><sub>crit</sub> with no ion, <em>Z</em> = 0.</p>
+        <p class="ex-step"><b>Argon.</b> 1 + 18/44 = 1.409; <em>V</em><sub>crit</sub> = 100/1.409 =
+          71 V.</p>
+        <p class="ex-step"><b>Krypton.</b> 1 + 36/44 = 1.818; <em>V</em><sub>crit</sub> = 55 V.</p>
+        <p class="ex-step"><b>Xenon.</b> 1 + 54/44 = 2.227; <em>V</em><sub>crit</sub> = 45 V.</p>
+        <p class="ex-answer"><em>V</em><sub>crit</sub> ≈ 71, 55 and 45 V. Check: the ratio to the
+          unirradiated breakdown voltage depends only on <em>Z</em>, so the same three fractions, 0.71,
+          0.55 and 0.45, apply to any oxide thickness; the heaviest ion more than halves the voltage the
+          oxide can hold.</p>
+      </div>
+    </div>
+
+    <p>
+      Gate rupture also leaves damage that does not fail during the test. Deck 14 p. 33 recommends a
+      <b>post-irradiation gate stress</b> (PIGS) test: if the gate bias during irradiation was small, a
+      strike may produce a latent defect instead of a rupture, and stressing the gate after irradiation
+      exposes it. The same latent-damage question returns for silicon carbide in §5, and its statistics
+      in §7.
+    </p>
+
+    <details class="check">
+      <summary>A power MOSFET under heavy-ion test shows a sudden rise in drain current with no change in gate current; a second sample of the same part, at a higher gate bias, shows the gate current rising first. Identify each event, and state which test circuit can let the first part survive and why it cannot help the second.</summary>
+      <div class="answer">
+        <p>The first is burnout: the parasitic npn conducts from drain to source and the gate is not
+        involved, so only the drain current changes and the gate-bias dependence is absent. The second
+        is gate rupture: the oxide has broken down, so current flows through the gate first, and the
+        higher gate bias raised the oxide field, which is the dependence rupture shows and burnout does
+        not. A series resistance in the drain path, with a capacitor to carry the event's signal to an
+        oscilloscope (§6), lets a burnout be detected while the resistance pulls the drain voltage down
+        and stops the runaway before the filament melts; the part survives and can be struck again,
+        which allows a cross-section to be measured on one device. A rupture is complete once the oxide
+        has broken down — the short exists before any external circuit can respond — so no protective
+        circuit can save the part, and each rupture costs a device.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>5 · Silicon carbide and gallium nitride</h2>
+    <p>
+      Wide-bandgap semiconductors are replacing silicon in power conversion because they hold a given
+      voltage in a far thinner, more heavily doped layer, which cuts on-resistance, size and mass.
+      For spacecraft that saving in size, weight and power is the attraction (Deck 14 p. 18). The same
+      property, a much higher field in the blocking layer, is what makes their destructive single-event
+      response worse than their material constants suggest. This section compares the three materials,
+      works out what the higher field means for a drift layer, and then gives the observed failure
+      modes of each material.
+    </p>
+
+    <h3>The materials compared</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Property</th><th>Si</th><th>4H-SiC</th><th>GaN</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Bandgap (eV)</td><td>1.12</td><td>3.26</td><td>3.39</td><td>Deck 14 p. 15; standard values</td></tr>
+        <tr><td>Critical (breakdown) field (MV/cm)</td><td>≈ 0.3</td><td>≈ 2–3</td><td>≈ 3.3</td><td>Baliga; Deck 14 p. 16 chart</td></tr>
+        <tr><td>Electron–hole pair energy (eV)</td><td>3.6</td><td>7.8</td><td>8.9</td><td>Deck 14 p. 18</td></tr>
+        <tr><td>Displacement threshold energy (eV)</td><td>12.8</td><td>≈ 20</td><td>19</td><td>Deck 14 p. 18</td></tr>
+        <tr><td>Density (g/cm³)</td><td>2.33</td><td>3.21</td><td>6.15</td><td>standard values</td></tr>
+        <tr><td>Thermal conductivity (W cm⁻¹ K⁻¹)</td><td>≈ 1.5</td><td>≈ 3.7–4.9</td><td>≈ 1.3–2.3</td><td>standard values</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      Deck 14 p. 18 reads the pair and displacement energies as inherent radiation hardness: more
+      energy is needed to create a pair and to displace an atom, and both materials tolerate total
+      ionizing dose better than silicon in the semiconductor itself. The 21 Oct lecture added the
+      qualification that their gate dielectrics, not the semiconductor, remain the weak point for dose.
+      Deck 03 p. 37 and <a href="m12-displacement-damage.html">M12</a> use 21 eV for the silicon
+      displacement threshold, against Deck 14's 12.8 eV; both appear in the literature, for
+      different definitions of the threshold.
+    </p>
+
+    <div class="box warn">
+      <p>
+        Deck 14 p. 16 lists high thermal conductivity, "~10× vs. Si", among the advantages of the
+        wide-bandgap materials. Silicon carbide's thermal conductivity is about three times silicon's,
+        and gallium nitride's is comparable to silicon's; neither reaches ten times, and the radar chart
+        on the same slide plots about 1.5, 4.5 and 2.5 W cm⁻¹ K⁻¹. Silicon carbide's advantage in heat
+        removal is real and matters for burnout, which is a thermal failure; gallium nitride's is
+        small, and on a sapphire substrate, a poor thermal conductor, it is lost.
+      </p>
+    </div>
+
+    <h3>What the higher critical field does to a drift layer</h3>
+    <p>
+      The drift region of a vertical power device is a lightly doped layer that is fully depleted at
+      the rated voltage. In a one-sided abrupt junction the field falls linearly from its peak at the
+      junction to zero at the edge of the depletion region, with slope <em>qN</em><sub>D</sub>/<em>ε</em>
+      set by Poisson's equation. The voltage held is the area under that triangle. Designing for the
+      peak field to reach the critical field <em>E</em><sub>c</sub> exactly at the rated voltage fixes
+      both the doping and the thickness.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>V</em><sub>BR</sub> = <span class="frac"><span class="num"><em>ε</em><sub>s</sub> <em>E</em><sub>c</sub><sup>2</sup></span><span class="den">2 <em>q N</em><sub>D</sub></span></span>, &emsp; <em>W</em> = <span class="frac"><span class="num">2 <em>V</em><sub>BR</sub></span><span class="den"><em>E</em><sub>c</sub></span></span></div>
+        <div class="eq-num">(16.3)</div>
+      </div>
+      <div class="eq-says">
+        <em>V</em><sub>BR</sub> breakdown voltage (V) · <em>ε</em><sub>s</sub> semiconductor
+        permittivity (F/cm): 11.7<em>ε</em><sub>0</sub> for Si, 9.7<em>ε</em><sub>0</sub> for 4H-SiC,
+        with <em>ε</em><sub>0</sub> = 8.854×10⁻¹⁴ F/cm · <em>E</em><sub>c</sub> critical field (V/cm)
+        · <em>q</em> = 1.602×10⁻¹⁹ C · <em>N</em><sub>D</sub> drift-region doping (cm⁻³) ·
+        <em>W</em> depletion width at breakdown (cm). Treats <em>E</em><sub>c</sub> as a constant; in
+        practice it rises slowly with doping, so the numbers are estimates.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">A 1200 V drift layer in silicon and in silicon carbide</div>
+      <div class="ex-body">
+        <p><b>Given</b> <em>V</em><sub>BR</sub> = 1200 V; <em>E</em><sub>c</sub> = 0.3 MV/cm for Si
+        and 3 MV/cm for 4H-SiC, the upper end of its range; permittivities as in (16.3). <b>Find</b> the drift-region doping and
+        thickness in each material, and the ratio of their peak fields at the rated voltage.</p>
+        <p><b>Plan.</b> Solve the first half of (16.3) for <em>N</em><sub>D</sub>, then use the second
+        for <em>W</em>. Keep every length in centimetres, so that the doping comes out in cm⁻³.</p>
+        <p class="ex-step"><b>Silicon doping.</b> <em>ε</em><sub>s</sub> = 11.7 × 8.854×10⁻¹⁴ =
+          1.036×10⁻¹² F/cm; <em>E</em><sub>c</sub>² = (3×10⁵ V/cm)² = 9×10¹⁰ V²/cm².
+          <em>N</em><sub>D</sub> = <em>ε</em><sub>s</sub><em>E</em><sub>c</sub>²/(2<em>qV</em><sub>BR</sub>)
+          = (1.036×10⁻¹² × 9×10¹⁰)/(2 × 1.602×10⁻¹⁹ × 1200) = 9.32×10⁻²/3.84×10⁻¹⁶ =
+          2.4×10¹⁴ cm⁻³. Units: F/cm × V²/cm² ÷ (C × V) = (C/V)/cm × V²/cm² ÷ (C·V) = cm⁻³.</p>
+        <p class="ex-step"><b>Silicon thickness.</b> <em>W</em> = 2 × 1200 V / 3×10⁵ V/cm =
+          8.0×10⁻³ cm = 80 µm.</p>
+        <p class="ex-step"><b>Silicon carbide doping.</b> <em>ε</em><sub>s</sub> = 9.7 × 8.854×10⁻¹⁴ =
+          8.59×10⁻¹³ F/cm; <em>E</em><sub>c</sub>² = 9×10¹² V²/cm². <em>N</em><sub>D</sub> =
+          (8.59×10⁻¹³ × 9×10¹²)/3.84×10⁻¹⁶ = 7.73/3.84×10⁻¹⁶ = 2.0×10¹⁶ cm⁻³.</p>
+        <p class="ex-step"><b>Silicon carbide thickness.</b> <em>W</em> = 2400 V / 3×10⁶ V/cm =
+          8.0×10⁻⁴ cm = 8 µm.</p>
+        <p class="ex-step"><b>Compare.</b> The silicon carbide layer is 10 times thinner and about 80
+          times more heavily doped, and at 1200 V its peak field is 3 MV/cm against 0.3 MV/cm, ten
+          times higher. Why the doping ratio is near 100: <em>N</em><sub>D</sub> scales with
+          <em>ε</em><sub>s</sub><em>E</em><sub>c</sub>², and (3/0.3)² × 9.7/11.7 = 83.</p>
+        <p class="ex-answer">Si: 2.4×10¹⁴ cm⁻³ over 80 µm; 4H-SiC: 2.0×10¹⁶ cm⁻³ over 8 µm; the peak
+          field is ten times higher in silicon carbide. Check: both triangles hold the same voltage,
+          ½ × 0.3 MV/cm × 80 µm = ½ × 3 MV/cm × 8 µm = 1200 V. The silicon thickness falls inside the
+          10–120 µm range of real silicon power devices.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="m16f10-t">
+        <title id="m16f10-t">Field against depth in 1200 V drift regions of silicon and silicon carbide, drawn to scale</title>
+        <line x1="60" y1="190" x2="420" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="190" x2="60" y2="36" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="205">0</text><text x="140" y="205">20</text><text x="220" y="205">40</text><text x="300" y="205">60</text><text x="380" y="205">80</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="54" y="194">0</text><text x="54" y="151">1</text><text x="54" y="108">2</text><text x="54" y="65">3</text>
+        </g>
+        <text x="240" y="224" class="dg-label" text-anchor="middle">depth below the junction (µm)</text>
+        <text x="22" y="114" class="dg-label" text-anchor="middle" transform="rotate(-90 22 114)">field (MV/cm)</text>
+        <path d="M60,61.4 L92,190" class="dg-acc" stroke-width="2.4"/>
+        <path d="M60,177.1 L380,190" class="dg-line" stroke-width="2"/>
+        <text x="100" y="72" class="dg-label"><tspan class="dg-acc-f">4H-SiC: 3 MV/cm over 8 µm</tspan></text>
+        <text x="200" y="168" class="dg-label">Si: 0.3 MV/cm over 80 µm</text>
+        <text x="236" y="120" class="dg-label-sm">equal areas: 1200 V each</text>
+      </svg>
+      <figcaption>
+        <b>Figure 10.</b> The two fields of the worked example, to scale. A strike through the silicon
+        carbide layer deposits its charge in a field up to ten times higher than in silicon, so the
+        same current dissipates up to ten times the power density <em>J</em> · <em>E</em>.
+      </figcaption>
+    </figure>
+
+    <p>
+      The higher field is why a wider bandgap does not buy single-event hardness. The charge an ion
+      generates per micrometre depends on the deposited energy per micrometre, which is the mass LET
+      times the density, divided by the pair energy. The pair energy is larger in the wide-bandgap
+      materials, but so is their density.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Charge per micrometre in Si, SiC and GaN at equal LET</div>
+      <div class="ex-body">
+        <p><b>Given</b> LET = 1 MeV·cm²/mg in each material; densities and pair energies from the table.
+        <b>Find</b> the charge generated per micrometre of track in each, in fC/µm.</p>
+        <p><b>Plan.</b> Energy per length = LET × density; pairs per length = energy per length ÷ pair
+        energy; charge per length = pairs × <em>q</em>. Use mg/cm³ for density and convert cm to µm
+        once.</p>
+        <p class="ex-step"><b>Silicon.</b> 1 MeV·cm²/mg × 2330 mg/cm³ = 2330 MeV/cm = 0.233 MeV/µm =
+          2.33×10⁵ eV/µm. ÷ 3.6 eV = 6.47×10⁴ pairs/µm; × 1.602×10⁻¹⁹ C = 1.04×10⁻¹⁴ C/µm =
+          10.4 fC/µm.</p>
+        <p class="ex-step"><b>Silicon carbide.</b> 1 × 3210 mg/cm³ = 0.321 MeV/µm; ÷ 7.8 eV =
+          4.12×10⁴ pairs/µm; = 6.6 fC/µm.</p>
+        <p class="ex-step"><b>Gallium nitride.</b> 1 × 6150 mg/cm³ = 0.615 MeV/µm; ÷ 8.9 eV =
+          6.91×10⁴ pairs/µm; = 11.1 fC/µm.</p>
+        <p class="ex-answer">Si 10.4, SiC 6.6, GaN 11.1 fC/µm per MeV·cm²/mg. Check: the silicon value
+          inverts to 1 pC/µm at LET ≈ 96–97, the rule used in §1. At equal mass LET gallium nitride
+          generates slightly more charge per micrometre than silicon, because its density more than
+          compensates for its larger pair energy; silicon carbide generates about two-thirds as much.
+          The same ion has a lower mass LET in gallium nitride than in silicon, because gallium nitride
+          has fewer electrons per gram, so for one ion both wide-bandgap materials generate less charge
+          per unit distance than silicon, as the IEEE NSREC 2024 Short Course states.</p>
+      </div>
+    </div>
+
+    <p>
+      The two examples together give the comparison Deck 14 p. 18 leaves implicit. The trigger
+      charge differs between the three materials by less than a factor of two; the field it lands in
+      differs by up to a factor of ten. The IEEE NSREC 2024 Short Course draws the same conclusion:
+      silicon carbide devices are more sensitive to burnout because of a much higher heat-generation
+      density, and their burnout threshold is not necessarily higher than that of silicon diodes of
+      the same rating, because their peak fields are much higher. That is why Deck 14 p. 19 calls the susceptibility of silicon carbide
+      power devices to single-event catastrophic failure an unexpected barrier to their use in space,
+      and why the 19 Oct lecture concluded that the high field dominates the weakness and must be
+      handled by derating and design trade-offs.
+    </p>
+
+    <h3>Silicon carbide: leakage, then burnout</h3>
+    <p>
+      Silicon carbide power MOSFETs and diodes show three destructive or permanent effects under heavy
+      ions: gate rupture, single-event leakage current and burnout (Deck 14 p. 39). Their onset
+      depends on the applied voltage as a fraction of the rating, and diodes and MOSFETs fail at
+      similar fractions, which points to the field in the shared drift region, not the gate or
+      channel, as the controlling quantity (Deck 14 p. 39). The response divides into three regions
+      as the reverse bias is raised (Deck 14 pp. 39–41, 48; Martinella <em>et al.</em> 2022):
+    </p>
+    <ul>
+      <li><b>Charge collection only.</b> At low bias each strike produces a current transient and the
+        leakage returns to its previous value.</li>
+      <li><b>Single-event leakage current.</b> At moderate bias each strike can leave a small permanent
+        increase in drain and gate leakage, so the leakage climbs with fluence. Deck 14 p. 41 labels it
+        heavy-ion displacement damage formed under the bias during irradiation, located in the
+        p–n-junction and JFET regions of a MOSFET, and notes that the growth with fluence complicates
+        the assessment of the tested parts.</li>
+      <li><b>Burnout.</b> At higher bias a single strike causes immediate catastrophic failure.</li>
+    </ul>
+    <div class="box warn">
+      <p>
+        Deck 14 p. 41 calls the leakage damage displacement damage. The papers it draws on describe a
+        thermal mechanism instead: Martinella <em>et al.</em> (2022) attribute it to localized Joule
+        heating along the track that leaves extended defects, and the IEEE NSREC 2024 Short Course to
+        thermal spikes. Read "displacement damage" on the slide as permanent lattice damage along the
+        track, not as the non-ionizing-energy-loss mechanism of
+        <a href="m12-displacement-damage.html">M12</a>.
+      </p>
+    </div>
+    <p>
+      The thresholds are low fractions of the voltage a device is built to block, and the sources
+      normalize them in two ways, to the rating and to the measured breakdown voltage, which differ.
+      In 1200 V junction-barrier Schottky diodes the burnout threshold is about 40% of the rated
+      voltage, about 500 V (Deck 14 p. 40, Sengupta <em>et al.</em> 2023). In the diodes rated
+      650–3300 V that Deck 14 p. 45 plots, immediate failure occurs between 30% and 47% of the
+      measured breakdown voltage, even at the lowest LET tested, 2.9 MeV·cm²/mg with neon. The
+      heavy-ion response saturates at LETs well below those that typical mission requirements specify
+      (Deck 14 p. 45); the saturated burnout threshold is about 500 V for 1200 V parts and about 800 V
+      for 3300 V parts, roughly 30% and 20% of their avalanche breakdown voltages, or about 42% and
+      24% of their ratings (<a href="m11-single-event-effects.html">M11</a> §10). Voltage rating, epitaxial thickness and
+      doping move the thresholds substantially, which Deck 14 p. 46 states as a call for structural and
+      process optimization. Martinella <em>et al.</em> sectioned a failed 1.2 kV MOSFET from
+      Wolfspeed's second generation with a focused ion beam and imaged it with secondary and
+      backscattered electrons (Deck 14 pp. 43–44). That device had survived the heavy-ion exposure
+      and failed afterwards, in a post-irradiation drain-voltage measurement: latent damage. The
+      failure left a hole about 30 × 20 µm across and about 18 µm deep through the epitaxial layer,
+      where the silicon carbide had decomposed.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 220" role="img" aria-labelledby="m16f12-t">
+        <title id="m16f12-t">Drain leakage against fluence for a silicon carbide device at low, moderate and high bias: transients only, stepwise leakage growth, and burnout</title>
+        <line x1="60" y1="180" x2="420" y2="180" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="180" x2="60" y2="24" class="dg-rule" stroke-width="1.2"/>
+        <text x="240" y="212" class="dg-label" text-anchor="middle">fluence (time under beam)</text>
+        <text x="24" y="104" class="dg-label" text-anchor="middle" transform="rotate(-90 24 104)">drain leakage, log</text>
+        <path d="M60,166 L120,166 L122,150 L124,166 L220,166 L222,152 L224,166 L330,166 L332,151 L334,166 L410,166" class="dg-line" stroke-width="1.4"/>
+        <path d="M60,140 L110,140 L110,132 L170,132 L170,121 L230,121 L230,113 L290,113 L290,104 L350,104 L350,97 L410,97" class="dg-line" stroke-width="1.8" stroke-dasharray="6 3"/>
+        <path d="M60,118 L100,118 L100,108 L150,108 L150,98 L180,98 L182,30 L196,30" class="dg-acc" stroke-width="2.4"/>
+        <text x="404" y="160" class="dg-label-sm" text-anchor="end">low bias: transients only</text>
+        <text x="404" y="90" class="dg-label-sm" text-anchor="end">moderate bias: SELC steps</text>
+        <text x="200" y="34" class="dg-label"><tspan class="dg-acc-f">high bias: SEB</tspan></text>
+      </svg>
+      <figcaption>
+        <b>Figure 11.</b> Schematic of the three regions on Deck 14 pp. 39–41. At moderate bias each
+        strike can add a permanent step of leakage; at high bias one strike destroys the device. Under
+        test the instrument's current limit truncates the burnout trace.
+      </figcaption>
+    </figure>
+
+    <p>
+      Strikes that neither burn out the device nor raise its leakage much still weaken it. Deck 14
+      p. 42 reports time-dependent dielectric breakdown failures in gate-oxide stress tests after
+      irradiation, with a dependence on the drain bias during irradiation and on the LET, and states
+      that heavy-ion-induced damage degrades long-term reliability; the paper it cites, Niskanen
+      <em>et al.</em> (2023), shows the effect after 53 MeV proton irradiation. Martinella
+      <em>et al.</em> (2022) titled their heavy-ion study for the same finding, latent damage. A part that survives a heavy-ion test is not shown by that survival to be undamaged, which
+      §7 turns into a statistical question.
+    </p>
+
+    <h3>Gallium nitride: no junction, but high-field corners</h3>
+    <p>
+      A gallium nitride high-electron-mobility transistor (HEMT) conducts through a
+      <b>two-dimensional electron gas</b> (2DEG), a sheet of electrons confined at the
+      heterojunction between an AlGaN barrier and the GaN layer (Deck 14 p. 35), where the difference
+      in polarization between the two materials induces it without doping (Johnston 2010). The device is lateral:
+      source, gate and drain sit on the surface, over a GaN buffer grown on silicon or sapphire. A plain
+      HEMT is normally on, because the 2DEG exists at zero gate bias; power switches are made normally
+      off by a p-type GaN layer under the gate that depletes the 2DEG beneath it, the enhancement-mode
+      or e-mode device. The structure has no p–n junction in the current path, so it has no parasitic
+      bipolar transistor and no avalanche breakdown in the silicon sense; Deck 14 p. 35 puts it as
+      "no junctions, no avalanche". It still holds the drain voltage across short regions, at the
+      drain-side edge of the gate and at the ends of the field plates that spread that field, and
+      across the buffer to the substrate. Those regions fail.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="m16f11-t">
+        <title id="m16f11-t">Enhancement-mode GaN HEMT cross-section with two-dimensional electron gas, p-GaN gate, field plate, high-field region and the paths of burnout, leakage and dielectric rupture</title>
+        <rect x="10" y="178" width="420" height="28" class="dg-fill"/>
+        <rect x="10" y="102" width="420" height="76" class="dg-fill"/>
+        <rect x="10" y="88" width="420" height="14" class="dg-fill"/>
+        <rect x="20" y="66" width="56" height="22" class="dg-fill"/>
+        <rect x="364" y="66" width="56" height="22" class="dg-fill"/>
+        <rect x="140" y="74" width="34" height="14" class="dg-fill"/>
+        <rect x="140" y="62" width="34" height="12" class="dg-fill"/>
+        <rect x="140" y="50" width="100" height="6" class="dg-fill"/>
+        <text x="48" y="60" class="dg-label-sm" text-anchor="middle">source</text>
+        <text x="392" y="60" class="dg-label-sm" text-anchor="middle">drain</text>
+        <text x="157" y="44" class="dg-label-sm" text-anchor="middle">gate</text>
+        <text x="236" y="44" class="dg-label-sm" text-anchor="middle">field plate</text>
+        <text x="122" y="84" class="dg-label-sm" text-anchor="end">p-GaN</text>
+        <text x="300" y="98" class="dg-label-sm">AlGaN</text>
+        <line x1="20" y1="104" x2="138" y2="104" class="dg-line" stroke-width="1.4" stroke-dasharray="3 2"/>
+        <line x1="176" y1="104" x2="420" y2="104" class="dg-line" stroke-width="1.4" stroke-dasharray="3 2"/>
+        <text x="60" y="118" class="dg-label-sm">2DEG</text>
+        <text x="200" y="160" class="dg-label-sm">GaN buffer</text>
+        <text x="20" y="197" class="dg-label-sm">Si or sapphire substrate</text>
+        <ellipse cx="200" cy="96" rx="30" ry="9" class="dg-acc" stroke-width="2"/>
+        <text x="206" y="128" class="dg-label"><tspan class="dg-acc-f">peak field</tspan></text>
+        <line x1="392" y1="90" x2="392" y2="176" class="dg-line" stroke-width="1.4" marker-end="url(#m16f11-a)"/>
+        <text x="386" y="140" class="dg-label-sm" text-anchor="end">SEB, SELC:</text>
+        <text x="386" y="153" class="dg-label-sm" text-anchor="end">drain → substrate</text>
+        <text x="250" y="70" class="dg-label-sm">SEDR: plate dielectric</text>
+        <text x="220" y="224" class="dg-label-sm" text-anchor="middle">Schematic, not to scale.</text>
+        <defs>
+          <marker id="m16f11-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-ink"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 12.</b> The 2DEG is interrupted under the p-GaN gate, which makes the device normally
+        off. The off-state drain voltage concentrates at the drain-side gate and field-plate edges and
+        across the buffer; the three failure modes of Deck 14 p. 36 follow those paths.
+      </figcaption>
+    </figure>
+
+    <p>
+      Deck 14 p. 36 lists the three modes, with the caveat that their mechanisms are active research.
+      <b>Burnout</b> is a fully destructive drain–substrate short with a large rise in drain current; it
+      needs a high voltage, but its cross-section is not negligible (Zerarka <em>et al.</em>, from
+      device simulation). <b>Single-event leakage current</b> is a moderate but instantaneous rise in
+      drain current from permanent damage at the drain–substrate interface (Abbate <em>et al.</em>).
+      <b>Single-event dielectric rupture</b> is breakdown of the dielectric under the field plate
+      between gate and drain, which raises both drain and gate current; its cross-section is low.
+      Deck 14 p. 37 summarizes tests at CERN with high-energy neutrons and protons at 90–100% of the
+      maximum bias: 100 V parts showed no burnout, and 600 V parts could burn out, with lower
+      cross-sections than the silicon MOSFETs tested alongside. Deck 14 p. 38 shows heavy-ion leakage
+      and burnout in e-mode devices (Billa <em>et al.</em>, NSREC 2025), and the 21 Oct lecture
+      described the pattern seen in the course's own heavy-ion data: drain leakage rising in steps at
+      successive strikes without recovering, then a sudden burnout. The lecture's group tested these
+      devices without the current-limited burnout circuit of §6, since no bipolar mode needs
+      separating, and without a gate load, since the p-GaN gate has no gate dielectric to rupture.
+    </p>
+
+    <details class="check">
+      <summary>Explain why a 1200 V silicon carbide MOSFET can burn out at a lower fraction of its rating than a 1200 V silicon MOSFET, even though silicon carbide needs more than twice the energy to create an electron–hole pair.</summary>
+      <div class="answer">
+        <p>Burnout depends on the field the ion's charge lands in, not only on the amount of charge.
+        Charge per micrometre at equal LET is LET × density ÷ pair energy: 10.4 fC/µm in silicon and
+        6.6 fC/µm in silicon carbide, so the trigger is only about a third smaller. The drift region
+        that holds 1200 V is about 8 µm thick in silicon carbide at a peak field near 3 MV/cm, against
+        about 80 µm and 0.3 MV/cm in silicon (16.3). A track through the silicon carbide layer therefore
+        places its carriers in a field up to ten times higher, and the power density
+        <em>J</em>·<em>E</em> that heats the filament is up to ten times higher for the same current;
+        the IEEE NSREC 2024 Short Course identifies this heat-generation density, not impact ionization,
+        as the reason silicon carbide diodes burn out. Measured burnout thresholds of silicon carbide
+        devices, near 40% of rating and 20–47% of breakdown depending on the device and the
+        normalization, reflect this; the pair-energy advantage is outweighed by the field.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>6 · Measuring destructive events</h2>
+    <p>
+      A destructive event is measured by counting events per unit fluence, the cross-section of
+      <a href="m11-single-event-effects.html">M11</a> §6, but three things make it harder than counting
+      upsets: each event can cost a device, the counts are small, and the ion must reach a sensitive
+      region tens of micrometres deep. This section gives the standard test, the conditions the beam
+      must meet, and the statistics of small and zero counts.
+    </p>
+
+    <h3>The test</h3>
+    <p>
+      Burnout and gate-rupture tests of power MOSFETs follow MIL-STD-750 Method 1080 (Deck 14
+      pp. 26, 33). For burnout, a drain–source voltage is applied with the gate well below threshold,
+      normally at 0 V, so the device is off; the gate and drain currents are monitored; and the part is
+      irradiated until it fails or until a maximum fluence, 1×10⁷ ions/cm² for heavy ions, is reached.
+      For gate rupture the gate bias is a test variable as well. Deck 14 p. 27 gives the burnout test
+      circuit. A series resistor <em>R</em><sub>1</sub> in the drain supply limits the current during an
+      event, so the drain voltage collapses before the filament melts; a capacitor
+      <em>C</em><sub>1</sub>, with a series resistor <em>R</em><sub>p</sub> to limit its discharge,
+      carries the event's pulse to an oscilloscope; a terminating resistor <em>R</em><sub>3</sub>
+      prevents reflections on the line; and two switches move the circuit between test and
+      characterization modes.
+    </p>
+    <p>
+      The protective circuit makes non-destructive burnout counting possible, and Deck 14 p. 26 lists
+      what that buys and what it risks. Fewer parts are needed, which matters most when low-energy
+      heavy ions require the parts to be delidded; a cross-section, events per fluence on one device,
+      is a more direct and more accurate measure of sensitivity than the fluence to the first failure;
+      and more development testing becomes affordable. The risks are that the circuit may suppress
+      events that would have been destructive, and that a counted event may not be a real burnout.
+      Gate rupture has no protective circuit (Deck 14 p. 33): many devices are needed to build a
+      cross-section, and each data point needs fresh parts.
+    </p>
+
+    <h3>What the beam must reach</h3>
+    <p>
+      The ion must deposit its charge in the sensitive region, which for a power device means through
+      the drift region to the substrate. Deck 14 p. 51 states the requirement directly: ions with
+      enough energy to penetrate into the substrate. The LET of an ion is not constant along its path;
+      it rises to the Bragg peak near the end of its range (Deck 14 p. 10;
+      <a href="m04-quantifying-energy-deposition.html">M04</a> §2), so the same species at different
+      energies probes different depths with different LETs. On Deck 14 p. 28 the lowest-energy xenon
+      beam gave the largest burnout cross-section at a given bias; the 21 Oct lecture explained that
+      its Bragg peak lay in the sensitive region, while the higher-energy xenon beams passed through it
+      at a lower LET. For gate rupture the worst case is a Bragg peak near the interface between the
+      epitaxial layer and the substrate (§4). Range in a given material is calculated with SRIM
+      (<a href="../../EEL5385_Space_Electronics/site/m13-srim-trim.html">EEL5385 M13</a>).
+    </p>
+    <p>
+      Four further conditions are listed on Deck 14 p. 51. Because the heavy-ion response saturates at
+      LETs below typical requirements, tests with lighter ions at lower LET are needed to see
+      differences between designs and to support on-orbit risk assessment. The angle of incidence,
+      the sample temperature and the sample preparation all change the result. And the test fluence is
+      itself a problem in silicon carbide: leakage degradation accumulates with fluence, so the
+      fluence needed to establish a burnout threshold also damages the part, which Deck 14 p. 51 calls
+      the most significant challenge to testing silicon carbide power devices. Proton and neutron tests
+      are indirect: the destructive events come from nuclear reactions of the incident particle, whose
+      recoils carry the high LET (<a href="m11-single-event-effects.html">M11</a> §11).
+    </p>
+
+    <h3>Cross-sections from small counts</h3>
+    <p>
+      The cross-section at each bias is the count divided by the fluence. A count of <em>N</em>
+      independent events is a sample from a Poisson distribution, so its standard deviation is
+      √<em>N</em> and its relative uncertainty is 1/√<em>N</em>: a count of 4 carries a 50% uncertainty,
+      a count of 100 a 10% one. When no events occur, the count gives no estimate at all, only an upper
+      bound. If the true cross-section is <em>σ</em>, the expected number of events in fluence Φ is
+      <em>σ</em>Φ, and the Poisson probability of observing none is exp(−<em>σ</em>Φ). The one-sided
+      upper bound at confidence level <em>C</em> is the cross-section for which observing zero events
+      would be that improbable: exp(−<em>σ</em>Φ) = 1 − <em>C</em>.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>σ</em> = <span class="frac"><span class="num"><em>N</em></span><span class="den">Φ</span></span>, &emsp; <em>σ</em><sub>95</sub> = <span class="frac"><span class="num">−ln(1 − 0.95)</span><span class="den">Φ</span></span> = <span class="frac"><span class="num">ln 20</span><span class="den">Φ</span></span> ≈ <span class="frac"><span class="num">3.0</span><span class="den">Φ</span></span> &ensp; (<em>N</em> = 0)</div>
+        <div class="eq-num">(16.4)</div>
+      </div>
+      <div class="eq-says">
+        <em>σ</em> event cross-section (cm²) · <em>N</em> number of events, dimensionless ·
+        Φ fluence (ions/cm²) · <em>σ</em><sub>95</sub> one-sided 95% upper bound on <em>σ</em> when no
+        event is seen (cm²). For a 90% bound the constant is ln 10 = 2.30. For
+        <em>N</em> ≥ 1 the one-sided 95% upper bounds on the expected count are 4.74 (<em>N</em> = 1),
+        6.30 (2), 7.75 (3), 9.15 (4) and 10.51 (5), each divided by Φ (Gehrels, <em>Astrophys. J.</em>
+        <b>303</b>, 336, 1986). Assumes independent events and a constant cross-section during the run.
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="m16f13-t">
+        <title id="m16f13-t">Probability of observing zero events against the expected number of events, with the 5 percent level reached at 3</title>
+        <line x1="60" y1="190" x2="410" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="190" x2="60" y2="36" class="dg-rule" stroke-width="1.2"/>
+        <g class="dg-label-sm" text-anchor="middle">
+          <text x="60" y="205">0</text><text x="128" y="205">1</text><text x="196" y="205">2</text><text x="264" y="205">3</text><text x="332" y="205">4</text><text x="400" y="205">5</text>
+        </g>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="54" y="194">0</text><text x="54" y="119">0.5</text><text x="54" y="44">1</text>
+        </g>
+        <text x="235" y="224" class="dg-label" text-anchor="middle">expected events σΦ</text>
+        <text x="22" y="113" class="dg-label" text-anchor="middle" transform="rotate(-90 22 113)">P(zero events)</text>
+        <path d="M60,40 L94,99 L128,134.8 L162,156.5 L196,169.7 L230,177.7 L264,182.5 L298,185.5 L332,187.3 L400,189" class="dg-acc" stroke-width="2.2"/>
+        <line x1="60" y1="182.5" x2="400" y2="182.5" class="dg-guide" stroke-dasharray="4 3"/>
+        <line x1="264" y1="190" x2="264" y2="60" class="dg-guide" stroke-dasharray="4 3"/>
+        <text x="270" y="74" class="dg-label-sm">σΦ = 3.0</text>
+        <text x="404" y="176" class="dg-label-sm" text-anchor="end">P = 0.05</text>
+        <text x="110" y="70" class="dg-label"><tspan class="dg-acc-f">P = exp(−σΦ)</tspan></text>
+      </svg>
+      <figcaption>
+        <b>Figure 13.</b> A device whose true cross-section gives three expected events in the test
+        fluence would show none 5% of the time. A run with no events therefore bounds
+        <em>σ</em>Φ below 3 at 95% confidence; it does not show <em>σ</em> = 0.
+      </figcaption>
+    </figure>
+
+    <p>
+      Zero events does not prove immunity, for two reasons. Statistically, it bounds the cross-section
+      at 3/Φ, and a larger fluence would lower the bound but never to zero. Physically, the bound holds
+      only for the conditions tested: one ion, one energy and range, one angle, one temperature and one
+      bias. A different ion that places its Bragg peak deeper, or a bias a few percent higher on the
+      steep part of the curve, can produce events where none were seen.
+    </p>
+    <p>
+      Comparing devices of different ratings needs the voltage normalized to the rating,
+      <em>V</em><sub>DS</sub>/<em>V</em><sub>rated</sub>. A device is designed so that its drift-region
+      field approaches the critical field at its rated voltage (16.3), so equal fractions of rating
+      correspond to roughly comparable peak fields in different devices, and thresholds stated as
+      fractions of rating — no burnout below 50% in the silicon MOSFET of Deck 14 p. 28, about 40% in
+      the 1200 V silicon carbide diodes of p. 40 — can be compared across ratings and technologies. A
+      fraction of the measured breakdown voltage is a different scale, because parts break down above
+      their rating. The normalization is approximate: the saturated burnout
+      threshold of silicon carbide is a smaller fraction for 3300 V parts than for 1200 V parts
+      (<a href="m11-single-event-effects.html">M11</a> §10), because drift-region thickness and doping
+      do not scale exactly with the rating.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Burnout cross-sections, a ratio and a zero-event bound</div>
+      <div class="ex-body">
+        <p><b>Given</b> A 200 V-rated silicon power MOSFET is tested at LET 60 MeV·cm²/mg, each bias on a
+        fresh device, to a fluence of 3×10⁶ ions/cm². Counted burnouts, with a protective circuit: 0 at
+        90 V, 2 at 110 V, 9 at 130 V. The data are illustrative. <b>Find</b> the normalized voltages, the
+        cross-sections and their uncertainties, the ratio of the 130 V and 110 V cross-sections, and the
+        95% upper bound at 90 V.</p>
+        <p><b>Plan.</b> Normalize by the rating; divide counts by fluence; attach √<em>N</em>; use
+        (16.4) for the zero count. Then compare the measured cross-section at 110 V with the bound at
+        90 V, which is the trap the example is built to expose.</p>
+        <p class="ex-step"><b>Normalized voltage.</b> 90/200 = 0.45; 110/200 = 0.55; 130/200 = 0.65.</p>
+        <p class="ex-step"><b>Cross-sections.</b> 110 V: <em>σ</em> = 2/3×10⁶ = 6.7×10⁻⁷ cm², relative
+          uncertainty 1/√2 = 71%. 130 V: <em>σ</em> = 9/3×10⁶ = 3.0×10⁻⁶ cm², relative uncertainty
+          1/√9 = 33%.</p>
+        <p class="ex-step"><b>Ratio.</b> 3.0×10⁻⁶/6.7×10⁻⁷ = 4.5, for an 18% rise in voltage. Its
+          relative uncertainty, combining the two in quadrature, is √(0.71² + 0.33²) = 78%. What the
+          ratio says about the field: the peak drift-region field rises by between about 9% (∝ √<em>V</em>,
+          for a depletion region that has not reached the substrate) and at most 18% (linear in
+          <em>V</em> once it has, though not proportional),
+          yet the cross-section rises by a factor of several. A response that grows much faster than the
+          field is the signature of impact ionization, whose coefficient rises exponentially with field
+          (Chynoweth's law, <em>α</em> = <em>a</em> exp(−<em>b</em>/<em>E</em>)).</p>
+        <p class="ex-step"><b>Bound at 90 V.</b> <em>σ</em><sub>95</sub> = 3.0/3×10⁶ = 1.0×10⁻⁶ cm².</p>
+        <p class="ex-answer">0.45, 0.55, 0.65 of rating; <em>σ</em> = 6.7×10⁻⁷ cm² (±71%) at 110 V and
+          3.0×10⁻⁶ cm² (±33%) at 130 V; ratio 4.5; <em>σ</em><sub>95</sub> ≤ 1.0×10⁻⁶ cm² at 90 V. Check:
+          the bound at 90 V is larger than the measured cross-section at 110 V. That is not a
+          contradiction: a bound states what the data cannot exclude, not what the device does. To push
+          the 90 V bound below the 110 V estimate the fluence would have to exceed 3.0/6.7×10⁻⁷ =
+          4.5×10⁶ ions/cm².</p>
+      </div>
+    </div>
+
+    <details class="check">
+      <summary>A 650 V gallium nitride transistor shows no burnout in 5×10⁶ ions/cm² at 520 V. Give the one-sided 90% and 95% upper bounds on its burnout cross-section, its normalized voltage, and two reasons the result does not establish that 520 V is safe in orbit.</summary>
+      <div class="answer">
+        <p>Normalized voltage: 520/650 = 0.80. The 95% bound is 3.0/5×10⁶ = 6.0×10⁻⁷ cm²; the 90%
+        bound is 2.30/5×10⁶ = 4.6×10⁻⁷ cm². A lower confidence gives a lower bound because it accepts a
+        larger chance that the true value lies above it. The result does not establish safety, first
+        because zero events only bounds the cross-section: the device could have a cross-section of
+        5×10⁻⁷ cm² and still produce no event in this fluence with substantial probability, here
+        exp(−5×10⁻⁷ × 5×10⁶) = exp(−2.5) = 8%. Second, the bound applies only to the ion, energy,
+        range, angle, temperature and bias of the test: an ion whose Bragg peak sits in the
+        drain–substrate high-field region, a higher temperature, or a transient overshoot of the drain
+        voltage above 520 V in the flight circuit could produce burnout that this test could not
+        see.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>7 · From test data to a flight decision</h2>
+    <p>
+      A single-event upset rate can be calculated from a cross-section curve and the environment's LET
+      spectrum (<a href="m11-single-event-effects.html">M11</a> §8). For burnout and gate rupture no
+      such method has been validated (Deck 14 p. 50). The test data are used instead to draw a boundary
+      — a safe operating area — and the part is operated inside it with a margin. This section gives
+      that procedure, the probability arithmetic that supports it and its limits, the statistics of
+      latent damage, and the levers available when the safe area is too small.
+    </p>
+
+    <h3>The safe operating area and derating</h3>
+    <p>
+      Deck 14 p. 50 states the practice. Test standards and guidelines set worst-case test conditions
+      to bound the on-orbit susceptibility; because there is no validated rate prediction for burnout or
+      gate rupture, the heavy-ion data define a response curve that delineates a safe operating voltage
+      area for the beam conditions tested, and devices are operated below the threshold biases for
+      failure. Burnout and gate-rupture test-method standards for silicon carbide are still being
+      developed. In practice the boundary is the threshold drain voltage (for burnout) or the
+      (<em>V</em><sub>DS</sub>, <em>V</em><sub>GS</sub>) rupture boundary (for gate rupture) against LET,
+      up to the highest LET the mission must survive, and the operating point is placed below it by a
+      derating margin.
+    </p>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 230" role="img" aria-labelledby="m16f14-t">
+        <title id="m16f14-t">Safe operating area: burnout threshold voltage as a fraction of rating against LET, with a derated operating voltage below it</title>
+        <line x1="60" y1="190" x2="410" y2="190" class="dg-rule" stroke-width="1.2"/>
+        <line x1="60" y1="190" x2="60" y2="36" class="dg-rule" stroke-width="1.2"/>
+        <rect x="61" y="146" width="339" height="43" class="dg-fill"/>
+        <path d="M68.5,62.5 L81.3,85 L102.5,107.5 L145,122.5 L230,128.5 L400,130" class="dg-acc" stroke-width="2.4"/>
+        <line x1="60" y1="145" x2="400" y2="145" class="dg-line" stroke-width="1.6" stroke-dasharray="6 3"/>
+        <g class="dg-label-sm" text-anchor="end">
+          <text x="54" y="194">0</text><text x="54" y="119">0.5</text><text x="54" y="44">1</text>
+        </g>
+        <text x="235" y="212" class="dg-label" text-anchor="middle">LET (MeV·cm²/mg)</text>
+        <text x="22" y="113" class="dg-label" text-anchor="middle" transform="rotate(-90 22 113)">V<tspan baseline-shift="sub" style="font-size:75%">DS</tspan> / V<tspan baseline-shift="sub" style="font-size:75%">rated</tspan></text>
+        <text x="150" y="104" class="dg-label"><tspan class="dg-acc-f">burnout threshold</tspan></text>
+        <text x="396" y="140" class="dg-label-sm" text-anchor="end">derated operating limit</text>
+        <text x="230" y="172" class="dg-label">safe operating area</text>
+        <line x1="340" y1="190" x2="340" y2="196" class="dg-rule"/>
+        <text x="340" y="206" class="dg-label-sm" text-anchor="middle">mission LET</text>
+      </svg>
+      <figcaption>
+        <b>Figure 14.</b> Schematic. The threshold falls with LET and, for silicon carbide, saturates
+        (§5). The operating limit is set below the threshold at the highest LET the mission must
+        survive, which in the saturated regime is a fixed fraction of the rating.
+      </figcaption>
+    </figure>
+
+    <p>
+      Derating rules summarize such curves. For silicon, Deck 14 p. 28 notes that no burnout occurred
+      below 50% of the rated voltage in its data, so derating to below 50% is usable as a rule of thumb,
+      with the slide's warning that the radiation engineer's judgement must never be dropped. The
+      warning has force: the silicon-against-silicon-carbide MOSFET plot on Deck 14 p. 45, which carries
+      no reference, shows silicon parts failing at 20–40% of their normalized voltage above an LET of
+      about 25 MeV·cm²/mg, so the 50% figure is one part's result, not a property of silicon. Johnston
+      states that burnout of silicon power devices usually requires an LET above 20 MeV·cm²/mg when the
+      devices are not operated near their voltage limits, and that accepted practice for space derates
+      by at least 20%. For atmospheric neutrons, Normand concluded from beam tests that burnout is a
+      concern only in devices rated above about 400 V, and becomes negligible when such devices are
+      derated to below about 300 V (Normand, in Schrimpf and Fleetwood, 2004). Silicon carbide needs
+      deeper derating: thresholds near 40% of rating, and 20–47% of breakdown (§5), mean a 1200 V part may be usable only
+      at a few hundred volts in a heavy-ion environment, which the 19 and 21 Oct lectures gave as the
+      reason silicon carbide power MOSFETs have not yet been widely flown. The derating gives back much
+      of the voltage advantage that made the material attractive.
+    </p>
+
+    <h3>Probability of an event in a mission</h3>
+    <p>
+      Where a cross-section and a mission fluence at the same condition are available, the expected
+      number of events is <em>σ</em>Φ<sub>mission</sub>, and if events are independent the number in
+      flight is Poisson-distributed. The probability of at least one is one minus the probability of
+      none.
+    </p>
+
+    <div class="eq">
+      <div class="eq-body">
+        <div class="eq-math"><em>P</em>(≥ 1) = 1 − exp(−<em>σ</em> Φ<sub>mission</sub>) ≈ <em>σ</em> Φ<sub>mission</sub> &ensp; (<em>σ</em>Φ<sub>mission</sub> ≪ 1)</div>
+        <div class="eq-num">(16.5)</div>
+      </div>
+      <div class="eq-says">
+        <em>P</em>(≥ 1) probability of one or more events in the mission, dimensionless ·
+        <em>σ</em> cross-section at the flight condition (cm²) · Φ<sub>mission</sub> fluence over the
+        mission of particles able to cause the event (particles/cm²). The approximation overestimates by
+        about 5% at <em>σ</em>Φ = 0.1 and by less below it. Both quantities must refer to the same LET, angle and
+        bias.
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-head">Mission burnout probability, point estimate against bound</div>
+      <div class="ex-body">
+        <p><b>Given</b> The MOSFET of the §6 example is to be flown at 110 V, and the mission is
+        represented, for illustration, by a fluence of 1×10⁴ ions/cm² at the tested LET. <b>Find</b>
+        <em>P</em>(≥ 1 burnout) from the measured cross-section and from its 95% upper bound, and the
+        same for a design that flies at 90 V.</p>
+        <p><b>Plan.</b> Apply (16.5) to the point estimate and to the bound. For two events the 95% upper
+        bound on the expected count is 6.30 (16.4); for zero it is 3.0.</p>
+        <p class="ex-step"><b>110 V, point estimate.</b> <em>σ</em>Φ = 6.7×10⁻⁷ × 1×10⁴ = 6.7×10⁻³;
+          <em>P</em> = 1 − exp(−0.0067) = 0.0067.</p>
+        <p class="ex-step"><b>110 V, 95% bound.</b> <em>σ</em><sub>95</sub> = 6.30/3×10⁶ =
+          2.1×10⁻⁶ cm²; <em>σ</em>Φ = 0.021; <em>P</em> = 1 − exp(−0.021) = 0.021.</p>
+        <p class="ex-step"><b>90 V, bound only.</b> <em>σ</em><sub>95</sub>Φ = 1.0×10⁻⁶ × 1×10⁴ = 0.010;
+          <em>P</em> ≤ 1 − exp(−0.010) = 0.010. No point estimate exists, because no event was seen.</p>
+        <p class="ex-answer">At 110 V, <em>P</em> ≈ 0.7% from the estimate and up to 2.1% at 95%
+          confidence; at 90 V, <em>P</em> ≤ 1.0% at 95% confidence. Check: every <em>σ</em>Φ is well below
+          0.1, so <em>P</em> ≈ <em>σ</em>Φ to within about 1%. With only two counts the bound is three times the
+          estimate, so the statistical uncertainty of the test is as large as the decision.</p>
+      </div>
+    </div>
+
+    <p>
+      The arithmetic is simple and its assumptions are not, which is why Deck 14 p. 50 declines to call
+      it a rate prediction. Seven limits apply. The space environment is a spectrum of ions over all
+      LETs and angles, and collapsing it to one fluence "at the tested condition" is the step no
+      validated method supports. The cross-section has the statistical uncertainty of a small count,
+      and a decision should use its upper bound. The test used one ion, energy, range and angle, and a
+      flight ion with a deeper Bragg peak or a grazing path can be worse. Temperature in flight can
+      differ from the test. Parts vary from device to device and lot to lot, and a few devices per
+      condition sample that variation poorly. The flight bias is not constant: switching transients
+      can carry the drain voltage above its nominal value onto the steep part of the cross-section
+      curve. And the Poisson model assumes independent events at a constant cross-section, which fails
+      in silicon carbide, where leakage damage accumulates with fluence and changes the device during
+      the mission.
+    </p>
+
+    <h3>Latent damage in the survivors</h3>
+    <p>
+      A part that survives irradiation may carry damage that shortens its life (§4, §5). The test for it
+      compares irradiated survivors with unirradiated controls under the same accelerated stress, such
+      as a gate-oxide stress that drives time-dependent dielectric breakdown. The question is whether a
+      difference in failure fractions between two small groups could have arisen by chance, and
+      Fisher's exact test answers it without large-sample approximations: given the total number of
+      failures, it computes the probability that they would fall as unevenly as observed, or more so,
+      if irradiation had no effect.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Irradiated survivors against controls</div>
+      <div class="ex-body">
+        <p><b>Given</b> Twelve silicon carbide MOSFETs that survived a heavy-ion exposure and twelve
+        unirradiated controls from the same lot undergo the same accelerated gate stress. Four irradiated
+        devices fail early; no control fails. The numbers are illustrative. <b>Find</b> the failure
+        fractions, the probability of so uneven a split by chance, and a 95% upper bound on the
+        controls' failure probability.</p>
+        <p><b>Plan.</b> Under the hypothesis that irradiation has no effect, the four failures are four
+        devices drawn at random from twenty-four; the chance that all four are irradiated ones is a
+        ratio of combinations. Zero failures among twelve controls bounds their failure probability as
+        a binomial zero count.</p>
+        <p class="ex-step"><b>Failure fractions.</b> Irradiated 4/12 = 0.33; controls 0/12 = 0.</p>
+        <p class="ex-step"><b>Ways to place the failures.</b> The number of ways to choose which 4 of the
+          24 devices fail is C(24, 4) = 24·23·22·21/(4·3·2·1) = 10 626. The number with all 4 among the
+          irradiated is C(12, 4) × C(12, 0) = 495 × 1 = 495.</p>
+        <p class="ex-step"><b>Probability of a split this uneven.</b> No split is more extreme than
+          4–0, so <em>p</em> = 495/10 626 = 0.047 (one-sided). Why one-sided: the hypothesis being tested
+          is that irradiation increases failures, not that it changes them in either direction.</p>
+        <p class="ex-step"><b>Bound on the controls.</b> With true failure probability <em>f</em>, the
+          chance of no failures in 12 is (1 − <em>f</em>)¹². Setting it to 0.05: 1 − <em>f</em> =
+          0.05<sup>1/12</sup> = exp(ln 0.05 / 12) = exp(−0.250) = 0.779, so <em>f</em><sub>95</sub> =
+          0.22.</p>
+        <p class="ex-answer">0.33 against 0; <em>p</em> = 0.047; the controls' failure probability is
+          below 0.22 at 95% confidence. Check: <em>p</em> is just under 0.05, so even a 4–0 split in
+          groups of twelve is barely significant at the 5% level; a 3–0 split would give
+          C(12,3)/C(24,3) = 220/2024 = 0.11 and would not be.</p>
+      </div>
+    </div>
+
+    <p>
+      What such a comparison can establish is limited, in both directions. It can show that the
+      irradiated group fails early more often than chance would explain, which is evidence of latent
+      damage under the stress applied. It cannot, from a dozen devices, give the size of the effect
+      with any precision: the irradiated failure fraction of 0.33 has a wide confidence interval. It
+      cannot locate or identify the defect, which needs failure analysis of the failed parts. It cannot
+      translate an accelerated-stress result into a lifetime at flight conditions without an
+      acceleration model for the failure mechanism. And it cannot rule out a difference in handling
+      between the two groups, which is why the controls must come from the same lot and see every step
+      except the beam. A difference that does not reach significance is not evidence of no damage
+      either; it means the sample was too small to see it.
+    </p>
+
+    <h3>Levers when the safe area is too small</h3>
+    <p>
+      When derating would remove the performance the part was chosen for, the alternatives act on the
+      device, the test or the circuit. In the device, the levers are those of §4 and §5: a buffer layer
+      that lowers the peak field where the track's carriers pile up, a p⁺ plug or lower body
+      resistance that keeps the parasitic transistor off, a trench gate, and in silicon carbide an
+      optimized epitaxial thickness and doping, which Deck 14 pp. 46–47 identify as the route to
+      tolerant designs; in gallium nitride, gate and field-plate design that spreads the drain-side
+      field. Choosing a part with a higher rating and operating it at the required voltage is the
+      simplest form of the same idea, as the 21 Oct lecture recommended: a higher-rated part at a fixed
+      voltage sits at a lower fraction of its rating. In qualification, the levers are tests that
+      cover the conditions the bound depends on: ions with the range to reach the substrate, several
+      LETs including light ions below saturation, the worst-case angle and temperature, enough devices
+      per condition to sample part-to-part variation, post-irradiation gate stress against controls,
+      and fluences high enough to make the zero-event bounds meaningful. In the circuit, current
+      limiting and redundancy (§8) contain an event the device cannot prevent.
+    </p>
+    <p>
+      Device simulation is how the device levers are found before parts exist. <b>Technology
+      computer-aided design</b> (TCAD) solves Poisson's equation and the electron and hole continuity
+      equations on a two- or three-dimensional model of the device, with impact ionization, and for
+      burnout the lattice heat equation as well; the ion is represented as a column of generated pairs
+      whose density follows its LET along the track. Two investigations follow from this module's
+      mechanisms. The first scans strike position, LET and depth at fixed bias to find where a strike
+      triggers burnout and at what voltage; it monitors the electric-field distribution and where its
+      peak moves during the transient, the impact-ionization generation rate, the electron and hole
+      densities and current density along the track, the lattice temperature against the melting or
+      decomposition temperature of the material, and in silicon the base–emitter voltage of the
+      parasitic transistor. The second adds defects, as traps at the interfaces or in the buffer that
+      displacement damage could create, to test whether they reproduce the permanent leakage of SELC;
+      it monitors the leakage current path, the trap occupancy and the field at the defect location.
+      Deck 14 p. 36 cites simulations of this kind for gallium nitride (Zerarka <em>et al.</em>).
+    </p>
+
+    <details class="check">
+      <summary>Eight irradiated devices and eight controls are stressed; two irradiated devices fail early and no control does. A colleague concludes that the radiation caused latent damage. Compute the one-sided Fisher probability and say what the result does and does not support.</summary>
+      <div class="answer">
+        <p>Under no effect, the two failures are two devices drawn from sixteen. C(16, 2) = 16·15/2 =
+        120 ways; with both among the irradiated, C(8, 2) = 28 ways. <em>p</em> = 28/120 = 0.23. A split
+        at least this uneven would occur by chance nearly a quarter of the time, so the data do not
+        support the conclusion at any conventional significance level. They do not refute it either:
+        two failures in eight is consistent with a real effect that a sample of eight is too small to
+        detect. The defensible statement is that the test is inconclusive, and the next step is more
+        devices per group, failure analysis of the two failed devices to identify the failure site, and
+        controls that share every step except the beam.</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>8 · The system and the mission</h2>
+    <p>
+      A destructive event begins in one device but does not stay there. Deck 14 p. 49 traces how
+      latchup and burnout currents disturb the rest of a spacecraft, and its last slide (p. 52) states
+      the conclusion the course has been building toward: effective hardness assurance unites
+      total-dose, single-event and displacement-damage testing with hardening by design and system-level
+      mitigation. This section gives the propagation paths, the mitigation, and the argument for
+      qualifying against all three effects together.
+    </p>
+
+    <h3>How one event reaches the rest of the system</h3>
+    <p>
+      Latchup and burnout events often propagate through shared power domains, affecting several
+      integrated circuits or power converters (Deck 14 p. 49). A latched or shorted part draws current
+      from a rail it shares with others; the rail's source impedance turns that current into a voltage
+      sag, and the other parts on the rail see a brownout, reset, or shut down. The fast current step
+      also disturbs circuits that share no rail. Any loop that carries it has inductance — bond wires,
+      package leads, board traces, cable harnesses — and an inductance <em>L</em> carrying a current
+      that changes at rate d<em>i</em>/d<em>t</em> develops a voltage <em>L</em> d<em>i</em>/d<em>t</em>
+      across it, which appears as ground bounce or supply noise wherever the loop is shared, and the
+      loop radiates. Deck 14 p. 49 calls this <b>radiation-induced electromagnetic interference</b>
+      (RIEMI) and lists its coupling paths as power and ground networks and decoupling loops, package
+      inductance and board traces, and cable harnesses and connectors. Its consequences are false
+      switching, logic resets and corrupted communication between subsystems.
+    </p>
+
+    <div class="example">
+      <div class="ex-head">Ground bounce from a current step</div>
+      <div class="ex-body">
+        <p><b>Given</b> A burnout in a converter switch drives a 2 A current step with a 20 ns rise
+        through a shared ground return whose inductance is 5 nH. The values are illustrative.
+        <b>Find</b> the voltage developed across the return, and compare it with a 1.8 V logic swing.</p>
+        <p><b>Plan.</b> <em>V</em> = <em>L</em> d<em>i</em>/d<em>t</em>, with the step approximated as a
+        linear ramp over its rise time.</p>
+        <p class="ex-step"><b>Rate of change.</b> d<em>i</em>/d<em>t</em> = 2 A / 20×10⁻⁹ s =
+          1.0×10⁸ A/s.</p>
+        <p class="ex-step"><b>Voltage.</b> <em>V</em> = 5×10⁻⁹ H × 1.0×10⁸ A/s = 0.50 V.</p>
+        <p class="ex-answer"><em>V</em> ≈ 0.5 V for the duration of the edge, more than a quarter of a
+          1.8 V logic swing. Check: henries × amperes per second = volt-seconds per ampere × amperes per
+          second = volts. A logic gate referenced to the bouncing ground can switch falsely, which is the
+          mechanism behind the false switching Deck 14 p. 49 lists.</p>
+      </div>
+    </div>
+
+    <figure class="compact">
+      <svg viewBox="0 0 440 210" role="img" aria-labelledby="m16f15-t">
+        <title id="m16f15-t">Propagation of a destructive event: shared rail, inductive coupling and radiated interference reaching other subsystems</title>
+        <rect x="14" y="80" width="104" height="48" class="dg-fill"/>
+        <text x="66" y="100" class="dg-label" text-anchor="middle">struck part</text>
+        <text x="66" y="116" class="dg-label-sm" text-anchor="middle">SEL or SEB current</text>
+        <rect x="300" y="20" width="126" height="40" class="dg-fill"/>
+        <text x="363" y="38" class="dg-label-sm" text-anchor="middle">rail sag: brownout,</text>
+        <text x="363" y="51" class="dg-label-sm" text-anchor="middle">reset, shutdown</text>
+        <rect x="300" y="84" width="126" height="40" class="dg-fill"/>
+        <text x="363" y="102" class="dg-label-sm" text-anchor="middle">ground bounce:</text>
+        <text x="363" y="115" class="dg-label-sm" text-anchor="middle">false switching</text>
+        <rect x="300" y="148" width="126" height="40" class="dg-fill"/>
+        <text x="363" y="166" class="dg-label-sm" text-anchor="middle">radiated: corrupted</text>
+        <text x="363" y="179" class="dg-label-sm" text-anchor="middle">links between subsystems</text>
+        <path d="M118,92 C200,60 240,40 298,40" class="dg-acc" stroke-width="2" marker-end="url(#m16f15-a)"/>
+        <path d="M118,104 L298,104" class="dg-acc" stroke-width="2" marker-end="url(#m16f15-a)"/>
+        <path d="M118,116 C200,148 240,168 298,168" class="dg-acc" stroke-width="2" marker-end="url(#m16f15-a)"/>
+        <text x="200" y="52" class="dg-label-sm" text-anchor="middle">shared power domain</text>
+        <text x="208" y="98" class="dg-label-sm" text-anchor="middle">L di/dt in package, board</text>
+        <text x="200" y="174" class="dg-label-sm" text-anchor="middle">loops, cables, connectors</text>
+        <defs>
+          <marker id="m16f15-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" class="dg-acc-f"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>
+        <b>Figure 15.</b> The three coupling paths of Deck 14 p. 49. Each is cut at its source by
+        limiting the current locally, and along its path by the power-distribution and shielding
+        measures in the next paragraph.
+      </figcaption>
+    </figure>
+
+    <p>
+      The mitigations Deck 14 p. 49 lists act on these paths: local current limiting, which stops the
+      event's current at the struck part; EMI shielding; segregated grounds, so that one subsystem's
+      return current does not flow through another's reference; and a robust power-distribution
+      network, with low-inductance decoupling that supplies fast current locally and ferrite isolation
+      between domains. Deck 14 p. 5 adds redundancy and hardening by design: a redundant converter or
+      switch that takes over when one fails turns a destroyed part into a recoverable system event, and
+      circuit techniques that keep a struck node from reaching the conditions of §§2–4 reduce the
+      events at their origin (rad-hard design for single events, M14).
+    </p>
+
+    <h3>Why a mission is qualified against all three effects together</h3>
+    <p>
+      The three effects are measured separately, with gamma rays for total dose, heavy ions for single
+      events and protons or neutrons for displacement damage, but in orbit a part receives them
+      together, and each changes the response to the others. A prior total dose changes single-event
+      sensitivity: in floating-gate memories, prior dose amplifies heavy-ion upset sensitivity because
+      the threshold shifts from the two exposures add (IEEE NSREC 2025 Short Course, Part III-A), and in
+      static memories the leakage that dose causes changes the upset response (Schwank <em>et al.</em>,
+      2006). Heavy ions also leave permanent lattice damage in silicon carbide, the leakage-current
+      degradation of §5, so a single-event test there accumulates a cumulative degradation as it runs
+      (Deck 14 pp. 41, 51). Protons, which deliver dose, displacement damage and single events at once,
+      degrade the gate oxide's long-term reliability (Deck 14 p. 42; Niskanen <em>et al.</em> 2023). A part
+      qualified to a dose specification alone, or to each effect in isolation, can therefore fail in a
+      way none of the separate tests revealed.
+      <a href="m05-three-effects-taxonomy.html">M05</a> §7 compared the three effects side by side;
+      total-dose assurance is <a href="m15-hardness-assurance.html">M15</a>, displacement damage
+      <a href="m12-displacement-damage.html">M12</a>.
+    </p>
+
+    <details class="check">
+      <summary>A power subsystem uses one 28 V bus for three converters. One converter's switch is susceptible to burnout at the bus voltage. Name the propagation paths that put the other two converters at risk and one mitigation for each.</summary>
+      <div class="answer">
+        <p>First, the shared bus: a burned-out switch shorts its converter's input, the bus current
+        surges and the bus voltage sags through its source impedance, so the other converters brown out
+        or shut down. Local current limiting or a fuse or switch at the failed converter's input
+        isolates the short, and a redundant converter restores its function. Second, inductive coupling:
+        the fast current step through shared ground returns and package and board inductance develops
+        <em>L</em> d<em>i</em>/d<em>t</em> voltages that shift the other converters' references and can
+        switch their control logic falsely; segregated grounds and low-inductance local decoupling
+        reduce it. Third, radiation from the current loop and harness couples into control and
+        communication lines; shielding and ferrite isolation reduce it. The root measure is to derate the
+        switch so that the bus voltage sits inside its safe operating area (§7).</p>
+      </div>
+    </details>
+
+    <!-- ============================================================ -->
+    <h2>Where this leaves us</h2>
+    <p>
+      A destructive single event is a feedback loop that an ion switches on and a power supply drives.
+      The ion supplies picojoules and picocoulombs; the destruction is millijoules of supply energy
+      delivered through a parasitic thyristor, a parasitic bipolar transistor with avalanche
+      multiplication, or a dielectric pushed past its breakdown field, and heated until it melts. Power
+      devices are exposed because they hold the highest fields when off, and the wide-bandgap materials
+      hold ten times higher fields still, which outweighs their larger pair energies. Because no
+      validated rate method exists for burnout or gate rupture, the engineering answer is a safe
+      operating area drawn from tests and a derating margin below it, with small-count statistics
+      deciding what the tests can claim. Rad-hard design for single events (M14) takes up the circuit
+      techniques; <a href="m12-displacement-damage.html">M12</a> continues with displacement damage.
+    </p>
+
+    <div class="keycard">
+      <p class="label">Summary</p>
+      <ul>
+        <li><b>Soft against hard:</b> permanence and loss of function are separate questions. SEL is
+          cleared by power cycling if cut in time; SELC is permanent but the part works; SEB, SEGR and
+          SEDR destroy it.</li>
+        <li><b>Energy:</b> ion ≈ 15 pJ and 4 pC (LET 40, 10 µm Si); supply ≈ mJ. Damage scales with the
+          time before the current is cut.</li>
+        <li><b>Avalanche (16.1):</b> <em>M</em> = 1/[1 − (<em>V</em>/<em>V</em><sub>BR</sub>)<sup><em>n</em></sup>];
+          thermal runaway when heating outruns conduction; electromigration in metal.</li>
+        <li><b>SEL:</b> needs supply above <em>V</em><sub>H</sub> and current above
+          <em>I</em><sub>H</sub>; limit current or detect and cycle power; worse hot; latent metal damage.</li>
+        <li><b>SEB (Si):</b> off state; parasitic npn (source–body–drift) plus avalanche; drain current
+          only; threshold falls and σ rises with LET; p⁺ plug and buffer layer help, lighter epi
+          hurts; p-channel resistant.</li>
+        <li><b>SEGR:</b> holes pool under the neck oxide; gate current first; no protective circuit;
+          (16.2) <em>V</em><sub>crit</sub> = <em>E</em><sub>BD</sub><em>t</em><sub>ox</sub>/(1 + <em>Z</em>/44);
+          PIGS for latent damage.</li>
+        <li><b>WBG:</b> (16.3) a 1200 V drift layer is 80 µm at 0.3 MV/cm in Si, 8 µm at 3 MV/cm in
+          SiC; charge per µm per unit LET 10.4 (Si), 6.6 (SiC), 11.1 (GaN) fC/µm. SiC: transients →
+          SELC → SEB, burnout near 40% of rating (20–47% of breakdown), saturating with LET; latent
+          damage in survivors. GaN:
+          no junction or avalanche, but SEB, SELC and SEDR at high-field corners.</li>
+        <li><b>Statistics (16.4, 16.5):</b> <em>σ</em> = <em>N</em>/Φ, ±1/√<em>N</em>;
+          zero events → <em>σ</em><sub>95</sub> = 3.0/Φ, a bound, not immunity;
+          <em>P</em>(≥ 1) = 1 − exp(−<em>σ</em>Φ); normalize to <em>V</em>/<em>V</em><sub>rated</sub>;
+          latent damage by survivors against controls (Fisher).</li>
+        <li><b>Flight:</b> no validated SEB/SEGR rate method; safe operating area plus derating (Si
+          &lt; 50% for one part, not a rule of the material; SiC lower); RIEMI through rails, <em>L</em> d<em>i</em>/d<em>t</em>
+          and radiation; qualify TID, SEE and DD together.</li>
+      </ul>
+    </div>
+
+    <h2>Where this came from</h2>
+    <div class="table-scroll">
+    <table class="srcmap">
+      <tr><td>§1</td><td>Deck 14 pp. 3–7, 52; lecture of 19 Oct; IEEE NSREC 2024 Short Course §1.1 (effect definitions)</td></tr>
+      <tr><td>§2</td><td>Deck 14 p. 21; S. M. Sze and K. K. Ng, <em>Physics of Semiconductor Devices</em>, 3rd ed. (Wiley, 2007) (impact ionization, Miller's multiplication form); A. H. Johnston, <em>Reliability and Radiation Effects in Compound Semiconductors</em> (World Scientific, 2010) ch. 13; IEEE NSREC 2024 Short Course (latchup metal damage); lecture of 19 Oct</td></tr>
+      <tr><td>§3</td><td>Deck 14 pp. 20, 48; IEEE NSREC 2024 Short Course §§1.1, 3.5; lecture of 19 Oct</td></tr>
+      <tr><td>§4</td><td>Deck 14 pp. 12, 22–33; K. Shenai, K. F. Galloway and R. D. Schrimpf, “The effects of space radiation exposure on power MOSFETs: a review”, in R. D. Schrimpf and D. M. Fleetwood (eds.), <em>Radiation Effects and Soft Errors in Integrated Circuits and Electronic Devices</em> (World Scientific, 2004); C. F. Wheatley, J. L. Titus and D. I. Burton, <em>IEEE Trans. Nucl. Sci.</em> <b>41</b>, 2152 (1994); P. Fernández-Martínez and A. Papadopoulou (via Deck 14 p. 28); IEEE NSREC 2024 Short Course §3.5; lectures of 19 and 21 Oct</td></tr>
+      <tr><td>§5</td><td>Deck 14 pp. 14–19, 34–48; B. J. Baliga, <em>Fundamentals of Power Semiconductor Devices</em>, 2nd ed. (Springer, 2019) (critical fields, drift-region design); C. Martinella <em>et al.</em>, <em>Microelectron. Reliab.</em> <b>128</b>, 114423 (2022); A. Sengupta <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>70</b>, 394 (2023); K. Niskanen <em>et al.</em>, <em>ibid.</em> <b>70</b>, 1838 (2023); J.-M. Lauenstein, IEEE NSREC 2020 Short Course; lecture of 21 Oct</td></tr>
+      <tr><td>§6</td><td>Deck 14 pp. 10, 26–28, 33, 51; N. Gehrels, <em>Astrophys. J.</em> <b>303</b>, 336 (1986) (Poisson upper limits); lecture of 21 Oct</td></tr>
+      <tr><td>§7</td><td>Deck 14 pp. 28, 42, 46–47, 50; A. H. Johnston (2010) ch. 13; E. Normand, in Schrimpf and Fleetwood (2004) (neutron-induced burnout and derating); R. A. Fisher's exact test (standard statistics); lectures of 19 and 21 Oct</td></tr>
+      <tr><td>§8</td><td>Deck 14 pp. 5, 41–42, 49, 52; IEEE NSREC 2025 Short Course Part III-A (floating-gate TID–SEE synergy); J. R. Schwank <em>et al.</em>, <em>IEEE Trans. Nucl. Sci.</em> <b>53</b>, 1772 (2006)</td></tr>
+    </table>
+    </div>
+
+    <nav class="pagination">
+      <a class="prev" href="m11-single-event-effects.html"><span>Previous</span>M11 · Single-Event Effects</a>
+      <a class="next" href="m12-displacement-damage.html"><span>Next</span>M12 · Displacement Damage and NIEL</a>
+    </nav>
+
+  </div>
+  </main>
+</div>
+<script defer src="../../_system/assets/course.js"></script>
+</body>
+</html>
